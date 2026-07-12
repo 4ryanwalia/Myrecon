@@ -35,7 +35,6 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("VK",                "https://vk.com/{username}",                           200),
     ("Mastodon",          "https://mastodon.social/@{username}",                 200),
     ("Threads",           "https://www.threads.net/@{username}",                 200),
-    ("Bluesky",           "https://bsky.app/profile/{username}.bsky.social",     200),
 
     # ── Professional ──────────────────────────────────────────
     ("LinkedIn",          "https://www.linkedin.com/in/{username}",              200),
