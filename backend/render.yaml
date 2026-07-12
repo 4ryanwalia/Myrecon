@@ -1,0 +1,35 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy: create a new Blueprint on Render pointing at this repo. Render reads
+# this file, provisions the service, and prompts for the secret env vars.
+services:
+  - type: web
+    name: myrecon-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --workers 2 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: https://myrecon.xyz,https://www.myrecon.xyz
+      - key: SECRET_KEY
+        generateValue: true
+      - key: RATE_LIMIT_REQUESTS
+        value: "30"
+      - key: RATE_LIMIT_WINDOW
+        value: "60"
+      - key: CACHE_TTL
+        value: "600"
+      # Optional integrations — set these in the Render dashboard, not here.
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GOOGLE_CX_ID
+        sync: false
+      - key: HIBP_API_KEY
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
