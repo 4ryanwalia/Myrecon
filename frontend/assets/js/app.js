@@ -210,19 +210,24 @@
     if (r.is_verified) meta += `<span class="meta-tag">✓ Verified</span>`;
     if (r.is_private) meta += `<span class="meta-tag">🔒 Private</span>`;
     if (r.repos) meta += `<span class="meta-tag">📦 ${fmtNum(r.repos)} repos</span>`;
-    return `<div class="card">
+    const href = r.url && /^https?:\/\//.test(r.url) ? r.url : null;
+    const inner = `
       <div class="card-head">
         ${avatarHTML(r, fallback)}
         <div style="min-width:0">
           <div class="card-title">${esc(platform)}</div>
-          <div class="card-url"><a href="${esc(r.url)}" target="_blank" rel="noopener nofollow">${esc(hostOf(r.url))}</a></div>
+          <div class="card-url">${esc(hostOf(r.url))}${href ? ' <span class="open-ico" aria-hidden="true">↗</span>' : ""}</div>
         </div>
         <span class="tag ${esc(cat)}">${esc(cat)}</span>
       </div>
       ${r.display_name && r.display_name !== platform ? `<div class="card-bio" style="font-weight:600;color:var(--text)">${esc(r.display_name)}</div>` : ""}
       ${r.bio ? `<div class="card-bio">${esc(r.bio.slice(0, 150))}</div>` : ""}
-      ${meta ? `<div class="card-meta">${meta}</div>` : ""}
-    </div>`;
+      ${meta ? `<div class="card-meta">${meta}</div>` : ""}`;
+    if (href) {
+      return `<a class="card card-link" href="${esc(href)}" target="_blank" rel="noopener nofollow"
+        aria-label="Open ${esc(platform)} profile in a new tab">${inner}</a>`;
+    }
+    return `<div class="card">${inner}</div>`;
   }
 
   // -- Email results

@@ -251,6 +251,12 @@ button, input, select { font: inherit; color: inherit; }
   position: relative; overflow: hidden; animation: rise 0.35s ease both;
 }
 .card:hover { transform: translateY(-3px); border-color: var(--border-strong); box-shadow: var(--shadow); }
+a.card { display: block; }
+.card-link { cursor: pointer; }
+.card-link:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+.card-link:hover .card-title { color: var(--accent); }
+.open-ico { color: var(--text-mute); }
+.card-link:hover .open-ico { color: var(--accent); }
 .card-head { display: flex; align-items: center; gap: 12px; }
 .avatar {
   width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0; overflow: hidden;
