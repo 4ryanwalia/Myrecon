@@ -204,6 +204,8 @@
     const cat = r.category || "mention";
     const fallback = (platform[0] || "?").toUpperCase();
     let meta = "";
+    if (r.confidence === "medium") meta += `<span class="meta-tag conf-medium">Possible match</span>`;
+    else if (r.confidence === "high") meta += `<span class="meta-tag conf-high">Confirmed</span>`;
     if (r.followers) meta += `<span class="meta-tag">👥 ${fmtNum(r.followers)}</span>`;
     if (r.is_verified) meta += `<span class="meta-tag">✓ Verified</span>`;
     if (r.is_private) meta += `<span class="meta-tag">🔒 Private</span>`;
@@ -366,18 +368,107 @@
     if (tool.deep) body.deep = $("#deepToggle")?.checked || false;
 
     $("#runBtn").disabled = true;
-    setLoading(activeTool);
     try {
-      const data = await api(tool.endpoint, body);
-      lastResult = { tool: activeTool, query: value, data };
-      (RENDERERS[activeTool] || renderIp)(data);
-      pushHistory(activeTool, value);
-      bindExport();
+      if (activeTool === "username") {
+        await runUsernameStream(value, body);
+      } else {
+        setLoading(activeTool);
+        const data = await api(tool.endpoint, body);
+        lastResult = { tool: activeTool, query: value, data };
+        (RENDERERS[activeTool] || renderIp)(data);
+        pushHistory(activeTool, value);
+        bindExport();
+      }
     } catch (e) {
       setError(e.message);
     } finally {
       $("#runBtn").disabled = false;
     }
+  }
+
+  // ---- Username: live streaming scan with progress -----------------
+  function setScanning() {
+    resultsEl().innerHTML = `
+      <div class="loading scan" role="status" aria-live="polite">
+        <div class="scan-head">
+          <div class="spinner"></div>
+          <div class="scan-meta">
+            <h3 id="scanPhase">Starting scan…</h3>
+            <p class="hint" id="scanDetail">Preparing to check 100+ platforms.</p>
+          </div>
+          <div class="scan-pct" id="scanPct">0%</div>
+        </div>
+        <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
+      </div>`;
+  }
+
+  function updateScanUI(ev) {
+    const pct = Math.max(0, Math.min(100, Math.round(ev.percent || 0)));
+    const bar = $("#scanBar"); if (bar) bar.style.width = pct + "%";
+    const p = $("#scanPct"); if (p) p.textContent = pct + "%";
+    const phase = $("#scanPhase"); if (phase && ev.phase) phase.textContent = ev.phase + "…";
+    const detail = $("#scanDetail"); if (detail && ev.detail) detail.textContent = ev.detail;
+  }
+
+  async function runUsernameStream(value, body) {
+    setScanning();
+    let res;
+    try {
+      res = await fetch(CFG.apiBase + CFG.endpoints.usernameStream, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch {
+      return runUsernameFallback(value, body); // network hiccup → plain request
+    }
+    if (res.status === 404) return runUsernameFallback(value, body); // older backend
+    if (!res.ok || !res.body) {
+      let msg = `Request failed (${res.status})`;
+      try { const j = await res.json(); msg = j.error || msg; } catch {}
+      throw new Error(msg);
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let finalData = null;
+
+    const handleLine = (line) => {
+      line = line.trim();
+      if (!line) return;
+      let ev; try { ev = JSON.parse(line); } catch { return; }
+      if (ev.type === "progress") updateScanUI(ev);
+      else if (ev.type === "complete") finalData = ev.data;
+      else if (ev.type === "error") throw new Error(ev.error || "Scan failed");
+    };
+
+    while (true) {
+      const { value: chunk, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(chunk, { stream: true });
+      let nl;
+      while ((nl = buffer.indexOf("\n")) >= 0) {
+        handleLine(buffer.slice(0, nl));
+        buffer = buffer.slice(nl + 1);
+      }
+    }
+    if (buffer) handleLine(buffer);
+
+    if (!finalData) throw new Error("The scan did not complete. Please try again.");
+    lastResult = { tool: "username", query: value, data: finalData };
+    renderUsername(finalData);
+    pushHistory("username", value);
+    bindExport();
+  }
+
+  async function runUsernameFallback(value, body) {
+    setLoading("username");
+    const data = await api(CFG.endpoints.username, body);
+    lastResult = { tool: "username", query: value, data };
+    renderUsername(data);
+    pushHistory("username", value);
+    bindExport();
   }
 
   // ---------------------------------------------------------------- export

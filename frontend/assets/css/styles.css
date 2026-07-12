@@ -318,8 +318,20 @@ button, input, select { font: inherit; color: inherit; }
   width: 42px; height: 42px; border-radius: 50%; margin: 0 auto 16px;
   border: 3px solid var(--border); border-top-color: var(--accent); animation: spin 0.8s linear infinite;
 }
-.progress { height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin-top: 16px; }
+.progress { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin-top: 16px; }
 .progress > i { display: block; height: 100%; width: 30%; background: var(--brand-grad); border-radius: 999px; animation: indeterminate 1.3s ease-in-out infinite; }
+.progress.determinate > i { width: 0; animation: none; transition: width 0.4s ease; }
+
+/* Live scan header */
+.loading.scan { text-align: left; }
+.scan-head { display: flex; align-items: center; gap: 16px; }
+.scan-head .spinner { margin: 0; flex-shrink: 0; }
+.scan-meta { flex: 1; min-width: 0; }
+.scan-meta h3 { color: var(--text); font-size: 1.05rem; margin: 0; }
+.scan-meta #scanDetail { margin: 2px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scan-pct { font-family: var(--mono); font-weight: 700; font-size: 1.15rem; color: var(--accent); flex-shrink: 0; }
+.meta-tag.conf-medium { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+.meta-tag.conf-high { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
 
 /* History */
 .history-list { display: grid; gap: 8px; }

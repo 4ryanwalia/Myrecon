@@ -17,6 +17,7 @@
     apiBase: base,
     endpoints: {
       username: "/api/username",
+      usernameStream: "/api/username/stream",
       fullname: "/api/fullname",
       email: "/api/email",
       domain: "/api/domain",

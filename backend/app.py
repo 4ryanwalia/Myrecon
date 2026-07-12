@@ -11,9 +11,10 @@ Run on Render: gunicorn wsgi:app  (see Procfile)
 
 import functools
 import hashlib
+import json
 import logging
 
-from flask import Flask, request, g
+from flask import Flask, request, g, Response, stream_with_context
 
 import config
 from core.cache import TTLCache
@@ -149,6 +150,40 @@ def _register_routes(app: Flask) -> None:
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
         return responses.ok(cached_username(username, deep))
+
+    @app.route("/api/username/stream", methods=["POST", "OPTIONS"])
+    def api_username_stream():
+        """Live username scan streamed as newline-delimited JSON (NDJSON).
+
+        Emits {"type":"progress",...} events during the scan and a final
+        {"type":"complete","data":{...}} with the full result. Shares the
+        TTL cache with the non-streaming /api/username endpoint.
+        """
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from services.search import stream_username
+
+        body = _json_body()
+        username = validation.username(body.get("username", ""))
+        deep = validation.boolean(body.get("deep"))
+        key = _cache_key("username", username, deep)
+        cached_hit = _cache.get(key) if config.CACHE_ENABLED else None
+
+        def generate():
+            if cached_hit is not None:
+                yield json.dumps({"type": "complete", "data": cached_hit}) + "\n"
+                return
+            for event in stream_username(username, deep):
+                if event.get("type") == "complete" and config.CACHE_ENABLED:
+                    data = event.get("data")
+                    if isinstance(data, dict) and data.get("status") != "error":
+                        _cache.set(key, data)
+                yield json.dumps(event) + "\n"
+
+        resp = Response(stream_with_context(generate()), mimetype="application/x-ndjson")
+        resp.headers["Cache-Control"] = "no-cache"
+        resp.headers["X-Accel-Buffering"] = "no"  # disable proxy buffering
+        return resp
 
     @app.route("/api/fullname", methods=["POST", "OPTIONS"])
     def api_fullname():

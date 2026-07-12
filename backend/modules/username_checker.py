@@ -1,26 +1,31 @@
 """
-╔══════════════════════════════════════════════════════════════╗
-║  Username Checker — Multi-Platform Enumeration Engine       ║
-║  Checks 120+ platforms via HTTP HEAD/GET with threading     ║
-║  Platform-specific validators for SPA sites (IG, FB, etc.)  ║
-╚══════════════════════════════════════════════════════════════╝
+Username checker — multi-platform enumeration engine.
+
+Checks a username across the platform database and, crucially, **verifies**
+each hit before reporting it. A username resolving to an HTTP 200 page is not
+proof of a real profile — many sites return 200 for any handle (SPA shells,
+login walls, soft 404s, redirects to a home/login page). To avoid false
+positives we require positive corroborating signals (the handle echoed in the
+title/canonical URL, a profile-type OpenGraph tag, a real avatar, follower
+stats, …) and score confidence. Only medium/high-confidence matches are kept.
 """
 
 import re
 import time
+import html as _html
 import requests
+from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Optional
 
 # ──────────────────────────────────────────────────────────────
 #  Platform database:  (name, url_template, expected_status)
-#  {username} is dynamically replaced at runtime.
+#  {username} is replaced at runtime.
 # ──────────────────────────────────────────────────────────────
 
 PLATFORMS: list[tuple[str, str, int]] = [
     # ── Social Media ──────────────────────────────────────────
     ("Twitter / X",       "https://x.com/{username}",                            200),
-    ("Instagram",         "https://www.instagram.com/{username}/",                200),
+    ("Instagram",         "https://www.instagram.com/{username}/",               200),
     ("Facebook",          "https://www.facebook.com/{username}",                 200),
     ("TikTok",            "https://www.tiktok.com/@{username}",                  200),
     ("Snapchat",          "https://www.snapchat.com/add/{username}",             200),
@@ -92,7 +97,7 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("Steam",             "https://steamcommunity.com/id/{username}",            200),
     ("Chess.com",         "https://www.chess.com/member/{username}",             200),
     ("Lichess",           "https://lichess.org/@/{username}",                    200),
-    ("Roblox",            "https://www.roblox.com/user.aspx?username={username}",200),
+    ("Roblox",            "https://www.roblox.com/user.aspx?username={username}", 200),
     ("Osu!",              "https://osu.ppy.sh/users/{username}",                 200),
     ("Minecraft",         "https://namemc.com/profile/{username}",               200),
     ("Fortnite Tracker",  "https://fortnitetracker.com/profile/all/{username}",  200),
@@ -104,7 +109,7 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("ArtStation",        "https://www.artstation.com/{username}",               200),
     ("Unsplash",          "https://unsplash.com/@{username}",                    200),
     ("Imgur",             "https://imgur.com/user/{username}",                   200),
-    ("VSCO",             "https://vsco.co/{username}/gallery",                   200),
+    ("VSCO",              "https://vsco.co/{username}/gallery",                  200),
     ("Giphy",             "https://giphy.com/{username}",                        200),
 
     # ── Blogging ──────────────────────────────────────────────
@@ -147,7 +152,6 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("Carrd",             "https://{username}.carrd.co",                         200),
     ("Bio.link",          "https://bio.link/{username}",                         200),
     ("Beacons",           "https://beacons.ai/{username}",                       200),
-    ("Gravatar",          "https://gravatar.com/{username}",                     200),
     ("Buymeacoffee",      "https://buymeacoffee.com/{username}",                 200),
     ("Ko-fi",             "https://ko-fi.com/{username}",                        200),
     ("Patreon",           "https://www.patreon.com/{username}",                  200),
@@ -158,14 +162,14 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("SlideShare",        "https://www.slideshare.net/{username}",               200),
     ("Scribd",            "https://www.scribd.com/{username}",                   200),
     ("Issuu",             "https://issuu.com/{username}",                        200),
-    ("Instructables",     "https://www.instructables.com/member/{username}/",     200),
+    ("Instructables",     "https://www.instructables.com/member/{username}/",    200),
     ("Hackaday",          "https://hackaday.io/{username}",                      200),
     ("Goodreads",         "https://www.goodreads.com/{username}",                200),
-    ("MyAnimeList",       "https://myanimelist.net/profile/{username}",           200),
+    ("MyAnimeList",       "https://myanimelist.net/profile/{username}",          200),
     ("Letterboxd",        "https://letterboxd.com/{username}/",                  200),
     ("Trakt",             "https://trakt.tv/users/{username}",                   200),
-    ("Duolingo",          "https://www.duolingo.com/profile/{username}",          200),
-    ("Codecademy",        "https://www.codecademy.com/profiles/{username}",       200),
+    ("Duolingo",          "https://www.duolingo.com/profile/{username}",         200),
+    ("Codecademy",        "https://www.codecademy.com/profiles/{username}",      200),
     ("FreeCodeCamp",      "https://www.freecodecamp.org/{username}",             200),
     ("HackerOne",         "https://hackerone.com/{username}",                    200),
     ("BugCrowd",          "https://bugcrowd.com/{username}",                     200),
@@ -173,209 +177,130 @@ PLATFORMS: list[tuple[str, str, int]] = [
 
 TOTAL_PLATFORMS = len(PLATFORMS)
 
-
-# ──────────────────────────────────────────────────────────────
-#  Platform-Specific Validators
-#  These handle SPA sites that return 200 for everything
-# ──────────────────────────────────────────────────────────────
-
-def _validate_instagram(resp, username: str) -> bool:
-    """
-    Instagram returns 200 for ALL URLs (login wall).
-    Strategy: Instagram shows specific error text for non-existent profiles.
-    If we DON'T see that error, the profile likely exists.
-    Uses Turkish locale (?hl=tr) to get richer meta tags.
-    """
-    body = resp.text[:15000]
-    body_lower = body.lower()
-
-    # ── Negative signals: profile does NOT exist ─────────────
-    not_found_signals = [
-        "sorry, this page isn't available",
-        "this page isn't available",
-        "the link you followed may be broken",
-        "page not found",
-        "user not found",
-        "bu sayfa kullanılamıyor",          # Turkish: "this page is unavailable"
-        "sayfa bulunamadı",                 # Turkish: "page not found"
-    ]
-    for sig in not_found_signals:
-        if sig in body_lower:
-            return False
-
-    # ── Strong positive signals ──────────────────────────────
-    # og:description with follower counts = definitely real
-    if "follower" in body_lower and "following" in body_lower:
-        return True
-    # Turkish follower text
-    if "takipçi" in body_lower and "takip" in body_lower:
-        return True
-
-    # Username appears in page meta/JSON data
-    positive_signals = [
-        f'"username":"{username}"',
-        f'"username": "{username}"',
-        f"@{username}",
-        "edge_followed_by",
-        "is_private",
-        "biography",
-        "profile_pic_url",
-        "full_name",
-        "external_url",
-        "is_verified",
-        "media_count",
-        '"user":',
-    ]
-    for sig in positive_signals:
-        if sig.lower() in body_lower:
-            return True
-
-    # og:title contains the username
-    og_title_match = re.search(
-        r'content=["\']([^"\']*)["\'][^>]*(?:property|name)=["\']og:title["\']',
-        body, re.IGNORECASE
-    )
-    if not og_title_match:
-        og_title_match = re.search(
-            r'(?:property|name)=["\']og:title["\'][^>]*content=["\']([^"\']*)["\']',
-            body, re.IGNORECASE
-        )
-    if og_title_match:
-        title = og_title_match.group(1).lower()
-        if username.lower() in title:
-            return True
-
-    # og:description exists and has content (real profiles always have this)
-    og_desc_match = re.search(
-        r'(?:property|name)=["\']og:description["\'][^>]*content=["\']([^"\']+)["\']',
-        body, re.IGNORECASE
-    )
-    if not og_desc_match:
-        og_desc_match = re.search(
-            r'content=["\']([^"\']+)["\'][^>]*(?:property|name)=["\']og:description["\']',
-            body, re.IGNORECASE
-        )
-    if og_desc_match:
-        desc = og_desc_match.group(1).strip()
-        if len(desc) > 20 and ("instagram" not in desc.lower() or username.lower() in desc.lower()):
-            return True
-
-    # ── If page is large and no error found → likely exists ──
-    if len(resp.text) > 3000:
-        return True
-
-    # Small/empty page with no positive signals → not found
-    return False
-
-
-def _validate_facebook(resp, username: str) -> bool:
-    """Facebook also returns 200 with login walls for non-existent users."""
-    body_lower = resp.text[:5000].lower()
-
-    # Facebook login wall
-    if "you must log in to continue" in body_lower:
-        return False
-    if "this page isn't available" in body_lower:
-        return False
-    if "this content isn't available" in body_lower:
-        return False
-
-    # Real profile indicators
-    if f"/{username}" in body_lower and ("profile" in body_lower or "timeline" in body_lower):
-        return True
-
-    # Check og:title for username
-    og_title = re.search(
-        r'<meta\s+(?:property|name)=["\']og:title["\']\s+content=["\']([^"\']*)["\']',
-        resp.text[:5000], re.IGNORECASE
-    )
-    if og_title and username.lower() in og_title.group(1).lower():
-        return True
-
-    return True  # Facebook is more reliable with status codes
-
-
-def _validate_tiktok(resp, username: str) -> bool:
-    """TikTok returns 200 with different page content for invalid users."""
-    body_lower = resp.text[:5000].lower()
-
-    if "couldn't find this account" in body_lower:
-        return False
-    if "this account was banned" in body_lower:
-        return False
-    if '"statusCode":10202' in resp.text[:5000]:
-        return False
-
-    # Real profile signals
-    if '"uniqueId"' in resp.text[:5000] or '"nickname"' in resp.text[:5000]:
-        return True
-
-    # Check og:title
-    og_title = re.search(
-        r'<meta\s+(?:property|name)=["\']og:title["\']\s+content=["\']([^"\']*)["\']',
-        resp.text[:5000], re.IGNORECASE
-    )
-    if og_title:
-        title = og_title.group(1).lower()
-        if username.lower() in title or f"@{username.lower()}" in title:
-            return True
-        if "tiktok" == title.strip():
-            return False
-
-    return True
-
-
-def _validate_twitter(resp, username: str) -> bool:
-    """Twitter/X returns 200 but may show 'This account doesn't exist'."""
-    body_lower = resp.text[:5000].lower()
-
-    if "this account doesn't exist" in body_lower:
-        return False
-    if "account is suspended" in body_lower:
-        return False
-    if "something went wrong" in body_lower and username.lower() not in body_lower:
-        return False
-
-    return True
-
-
-def _validate_linkedin(resp, username: str) -> bool:
-    """LinkedIn aggressively redirects to login — check for authwall."""
-    body_lower = resp.text[:5000].lower()
-
-    if "authwall" in body_lower or "join linkedin" in body_lower:
-        # LinkedIn shows authwall even for real profiles — check og:title
-        og_title = re.search(
-            r'<meta\s+(?:property|name)=["\']og:title["\']\s+content=["\']([^"\']*)["\']',
-            resp.text[:5000], re.IGNORECASE
-        )
-        if og_title:
-            title = og_title.group(1).lower()
-            if username.lower() in title or "linkedin" not in title:
-                return True
-        return False
-
-    return True
-
-
-# Registry of platform-specific validators
-PLATFORM_VALIDATORS = {
-    "Instagram": _validate_instagram,
-    "Facebook": _validate_facebook,
-    "TikTok": _validate_tiktok,
-    "Twitter / X": _validate_twitter,
-    "LinkedIn": _validate_linkedin,
-}
-
-# Platforms that need longer timeout (SPAs, slow APIs)
+# Platforms that need a longer timeout (SPAs / slow APIs).
 SLOW_PLATFORMS = {"Instagram", "Facebook", "TikTok", "LinkedIn", "Threads"}
 
 
+# ══════════════════════════════════════════════════════════════
+#  Match verification
+# ══════════════════════════════════════════════════════════════
+
+# Phrases that indicate the profile does NOT exist (soft 404s).
+NOT_FOUND_SIGNALS = (
+    "page not found", "user not found", "profile not found",
+    "page isn't available", "this page isn't available",
+    "sorry, this page", "the link you followed may be broken",
+    "couldn't find this account", "this account doesn't exist",
+    "this account doesn’t exist", "account suspended",
+    "account has been suspended", "nobody on reddit goes by",
+    "user does not exist", "isn't available on",
+    "the specified profile could not be found", "no longer available",
+    "bu sayfa kullanılamıyor", "sayfa bulunamadı",
+)
+
+# Final-URL paths that mean we were bounced to a generic landing page.
+_GENERIC_PATHS = {
+    "", "/login", "/signin", "/signup", "/home", "/404", "/error",
+    "/accounts/login", "/auth/login", "/users/sign_in", "/register",
+}
+
+_GENERIC_IMG = (
+    "default", "logo", "favicon", "placeholder", "share",
+    "open_graph", "avatar_default", "sprite", "fallback",
+)
+
+
+def _is_generic_image(url: str) -> bool:
+    u = url.lower()
+    return any(w in u for w in _GENERIC_IMG)
+
+
+def parse_meta(page_html: str) -> dict:
+    """Parse <meta>, <title>, and <link rel=canonical> into one dict."""
+    meta: dict = {}
+    for m in re.finditer(r"<meta\s+([^>]+?)/?>", page_html, re.IGNORECASE):
+        attrs = m.group(1)
+        cm = re.search(r'content\s*=\s*["\']([^"\']*)["\']', attrs, re.IGNORECASE)
+        km = re.search(r'(?:property|name)\s*=\s*["\']([^"\']*)["\']', attrs, re.IGNORECASE)
+        if cm and km:
+            key = km.group(1).lower()
+            if key not in meta:
+                meta[key] = _html.unescape(cm.group(1)).strip()
+    tm = re.search(r"<title[^>]*>([^<]*)</title>", page_html, re.IGNORECASE)
+    if tm:
+        meta["__title__"] = _html.unescape(tm.group(1)).strip()
+    cn = re.search(
+        r'<link[^>]+rel=["\']canonical["\'][^>]*href=["\']([^"\']+)["\']',
+        page_html, re.IGNORECASE,
+    )
+    if cn:
+        meta["__canonical__"] = cn.group(1).strip()
+    return meta
+
+
+def _looks_not_found(resp) -> bool:
+    body = resp.text[:4000].lower()
+    return any(sig in body for sig in NOT_FOUND_SIGNALS)
+
+
+def _redirected_to_generic(resp, username: str) -> bool:
+    """True if we were redirected to a home/login page (not the profile)."""
+    try:
+        path = urlparse(resp.url).path.rstrip("/").lower()
+    except Exception:
+        return False
+    if path in _GENERIC_PATHS:
+        return True
+    if ("login" in path or "signin" in path) and username.lower() not in path:
+        return True
+    return False
+
+
+def confidence_score(resp, username: str, meta: dict) -> int:
+    """
+    Score how strongly the response corroborates a *real* profile for
+    `username`. A hard negative (soft 404 / bounced to a landing page)
+    returns a strongly negative score. Positive signals accumulate.
+
+    Callers treat >= 3 as high confidence, 2 as medium, and < 2 as
+    "not a confirmed match" (dropped).
+    """
+    if _looks_not_found(resp) or _redirected_to_generic(resp, username):
+        return -10
+
+    uname = username.lower()
+    title = (meta.get("og:title", "") + " " + meta.get("__title__", "")).lower()
+    urls = (meta.get("og:url", "") + " " + meta.get("__canonical__", "")).lower()
+    og_type = meta.get("og:type", "").lower()
+    og_img = meta.get("og:image", "")
+    og_desc = meta.get("og:description", "") or meta.get("description", "")
+    body_lower = resp.text[:4000].lower()
+
+    score = 0
+    if uname in title:                                   # handle echoed in title
+        score += 2
+    if uname in urls:                                    # handle in canonical/og:url
+        score += 2
+    if uname in resp.url.lower():                        # served the profile path
+        score += 1
+    if "profile" in og_type or "user" in og_type:        # og:type = profile
+        score += 1
+    if og_img.startswith("http") and not _is_generic_image(og_img):
+        score += 1                                       # a real (non-default) avatar
+    if len(og_desc) > 40:                                # substantive description
+        score += 1
+    # Social stat hints (followers/following, subscribers…)
+    if ("follower" in body_lower and "following" in body_lower) or "takipçi" in body_lower:
+        score += 2
+    return score
+
+
+def _confidence_label(score: int) -> str:
+    return "high" if score >= 3 else "medium"
+
+
 class UsernameChecker:
-    """
-    Performs concurrent HTTP checks against 120+ platforms to detect
-    whether a username has a registered profile.
-    """
+    """Concurrent, verified username enumeration across the platform list."""
 
     HEADERS = {
         "User-Agent": (
@@ -386,8 +311,13 @@ class UsernameChecker:
         "Accept-Language": "en-US,en;q=0.9",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     }
-    TIMEOUT = 8  # seconds
-    SLOW_TIMEOUT = 12  # for SPA platforms
+    MOBILE_UA = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+        "Version/16.6 Mobile/15E148 Safari/604.1"
+    )
+    TIMEOUT = 8
+    SLOW_TIMEOUT = 12
 
     def __init__(self, max_workers: int = 20, delay: float = 0.1):
         self.max_workers = max_workers
@@ -396,11 +326,9 @@ class UsernameChecker:
         self._stop_flag = False
 
     def stop(self):
-        """Signal the checker to stop scanning."""
         self._stop_flag = True
 
     def _check_platform(self, name: str, url: str, expected: int, username: str = "") -> dict:
-        """Check a single platform for the existence of the username."""
         result = {
             "platform": name,
             "url": url,
@@ -409,141 +337,61 @@ class UsernameChecker:
             "source": "username_check",
             "username": username,
         }
-
         if self._stop_flag:
             return result
 
         timeout = self.SLOW_TIMEOUT if name in SLOW_PLATFORMS else self.TIMEOUT
-
-        # Instagram requires mobile UA to bypass login wall
         headers = self.HEADERS
+        # Instagram serves richer OG tags to a mobile UA.
         if name == "Instagram":
-            headers = {
-                **self.HEADERS,
-                "User-Agent": (
-                    "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) "
-                    "AppleWebKit/605.1.15 (KHTML, like Gecko) "
-                    "Version/16.6 Mobile/15E148 Safari/604.1"
-                ),
-            }
+            headers = {**self.HEADERS, "User-Agent": self.MOBILE_UA}
 
         try:
-            resp = requests.get(
-                url,
-                headers=headers,
-                timeout=timeout,
-                allow_redirects=True,
-            )
+            resp = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
             result["status_code"] = resp.status_code
 
             if resp.status_code == expected:
-                # ── Platform-specific validation ─────────────
-                validator = PLATFORM_VALIDATORS.get(name)
-                if validator:
-                    result["exists"] = validator(resp, username)
-                else:
-                    # Generic soft-404 detection for standard platforms
-                    body_lower = resp.text[:2000].lower()
-                    soft_404_signals = [
-                        "page not found",
-                        "user not found",
-                        "profile not found",
-                        "doesn't exist",
-                        "does not exist",
-                        "no user",
-                        "404",
-                        "this page isn't available",
-                        "sorry, this page",
-                        "account suspended",
-                        "account has been suspended",
-                    ]
-                    is_soft_404 = any(sig in body_lower for sig in soft_404_signals)
-                    result["exists"] = not is_soft_404
-
-                # ── Extract basic metadata from the page ─────
-                if result["exists"]:
-                    self._extract_basic_metadata(result, resp, username)
-
+                meta = parse_meta(resp.text[:20000])
+                score = confidence_score(resp, username, meta)
+                if score >= 2:
+                    result["exists"] = True
+                    result["confidence"] = _confidence_label(score)
+                    result["match_score"] = score
+                    self._extract_metadata(result, meta)
         except requests.exceptions.Timeout:
-            result["status_code"] = -1  # timeout
+            result["status_code"] = -1
         except requests.exceptions.ConnectionError:
-            result["status_code"] = -2  # connection error
+            result["status_code"] = -2
         except Exception:
-            result["status_code"] = -3  # unknown error
+            result["status_code"] = -3
 
         return result
 
-    def _extract_basic_metadata(self, result: dict, resp, username: str):
-        """Extract basic bio/pic from meta tags during the initial check."""
-        try:
-            html = resp.text[:8000]
+    @staticmethod
+    def _extract_metadata(result: dict, meta: dict) -> None:
+        """Populate bio / avatar / display name from parsed meta tags."""
+        desc = meta.get("og:description") or meta.get("description")
+        if desc and len(desc) > 10:
+            result["bio"] = desc[:200]
 
-            # Extract og:description
-            desc_match = re.search(
-                r'<meta\s+[^>]*?content=["\']([^"\']*)["\'][^>]*?'
-                r'(?:property|name)=["\']og:description["\']',
-                html, re.IGNORECASE
-            )
-            if not desc_match:
-                desc_match = re.search(
-                    r'<meta\s+[^>]*?(?:property|name)=["\']og:description["\']'
-                    r'[^>]*?content=["\']([^"\']*)["\']',
-                    html, re.IGNORECASE
-                )
-            if desc_match:
-                desc = desc_match.group(1).strip()
-                if desc and len(desc) > 10:
-                    result["bio"] = desc[:200]
+        img = meta.get("og:image", "")
+        if img.startswith("http") and not _is_generic_image(img):
+            result["profile_pic_url"] = img
 
-            # Extract og:image for profile pic
-            img_match = re.search(
-                r'<meta\s+[^>]*?content=["\']([^"\']*)["\'][^>]*?'
-                r'(?:property|name)=["\']og:image["\']',
-                html, re.IGNORECASE
-            )
-            if not img_match:
-                img_match = re.search(
-                    r'<meta\s+[^>]*?(?:property|name)=["\']og:image["\']'
-                    r'[^>]*?content=["\']([^"\']*)["\']',
-                    html, re.IGNORECASE
-                )
-            if img_match:
-                pic_url = img_match.group(1).strip()
-                if pic_url and pic_url.startswith("http"):
-                    # Skip generic/default images
-                    skip_words = ["default", "logo", "favicon", "placeholder", "share", "open_graph"]
-                    if not any(w in pic_url.lower() for w in skip_words):
-                        result["profile_pic_url"] = pic_url
-
-            # Extract og:title for display name
-            title_match = re.search(
-                r'<meta\s+[^>]*?content=["\']([^"\']*)["\'][^>]*?'
-                r'(?:property|name)=["\']og:title["\']',
-                html, re.IGNORECASE
-            )
-            if not title_match:
-                title_match = re.search(
-                    r'<meta\s+[^>]*?(?:property|name)=["\']og:title["\']'
-                    r'[^>]*?content=["\']([^"\']*)["\']',
-                    html, re.IGNORECASE
-                )
-            if title_match:
-                title = title_match.group(1).strip()
-                if title and title.lower() not in ("", "instagram", "facebook", "tiktok"):
-                    result["display_name"] = title[:100]
-
-        except Exception:
-            pass
+        title = (meta.get("og:title") or meta.get("__title__") or "").strip()
+        if title and title.lower() not in ("instagram", "facebook", "tiktok", "twitter", "x"):
+            result["display_name"] = title[:100]
 
     def scan(self, username: str, callback=None, deep: bool = False) -> list[dict]:
         """
-        Scan all platforms for the given username.
-        In fast mode, check the first 50 platforms. Deep mode checks all.
+        Scan platforms for `username`. Fast mode checks the first 50; deep
+        mode checks all. `callback(module, message, progress, results)` is
+        invoked after each platform completes (used for live progress).
         """
         self._stop_flag = False
         platforms = PLATFORMS if deep else PLATFORMS[:50]
         total = len(platforms)
-        results = []
+        results: list[dict] = []
         completed = 0
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
@@ -552,8 +400,7 @@ class UsernameChecker:
                 if self._stop_flag:
                     break
                 url = url_tpl.replace("{username}", username)
-                future = executor.submit(self._check_platform, name, url, expected, username)
-                futures[future] = (name, url)
+                futures[executor.submit(self._check_platform, name, url, expected, username)] = name
 
             for future in as_completed(futures):
                 if self._stop_flag:
@@ -561,18 +408,17 @@ class UsernameChecker:
                 result = future.result()
                 results.append(result)
                 completed += 1
-
                 if callback:
                     progress = int((completed / total) * 100)
-                    status = "✓ FOUND" if result["exists"] else "✗ Not found"
+                    status = "found" if result["exists"] else "no match"
                     callback(
                         module="Username Check",
                         message=f"[{completed}/{total}] {result['platform']} — {status}",
                         progress=progress,
                         results=[result] if result["exists"] else [],
                     )
-
-                time.sleep(self.delay)
+                if self.delay:
+                    time.sleep(self.delay)
 
         self.results = [r for r in results if r["exists"]]
         return self.results
