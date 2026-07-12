@@ -288,6 +288,20 @@ a.card { display: block; }
 .datarow .v { flex: 1; font-size: 0.9rem; word-break: break-word; font-family: var(--mono); }
 .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); margin: 22px 0 10px; }
 
+/* Cross-tool pivot chips */
+.pivot-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 4px; }
+.pivot-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); }
+.pivot {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  padding: 6px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; font-family: inherit;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  transition: background 0.16s, transform 0.12s;
+}
+.pivot:hover { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); transform: translateY(-1px); }
+.pivot:active { transform: translateY(0); }
+
 /* Breach banner */
 .breach {
   border-radius: var(--radius); padding: 18px; margin-bottom: 18px;

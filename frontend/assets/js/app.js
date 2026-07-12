@@ -164,6 +164,9 @@
       ${stat(s.mentions, "Mentions")}${stat(s.clusters, "Identities")}
     </div>`;
 
+    const relDomains = usernameRelatedDomains(data);
+    if (relDomains.length) html += pivotRow("Related domains", relDomains.map((d) => pivotChip("domain", d, d)));
+
     (data.identity_clusters || []).forEach((c) => { html += clusterCard(c); });
 
     if (!profiles.length && !documents.length && !mentions.length) {
@@ -260,6 +263,13 @@
       ["MX hosts", (a.mx_hosts || []).map(esc).join("<br>") || "—"],
     ]);
 
+    const emailDomain = baseDomain(data.query.email.split("@")[1] || "");
+    html += pivotRow("Pivot", [
+      pivotChip("domain", emailDomain, emailDomain),
+      ...(a.mx_hosts || []).map((h) => { const d = baseDomain(h); return d && d !== emailDomain ? pivotChip("domain", d, d) : ""; }),
+      data.github ? pivotChip("username", data.github.username, data.github.username) : "",
+    ]);
+
     if (s.linked_accounts && s.linked_accounts.length) {
       html += `<div class="section-label">Linked accounts</div>`;
       html += `<div class="chips">${s.linked_accounts.map((x) => `<span class="pill">${esc(x)}</span>`).join("")}</div>`;
@@ -307,6 +317,12 @@
       html += `<div class="section-label">Primary server (${esc((data.resolved_ips || [])[0] || "")})</div>`;
       html += ipDetails(ip);
     }
+
+    const primaryIp = (data.resolved_ips || [])[0];
+    html += pivotRow("Pivot", [
+      primaryIp ? pivotChip("ip", primaryIp, primaryIp) : "",
+      ...(w.nameservers || []).map((ns) => { const d = baseDomain(ns); return pivotChip("domain", d, d); }),
+    ]);
     resultsEl().innerHTML = html;
   }
 
@@ -326,6 +342,7 @@
   function renderDns(data) {
     let html = resultsHeader(`DNS records: ${esc(data.query.domain)}`, "");
     html += renderDnsBlock(data);
+    html += dnsPivotRow(data.records || {});
     resultsEl().innerHTML = html;
   }
 
@@ -347,7 +364,13 @@
   function renderIp(data) {
     let html = resultsHeader(`IP intelligence: ${esc(data.query.ip)}`, "");
     if (!data.found) { html += `<div class="hint">${esc(data.error || "No data available for this IP.")}</div>`; }
-    else { html += ipDetails(data); }
+    else {
+      html += ipDetails(data);
+      if (data.reverse_dns) {
+        const d = baseDomain(data.reverse_dns);
+        html += pivotRow("Pivot", [pivotChip("domain", d, d)]);
+      }
+    }
     resultsEl().innerHTML = html;
   }
 
@@ -358,6 +381,79 @@
 
   function emptyState(msg) {
     return `<div class="empty"><h3>Nothing found</h3><p>${esc(msg)}</p></div>`;
+  }
+
+  // ---------------------------------------------------------------- pivoting
+  // Turn a discovered value (domain, IP, handle) into a one-click
+  // "investigate this" chip that switches tools and re-runs the scan.
+  const PIVOT_ICON = { domain: "🌐", dns: "🧭", ip: "📍", email: "✉️", username: "👤" };
+
+  function cleanHost(v) {
+    return String(v || "").trim().replace(/^https?:\/\//i, "").split("/")[0]
+      .split("?")[0].replace(/\.$/, "").toLowerCase();
+  }
+  // Common two-level public suffixes, so we keep 3 labels (e.g. awsdns-21.co.uk)
+  // instead of wrongly collapsing to the bare suffix (co.uk).
+  const TWO_LEVEL_TLDS = new Set([
+    "co.uk", "org.uk", "gov.uk", "ac.uk", "me.uk", "net.uk", "ltd.uk", "plc.uk",
+    "com.au", "net.au", "org.au", "edu.au", "gov.au", "id.au",
+    "co.in", "net.in", "org.in", "firm.in", "gen.in", "ind.in",
+    "co.nz", "net.nz", "org.nz", "co.za", "org.za",
+    "co.jp", "or.jp", "ne.jp", "ac.jp", "co.kr", "or.kr",
+    "com.br", "net.br", "org.br", "com.cn", "net.cn", "org.cn", "gov.cn",
+    "com.mx", "com.tr", "com.sg", "com.hk", "com.tw", "com.ar", "com.co",
+  ]);
+  function baseDomain(host) {
+    host = cleanHost(host);
+    const parts = host.split(".").filter(Boolean);
+    if (parts.length <= 2) return host;
+    const lastTwo = parts.slice(-2).join(".");
+    return TWO_LEVEL_TLDS.has(lastTwo) ? parts.slice(-3).join(".") : lastTwo;
+  }
+  function domainFromUrl(u) {
+    try { return cleanHost(new URL(u).hostname); } catch { return cleanHost(u); }
+  }
+
+  function pivotChip(tool, query, label) {
+    if (!TOOLS[tool] || !query) return "";
+    return `<button type="button" class="pivot" data-pivot data-tool="${esc(tool)}" data-query="${esc(query)}"
+      title="Investigate ${esc(query)} with the ${esc(TOOLS[tool].label)} tool">${PIVOT_ICON[tool] || "🔎"} ${esc(label || query)}</button>`;
+  }
+  function pivotRow(label, chips) {
+    const filled = [...new Set(chips.filter(Boolean))];
+    if (!filled.length) return "";
+    return `<div class="pivot-row"><span class="pivot-label">${esc(label)}</span>${filled.join("")}</div>`;
+  }
+  function doPivot(tool, query) {
+    if (!TOOLS[tool] || !query) return;
+    switchTool(tool);
+    $("#queryInput").value = query;
+    if ($("#tool")) window.scrollTo({ top: $("#tool").offsetTop - 70, behavior: "smooth" });
+    run();
+  }
+
+  function dnsPivotRow(recs) {
+    const domains = new Set(), ips = new Set();
+    (recs.A || []).forEach((r) => ips.add(r.value));
+    (recs.AAAA || []).forEach((r) => ips.add(r.value));
+    (recs.MX || []).forEach((r) => { const h = String(r.value).split(/\s+/).pop(); if (h) domains.add(baseDomain(h)); });
+    (recs.NS || []).forEach((r) => domains.add(baseDomain(r.value)));
+    (recs.CNAME || []).forEach((r) => domains.add(baseDomain(r.value)));
+    return pivotRow("Pivot", [
+      ...[...ips].slice(0, 3).map((ip) => pivotChip("ip", ip, ip)),
+      ...[...domains].filter(Boolean).slice(0, 4).map((d) => pivotChip("domain", d, d)),
+    ]);
+  }
+
+  function usernameRelatedDomains(data) {
+    const out = new Set();
+    const rs = data.results || {};
+    [].concat(rs.profiles || [], rs.documents || [], rs.mentions || []).forEach((r) => {
+      if (r.blog) out.add(baseDomain(r.blog));
+      if (r.website) out.add(baseDomain(r.website));
+      (String(r.bio || "").match(/https?:\/\/[^\s"'<>)]+/g) || []).forEach((u) => out.add(baseDomain(domainFromUrl(u))));
+    });
+    return [...out].filter((d) => d && d.includes(".") && d.length < 60).slice(0, 6);
   }
 
   const RENDERERS = { username: renderUsername, email: renderEmail, domain: renderDomain, dns: renderDns, ip: renderIp };
@@ -589,6 +685,13 @@
       renderHistory();
       $("#runBtn")?.addEventListener("click", run);
       $("#queryInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+      // Cross-tool pivoting: delegated so it survives result re-renders.
+      resultsEl().addEventListener("click", (e) => {
+        const el = e.target.closest("[data-pivot]");
+        if (!el) return;
+        e.preventDefault();
+        doPivot(el.dataset.tool, el.dataset.query);
+      });
       // Deep-link support: #tool=email&q=...
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
       if (params.get("tool")) { switchTool(params.get("tool")); if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); } }
