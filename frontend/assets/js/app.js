@@ -162,6 +162,7 @@
           <button class="btn btn-ghost btn-sm" data-action="save">Save</button>
           <button class="btn btn-ghost btn-sm" data-action="share">Copy link</button>
           <button class="btn btn-ghost btn-sm" data-action="copy">Copy</button>
+          <button class="btn btn-ghost btn-sm" data-action="print">PDF</button>
           <button class="btn btn-ghost btn-sm" data-export="json">JSON</button>
           <button class="btn btn-ghost btn-sm" data-export="csv">CSV</button>
         </div>
@@ -611,6 +612,7 @@
       if (a === "save") saveCurrent(btn);
       else if (a === "share") shareLink();
       else if (a === "copy") copySummary();
+      else if (a === "print") printReport();
       else if (a === "subdomains") discoverSubdomains(btn);
     }));
   }
@@ -638,6 +640,16 @@
   function copySummary() {
     if (!lastResult) return;
     copyText(buildTextSummary(lastResult), "Summary copied to clipboard.");
+  }
+
+  function printReport() {
+    if (!lastResult) return;
+    const meta = $("#printMeta");
+    if (meta) meta.textContent = `${TOOLS[lastResult.tool].label} report · Target: ${lastResult.query} · ${new Date().toLocaleString()}`;
+    const prev = document.title;
+    document.title = `MyRecon ${TOOLS[lastResult.tool].label} report — ${lastResult.query}`;
+    window.print();
+    setTimeout(() => { document.title = prev; }, 800);
   }
 
   function buildTextSummary(res) {
@@ -852,6 +864,12 @@
         if (!el) return;
         $("#queryInput").value = el.dataset.ex;
         run();
+      });
+      // "/" focuses the search box, like a real tool.
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "/" && !/^(input|textarea)$/i.test(document.activeElement.tagName)) {
+          e.preventDefault(); $("#queryInput")?.focus();
+        }
       });
       // Cross-tool pivoting: delegated so it survives result re-renders.
       resultsEl().addEventListener("click", (e) => {
