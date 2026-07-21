@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=3">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=4">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -125,13 +125,21 @@
         <div class="opt-row" id="deepWrap">
           <label class="switch"><input type="checkbox" id="deepToggle"> Deep search <span class="hint">(slower, more platforms)</span></label>
         </div>
+        <div class="examples" id="examples"></div>
       </div>
 
       <div class="results" id="results" aria-live="polite"></div>
     </section>
 
+    <!-- Saved investigations -->
+    <section class="section container" id="saved-section">
+      <h2 style="text-align:left;font-size:1.3rem">Saved investigations</h2>
+      <p class="sub" style="text-align:left;margin:8px 0 18px">Pin the searches you want to keep. Stored privately in your browser.</p>
+      <div id="saved"></div>
+    </section>
+
     <!-- History -->
-    <section class="section container" id="history-section">
+    <section class="section container" id="history-section" style="padding-top:0">
       <h2 style="text-align:left;font-size:1.3rem">Search history</h2>
       <p class="sub" style="text-align:left;margin:8px 0 18px">Recent lookups, stored privately in your browser.</p>
       <div id="history"></div>
@@ -218,8 +226,8 @@
     </div>
   </footer>
 
-  <script src="/assets/js/env.js?v=3"></script>
-  <script src="/assets/js/config.js?v=3"></script>
-  <script src="/assets/js/app.js?v=3"></script>
+  <script src="/assets/js/env.js?v=4"></script>
+  <script src="/assets/js/config.js?v=4"></script>
+  <script src="/assets/js/app.js?v=4"></script>
 </body>
 </html>

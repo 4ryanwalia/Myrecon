@@ -24,6 +24,7 @@
       dns: "/api/dns",
       whois: "/api/whois",
       ip: "/api/ip",
+      subdomains: "/api/subdomains",
       image: "/api/image",
       health: "/api/health",
     },

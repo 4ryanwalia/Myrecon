@@ -105,26 +105,31 @@
       label: "Username", icon: "user", placeholder: "e.g. johndoe or a profile URL",
       endpoint: CFG.endpoints.username, field: "username", deep: true,
       sub: "Search a username across 100+ platforms and enrich matches with avatars and bios.",
+      examples: ["github", "torvalds", "nasa"],
     },
     email: {
       label: "Email", icon: "mail", placeholder: "e.g. name@example.com",
       endpoint: CFG.endpoints.email, field: "email",
       sub: "Provider analysis, deliverability, linked accounts, and breach exposure.",
+      examples: ["test@gmail.com", "contact@github.com"],
     },
     domain: {
       label: "Domain", icon: "globe", placeholder: "e.g. example.com",
       endpoint: CFG.endpoints.domain, field: "domain",
-      sub: "WHOIS/RDAP registration, DNS records, and the resolved server's geolocation.",
+      sub: "WHOIS/RDAP registration, DNS records, subdomains, and the resolved server's geolocation.",
+      examples: ["github.com", "stripe.com", "wikipedia.org"],
     },
     dns: {
       label: "DNS", icon: "compass", placeholder: "e.g. example.com",
       endpoint: CFG.endpoints.dns, field: "domain",
       sub: "A, AAAA, MX, NS, TXT, CNAME, SOA and CAA records via DNS-over-HTTPS.",
+      examples: ["cloudflare.com", "google.com"],
     },
     ip: {
       label: "IP", icon: "pin", placeholder: "e.g. 8.8.8.8",
       endpoint: CFG.endpoints.ip, field: "ip",
       sub: "Geolocation, network/ASN ownership, hosting flags, and reverse DNS.",
+      examples: ["8.8.8.8", "1.1.1.1"],
     },
   };
 
@@ -154,8 +159,11 @@
         <h2>${esc(title)}</h2>
         <span class="hint">${count}</span>
         <div class="results-actions">
-          <button class="btn btn-ghost btn-sm" data-export="json">Export JSON</button>
-          <button class="btn btn-ghost btn-sm" data-export="csv">Export CSV</button>
+          <button class="btn btn-ghost btn-sm" data-action="save">Save</button>
+          <button class="btn btn-ghost btn-sm" data-action="share">Copy link</button>
+          <button class="btn btn-ghost btn-sm" data-action="copy">Copy</button>
+          <button class="btn btn-ghost btn-sm" data-export="json">JSON</button>
+          <button class="btn btn-ghost btn-sm" data-export="csv">CSV</button>
         </div>
       </div>`;
   }
@@ -335,6 +343,12 @@
       html += ipDetails(ip);
     }
 
+    html += `<div class="section-label">Subdomains</div>
+      <div id="subdomains-block">
+        <button class="btn btn-ghost btn-sm" data-action="subdomains">Discover subdomains</button>
+        <span class="hint" style="margin-left:10px">from public Certificate Transparency logs</span>
+      </div>`;
+
     const primaryIp = (data.resolved_ips || [])[0];
     html += pivotRow("Pivot", [
       primaryIp ? pivotChip("ip", primaryIp, primaryIp) : "",
@@ -495,7 +509,7 @@
         lastResult = { tool: activeTool, query: value, data };
         (RENDERERS[activeTool] || renderIp)(data);
         pushHistory(activeTool, value);
-        bindExport();
+        bindActions();
       }
     } catch (e) {
       setError(e.message);
@@ -577,7 +591,7 @@
     lastResult = { tool: "username", query: value, data: finalData };
     renderUsername(finalData);
     pushHistory("username", value);
-    bindExport();
+    bindActions();
   }
 
   async function runUsernameFallback(value, body) {
@@ -586,14 +600,137 @@
     lastResult = { tool: "username", query: value, data };
     renderUsername(data);
     pushHistory("username", value);
-    bindExport();
+    bindActions();
   }
 
-  // ---------------------------------------------------------------- export
-  function bindExport() {
-    $$("[data-export]").forEach((btn) =>
-      btn.addEventListener("click", () => exportResult(btn.dataset.export))
-    );
+  // ---------------------------------------------------------------- result actions
+  function bindActions() {
+    $$("[data-export]").forEach((btn) => btn.addEventListener("click", () => exportResult(btn.dataset.export)));
+    $$("[data-action]").forEach((btn) => btn.addEventListener("click", () => {
+      const a = btn.dataset.action;
+      if (a === "save") saveCurrent(btn);
+      else if (a === "share") shareLink();
+      else if (a === "copy") copySummary();
+      else if (a === "subdomains") discoverSubdomains(btn);
+    }));
+  }
+
+  function copyText(text, okMsg) {
+    const done = () => toast(okMsg || "Copied.");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+    } else { fallbackCopy(text, done); }
+  }
+  function fallbackCopy(text, done) {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch { toast("Copy failed.", "err"); }
+    ta.remove();
+  }
+
+  function shareLink() {
+    if (!lastResult) return;
+    const url = `${location.origin}/#tool=${encodeURIComponent(lastResult.tool)}&q=${encodeURIComponent(lastResult.query)}`;
+    copyText(url, "Shareable link copied to clipboard.");
+  }
+
+  function copySummary() {
+    if (!lastResult) return;
+    copyText(buildTextSummary(lastResult), "Summary copied to clipboard.");
+  }
+
+  function buildTextSummary(res) {
+    const d = res.data;
+    const L = [`MyRecon — ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
+    if (res.tool === "username") {
+      const all = [].concat(d.results?.profiles || [], d.results?.documents || [], d.results?.mentions || []);
+      L.push(`${all.length} results found:`);
+      all.forEach((r) => L.push(`- ${r.platform || hostOf(r.url)} — ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`));
+    } else if (res.tool === "email") {
+      const a = d.analysis || {}, s = d.summary || {};
+      L.push(`Provider: ${a.provider || "—"} (${a.provider_type || "—"})`);
+      L.push(`Deliverable: ${a.deliverable ? "yes" : "no"} · Disposable: ${a.disposable ? "yes" : "no"}`);
+      L.push(`Breaches: ${s.breached ? (s.breach_count || 0) : "none"}`);
+      if ((s.linked_accounts || []).length) L.push(`Linked accounts: ${s.linked_accounts.join(", ")}`);
+    } else if (res.tool === "domain") {
+      const w = d.whois || {};
+      L.push(`Registrar: ${w.registrar || "—"}`);
+      L.push(`Created: ${w.created || "—"} · Expires: ${w.expires || "—"}`);
+      L.push(`Nameservers: ${(w.nameservers || []).join(", ") || "—"}`);
+      L.push(`Resolved IP: ${(d.resolved_ips || [])[0] || "—"}`);
+    } else if (res.tool === "ip") {
+      const g = d.geo || {}, n = d.network || {};
+      L.push(`Location: ${[g.city, g.region, g.country].filter(Boolean).join(", ") || "—"}`);
+      L.push(`ISP: ${n.isp || "—"} · ASN: ${n.asn || "—"}`);
+      L.push(`Reverse DNS: ${d.reverse_dns || "—"}`);
+    } else if (res.tool === "dns") {
+      Object.entries(d.records || {}).forEach(([t, recs]) => L.push(`${t}: ${recs.map((r) => r.value).join(", ")}`));
+    }
+    return L.join("\n") + `\n\nvia https://myrecon.xyz`;
+  }
+
+  async function discoverSubdomains(btn) {
+    const domain = lastResult && lastResult.query;
+    if (!domain) return;
+    btn.disabled = true; btn.textContent = "Discovering…";
+    const wrap = $("#subdomains-block");
+    try {
+      const data = await api(CFG.endpoints.subdomains, { domain });
+      const subs = data.subdomains || [];
+      if (!subs.length) { wrap.innerHTML = `<div class="hint">No subdomains found in Certificate Transparency logs.</div>`; return; }
+      wrap.innerHTML =
+        `<div class="hint" style="margin-bottom:8px">${data.total} found${data.truncated ? `, showing ${subs.length}` : ""} · ${esc(data.source || "CT logs")}</div>` +
+        `<div class="chips">${subs.map((s) => `<a class="pill" href="https://${esc(s)}" target="_blank" rel="noopener nofollow">${esc(s)}</a>`).join("")}</div>` +
+        pivotRow("Pivot", subs.slice(0, 6).map((s) => pivotChip("domain", s, s)));
+    } catch (e) {
+      wrap.innerHTML = `<div class="hint">Subdomain discovery failed: ${esc(e.message)}</div>`;
+    }
+  }
+
+  // ---- Saved investigations (localStorage) --------------------------
+  const SKEY = "myrecon-saved";
+  function getSaved() { try { return JSON.parse(localStorage.getItem(SKEY)) || []; } catch { return []; } }
+  function saveCurrent(btn) {
+    if (!lastResult) return;
+    let s = getSaved().filter((x) => !(x.tool === lastResult.tool && x.query === lastResult.query));
+    s.unshift({ tool: lastResult.tool, query: lastResult.query, at: Date.now(), note: quickStat(lastResult) });
+    localStorage.setItem(SKEY, JSON.stringify(s.slice(0, 50)));
+    renderSaved();
+    if (btn) { btn.textContent = "Saved"; btn.disabled = true; }
+    toast("Saved to your investigations.");
+  }
+  function quickStat(res) {
+    const d = res.data;
+    if (res.tool === "username") return `${(d.summary || {}).profiles || 0} profiles`;
+    if (res.tool === "email") return (d.summary || {}).breached ? `${d.summary.breach_count} breaches` : "no breaches";
+    if (res.tool === "domain") return (d.whois || {}).registrar || "domain";
+    if (res.tool === "ip") return [(d.geo || {}).city, (d.geo || {}).country].filter(Boolean).join(", ") || "IP";
+    if (res.tool === "dns") return `${(d.summary || {}).total_records || 0} records`;
+    return "";
+  }
+  function renderSaved() {
+    const wrap = $("#saved");
+    if (!wrap) return;
+    const s = getSaved();
+    if (!s.length) { wrap.innerHTML = `<p class="hint">Save an investigation to pin it here (stored only in this browser).</p>`; return; }
+    wrap.innerHTML = `<div class="history-list">` + s.map((x) => `
+      <div class="history-item" data-tool="${esc(x.tool)}" data-query="${esc(x.query)}">
+        <div class="ico">${icon(TOOLS[x.tool] ? TOOLS[x.tool].icon : "search", 17)}</div>
+        <div class="meta"><div class="q">${esc(x.query)}</div>
+          <div class="t">${TOOLS[x.tool] ? esc(TOOLS[x.tool].label) : ""}${x.note ? " · " + esc(x.note) : ""}</div></div>
+        <button class="icon-btn btn-sm" data-del="${esc(x.tool)}|${esc(x.query)}" aria-label="Remove" title="Remove">&times;</button>
+      </div>`).join("") + `</div>`;
+    $$(".history-item", wrap).forEach((el) => el.addEventListener("click", (e) => {
+      if (e.target.closest("[data-del]")) return;
+      switchTool(el.dataset.tool); $("#queryInput").value = el.dataset.query; run();
+      window.scrollTo({ top: $("#tool").offsetTop - 70, behavior: "smooth" });
+    }));
+    $$("[data-del]", wrap).forEach((b) => b.addEventListener("click", () => {
+      const [tool, query] = b.dataset.del.split("|");
+      localStorage.setItem(SKEY, JSON.stringify(getSaved().filter((x) => !(x.tool === tool && x.query === query))));
+      renderSaved();
+    }));
   }
 
   function download(name, text, type) {
@@ -671,6 +808,13 @@
     $("#queryInput").value = "";
     $("#panelSub").textContent = tool.sub;
     $("#deepWrap").style.display = tool.deep ? "" : "none";
+    const ex = $("#examples");
+    if (ex) {
+      ex.innerHTML = (tool.examples || []).length
+        ? `<span class="ex-label">Try:</span>` + tool.examples.map((e) =>
+            `<button type="button" class="ex-chip" data-ex="${esc(e)}">${esc(e)}</button>`).join("")
+        : "";
+    }
     resultsEl().innerHTML = defaultEmpty();
   }
 
@@ -700,8 +844,15 @@
     if ($("#tool")) {
       switchTool("username");
       renderHistory();
+      renderSaved();
       $("#runBtn")?.addEventListener("click", run);
       $("#queryInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+      $("#examples")?.addEventListener("click", (e) => {
+        const el = e.target.closest("[data-ex]");
+        if (!el) return;
+        $("#queryInput").value = el.dataset.ex;
+        run();
+      });
       // Cross-tool pivoting: delegated so it survives result re-renders.
       resultsEl().addEventListener("click", (e) => {
         const el = e.target.closest("[data-pivot]");

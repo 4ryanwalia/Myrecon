@@ -270,6 +270,79 @@ def ip_lookup(ip: str) -> dict:
 
 
 # ══════════════════════════════════════════════════════════════════
+#  Subdomain discovery via Certificate Transparency (crt.sh)
+# ══════════════════════════════════════════════════════════════════
+
+def _crtsh_subdomains(domain: str, suffix: str, found: set) -> None:
+    """Collect subdomains from crt.sh Certificate Transparency search."""
+    resp = requests.get(
+        "https://crt.sh/",
+        params={"q": f"%.{domain}", "output": "json", "exclude": "expired"},
+        headers={"User-Agent": _UA, "Accept": "application/json"},
+        timeout=20,
+    )
+    if resp.status_code == 200:
+        for entry in resp.json():
+            names = str(entry.get("name_value", "")).split("\n")
+            cn = entry.get("common_name")
+            if cn:
+                names.append(cn)
+            for name in names:
+                name = name.strip().lower().lstrip("*.").rstrip(".")
+                if name and "@" not in name and " " not in name \
+                        and name != domain and name.endswith(suffix):
+                    found.add(name)
+
+
+def _certspotter_subdomains(domain: str, suffix: str, found: set) -> None:
+    """Fallback CT source: Certspotter issuances API (free, no key)."""
+    resp = requests.get(
+        "https://api.certspotter.com/v1/issuances",
+        params={"domain": domain, "include_subdomains": "true", "expand": "dns_names"},
+        headers={"User-Agent": _UA, "Accept": "application/json"},
+        timeout=15,
+    )
+    if resp.status_code == 200:
+        for entry in resp.json():
+            for name in entry.get("dns_names", []):
+                name = str(name).strip().lower().lstrip("*.").rstrip(".")
+                if name and "@" not in name and " " not in name \
+                        and name != domain and name.endswith(suffix):
+                    found.add(name)
+
+
+def subdomains(domain: str, limit: int = 100) -> dict:
+    """
+    Discover subdomains from public Certificate Transparency logs.
+
+    Every publicly-trusted TLS certificate is logged to CT, and the names on
+    those certificates reveal subdomains — a reliable, passive source that
+    needs no scanning or API key. Queries crt.sh first and falls back to
+    Certspotter, so a slow or unavailable source doesn't lose the result.
+    """
+    domain = domain.lower().strip().strip(".")
+    suffix = "." + domain
+    found: set[str] = set()
+
+    for source in (_crtsh_subdomains, _certspotter_subdomains):
+        try:
+            source(domain, suffix, found)
+        except Exception:
+            continue
+        if found:
+            break  # first source that returns data wins
+
+    subs = sorted(found)
+    return {
+        "query": {"domain": domain},
+        "source": "Certificate Transparency logs",
+        "total": len(subs),
+        "truncated": len(subs) > limit,
+        "subdomains": subs[:limit],
+    }
+
+
+# ══════════════════════════════════════════════════════════════════
 #  Combined domain intelligence
 # ══════════════════════════════════════════════════════════════════
 

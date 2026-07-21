@@ -285,6 +285,22 @@ a.card { display: block; }
 .pivot:hover { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); transform: translateY(-1px); }
 .pivot:active { transform: translateY(0); }
 
+/* Quick-start example chips */
+.examples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+.examples:empty { display: none; }
+.ex-label { font-size: 0.78rem; color: var(--text-mute); }
+.ex-chip {
+  font-family: inherit; cursor: pointer; font-size: 0.82rem; padding: 5px 12px;
+  border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim);
+  transition: border-color 0.16s, color 0.16s;
+}
+.ex-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Saved-item remove button */
+.history-item [data-del] { margin-left: auto; width: 28px; height: 28px; font-size: 1.05rem; line-height: 1; flex-shrink: 0; }
+.pill { cursor: pointer; }
+a.pill:hover { border-color: var(--accent); color: var(--accent); }
+
 /* Breach banner */
 .breach {
   border-radius: var(--radius); padding: 18px; margin-bottom: 18px;

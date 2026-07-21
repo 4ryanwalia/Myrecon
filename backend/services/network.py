@@ -25,3 +25,9 @@ def scan_ip(ip: str) -> dict:
     result = network.ip_lookup(ip)
     result["status"] = "ok"
     return result
+
+
+def scan_subdomains(domain: str) -> dict:
+    result = network.subdomains(domain)
+    result["status"] = "ok"
+    return result

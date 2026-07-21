@@ -127,7 +127,7 @@ def _register_routes(app: Flask) -> None:
     from services.search import search_username, search_fullname
     from services.email import scan_email
     from services.image import scan_image
-    from services.network import scan_domain, scan_dns, scan_whois, scan_ip
+    from services.network import scan_domain, scan_dns, scan_whois, scan_ip, scan_subdomains
 
     cached_username = cached("username")(search_username)
     cached_fullname = cached("fullname")(search_fullname)
@@ -137,6 +137,7 @@ def _register_routes(app: Flask) -> None:
     cached_dns = cached("dns")(scan_dns)
     cached_whois = cached("whois")(scan_whois)
     cached_ip = cached("ip")(scan_ip)
+    cached_subdomains = cached("subdomains")(scan_subdomains)
 
     @app.route("/api/health")
     def health():
@@ -229,6 +230,13 @@ def _register_routes(app: Flask) -> None:
             return ("", 204)
         ip = validation.ip_address(_json_body().get("ip", ""))
         return responses.ok(cached_ip(ip))
+
+    @app.route("/api/subdomains", methods=["POST", "OPTIONS"])
+    def api_subdomains():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        domain = validation.domain(_json_body().get("domain", ""))
+        return responses.ok(cached_subdomains(domain))
 
     @app.route("/api/image", methods=["POST", "OPTIONS"])
     def api_image():
