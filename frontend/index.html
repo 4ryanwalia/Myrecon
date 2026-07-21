@@ -8,7 +8,7 @@
   <meta name="keywords" content="OSINT, username search, email intelligence, breach detection, WHOIS lookup, DNS records, IP geolocation, reverse DNS, digital footprint">
   <meta name="author" content="MyRecon">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#070b12">
+  <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://myrecon.xyz/">
 
   <!-- Open Graph -->
@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=2">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -51,6 +51,18 @@
     "featureList": ["Username search across 100+ platforms", "Email intelligence and breach detection", "Domain WHOIS lookup", "DNS records", "IP geolocation and reverse DNS"]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is MyRecon legal to use?", "acceptedAnswer": { "@type": "Answer", "text": "MyRecon only aggregates information that is already publicly available, which is legal in most jurisdictions. It is intended for lawful purposes such as reviewing your own footprint, authorized security research, verification, and journalism. Using it to harass or harm someone is prohibited." } },
+      { "@type": "Question", "name": "Do you store my searches?", "acceptedAnswer": { "@type": "Answer", "text": "No. MyRecon does not require an account and does not save your search queries or results to a database. Your history lives only in your browser's local storage, and results are held briefly in an in-memory cache that expires automatically." } },
+      { "@type": "Question", "name": "How accurate are the results?", "acceptedAnswer": { "@type": "Answer", "text": "MyRecon favours reliable, documented sources such as RDAP, DNS-over-HTTPS, and official breach and profile APIs, and verifies username matches with confidence scoring. Matches are labelled by confidence and should be independently confirmed." } },
+      { "@type": "Question", "name": "Is MyRecon free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All core lookups — username, email, domain, DNS, and IP — are free with no account. The service is supported by non-intrusive advertising and is rate-limited to stay fast and available." } }
+    ]
+  }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#tool">Skip to the tool</a>
@@ -64,8 +76,8 @@
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary">
         <a href="#tool">Tool</a>
+        <a href="/guides/">Guides</a>
         <a href="#features">Features</a>
-        <a href="#history">History</a>
         <a href="/about.html">About</a>
       </nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
@@ -85,11 +97,11 @@
         <h1>Investigate any digital footprint<br><span class="gradient-text">with MyRecon</span></h1>
         <p class="lead">Search usernames across 100+ platforms, analyze emails and breach exposure, and investigate domains, DNS, and IP addresses — all from accurate, public data sources.</p>
         <div class="trust-row">
-          <span class="chip">🔎 100+ platforms</span>
-          <span class="chip">🛡️ Breach detection</span>
-          <span class="chip">🌐 WHOIS · DNS · IP</span>
-          <span class="chip">⚡ Cached &amp; fast</span>
-          <span class="chip">🔒 Nothing stored server-side</span>
+          <span class="chip">100+ platforms</span>
+          <span class="chip">Breach detection</span>
+          <span class="chip">WHOIS · DNS · IP</span>
+          <span class="chip">Fast &amp; cached</span>
+          <span class="chip">No server-side storage</span>
         </div>
       </div>
     </section>
@@ -131,12 +143,56 @@
         <h2>Built for accurate investigations</h2>
         <p class="sub">Every tool draws from documented, reliable sources — no scraping guesswork, no fabricated results.</p>
         <div class="feature-grid">
-          <div class="feature"><div class="fico">👤</div><h3>Username search</h3><p>Check a handle across 100+ social, developer, and community platforms with per-platform validation to cut false positives, then enrich matches with avatars and bios.</p></div>
-          <div class="feature"><div class="fico">✉️</div><h3>Email intelligence</h3><p>Provider and deliverability analysis, disposable detection, Gravatar and linked accounts, plus breach exposure from public breach databases.</p></div>
-          <div class="feature"><div class="fico">🌐</div><h3>Domain &amp; WHOIS</h3><p>Registration lifecycle, registrar, DNSSEC, and nameservers via RDAP — the standardized successor to WHOIS.</p></div>
-          <div class="feature"><div class="fico">🧭</div><h3>DNS records</h3><p>A, AAAA, MX, NS, TXT, CNAME, SOA, and CAA resolved over DNS-over-HTTPS for accuracy and privacy.</p></div>
-          <div class="feature"><div class="fico">📍</div><h3>IP &amp; geolocation</h3><p>Geolocation, ISP/ASN ownership, hosting and proxy flags, and reverse DNS resolution.</p></div>
-          <div class="feature"><div class="fico">📤</div><h3>Export &amp; history</h3><p>Export any result as JSON or CSV and revisit recent investigations — kept privately in your browser.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4.2-6 7.5-6s6.5 2 7.5 6"/></svg></div><h3>Username search</h3><p>Check a handle across 100+ social, developer, and community platforms with per-platform validation to cut false positives, then enrich matches with avatars and bios.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div><h3>Email intelligence</h3><p>Provider and deliverability analysis, disposable detection, Gravatar and linked accounts, plus breach exposure from public breach databases.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg></div><h3>Domain &amp; WHOIS</h3><p>Registration lifecycle, registrar, DNSSEC, and nameservers via RDAP — the standardized successor to WHOIS.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></div><h3>DNS records</h3><p>A, AAAA, MX, NS, TXT, CNAME, SOA, and CAA resolved over DNS-over-HTTPS for accuracy and privacy.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>IP &amp; geolocation</h3><p>Geolocation, ISP/ASN ownership, hosting and proxy flags, and reverse DNS resolution.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg></div><h3>Export &amp; history</h3><p>Export any result as JSON or CSV and revisit recent investigations — kept privately in your browser.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how">
+      <div class="container prose">
+        <h2>How MyRecon works</h2>
+        <p class="sub">MyRecon turns a single starting point — a username, email, domain, or IP address — into a structured picture of a public online footprint. It queries documented, reliable sources and verifies each result before showing it, so you spend time on real leads instead of noise.</p>
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><div><h3>Enter a target</h3><p>Pick a tool and enter what you already know: a handle, an email address, a domain name, or an IP. No account, no sign-up, and nothing about your search is stored on our servers.</p></div></div>
+          <div class="step"><span class="step-n">2</span><div><h3>We gather and verify</h3><p>MyRecon checks the target against public sources — 100+ platform profile pages, breach databases, RDAP/WHOIS registries, DNS-over-HTTPS resolvers, and IP geolocation providers — and scores each finding for confidence so false positives are filtered out.</p></div></div>
+          <div class="step"><span class="step-n">3</span><div><h3>Investigate and pivot</h3><p>Results arrive as clean cards you can open, export as JSON or CSV, and pivot from: a discovered domain, email, or handle becomes a one-click next lookup, so an investigation flows naturally from one lead to the next.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who it's for -->
+    <section class="section alt" id="use-cases">
+      <div class="container prose">
+        <h2>Who uses MyRecon</h2>
+        <p class="sub">Open-source intelligence is useful far beyond security teams. MyRecon is built for anyone who needs to understand what public data says about a person, brand, or piece of infrastructure.</p>
+        <div class="feature-grid">
+          <div class="feature"><h3>Protect your own footprint</h3><p>Search your own username and email to see which platforms and breaches expose your data, then lock down or remove what you no longer use. A quick self-audit is the fastest way to understand your exposure.</p></div>
+          <div class="feature"><h3>Security researchers</h3><p>Enumerate a target's public profiles, map a domain's DNS and hosting, and correlate identities across platforms during authorized assessments and responsible-disclosure work.</p></div>
+          <div class="feature"><h3>Recruiters &amp; verification</h3><p>Confirm that a candidate's professional profiles and portfolio links are consistent, and check that a company domain's registration and mail setup look legitimate.</p></div>
+          <div class="feature"><h3>Fraud &amp; trust teams</h3><p>Check whether an email is disposable, whether a domain was registered recently, and whether an IP belongs to a hosting provider or proxy — useful signals when assessing risk.</p></div>
+          <div class="feature"><h3>Journalists &amp; OSINT</h3><p>Build a verifiable picture from public records: who registered a domain, where a server is hosted, and which accounts share a handle — all with sources you can cite.</p></div>
+          <div class="feature"><h3>Developers &amp; sysadmins</h3><p>Inspect DNS records, mail configuration, nameservers, and reverse DNS quickly during setup and debugging, without stitching together half a dozen command-line tools.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container prose">
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <details><summary>Is MyRecon legal to use?</summary><p>MyRecon only aggregates information that is already publicly available, which is legal in most jurisdictions. What matters is how you use it. MyRecon is intended for lawful purposes such as reviewing your own footprint, authorized security research, verification, and journalism. Using it to harass, stalk, or harm someone, or to violate a platform's terms of service, is prohibited — see our <a href="/terms.html">Terms of Use</a>.</p></details>
+          <details><summary>Do you store my searches?</summary><p>No. MyRecon does not require an account and does not save your search queries or results to a database. Your recent-lookup history lives only in your browser's local storage and never leaves your device. Results may be held briefly in an in-memory cache to speed up repeated lookups, then expire automatically.</p></details>
+          <details><summary>How accurate are the results?</summary><p>MyRecon deliberately favours reliable, documented sources — RDAP for registration data, DNS-over-HTTPS for records, official APIs for breach and profile data — and verifies username matches with confidence scoring rather than assuming a profile exists just because a page loads. No tool that relies on public data can be perfect, so matches are labelled by confidence and you should always confirm anything important.</p></details>
+          <details><summary>What is the difference between the WHOIS and DNS tools?</summary><p>WHOIS/RDAP tells you about a domain's <em>registration</em> — who registered it, when, the registrar, and its expiry. DNS tells you how the domain currently <em>resolves</em> — its A, MX, TXT, NS, and other records. The Domain tool combines both plus the resolved server's geolocation; the DNS tool focuses purely on records. Our <a href="/guides/">guides</a> explain each in depth.</p></details>
+          <details><summary>Is MyRecon free?</summary><p>Yes. All of the core lookups — username, email, domain, DNS, and IP — are free to use with no account. The service is supported by non-intrusive advertising and is rate-limited to keep it fast and available for everyone.</p></details>
+          <details><summary>Can I remove my information from MyRecon?</summary><p>MyRecon doesn't host a database of people — it queries public sources live at the moment you search. To reduce what appears, you need to reduce your public footprint at the source: delete unused accounts, tighten privacy settings, and change passwords exposed in breaches. Our guide on <a href="/guides/reduce-your-digital-footprint.html">reducing your digital footprint</a> walks through exactly how.</p></details>
         </div>
       </div>
     </section>
@@ -150,7 +206,8 @@
           <p class="footer-tag">Open-source intelligence for defenders, researchers, and the privacy-conscious. Use responsibly and lawfully.</p>
         </div>
         <div class="footer-cols">
-          <div class="footer-col"><h4>Platform</h4><a href="#tool">Tools</a><a href="#features">Features</a><a href="#history">History</a></div>
+          <div class="footer-col"><h4>Platform</h4><a href="#tool">Tools</a><a href="#features">Features</a><a href="#faq">FAQ</a></div>
+          <div class="footer-col"><h4>Guides</h4><a href="/guides/">All guides</a><a href="/guides/check-email-data-breach.html">Email breach check</a><a href="/guides/reduce-your-digital-footprint.html">Digital footprint</a></div>
           <div class="footer-col"><h4>Company</h4><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div>
         </div>
       </div>
@@ -161,8 +218,8 @@
     </div>
   </footer>
 
-  <script src="/assets/js/env.js?v=2"></script>
-  <script src="/assets/js/config.js?v=2"></script>
-  <script src="/assets/js/app.js?v=2"></script>
+  <script src="/assets/js/env.js?v=3"></script>
+  <script src="/assets/js/config.js?v=3"></script>
+  <script src="/assets/js/app.js?v=3"></script>
 </body>
 </html>

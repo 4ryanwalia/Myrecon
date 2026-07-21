@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Check If Your Email Was in a Data Breach — MyRecon</title>
+  <meta name="description" content="Learn what a data breach is, how to check whether your email address was exposed, and the exact steps to protect your accounts if it was.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/check-email-data-breach.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Check If Your Email Was in a Data Breach">
+  <meta property="og:description" content="What a breach is, how to check your exposure safely, and what to do if your email turns up in one.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/check-email-data-breach.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"How to Check If Your Email Was in a Data Breach","description":"What a data breach is, how to check whether your email was exposed, and what to do about it.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/check-email-data-breach.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Email intelligence</span>
+      <h1>How to Check If Your Email Was in a Data Breach</h1>
+      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+
+      <p class="lead">If you have used the same email address for more than a year or two, the odds are high that it appears in at least one data breach. That is not a reason to panic — but it is a reason to check, and to know what to do next.</p>
+
+      <h2>What a data breach actually is</h2>
+      <p>A data breach happens when information a company stored about its users is exposed to people who were not supposed to see it. This can be the result of hacking, a misconfigured database left open on the internet, a malicious insider, or a third-party supplier being compromised. When it happens, the stolen data — often millions of records — is frequently traded or dumped publicly.</p>
+      <p>The records usually contain an email address as the primary identifier, alongside whatever else the service held: a password (sometimes as plain text, sometimes hashed), a username, a phone number, an IP address, a date of birth, or a physical address. Once a dataset like this is circulating, it does not disappear — copies persist indefinitely.</p>
+
+      <h2>Why it matters even if "it's just an old account"</h2>
+      <p>The single biggest risk from breaches is <strong>password reuse</strong>. If your email and password leaked from a forum you forgot about in 2016, and you used that same password on your email or bank, attackers can try those exact credentials everywhere else. This automated technique is called <strong>credential stuffing</strong>, and it works because most people reuse passwords.</p>
+      <p>Beyond passwords, exposed data fuels targeted phishing. An attacker who knows your name, the services you use, and your phone number can craft a message that looks convincingly real. The more of your data is out there, the easier you are to impersonate or deceive.</p>
+
+      <h2>How to check your exposure</h2>
+      <p>You can check whether your email appears in known breaches using free, reputable breach-notification services. MyRecon's <a href="/#tool">email tool</a> queries public breach databases and shows you how many breaches your address appears in, along with the categories of data that were exposed (passwords, phone numbers, and so on).</p>
+      <div class="callout">
+        <p><strong>Do this safely.</strong> Only ever check <em>your own</em> email addresses, and only use services that look up an address against known breaches — never a site that asks you to enter your current password to "test" it. A legitimate checker never needs your password.</p>
+      </div>
+      <p>When you run a check, focus on two things: how recent the breaches are, and whether any of them exposed passwords. A recent breach that leaked passwords is far more urgent than a decade-old one that only exposed email addresses.</p>
+
+      <h2>What to do if your email was breached</h2>
+      <ol>
+        <li><strong>Change the password on the breached service</strong> — and on any other account where you used the same or a similar password. This is the most important step.</li>
+        <li><strong>Use a password manager</strong> so every account gets a long, unique password you never have to remember. This single change eliminates the credential-stuffing risk entirely.</li>
+        <li><strong>Turn on two-factor authentication (2FA)</strong> everywhere it is offered, especially on your email, banking, and primary social accounts. Prefer an authenticator app or a hardware key over SMS.</li>
+        <li><strong>Watch for phishing</strong> in the weeks after a breach. Be sceptical of unexpected messages that reference real details about you or create urgency.</li>
+        <li><strong>Consider a fresh email</strong> for sensitive accounts (banking, government) that is different from the one you hand out publicly.</li>
+      </ol>
+
+      <h2>How to reduce future exposure</h2>
+      <p>You cannot un-leak data that is already out, but you can limit how much new data accumulates. Use unique passwords, delete accounts you no longer need, and think twice before handing your real email to every website that asks. Email aliases and "plus addressing" (for example, <span style="font-family:var(--mono)">you+shop@gmail.com</span>) can help you compartmentalise and even trace which service leaked or sold your address.</p>
+
+      <div class="callout">
+        <p>Want the full routine? Read our guide on <a href="/guides/reduce-your-digital-footprint.html">how to reduce your digital footprint</a>, or run a quick self-check with the <a href="/#tool">MyRecon email tool</a>.</p>
+      </div>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=3"></script>
+  <script src="/assets/js/config.js?v=3"></script>
+  <script src="/assets/js/app.js?v=3"></script>
+</body>
+</html>

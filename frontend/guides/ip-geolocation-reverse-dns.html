@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IP Geolocation and Reverse DNS: What an IP Address Reveals — MyRecon</title>
+  <meta name="description" content="How IP geolocation is estimated, what ASN and hosting flags mean, and how reverse DNS gives investigators a useful clue about a server's identity.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/ip-geolocation-reverse-dns.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="IP Geolocation and Reverse DNS: What an IP Address Reveals">
+  <meta property="og:description" content="How IP location is estimated, what ASN means, and why reverse DNS is a useful clue.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/ip-geolocation-reverse-dns.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"IP Geolocation and Reverse DNS: What an IP Address Reveals","description":"How IP geolocation works, what ASN and hosting flags mean, and how reverse DNS helps.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/ip-geolocation-reverse-dns.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">IP intelligence</span>
+      <h1>IP Geolocation and Reverse DNS: What an IP Address Reveals</h1>
+      <p class="meta">Updated 12 July 2026 · 6 min read</p>
+
+      <p class="lead">An IP address is how devices find each other on the internet. Look one up and you can learn roughly where it is, who operates the network it belongs to, and whether it is a home connection or a data-centre server — all without any special access.</p>
+
+      <h2>How IP geolocation actually works</h2>
+      <p>A common misconception is that an IP address contains GPS coordinates. It does not. Geolocation is an <em>estimate</em>, built by mapping blocks of IP addresses to locations using data such as regional registry allocations, network routing information, and the self-reported locations of internet providers. Commercial databases combine these signals to guess a city, region, and country.</p>
+      <p>The accuracy varies. Country-level results are usually reliable; city-level results are often approximate and can be off by a long way, especially for mobile networks that route many users through a single regional gateway. Treat the location as "somewhere in this area, probably," not a home address.</p>
+
+      <div class="callout">
+        <p><strong>Reality check.</strong> An IP does not identify a person. It identifies a network endpoint that may be shared by many people, sit behind a router, or belong to a VPN or cloud provider. Precise, individual identification from an IP alone is not possible from public data.</p>
+      </div>
+
+      <h2>ASN and network ownership</h2>
+      <p>Every IP address belongs to a network operated by an organisation, identified by an <strong>Autonomous System Number (ASN)</strong>. The ASN and its associated name tell you who runs the network — a residential ISP, a mobile carrier, a university, or a cloud host like Amazon, Google, or Microsoft. This is frequently more useful than the geographic estimate: knowing an address belongs to "Google Cloud" or "a Vietnamese residential ISP" tells you a great deal about what the endpoint is.</p>
+
+      <h2>Hosting, proxy and mobile flags</h2>
+      <p>Many IP databases classify addresses with useful flags:</p>
+      <ul>
+        <li><strong>Hosting / data-centre</strong> — the IP belongs to a server provider rather than a home connection. Legitimate for websites; unusual for a "regular user."</li>
+        <li><strong>Proxy / VPN</strong> — traffic is being routed through an anonymising service, so the real origin is hidden.</li>
+        <li><strong>Mobile</strong> — the address belongs to a cellular carrier.</li>
+      </ul>
+      <p>These flags matter for risk and fraud analysis. A login that claims to be a home user but comes from a data-centre IP, or a sign-up from a known VPN range, is worth a second look.</p>
+
+      <h2>Reverse DNS: turning an IP back into a name</h2>
+      <p>Forward DNS turns a name into an IP. <strong>Reverse DNS (rDNS)</strong> does the opposite: it looks up the <span style="font-family:var(--mono)">PTR</span> record to find the hostname associated with an IP. The result is often descriptive — an address might resolve to something like <span style="font-family:var(--mono)">mail.example.com</span> or a cloud provider's auto-generated hostname that encodes the region and instance. Not every IP has a PTR record, but when one exists it is a strong, free clue about the server's role and operator.</p>
+
+      <h2>Putting it together</h2>
+      <p>On its own, an IP lookup is a snapshot. In an investigation it becomes a hinge: the IP behind a domain's A record reveals its host and region; a reverse-DNS hostname can be pivoted into a fresh domain lookup; and the ASN and flags help you judge whether infrastructure is legitimate. MyRecon's <a href="/#tool">IP tool</a> returns geolocation, ASN and network ownership, hosting and proxy flags, and reverse DNS together, so you can read all of these signals at once.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=3"></script>
+  <script src="/assets/js/config.js?v=3"></script>
+  <script src="/assets/js/app.js?v=3"></script>
+</body>
+</html>

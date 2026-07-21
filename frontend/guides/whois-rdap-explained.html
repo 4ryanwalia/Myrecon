@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WHOIS and RDAP Explained: Who Owns a Domain? — MyRecon</title>
+  <meta name="description" content="Understand a domain's registration record: registrar, creation and expiry dates, DNSSEC, status codes, and nameservers — and why RDAP is replacing WHOIS.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/whois-rdap-explained.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="WHOIS and RDAP Explained: Who Owns a Domain?">
+  <meta property="og:description" content="Read a domain's registration record and understand why RDAP is replacing WHOIS.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/whois-rdap-explained.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"WHOIS and RDAP Explained: Who Owns a Domain?","description":"Read a domain registration record and understand why RDAP is replacing WHOIS.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/whois-rdap-explained.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Domain intelligence</span>
+      <h1>WHOIS and RDAP Explained: Who Owns a Domain?</h1>
+      <p class="meta">Updated 12 July 2026 · 6 min read</p>
+
+      <p class="lead">Every domain name has a paper trail: when it was registered, through which company, and when it expires. Reading that record is one of the fastest ways to judge whether a website is established and legitimate or brand-new and suspicious.</p>
+
+      <h2>What WHOIS is</h2>
+      <p>WHOIS is a decades-old system for looking up the registration details of a domain name. When someone registers a domain, the registrar records information about it in a database, and WHOIS is the protocol that lets anyone query that database. The response tells you things like the registrar, the registration and expiry dates, and the domain's nameservers.</p>
+
+      <h2>The fields that matter</h2>
+      <ul>
+        <li><strong>Registrar</strong> — the company through which the domain was registered (for example GoDaddy, Namecheap, or MarkMonitor). Large brands often use corporate registrars.</li>
+        <li><strong>Creation date</strong> — when the domain was first registered. This is one of the most useful signals: a domain created a few days ago that claims to be an established business is a red flag.</li>
+        <li><strong>Expiry date</strong> — when the registration lapses. Serious owners renew years in advance.</li>
+        <li><strong>Updated date</strong> — the last time the record changed, which can hint at a recent transfer or nameserver change.</li>
+        <li><strong>Nameservers</strong> — the DNS servers authoritative for the domain, which often reveal the hosting or DNS provider.</li>
+        <li><strong>Status codes</strong> — machine-readable states such as <span style="font-family:var(--mono)">clientTransferProhibited</span>, which is a normal lock that prevents unauthorized transfers.</li>
+        <li><strong>DNSSEC</strong> — whether the domain uses cryptographic signing to protect its DNS answers from tampering.</li>
+      </ul>
+
+      <h2>Why the owner's name is usually hidden</h2>
+      <p>Years ago, WHOIS exposed the registrant's name, address, email, and phone number. Since privacy regulations such as the GDPR came into force, most of that personal contact information is now redacted or replaced with a privacy-protection service. So while WHOIS still tells you plenty about a domain, it rarely names an individual anymore. That is by design, and it is why investigators lean on the <em>structural</em> details — dates, registrar, nameservers — rather than expecting a name.</p>
+
+      <h2>RDAP: the modern replacement</h2>
+      <p>WHOIS returns free-form text that every registry formats slightly differently, which makes it awkward to parse reliably. <strong>RDAP</strong> (the Registration Data Access Protocol) is its standardized successor. It returns clean, structured JSON, supports consistent fields across registries, and handles access control and internationalization far better. MyRecon's <a href="/#tool">domain tool</a> uses RDAP so the registrar, dates, status codes, DNSSEC state, and nameservers come back in a predictable, reliable shape.</p>
+
+      <div class="callout">
+        <p><strong>WHOIS is not DNS.</strong> WHOIS/RDAP tells you about a domain's <em>registration</em> — who registered it and when. DNS tells you how the domain <em>currently resolves</em> — its servers and mail configuration. They answer different questions. See our guide to <a href="/guides/dns-records-explained.html">DNS records</a>.</p>
+      </div>
+
+      <h2>Putting it to use</h2>
+      <p>A practical way to read a registration record: check the creation date against the site's claims, confirm the registrar and nameservers look consistent with a real business, and note whether DNSSEC and transfer locks are in place. Combined with the domain's DNS records and the geolocation of its server, you get a quick, evidence-based read on whether a domain is what it claims to be — useful for spotting phishing sites, verifying a company, or simply understanding infrastructure.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=3"></script>
+  <script src="/assets/js/config.js?v=3"></script>
+  <script src="/assets/js/app.js?v=3"></script>
+</body>
+</html>

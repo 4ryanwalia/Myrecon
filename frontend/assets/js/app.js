@@ -21,6 +21,23 @@
 
   const hostOf = (url) => { try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url; } };
 
+  // ---------------------------------------------------------------- icons
+  // Clean inline line-icons (no emoji). currentColor + stroke.
+  const SVG = {
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4.2-6 7.5-6s6.5 2 7.5 6"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>',
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg>',
+    compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15a4 4 0 0 0 5.66 0l3-3A4 4 0 1 0 12 6.34l-1 1"/><path d="M15 9a4 4 0 0 0-5.66 0l-3 3A4 4 0 1 0 12 17.66l1-1"/></svg>',
+    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5h5v5"/><path d="M19 5l-8 8"/><path d="M19 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>',
+  };
+  const icon = (name, size = 18) => {
+    const s = SVG[name];
+    return s ? s.replace("<svg ", `<svg width="${size}" height="${size}" aria-hidden="true" `) : "";
+  };
+
   // ---------------------------------------------------------------- toast
   function toast(msg, kind = "ok") {
     let host = $(".toasts");
@@ -85,27 +102,27 @@
   // ---------------------------------------------------------------- tools registry
   const TOOLS = {
     username: {
-      label: "Username", icon: "👤", placeholder: "e.g. johndoe or a profile URL",
+      label: "Username", icon: "user", placeholder: "e.g. johndoe or a profile URL",
       endpoint: CFG.endpoints.username, field: "username", deep: true,
       sub: "Search a username across 100+ platforms and enrich matches with avatars and bios.",
     },
     email: {
-      label: "Email", icon: "✉️", placeholder: "e.g. name@example.com",
+      label: "Email", icon: "mail", placeholder: "e.g. name@example.com",
       endpoint: CFG.endpoints.email, field: "email",
       sub: "Provider analysis, deliverability, linked accounts, and breach exposure.",
     },
     domain: {
-      label: "Domain", icon: "🌐", placeholder: "e.g. example.com",
+      label: "Domain", icon: "globe", placeholder: "e.g. example.com",
       endpoint: CFG.endpoints.domain, field: "domain",
       sub: "WHOIS/RDAP registration, DNS records, and the resolved server's geolocation.",
     },
     dns: {
-      label: "DNS", icon: "🧭", placeholder: "e.g. example.com",
+      label: "DNS", icon: "compass", placeholder: "e.g. example.com",
       endpoint: CFG.endpoints.dns, field: "domain",
       sub: "A, AAAA, MX, NS, TXT, CNAME, SOA and CAA records via DNS-over-HTTPS.",
     },
     ip: {
-      label: "IP", icon: "📍", placeholder: "e.g. 8.8.8.8",
+      label: "IP", icon: "pin", placeholder: "e.g. 8.8.8.8",
       endpoint: CFG.endpoints.ip, field: "ip",
       sub: "Geolocation, network/ASN ownership, hosting flags, and reverse DNS.",
     },
@@ -128,7 +145,7 @@
   }
 
   function setError(msg) {
-    resultsEl().innerHTML = `<div class="error-box" role="alert">⚠️ ${esc(msg)}</div>`;
+    resultsEl().innerHTML = `<div class="error-box" role="alert">${esc(msg)}</div>`;
   }
 
   function resultsHeader(title, count) {
@@ -190,7 +207,7 @@
     ).join("");
     return `<div class="card" style="grid-column:1/-1;margin-bottom:14px">
       <div class="card-head">
-        ${avatarHTML(c, "🔗")}
+        ${avatarHTML(c, (c.display_name || c.username || "?").charAt(0).toUpperCase())}
         <div style="min-width:0">
           <div class="card-title">${esc(c.display_name || c.username || "Correlated identity")}</div>
           <div class="card-url">Cross-platform match</div>
@@ -209,17 +226,17 @@
     let meta = "";
     if (r.confidence === "medium") meta += `<span class="meta-tag conf-medium">Possible match</span>`;
     else if (r.confidence === "high") meta += `<span class="meta-tag conf-high">Confirmed</span>`;
-    if (r.followers) meta += `<span class="meta-tag">👥 ${fmtNum(r.followers)}</span>`;
-    if (r.is_verified) meta += `<span class="meta-tag">✓ Verified</span>`;
-    if (r.is_private) meta += `<span class="meta-tag">🔒 Private</span>`;
-    if (r.repos) meta += `<span class="meta-tag">📦 ${fmtNum(r.repos)} repos</span>`;
+    if (r.followers) meta += `<span class="meta-tag">${fmtNum(r.followers)} followers</span>`;
+    if (r.is_verified) meta += `<span class="meta-tag">Verified</span>`;
+    if (r.is_private) meta += `<span class="meta-tag">Private</span>`;
+    if (r.repos) meta += `<span class="meta-tag">${fmtNum(r.repos)} repos</span>`;
     const href = r.url && /^https?:\/\//.test(r.url) ? r.url : null;
     const inner = `
       <div class="card-head">
         ${avatarHTML(r, fallback)}
         <div style="min-width:0">
           <div class="card-title">${esc(platform)}</div>
-          <div class="card-url">${esc(hostOf(r.url))}${href ? ' <span class="open-ico" aria-hidden="true">↗</span>' : ""}</div>
+          <div class="card-url">${esc(hostOf(r.url))}${href ? ` <span class="open-ico">${icon("external", 12)}</span>` : ""}</div>
         </div>
         <span class="tag ${esc(cat)}">${esc(cat)}</span>
       </div>
@@ -241,7 +258,7 @@
 
     const breached = s.breached, count = s.breach_count || 0;
     html += `<div class="breach ${breached ? "" : "clean"}">
-      <h3>${breached ? "🛡️ Breach exposure detected" : "✅ No breaches found"}
+      <h3>${breached ? "Breach exposure detected" : "No breaches found"}
         <span class="sev" style="color:${breached ? "var(--danger)" : "var(--ok)"}">${breached ? count + " breaches" : "clean"}</span>
       </h3>
       ${breaches.fields && breaches.fields.length ? `<div class="chips">${breaches.fields.slice(0, 14).map((f) => {
@@ -257,7 +274,7 @@
     html += datalist([
       ["Provider", `${esc(a.provider)} (${esc(a.provider_type)})`],
       ["Deliverable", a.deliverable ? "Yes — mail server present" : "No MX record found"],
-      ["Disposable", a.disposable ? "⚠️ Yes" : "No"],
+      ["Disposable", a.disposable ? "Yes (flagged)" : "No"],
       ["Plus addressing", a.plus_addressing ? "Yes" : "No"],
       ["Format", esc(a.format)],
       ["MX hosts", (a.mx_hosts || []).map(esc).join("<br>") || "—"],
@@ -277,14 +294,14 @@
 
     if (g.exists) {
       html += `<div class="section-label">Gravatar profile</div>`;
-      html += `<div class="card"><div class="card-head">${avatarHTML(g, "👤")}
+      html += `<div class="card"><div class="card-head">${avatarHTML(g, "G")}
         <div style="min-width:0"><div class="card-title">${esc(g.display_name || "Gravatar")}</div>
         <div class="card-url"><a href="${esc(g.profile_url)}" target="_blank" rel="noopener nofollow">${esc(hostOf(g.profile_url) || "gravatar.com")}</a></div></div></div>
         ${g.bio ? `<div class="card-bio">${esc(g.bio)}</div>` : ""}</div>`;
     }
     if (data.github) {
       html += `<div class="section-label">GitHub</div>`;
-      html += `<div class="card"><div class="card-head">${avatarHTML({ avatar_url: data.github.avatar_url }, "🐙")}
+      html += `<div class="card"><div class="card-head">${avatarHTML({ avatar_url: data.github.avatar_url }, "GH")}
         <div style="min-width:0"><div class="card-title">${esc(data.github.username)}</div>
         <div class="card-url"><a href="${esc(data.github.url)}" target="_blank" rel="noopener nofollow">github.com</a></div></div></div></div>`;
     }
@@ -386,7 +403,7 @@
   // ---------------------------------------------------------------- pivoting
   // Turn a discovered value (domain, IP, handle) into a one-click
   // "investigate this" chip that switches tools and re-runs the scan.
-  const PIVOT_ICON = { domain: "🌐", dns: "🧭", ip: "📍", email: "✉️", username: "👤" };
+  const PIVOT_ICON = { domain: "globe", dns: "compass", ip: "pin", email: "mail", username: "user" };
 
   function cleanHost(v) {
     return String(v || "").trim().replace(/^https?:\/\//i, "").split("/")[0]
@@ -417,7 +434,7 @@
   function pivotChip(tool, query, label) {
     if (!TOOLS[tool] || !query) return "";
     return `<button type="button" class="pivot" data-pivot data-tool="${esc(tool)}" data-query="${esc(query)}"
-      title="Investigate ${esc(query)} with the ${esc(TOOLS[tool].label)} tool">${PIVOT_ICON[tool] || "🔎"} ${esc(label || query)}</button>`;
+      title="Investigate ${esc(query)} with the ${esc(TOOLS[tool].label)} tool">${icon(PIVOT_ICON[tool] || "search", 15)} ${esc(label || query)}</button>`;
   }
   function pivotRow(label, chips) {
     const filled = [...new Set(chips.filter(Boolean))];
@@ -630,7 +647,7 @@
     if (!h.length) { wrap.innerHTML = `<p class="hint">Your recent lookups appear here (stored only in this browser).</p>`; return; }
     wrap.innerHTML = `<div class="history-list">` + h.map((x) => `
       <div class="history-item" data-tool="${esc(x.tool)}" data-query="${esc(x.query)}">
-        <div class="ico">${TOOLS[x.tool] ? TOOLS[x.tool].icon : "🔎"}</div>
+        <div class="ico">${icon(TOOLS[x.tool] ? TOOLS[x.tool].icon : "search", 17)}</div>
         <div class="meta"><div class="q">${esc(x.query)}</div>
           <div class="t">${TOOLS[x.tool] ? esc(TOOLS[x.tool].label) : ""} · ${new Date(x.at).toLocaleString()}</div></div>
       </div>`).join("") + `</div>
@@ -671,7 +688,7 @@
     if (!tabs) return;
     tabs.innerHTML = Object.entries(TOOLS).map(([k, t], i) =>
       `<button class="tab" role="tab" data-tool="${k}" aria-selected="${i === 0}">
-        <span class="tab-ico" aria-hidden="true">${t.icon}</span>${esc(t.label)}</button>`
+        <span class="tab-ico">${icon(t.icon, 17)}</span>${esc(t.label)}</button>`
     ).join("");
     $$(".tab", tabs).forEach((el) => el.addEventListener("click", () => switchTool(el.dataset.tool)));
   }
