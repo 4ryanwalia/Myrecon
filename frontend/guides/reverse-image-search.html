@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reverse Image Search: How to Trace a Photo's Origin — MyRecon</title>
+  <meta name="description" content="How reverse image search works, which tools to use, and a practical workflow for verifying photos, spotting fake profiles, and tracing where an image appears.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/reverse-image-search.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Reverse Image Search: How to Trace a Photo's Origin">
+  <meta property="og:description" content="How reverse image search works and a workflow for verifying photos and spotting fakes.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/reverse-image-search.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"Reverse Image Search: How to Trace a Photo's Origin","description":"How reverse image search works and a workflow for verifying photos and spotting fakes.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/reverse-image-search.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Image intelligence</span>
+      <h1>Reverse Image Search: How to Trace a Photo's Origin</h1>
+      <p class="meta">Updated 12 July 2026 · 6 min read</p>
+
+      <p class="lead">A single photograph can answer a lot of questions. Reverse image search lets you take an image and find out where else it appears online — which is how investigators confirm identities, expose fake profiles, and debunk misleading pictures.</p>
+
+      <h2>What reverse image search does</h2>
+      <p>Ordinary search starts with words. Reverse image search starts with a picture: you provide an image, and the engine finds visually similar or identical images across the web, along with the pages that host them. Rather than matching pixels exactly, modern engines build a mathematical "fingerprint" of the image's content, so they can find the same picture even if it has been resized, lightly cropped, or re-saved.</p>
+
+      <h2>The main tools</h2>
+      <ul>
+        <li><strong>Google Images</strong> — broad coverage and strong at finding the same picture across mainstream sites.</li>
+        <li><strong>Bing Visual Search</strong> — good at object and landmark recognition.</li>
+        <li><strong>Yandex</strong> — widely regarded as the strongest for faces and for finding near-duplicates.</li>
+        <li><strong>TinEye</strong> — specialises in exact-match tracking and shows the oldest known appearance of an image, which is invaluable for finding an original source.</li>
+      </ul>
+      <p>Because each engine indexes different parts of the web, the professional habit is to run the same image through several of them rather than trusting one.</p>
+
+      <h2>A practical verification workflow</h2>
+      <ol>
+        <li><strong>Get the best version of the image.</strong> Higher resolution produces better matches. Save the original rather than a screenshot where possible.</li>
+        <li><strong>Search across multiple engines.</strong> Run it through at least Google, Yandex, and TinEye.</li>
+        <li><strong>Sort by date where you can.</strong> Finding the earliest appearance often reveals the true origin — and whether a "recent" photo is actually years old.</li>
+        <li><strong>Crop and re-search.</strong> If the whole image returns nothing, crop to a distinctive detail (a logo, a face, a sign) and search again.</li>
+        <li><strong>Read the context, not just the match.</strong> The pages hosting the image tell you who has used it and how.</li>
+      </ol>
+
+      <div class="callout">
+        <p><strong>Use case: fake profiles.</strong> Dating scams and impersonation accounts almost always use stolen photos. Reverse-searching a profile picture and finding it on a stock-photo site, a stranger's real account, or dozens of unrelated profiles is one of the fastest ways to expose a fake.</p>
+      </div>
+
+      <h2>What photos can quietly reveal</h2>
+      <p>Beyond where an image appears, the image file itself can carry <strong>metadata (EXIF)</strong>: the camera or phone model, the date and time it was taken, and sometimes GPS coordinates. Many social platforms strip this on upload, but images shared directly or hosted elsewhere often retain it. The visible content matters too — street signs, licence plates, reflections, architecture, and language on shopfronts can all help place where and when a photo was taken.</p>
+
+      <div class="callout">
+        <p><strong>Privacy note.</strong> This cuts both ways. Before you post a photo, remember it may carry location metadata and background details. If a picture reveals your home or routine, consider stripping its metadata and cropping sensitive detail first — see our guide on <a href="/guides/reduce-your-digital-footprint.html">reducing your digital footprint</a>.</p>
+      </div>
+
+      <h2>Verify, don't assume</h2>
+      <p>A visual match is a strong lead, but not automatic proof — similar images exist, and pictures are reused out of context. Confirm what you find against other evidence before drawing conclusions, and use these techniques only for lawful, ethical purposes such as verification and protecting yourself. Pair image analysis with the rest of the <a href="/guides/">MyRecon guides</a> for a fuller picture.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=5"></script>
+  <script src="/assets/js/config.js?v=5"></script>
+  <script src="/assets/js/app.js?v=5"></script>
+</body>
+</html>

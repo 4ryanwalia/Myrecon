@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Authentication Explained: SPF, DKIM and DMARC — MyRecon</title>
+  <meta name="description" content="A plain-English guide to SPF, DKIM, and DMARC — the DNS records that stop spammers spoofing your domain, how they work together, and how to read them.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/spf-dkim-dmarc-explained.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Email Authentication Explained: SPF, DKIM and DMARC">
+  <meta property="og:description" content="How SPF, DKIM, and DMARC stop spammers spoofing your domain, and how to read them.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/spf-dkim-dmarc-explained.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"Email Authentication Explained: SPF, DKIM and DMARC","description":"How SPF, DKIM, and DMARC stop spammers spoofing your domain, and how to read them.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/spf-dkim-dmarc-explained.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Domain intelligence</span>
+      <h1>Email Authentication Explained: SPF, DKIM and DMARC</h1>
+      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+
+      <p class="lead">Email was designed in a more trusting era, when anyone could put any name in the "From" field. SPF, DKIM, and DMARC are the three DNS records that fixed that — they let the world verify that an email really came from the domain it claims. Understanding them helps you protect your own domain and judge whether someone else's is trustworthy.</p>
+
+      <h2>The problem: anyone can forge "From"</h2>
+      <p>By default, nothing stops a spammer from sending an email that says it came from <span style="font-family:var(--mono)">billing@yourbank.com</span>. This is called spoofing, and it is the engine behind most phishing. The three email-authentication standards work together to make spoofing detectable, so receiving mail servers can reject or quarantine fakes.</p>
+
+      <h2>SPF — who is allowed to send</h2>
+      <p><strong>SPF (Sender Policy Framework)</strong> is a DNS TXT record that lists the mail servers permitted to send email for a domain. When a message arrives, the receiving server checks whether the sending server's IP is on that list. A typical SPF record looks like <span style="font-family:var(--mono)">v=spf1 include:_spf.google.com ~all</span>, which says "Google's servers may send for us; treat anything else as suspicious." SPF answers one question: is this server authorised?</p>
+
+      <h2>DKIM — proof the message wasn't tampered with</h2>
+      <p><strong>DKIM (DomainKeys Identified Mail)</strong> adds a cryptographic signature to each outgoing message. The domain publishes a public key in DNS, and the sending server signs messages with the matching private key. The receiver uses the public key to verify the signature, proving two things: the message genuinely came from the domain, and its key contents were not altered in transit. DKIM answers: is this message authentic and intact?</p>
+
+      <h2>DMARC — the policy that ties it together</h2>
+      <p><strong>DMARC (Domain-based Message Authentication, Reporting and Conformance)</strong> is the record that tells receivers what to do when SPF or DKIM fail, and asks them to send reports. A DMARC record such as <span style="font-family:var(--mono)">v=DMARC1; p=reject; rua=mailto:reports@domain.com</span> means "if a message claiming to be from us fails authentication, reject it, and send me reports." The policy can be <span style="font-family:var(--mono)">none</span> (monitor only), <span style="font-family:var(--mono)">quarantine</span> (send to spam), or <span style="font-family:var(--mono)">reject</span> (block outright).</p>
+
+      <div class="callout">
+        <p><strong>How they combine:</strong> SPF checks the sending server, DKIM checks the message signature, and DMARC decides what happens if either fails — and alignment rules ensure the checks actually match the visible "From" domain. All three are needed for strong protection.</p>
+      </div>
+
+      <h2>How to read a domain's email security</h2>
+      <p>Because these are all public DNS records, you can inspect any domain's email posture. Look at its TXT records for an SPF entry, its DMARC record at <span style="font-family:var(--mono)">_dmarc.&lt;domain&gt;</span>, and DKIM selectors where known. MyRecon's <a href="/#tool">DNS tool</a> surfaces the TXT records where SPF and DMARC live — our guide to <a href="/guides/dns-records-explained.html">DNS records</a> explains the surrounding record types. A domain with no SPF and no DMARC is trivially spoofable; a domain with <span style="font-family:var(--mono)">p=reject</span> is well protected.</p>
+
+      <h2>Why it matters for investigation and trust</h2>
+      <p>For a defender, weak or missing authentication on your own domain is an open door for attackers to impersonate you to your customers. For an investigator assessing whether a message is legitimate, the sending domain's authentication posture is a useful signal — although remember that attackers frequently register their <em>own</em> look-alike domains and configure valid SPF/DKIM on them, so good authentication proves the domain sent the mail, not that the domain is honest.</p>
+
+      <h2>Quick checklist for your own domain</h2>
+      <ul>
+        <li>Publish an <strong>SPF</strong> record listing every service that sends mail for you.</li>
+        <li>Enable <strong>DKIM</strong> signing in your mail provider and publish the key.</li>
+        <li>Start <strong>DMARC</strong> at <span style="font-family:var(--mono)">p=none</span> with reporting, review the reports, then move to <span style="font-family:var(--mono)">quarantine</span> and finally <span style="font-family:var(--mono)">reject</span>.</li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=5"></script>
+  <script src="/assets/js/config.js?v=5"></script>
+  <script src="/assets/js/app.js?v=5"></script>
+</body>
+</html>

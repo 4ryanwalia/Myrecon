@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Investigate a Suspicious Domain: A Step-by-Step Guide — MyRecon</title>
+  <meta name="description" content="A repeatable workflow for investigating a domain you don't trust: registration age, DNS and mail setup, hosting and IP, subdomains, and certificate history.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/investigate-a-domain.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Investigate a Suspicious Domain: A Step-by-Step Guide">
+  <meta property="og:description" content="A repeatable workflow for investigating a domain you don't trust.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/investigate-a-domain.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"How to Investigate a Suspicious Domain: A Step-by-Step Guide","description":"A repeatable workflow for investigating a domain you don't trust.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/investigate-a-domain.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Domain intelligence</span>
+      <h1>How to Investigate a Suspicious Domain: A Step-by-Step Guide</h1>
+      <p class="meta">Updated 12 July 2026 · 8 min read</p>
+
+      <p class="lead">You got a link, an email, or a job offer from a domain you have never heard of. Before you trust it — or click anything — you can learn a surprising amount about it from public data alone, without ever visiting the site. Here is a repeatable workflow.</p>
+
+      <h2>Step 1: Check the registration age</h2>
+      <p>Start with the domain's WHOIS/RDAP record and look at the <strong>creation date</strong>. This one field is the most powerful early signal. Scammers register fresh domains constantly, so a site claiming to be an established bank, retailer, or employer that was registered a few days or weeks ago is a serious red flag. Also note the registrar and whether the registration is privacy-protected — legitimate businesses often use corporate registrars, while throwaway scam domains cluster on cheap ones. Our guide on <a href="/guides/whois-rdap-explained.html">reading a WHOIS record</a> explains each field.</p>
+
+      <h2>Step 2: Look at the DNS and mail setup</h2>
+      <p>The domain's DNS records reveal how it is actually configured. Does it have proper mail records (MX), or none? Are there <a href="/guides/spf-dkim-dmarc-explained.html">SPF and DMARC</a> records, or is the domain wide open to spoofing? A domain built to run a real business tends to have a complete, sensible DNS setup; a domain spun up purely to host a scam page is often bare. Our <a href="/guides/dns-records-explained.html">DNS records guide</a> covers what each type means.</p>
+
+      <h2>Step 3: Find out where it is hosted</h2>
+      <p>Resolve the domain to its IP address and look up that IP's geolocation and network owner. This tells you which hosting provider and roughly which region serves the site. A "local bank" hosted on a random offshore provider, or infrastructure that does not match the brand's scale, is worth noting. See our guide on <a href="/guides/ip-geolocation-reverse-dns.html">IP geolocation and reverse DNS</a> for how to interpret the result.</p>
+
+      <div class="callout">
+        <p><strong>Investigate, don't visit.</strong> The point of this workflow is that you can assess a domain from public records without loading a potentially malicious page. If you must view the site, do it carefully and never enter credentials.</p>
+      </div>
+
+      <h2>Step 4: Enumerate subdomains</h2>
+      <p>Public Certificate Transparency logs record every TLS certificate issued for a domain, which reveals its subdomains — <span style="font-family:var(--mono)">mail.</span>, <span style="font-family:var(--mono)">vpn.</span>, <span style="font-family:var(--mono)">staging.</span>, <span style="font-family:var(--mono)">login.</span>, and so on. Subdomains map out an organisation's real infrastructure and can expose services the front page never mentions. MyRecon's <a href="/#tool">domain tool</a> includes subdomain discovery from these logs.</p>
+
+      <h2>Step 5: Watch for look-alike tricks</h2>
+      <p>Many malicious domains are designed to be mistaken for a real one. Check carefully for:</p>
+      <ul>
+        <li><strong>Typosquats</strong> — <span style="font-family:var(--mono)">amaz0n.com</span>, <span style="font-family:var(--mono)">micros0ft.com</span>.</li>
+        <li><strong>Added words</strong> — <span style="font-family:var(--mono)">secure-paypal-login.com</span>.</li>
+        <li><strong>Wrong suffix</strong> — a real brand's name on an unusual top-level domain.</li>
+        <li><strong>Subdomain deception</strong> — <span style="font-family:var(--mono)">paypal.com.account-verify.net</span>, where the real domain is the last two labels.</li>
+      </ul>
+
+      <h2>Step 6: Put the signals together</h2>
+      <p>No single fact convicts a domain, but the pattern usually does. A domain that is days old, has no proper mail or anti-spoofing records, is hosted somewhere that does not match its claims, and mimics a known brand is almost certainly not to be trusted. A domain with years of history, a complete DNS setup, and matching infrastructure is far more likely to be genuine. Record what you find with its sources so your judgement is defensible.</p>
+
+      <h2>Do it in one place</h2>
+      <p>You can run the whole workflow — registration, DNS, hosting, and subdomains — from the MyRecon <a href="/#tool">domain tool</a>, and pivot from one finding to the next (a resolved IP, a nameserver, a discovered subdomain) with a click. Combine it with the other <a href="/guides/">guides</a> to sharpen your read on any domain you are unsure about.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=5"></script>
+  <script src="/assets/js/config.js?v=5"></script>
+  <script src="/assets/js/app.js?v=5"></script>
+</body>
+</html>

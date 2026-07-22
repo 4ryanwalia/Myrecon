@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Spot a Phishing Email or Website — MyRecon</title>
+  <meta name="description" content="A practical checklist for spotting phishing emails and scam websites: the red flags, how to inspect a link or domain safely, and what to do if you clicked.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/how-to-spot-phishing.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Spot a Phishing Email or Website">
+  <meta property="og:description" content="The red flags of phishing, how to inspect a link safely, and what to do if you clicked.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/how-to-spot-phishing.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"How to Spot a Phishing Email or Website","description":"The red flags of phishing, how to inspect a link safely, and what to do if you clicked.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/how-to-spot-phishing.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Security</span>
+      <h1>How to Spot a Phishing Email or Website</h1>
+      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+
+      <p class="lead">Phishing is the most common way ordinary people get hacked. The good news: almost every phishing attempt leaves the same tell-tale signs, and once you know them you can spot the great majority in a few seconds.</p>
+
+      <h2>What phishing is trying to do</h2>
+      <p>Phishing is a message — usually email, but also SMS ("smishing"), social media, or phone — designed to trick you into doing something that benefits the attacker: entering a password on a fake login page, sending money, opening a malicious attachment, or approving a payment. It works by impersonating something you trust (your bank, a delivery company, your employer, a popular service) and creating a reason to act quickly.</p>
+
+      <h2>The red flags in a message</h2>
+      <ul>
+        <li><strong>Urgency and threats.</strong> "Your account will be suspended in 24 hours." Manufactured time pressure is designed to stop you thinking.</li>
+        <li><strong>A mismatched sender.</strong> The display name says "PayPal" but the actual address is a random domain. Always check the real email address, not just the name.</li>
+        <li><strong>Generic greetings.</strong> "Dear Customer" instead of your name often signals a mass phishing run.</li>
+        <li><strong>Unexpected attachments or links,</strong> especially ones asking you to "verify," "confirm," or "unlock" something.</li>
+        <li><strong>Requests for credentials or payment.</strong> Legitimate organisations do not email you to ask for your password or a gift-card payment.</li>
+        <li><strong>Small errors.</strong> Odd grammar, low-resolution logos, or slightly-off branding.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>The golden rule:</strong> never enter credentials or payment details on a page you reached by clicking a link in a message. Instead, open a new tab and navigate to the service yourself, or use the official app.</p>
+      </div>
+
+      <h2>Inspecting a link before you click</h2>
+      <p>The destination of a link is often disguised. On a computer, hover over the link (without clicking) and read the real URL that appears. On mobile, press and hold to preview it. Look at the <strong>domain</strong> — the part right before the first single slash. Attackers rely on look-alikes:</p>
+      <ul>
+        <li><span style="font-family:var(--mono)">paypa1.com</span> (a "1" instead of "l")</li>
+        <li><span style="font-family:var(--mono)">secure-paypal.com</span> (extra words bolted on)</li>
+        <li><span style="font-family:var(--mono)">paypal.com.verify-login.net</span> (the real domain here is <span style="font-family:var(--mono)">verify-login.net</span>, not paypal)</li>
+      </ul>
+      <p>The true domain is always the two labels immediately before the top-level suffix. Everything to the left of that can be anything the attacker wants.</p>
+
+      <h2>Checking a suspicious domain safely</h2>
+      <p>If you want to investigate a domain without visiting it, look up its registration and infrastructure. A domain <strong>registered days ago</strong> that claims to be an established bank is a strong warning sign. Use MyRecon's <a href="/#tool">domain tool</a> to check the creation date, registrar, and hosting — our guide on <a href="/guides/whois-rdap-explained.html">reading a WHOIS record</a> explains exactly what to look for. Brand-new domains, privacy-hidden registration paired with a "trusted brand" claim, and hosting on a random provider are all red flags.</p>
+
+      <h2>Spotting a fake login page</h2>
+      <p>Even a convincing page has tells. Check the address bar for the exact, correct domain (a padlock only means the connection is encrypted, not that the site is legitimate — scammers use HTTPS too). Be suspicious of pages that ask for your password <em>and</em> your 2FA code and something else all at once, and of any "login" that arrived via a link rather than your own navigation.</p>
+
+      <h2>What to do if you clicked or entered details</h2>
+      <ol>
+        <li><strong>Change the password</strong> for that account immediately, and anywhere you reused it.</li>
+        <li><strong>Turn on two-factor authentication</strong> if it was not already active.</li>
+        <li><strong>Contact your bank</strong> if you entered financial details, and watch for unfamiliar transactions.</li>
+        <li><strong>Report it</strong> to the impersonated company and, if relevant, your workplace security team.</li>
+        <li><strong>Check your exposure</strong> — see whether the email involved appears in <a href="/guides/check-email-data-breach.html">known breaches</a>, which attackers often use to target you.</li>
+      </ol>
+
+      <p>Phishing succeeds on autopilot and urgency. Slowing down for ten seconds to check the sender and the real domain defeats almost all of it.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=5"></script>
+  <script src="/assets/js/config.js?v=5"></script>
+  <script src="/assets/js/app.js?v=5"></script>
+</body>
+</html>

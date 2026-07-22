@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two-Factor Authentication: Why It Matters and How to Set It Up — MyRecon</title>
+  <meta name="description" content="What two-factor authentication is, why it stops most account takeovers, the different 2FA methods ranked by security, and how to set it up the right way.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/two-factor-authentication.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Two-Factor Authentication: Why It Matters and How to Set It Up">
+  <meta property="og:description" content="Why 2FA stops most account takeovers, the methods ranked by security, and how to set it up.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/two-factor-authentication.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"Two-Factor Authentication: Why It Matters and How to Set It Up","description":"Why 2FA stops most account takeovers, the methods ranked by security, and how to set it up.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/two-factor-authentication.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Security</span>
+      <h1>Two-Factor Authentication: Why It Matters and How to Set It Up</h1>
+      <p class="meta">Updated 12 July 2026 · 6 min read</p>
+
+      <p class="lead">If you do only one thing to secure your accounts this year, make it turning on two-factor authentication. It is the single most effective defence against account takeover, and it blocks the vast majority of attacks that rely on stolen passwords.</p>
+
+      <h2>What two-factor authentication is</h2>
+      <p>Two-factor authentication (2FA), sometimes called two-step verification or multi-factor authentication, requires two different kinds of proof to log in: something you <em>know</em> (your password) and something you <em>have</em> (your phone, an app, or a security key). Even if an attacker steals your password, they still cannot get in without the second factor.</p>
+
+      <h2>Why it stops most attacks</h2>
+      <p>The overwhelming majority of account compromises begin with a stolen or reused password — leaked in a breach, phished, or guessed. Attackers run these credentials automatically against thousands of accounts. 2FA breaks that entire model: a correct password alone is no longer enough. It is why every major provider now offers it, and why it is worth the small daily friction.</p>
+
+      <div class="callout">
+        <p><strong>Do your email first.</strong> Your email account is the master key — password resets for everything else land there. If you protect just one account with 2FA, protect your email.</p>
+      </div>
+
+      <h2>The 2FA methods, ranked</h2>
+      <p>Not all second factors are equally strong. From most to least secure:</p>
+      <ul>
+        <li><strong>Hardware security keys</strong> (FIDO2 / passkeys) — a physical key or a device-bound passkey. These are phishing-resistant, because the key only works on the genuine site. The gold standard for high-value accounts.</li>
+        <li><strong>Authenticator apps</strong> (TOTP) — apps that generate a rotating six-digit code. Strong, free, and work offline. A great default for almost everyone.</li>
+        <li><strong>Push notifications</strong> — an approve/deny prompt in an app. Convenient, but be alert to "MFA fatigue" attacks that spam prompts hoping you tap "approve."</li>
+        <li><strong>SMS codes</strong> — texted codes. Better than nothing, but the weakest option: vulnerable to SIM-swapping and interception. Use it only where nothing better is offered.</li>
+      </ul>
+
+      <h2>How to set it up</h2>
+      <ol>
+        <li>Open the account's <strong>Security</strong> or <strong>Login</strong> settings and find "two-factor," "two-step," or "multi-factor" verification.</li>
+        <li>Choose the strongest method available — ideally a security key or an authenticator app.</li>
+        <li>For an authenticator app, scan the QR code the site shows; the app then generates codes for that account.</li>
+        <li><strong>Save your backup / recovery codes</strong> somewhere safe and offline. These let you back in if you lose your device — losing both is the most common way people get locked out.</li>
+        <li>Repeat for your other important accounts: email, banking, primary social, and your password manager.</li>
+      </ol>
+
+      <h2>Passkeys: where things are heading</h2>
+      <p>Passkeys are a newer, passwordless evolution built on the same phishing-resistant technology as security keys. Instead of a password plus a code, you unlock a cryptographic key stored on your device with your fingerprint, face, or PIN. They cannot be phished or reused, and adoption is growing quickly. Where a service offers passkeys, they are an excellent upgrade.</p>
+
+      <h2>Don't forget the password underneath</h2>
+      <p>2FA protects an account, but it works best on top of a strong, unique password — so a single breach never handed an attacker a working credential in the first place. Combine 2FA with a password manager, and check whether your accounts were exposed in a <a href="/guides/check-email-data-breach.html">data breach</a> so you know which passwords to rotate first.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=5"></script>
+  <script src="/assets/js/config.js?v=5"></script>
+  <script src="/assets/js/app.js?v=5"></script>
+</body>
+</html>

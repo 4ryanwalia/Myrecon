@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Is OSINT? A Beginner's Guide to Open-Source Intelligence — MyRecon</title>
+  <meta name="description" content="A clear beginner's guide to open-source intelligence (OSINT): what it is, how it works, who uses it, the main techniques, and how to do it ethically.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/guides/what-is-osint.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="What Is OSINT? A Beginner's Guide to Open-Source Intelligence">
+  <meta property="og:description" content="What OSINT is, how it works, who uses it, and how to do it ethically.">
+  <meta property="og:url" content="https://myrecon.xyz/guides/what-is-osint.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"What Is OSINT? A Beginner's Guide to Open-Source Intelligence","description":"What OSINT is, how it works, who uses it, and how to do it ethically.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/what-is-osint.html"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/#features">Features</a><a href="/about.html">About</a>
+      </nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Fundamentals</span>
+      <h1>What Is OSINT? A Beginner's Guide to Open-Source Intelligence</h1>
+      <p class="meta">Updated 12 July 2026 · 8 min read</p>
+
+      <p class="lead">Open-source intelligence, or OSINT, is the practice of collecting and analysing information that is freely and legally available to the public, then turning it into useful insight. No hacking, no special access — just publicly available data, gathered methodically.</p>
+
+      <h2>A simple definition</h2>
+      <p>The word "source" here refers to where the information comes from, and "open" means it is publicly accessible: websites, social media profiles, public records, news articles, domain registrations, maps, images, and more. OSINT is the discipline of finding the right pieces of that public data, verifying them, and connecting them into an answer to a specific question — for example, "does this person have a public LinkedIn?", "when was this website registered?", or "where is this server hosted?"</p>
+      <p>The concept is old — governments and journalists have practised it for decades using newspapers and public broadcasts — but the internet turned it into something almost anyone can do. The challenge today is rarely a lack of information; it is filtering, verifying, and making sense of an overwhelming amount of it.</p>
+
+      <h2>What counts as an "open source"?</h2>
+      <ul>
+        <li><strong>The public web</strong> — websites, blogs, forums, and search engines.</li>
+        <li><strong>Social media</strong> — public profiles, posts, photos, and the connections between accounts.</li>
+        <li><strong>Technical records</strong> — domain WHOIS/RDAP data, DNS records, IP allocations, and TLS certificate logs.</li>
+        <li><strong>Public and government records</strong> — company registries, court filings, and property records where they are public.</li>
+        <li><strong>Media</strong> — images and videos, including the metadata and visual clues inside them.</li>
+        <li><strong>Data breaches</strong> — where checking public breach databases is legally permitted, to understand exposure.</li>
+      </ul>
+
+      <h2>The OSINT process</h2>
+      <p>Good OSINT is a repeatable process, not random searching:</p>
+      <ol>
+        <li><strong>Define the question.</strong> Vague goals produce vague results. Start with a specific, answerable question.</li>
+        <li><strong>Collect.</strong> Gather relevant data from open sources, starting with what you already know (a username, an email, a domain).</li>
+        <li><strong>Verify.</strong> Cross-check each finding against a second source. A single unconfirmed hit is a lead, not a fact.</li>
+        <li><strong>Correlate.</strong> Connect the pieces — the same handle on several sites, a website linked from a bio — to build a coherent picture.</li>
+        <li><strong>Report.</strong> Record your findings with their sources so the conclusion is defensible and repeatable.</li>
+      </ol>
+
+      <div class="callout">
+        <p><strong>Verification is everything.</strong> The most common OSINT mistake is treating a coincidence as a connection. Two people can share a username; a photo can be reused. Always confirm before you conclude.</p>
+      </div>
+
+      <h2>Who uses OSINT, and why</h2>
+      <p>OSINT is used far beyond intelligence agencies. Security teams use it to map their own organisation's exposure and investigate threats. Recruiters and fraud teams use it to verify identities. Journalists use it to corroborate stories with public evidence. Everyday people use it to audit their own digital footprint before a stranger does. The same techniques serve very different, legitimate goals.</p>
+
+      <h2>Common OSINT techniques</h2>
+      <p>Most practical OSINT falls into a few repeatable categories, each of which MyRecon supports:</p>
+      <ul>
+        <li><strong>Username enumeration</strong> — finding where a handle exists across platforms. Read our guide on <a href="/guides/username-osint-search.html">username OSINT</a>.</li>
+        <li><strong>Email intelligence</strong> — provider analysis, linked accounts, and <a href="/guides/check-email-data-breach.html">breach exposure</a>.</li>
+        <li><strong>Domain and infrastructure analysis</strong> — <a href="/guides/whois-rdap-explained.html">WHOIS/RDAP</a>, <a href="/guides/dns-records-explained.html">DNS records</a>, and <a href="/guides/ip-geolocation-reverse-dns.html">IP geolocation</a>.</li>
+        <li><strong>Image analysis</strong> — reverse image search to trace where a photo appears.</li>
+      </ul>
+
+      <h2>The ethics and the law</h2>
+      <p>Because OSINT uses public information, it is generally legal — but "legal" and "ethical" are not the same, and neither is unlimited. Collecting public data to review your own exposure or conduct authorized research is fine. Using the same data to stalk, harass, or dox someone is harmful and often illegal, and it can breach platform terms of service. Responsible OSINT means having a legitimate purpose, respecting privacy, and never weaponising what you find.</p>
+
+      <h2>Getting started</h2>
+      <p>The best way to learn OSINT is to practise on yourself. Search your own username, check your own email for breaches, and look up a domain you own. You will quickly see how much is public — and how the pieces connect. Try it with the <a href="/#tool">MyRecon tools</a>, then work through the rest of our <a href="/guides/">guides</a> to go deeper.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=5"></script>
+  <script src="/assets/js/config.js?v=5"></script>
+  <script src="/assets/js/app.js?v=5"></script>
+</body>
+</html>
