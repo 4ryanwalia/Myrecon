@@ -135,6 +135,7 @@
 
   let activeTool = "username";
   let lastResult = null;
+  let lastExposure = null;
 
   // ---------------------------------------------------------------- rendering
   const resultsEl = () => $("#results");
@@ -185,6 +186,10 @@
     const s = data.summary || {};
     let html = resultsHeader(`Results for “${esc(data.query.username)}”`, `${s.total || 0} findings`);
 
+    const exp = computeExposure("username", data);
+    lastExposure = exp;
+    if ((s.profiles || 0) > 0) html += exposureGauge(exp);
+
     html += `<div class="summary-grid">
       ${stat(s.profiles, "Profiles")}${stat(s.documents, "Documents")}
       ${stat(s.mentions, "Mentions")}${stat(s.clusters, "Identities")}
@@ -203,10 +208,12 @@
       html += `</div>`;
     }
     r.innerHTML = html;
+    animateCountUps();
   }
 
   function stat(n, label) {
-    return `<div class="stat"><div class="num">${fmtNum(n || 0)}</div><div class="lbl">${esc(label)}</div></div>`;
+    n = n || 0;
+    return `<div class="stat"><div class="num" data-countup="${n}">0</div><div class="lbl">${esc(label)}</div></div>`;
   }
 
   function clusterCard(c) {
@@ -265,6 +272,10 @@
     const breaches = data.breaches || {}, hibp = data.hibp;
     let html = resultsHeader(`Email intelligence: ${esc(data.query.email)}`, "");
 
+    const exp = computeExposure("email", data);
+    lastExposure = exp;
+    html += exposureGauge(exp);
+
     const breached = s.breached, count = s.breach_count || 0;
     html += `<div class="breach ${breached ? "" : "clean"}">
       <h3>${breached ? "Breach exposure detected" : "No breaches found"}
@@ -315,6 +326,7 @@
         <div class="card-url"><a href="${esc(data.github.url)}" target="_blank" rel="noopener nofollow">github.com</a></div></div></div></div>`;
     }
     resultsEl().innerHTML = html;
+    animateCountUps();
   }
 
   // -- Domain results
@@ -488,6 +500,83 @@
     return [...out].filter((d) => d && d.includes(".") && d.length < 60).slice(0, 6);
   }
 
+  // ---------------------------------------------------------------- exposure score
+  // A shareable 0-100 "digital exposure" score computed from the scan results.
+  function computeExposure(tool, data) {
+    const s = data.summary || {};
+    let score = 0, factors = [];
+    if (tool === "username") {
+      const profiles = s.profiles || 0, clusters = s.clusters || 0, docs = s.documents || 0;
+      score = Math.round(profiles * 5 + clusters * 8 + docs * 3);
+      factors = [
+        { label: "Public profiles", value: profiles },
+        { label: "Linked identities", value: clusters },
+        { label: "Documents", value: docs },
+      ];
+    } else {
+      const breached = s.breached, bc = s.breach_count || 0;
+      const linked = (s.linked_accounts || []).length;
+      const grav = data.gravatar && data.gravatar.exists ? 1 : 0;
+      score = Math.round((breached ? 35 : 0) + Math.min(bc, 45) + linked * 6 + grav * 8);
+      factors = [
+        { label: "Breaches", value: bc },
+        { label: "Linked accounts", value: linked },
+        { label: "Gravatar", value: grav ? "Yes" : "No" },
+      ];
+    }
+    score = Math.max(0, Math.min(100, score));
+    let label, color, message;
+    if (score <= 30) {
+      label = "Low exposure"; color = "var(--ok)";
+      message = "A small public footprint. Not much is easy to find — nice work.";
+    } else if (score <= 60) {
+      label = "Moderate exposure"; color = "var(--warn)";
+      message = "A noticeable footprint. Worth reviewing what's public and locking down old accounts.";
+    } else {
+      label = "High exposure"; color = "var(--danger)";
+      message = "A large public footprint. Consider tightening privacy and rotating any breached passwords.";
+    }
+    return { score, label, color, message, factors };
+  }
+
+  function exposureGauge(exp) {
+    const R = 52, C = 2 * Math.PI * R;
+    const offset = (C * (1 - exp.score / 100)).toFixed(1);
+    return `<div class="exposure" style="--gauge-c:${C.toFixed(1)}; --gauge-target:${offset}; --gauge-color:${exp.color}">
+      <div class="gauge">
+        <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+          <circle cx="60" cy="60" r="${R}" class="gauge-bg"/>
+          <circle cx="60" cy="60" r="${R}" class="gauge-val"/>
+        </svg>
+        <div class="gauge-center"><span class="gauge-score" data-countup="${exp.score}">0</span><span class="gauge-max">/ 100</span></div>
+      </div>
+      <div class="exposure-info">
+        <div class="exposure-kicker">Digital exposure score</div>
+        <div class="exposure-label" style="color:${exp.color}">${esc(exp.label)}</div>
+        <p class="exposure-sub">${esc(exp.message)}</p>
+        <div class="exposure-factors">${exp.factors.map((f) =>
+          `<div class="ef"><span>${esc(f.label)}</span><strong>${esc(String(f.value))}</strong></div>`).join("")}</div>
+      </div>
+    </div>`;
+  }
+
+  function animateCountUps() {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    $$("[data-countup]").forEach((el) => {
+      const target = parseFloat(el.dataset.countup) || 0;
+      if (reduce) { el.textContent = target; return; }
+      const dur = 900, start = performance.now();
+      const step = (t) => {
+        const p = Math.min(1, (t - start) / dur);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+      // Guarantee the final value even if rAF is throttled (background tab).
+      setTimeout(() => { el.textContent = target; }, dur + 120);
+    });
+  }
+
   const RENDERERS = { username: renderUsername, email: renderEmail, domain: renderDomain, dns: renderDns, ip: renderIp };
 
   // ---------------------------------------------------------------- run
@@ -655,6 +744,9 @@
   function buildTextSummary(res) {
     const d = res.data;
     const L = [`MyRecon — ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
+    if ((res.tool === "username" || res.tool === "email") && lastExposure) {
+      L.push(`Digital exposure score: ${lastExposure.score}/100 (${lastExposure.label})`, "");
+    }
     if (res.tool === "username") {
       const all = [].concat(d.results?.profiles || [], d.results?.documents || [], d.results?.mentions || []);
       L.push(`${all.length} results found:`);
@@ -849,9 +941,22 @@
     $$(".tab", tabs).forEach((el) => el.addEventListener("click", () => switchTool(el.dataset.tool)));
   }
 
+  function initHeroRotate() {
+    const el = $("#heroWord");
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const words = ["digital footprint", "username", "email address", "domain", "IP address"];
+    let i = 0;
+    setInterval(() => {
+      i = (i + 1) % words.length;
+      el.classList.add("swap");
+      setTimeout(() => { el.textContent = words[i]; el.classList.remove("swap"); }, 250);
+    }, 2600);
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initNav();
+    initHeroRotate();
     buildTabs();
     if ($("#tool")) {
       switchTool("username");
