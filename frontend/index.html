@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyRecon — OSINT Intelligence Platform</title>
-  <meta name="description" content="MyRecon is a fast, accurate open-source intelligence platform. Search usernames across 100+ platforms, analyze emails and breaches, and investigate domains, DNS, and IP addresses.">
-  <meta name="keywords" content="OSINT, username search, email intelligence, breach detection, WHOIS lookup, DNS records, IP geolocation, reverse DNS, digital footprint">
+  <meta name="description" content="MyRecon is a fast, accurate open-source intelligence platform. Search usernames across 100+ platforms, check emails and passwords against breach data, and investigate domains, DNS, and IP addresses.">
+  <meta name="keywords" content="OSINT, username search, email intelligence, breach detection, password exposure check, pwned password, WHOIS lookup, DNS records, IP geolocation, reverse DNS, digital footprint">
   <meta name="author" content="MyRecon">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
@@ -15,15 +15,19 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="MyRecon — OSINT Intelligence Platform">
-  <meta property="og:description" content="Search usernames across 100+ platforms, analyze emails and breaches, and investigate domains, DNS, and IP addresses — accurate, fast, and private.">
+  <meta property="og:description" content="Search usernames across 100+ platforms, check emails and passwords against breach data, and investigate domains, DNS, and IP addresses — accurate, fast, and private.">
   <meta property="og:url" content="https://myrecon.xyz/">
-  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MyRecon — OSINT Intelligence Platform">
-  <meta name="twitter:description" content="Fast, accurate open-source intelligence: usernames, email, breaches, domains, DNS, and IP.">
-  <meta name="twitter:image" content="https://myrecon.xyz/assets/img/og-image.svg">
+  <meta name="twitter:description" content="Fast, accurate open-source intelligence: usernames, email, breaches, password exposure, domains, DNS, and IP.">
+  <meta name="twitter:image" content="https://myrecon.xyz/assets/img/og-image.png">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
@@ -32,7 +36,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=6">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=8">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -47,8 +51,8 @@
     "applicationCategory": "SecurityApplication",
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "description": "MyRecon is an open-source intelligence platform for username search, email intelligence, breach detection, WHOIS, DNS, and IP investigation.",
-    "featureList": ["Username search across 100+ platforms", "Email intelligence and breach detection", "Domain WHOIS lookup", "DNS records", "IP geolocation and reverse DNS"]
+    "description": "MyRecon is an open-source intelligence platform for username search, email intelligence, breach detection, password exposure checks, WHOIS, DNS, and IP investigation.",
+    "featureList": ["Username search across 100+ platforms", "Email intelligence and breach detection", "Password exposure checking against breached credential corpora", "Domain WHOIS lookup", "DNS records", "IP geolocation and reverse DNS"]
   }
   </script>
   <script type="application/ld+json">
@@ -59,7 +63,9 @@
       { "@type": "Question", "name": "Is MyRecon legal to use?", "acceptedAnswer": { "@type": "Answer", "text": "MyRecon only aggregates information that is already publicly available, which is legal in most jurisdictions. It is intended for lawful purposes such as reviewing your own footprint, authorized security research, verification, and journalism. Using it to harass or harm someone is prohibited." } },
       { "@type": "Question", "name": "Do you store my searches?", "acceptedAnswer": { "@type": "Answer", "text": "No. MyRecon does not require an account and does not save your search queries or results to a database. Your history lives only in your browser's local storage, and results are held briefly in an in-memory cache that expires automatically." } },
       { "@type": "Question", "name": "How accurate are the results?", "acceptedAnswer": { "@type": "Answer", "text": "MyRecon favours reliable, documented sources such as RDAP, DNS-over-HTTPS, and official breach and profile APIs, and verifies username matches with confidence scoring. Matches are labelled by confidence and should be independently confirmed." } },
-      { "@type": "Question", "name": "Is MyRecon free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All core lookups — username, email, domain, DNS, and IP — are free with no account. The service is supported by non-intrusive advertising and is rate-limited to stay fast and available." } }
+      { "@type": "Question", "name": "Is it safe to type a password into the password checker?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The password is hashed with SHA-1 inside your browser and only the first five characters of the hash are sent to the Pwned Passwords service, a technique called k-anonymity. That prefix is shared by thousands of different passwords, so it identifies nothing, and the final matching happens locally. The password never reaches MyRecon's servers, is never written to browser storage, and is never placed in a URL." } },
+      { "@type": "Question", "name": "Does MyRecon search the dark web?", "acceptedAnswer": { "@type": "Answer", "text": "Not in the way the phrase is usually sold. Live crawling of dark web marketplaces is not something any free service can do. MyRecon checks your email and passwords against published breach corpora — the credential dumps that were traded on criminal forums and have since been released and catalogued. That is the same underlying data most consumer dark web monitoring products check." } },
+      { "@type": "Question", "name": "Is MyRecon free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All core lookups — username, email, password exposure, domain, DNS, and IP — are free with no account. The service is supported by non-intrusive advertising and is rate-limited to stay fast and available." } }
     ]
   }
   </script>
@@ -100,8 +106,8 @@
         <div class="trust-row">
           <span class="chip">100+ platforms</span>
           <span class="chip">Breach detection</span>
+          <span class="chip">Password exposure</span>
           <span class="chip">WHOIS · DNS · IP</span>
-          <span class="chip">Fast &amp; cached</span>
           <span class="chip">No server-side storage</span>
         </div>
       </div>
@@ -119,7 +125,10 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
             </span>
             <input class="input" id="queryInput" type="text" autocomplete="off" spellcheck="false"
+                   autocapitalize="none" autocorrect="off" data-lpignore="true" data-1p-ignore
                    aria-label="Search target" placeholder="Enter a target…">
+            <button class="reveal-btn" id="revealBtn" type="button" hidden
+                    aria-label="Show password" title="Show password"></button>
           </div>
           <button class="btn" id="runBtn" type="button">Investigate</button>
         </div>
@@ -157,6 +166,7 @@
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg></div><h3>Domain &amp; WHOIS</h3><p>Registration lifecycle, registrar, DNSSEC, and nameservers via RDAP — the standardized successor to WHOIS.</p></div>
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></div><h3>DNS records</h3><p>A, AAAA, MX, NS, TXT, CNAME, SOA, and CAA resolved over DNS-over-HTTPS for accuracy and privacy.</p></div>
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>IP &amp; geolocation</h3><p>Geolocation, ISP/ASN ownership, hosting and proxy flags, and reverse DNS resolution.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Password exposure</h3><p>Check a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser and only the first five characters of the hash are ever sent — the password itself never leaves your device.</p></div>
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg></div><h3>Export &amp; history</h3><p>Export any result as JSON or CSV and revisit recent investigations — kept privately in your browser.</p></div>
         </div>
       </div>
@@ -200,7 +210,9 @@
           <details><summary>Do you store my searches?</summary><p>No. MyRecon does not require an account and does not save your search queries or results to a database. Your recent-lookup history lives only in your browser's local storage and never leaves your device. Results may be held briefly in an in-memory cache to speed up repeated lookups, then expire automatically.</p></details>
           <details><summary>How accurate are the results?</summary><p>MyRecon deliberately favours reliable, documented sources — RDAP for registration data, DNS-over-HTTPS for records, official APIs for breach and profile data — and verifies username matches with confidence scoring rather than assuming a profile exists just because a page loads. No tool that relies on public data can be perfect, so matches are labelled by confidence and you should always confirm anything important.</p></details>
           <details><summary>What is the difference between the WHOIS and DNS tools?</summary><p>WHOIS/RDAP tells you about a domain's <em>registration</em> — who registered it, when, the registrar, and its expiry. DNS tells you how the domain currently <em>resolves</em> — its A, MX, TXT, NS, and other records. The Domain tool combines both plus the resolved server's geolocation; the DNS tool focuses purely on records. Our <a href="/guides/">guides</a> explain each in depth.</p></details>
-          <details><summary>Is MyRecon free?</summary><p>Yes. All of the core lookups — username, email, domain, DNS, and IP — are free to use with no account. The service is supported by non-intrusive advertising and is rate-limited to keep it fast and available for everyone.</p></details>
+          <details><summary>Is it safe to type a password into the password checker?</summary><p>Yes, and you don't have to take our word for it. Your password is hashed with SHA-1 <em>inside your browser</em>, and only the first five characters of that hash are sent to the Pwned Passwords service — a technique called k-anonymity. That prefix is shared by many thousands of different passwords, so it identifies nothing. The matching is done locally on the list that comes back. Your password never reaches MyRecon's servers, is never written to your browser storage, and is never placed in a URL. We also ask the service to pad its response so its size gives nothing away.</p></details>
+          <details><summary>Does MyRecon search the dark web?</summary><p>Honestly: not in the way that phrase is usually sold. Nobody can crawl dark web marketplaces live for free, and services that genuinely infiltrate criminal forums charge thousands per month. What MyRecon does is check your email and passwords against the <em>breach corpora</em> — the credential dumps that were traded on those forums and have since been published and catalogued. That is the same underlying data most consumer "dark web monitoring" products actually check, and every source we use is documented and free.</p></details>
+          <details><summary>Is MyRecon free?</summary><p>Yes. All of the core lookups — username, email, password exposure, domain, DNS, and IP — are free to use with no account. The service is supported by non-intrusive advertising and is rate-limited to keep it fast and available for everyone.</p></details>
           <details><summary>Can I remove my information from MyRecon?</summary><p>MyRecon doesn't host a database of people — it queries public sources live at the moment you search. To reduce what appears, you need to reduce your public footprint at the source: delete unused accounts, tighten privacy settings, and change passwords exposed in breaches. Our guide on <a href="/guides/reduce-your-digital-footprint.html">reducing your digital footprint</a> walks through exactly how.</p></details>
         </div>
       </div>
@@ -227,8 +239,8 @@
     </div>
   </footer>
 
-  <script src="/assets/js/env.js?v=6"></script>
-  <script src="/assets/js/config.js?v=6"></script>
-  <script src="/assets/js/app.js?v=6"></script>
+  <script src="/assets/js/env.js?v=8"></script>
+  <script src="/assets/js/config.js?v=8"></script>
+  <script src="/assets/js/app.js?v=8"></script>
 </body>
 </html>

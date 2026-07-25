@@ -358,6 +358,69 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .pill { font-size: 0.72rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
 .pill.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.pill.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+
+/* Breach metrics strip */
+.breach-metrics { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.bm {
+  flex: 1 1 130px; padding: 10px 12px; border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  border: 1px solid var(--border);
+}
+.bm span { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-mute); }
+.bm strong { display: block; margin-top: 3px; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+
+/* Horizontal ranked bars — "what leaked" */
+.bars { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: minmax(90px, 1.1fr) 3fr auto; align-items: center; gap: 10px; }
+.bar-k { font-size: 0.82rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.bar-track i { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+.bar-v { font-size: 0.78rem; font-variant-numeric: tabular-nums; color: var(--text-mute); min-width: 2.5ch; text-align: right; }
+
+/* Year-by-year exposure timeline */
+.timeline {
+  display: flex; align-items: flex-end; gap: 4px; height: 110px; padding: 10px 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow-x: auto;
+}
+.tl-col { flex: 1 1 0; min-width: 16px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 5px; }
+.tl-bar { width: 100%; max-width: 22px; border-radius: 4px 4px 2px 2px; background: var(--accent); opacity: 0.85; }
+.tl-col:hover .tl-bar { opacity: 1; }
+.tl-y { font-size: 0.62rem; color: var(--text-mute); font-variant-numeric: tabular-nums; }
+
+/* Expandable per-breach cards */
+.breach-list { display: grid; gap: 8px; }
+.breach-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.breach-card summary {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 12px 14px; cursor: pointer; list-style: none;
+}
+.breach-card summary::-webkit-details-marker { display: none; }
+.breach-card[open] { border-color: var(--border-strong); }
+.breach-card:hover { border-color: var(--border-strong); }
+.bc-name { font-weight: 650; }
+.bc-meta { margin-left: auto; font-size: 0.74rem; color: var(--text-mute); font-variant-numeric: tabular-nums; }
+.bc-body { padding: 0 14px 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+.bc-body p { font-size: 0.86rem; color: var(--text-dim); line-height: 1.55; }
+
+/* Password reveal toggle */
+.reveal-btn {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; padding: 0; cursor: pointer;
+  border-radius: 8px; border: 1px solid transparent;
+  background: transparent; color: var(--text-mute);
+}
+.reveal-btn:hover { color: var(--text); border-color: var(--border); }
+.reveal-btn[hidden] { display: none; }
+/* Keep long secrets clear of the toggle. Applies while masked and, because
+   revealing swaps the type to text, also via .revealing on the wrapper. */
+.input[type="password"], .input-wrap.revealing .input { padding-right: 48px; }
+
+/* Guidance list */
+.tips { display: grid; gap: 9px; padding-left: 20px; }
+.tips li { font-size: 0.88rem; color: var(--text-dim); line-height: 1.55; }
 
 /* States */
 .empty, .loading, .error-box {

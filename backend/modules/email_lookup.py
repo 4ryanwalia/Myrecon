@@ -10,6 +10,7 @@ of sources that are documented, stable, and accurate:
   • MX validation via DNS-over-HTTPS
   • Gravatar profile + avatar     (public, documented)
   • LeakCheck public breach API   (free, documented)
+  • XposedOrNot breach analytics  (free, documented — per-breach detail)
   • Have I Been Pwned             (official API, when a key is configured)
   • GitHub commit-email search    (official API)
 """
@@ -28,6 +29,56 @@ _UA = (
 )
 _HEADERS = {"User-Agent": _UA}
 _TIMEOUT = 10
+# Breach analytics returns a large document (150 KB+ for heavily exposed
+# addresses), so it gets a longer budget than the other lookups.
+_ANALYTICS_TIMEOUT = 20
+# Per-breach records sent to the client, most records-leaked first. The full
+# count is still reported; this only bounds the response payload.
+_MAX_BREACH_DETAILS = 30
+
+
+def _first(value):
+    """XposedOrNot returns some metrics as a bare object and others wrapped in
+    a single-element list, depending on the field. Normalise both to an object."""
+    if isinstance(value, list):
+        return value[0] if value else {}
+    return value or {}
+
+
+def _int(value) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _clip(text: str, limit: int) -> str:
+    text = " ".join(str(text or "").split())
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
+
+
+def _flatten_categories(tree: dict) -> list:
+    """
+    Flatten XposedOrNot's nested xposed_data tree into a ranked list of the
+    data types that actually leaked:
+
+        {"children": [{"name": "🔒 Security Practices",
+                       "children": [{"name": "data_Passwords", "value": 142}]}]}
+        → [{"name": "Passwords", "category": "Security Practices", "count": 142}]
+    """
+    out = []
+    for group in (tree or {}).get("children") or []:
+        # Category labels ship with a leading emoji; keep the words only.
+        raw = str(group.get("name", ""))
+        category = "".join(c for c in raw if c.isalnum() or c in " &-/").strip()
+        for leaf in group.get("children") or []:
+            name = str(leaf.get("name", ""))
+            out.append({
+                "name": name[5:] if name.startswith("data_") else name,
+                "category": category,
+                "count": _int(leaf.get("value")),
+            })
+    return sorted(out, key=lambda x: x["count"], reverse=True)
 
 
 class EmailLookup:
@@ -179,6 +230,81 @@ class EmailLookup:
             pass
         return None
 
+    # ── XposedOrNot breach analytics (free, no key) ──────────────
+    def darkweb(self, email: str) -> dict:
+        """
+        Per-breach exposure detail from published breach corpora.
+
+        This is the same class of data commercial "dark web monitoring"
+        products resell: credentials recovered from dumps that were traded on
+        criminal forums and later published. It is *not* a live crawl of onion
+        services — no free source offers that, and the UI says so plainly.
+        """
+        result = {
+            "checked": True, "breached": False, "count": 0,
+            "risk_label": "", "risk_score": 0, "records_exposed": 0,
+            "breaches": [], "timeline": [], "exposed_data": [],
+            "password_strength": {}, "pastes": 0, "source_api": "XposedOrNot",
+        }
+        try:
+            resp = requests.get(
+                "https://api.xposedornot.com/v1/breach-analytics",
+                params={"email": email},
+                headers=_HEADERS,
+                timeout=_ANALYTICS_TIMEOUT,
+            )
+            if resp.status_code == 429:
+                result["error"] = "Breach analytics rate-limited — try again shortly."
+                return result
+            if resp.status_code != 200:
+                return result
+            data = resp.json() or {}
+        except (requests.RequestException, ValueError):
+            result["error"] = "Breach analytics service was unreachable."
+            return result
+
+        # A clean address answers 200 with every member null, not 404.
+        details = (data.get("ExposedBreaches") or {}).get("breaches_details") or []
+        if not details:
+            return result
+
+        result["breached"] = True
+        result["count"] = len(details)
+
+        ranked = sorted(details, key=lambda b: _int(b.get("xposed_records")), reverse=True)
+        result["records_exposed"] = sum(_int(b.get("xposed_records")) for b in details)
+        result["breaches"] = [{
+            "name": b.get("breach", ""),
+            "domain": b.get("domain", ""),
+            "date": str(b.get("xposed_date", "")),
+            "records": _int(b.get("xposed_records")),
+            "industry": b.get("industry", ""),
+            "verified": str(b.get("verified", "")).lower() == "yes",
+            "password_risk": b.get("password_risk", ""),
+            "logo": b.get("logo", ""),
+            "exposed": [p.strip() for p in str(b.get("xposed_data", "")).split(";") if p.strip()],
+            "details": _clip(b.get("details", ""), 260),
+        } for b in ranked[:_MAX_BREACH_DETAILS]]
+
+        metrics = data.get("BreachMetrics") or {}
+        risk = _first(metrics.get("risk"))
+        result["risk_label"] = risk.get("risk_label", "")
+        result["risk_score"] = _int(risk.get("risk_score"))
+        result["password_strength"] = _first(metrics.get("passwords_strength"))
+
+        # yearwise_details is {"y2007": 0, "y2008": 3, ...} — keep the years
+        # that actually saw a breach so the client can chart them directly.
+        years = _first(metrics.get("yearwise_details"))
+        result["timeline"] = [
+            {"year": int(k[1:]), "count": _int(v)}
+            for k, v in sorted(years.items())
+            if k.startswith("y") and k[1:].isdigit() and _int(v) > 0
+        ]
+
+        result["exposed_data"] = _flatten_categories(_first(metrics.get("xposed_data")))
+        result["pastes"] = _int((data.get("PastesSummary") or {}).get("cnt"))
+        return result
+
     # ── GitHub commit-email search (official API) ────────────────
     def github(self, email: str) -> Optional[dict]:
         try:
@@ -210,6 +336,7 @@ class EmailLookup:
         analysis = self.analyze(email)
         gravatar = self.gravatar(email)
         breaches = self.breaches(email)
+        darkweb = self.darkweb(email)
         hibp = self.hibp(email)
         github = self.github(email)
 
@@ -222,9 +349,19 @@ class EmailLookup:
             if acc.get("name"):
                 linked.append(acc["name"])
 
-        breach_count = breaches.get("count", 0)
-        if hibp and hibp.get("count"):
-            breach_count = max(breach_count, hibp["count"])
+        # Breach count = distinct named breaches across every source, not the
+        # record tally. LeakCheck's "found" counts leaked *rows* (often
+        # thousands for one address), so using it as a breach count both
+        # overstated exposure and pinned the client's score to maximum.
+        names = {s.get("name", "").strip().lower()
+                 for s in breaches.get("sources") or [] if s.get("name")}
+        names |= {b["name"].strip().lower() for b in darkweb["breaches"] if b.get("name")}
+        if hibp:
+            names |= {s.get("name", "").strip().lower()
+                      for s in hibp.get("sources") or [] if s.get("name")}
+        # darkweb["count"] covers every breach found, including any trimmed
+        # from the detail list by _MAX_BREACH_DETAILS.
+        breach_count = max(len(names), darkweb["count"])
 
         return {
             "query": {"email": email},
@@ -232,11 +369,18 @@ class EmailLookup:
             "gravatar": gravatar,
             "github": github,
             "breaches": breaches,
+            "darkweb": darkweb,
             "hibp": hibp,
             "summary": {
                 "linked_accounts": sorted(set(linked)),
-                "breached": bool(breaches.get("breached") or (hibp and hibp.get("breached"))),
+                "breached": bool(breaches.get("breached")
+                                 or darkweb["breached"]
+                                 or (hibp and hibp.get("breached"))),
                 "breach_count": breach_count,
+                "records_found": breaches.get("count", 0),
+                "records_exposed": darkweb["records_exposed"],
+                "risk_label": darkweb["risk_label"],
+                "risk_score": darkweb["risk_score"],
                 "deliverable": analysis["deliverable"],
                 "disposable": analysis["disposable"],
             },

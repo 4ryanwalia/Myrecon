@@ -14,6 +14,8 @@
 
   const fmtNum = (n) => {
     n = Number(n) || 0;
+    // Breach corpora run to billions of records, so B is a real bucket here.
+    if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
     if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
     if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
     return String(n);
@@ -32,6 +34,9 @@
     search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
     link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15a4 4 0 0 0 5.66 0l3-3A4 4 0 1 0 12 6.34l-1 1"/><path d="M15 9a4 4 0 0 0-5.66 0l-3 3A4 4 0 1 0 12 17.66l1-1"/></svg>',
     external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5h5v5"/><path d="M19 5l-8 8"/><path d="M19 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>',
+    eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 6.2A9.7 9.7 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.2 3.7M6.3 8.3A17 17 0 0 0 2 12s3.6 6 10 6a9.6 9.6 0 0 0 3.9-.8"/><path d="m3 3 18 18"/></svg>',
   };
   const icon = (name, size = 18) => {
     const s = SVG[name];
@@ -131,6 +136,15 @@
       sub: "Geolocation, network/ASN ownership, hosting flags, and reverse DNS.",
       examples: ["8.8.8.8", "1.1.1.1"],
     },
+    // `local: true` keeps this tool entirely in the browser. It has no
+    // endpoint, is refused by hash routing, and never sets lastResult — so
+    // save / share / export / history cannot reach the typed secret.
+    password: {
+      label: "Password", icon: "lock", placeholder: "Type or paste a password to check",
+      local: true, secret: true, field: "password",
+      sub: "Checks a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser — only the first 5 characters of the hash are ever sent.",
+      examples: ["password", "qwerty123", "letmein"],
+    },
   };
 
   let activeTool = "username";
@@ -160,6 +174,7 @@
         <h2>${esc(title)}</h2>
         <span class="hint">${count}</span>
         <div class="results-actions">
+          <button class="btn btn-sm" data-action="share-native">Share</button>
           <button class="btn btn-ghost btn-sm" data-action="save">Save</button>
           <button class="btn btn-ghost btn-sm" data-action="share">Copy link</button>
           <button class="btn btn-ghost btn-sm" data-action="copy">Copy</button>
@@ -276,19 +291,72 @@
     lastExposure = exp;
     html += exposureGauge(exp);
 
+    const dw = data.darkweb || {};
     const breached = s.breached, count = s.breach_count || 0;
     html += `<div class="breach ${breached ? "" : "clean"}">
       <h3>${breached ? "Breach exposure detected" : "No breaches found"}
-        <span class="sev" style="color:${breached ? "var(--danger)" : "var(--ok)"}">${breached ? count + " breaches" : "clean"}</span>
+        <span class="sev" style="color:${breached ? "var(--danger)" : "var(--ok)"}">${breached
+          ? count.toLocaleString() + (count === 1 ? " breach" : " breaches")
+          : "clean"}</span>
       </h3>
+      ${breached ? `<div class="breach-metrics">
+        ${dw.risk_label ? `<div class="bm"><span>Risk</span><strong>${esc(dw.risk_label)}</strong></div>` : ""}
+        ${dw.records_exposed ? `<div class="bm"><span>Records in these dumps</span><strong>${fmtNum(dw.records_exposed)}</strong></div>` : ""}
+        ${s.records_found ? `<div class="bm"><span>Rows naming this address</span><strong>${s.records_found.toLocaleString()}</strong></div>` : ""}
+        ${dw.pastes ? `<div class="bm"><span>Pastes</span><strong>${dw.pastes}</strong></div>` : ""}
+      </div>` : ""}
       ${breaches.fields && breaches.fields.length ? `<div class="chips">${breaches.fields.slice(0, 14).map((f) => {
         const danger = ["password", "hash", "ssn", "phone", "address", "dob", "ip"].includes(String(f).toLowerCase());
         return `<span class="pill ${danger ? "danger" : ""}">${esc(f)}</span>`;
       }).join("")}</div>` : ""}
-      ${breaches.sources && breaches.sources.length ? `<div class="chips">${breaches.sources.slice(0, 12).map((x) =>
-        `<span class="pill">${esc(x.name)}${x.date ? " · " + esc(x.date) : ""}</span>`).join("")}</div>` : ""}
       ${hibp ? `<div class="hint" style="margin-top:10px">HIBP: ${hibp.breached ? esc(hibp.count) + " breaches" : "no breaches"}</div>` : ""}
+      ${dw.error ? `<div class="hint" style="margin-top:10px">${esc(dw.error)}</div>` : ""}
     </div>`;
+
+    if (dw.exposed_data && dw.exposed_data.length) {
+      const top = dw.exposed_data.slice(0, 10), max = top[0].count || 1;
+      html += `<div class="section-label">What leaked about this address</div>
+        <div class="bars">${top.map((x) => `
+          <div class="bar-row">
+            <div class="bar-k" title="${esc(x.category)}">${esc(x.name)}</div>
+            <div class="bar-track"><i style="width:${Math.max(4, (x.count / max) * 100).toFixed(1)}%"></i></div>
+            <div class="bar-v">${x.count}</div>
+          </div>`).join("")}</div>`;
+    }
+
+    if (dw.timeline && dw.timeline.length > 1) {
+      const peak = Math.max(...dw.timeline.map((t) => t.count));
+      html += `<div class="section-label">Exposure over time</div>
+        <div class="timeline" role="img" aria-label="Breaches per year">
+          ${dw.timeline.map((t) => `
+            <div class="tl-col" title="${t.year}: ${t.count} breach${t.count === 1 ? "" : "es"}">
+              <div class="tl-bar" style="height:${Math.max(6, (t.count / peak) * 100).toFixed(1)}%"></div>
+              <div class="tl-y">${String(t.year).slice(2)}</div>
+            </div>`).join("")}
+        </div>`;
+    }
+
+    if (dw.breaches && dw.breaches.length) {
+      html += `<div class="section-label">Breaches naming this address
+        <span class="hint">${dw.breaches.length} of ${count} shown, largest first</span></div>`;
+      html += `<div class="breach-list">${dw.breaches.map((b) => `
+        <details class="breach-card">
+          <summary>
+            <span class="bc-name">${esc(b.name)}</span>
+            ${b.verified ? `<span class="pill ok">verified</span>` : ""}
+            ${b.password_risk === "plaintext" ? `<span class="pill danger">plaintext passwords</span>` : ""}
+            <span class="bc-meta">${esc(b.date)}${b.records ? " · " + fmtNum(b.records) + " records" : ""}</span>
+          </summary>
+          <div class="bc-body">
+            ${b.details ? `<p>${esc(b.details)}</p>` : ""}
+            ${b.exposed && b.exposed.length ? `<div class="chips">${b.exposed.map((f) => {
+              const danger = /password|ssn|bank|card|phone|address|birth|token/i.test(f);
+              return `<span class="pill ${danger ? "danger" : ""}">${esc(f)}</span>`;
+            }).join("")}</div>` : ""}
+            ${b.industry ? `<div class="hint" style="margin-top:8px">Industry: ${esc(b.industry)}</div>` : ""}
+          </div>
+        </details>`).join("")}</div>`;
+    }
 
     html += `<div class="section-label">Address analysis</div>`;
     html += datalist([
@@ -469,7 +537,9 @@
     return `<div class="pivot-row"><span class="pivot-label">${esc(label)}</span>${filled.join("")}</div>`;
   }
   function doPivot(tool, query) {
-    if (!TOOLS[tool] || !query) return;
+    // Secret tools are never a valid pivot target — a pivot carries a value
+    // from a rendered result into the input, which must never be a password.
+    if (!TOOLS[tool] || TOOLS[tool].secret || !query) return;
     switchTool(tool);
     $("#queryInput").value = query;
     if ($("#tool")) window.scrollTo({ top: $("#tool").offsetTop - 70, behavior: "smooth" });
@@ -577,14 +647,137 @@
     });
   }
 
+  // ---------------------------------------------------------------- password exposure
+  // k-anonymity lookup against the Pwned Passwords corpus. The password is
+  // hashed locally and only the first 5 hex characters of the SHA-1 leave the
+  // browser; the response is padded so its size reveals nothing either. The
+  // password reaches neither MyRecon's backend nor Have I Been Pwned.
+  async function pwnedCount(password) {
+    if (!(window.crypto && crypto.subtle)) {
+      throw new Error("This browser can't hash locally, so the check was not run. It needs a secure (https) connection.");
+    }
+    const digest = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(password));
+    const hash = Array.from(new Uint8Array(digest))
+      .map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+    const prefix = hash.slice(0, 5), suffix = hash.slice(5);
+
+    const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
+      headers: { "Add-Padding": "true" },
+    });
+    if (!res.ok) throw new Error(`Breach corpus is unavailable right now (HTTP ${res.status}).`);
+
+    for (const line of (await res.text()).split("\n")) {
+      const [suf, cnt] = line.trim().split(":");
+      if (suf === suffix) return parseInt(cnt, 10) || 0;
+    }
+    return 0; // not in the corpus — padding rows always carry a count of 0
+  }
+
+  // Entropy from the character pool actually used. This measures resistance to
+  // brute force only; a breached password is weak at any entropy, which is why
+  // the corpus result always outranks this number in the verdict.
+  function passwordStrength(pw) {
+    const pool = (/[a-z]/.test(pw) ? 26 : 0) + (/[A-Z]/.test(pw) ? 26 : 0)
+               + (/[0-9]/.test(pw) ? 10 : 0) + (/[^A-Za-z0-9]/.test(pw) ? 33 : 0);
+    const bits = pw.length * Math.log2(pool || 1);
+    // ~100 billion guesses/sec — a mid-range GPU rig against a fast hash.
+    const seconds = Math.pow(2, bits - 1) / 1e11;
+    let label = "Very weak";
+    if (bits >= 100) label = "Excellent";
+    else if (bits >= 75) label = "Strong";
+    else if (bits >= 60) label = "Reasonable";
+    else if (bits >= 40) label = "Weak";
+    return { bits: Math.round(bits), label, crack: humanDuration(seconds), pool };
+  }
+
+  function humanDuration(sec) {
+    if (sec < 1) return "instantly";
+    const units = [["second", 60], ["minute", 60], ["hour", 24], ["day", 365], ["year", Infinity]];
+    let v = sec;
+    for (const [name, step] of units) {
+      if (v < step) {
+        const n = Math.round(v);
+        return `${n.toLocaleString()} ${name}${n === 1 ? "" : "s"}`;
+      }
+      v /= step;
+    }
+    return "centuries";
+  }
+
+  function renderPassword(count, pw) {
+    const s = passwordStrength(pw);
+    const breached = count > 0;
+    const color = breached ? "var(--danger)" : "var(--ok)";
+    const advice = breached
+      ? "Stop using this password everywhere it appears. Attackers load exactly these lists into credential-stuffing tools, so its strength on paper no longer matters."
+      : "This password isn't in the corpus. That means it hasn't turned up in a known dump — it doesn't by itself mean the password is strong.";
+
+    resultsEl().innerHTML = `
+      <div class="results-bar"><h2>Password exposure</h2>
+        <span class="hint">checked privately in your browser</span></div>
+
+      <div class="breach ${breached ? "" : "clean"}">
+        <h3>${breached ? "Found in breach data" : "Not found in breach data"}
+          <span class="sev" style="color:${color}">
+            ${breached ? `seen ${count.toLocaleString()} time${count === 1 ? "" : "s"}` : "no match"}</span>
+        </h3>
+        <p class="exposure-sub" style="margin:10px 0 0">${esc(advice)}</p>
+      </div>
+
+      <div class="section-label">Brute-force resistance</div>
+      ${datalist([
+        ["Strength", `${esc(s.label)} — ${s.bits} bits of entropy`],
+        ["Character pool", `${s.pool} possible characters per position`],
+        ["Length", `${pw.length} characters`],
+        ["Offline crack time", esc(s.crack)],
+      ])}
+      <p class="hint" style="margin-top:12px">
+        Estimated against roughly 100 billion guesses per second — a mid-range GPU rig
+        attacking a fast hash. A site using a slow hash such as bcrypt would take far longer.
+      </p>
+
+      <div class="section-label">What to do</div>
+      <ul class="tips">
+        <li>Use a unique password for every account — reuse is what turns one breach into many.</li>
+        <li>Let a password manager generate and store them; length beats complexity.</li>
+        <li>Turn on two-factor authentication so a leaked password isn't enough on its own.</li>
+        <li><a href="/guides/strong-passwords-guide.html">Read the full guide to strong passwords →</a></li>
+      </ul>`;
+  }
+
   const RENDERERS = { username: renderUsername, email: renderEmail, domain: renderDomain, dns: renderDns, ip: renderIp };
 
   // ---------------------------------------------------------------- run
   async function run() {
     const tool = TOOLS[activeTool];
     const input = $("#queryInput");
-    const value = input.value.trim();
+    // Never trim a secret — leading and trailing spaces are part of a password.
+    const value = tool.secret ? input.value : input.value.trim();
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
+
+    // Local-only tools resolve in the browser. They deliberately clear
+    // lastResult rather than set it, so every result action (save, copy link,
+    // export, print) stays inert and cannot reach the value typed above.
+    if (tool.local) {
+      lastResult = null;
+      lastExposure = null;
+      $("#runBtn").disabled = true;
+      resultsEl().innerHTML = `
+        <div class="loading" role="status" aria-live="polite">
+          <div class="spinner"></div>
+          <h3>Checking privately…</h3>
+          <p>Hashing locally and comparing against the breach corpus.</p>
+          <div class="progress"><i></i></div>
+        </div>`;
+      try {
+        renderPassword(await pwnedCount(value), value);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        $("#runBtn").disabled = false;
+      }
+      return;
+    }
 
     const body = { [tool.field]: value };
     if (tool.deep) body.deep = $("#deepToggle")?.checked || false;
@@ -699,6 +892,7 @@
     $$("[data-action]").forEach((btn) => btn.addEventListener("click", () => {
       const a = btn.dataset.action;
       if (a === "save") saveCurrent(btn);
+      else if (a === "share-native") shareNative();
       else if (a === "share") shareLink();
       else if (a === "copy") copySummary();
       else if (a === "print") printReport();
@@ -720,10 +914,33 @@
     ta.remove();
   }
 
+  function shareUrl() {
+    return `${location.origin}/#tool=${encodeURIComponent(lastResult.tool)}&q=${encodeURIComponent(lastResult.query)}`;
+  }
+
   function shareLink() {
     if (!lastResult) return;
-    const url = `${location.origin}/#tool=${encodeURIComponent(lastResult.tool)}&q=${encodeURIComponent(lastResult.query)}`;
-    copyText(url, "Shareable link copied to clipboard.");
+    copyText(shareUrl(), "Shareable link copied to clipboard.");
+  }
+
+  // Native share sheet (mobile + supported desktop browsers). Falls back to
+  // copying the link when the Web Share API isn't available.
+  async function shareNative() {
+    if (!lastResult) return;
+    // lastExposure is only computed for username/email and is not cleared by the
+    // other renderers, so gate on the tool or a stale score leaks into the text.
+    const scored = lastResult.tool === "username" || lastResult.tool === "email";
+    const scoreBit = scored && lastExposure ? ` — exposure score ${lastExposure.score}/100 (${lastExposure.label})` : "";
+    const payload = {
+      title: "MyRecon — OSINT report",
+      text: `${TOOLS[lastResult.tool].label} report for ${lastResult.query}${scoreBit}`,
+      url: shareUrl(),
+    };
+    if (navigator.share) {
+      try { await navigator.share(payload); return; }
+      catch (e) { if (e && e.name === "AbortError") return; }
+    }
+    copyText(`${payload.text}\n${payload.url}`, "Copied — paste it anywhere to share.");
   }
 
   function copySummary() {
@@ -903,13 +1120,32 @@
   }
 
   // ---------------------------------------------------------------- tabs
+  // Reveal only ever applies to the password tool; every other tool renders a
+  // plain text input and keeps the button hidden.
+  function setReveal(shown) {
+    const q = $("#queryInput"), btn = $("#revealBtn");
+    if (!q || !btn) return;
+    const secret = !!(TOOLS[activeTool] && TOOLS[activeTool].secret);
+    if (secret) q.type = shown ? "text" : "password";
+    q.closest(".input-wrap")?.classList.toggle("revealing", secret && shown);
+    btn.innerHTML = icon(shown ? "eyeOff" : "eye", 17);
+    btn.setAttribute("aria-label", shown ? "Hide password" : "Show password");
+    btn.setAttribute("title", shown ? "Hide password" : "Show password");
+    btn.setAttribute("aria-pressed", String(shown));
+  }
+
   function switchTool(name) {
     if (!TOOLS[name]) return;
     activeTool = name;
     $$(".tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tool === name)));
     const tool = TOOLS[name];
-    $("#queryInput").placeholder = tool.placeholder;
-    $("#queryInput").value = "";
+    const q = $("#queryInput");
+    q.placeholder = tool.placeholder;
+    q.value = "";
+    q.type = tool.secret ? "password" : "text";
+    q.setAttribute("aria-label", tool.secret ? "Password to check" : "Search target");
+    setReveal(false);
+    $("#revealBtn").hidden = !tool.secret;
     $("#panelSub").textContent = tool.sub;
     $("#deepWrap").style.display = tool.deep ? "" : "none";
     const ex = $("#examples");
@@ -983,9 +1219,18 @@
         e.preventDefault();
         doPivot(el.dataset.tool, el.dataset.query);
       });
-      // Deep-link support: #tool=email&q=...
+      $("#revealBtn")?.addEventListener("click", () => {
+        setReveal($("#queryInput").type === "password");
+        $("#queryInput").focus();
+      });
+      // Deep-link support: #tool=email&q=... Secret tools are refused outright
+      // so a crafted link can never pre-fill — or auto-submit — a password.
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
-      if (params.get("tool")) { switchTool(params.get("tool")); if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); } }
+      const linked = params.get("tool");
+      if (linked && TOOLS[linked] && !TOOLS[linked].secret) {
+        switchTool(linked);
+        if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); }
+      }
     }
   });
 })();
