@@ -1,0 +1,89 @@
+<!--
+  MyRecon mark — the magnifier/crosshair from frontend/assets/img/logo.svg,
+  converted to a VectorDrawable. Circles become two-arc paths because
+  VectorDrawable has no <circle>, and the SVG's linearGradient becomes an
+  aapt:attr gradient on each stroke.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+
+    <!-- rounded plate -->
+    <path
+        android:pathData="M11.5,1.5h17a10,10 0,0 1,10 10v17a10,10 0,0 1,-10 10h-17a10,10 0,0 1,-10 -10v-17a10,10 0,0 1,10 -10z"
+        android:fillColor="#0B1220"
+        android:strokeWidth="1.5">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="4" android:startY="4"
+                android:endX="36" android:endY="36"
+                android:type="linear">
+                <item android:offset="0" android:color="#22D3EE" />
+                <item android:offset="1" android:color="#6366F1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- lens -->
+    <path
+        android:pathData="M26.5,18a8.5,8.5 0,1 1,-17 0a8.5,8.5 0,1 1,17 0"
+        android:strokeWidth="2.2">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="9.5" android:startY="9.5"
+                android:endX="26.5" android:endY="26.5"
+                android:type="linear">
+                <item android:offset="0" android:color="#22D3EE" />
+                <item android:offset="1" android:color="#6366F1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- pupil -->
+    <path android:pathData="M21,18a3,3 0,1 1,-6 0a3,3 0,1 1,6 0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="15" android:startY="15"
+                android:endX="21" android:endY="21"
+                android:type="linear">
+                <item android:offset="0" android:color="#22D3EE" />
+                <item android:offset="1" android:color="#6366F1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- crosshair ticks -->
+    <path
+        android:pathData="M18,6.5V9.5M18,26.5V29.5M6.5,18H9.5M26.5,18H29.5"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="6.5" android:startY="6.5"
+                android:endX="29.5" android:endY="29.5"
+                android:type="linear">
+                <item android:offset="0" android:color="#22D3EE" />
+                <item android:offset="1" android:color="#6366F1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- handle -->
+    <path
+        android:pathData="M24.2,24.2L30.5,30.5"
+        android:strokeWidth="2.6"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="24" android:startY="24"
+                android:endX="31" android:endY="31"
+                android:type="linear">
+                <item android:offset="0" android:color="#22D3EE" />
+                <item android:offset="1" android:color="#6366F1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

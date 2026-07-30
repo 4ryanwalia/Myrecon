@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+      The UI is entirely Compose, so this theme only governs the window before
+      the first frame: no action bar, and a background matching the Compose
+      palette so launch does not flash white.
+
+      Parent is a platform theme rather than Theme.Material3.*, because the
+      Material Components view library is not a dependency — Compose brings its
+      own Material 3 implementation.
+    -->
+    <style name="Base.Theme.Myrecon" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/recon_bg</item>
+        <item name="android:statusBarColor">@color/recon_bg</item>
+        <item name="android:navigationBarColor">@color/recon_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Myrecon" parent="Base.Theme.Myrecon" />
+</resources>
