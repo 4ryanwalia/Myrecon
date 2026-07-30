@@ -153,6 +153,7 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
             is LookupState.Failed -> StatePanel("Lookup failed", s.message, tint = t.danger)
 
             is LookupState.Done -> when (val r = s.result) {
+                is SweepResult -> SweepView(r)
                 is UsernameResult -> UsernameView(r)
                 is EmailResult -> EmailView(r)
                 is DomainResult -> DomainView(r)

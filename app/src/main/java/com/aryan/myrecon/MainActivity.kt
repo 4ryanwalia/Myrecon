@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.rememberHaptics
+import com.aryan.myrecon.ui.screens.ImageScreen
 import com.aryan.myrecon.ui.screens.LookupScreen
 import com.aryan.myrecon.ui.screens.PasswordScreen
 import com.aryan.myrecon.ui.screens.ScanScreen
@@ -49,6 +51,7 @@ class MainActivity : ComponentActivity() {
 private enum class Destination(val label: String, val icon: ImageVector) {
     Lookup("Lookup", Icons.Filled.Search),
     Scan("Scan", Icons.Filled.QrCodeScanner),
+    Image("Image", Icons.Filled.Image),
     Password("Password", Icons.Filled.Lock),
 }
 
@@ -108,6 +111,7 @@ private fun MyReconApp() {
             when (current) {
                 Destination.Lookup -> LookupScreen()
                 Destination.Scan -> ScanScreen()
+                Destination.Image -> ImageScreen()
                 Destination.Password -> PasswordScreen()
             }
         }

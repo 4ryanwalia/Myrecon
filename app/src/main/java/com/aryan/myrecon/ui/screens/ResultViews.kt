@@ -45,6 +45,127 @@ private fun Long.compact(): String = when {
 // ── Username ─────────────────────────────────────────────────────
 
 @Composable
+fun SweepView(s: SweepResult) {
+    s.identity?.let { VerifiedIdentity(it) }
+    UsernameView(s.result)
+}
+
+/**
+ * Cryptographically verified identity links.
+ *
+ * Placed above the sweep because it is a different class of evidence. Every
+ * other result on this screen says "an account with this handle exists"; these
+ * say "the same key signed for both accounts", which is proof rather than
+ * correlation — and the aliases are things a handle sweep structurally cannot
+ * find.
+ */
+@Composable
+private fun VerifiedIdentity(id: KeybaseIntel.Identity) {
+    val t = LocalReconTokens.current
+    val uriHandler = LocalUriHandler.current
+    val aliases = id.aliases
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(t.ok.copy(alpha = 0.09f))
+            .border(1.dp, t.ok.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+            .padding(16.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (id.avatar != null) {
+                SubcomposeAsyncImage(
+                    model = id.avatar,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(42.dp).clip(RoundedCornerShape(12.dp)),
+                    loading = { PlatformTile("Keybase", "Messaging", size = 42) },
+                    error = { PlatformTile("Keybase", "Messaging", size = 42) },
+                )
+                Spacer(Modifier.width(12.dp))
+            }
+            Column(Modifier.weight(1f)) {
+                Text(
+                    id.fullName ?: id.username,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = t.ok,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    "${id.proofs.size} cryptographically verified link" +
+                        if (id.proofs.size == 1) "" else "s",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = t.textDim,
+                )
+            }
+        }
+
+        if (!id.bio.isNullOrBlank()) {
+            Spacer(Modifier.height(8.dp))
+            Text(id.bio, style = MaterialTheme.typography.bodySmall, color = t.textDim, maxLines = 3)
+        }
+
+        // The headline: accounts under a DIFFERENT name, proven to be the same
+        // person. A handle sweep can never surface these.
+        if (aliases.isNotEmpty()) {
+            Spacer(Modifier.height(14.dp))
+            Text(
+                "ALSO KNOWN AS",
+                style = MaterialTheme.typography.labelSmall,
+                color = t.ok,
+            )
+            Spacer(Modifier.height(6.dp))
+            aliases.forEach { p ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
+                        .let { m -> p.url?.let { u -> m.clickable { uriHandler.openUri(u) } } ?: m },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        p.handle,
+                        style = MonoStyle.copy(fontSize = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp)),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        "on ${p.platform}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = t.textMute,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Icon(
+                        Icons.AutoMirrored.Filled.OpenInNew,
+                        contentDescription = null,
+                        tint = t.textMute,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "These use a different handle to the one searched, so a platform sweep could " +
+                    "not have found them. Each is a signed statement published on that platform " +
+                    "confirming the same owner.",
+                style = MaterialTheme.typography.bodySmall,
+                color = t.textMute,
+            )
+        }
+
+        val confirmed = id.proofs.filterNot { it.isAlias }
+        if (confirmed.isNotEmpty()) {
+            Spacer(Modifier.height(12.dp))
+            Text("VERIFIED SAME HANDLE", style = MaterialTheme.typography.labelSmall, color = t.textMute)
+            Spacer(Modifier.height(6.dp))
+            ChipRow(confirmed.map { it.platform }, strongPredicate = { true })
+        }
+    }
+    Spacer(Modifier.height(6.dp))
+}
+
+@Composable
 fun UsernameView(r: UsernameResult) {
     val t = LocalReconTokens.current
     val uriHandler = LocalUriHandler.current

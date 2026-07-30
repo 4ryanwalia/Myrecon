@@ -57,6 +57,18 @@ enum class Tool(
     ),
 }
 
+/**
+ * A username sweep plus its verified-identity lookup.
+ *
+ * Kept separate from [UsernameResult], which is a wire model shared with the
+ * backend — Keybase runs entirely client-side and has no business in a schema
+ * the server also parses.
+ */
+data class SweepResult(
+    val result: UsernameResult,
+    val identity: KeybaseIntel.Identity?,
+)
+
 /** What the screen is currently showing. */
 sealed interface LookupState {
     data object Idle : LookupState
@@ -195,6 +207,10 @@ class LookupViewModel : ViewModel() {
                 }
 
                 is UsernameSweep.Event.Finished -> {
+                    // Verified identity links, fetched once the sweep settles.
+                    // Additive: a Keybase failure must not lose the sweep.
+                    val identity = runCatching { KeybaseIntel.lookup(q) }.getOrNull()
+
                     val profiles = ev.hits.map { h ->
                         Profile(
                             url = h.url,
@@ -207,13 +223,16 @@ class LookupViewModel : ViewModel() {
                         )
                     }
                     _state.value = LookupState.Done(
-                        UsernameResult(
-                            query = UsernameQuery(q),
-                            summary = UsernameSummary(
-                                total = profiles.size,
-                                profiles = profiles.size,
+                        SweepResult(
+                            result = UsernameResult(
+                                query = UsernameQuery(q),
+                                summary = UsernameSummary(
+                                    total = profiles.size,
+                                    profiles = profiles.size,
+                                ),
+                                results = UsernameBuckets(profiles = profiles),
                             ),
-                            results = UsernameBuckets(profiles = profiles),
+                            identity = identity?.takeIf { it.found },
                         )
                     )
                 }
