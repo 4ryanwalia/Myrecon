@@ -1,0 +1,139 @@
+/* ==========================================================================
+   Deep Search — correlation console
+   Extends the MyRecon design system; defines no colours of its own beyond
+   two aliases, so both themes follow the base tokens automatically.
+   ========================================================================== */
+
+.mono { font-family: var(--mono); }
+
+/* Confidence colours.
+   The base system retunes layout tokens for light mode but leaves the semantic
+   ones (--ok/--warn/--danger) at their dark-theme values. Those are tuned for a
+   near-black ground: --warn #fbbf24 on white is roughly 1.8:1, which fails
+   badly for the confidence scores, since here the colour *is* the reading.
+   Aliased and darkened for light mode. Scoped to this page deliberately — the
+   same gap affects the breach banner site-wide and that is a separate call. */
+:root { --ds-ok: var(--ok); --ds-warn: var(--warn); --ds-mute: var(--text-mute); }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --ds-ok: #047857; --ds-warn: #a3480a; }
+}
+:root[data-theme="light"] { --ds-ok: #047857; --ds-warn: #a3480a; }
+:root[data-theme="dark"]  { --ds-ok: var(--ok); --ds-warn: var(--warn); }
+
+.ds-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding-top: 26px; }
+.ds-head h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; }
+.ds-kicker {
+  font-family: var(--mono); font-size: .68rem; text-transform: uppercase;
+  letter-spacing: .14em; color: var(--text-mute);
+}
+.ds-stand { color: var(--text-dim); font-size: .93rem; max-width: 66ch; margin: 8px 0 20px; }
+
+.ds-query { margin-bottom: 14px; }
+.ds-query .opt-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.ds-query .opt-row .hint:last-child { margin-left: auto; font-family: var(--mono); font-size: .72rem; }
+
+/* ---- live telemetry ---- */
+.ds-console {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 14px;
+}
+.ds-chead {
+  display: flex; align-items: center; gap: 12px; padding: 13px 18px;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+}
+.ds-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--text-mute); flex: none; }
+.ds-console.running .ds-pulse { background: var(--accent); animation: dsbeat 1.1s ease-in-out infinite; }
+.ds-console.done .ds-pulse { background: var(--ok); }
+.ds-console.failed .ds-pulse { background: var(--danger); }
+@keyframes dsbeat { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.72); } }
+.ds-status { font-weight: 600; font-size: .84rem; }
+.ds-count {
+  margin-left: auto; font-family: var(--mono); font-size: .78rem;
+  color: var(--text-mute); font-variant-numeric: tabular-nums;
+}
+.ds-bar { height: 2px; background: var(--surface-2); }
+.ds-bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s linear; }
+
+.ds-feed { max-height: 230px; overflow-y: auto; padding: 6px 0; }
+.ds-line {
+  display: grid; grid-template-columns: 74px 1fr auto; align-items: center; gap: 12px;
+  padding: 6px 18px; font-family: var(--mono); font-size: .78rem;
+}
+.ds-line + .ds-line { border-top: 1px solid color-mix(in srgb, var(--border) 45%, transparent); }
+.ds-state { font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; }
+.ds-state.on { color: var(--accent); }
+.ds-state.ok { color: var(--ok); }
+.ds-phase { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-pct { color: var(--text-mute); font-variant-numeric: tabular-nums; font-size: .72rem; }
+
+/* ---- results ---- */
+.ds-split { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; align-items: start; }
+@media (max-width: 900px) { .ds-split { grid-template-columns: 1fr; } }
+
+.ds-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px;
+}
+.ds-ptitle { font-size: .95rem; font-weight: 700; }
+.ds-psub { font-size: .78rem; color: var(--text-mute); margin: 2px 0 14px; }
+
+.ds-card {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center;
+  padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--bg-soft); border-left: 3px solid var(--stripe, var(--text-mute));
+}
+.ds-card + .ds-card { margin-top: 8px; }
+.ds-av {
+  width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center;
+  background: var(--surface-2); font: 700 .8rem var(--mono); color: var(--text-dim);
+  overflow: hidden; flex: none;
+}
+.ds-av img { width: 100%; height: 100%; object-fit: cover; }
+.ds-who { min-width: 0; }
+.ds-plat { font-size: .87rem; font-weight: 650; }
+.ds-url { font-family: var(--mono); font-size: .74rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-url a { color: var(--text-dim); }
+.ds-url a:hover { color: var(--accent); }
+.ds-conf { text-align: right; flex: none; }
+.ds-cval {
+  font-family: var(--mono); font-size: .95rem; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: var(--stripe, var(--text));
+}
+.ds-cband { font-size: .58rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-mute); }
+
+.ds-why { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
+.ds-chip {
+  font-family: var(--mono); font-size: .64rem; padding: 3px 7px; border-radius: 5px;
+  border: 1px solid var(--border); color: var(--text-mute); background: var(--surface);
+}
+.ds-chip.good { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+
+/* cluster block */
+.ds-cluster + .ds-cluster { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.ds-chead2 { display: flex; align-items: baseline; gap: 10px; margin-bottom: 9px; flex-wrap: wrap; }
+.ds-cname { font-family: var(--mono); font-size: .84rem; font-weight: 600; }
+.ds-cmeta { font-size: .72rem; color: var(--text-mute); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+/* graph */
+.ds-graph { width: 100%; height: auto; display: block; border-radius: var(--radius-sm); background: var(--bg-soft); }
+.ds-graph line { stroke: var(--border-strong); stroke-width: 1.1; }
+.ds-graph circle { stroke: var(--bg-soft); stroke-width: 2; cursor: pointer; }
+.ds-graph circle:hover { stroke: var(--accent); }
+.ds-graph text { font-family: var(--mono); font-size: 7px; fill: var(--text-mute); text-anchor: middle; }
+
+/* assessment */
+.ds-verdict {
+  margin-top: 14px; padding: 16px 18px; border-radius: var(--radius);
+  border: 1px solid var(--vb, var(--border)); background: color-mix(in srgb, var(--vb, var(--surface)) 9%, var(--surface));
+}
+.ds-verdict h3 { font-size: .9rem; margin-bottom: 7px; }
+.ds-verdict p { font-size: .86rem; color: var(--text-dim); max-width: 76ch; }
+.ds-notes { margin: 10px 0 0; padding-left: 18px; }
+.ds-notes li { font-size: .78rem; color: var(--text-mute); margin-top: 4px; }
+
+.ds-foot { margin: 22px 0 60px; font-size: .76rem; color: var(--text-mute); max-width: 76ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-console .ds-pulse { animation: none; }
+  .ds-bar i { transition: none; }
+}

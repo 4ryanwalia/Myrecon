@@ -186,6 +186,62 @@ def _register_routes(app: Flask) -> None:
         resp.headers["X-Accel-Buffering"] = "no"  # disable proxy buffering
         return resp
 
+    @app.route("/api/investigate/stream", methods=["POST", "OPTIONS"])
+    def api_investigate_stream():
+        """Deep search: a handle correlated into an investigation graph.
+
+        Streamed as NDJSON so the client sees per-platform progress rather than
+        a stalled request. Same event shape as /api/username/stream, so the
+        frontend reuses one renderer.
+
+        Handles only. Search by personal name was removed — deriving handles
+        from a name returned accounts belonging to whoever registered them,
+        which is usually not the person searched.
+        """
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from services.investigation import investigate
+
+        body = _json_body()
+        # validation.username rejects whitespace, so a pasted name is turned
+        # away here with a clear message instead of being quietly guessed at.
+        query = validation.username(body.get("query", ""))
+        deep = validation.boolean(body.get("deep"))
+
+        def generate():
+            # investigate() reports progress through a callback, but a
+            # generator cannot yield from inside one. Running it on a worker
+            # thread and draining a queue is what makes the progress actually
+            # live — collecting events into a list and yielding afterwards
+            # would deliver the whole scan in one burst at the end, which is
+            # indistinguishable from no streaming at all.
+            import queue
+            import threading
+
+            q: "queue.Queue[dict]" = queue.Queue()
+            DONE = {"__done__": True}
+
+            def work():
+                try:
+                    result = investigate(query, deep=deep, emit=q.put)
+                    q.put({"type": "complete", "data": result})
+                except Exception as exc:  # noqa: BLE001 - surfaced to client
+                    q.put({"type": "error", "error": str(exc)})
+                finally:
+                    q.put(DONE)
+
+            threading.Thread(target=work, daemon=True).start()
+            while True:
+                ev = q.get()
+                if ev is DONE:
+                    return
+                yield json.dumps(ev) + "\n"
+
+        resp = Response(stream_with_context(generate()), mimetype="application/x-ndjson")
+        resp.headers["Cache-Control"] = "no-cache"
+        resp.headers["X-Accel-Buffering"] = "no"
+        return resp
+
     @app.route("/api/fullname", methods=["POST", "OPTIONS"])
     def api_fullname():
         if request.method == "OPTIONS":
