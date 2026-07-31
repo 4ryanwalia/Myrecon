@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -46,8 +47,44 @@ private fun Long.compact(): String = when {
 
 @Composable
 fun SweepView(s: SweepResult) {
+    if (s.restored) RestoredBanner(s.result.query.username)
     s.identity?.let { VerifiedIdentity(it) }
     UsernameView(s.result)
+}
+
+/**
+ * Marks a result as reloaded from disk rather than freshly gathered.
+ *
+ * Without this the app would present week-old data as though it had just been
+ * checked, which is the kind of quiet dishonesty that makes a tool untrustworthy
+ * the first time someone notices.
+ */
+@Composable
+private fun RestoredBanner(handle: String) {
+    val t = LocalReconTokens.current
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(t.surface2)
+            .border(1.dp, t.border, RoundedCornerShape(10.dp))
+            .padding(horizontal = 12.dp, vertical = 9.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            Icons.Filled.History,
+            contentDescription = null,
+            tint = t.textMute,
+            modifier = Modifier.size(15.dp),
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            "Your last scan for $handle · run it again for current results",
+            style = MaterialTheme.typography.bodySmall,
+            color = t.textMute,
+        )
+    }
+    Spacer(Modifier.height(12.dp))
 }
 
 /**
@@ -450,6 +487,11 @@ fun EmailView(r: EmailResult) {
         SectionLabel("Linked accounts")
         ChipRow(s.linkedAccounts, strongPredicate = { true })
     }
+
+    // Offered after a result, when the value of being told about the next one
+    // is obvious, rather than as an upfront prompt.
+    SectionLabel("Stay informed")
+    BreachWatchCard()
 }
 
 @Composable

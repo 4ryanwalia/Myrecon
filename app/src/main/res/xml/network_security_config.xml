@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Transport policy.
+
+  cleartextTrafficPermitted=false makes plain HTTP a hard failure rather than a
+  silent downgrade. Every endpoint the app uses is HTTPS, so this costs nothing
+  and turns a future mistake into a crash at development time instead of a
+  quiet leak in production.
+
+  Release trusts only the system CA store. User-installed certificates are
+  excluded, which blocks the standard interception setup (Burp, mitmproxy, a
+  rogue enterprise root) from reading traffic on a device the attacker controls.
+  debug-overrides applies solely when android:debuggable is true, so proxying a
+  debug build still works for legitimate testing.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

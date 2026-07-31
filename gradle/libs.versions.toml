@@ -12,6 +12,10 @@ coil = "2.7.0"
 exifinterface = "1.4.1"
 camerax = "1.4.2"
 mlkitBarcode = "17.3.0"
+work = "2.10.0"
+datastore = "1.1.7"
+playServicesAds = "23.6.0"
+userMessaging = "3.1.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
@@ -44,6 +48,16 @@ camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "
 # Bundled rather than Play-Services-delivered: a QR scanner that has to download
 # a model on first use will be abandoned before it ever works.
 mlkit-barcode = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcode" }
+
+# Background breach checks. Room would mean a KSP compiler plugin for what is
+# really three small lists, so persistence is a JSON-backed DataStore instead.
+work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
+# Google's consent SDK. Not optional: serving personalised ads to users in the
+# EEA or UK without a compliant consent flow breaches AdMob policy.
+user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "userMessaging" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

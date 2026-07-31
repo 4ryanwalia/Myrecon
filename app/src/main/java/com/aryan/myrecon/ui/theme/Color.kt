@@ -8,17 +8,24 @@ import androidx.compose.ui.graphics.Color
  */
 
 // ── Dark (default) ───────────────────────────────────────────────
-val DarkBg = Color(0xFF0A0F1A)
-val DarkBgSoft = Color(0xFF0E1524)
-val DarkSurface = Color(0xFF111A2B)
-val DarkSurface2 = Color(0xFF16223A)
-val DarkBorder = Color(0xFF1F2B42)
-val DarkBorderStrong = Color(0xFF2C3C5A)
-val DarkText = Color(0xFFE8EEF7)
-val DarkTextDim = Color(0xFF9AABC4)
-val DarkTextMute = Color(0xFF647089)
-val DarkAccent = Color(0xFF3B82F6)
-val DarkAccent2 = Color(0xFF2563EB)
+//
+// Pulled well below the web palette's navy toward near-black. A #0A0F1A ground
+// reads as "dark theme"; #04070B reads as an instrument, and it is what makes
+// a cyan accent look emitted rather than printed.
+val DarkBg = Color(0xFF04070B)
+val DarkBgSoft = Color(0xFF080C13)
+val DarkSurface = Color(0xFF0B1119)
+val DarkSurface2 = Color(0xFF121A25)
+val DarkBorder = Color(0xFF1B2634)
+val DarkBorderStrong = Color(0xFF2C3D50)
+val DarkText = Color(0xFFDDE7F0)
+val DarkTextDim = Color(0xFF8497A9)
+val DarkTextMute = Color(0xFF4E5F72)
+
+// Cyan, not blue. The logo already runs cyan-to-indigo, and cyan on near-black
+// is the colour of a readout — blue on navy is the colour of a web page.
+val DarkAccent = Color(0xFF22D3EE)
+val DarkAccent2 = Color(0xFF06B6D4)
 
 // ── Light ────────────────────────────────────────────────────────
 val LightBg = Color(0xFFF5F7FB)

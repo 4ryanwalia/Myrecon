@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.aryan.myrecon.ui.LocalHaptics
+import com.aryan.myrecon.ui.components.AdBanner
 import com.aryan.myrecon.ui.rememberHaptics
 import com.aryan.myrecon.ui.screens.ImageScreen
 import com.aryan.myrecon.ui.screens.LookupScreen
@@ -88,15 +89,25 @@ private fun MyReconApp() {
             )
         },
         bottomBar = {
-            NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                val haptics = LocalHaptics.current
-                Destination.entries.forEach { d ->
-                    NavigationBarItem(
-                        selected = current == d,
-                        onClick = { if (current != d) haptics.tap(); current = d },
-                        icon = { Icon(d.icon, contentDescription = null) },
-                        label = { Text(d.label) },
-                    )
+            Column {
+                // Anchored above the nav and outside the scroll container, so
+                // it never slides under a finger mid-scroll — the most common
+                // source of accidental clicks, which AdMob counts as invalid
+                // traffic. Hidden on the password screen: an ad next to a field
+                // where someone types a secret is a trust problem, whatever the
+                // policy says.
+                if (current != Destination.Password) AdBanner()
+
+                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                    val haptics = LocalHaptics.current
+                    Destination.entries.forEach { d ->
+                        NavigationBarItem(
+                            selected = current == d,
+                            onClick = { if (current != d) haptics.tap(); current = d },
+                            icon = { Icon(d.icon, contentDescription = null) },
+                            label = { Text(d.label) },
+                        )
+                    }
                 }
             }
         },

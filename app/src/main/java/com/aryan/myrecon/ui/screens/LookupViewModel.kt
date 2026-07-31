@@ -7,8 +7,9 @@ import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Router
+import android.app.Application
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.aryan.myrecon.data.*
 import kotlinx.coroutines.Job
@@ -67,6 +68,9 @@ enum class Tool(
 data class SweepResult(
     val result: UsernameResult,
     val identity: KeybaseIntel.Identity?,
+    /** True when reloaded from disk rather than just scanned, so the UI can
+     *  say so instead of implying the data is live. */
+    val restored: Boolean = false,
 )
 
 /** What the screen is currently showing. */
@@ -89,7 +93,47 @@ sealed interface LookupState {
     data class Failed(val message: String) : LookupState
 }
 
-class LookupViewModel : ViewModel() {
+class LookupViewModel(app: Application) : AndroidViewModel(app) {
+
+    private val store = ReconStore(app)
+
+    init {
+        // Restore the last sweep so a result is not lost by switching apps.
+        // Holding it only in the ViewModel survived a configuration change but
+        // not process death, and Android reclaims a backgrounded app freely —
+        // which is exactly when someone has tapped through to a browser.
+        viewModelScope.launch {
+            val saved = store.lastScan() ?: return@launch
+            if (_state.value !is LookupState.Idle) return@launch
+            _query.value = saved.handle
+            _state.value = LookupState.Done(
+                SweepResult(
+                    result = UsernameResult(
+                        query = UsernameQuery(saved.handle),
+                        summary = UsernameSummary(
+                            total = saved.profiles.size,
+                            profiles = saved.profiles.size,
+                        ),
+                        results = UsernameBuckets(
+                            profiles = saved.profiles.map {
+                                Profile(
+                                    url = it.url,
+                                    platform = it.platform,
+                                    category = it.category,
+                                    confidence = it.confidence,
+                                    exists = true,
+                                    profilePicUrl = it.avatar,
+                                    displayName = it.displayName,
+                                )
+                            }
+                        ),
+                    ),
+                    identity = null,
+                    restored = true,
+                )
+            )
+        }
+    }
 
     private val _tool = MutableStateFlow(Tool.Username)
     val tool: StateFlow<Tool> = _tool.asStateFlow()
@@ -222,6 +266,27 @@ class LookupViewModel : ViewModel() {
                             displayName = h.displayName,
                         )
                     }
+                    // Persist before publishing, so the result is already
+                    // recoverable by the time the user can act on it.
+                    runCatching {
+                        store.saveScan(
+                            SavedScan(
+                                handle = q,
+                                at = System.currentTimeMillis(),
+                                profiles = ev.hits.map {
+                                    SavedProfile(
+                                        platform = it.platform.name,
+                                        category = it.platform.category,
+                                        url = it.url,
+                                        confidence = it.confidence,
+                                        avatar = it.avatar,
+                                        displayName = it.displayName,
+                                    )
+                                },
+                            )
+                        )
+                    }
+
                     _state.value = LookupState.Done(
                         SweepResult(
                             result = UsernameResult(

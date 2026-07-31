@@ -1,5 +1,7 @@
 package com.aryan.myrecon.ui.screens
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -17,8 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -74,6 +78,16 @@ fun PasswordScreen(vm: PasswordViewModel = viewModel()) {
     var password by remember { mutableStateOf("") }
     var revealed by remember { mutableStateOf(false) }
 
+    // Block screenshots and the recents-screen thumbnail while this tab is
+    // open. Without it a revealed password is captured into the task snapshot
+    // the moment the user switches apps, and that snapshot outlives the screen.
+    val view = LocalView.current
+    DisposableEffect(Unit) {
+        val window = (view.context as? Activity)?.window
+        window?.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        onDispose { window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -106,6 +120,10 @@ fun PasswordScreen(vm: PasswordViewModel = viewModel()) {
                 capitalization = KeyboardCapitalization.None,
                 autoCorrectEnabled = false,
                 imeAction = ImeAction.Go,
+                // Tells the keyboard this is a password field, which stops it
+                // adding the text to its personal dictionary or predictions.
+                // Otherwise the secret can end up suggested in other apps.
+                keyboardType = KeyboardType.Password,
             ),
             keyboardActions = KeyboardActions(onGo = { keyboard?.hide(); vm.check(password) }),
             trailingIcon = {

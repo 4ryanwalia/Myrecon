@@ -28,14 +28,38 @@ android {
         buildConfigField("String", "API_BASE", "\"https://myrecon.onrender.com\"")
     }
 
+    // AdMob identifiers.
+    //
+    // These are publisher IDs, not credentials — every published APK carries
+    // them in plain sight and the SDK requires it. The reason they are split by
+    // build type is policy, not secrecy: impressions or clicks a developer
+    // generates against a live ad unit count as invalid traffic, and repeated
+    // invalid traffic gets an AdMob account suspended. Debug therefore uses
+    // Google's public test units, which serve real-looking ads that bill
+    // nobody.
+    val realAppId = "ca-app-pub-6109270472398539~8843971332"
+    val realBanner = "ca-app-pub-6109270472398539/3567327992"
+    val testAppId = "ca-app-pub-3940256099942544~3347511713"
+    val testBanner = "ca-app-pub-3940256099942544/6300978111"
+
     buildTypes {
         debug {
-            // 10.0.2.2 is the host machine as seen from the Android emulator.
-            // Point at the local Flask server during development.
             buildConfigField("String", "API_BASE", "\"https://myrecon.onrender.com\"")
+            buildConfigField("String", "AD_BANNER_UNIT", "\"$testBanner\"")
+            manifestPlaceholders["admobAppId"] = testAppId
         }
         release {
-            isMinifyEnabled = false
+            buildConfigField("String", "AD_BANNER_UNIT", "\"$realBanner\"")
+            manifestPlaceholders["admobAppId"] = realAppId
+
+            // R8 shrinks and obfuscates. Beyond the size win, it strips the
+            // readable class and method names that make an APK trivial to
+            // reverse, which is the first thing any assessment looks at.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            // Never ship a debuggable release: it exposes the app's data
+            // directory over adb and permits a debugger to attach.
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -96,6 +120,14 @@ dependencies {
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
     implementation(libs.mlkit.barcode)
+
+    // Periodic breach checks and local persistence.
+    implementation(libs.work.runtime)
+    implementation(libs.datastore.preferences)
+
+    // AdMob, plus Google's consent SDK for EEA/UK users.
+    implementation(libs.play.services.ads)
+    implementation(libs.user.messaging.platform)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

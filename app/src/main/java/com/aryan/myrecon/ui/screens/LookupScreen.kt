@@ -2,6 +2,7 @@ package com.aryan.myrecon.ui.screens
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +19,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -29,6 +33,7 @@ import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.*
 import com.aryan.myrecon.ui.pressScale
 import com.aryan.myrecon.ui.theme.LocalReconTokens
+import com.aryan.myrecon.ui.theme.Mono
 import com.aryan.myrecon.ui.theme.MonoStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,14 +62,21 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
         }
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 40.dp),
-    ) {
+    val scroll = rememberScrollState()
+
+    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        // Instrument ground: ruled grid, one pool of light, a slow sweep. The
+        // sweep stops once results are on screen — ambient motion under data
+        // someone is reading is a distraction, not atmosphere.
+        GridBackdrop(sweep = state !is LookupState.Done)
+
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scroll)
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 40.dp),
+        ) {
         Spacer(Modifier.height(12.dp))
 
         // ── tool selector ────────────────────────────────────────
@@ -84,8 +96,26 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
         OutlinedTextField(
             value = query,
             onValueChange = vm::setQuery,
+            // A prompt marker, so the field reads as a command line rather than
+            // a web form input.
+            leadingIcon = {
+                Text(
+                    "›",
+                    fontFamily = Mono,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            },
             placeholder = { Text(tool.placeholder, style = MonoStyle, color = t.textMute) },
             singleLine = true,
+            shape = RoundedCornerShape(3.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = t.border,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.primary,
+            ),
             textStyle = MonoStyle.copy(color = MaterialTheme.colorScheme.onSurface),
             keyboardOptions = KeyboardOptions(
                 // Autocapitalising a handle or a domain produces a value that
@@ -95,7 +125,6 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 imeAction = ImeAction.Search,
             ),
             keyboardActions = KeyboardActions(onSearch = { keyboard?.hide(); vm.run() }),
-            shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -163,6 +192,7 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 else -> StatePanel("Unsupported result", "Nothing to display.")
             }
         }
+        }
     }
 }
 
@@ -194,42 +224,54 @@ private fun ToolGrid(selected: Tool, onSelect: (Tool) -> Unit) {
                         label = "toolEdge",
                     )
                     val source = remember { MutableInteractionSource() }
+                    val accent = MaterialTheme.colorScheme.primary
+                    val lift by animateFloatAsState(
+                        if (isSel) 1f else 0f,
+                        spring(dampingRatio = 0.7f, stiffness = Spring.StiffnessLow),
+                        label = "toolLift",
+                    )
+                    // Selected cells wear brackets and emit; unselected are a
+                    // plain hairline. Registration marks rather than cards.
+                    val frame = lerp(t.border, accent, lift)
                     Column(
                         Modifier
                             .weight(1f)
-                            .heightIn(min = 74.dp)
+                            .heightIn(min = 80.dp)
                             .pressScale(source)
-                            .clip(RoundedCornerShape(13.dp))
-                            .background(bg)
-                            .border(if (isSel) 1.5.dp else 1.dp, edge, RoundedCornerShape(13.dp))
+                            .then(if (isSel) Modifier.glow(accent, 20.dp, 0.20f * lift) else Modifier)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(if (isSel) t.surface2 else MaterialTheme.colorScheme.surface)
+                            .bracketFrame(frame, armLength = 11.dp, stroke = if (isSel) 1.6.dp else 1.dp)
                             .clickable(interactionSource = source, indication = null) {
                                 haptics.tap()
                                 onSelect(item)
                             }
-                            .padding(vertical = 11.dp, horizontal = 8.dp),
+                            .padding(vertical = 13.dp, horizontal = 6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Icon(
                             item.icon,
                             contentDescription = null,
-                            tint = if (isSel) MaterialTheme.colorScheme.primary else t.textMute,
+                            tint = lerp(t.textMute, accent, lift),
                             modifier = Modifier.size(20.dp),
                         )
-                        Spacer(Modifier.height(6.dp))
+                        Spacer(Modifier.height(7.dp))
                         Text(
-                            item.label,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = if (isSel) MaterialTheme.colorScheme.onSurface else t.textDim,
+                            item.label.uppercase(),
+                            fontFamily = Mono,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = lerp(t.textDim, MaterialTheme.colorScheme.onSurface, lift),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(6.dp))
+                        val dot = if (item.runs == Runs.OnDevice) t.ok else t.info
                         Box(
                             Modifier
-                                .size(5.dp)
-                                .clip(RoundedCornerShape(99.dp))
-                                .background(if (item.runs == Runs.OnDevice) t.ok else t.info),
+                                .size(width = 14.dp, height = 2.dp)
+                                .then(if (isSel) Modifier.glow(dot, 5.dp, 0.55f) else Modifier)
+                                .background(dot.copy(alpha = if (isSel) 1f else 0.55f)),
                         )
                     }
                 }
@@ -288,50 +330,50 @@ private fun ScanConsole(s: LookupState.Running) {
     val t = LocalReconTokens.current
     val pct by animateFloatAsState(s.percent / 100f, label = "scanProgress")
 
+    val accent = MaterialTheme.colorScheme.primary
     Column(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(3.dp))
             .background(t.bgSoft)
-            .border(1.dp, t.border, RoundedCornerShape(14.dp)),
+            .bracketFrame(accent.copy(alpha = 0.7f)),
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             PulsingDot()
             Spacer(Modifier.width(10.dp))
             Text(
-                s.phase,
-                style = MaterialTheme.typography.titleMedium,
+                s.phase.uppercase(),
+                fontFamily = Mono,
+                style = MaterialTheme.typography.labelSmall,
+                color = accent,
                 modifier = Modifier.weight(1f),
                 maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
-            Text("${s.percent}%", style = MonoStyle, color = t.textMute)
+            Text("${s.percent}%".padStart(4), style = MonoStyle, color = t.textDim)
         }
 
         LinearProgressIndicator(
             progress = { pct },
             modifier = Modifier.fillMaxWidth().height(2.dp),
-            color = MaterialTheme.colorScheme.primary,
+            color = accent,
             trackColor = t.surface2,
             drawStopIndicator = {},
         )
 
-        Column(Modifier.padding(vertical = 4.dp)) {
-            s.log.take(12).forEach { line ->
-                Text(
-                    line,
-                    style = MonoStyle,
-                    color = t.textDim,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 14.dp, vertical = 4.dp),
+        // Reads as a log: newest at the top, older lines fading out, so the
+        // eye stays on the current line without the list feeling truncated.
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+            s.log.take(10).forEachIndexed { i, line ->
+                val fade = 1f - (i * 0.085f)
+                TerminalLine(
+                    text = line,
+                    prefix = if (i == 0) "›" else " ",
+                    colour = t.textDim.copy(alpha = fade.coerceAtLeast(0.25f)),
                 )
             }
         }
