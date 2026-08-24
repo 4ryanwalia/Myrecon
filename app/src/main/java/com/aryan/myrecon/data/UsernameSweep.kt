@@ -178,7 +178,10 @@ object UsernameSweep {
             ?.takeIf { it.isNotBlank() }
 
     private fun avatarFromJson(body: String): String? =
-        listOf("profile_pic_url_hd", "profile_pic_url", "avatar_url", "icon_img", "image_url")
+        listOf(
+            "profile_pic_url_hd", "profile_pic_url", "avatar_url", "icon_img", "image_url",
+            "image_xlarge_url", "image_large_url",
+        )
             .firstNotNullOfOrNull { cleanAvatar(jsonField(body, it)) }
 
     private const val CONCURRENCY = 16
@@ -193,6 +196,21 @@ object UsernameSweep {
      * matters on mobile data.
      */
     private const val BODY_PEEK_BYTES = 48_000L
+    // Pinterest's account object often follows its generic shell. Read a
+    // larger bounded slice for this one platform so a real profile does not
+    // get hidden as a low-confidence page merely because its title is generic.
+    private const val PINTEREST_PEEK_BYTES = 192_000L
+
+    private fun pinterestProfileIn(body: String, handle: String): Boolean {
+        val escaped = Regex.escape(handle.lowercase())
+        val hasHandle = Regex("""[\"']username[\"']\s*:\s*[\"']$escaped[\"']""")
+            .containsMatchIn(body)
+        val hasProfileField = listOf(
+            "\"full_name\"", "\"image_xlarge_url\"", "\"image_large_url\"",
+            "\"follower_count\"", "\"following_count\"",
+        ).any { it in body }
+        return hasHandle && hasProfileField
+    }
 
     /**
      * Check [username] across every catalogued platform.
@@ -307,7 +325,8 @@ object UsernameSweep {
                 // Bounded peek — whole pages for 117 platforms would burn the
                 // user's data allowance for no extra signal.
                 val peek = runCatching {
-                    resp.peekBody(BODY_PEEK_BYTES).string().lowercase()
+                    val limit = if (p.name == "Pinterest") PINTEREST_PEEK_BYTES else BODY_PEEK_BYTES
+                    resp.peekBody(limit).string().lowercase()
                 }.getOrDefault("")
 
                 val title = TITLE_RE.find(peek)?.groupValues?.get(1)?.trim().orEmpty()
@@ -340,18 +359,19 @@ object UsernameSweep {
                 // omit the handle from their HTML even for accounts that exist,
                 // and the rule hid them completely.
                 val mentionsHandle = handle.lowercase() in peek
+                val pinterestProfile = p.name == "Pinterest" && pinterestProfileIn(peek, handle)
                 val conf = when {
                     // Serves a page for any handle, so nothing here is evidence.
                     p.name in PlatformCatalogue.ECHOES_HANDLE -> "unverified"
                     mentionsHandle && p.name in PlatformCatalogue.CORROBORATING -> "high"
-                    mentionsHandle -> "medium"
+                    mentionsHandle || pinterestProfile -> "medium"
                     // Reachable, no error, but unconfirmed — reported as a
                     // possible hit rather than dropped or overclaimed.
                     else -> "low"
                 }
                 Hit(
                     p, exists = conf != "unverified", url = url, status = code, confidence = conf,
-                    avatar = avatarFrom(peek),
+                    avatar = avatarFrom(peek) ?: avatarFromJson(peek),
                     displayName = OG_TITLE_RE.find(peek)?.groupValues?.getOrNull(1)?.trim()
                         ?.takeIf { it.isNotBlank() && !it.equals(p.name, ignoreCase = true) },
                 )
