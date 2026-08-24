@@ -14,7 +14,7 @@ import re
 import time
 import html as _html
 import requests
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlsplit, urlunsplit
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ──────────────────────────────────────────────────────────────
@@ -144,7 +144,6 @@ PLATFORMS: list[tuple[str, str, int]] = [
 
     # ── Paste / Dump ──────────────────────────────────────────
     ("Pastebin",          "https://pastebin.com/u/{username}",                   200),
-    ("GitHub Gist",       "https://gist.github.com/{username}",                  200),
 
     # ── Other Platforms ───────────────────────────────────────
     ("Linktree",          "https://linktr.ee/{username}",                        200),
@@ -177,7 +176,9 @@ PLATFORMS: list[tuple[str, str, int]] = [
 TOTAL_PLATFORMS = len(PLATFORMS)
 
 # Platforms that need a longer timeout (SPAs / slow APIs).
-SLOW_PLATFORMS = {"Instagram", "Facebook", "TikTok", "LinkedIn", "Threads"}
+SLOW_PLATFORMS = {
+    "Instagram", "Facebook", "TikTok", "LinkedIn", "Threads", "Pinterest",
+}
 
 
 # ══════════════════════════════════════════════════════════════
@@ -255,11 +256,33 @@ def _redirected_to_generic(resp, username: str) -> bool:
     return False
 
 
+def _mentions_handle(text: str, uname: str) -> bool:
+    """Handle present as a token, not as an accident inside a longer word."""
+    if not text or not uname:
+        return False
+    return re.search(rf"(?<![0-9a-z]){re.escape(uname)}(?![0-9a-z])", text) is not None
+
+
 def confidence_score(resp, username: str, meta: dict) -> int:
     """
     Score how strongly the response corroborates a *real* profile for
     `username`. A hard negative (soft 404 / bounced to a landing page)
-    returns a strongly negative score. Positive signals accumulate.
+    returns a strongly negative score.
+
+    The scoring is gated, not purely additive, because additive scoring cannot
+    tell an account from an empty one. Sites that answer 200 for every handle
+    serve the *same* page either way: same meta description, same default share
+    image, same canonical echoing back whatever path was requested. Award
+    points for those and a made-up handle scores exactly what a real one does —
+    which is how a result ends up reported as found and then 404s when clicked.
+
+    So a match needs at least one signal that could only come from a page
+    rendered for this specific account: the handle in the page title, or
+    follower/following counts. Everything else is corroboration and only
+    counts once one of those has fired. Note what this gives up — a real
+    profile on a site that renders entirely client-side scores 0, because
+    nothing in the response distinguishes it from a nonexistent one. Silence
+    is the honest answer there.
 
     Callers treat >= 3 as high confidence, 2 as medium, and < 2 as
     "not a confirmed match" (dropped).
@@ -275,12 +298,35 @@ def confidence_score(resp, username: str, meta: dict) -> int:
     og_desc = meta.get("og:description", "") or meta.get("description", "")
     body_lower = resp.text[:4000].lower()
 
+    # ── Account-specific evidence ─────────────────────────────
     score = 0
-    if uname in title:                                   # handle echoed in title
+    if _mentions_handle(title, uname):                   # page is titled for them
         score += 2
-    if uname in urls:                                    # handle in canonical/og:url
-        score += 2
-    if uname in resp.url.lower():                        # served the profile path
+    if ("follower" in body_lower and "following" in body_lower) or "takipçi" in body_lower:
+        score += 2                                       # rendered social stats
+    if not score:
+        # Pinterest commonly returns a generic document title to non-browser
+        # clients, even for a public profile. Its embedded state still names
+        # the profile and carries account-only fields. Treat that combination
+        # as equivalent to a profile title, but never accept a path/canonical
+        # alone: Pinterest echoes requested paths for missing accounts too.
+        if "pinterest.com" in urlparse(resp.url).netloc.lower():
+            body = resp.text[:160000].lower()
+            escaped = re.escape(uname)
+            has_username_field = re.search(
+                rf'["\']username["\']\s*:\s*["\']{escaped}["\']', body
+            ) is not None
+            has_profile_field = any(field in body for field in (
+                '"full_name"', '"image_large_url"', '"image_xlarge_url"',
+                '"follower_count"', '"following_count"',
+            ))
+            if has_username_field and has_profile_field:
+                score = 2
+        if not score:
+            return 0
+
+    # ── Corroboration — meaningless on its own ────────────────
+    if _mentions_handle(urls, uname):                    # canonical names the handle
         score += 1
     if "profile" in og_type or "user" in og_type:        # og:type = profile
         score += 1
@@ -288,9 +334,6 @@ def confidence_score(resp, username: str, meta: dict) -> int:
         score += 1                                       # a real (non-default) avatar
     if len(og_desc) > 40:                                # substantive description
         score += 1
-    # Social stat hints (followers/following, subscribers…)
-    if ("follower" in body_lower and "following" in body_lower) or "takipçi" in body_lower:
-        score += 2
     return score
 
 
@@ -298,23 +341,136 @@ def _confidence_label(score: int) -> str:
     return "high" if score >= 3 else "medium"
 
 
+def rejection_reason(status_code: int, score=None) -> str:
+    """
+    Why a platform was checked and deliberately not reported as a match.
+
+    Every competing tool shows these as green ticks; showing them as rejections
+    with a stated reason is the difference between a result the user can trust
+    and a wall of links that 404. The wording is aimed at the person reading
+    the report, not at a log.
+    """
+    if status_code == -1:
+        return "timed out"
+    if status_code == -2:
+        return "could not connect"
+    if status_code == -3:
+        return "request failed"
+    if status_code == 404:
+        return "no such account (404)"
+    if status_code and status_code >= 400:
+        return f"refused the request (HTTP {status_code})"
+    if score is None:
+        return f"unexpected response (HTTP {status_code})"
+    if score <= -10:
+        return "the page itself says this account does not exist"
+    if score <= 0:
+        return "answered 200, but the page has no account-specific content"
+    return "only weak signals — not enough to confirm"
+
+
+def extract_metadata(result: dict, meta: dict) -> None:
+    """Populate bio / avatar / display name from parsed meta tags."""
+    desc = meta.get("og:description") or meta.get("description")
+    if desc and len(desc) > 10:
+        result["bio"] = desc[:200]
+
+    img = meta.get("og:image", "")
+    if img.startswith("http") and not _is_generic_image(img):
+        result["profile_pic_url"] = img
+
+    title = (meta.get("og:title") or meta.get("__title__") or "").strip()
+    if title and title.lower() not in ("instagram", "facebook", "tiktok", "twitter", "x"):
+        result["display_name"] = title[:100]
+
+
+DESKTOP_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/124.0.0.0 Safari/537.36"
+)
+MOBILE_UA = (
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) "
+    "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+    "Version/16.6 Mobile/15E148 Safari/604.1"
+)
+
+_VERIFY_HEADERS = {
+    "User-Agent": DESKTOP_UA,
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+
+# Hosts that serve a scripted shell to anything that isn't a real browser —
+# reddit.com returns the same contentless 200 for a live account and a made-up
+# one, so every profile there scored as unverifiable. The old.* mirror still
+# serves plain HTML with a real title and a real 404. We fetch the mirror and
+# keep reporting the canonical URL, so the check has something to score
+# without changing the link the user is given.
+_FETCH_MIRRORS = {
+    "reddit.com": "old.reddit.com",
+    "www.reddit.com": "old.reddit.com",
+}
+
+
+def _fetchable(url: str) -> str:
+    parts = urlsplit(url)
+    mirror = _FETCH_MIRRORS.get(parts.netloc.lower())
+    return urlunsplit(parts._replace(netloc=mirror)) if mirror else url
+
+
+def verify_profile_url(url: str, username: str, timeout: int = 8) -> dict:
+    """
+    Fetch an arbitrary profile URL and score it exactly as a platform check is.
+
+    Search engines return pages they indexed at some point in the past, and
+    profiles get deleted, renamed and suspended. Anything that reaches the user
+    as "account found" goes through here first, so a link that 404s or bounces
+    to a login wall is demoted before it is shown rather than after it is
+    clicked.
+
+    Returns ``{"ok": bool, "status_code": int, "confidence": str|None,
+    "match_score": int, "meta": dict}``. ``ok`` is False for any transport
+    failure too: unreachable is not the same as confirmed.
+    """
+    out = {"ok": False, "status_code": 0, "confidence": None,
+           "match_score": 0, "meta": {}}
+    headers = _VERIFY_HEADERS
+    if "instagram.com" in urlparse(url).netloc.lower():
+        # Same reason the platform sweep does it: the desktop page is an empty
+        # shell, the mobile one carries the OG tags the score is built from.
+        headers = {**_VERIFY_HEADERS, "User-Agent": MOBILE_UA}
+    try:
+        resp = requests.get(_fetchable(url), headers=headers, timeout=timeout,
+                            allow_redirects=True)
+    except requests.exceptions.Timeout:
+        out["status_code"] = -1
+        return out
+    except requests.exceptions.ConnectionError:
+        out["status_code"] = -2
+        return out
+    except Exception:
+        out["status_code"] = -3
+        return out
+
+    out["status_code"] = resp.status_code
+    if resp.status_code != 200:
+        return out
+
+    meta = parse_meta(resp.text[:20000])
+    score = confidence_score(resp, username, meta)
+    out["meta"] = meta
+    out["match_score"] = score
+    if score >= 2:
+        out["ok"] = True
+        out["confidence"] = _confidence_label(score)
+    return out
+
+
 class UsernameChecker:
     """Concurrent, verified username enumeration across the platform list."""
 
-    HEADERS = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/124.0.0.0 Safari/537.36"
-        ),
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    }
-    MOBILE_UA = (
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) "
-        "AppleWebKit/605.1.15 (KHTML, like Gecko) "
-        "Version/16.6 Mobile/15E148 Safari/604.1"
-    )
+    HEADERS = dict(_VERIFY_HEADERS)
     TIMEOUT = 8
     SLOW_TIMEOUT = 12
 
@@ -322,6 +478,11 @@ class UsernameChecker:
         self.max_workers = max_workers
         self.delay = delay
         self.results: list[dict] = []
+        # Every platform touched, matches and rejections alike. `results` keeps
+        # only the matches for callers that just want those; the full list is
+        # what lets the report say "117 checked, 5 confirmed, and here is why
+        # the other 112 were not".
+        self.all_results: list[dict] = []
         self._stop_flag = False
 
     def stop(self):
@@ -343,20 +504,23 @@ class UsernameChecker:
         headers = self.HEADERS
         # Instagram serves richer OG tags to a mobile UA.
         if name == "Instagram":
-            headers = {**self.HEADERS, "User-Agent": self.MOBILE_UA}
+            headers = {**self.HEADERS, "User-Agent": MOBILE_UA}
 
         try:
-            resp = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
+            resp = requests.get(_fetchable(url), headers=headers,
+                                timeout=timeout, allow_redirects=True)
             result["status_code"] = resp.status_code
 
             if resp.status_code == expected:
                 meta = parse_meta(resp.text[:20000])
                 score = confidence_score(resp, username, meta)
+                # Recorded either way: the score is what the rejection panel
+                # explains itself with.
+                result["match_score"] = score
                 if score >= 2:
                     result["exists"] = True
                     result["confidence"] = _confidence_label(score)
-                    result["match_score"] = score
-                    self._extract_metadata(result, meta)
+                    extract_metadata(result, meta)
         except requests.exceptions.Timeout:
             result["status_code"] = -1
         except requests.exceptions.ConnectionError:
@@ -364,22 +528,11 @@ class UsernameChecker:
         except Exception:
             result["status_code"] = -3
 
+        if not result["exists"]:
+            result["reason"] = rejection_reason(
+                result["status_code"], result.get("match_score")
+            )
         return result
-
-    @staticmethod
-    def _extract_metadata(result: dict, meta: dict) -> None:
-        """Populate bio / avatar / display name from parsed meta tags."""
-        desc = meta.get("og:description") or meta.get("description")
-        if desc and len(desc) > 10:
-            result["bio"] = desc[:200]
-
-        img = meta.get("og:image", "")
-        if img.startswith("http") and not _is_generic_image(img):
-            result["profile_pic_url"] = img
-
-        title = (meta.get("og:title") or meta.get("__title__") or "").strip()
-        if title and title.lower() not in ("instagram", "facebook", "tiktok", "twitter", "x"):
-            result["display_name"] = title[:100]
 
     def scan(self, username: str, callback=None, deep: bool = False) -> list[dict]:
         """
@@ -419,5 +572,6 @@ class UsernameChecker:
                 if self.delay:
                     time.sleep(self.delay)
 
+        self.all_results = results
         self.results = [r for r in results if r["exists"]]
         return self.results
