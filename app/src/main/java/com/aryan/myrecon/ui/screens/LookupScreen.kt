@@ -209,7 +209,7 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 is DomainResult -> DomainView(r)
                 is DnsResult -> DnsView(r)
                 is IpResult -> IpView(r)
-                is InvestigationResult -> InvestigationView(r)
+                is DeepSearch.Result -> DeepSearchView(r)
                 else -> StatePanel("Unsupported result", "Nothing to display.")
             }
         }

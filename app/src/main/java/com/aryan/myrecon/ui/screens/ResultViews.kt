@@ -127,7 +127,7 @@ private fun RestoredBanner(handle: String) {
  * find.
  */
 @Composable
-private fun VerifiedIdentity(id: KeybaseIntel.Identity) {
+fun VerifiedIdentity(id: KeybaseIntel.Identity) {
     val t = LocalReconTokens.current
     val uriHandler = LocalUriHandler.current
     val aliases = id.aliases
@@ -748,83 +748,4 @@ fun IpView(r: IpResult) {
             "Reverse DNS" to (r.reverseDns ?: "—"),
         )
     )
-}
-
-// ── Deep search ──────────────────────────────────────────────────
-
-@Composable
-fun InvestigationView(r: InvestigationResult) {
-    val t = LocalReconTokens.current
-    val a = r.assessment
-    val tint = bandColor(a.confidence.band)
-
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(tint.copy(alpha = 0.09f))
-            .border(1.dp, tint.copy(alpha = 0.38f), RoundedCornerShape(14.dp))
-            .padding(16.dp),
-    ) {
-        Text(
-            "Assessment — ${a.confidence.band} confidence (${a.confidence.score}/100)",
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Spacer(Modifier.height(7.dp))
-        Text(a.text, style = MaterialTheme.typography.bodySmall, color = t.textDim)
-        if (a.generatedBy.isNotBlank()) {
-            Spacer(Modifier.height(8.dp))
-            Text("Summary ${a.generatedBy}.", style = MaterialTheme.typography.bodySmall, color = t.textMute)
-        }
-    }
-
-    val profiles = r.graph.nodes.filter { it.type == "social_profile" }
-    if (profiles.isNotEmpty()) {
-        SectionLabel("Accounts · ${profiles.size}")
-        profiles.forEach { n ->
-            val stripe = bandColor(n.confidence.band)
-            ReconCard(stripe = stripe) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            n.attrs.platform ?: n.label,
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            n.attrs.url ?: n.value,
-                            style = MonoStyle, color = t.textDim,
-                            maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text("${n.confidence.score}", style = MonoScore, color = stripe)
-                        Text(n.confidence.band.uppercase(), style = MaterialTheme.typography.labelSmall, color = t.textMute)
-                    }
-                }
-                if (n.confidence.factors.isNotEmpty()) {
-                    Spacer(Modifier.height(8.dp))
-                    ChipRow(
-                        n.confidence.factors.take(3).map { it.name.replace('_', ' ') },
-                        strongPredicate = { it.contains("verified") || it.contains("multiple") },
-                    )
-                }
-            }
-            Spacer(Modifier.height(8.dp))
-        }
-    }
-
-    if (r.graph.clusters.isNotEmpty()) {
-        SectionLabel("Clusters")
-        r.graph.clusters.forEach { c ->
-            ReconCard(stripe = bandColor(c.confidence.band)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(c.label, style = MonoStyle, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text("${c.confidence.score}/100", style = MonoStyle, color = bandColor(c.confidence.band))
-                }
-                Text("${c.size} entities · ${c.types.joinToString(", ")}", style = MaterialTheme.typography.bodySmall, color = t.textMute)
-            }
-            Spacer(Modifier.height(8.dp))
-        }
-    }
 }

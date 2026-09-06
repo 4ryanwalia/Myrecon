@@ -16,7 +16,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 /** Where a lookup actually runs. Surfaced in the UI, because "nothing left
@@ -53,8 +52,11 @@ enum class Tool(
         Runs.OnDevice, Icons.Filled.Router,
     ),
     Deep(
-        "Deep Search", "Correlate a handle into a scored relationship graph.", "e.g. torvalds",
-        Runs.Server, Icons.Filled.Hub, streams = true,
+        "Deep Search",
+        "A name finds the person — LinkedIn, employer, press. A handle gets dorked " +
+            "across profiles, comments and documents.",
+        "e.g. Satya Nadella  ·  or  torvalds",
+        Runs.OnDevice, Icons.Filled.Hub, streams = true,
     ),
 }
 
@@ -320,40 +322,44 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private suspend fun runStreaming(t: Tool, q: String) {
-        if (t == Tool.Username) return runSweep(q)
-
-        // Deep Search is the deep mode — there is no shallow variant of it.
-        val flow = ReconApi.investigateStream(q, deep = true)
-
+    /**
+     * Deep search, on the device.
+     *
+     * It used to POST to `/api/investigate/stream` and render the correlation
+     * graph the server built. Moving it here is the same trade the platform
+     * sweep made and pays off harder: search engines rate-limit datacentre
+     * addresses far more aggressively than mobile ones, so the query budget
+     * survives longer from a handset than it ever did from one Render worker
+     * shared by every user — and the free tier's cold start no longer sits in
+     * front of the first result.
+     */
+    private suspend fun runDeep(q: String) {
         val log = ArrayDeque<String>()
-        flow.catch { e -> _state.value = LookupState.Failed(e.message ?: "The scan failed.") }
-            .collect { ev ->
-                when (ev.type) {
-                    "progress" -> {
-                        ev.detail?.takeIf { it.isNotBlank() }?.let {
-                            log.addFirst(it)
-                            while (log.size > 40) log.removeLast()
-                        }
-                        _state.value = LookupState.Running(
-                            phase = ev.phase ?: "Working",
-                            detail = ev.detail.orEmpty(),
-                            percent = (ev.percent ?: 0.0).toInt().coerceIn(0, 100),
-                            log = log.toList(),
-                        )
+        DeepSearch.run(q).collect { ev ->
+            when (ev) {
+                is DeepSearch.Event.Progress -> {
+                    ev.detail.takeIf { it.isNotBlank() }?.let {
+                        log.addFirst(it)
+                        while (log.size > 40) log.removeLast()
                     }
-                    "error" -> _state.value = LookupState.Failed(ev.error ?: "The scan failed.")
-                    "complete" -> {
-                        val el = ev.data ?: return@collect
-                        val parsed: Any = if (t == Tool.Deep) {
-                            ReconApi.json.decodeFromJsonElement(InvestigationResult.serializer(), el)
-                        } else {
-                            ReconApi.json.decodeFromJsonElement(UsernameResult.serializer(), el)
-                        }
-                        _state.value = LookupState.Done(parsed)
-                    }
+                    _state.value = LookupState.Running(
+                        phase = ev.phase,
+                        detail = ev.detail,
+                        percent = ev.percent,
+                        log = log.toList(),
+                        found = ev.found,
+                    )
                 }
+
+                is DeepSearch.Event.Finished -> _state.value = LookupState.Done(ev.result)
             }
+        }
+    }
+
+    private suspend fun runStreaming(t: Tool, q: String) = when (t) {
+        Tool.Username -> runSweep(q)
+        Tool.Deep -> runDeep(q)
+        else -> error("not a streaming tool: $t")
     }
 
     /**

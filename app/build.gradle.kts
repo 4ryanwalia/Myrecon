@@ -127,6 +127,17 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    testOptions {
+        unitTests {
+            // The unit tests run the real lookups against live sources, and
+            // OkHttp's Android platform detection calls android.util.Log the
+            // moment a client is constructed. Without this the stub throws
+            // "not mocked" and every networked test fails before it reaches
+            // the network.
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
