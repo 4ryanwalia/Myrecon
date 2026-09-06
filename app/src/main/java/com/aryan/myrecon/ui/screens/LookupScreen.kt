@@ -28,6 +28,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.platform.LocalContext
+import com.aryan.myrecon.ads.RewardedAdManager
 import com.aryan.myrecon.data.*
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.*
@@ -41,11 +43,20 @@ import com.aryan.myrecon.ui.theme.MonoStyle
 fun LookupScreen(vm: LookupViewModel = viewModel()) {
     val tool by vm.tool.collectAsState()
     val query by vm.query.collectAsState()
-    val deep by vm.deep.collectAsState()
     val state by vm.state.collectAsState()
     val t = LocalReconTokens.current
     val keyboard = LocalSoftwareKeyboardController.current
     val haptics = LocalHaptics.current
+    val context = LocalContext.current
+    // One manager per screen; it caches a loaded ad between offers.
+    val rewarded = remember(context) { RewardedAdManager(context.applicationContext) }
+
+    // Reset for every new result, so each scan is its own unlock rather than
+    // one ad buying every future search.
+    var resultsUnlocked by remember { mutableStateOf(false) }
+    LaunchedEffect(state) {
+        if (state is LookupState.Running) resultsUnlocked = false
+    }
 
     // The scan's physical soundtrack: a tick as each account lands, one firmer
     // thump when the sweep resolves. Keyed on the values themselves so a
@@ -131,11 +142,6 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
         Spacer(Modifier.height(10.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (tool.streams) {
-                Switch(checked = deep, onCheckedChange = { vm.toggleDeep() })
-                Spacer(Modifier.width(8.dp))
-                Text("Deep sweep", style = MaterialTheme.typography.bodySmall, color = t.textDim)
-            }
             Spacer(Modifier.weight(1f))
             val running = state is LookupState.Running
             Button(
@@ -182,7 +188,22 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
             is LookupState.Failed -> StatePanel("Lookup failed", s.message, tint = t.danger)
 
             is LookupState.Done -> when (val r = s.result) {
-                is SweepResult -> SweepView(r)
+                is SweepResult -> SweepView(
+                    s = r,
+                    unlocked = resultsUnlocked,
+                    offer = { hidden ->
+                        UnlockResultsOffer(
+                            manager = rewarded,
+                            hiddenCount = hidden,
+                            onGranted = { resultsUnlocked = true },
+                            // Declining leaves the preview as-is. The offer
+                            // stays available rather than vanishing, so it is a
+                            // deferral rather than a one-shot the user can lose
+                            // by mistapping.
+                            onDeclined = { },
+                        )
+                    },
+                )
                 is UsernameResult -> UsernameView(r)
                 is EmailResult -> EmailView(r)
                 is DomainResult -> DomainView(r)

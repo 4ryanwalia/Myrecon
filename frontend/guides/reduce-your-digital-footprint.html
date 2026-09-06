@@ -30,9 +30,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary">
-        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/deep-search.html">Deep Search</a><a href="/#features">Features</a><a href="/about.html">About</a>
-      </nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -72,6 +70,32 @@
 
       <h2>Step 6: Reduce data-broker exposure</h2>
       <p>Data brokers compile profiles from public records and sell them. Many operate opt-out processes that let you request removal of your listing. It is tedious and needs repeating periodically, but removing yourself from the largest brokers meaningfully cuts how easily your address and phone number can be found.</p>
+
+      <h2>Step 7: Find the leaks you didn't create</h2>
+      <p>The accounts you can remember are the easy half. The harder half is data that leaked out of something you did without realising it was public.</p>
+
+      <h3>Your commit email address</h3>
+      <p>If you have ever pushed code to a public repository, your email address is almost certainly published. Git stores <code>user.email</code> inside every commit object, and GitHub serves that through a public API — anyone can list your repositories and read the author address off your commits in about ten seconds. Most developers have no idea.</p>
+      <p>Check yours by opening any of your public commits and viewing the patch: append <code>.patch</code> to a commit URL and the <code>From:</code> line contains the address. To stop it, enable the noreply address in GitHub's email settings and turn on the option to block command-line pushes that expose your real address. That fixes future commits; historical ones keep the old address unless you rewrite history, which is usually not worth it — but knowing which address is exposed tells you which one to prioritise in your breach checks.</p>
+
+      <h3>Metadata inside photos you have posted</h3>
+      <p>Photos carry EXIF data: camera model, exact timestamp, editing software, and on phones with location services enabled, GPS coordinates accurate to a few metres. Large platforms strip this on upload. Forums, personal sites, marketplace listings, file-sharing links and messaging apps that send "as a file" frequently do not.</p>
+      <p>The practical risk is not a single photo — it is a pattern. A handful of images with coordinates reveals a home, a workplace, and the route between them. Before posting anywhere outside a major platform, strip metadata: on Windows, right-click the file, Properties, Details, "Remove Properties and Personal Information"; on macOS, export a copy rather than sharing the original.</p>
+
+      <h3>Old versions of pages you have already changed</h3>
+      <p>Deleting a bio does not delete what it said. The Internet Archive holds snapshots of pages going back years, and a profile you cleaned up in 2023 may still be readable as it was in 2019 — including the employer, the city and the linked accounts you have since removed.</p>
+      <p>Search the archive for your own profile URLs and personal site. You cannot rely on removal, but you can at least know what is there, and it will tell you which details are already circulating and therefore not worth protecting any more.</p>
+
+      <h2>Step 8: Understand what cannot be removed</h2>
+      <p>Any service promising to erase you from the internet is selling a story. Being clear about the boundary saves you time and money.</p>
+      <p><strong>Usually removable:</strong> data-broker listings that offer an opt-out, accounts you control, search-engine results for pages that no longer exist, and content you posted yourself on platforms you still have access to.</p>
+      <p><strong>Usually not removable:</strong> court records and other public records, legitimate news coverage, other people's posts that mention you, archived copies, and anything already scraped into a dataset that has been copied onward.</p>
+      <p>For the second category the realistic goal is displacement rather than deletion — publishing enough accurate material under your own name that it ranks above the rest. Slow, but it is the only lever that actually exists.</p>
+
+      <h2>Step 9: Check your exposure the way an outsider would</h2>
+      <p>Everything above assumes you know what is out there. Auditing yourself has a blind spot: you search for what you remember. An outsider searches for what exists.</p>
+      <p>Do the audit properly by starting from the pieces, not the person. Take each handle you have ever used, each email address including the ones you abandoned, and each phone number, and search on those rather than on your name. Abandoned identifiers are where forgotten accounts live, and forgotten accounts are the ones with weak passwords, no two-factor authentication, and a decade-old recovery address that may itself be compromised.</p>
+      <p>Be careful how you interpret a "not found", though. Many platforms answer identically whether or not an account exists, so a clean result may mean the check could not be performed rather than that nothing is there — we go into the measurements behind that in <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that don't exist</a>. When a tool cannot tell, the honest reading is "unknown", and it is worth checking those by hand.</p>
 
       <h2>Make it a habit, not a one-off</h2>
       <p>A footprint grows quietly, so schedule a check-up two or three times a year: re-run a search on yourself, review new breach exposure, close anything you have stopped using, and confirm your key accounts still have 2FA. Twenty minutes on a recurring reminder keeps you far ahead of where most people ever get.</p>

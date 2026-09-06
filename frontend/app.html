@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRecon for Android — On-device OSINT</title>
+  <meta name="description" content="The MyRecon Android app checks a username across 280+ platforms from your own phone, watches for new data breaches, and reads image metadata — without an account.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://myrecon.xyz/app.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MyRecon for Android — On-device OSINT">
+  <meta property="og:description" content="280+ platforms checked from your own phone. Breach alerts, QR link safety, image forensics. No account.">
+  <meta property="og:url" content="https://myrecon.xyz/app.html">
+  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=8">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main class="container" id="main" style="max-width:880px;padding-top:44px;padding-bottom:56px">
+    <h1 style="font-size:clamp(1.9rem,4vw,2.7rem);font-weight:800;letter-spacing:-0.02em">MyRecon for Android</h1>
+    <p style="color:var(--text-dim);font-size:1.06rem;margin-top:14px;line-height:1.65">
+      The same investigation, run from your own phone instead of our server. No account, no signup,
+      and for most of what it does, nothing about you is transmitted at all.
+    </p>
+
+    <div style="margin:26px 0 8px">
+      <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint"
+         target="_blank" rel="noopener">Get it on Google Play</a>
+      <a class="btn btn-ghost" href="/#tool" style="margin-left:8px">Use the web version</a>
+    </div>
+
+    <h2 style="margin:34px 0 10px">Why on-device matters</h2>
+    <p style="color:var(--text-dim)">
+      This is not a wrapper around the website. The username sweep runs from the handset, and that
+      produces better results for a reason worth understanding: platforms rate-limit and block
+      datacentre address ranges far more aggressively than residential and mobile ones. The same
+      check that a cloud server gets refused for, a phone is usually answered for. Running it on
+      your device is both faster and more accurate.
+    </p>
+
+    <h2 style="margin:34px 0 10px">What it does</h2>
+
+    <h3 style="margin:20px 0 6px;font-size:1.05rem">Username sweep — 280+ platforms</h3>
+    <p style="color:var(--text-dim)">
+      Social, developer, gaming, marketplace, forum and portfolio sites, checked concurrently.
+      Each result is verified rather than assumed: a platform returning HTTP 200 is not treated as
+      proof an account exists, because a great many sites answer 200 for every handle ever typed.
+      Findings are labelled by confidence, and anything the app could not confirm says so instead of
+      being presented as a match.
+    </p>
+
+    <h3 style="margin:20px 0 6px;font-size:1.05rem">Breach alerts, without handing over your address</h3>
+    <p style="color:var(--text-dim)">
+      The app downloads the public breach catalogue and compares it on your device. There is no
+      account and no address is sent anywhere — which is the opposite of every hosted breach-alert
+      service, all of which require your email up front. If you want the stronger per-address check,
+      that is a separate switch with its own disclosure, so the default promise stays true.
+    </p>
+
+    <h3 style="margin:20px 0 6px;font-size:1.05rem">QR link safety</h3>
+    <p style="color:var(--text-dim)">
+      Scan a QR code and see where it actually goes before you open it — the full redirect chain,
+      the final destination, and whether anything about it looks like a lookalike domain.
+    </p>
+
+    <h3 style="margin:20px 0 6px;font-size:1.05rem">Image forensics</h3>
+    <p style="color:var(--text-dim)">
+      Read the EXIF metadata still attached to a photo: camera, timestamps, editing software, and
+      GPS coordinates when the sender forgot to strip them. Done entirely on-device — the image is
+      never uploaded.
+    </p>
+
+    <h3 style="margin:20px 0 6px;font-size:1.05rem">Identity correlation</h3>
+    <p style="color:var(--text-dim)">
+      Accounts that appear to belong to the same person are grouped, with a confidence score and the
+      signals behind it. A matching handle alone is never treated as proof of identity.
+    </p>
+
+    <h2 id="availability" style="margin:34px 0 10px">Availability</h2>
+    <p style="color:var(--text-dim)">
+      MyRecon is on <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint"
+      target="_blank" rel="noopener" style="color:var(--accent)">Google Play</a> and requires
+      Android 11 or newer. The web version at <a href="/#tool" style="color:var(--accent)">myrecon.xyz</a>
+      works on any device and needs no installation.
+    </p>
+
+    <div style="margin-top:36px;padding:22px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)">
+      <h2 style="margin:0 0 8px;font-size:1.15rem">Want the cleanup done for you?</h2>
+      <p style="color:var(--text-dim);margin-bottom:16px">
+        The app shows you what is out there. If you would rather someone found all of it and handled
+        the removals, that is what our footprint service does.
+      </p>
+      <a class="btn btn-primary" href="/services.html">See the service</a>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon · myrecon.xyz</span><span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a></span></div></div></footer>
+  <script src="/assets/js/env.js?v=8"></script>
+  <script src="/assets/js/config.js?v=8"></script>
+  <script src="/assets/js/app.js?v=8"></script>
+</body>
+</html>

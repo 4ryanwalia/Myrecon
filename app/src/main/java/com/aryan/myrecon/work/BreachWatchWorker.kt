@@ -12,22 +12,35 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.aryan.myrecon.MainActivity
 import com.aryan.myrecon.R
+import com.aryan.myrecon.data.AccountBreachCheck
 import com.aryan.myrecon.data.BreachFeed
 import com.aryan.myrecon.data.ReconStore
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 
 /**
- * Periodic check for newly published breaches.
+ * Periodic check for newly published breaches. Two halves, with deliberately
+ * different privacy costs.
  *
- * Runs on-device against Have I Been Pwned's keyless catalogue. Nothing about
- * the user is transmitted — the app downloads the public list and compares it
- * locally, so there is no account, no signup, and no address handed to anyone.
- * Every competing breach-alert service requires exactly the opposite.
+ * **The catalogue check** runs on-device against Have I Been Pwned's keyless
+ * list. Nothing about the user is transmitted — the public list is downloaded
+ * and compared locally, so there is no account, no signup, and no address
+ * handed to anyone. Every competing breach-alert service requires exactly the
+ * opposite. This half is always on once alerts are enabled.
  *
- * The notification only ever fires for a breach the app has not reported
- * before. On first run the whole catalogue is recorded silently as a baseline;
- * without that, a fresh install would announce a thousand historical breaches
- * and be muted within the minute.
+ * **The per-address check** answers the question the catalogue cannot: not
+ * "did a breach happen" but "were you in it". That requires sending the
+ * address to a lookup service, so it is gated behind its own consent flag
+ * (`ReconStore.emailMonitoring`) that the catalogue switch does not grant. If
+ * that flag is off, or no address is watched, nothing here transmits anything
+ * and the behaviour is exactly as it was before the feature existed.
+ *
+ * Both halves only ever notify about something not reported before. First run
+ * records the current state silently as a baseline; without that, a fresh
+ * install would announce a thousand historical breaches — and a newly watched
+ * address would open with a push about a 2018 dump — and be muted within the
+ * minute.
  */
 class BreachWatchWorker(
     appContext: Context,
@@ -56,7 +69,107 @@ class BreachWatchWorker(
         store.recordCheck()
 
         if (fresh.isNotEmpty()) notify(fresh)
+        checkWatchedAddresses(store)
         return Result.success()
+    }
+
+    /**
+     * The personal half: has anything new turned up for an address the user
+     * asked us to watch.
+     *
+     * Runs only with explicit consent, because unlike the catalogue check this
+     * one transmits the address. Silence here is never assumed to be good news
+     * — a lookup that fails returns null and the address's history is left
+     * untouched, so the finding still surfaces on the next run instead of being
+     * marked as already seen.
+     */
+    private suspend fun checkWatchedAddresses(store: ReconStore) {
+        if (!store.isEmailMonitoringOn()) return
+        val watched = store.watchedEmails.first()
+        if (watched.isEmpty()) return
+
+        val findings = mutableListOf<Pair<String, List<AccountBreachCheck.Source>>>()
+        var severe = false
+
+        // Capped and paced: the public endpoint is rate-limited, and a burst
+        // gets the whole run throttled rather than just the last address.
+        for (email in watched.sorted().take(MAX_ADDRESSES_PER_RUN)) {
+            val report = AccountBreachCheck.check(email) ?: continue
+
+            if (!store.hasBaselineFor(email)) {
+                // First look: record what is already known without alerting.
+                store.markSourcesSeen(email, report.sources.map { it.name })
+                continue
+            }
+
+            val seen = store.seenSourcesFor(email)
+            val new = report.sources.filter { it.name !in seen }
+            store.markSourcesSeen(email, report.sources.map { it.name })
+            if (new.isNotEmpty()) {
+                findings += email to new
+                if (report.isSevere) severe = true
+            }
+            delay(REQUEST_SPACING_MS)
+        }
+
+        if (findings.isNotEmpty()) notifyAccounts(findings, severe)
+    }
+
+    /**
+     * Alert for the user's own address, kept separate from the catalogue
+     * notification in both id and channel priority. "A breach happened" and
+     * "you are in it" are different messages and must not overwrite each other.
+     */
+    private fun notifyAccounts(
+        findings: List<Pair<String, List<AccountBreachCheck.Source>>>,
+        severe: Boolean,
+    ) {
+        val context = applicationContext
+        if (!canNotify(context)) return
+        ensureChannel(context)
+
+        val addresses = findings.size
+        val title = if (addresses == 1) {
+            "Your address appeared in a new breach"
+        } else {
+            "$addresses of your addresses appeared in new breaches"
+        }
+
+        val lines = findings.flatMap { (email, sources) ->
+            sources.take(4).map { "$email — ${it.label}" }
+        }
+        val body = lines.firstOrNull().orEmpty()
+
+        val open = PendingIntent.getActivity(
+            context,
+            1,
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                putExtra(EXTRA_OPEN_TAB, TAB_EMAIL)
+            },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
+        val style = NotificationCompat.InboxStyle().setBigContentTitle(title)
+        lines.take(5).forEach { style.addLine(it) }
+        if (lines.size > 5) style.setSummaryText("and ${lines.size - 5} more")
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_stat_recon)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(style)
+            // Being personally exposed outranks a general news item, and a
+            // credential or identity-document leak outranks both.
+            .setPriority(if (severe) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
+            .setAutoCancel(true)
+            .setContentIntent(open)
+            .build()
+
+        runCatching {
+            NotificationManagerCompat.from(context).notify(ACCOUNT_NOTIFICATION_ID, notification)
+        }
     }
 
     private fun notify(fresh: List<BreachFeed.Breach>) {
@@ -123,6 +236,12 @@ class BreachWatchWorker(
     companion object {
         const val CHANNEL_ID = "breach_alerts"
         const val NOTIFICATION_ID = 4201
+        /** Separate id: a personal hit must not overwrite the news item. */
+        const val ACCOUNT_NOTIFICATION_ID = 4202
+
+        /** The public endpoint is rate-limited; a burst throttles the run. */
+        private const val MAX_ADDRESSES_PER_RUN = 5
+        private const val REQUEST_SPACING_MS = 1_500L
         const val EXTRA_OPEN_TAB = "open_tab"
         const val TAB_EMAIL = "email"
 

@@ -26,6 +26,7 @@
       ip: "/api/ip",
       subdomains: "/api/subdomains",
       image: "/api/image",
+      wayback: "/api/wayback",
       health: "/api/health",
     },
   };

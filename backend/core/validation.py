@@ -98,6 +98,24 @@ def image_url(value: str) -> str:
     return value
 
 
+def platform_name(value: str) -> str:
+    """A platform label from the catalogue. Kept strict: it indexes a table."""
+    value = _strip(value, "platform")
+    if len(value) > 64 or not re.match(r"^[A-Za-z0-9 ._/()!+-]+$", value):
+        raise ValidationError("Platform name is not valid.")
+    return value
+
+
+def page_url(value: str) -> str:
+    """Any http(s) page URL — used by the archive-history lookup."""
+    value = _strip(value, "URL")
+    if not re.match(r"^https?://", value, re.IGNORECASE):
+        raise ValidationError("URL must start with http:// or https://.")
+    if len(value) > 2048:
+        raise ValidationError("URL is too long.")
+    return value
+
+
 def boolean(value, default: bool = False) -> bool:
     if isinstance(value, bool):
         return value

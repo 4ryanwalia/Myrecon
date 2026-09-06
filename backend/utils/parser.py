@@ -5,28 +5,15 @@
 """
 
 import json
-import re
 from datetime import datetime
 from typing import Any
+
+from data.profile_urls import handles_match, profile_handle
 
 
 # ──────────────────────────────────────────────────────────────
 #  Category detection patterns
 # ──────────────────────────────────────────────────────────────
-
-PROFILE_DOMAINS = {
-    "twitter.com", "x.com", "instagram.com", "facebook.com", "tiktok.com",
-    "linkedin.com", "github.com", "gitlab.com", "reddit.com", "youtube.com",
-    "twitch.tv", "medium.com", "dev.to", "behance.net", "dribbble.com",
-    "pinterest.com", "tumblr.com", "snapchat.com", "vk.com", "flickr.com",
-    "soundcloud.com", "spotify.com", "steamcommunity.com", "chess.com",
-    "about.me", "keybase.io", "mastodon.social", "stackoverflow.com",
-    "quora.com", "hackerrank.com", "leetcode.com", "kaggle.com",
-    "bitbucket.org", "codepen.io", "500px.com", "deviantart.com",
-    "artstation.com", "gravatar.com", "patreon.com", "substack.com",
-    "threads.net", "bluesky.social", "kick.com", "odysee.com",
-    "buymeacoffee.com", "ko-fi.com", "linktree", "linktr.ee",
-}
 
 DOCUMENT_EXTENSIONS = {
     ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
@@ -35,13 +22,26 @@ DOCUMENT_EXTENSIONS = {
 }
 
 
-def categorise_result(result: dict) -> str:
-    """Classify a result as 'profile', 'document', or 'mention'."""
-    url = result.get("url", "").lower()
+def categorise_result(result: dict, target: str = "") -> str:
+    """
+    Classify a result as 'profile', 'document', or 'mention'.
+
+    'profile' is a claim that the URL is somebody's account page, so it is
+    only made when the URL is *shaped* like one — github.com/<handle>, not
+    any github.com page that mentions the handle — and, when `target` names
+    the handle we searched for, when the URL's own handle is that one.
+    Everything else on those domains is a mention: still a finding, still
+    shown, but not sold to the user as an account that exists.
+
+    Search results are indexed pages, and the index goes stale; callers that
+    report profiles as *found* verify them over HTTP first.
+    """
+    url = result.get("url", "")
+    lowered = url.lower()
 
     # Check document extensions
     for ext in DOCUMENT_EXTENSIONS:
-        if url.endswith(ext):
+        if lowered.endswith(ext):
             return "document"
 
     # Check filetype dorks
@@ -49,19 +49,19 @@ def categorise_result(result: dict) -> str:
     if "filetype:" in query:
         return "document"
 
-    # Check profile domains
-    for domain in PROFILE_DOMAINS:
-        if domain in url:
-            return "profile"
-
-    # Source-based classification
+    # Already verified upstream by an HTTP check against a known profile URL.
     source = result.get("source", "")
-    if source == "username_check":
-        return "profile"
-    if source == "email_lookup":
+    if source in ("username_check", "email_lookup"):
         return "profile"
 
-    return "mention"
+    match = profile_handle(url)
+    if not match:
+        return "mention"
+    _domain, handle = match
+    if target and not handles_match(handle, target):
+        # Profile-shaped, but it is somebody else's profile.
+        return "mention"
+    return "profile"
 
 
 def deduplicate_results(results: list[dict]) -> list[dict]:
@@ -80,7 +80,7 @@ def deduplicate_results(results: list[dict]) -> list[dict]:
     return unique
 
 
-def categorise_all(results: list[dict]) -> dict[str, list[dict]]:
+def categorise_all(results: list[dict], target: str = "") -> dict[str, list[dict]]:
     """Categorise and group results into profiles, documents, mentions."""
     categorised = {
         "profiles": [],
@@ -89,7 +89,7 @@ def categorise_all(results: list[dict]) -> dict[str, list[dict]]:
     }
 
     for result in results:
-        cat = categorise_result(result)
+        cat = categorise_result(result, target)
         result["category"] = cat
         if cat == "profile":
             categorised["profiles"].append(result)
@@ -109,7 +109,7 @@ def build_report(
 ) -> dict[str, Any]:
     """Build a structured JSON report from scan results."""
     unique = deduplicate_results(results)
-    categorised = categorise_all(unique)
+    categorised = categorise_all(unique, username)
 
     report = {
         "meta": {

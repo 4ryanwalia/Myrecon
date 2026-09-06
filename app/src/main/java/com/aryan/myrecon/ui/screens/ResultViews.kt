@@ -11,10 +11,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -36,6 +38,28 @@ import com.aryan.myrecon.ui.theme.*
  * survives both colour-blindness and a glance.
  */
 
+/**
+ * Categories that lead the results, in order. Anything unlisted falls below
+ * these and is ordered by how many accounts it holds.
+ *
+ * Social first because that is what someone checking their own footprint
+ * actually came to see. Messaging and Photo follow for the same reason — they
+ * carry a personal profile — while Developer and infrastructure categories sit
+ * lower despite often having the most hits.
+ */
+private val CATEGORY_RANK = mapOf(
+    "Social" to 0,
+    "Messaging" to 1,
+    "Photo & Art" to 2,
+    "Video" to 3,
+    "Professional" to 4,
+    "Blogging" to 5,
+    "Forums" to 6,
+    "Gaming" to 7,
+    "Marketplace" to 8,
+    "Developer" to 9,
+)
+
 private fun Long.compact(): String = when {
     this >= 1_000_000_000 -> "%.1fB".format(this / 1e9)
     this >= 1_000_000 -> "%.1fM".format(this / 1e6)
@@ -46,10 +70,16 @@ private fun Long.compact(): String = when {
 // ── Username ─────────────────────────────────────────────────────
 
 @Composable
-fun SweepView(s: SweepResult) {
+fun SweepView(
+    s: SweepResult,
+    /** When false, one account per category is shown and the rest are held. */
+    unlocked: Boolean = true,
+    /** Rendered between the preview and the remaining results. */
+    offer: (@Composable (hidden: Int) -> Unit)? = null,
+) {
     if (s.restored) RestoredBanner(s.result.query.username)
     s.identity?.let { VerifiedIdentity(it) }
-    UsernameView(s.result)
+    UsernameView(s.result, unlocked = unlocked, offer = offer)
 }
 
 /**
@@ -203,7 +233,11 @@ private fun VerifiedIdentity(id: KeybaseIntel.Identity) {
 }
 
 @Composable
-fun UsernameView(r: UsernameResult) {
+fun UsernameView(
+    r: UsernameResult,
+    unlocked: Boolean = true,
+    offer: (@Composable (hidden: Int) -> Unit)? = null,
+) {
     val t = LocalReconTokens.current
     val uriHandler = LocalUriHandler.current
     val profiles = r.results.profiles
@@ -220,8 +254,18 @@ fun UsernameView(r: UsernameResult) {
     val confirmed = profiles.filter { it.confidence != "unverified" }
     val unverified = profiles.filter { it.confidence == "unverified" }
     val high = confirmed.count { it.confidence == "high" }
+    // Social leads, then the rest by how much was found.
+    //
+    // Ordering purely by count buried Social behind Developer for anyone with a
+    // GitHub habit, which is backwards: someone checking their own exposure
+    // wants to know who can find them socially first. The remaining order is
+    // still count-descending, so the categories with most to show come next.
     val byCategory = confirmed.groupBy { it.category.ifBlank { "Other" } }
-        .toList().sortedByDescending { it.second.size }
+        .toList()
+        .sortedWith(
+            compareBy<Pair<String, List<Profile>>> { CATEGORY_RANK[it.first] ?: Int.MAX_VALUE }
+                .thenByDescending { it.second.size }
+        )
 
     val (score, label, message) = exposureFor(confirmed.size, high, byCategory.size)
 
@@ -237,18 +281,74 @@ fun UsernameView(r: UsernameResult) {
     // Grouped by category so a long list reads as a shape rather than a wall.
     // Entrance is staggered but capped: past about a dozen the delay stops
     // feeling deliberate and starts feeling slow.
+    //
+    // While locked, one account per category is shown. The category headers
+    // still carry the true count, so the preview never understates what was
+    // found — eleven Developer accounts read as eleven whether or not the list
+    // is unlocked. The offer above quotes its total from these same numbers, so
+    // scrolling the list can only confirm the trade on offer, never contradict
+    // it.
     var rank = 0
+    val shownCount = byCategory.sumOf { (_, items) -> if (unlocked) items.size else 1 }
+    val hidden = confirmed.size - shownCount
+
+    // The offer is rendered twice: once here, once after the list.
+    //
+    // Above the list, it makes the locked cards legible as a preview rather
+    // than as a scan that failed halfway. Below it, it catches the user who
+    // scrolled the whole way down and decided there — who would otherwise have
+    // to scroll back up to act on a decision they just made. Neither placement
+    // covers both, and the composable is cheap to repeat: preload() is guarded
+    // against a double load, and unlocking hides both at once.
+    //
+    // Both sit below the gauge and the counts deliberately. Those totals are
+    // real, visible and free, which is the honest framing and what keeps this
+    // inside AdMob's rules for a rewarded offer.
+    val showOffer = !unlocked && hidden > 0 && offer != null
+
+    if (showOffer) {
+        Spacer(Modifier.height(16.dp))
+        offer!!(hidden)
+        Spacer(Modifier.height(4.dp))
+    }
+
     byCategory.forEach { (category, items) ->
         CategoryHeader(category, items.size)
-        items.forEach { p ->
+        val visible = if (unlocked) items else items.take(1)
+        visible.forEach { p ->
             StaggeredIn(index = rank++) {
                 ProfileCard(p) { uriHandler.openUri(p.url) }
             }
             Spacer(Modifier.height(8.dp))
         }
+        // Locked entries are rendered, then obscured. Showing the real card
+        // shape communicates what is there far better than a count does — the
+        // user can see three more accounts exist in this category, not just
+        // read that they do.
+        if (!unlocked) {
+            items.drop(1).take(3).forEach { p ->
+                LockedProfileCard(p)
+                Spacer(Modifier.height(8.dp))
+            }
+            if (items.size > 4) {
+                Text(
+                    "+${items.size - 4} more in $category",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = t.textMute,
+                    modifier = Modifier.padding(bottom = 6.dp),
+                )
+            }
+        }
     }
 
-    if (unverified.isNotEmpty()) {
+    if (showOffer) {
+        Spacer(Modifier.height(8.dp))
+        offer!!(hidden)
+    }
+
+    // Unverified results stay behind the unlock too — showing every weak result
+    // while holding back the confirmed ones would be a strange trade.
+    if (unlocked && unverified.isNotEmpty()) {
         CategoryHeader("Unverified", unverified.size)
         Text(
             "These platforms return a page for any handle, so a result here is not " +
@@ -336,11 +436,83 @@ private fun ProfileCard(p: Profile, onOpen: () -> Unit) {
                 modifier = Modifier.size(16.dp),
             )
         }
+        if (p.confidence.equals("low", ignoreCase = true)) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "Possible match — the platform did not expose enough data to verify it.",
+                style = MaterialTheme.typography.bodySmall,
+                color = t.textMute,
+            )
+        }
         if (!p.bio.isNullOrBlank()) {
             Spacer(Modifier.height(8.dp))
             Text(p.bio, style = MaterialTheme.typography.bodySmall, color = t.textDim, maxLines = 3, overflow = TextOverflow.Ellipsis)
         }
     }
+}
+
+/**
+ * A locked result: the real card, obscured.
+ *
+ * Modifier.blur needs API 31, and minSdk here is 30 — on Android 11 it is a
+ * silent no-op, which would leak the whole card. So blur is treated as
+ * decoration and the actual concealment is done by a scrim plus redaction
+ * bars, both of which work everywhere. Getting that the wrong way round would
+ * expose the content on the one version that cannot blur.
+ *
+ * Not a security boundary — these are public platform URLs the user could find
+ * unaided. It is a preview device, and it is built to look like one rather
+ * than to imply the data is secret.
+ */
+@Composable
+private fun LockedProfileCard(p: Profile) {
+    val t = LocalReconTokens.current
+    Box {
+        ReconCard(
+            stripe = t.textMute.copy(alpha = 0.4f),
+            modifier = Modifier.blur(6.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // The category tile stays legible: it is the signal the user is
+                // being sold, and hiding it would make the offer meaningless.
+                PlatformTile("? ?", p.category.ifBlank { "Other" })
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    RedactionBar(widthFraction = 0.52f, height = 11.dp)
+                    Spacer(Modifier.height(6.dp))
+                    RedactionBar(widthFraction = 0.78f, height = 9.dp)
+                }
+                Spacer(Modifier.width(8.dp))
+                Icon(
+                    Icons.Filled.Lock,
+                    contentDescription = "Locked result",
+                    tint = t.textMute,
+                    modifier = Modifier.size(15.dp),
+                )
+            }
+        }
+        // Scrim over the top. This, not the blur, is what actually conceals the
+        // card on devices where blur is unavailable.
+        Box(
+            Modifier
+                .matchParentSize()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.35f)),
+        )
+    }
+}
+
+/** Solid bar standing in for redacted text. */
+@Composable
+private fun RedactionBar(widthFraction: Float, height: androidx.compose.ui.unit.Dp) {
+    val t = LocalReconTokens.current
+    Box(
+        Modifier
+            .fillMaxWidth(widthFraction)
+            .height(height)
+            .clip(RoundedCornerShape(3.dp))
+            .background(t.textMute.copy(alpha = 0.30f)),
+    )
 }
 
 /**

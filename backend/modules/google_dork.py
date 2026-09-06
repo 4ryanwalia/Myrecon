@@ -16,11 +16,30 @@ HOW TO GET YOUR FREE API KEY:
 import time
 import os
 import requests
-from typing import Optional
 
 from data.dorks import get_username_dorks, get_email_dorks
 
 GOOGLE_CSE_URL = "https://www.googleapis.com/customsearch/v1"
+
+
+def _budget(env_name: str, default: int) -> int:
+    try:
+        return max(1, int(os.environ.get(env_name, default)))
+    except (TypeError, ValueError):
+        return default
+
+
+# The free Custom Search tier allows 100 queries per day across every scan the
+# server runs. The username corpus is ~770 queries long, so running it end to
+# end would spend the whole day's allowance on one search and return quota
+# errors for everything after it. These budgets keep a single scan affordable;
+# get_username_dorks() orders its output highest-precision first so the budget
+# is spent on queries whose hits are profile URLs rather than incidental page
+# mentions. Raise them on a paid key.
+FAST_QUERY_BUDGET = _budget("DORK_FAST_BUDGET", 30)
+DEEP_QUERY_BUDGET = _budget("DORK_DEEP_BUDGET", 80)
+EMAIL_FAST_BUDGET = _budget("DORK_EMAIL_FAST_BUDGET", 20)
+EMAIL_DEEP_BUDGET = _budget("DORK_EMAIL_DEEP_BUDGET", 60)
 
 
 class GoogleDorkEngine:
@@ -84,15 +103,15 @@ class GoogleDorkEngine:
 
     def scan_username(self, username: str, callback=None, deep: bool = False) -> list[dict]:
         dorks = get_username_dorks(username)
-        if not deep:
-            dorks = dorks[:50]
-        return self._run_dorks(dorks, callback)
+        return self._run_dorks(
+            dorks[:DEEP_QUERY_BUDGET if deep else FAST_QUERY_BUDGET], callback
+        )
 
     def scan_email(self, email: str, callback=None, deep: bool = False) -> list[dict]:
         dorks = get_email_dorks(email)
-        if not deep:
-            dorks = dorks[:30]
-        return self._run_dorks(dorks, callback)
+        return self._run_dorks(
+            dorks[:EMAIL_DEEP_BUDGET if deep else EMAIL_FAST_BUDGET], callback
+        )
 
     def _run_dorks(self, dorks: list[str], callback=None) -> list[dict]:
         results = []

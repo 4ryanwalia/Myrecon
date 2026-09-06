@@ -13,6 +13,34 @@ import kotlinx.serialization.json.JsonElement
  * data is a normal outcome here, not an exception.
  */
 
+// ── Server-assisted enrichment ───────────────────────────────────
+
+/**
+ * Reply from /api/enrich — extra detail for a profile the sweep already found.
+ *
+ * Carries no existence verdict on purpose. This endpoint answers "what does
+ * this profile look like", never "is it real"; letting it speak to existence
+ * would put the server's opinion above a check the device performed itself.
+ */
+@Serializable
+data class EnrichResult(
+    val status: String = "ok",
+    val profile: EnrichedProfile = EnrichedProfile(),
+)
+
+@Serializable
+data class EnrichedProfile(
+    val platform: String = "",
+    val username: String = "",
+    val url: String = "",
+    @SerialName("display_name") val displayName: String? = null,
+    val bio: String? = null,
+    @SerialName("profile_pic_url") val profilePicUrl: String? = null,
+    val followers: Long? = null,
+    @SerialName("is_verified") val isVerified: Boolean = false,
+    @SerialName("is_private") val isPrivate: Boolean = false,
+)
+
 // ── Username ─────────────────────────────────────────────────────
 
 @Serializable

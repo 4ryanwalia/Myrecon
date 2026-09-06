@@ -1,8 +1,15 @@
 """
-╔══════════════════════════════════════════════════════════════╗
-║  OSINT DORK DATABASE — 300+ Structured Google Dork Queries  ║
-║  Dynamic replacement of {username} and {email} at runtime   ║
-╚══════════════════════════════════════════════════════════════╝
+OSINT dork database — structured Google queries, ~750 for usernames and
+~120 for email addresses, with {username} / {email} substituted at runtime.
+
+A note on ordering, because it matters more than the raw count: the queries
+are not all equally trustworthy. `site:reddit.com/user "bob"` can only match
+a URL under /user/, so a hit really is a profile page. `site:reddit.com "bob"`
+matches any comment thread that says "bob" — which is what produces results
+that read as "account found" until you click through and find nobody there.
+get_username_dorks() therefore returns the path-scoped queries first so that
+the per-scan query budget is spent on the ones worth trusting, and
+utils.parser rejects the rest as mentions rather than profiles.
 """
 
 
@@ -233,7 +240,6 @@ USERNAME_DORKS: list[str] = [
     'site:carrd.co "{username}"',
     'site:bio.link "{username}"',
     'site:beacons.ai "{username}"',
-    'site:about.me "{username}"',
     'site:calendly.com "{username}"',
 
     # ── Misc Platforms ────────────────────────────────────────
@@ -266,6 +272,550 @@ USERNAME_DORKS: list[str] = [
     'site:tryhackme.com "{username}"',
     'site:hackthebox.com "{username}"',
     'site:ctftime.org "{username}"',
+
+    # ══════════════════════════════════════════════════════════
+    #  EXTENDED PLATFORM SWEEP
+    #
+    #  Long-tail platforms and, more importantly, path-scoped
+    #  variants of the dorks above (site:reddit.com/user rather
+    #  than site:reddit.com). A path-scoped dork can only return
+    #  URLs that live under a profile path, which is what keeps
+    #  a hit from being some unrelated post that merely mentions
+    #  the handle. get_username_dorks() runs these first for
+    #  exactly that reason — see the ordering note there.
+    # ══════════════════════════════════════════════════════════
+
+    # ── Social / General ────────────────────────────────────────
+    'site:reddit.com/u "{username}"',
+    'site:tiktok.com/@ "{username}"',
+    'site:snapchat.com/add "{username}"',
+    'site:mewe.com "{username}"',
+    'site:kooapp.com "{username}"',
+    'site:mixi.jp "{username}"',
+    'site:plurk.com "{username}"',
+    'site:peach.social "{username}"',
+    'site:ello.co "{username}"',
+    'site:post.news "{username}"',
+    'site:counter.social "{username}"',
+    'site:diaspora.social "{username}"',
+    'site:friendica.social "{username}"',
+    'site:hubzilla.org "{username}"',
+    'site:me.dm "{username}"',
+    'site:cohost.org "{username}"',
+    'site:solo.to "{username}"',
+    'site:lnk.bio "{username}"',
+    'site:allmylinks.com "{username}"',
+    'site:facebook.com/public "{username}"',
+    'site:facebook.com/groups "{username}"',
+    'site:facebook.com/pages "{username}"',
+    'site:vero.co "{username}"',
+    'site:weheartit.com "{username}"',
+    'site:ameba.jp "{username}"',
+    'site:hatena.ne.jp "{username}"',
+    'site:line.me "{username}"',
+    'site:skyrock.com "{username}"',
+    'site:badoo.com "{username}"',
+    'site:meetme.com "{username}"',
+    'site:hi5.com "{username}"',
+    'site:ning.com "{username}"',
+    'site:friendfeed.com "{username}"',
+    'site:identi.ca "{username}"',
+    'site:gnusocial.network "{username}"',
+    'site:joinmastodon.org "{username}"',
+    'site:pixelfed.social "{username}"',
+    'site:pleroma.social "{username}"',
+    'site:misskey.io "{username}"',
+    'site:lemmy.world "{username}"',
+    'site:lemmy.ml "{username}"',
+    'site:kbin.social "{username}"',
+    'site:threads.social "{username}"',
+
+    # ── Developer / Programming ─────────────────────────────────
+    'site:stackoverflow.com/users "{username}"',
+    'site:stackexchange.com/users "{username}"',
+    'site:superuser.com/users "{username}"',
+    'site:serverfault.com/users "{username}"',
+    'site:askubuntu.com/users "{username}"',
+    'site:jsbin.com "{username}"',
+    'site:giters.com "{username}"',
+    'site:gitee.com "{username}"',
+    'site:sourcehut.org "{username}"',
+    'site:sr.ht "{username}"',
+    'site:pagure.io "{username}"',
+    'site:gitkraken.com "{username}"',
+    'site:phabricator.wikimedia.org "{username}"',
+    'site:discuss.python.org "{username}"',
+    'site:python.org "{username}"',
+    'site:crates.io "{username}"',
+    'site:packagist.org "{username}"',
+    'site:nuget.org "{username}"',
+    'site:maven.org "{username}"',
+    'site:docker.com "{username}"',
+    'site:hub.docker.io "{username}"',
+    'site:registry.npmjs.org "{username}"',
+    'site:terraform.io "{username}"',
+    'site:registry.terraform.io "{username}"',
+    'site:ansible.com "{username}"',
+    'site:observablehq.com "{username}"',
+    'site:codeberg.page "{username}"',
+    'site:repl.it "{username}"',
+    'site:hackerearth.com "{username}"',
+    'site:coderbyte.com "{username}"',
+    'site:frontendmentor.io "{username}"',
+    'site:devpost.com "{username}"',
+    'site:gitconnected.com "{username}"',
+    'site:roadmap.sh "{username}"',
+    'site:daily.dev "{username}"',
+    'site:hashnode.dev "{username}"',
+    'site:indiehackers.com "{username}"',
+    'site:stackblitz.com "{username}"',
+    'site:vercel.com "{username}"',
+    'site:netlify.com "{username}"',
+    'site:render.com "{username}"',
+    'site:railway.app "{username}"',
+    'site:fly.io "{username}"',
+    'site:heroku.com "{username}"',
+    'site:sourceforge.net/u "{username}"',
+    'site:gitlab.com/users "{username}"',
+    'site:pagure.io/user "{username}"',
+    'site:launchpad.net/~ "{username}"',
+    'site:git.savannah.gnu.org "{username}"',
+    'site:apache.org "{username}"',
+    'site:kernel.org "{username}"',
+    'site:git.kernel.org "{username}"',
+    'site:freedesktop.org "{username}"',
+    'site:codepen.io/{username} "{username}"',
+    'site:jsfiddle.net/user "{username}"',
+    'site:codesandbox.io/u "{username}"',
+    'site:replit.com/@ "{username}"',
+    'site:glitch.com/@ "{username}"',
+    'site:observablehq.com/@ "{username}"',
+    'site:stackblitz.com/@ "{username}"',
+    'site:pypi.org/user "{username}"',
+    'site:npmjs.com/~ "{username}"',
+    'site:rubygems.org/profiles "{username}"',
+    'site:crates.io/users "{username}"',
+    'site:packagist.org/users "{username}"',
+    'site:hub.docker.com/u "{username}"',
+    'site:quay.io/user "{username}"',
+    'site:registry.hub.docker.com "{username}"',
+    'site:pkg.go.dev "{username}"',
+    'site:pub.dev/packages "{username}"',
+    'site:hex.pm/users "{username}"',
+    'site:nuget.org/profiles "{username}"',
+    'site:gitee.com/{username} "{username}"',
+    'site:codeberg.org/{username} "{username}"',
+    'site:bitbucket.org/{username} "{username}"',
+
+    # ── Cybersecurity ───────────────────────────────────────────
+    'site:portswigger.net "{username}"',
+    'site:intigriti.com "{username}"',
+    'site:yeswehack.com "{username}"',
+    'site:huntr.dev "{username}"',
+    'site:cyberdefenders.org "{username}"',
+    'site:blueteamlabs.online "{username}"',
+    'site:letsdefend.io "{username}"',
+    'site:ine.com "{username}"',
+    'site:securityblue.team "{username}"',
+    'site:try2hack.nl "{username}"',
+    'site:root-me.org "{username}"',
+    'site:packetstormsecurity.com "{username}"',
+    'site:0day.today "{username}"',
+    'site:securityfocus.com "{username}"',
+    'site:malwaretips.com "{username}"',
+    'site:infosecinstitute.com "{username}"',
+    'site:darkreading.com "{username}"',
+    'site:bleepingcomputer.com "{username}"',
+    'site:securityweek.com "{username}"',
+    'site:packetpushers.net "{username}"',
+    'site:dfir.training "{username}"',
+    'site:app.hackthebox.com "{username}"',
+    'site:virustotal.com/gui/user "{username}"',
+    'site:any.run "{username}"',
+    'site:tria.ge "{username}"',
+    'site:app.any.run "{username}"',
+    'site:malshare.com "{username}"',
+    'site:hybrid-analysis.com "{username}"',
+    'site:joesandbox.com "{username}"',
+    'site:cyberchef.org "{username}"',
+    'site:osintframework.com "{username}"',
+    'site:osintdojo.com "{username}"',
+    'site:hackthebox.com/users "{username}"',
+    'site:tryhackme.com/p "{username}"',
+    'site:tryhackme.com/r/p "{username}"',
+    'site:hackerone.com/users "{username}"',
+    'site:bugcrowd.com/{username} "{username}"',
+    'site:intigriti.com/profile "{username}"',
+    'site:yeswehack.com/hunters "{username}"',
+    'site:huntr.dev/bounties "{username}"',
+    'site:cyberdefenders.org/p "{username}"',
+    'site:blueteamlabs.online/profile "{username}"',
+    'site:letsdefend.io/profile "{username}"',
+    'site:root-me.org/Users "{username}"',
+    'site:ctftime.org/user "{username}"',
+    'site:exploit-db.com/author "{username}"',
+
+    # ── Video / Streaming / Creator ─────────────────────────────
+    'site:youtube.com/@ "{username}"',
+    'site:streamable.com "{username}"',
+    'site:livestream.com "{username}"',
+    'site:podbean.com "{username}"',
+    'site:spreaker.com "{username}"',
+    'site:castbox.fm "{username}"',
+    'site:podchaser.com "{username}"',
+    'site:player.fm "{username}"',
+    'site:fanbox.cc "{username}"',
+    'site:floatplane.com "{username}"',
+
+    # ── Art / Photography / Design ──────────────────────────────
+    'site:unsplash.com/@ "{username}"',
+    'site:pexels.com/@ "{username}"',
+    'site:freepik.com "{username}"',
+    'site:creativemarket.com "{username}"',
+    'site:designspiration.com "{username}"',
+    'site:coroflot.com "{username}"',
+    'site:crevado.com "{username}"',
+    'site:format.com "{username}"',
+    'site:cargo.site "{username}"',
+    'site:journoportfolio.com "{username}"',
+    'site:clippings.me "{username}"',
+    'site:visual.ly "{username}"',
+    'site:creately.com "{username}"',
+    'site:figma.com "{username}"',
+    'site:canva.com "{username}"',
+    'site:invisionapp.com "{username}"',
+    'site:framer.com "{username}"',
+    'site:webflow.com "{username}"',
+    'site:wix.com "{username}"',
+    'site:squarespace.com "{username}"',
+    'site:artfol.co "{username}"',
+    'site:cargocollective.com "{username}"',
+    'site:figma.com/community "{username}"',
+    'site:canva.com/p "{username}"',
+    'site:redbubble.com/people "{username}"',
+    'site:zazzle.com "{username}"',
+    'site:artwanted.com "{username}"',
+
+    # ── Writing / Publishing ────────────────────────────────────
+    'site:blogspot.com "{username}"',
+    'site:ghost.org "{username}"',
+    'site:write.as "{username}"',
+    'site:telegra.ph "{username}"',
+    'site:micro.blog "{username}"',
+    'site:newsblur.com "{username}"',
+    'site:feedly.com "{username}"',
+    'site:inoreader.com "{username}"',
+    'site:librarything.com "{username}"',
+    'site:storygraph.com "{username}"',
+    'site:archiveofourown.org "{username}"',
+    'site:fanfiction.net "{username}"',
+    'site:fictionpress.com "{username}"',
+    'site:scribblehub.com "{username}"',
+    'site:royalroad.com "{username}"',
+    'site:inkitt.com "{username}"',
+    'site:webnovel.com "{username}"',
+    'site:poetrysoup.com "{username}"',
+    'site:allpoetry.com "{username}"',
+    'site:poetry.com "{username}"',
+    'site:bookcrossing.com "{username}"',
+    'site:bookwyrm.social "{username}"',
+    'site:writefreely.org "{username}"',
+    'site:medium.com/@ "{username}"',
+    'site:substack.com/@ "{username}"',
+    'site:wattpad.com/user "{username}"',
+    'site:archiveofourown.org/users "{username}"',
+    'site:fanfiction.net/u "{username}"',
+    'site:fictionpress.com/u "{username}"',
+    'site:royalroad.com/profile "{username}"',
+    'site:scribblehub.com/profile "{username}"',
+    'site:inkitt.com/profile "{username}"',
+    'site:poetrysoup.com/poems "{username}"',
+    'site:blogger.com/profile "{username}"',
+    'site:wordpress.com/me "{username}"',
+
+    # ── Forums / Communities ────────────────────────────────────
+    'site:answers.microsoft.com "{username}"',
+    'site:community.spiceworks.com "{username}"',
+    'site:forums.tomshardware.com "{username}"',
+    'site:linustechtips.com "{username}"',
+    'site:forums.linuxmint.com "{username}"',
+    'site:ubuntuforums.org "{username}"',
+    'site:forum.manjaro.org "{username}"',
+    'site:forums.freebsd.org "{username}"',
+    'site:forums.debian.net "{username}"',
+    'site:forums.opensuse.org "{username}"',
+    'site:forums.fedoraforum.org "{username}"',
+    'site:community.cloudflare.com "{username}"',
+    'site:community.cisco.com "{username}"',
+    'site:community.fortinet.com "{username}"',
+    'site:community.splunk.com "{username}"',
+    'site:community.vmware.com "{username}"',
+    'site:community.oracle.com "{username}"',
+    'site:community.ibm.com "{username}"',
+    'site:community.sap.com "{username}"',
+    'site:community.intel.com "{username}"',
+    'site:community.amd.com "{username}"',
+    'site:community.nvidia.com "{username}"',
+    'site:community.ui.com "{username}"',
+    'site:community.grafana.com "{username}"',
+    'site:zammad.org "{username}"',
+    'site:forums.anandtech.com "{username}"',
+    'site:forums.macrumors.com "{username}"',
+    'site:forums.androidcentral.com "{username}"',
+    'site:forum.xda-developers.com "{username}"',
+    'site:xdaforums.com "{username}"',
+    'site:discuss.elastic.co "{username}"',
+    'site:discuss.hashicorp.com "{username}"',
+    'site:discuss.kubernetes.io "{username}"',
+    'site:discuss.rust-lang.org "{username}"',
+    'site:forum.djangoproject.com "{username}"',
+    'site:forums.raspberrypi.com "{username}"',
+    'site:forum.arduino.cc "{username}"',
+    'site:community.home-assistant.io "{username}"',
+    'site:discuss.golang.org "{username}"',
+
+    # ── Gaming ──────────────────────────────────────────────────
+    'site:steamdb.info "{username}"',
+    'site:ea.com "{username}"',
+    'site:ubisoft.com "{username}"',
+    'site:nintendo.com "{username}"',
+    'site:gog.com "{username}"',
+    'site:gamejolt.com "{username}"',
+    'site:moddb.com "{username}"',
+    'site:nexusmods.com "{username}"',
+    'site:curseforge.com "{username}"',
+    'site:planetminecraft.com "{username}"',
+    'site:fortnite.com "{username}"',
+    'site:chessgames.com "{username}"',
+    'site:boardgamearena.com "{username}"',
+    'site:challengermode.com "{username}"',
+    'site:tracker.network "{username}"',
+    'site:u.gg "{username}"',
+    'site:porofessor.gg "{username}"',
+    'site:blitz.gg "{username}"',
+    'site:thetrackernetwork.com "{username}"',
+    'site:speedrun.com "{username}"',
+    'site:toonami.com "{username}"',
+    'site:steamcommunity.com/id "{username}"',
+    'site:steamcommunity.com/profiles "{username}"',
+    'site:itch.io/profile "{username}"',
+    'site:gamejolt.com/@ "{username}"',
+    'site:moddb.com/members "{username}"',
+    'site:nexusmods.com/users "{username}"',
+    'site:curseforge.com/members "{username}"',
+    'site:planetminecraft.com/member "{username}"',
+    'site:chess.com/member "{username}"',
+    'site:lichess.org/@ "{username}"',
+    'site:osu.ppy.sh/users "{username}"',
+    'site:speedrun.com/users "{username}"',
+    'site:faceit.com/en/players "{username}"',
+    'site:op.gg/summoners "{username}"',
+    'site:u.gg/lol/profile "{username}"',
+    'site:blitz.gg/wow "{username}"',
+    'site:warcraftlogs.com/users "{username}"',
+    'site:raider.io/users "{username}"',
+    'site:armory.worldofwarcraft.com "{username}"',
+
+    # ── Academic / Research ─────────────────────────────────────
+    'site:researcherid.com "{username}"',
+    'site:scopus.com "{username}"',
+    'site:semanticscholar.org "{username}"',
+    'site:loop.frontiersin.org "{username}"',
+    'site:frontiersin.org "{username}"',
+    'site:plos.org "{username}"',
+    'site:zenodo.org "{username}"',
+    'site:figshare.com "{username}"',
+    'site:osf.io "{username}"',
+    'site:biorxiv.org "{username}"',
+    'site:medrxiv.org "{username}"',
+    'site:ssrn.com "{username}"',
+    'site:paperswithcode.com "{username}"',
+    'site:openreview.net "{username}"',
+    'site:acm.org "{username}"',
+    'site:researchsquare.com "{username}"',
+    'site:protocols.io "{username}"',
+    'site:dryad.org "{username}"',
+    'site:dataverse.org "{username}"',
+    'site:researchgate.net/profile "{username}"',
+    'site:scholar.google.com/citations "{username}"',
+    'site:semanticscholar.org/author "{username}"',
+    'site:arxiv.org/a "{username}"',
+    'site:zenodo.org/communities "{username}"',
+    'site:figshare.com/authors "{username}"',
+    'site:osf.io/profiles "{username}"',
+    'site:ssrn.com/author "{username}"',
+    'site:openreview.net/profile "{username}"',
+    'site:loop.frontiersin.org/people "{username}"',
+    'site:protocols.io/view "{username}"',
+    'site:dryad.org/stash "{username}"',
+    'site:dataverse.harvard.edu "{username}"',
+
+    # ── Business / Professional ─────────────────────────────────
+    'site:clutch.co "{username}"',
+    'site:peopleperhour.com "{username}"',
+    'site:guru.com "{username}"',
+    'site:workana.com "{username}"',
+    'site:contra.com "{username}"',
+    'site:remoteok.com "{username}"',
+    'site:weworkremotely.com "{username}"',
+    'site:ziprecruiter.com "{username}"',
+    'site:meetup.com "{username}"',
+    'site:eventbrite.com "{username}"',
+    'site:speakerhub.com "{username}"',
+    'site:sessionize.com "{username}"',
+    'site:luma.com "{username}"',
+    'site:upwork.com/freelancers "{username}"',
+    'site:fiverr.com/users "{username}"',
+    'site:freelancer.com/u "{username}"',
+    'site:toptal.com/resume "{username}"',
+    'site:peopleperhour.com/freelancer "{username}"',
+    'site:guru.com/freelancers "{username}"',
+    'site:contra.com/{username} "{username}"',
+    'site:workana.com/freelancer "{username}"',
+    'site:clutch.co/profile "{username}"',
+    'site:wellfound.com/u "{username}"',
+    'site:crunchbase.com/person "{username}"',
+    'site:angel.co/u "{username}"',
+    'site:producthunt.com/@ "{username}"',
+    'site:meetup.com/members "{username}"',
+    'site:eventbrite.com/o "{username}"',
+    'site:polywork.com "{username}"',
+
+    # ── Open Source / Package Ecosystems ────────────────────────
+    'site:pub.dev "{username}"',
+    'site:hex.pm "{username}"',
+    'site:cpan.org "{username}"',
+    'site:metacpan.org "{username}"',
+    'site:godoc.org "{username}"',
+    'site:search.maven.org "{username}"',
+    'site:central.sonatype.com "{username}"',
+    'site:jitpack.io "{username}"',
+    'site:quay.io "{username}"',
+    'site:ghcr.io "{username}"',
+    'site:codecov.io "{username}"',
+    'site:coveralls.io "{username}"',
+    'site:readthedocs.org "{username}"',
+    'site:readme.com "{username}"',
+    'site:gitbook.io "{username}"',
+    'site:docs.rs "{username}"',
+
+    # ── Crypto / Web3 ───────────────────────────────────────────
+    'site:polygonscan.com "{username}"',
+    'site:bscscan.com "{username}"',
+    'site:arbiscan.io "{username}"',
+    'site:optimistic.etherscan.io "{username}"',
+    'site:solscan.io "{username}"',
+    'site:zapper.xyz "{username}"',
+    'site:zerion.io "{username}"',
+    'site:rarible.com "{username}"',
+    'site:foundation.app "{username}"',
+    'site:lens.xyz "{username}"',
+    'site:ens.domains "{username}"',
+    'site:gitcoin.co "{username}"',
+    'site:immunefi.com "{username}"',
+    'site:coinbase.com "{username}"',
+    'site:binance.com "{username}"',
+    'site:kraken.com "{username}"',
+    'site:bitcointalk.org "{username}"',
+    'site:forum.ethereum.org "{username}"',
+
+    # ── Education / Learning ────────────────────────────────────
+    'site:coursera.org "{username}"',
+    'site:udemy.com "{username}"',
+    'site:edx.org "{username}"',
+    'site:udacity.com "{username}"',
+    'site:pluralsight.com "{username}"',
+    'site:datacamp.com "{username}"',
+    'site:brilliant.org "{username}"',
+    'site:khanacademy.org "{username}"',
+    'site:skillshare.com "{username}"',
+    'site:classcentral.com "{username}"',
+    'site:frontendmasters.com "{username}"',
+    'site:egghead.io "{username}"',
+    'site:educative.io "{username}"',
+    'site:codingninjas.com/profile "{username}"',
+    'site:geeksforgeeks.org/user "{username}"',
+    'site:codechef.com/users "{username}"',
+    'site:atcoder.jp/users "{username}"',
+    'site:csacademy.com/user "{username}"',
+    'site:kattis.com/users "{username}"',
+    'site:projecteuler.net/progress "{username}"',
+    'site:rosalind.info/users "{username}"',
+
+    # ── Travel / Lifestyle / Reviews ────────────────────────────
+    'site:tripadvisor.com "{username}"',
+    'site:travelblog.org "{username}"',
+    'site:travellerspoint.com "{username}"',
+    'site:tripoto.com "{username}"',
+    'site:lonelyplanet.com "{username}"',
+    'site:couchsurfing.com "{username}"',
+    'site:airbnb.com "{username}"',
+    'site:booking.com "{username}"',
+    'site:expedia.com "{username}"',
+    'site:yelp.com "{username}"',
+    'site:foursquare.com "{username}"',
+    'site:trustpilot.com "{username}"',
+    'site:trip.com "{username}"',
+    'site:viator.com "{username}"',
+    'site:getyourguide.com "{username}"',
+    'site:tripadvisor.com/members "{username}"',
+    'site:tripoto.com/profile "{username}"',
+    'site:travellerspoint.com/members "{username}"',
+    'site:couchsurfing.com/people "{username}"',
+    'site:lonelyplanet.com/profile "{username}"',
+    'site:airbnb.com/users/show "{username}"',
+    'site:yelp.com/user_details "{username}"',
+    'site:foursquare.com/user "{username}"',
+    'site:trustpilot.com/users "{username}"',
+    'site:trip.com/members "{username}"',
+
+    # ── Sports / Fitness ────────────────────────────────────────
+    'site:strava.com "{username}"',
+    'site:garmin.com "{username}"',
+    'site:myfitnesspal.com "{username}"',
+    'site:fitbit.com "{username}"',
+    'site:runkeeper.com "{username}"',
+    'site:mapmyrun.com "{username}"',
+    'site:mapmyride.com "{username}"',
+    'site:trainingpeaks.com "{username}"',
+    'site:athlinks.com "{username}"',
+    'site:worldathletics.org "{username}"',
+    'site:espn.com "{username}"',
+    'site:ufc.com "{username}"',
+    'site:tapology.com "{username}"',
+    'site:boxrec.com "{username}"',
+    'site:thegymter.net "{username}"',
+    'site:strava.com/athletes "{username}"',
+    'site:myfitnesspal.com/profile "{username}"',
+    'site:fitbit.com/user "{username}"',
+    'site:runkeeper.com/user "{username}"',
+    'site:mapmyrun.com/profile "{username}"',
+    'site:mapmyride.com/profile "{username}"',
+    'site:trainingpeaks.com/athletes "{username}"',
+    'site:athlinks.com/athletes "{username}"',
+    'site:worldathletics.org/athletes "{username}"',
+    'site:tapology.com/fightcenter "{username}"',
+    'site:boxrec.com/en/proboxer "{username}"',
+    'site:ufc.com/athlete "{username}"',
+
+    # ── Music ───────────────────────────────────────────────────
+    'site:music.apple.com "{username}"',
+    'site:discogs.com "{username}"',
+    'site:rateyourmusic.com "{username}"',
+    'site:musixmatch.com "{username}"',
+    'site:reverbnation.com "{username}"',
+    'site:smule.com "{username}"',
+    'site:kompoz.com "{username}"',
+    'site:musicbrainz.org "{username}"',
+    'site:hearthis.at "{username}"',
+    'site:audiomack.com "{username}"',
+    'site:jamendo.com "{username}"',
+    'site:beatstars.com "{username}"',
+    'site:airbit.com "{username}"',
+    'site:splice.com "{username}"',
+    'site:looperman.com/users "{username}"',
+    'site:musopen.org "{username}"',
+    'site:bandlab.com "{username}"',
 
     # ── Generic Profile Discovery ─────────────────────────────
     '"{username}" "profile"',
@@ -439,12 +989,52 @@ DOCUMENT_DORKS: list[str] = [
 ]
 
 
+# Path prefixes that are scoped but still can't name a person: groups, pages,
+# package listings and so on. They stay in the list — a handle showing up in a
+# Facebook group is a real finding — they just don't get a precision slot.
+_NON_PERSONAL_PATHS = (
+    "/groups", "/pages", "/communities", "/packages", "/bounties",
+    "/poems", "/view", "/stash", "/fightcenter",
+)
+
+
+def is_path_scoped(dork: str) -> bool:
+    """
+    True when the dork's site: operator is narrowed past the bare domain.
+
+    `site:reddit.com/user` restricts results to profile paths; `site:reddit.com`
+    does not. Callers slice the dork list to fit a query budget, so this is what
+    decides whether that budget buys profile URLs or generic page hits.
+    """
+    if not dork.startswith("site:"):
+        return False
+    target = dork[len("site:"):].split(" ", 1)[0]
+    if "/" not in target:
+        return False
+    path = target[target.index("/"):].lower()
+    return not any(path.startswith(p) for p in _NON_PERSONAL_PATHS)
+
+
 def get_username_dorks(username: str) -> list[str]:
-    """Generate all username-based dork queries with deduplication."""
-    all_dorks = USERNAME_DORKS + DOCUMENT_DORKS
+    """
+    All username dorks, deduplicated, **highest precision first**.
+
+    Order is: path-scoped site: queries, then bare-domain site: queries, then
+    the generic/inurl: ones, then document discovery. Every caller truncates
+    this list to a query budget, so the order is the feature — it decides which
+    queries actually run.
+    """
+    def rank(dork: str) -> int:
+        if is_path_scoped(dork):
+            return 0                              # site:host/path — profile URLs only
+        if dork.startswith("site:"):
+            return 1                              # site:host — anywhere on the domain
+        return 2                                  # inurl:/intitle:/bare phrase
+
+    ranked = sorted(USERNAME_DORKS, key=rank)      # stable: keeps in-tier order
     populated = []
     seen = set()
-    for dork in all_dorks:
+    for dork in ranked + DOCUMENT_DORKS:
         query = dork.replace("{username}", username)
         if query not in seen:
             seen.add(query)
@@ -484,3 +1074,5 @@ def get_all_dorks(username: str = "", email: str = "") -> list[str]:
 TOTAL_USERNAME_DORKS = len(USERNAME_DORKS) + len(DOCUMENT_DORKS)
 TOTAL_EMAIL_DORKS = len(EMAIL_DORKS)
 TOTAL_DORKS = TOTAL_USERNAME_DORKS + TOTAL_EMAIL_DORKS
+# How many username dorks are precise enough to be worth an early slot.
+TOTAL_PRECISION_DORKS = sum(1 for d in USERNAME_DORKS if is_path_scoped(d))

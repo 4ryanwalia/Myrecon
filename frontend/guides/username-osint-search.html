@@ -30,9 +30,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary">
-        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/deep-search.html">Deep Search</a><a href="/#features">Features</a><a href="/about.html">About</a>
-      </nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -74,6 +72,35 @@
       <div class="callout">
         <p><strong>Investigate ethically.</strong> Username research surfaces information people made public, but that does not make every use acceptable. Use it to audit your own footprint, for authorized research, or for legitimate verification — never to harass, stalk, or dox anyone.</p>
       </div>
+
+      <h2>Testing whether a tool is honest</h2>
+      <p>Before trusting any username search, run one experiment. Search for a handle that cannot exist &mdash; a string of nonsense nobody would register. Compare it against a handle you know is real.</p>
+      <p>If the tool reports accounts for the nonsense string, it is not detecting accounts. It is detecting that pages loaded, and every result it gives you needs checking by hand.</p>
+      <p>This is not a hypothetical failure. Measured across well-known platforms, several return responses for a real handle and an invented one that are identical down to the byte &mdash; the same page, the same length, no difference to detect. Any tool reporting a match on those platforms is reporting that the site is online. The full measurements are in <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that don't exist</a>.</p>
+
+      <h2>Handle variations worth trying</h2>
+      <p>People rarely use one handle everywhere, and the variants follow predictable patterns. If the exact handle comes up short, try:</p>
+      <ul>
+        <li><strong>Separator swaps</strong> &mdash; <code>john.smith</code>, <code>john_smith</code>, <code>john-smith</code>, <code>johnsmith</code>. Platforms disagree about which characters they permit, so the same person ends up with different spellings on different sites. A dot is the most common casualty; several platforms reject it outright, which means a handle containing one simply cannot exist there.</li>
+        <li><strong>Numeric suffixes</strong> &mdash; a birth year, a favourite number, or the digit added when the plain handle was taken.</li>
+        <li><strong>Leetspeak substitutions</strong> &mdash; <code>4</code> for <code>a</code>, <code>3</code> for <code>e</code>, <code>0</code> for <code>o</code>. Common in handles chosen when the owner was younger.</li>
+        <li><strong>Truncations</strong> &mdash; platforms with short character limits force abbreviations that then get reused elsewhere.</li>
+        <li><strong>Old handles</strong> &mdash; people rename accounts but often keep the original on platforms they no longer visit, which is exactly where forgotten accounts live.</li>
+      </ul>
+      <p>Each variant is a separate hypothesis needing its own verification. A different spelling is weaker evidence than an exact match, not equal evidence.</p>
+
+      <h2>What a negative result is worth</h2>
+      <p>"Not found" is only meaningful when the check could actually have found something. Three situations produce a blank that means nothing at all:</p>
+      <ul>
+        <li><strong>You were blocked.</strong> A 403 or 429 response means the platform refused to answer you, usually because of the network you asked from. It says nothing about the account.</li>
+        <li><strong>The URL pattern is wrong.</strong> If a platform changed its profile URL structure, every check returns 404 regardless. Always confirm the pattern works by testing a handle you know exists.</li>
+        <li><strong>The handle is impossible there.</strong> A handle containing characters the platform forbids will never resolve. That is a definite negative, but for a boring reason &mdash; not because the person avoided the platform.</li>
+      </ul>
+      <p>A tool that distinguishes "checked, nothing there" from "could not check" is giving you materially more than one that shows both as silence.</p>
+
+      <h2>Using this on yourself</h2>
+      <p>The most valuable use of username enumeration is auditing your own footprint, and it is easier because you already know the truth &mdash; you are measuring what a stranger could assemble.</p>
+      <p>Search every handle you have used, including ones you abandoned years ago, then sort the results: accounts you want public, accounts you forgot existed, and accounts that are not yours. The middle group is the one that matters. Dormant accounts hold old photos, old email addresses and old passwords, and they are the standard route into an account-takeover attempt precisely because nobody is watching them.</p>
 
       <h2>Turning a username into a fuller picture</h2>
       <p>A confirmed profile often exposes the next lead: a personal website, a public email, or another handle. That is where pivoting matters — a discovered domain becomes a WHOIS and DNS lookup, an email becomes a breach and provider check. Chaining these small, verified steps is what separates a genuine investigation from a list of guesses.</p>

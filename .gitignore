@@ -69,3 +69,18 @@ scratch/
 /services/
 /utils/
 /data/
+
+# ── Cryptographic material — never commit ────────────────────────
+# `Aran` is a PKCS#12 keystore (contains a private key). If that is the
+# Android upload/signing key, publishing it would let anyone sign builds
+# impersonating the released app. The .der files are X.509 certificates
+# from signing experiments; harmless, but they are build artefacts and do
+# not belong in the repo either.
+Aran
+*.der
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+!deployment_cert.example.der

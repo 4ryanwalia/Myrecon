@@ -7,7 +7,11 @@ proof of a real profile — many sites return 200 for any handle (SPA shells,
 login walls, soft 404s, redirects to a home/login page). To avoid false
 positives we require positive corroborating signals (the handle echoed in the
 title/canonical URL, a profile-type OpenGraph tag, a real avatar, follower
-stats, …) and score confidence. Only medium/high-confidence matches are kept.
+stats, …) and score confidence. Hard negatives — a page that says the account
+does not exist, or a redirect to a login wall — are rejected. Everything else
+is reported with a confidence label rather than hidden, because platforms that
+render client-side give no evidence either way and silence there reads as
+"no account" when it should read "cannot tell".
 """
 
 import re
@@ -56,9 +60,7 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("HackerRank",        "https://www.hackerrank.com/{username}",               200),
     ("LeetCode",          "https://leetcode.com/{username}/",                    200),
     ("Codeforces",        "https://codeforces.com/profile/{username}",           200),
-    ("Kaggle",            "https://www.kaggle.com/{username}",                   200),
     ("npm",               "https://www.npmjs.com/~{username}",                   200),
-    ("PyPI",              "https://pypi.org/user/{username}/",                   200),
     ("Docker Hub",        "https://hub.docker.com/u/{username}",                 200),
     ("Gist",              "https://gist.github.com/{username}",                  200),
     ("Glitch",            "https://glitch.com/@{username}",                      200),
@@ -81,7 +83,6 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("Vimeo",             "https://vimeo.com/{username}",                        200),
     ("DailyMotion",       "https://www.dailymotion.com/{username}",              200),
     ("Rumble",            "https://rumble.com/user/{username}",                  200),
-    ("Odysee",            "https://odysee.com/@{username}",                      200),
     ("Kick",              "https://kick.com/{username}",                         200),
 
     # ── Audio / Music ─────────────────────────────────────────
@@ -103,7 +104,6 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("Xbox Gamertag",     "https://xboxgamertag.com/search/{username}",          200),
 
     # ── Photo / Art ───────────────────────────────────────────
-    ("500px",             "https://500px.com/p/{username}",                      200),
     ("DeviantArt",        "https://www.deviantart.com/{username}",               200),
     ("ArtStation",        "https://www.artstation.com/{username}",               200),
     ("Unsplash",          "https://unsplash.com/@{username}",                    200),
@@ -171,6 +171,23 @@ PLATFORMS: list[tuple[str, str, int]] = [
     ("FreeCodeCamp",      "https://www.freecodecamp.org/{username}",             200),
     ("HackerOne",         "https://hackerone.com/{username}",                    200),
     ("BugCrowd",          "https://bugcrowd.com/{username}",                     200),
+
+    # ── Requested coverage expansion ──────────────────────────
+    # Each probed with a real handle and an invented one first. The first
+    # three discriminate cleanly (200 vs 404); the rest answer 403 to a
+    # datacentre address and could not be confirmed here. A 403 fails the
+    # expected-status check and reports "not found", so an unconfirmed entry
+    # costs coverage, never a false hit.
+    ("Hugging Face",      "https://huggingface.co/{username}",                   200),
+    ("Pixelfed",          "https://pixelfed.social/{username}",                  200),
+    ("Indie Hackers",     "https://www.indiehackers.com/{username}",             200),
+    ("CodeSandbox",       "https://codesandbox.io/u/{username}",                 200),
+    ("Lemmy",             "https://lemmy.world/u/{username}",                    200),
+    ("Crunchbase",        "https://www.crunchbase.com/person/{username}",        200),
+    ("Audius",            "https://audius.co/{username}",                        200),
+    ("Mod DB",            "https://www.moddb.com/members/{username}",            200),
+    ("Nexus Mods",        "https://www.nexusmods.com/users/{username}",          200),
+    ("Pexels",            "https://www.pexels.com/@{username}",                  200),
 ]
 
 TOTAL_PLATFORMS = len(PLATFORMS)
@@ -311,7 +328,14 @@ def confidence_score(resp, username: str, meta: dict) -> int:
         # as equivalent to a profile title, but never accept a path/canonical
         # alone: Pinterest echoes requested paths for missing accounts too.
         if "pinterest.com" in urlparse(resp.url).netloc.lower():
-            body = resp.text[:160000].lower()
+            # Whole body, not a prefix. Pinterest ships ~1.5 MB of markup and
+            # puts its embedded state near the very end: measured on real
+            # profiles, "username" lands around 1,238,000 and <title> around
+            # 1,220,828, so a 160,000-char window missed every signal and this
+            # branch never fired. Scanning the rest is close to free, because
+            # requests has already read the full body into resp.text — the
+            # slice only ever limited the search, never the download.
+            body = resp.text.lower()
             escaped = re.escape(uname)
             has_username_field = re.search(
                 rf'["\']username["\']\s*:\s*["\']{escaped}["\']', body
@@ -322,10 +346,21 @@ def confidence_score(resp, username: str, meta: dict) -> int:
             ))
             if has_username_field and has_profile_field:
                 score = 2
-        if not score:
-            return 0
 
-    # ── Corroboration — meaningless on its own ────────────────
+    # ── Corroboration ─────────────────────────────────────────
+    #
+    # These used to count only once account-specific evidence had fired, and
+    # anything without it was dropped. That gate was too strict in practice:
+    # platforms that render client-side carry none of the evidence above even
+    # for accounts that plainly exist, so real profiles were being hidden.
+    # Nothing is dropped for weak evidence now — a page that showed no error
+    # and did not bounce us to a login wall is reported, and the confidence
+    # label carries the uncertainty instead of the visibility.
+    #
+    # The cost is real and worth stating: on a site that answers 200 for every
+    # handle, a made-up name scores the same as a real one. That is a property
+    # of those sites, not of the scoring — they return the same bytes either
+    # way. Hence the "low" tier below.
     if _mentions_handle(urls, uname):                    # canonical names the handle
         score += 1
     if "profile" in og_type or "user" in og_type:        # og:type = profile
@@ -338,7 +373,15 @@ def confidence_score(resp, username: str, meta: dict) -> int:
 
 
 def _confidence_label(score: int) -> str:
-    return "high" if score >= 3 else "medium"
+    """
+    high   — account-specific evidence (handle in title, follower counts)
+    medium — several corroborating signals, no direct evidence
+    low    — reachable, no error, nothing that distinguishes it from the
+             site's generic page. Shown, but never presented as confirmed.
+    """
+    if score >= 3:
+        return "high"
+    return "medium" if score >= 2 else "low"
 
 
 def rejection_reason(status_code: int, score=None) -> str:
@@ -461,7 +504,9 @@ def verify_profile_url(url: str, username: str, timeout: int = 8) -> dict:
     score = confidence_score(resp, username, meta)
     out["meta"] = meta
     out["match_score"] = score
-    if score >= 2:
+    # >= 0 keeps everything except the hard negatives (soft 404, login-wall
+    # bounce), which score -10. Weak evidence is labelled, not discarded.
+    if score >= 0:
         out["ok"] = True
         out["confidence"] = _confidence_label(score)
     return out
@@ -517,7 +562,7 @@ class UsernameChecker:
                 # Recorded either way: the score is what the rejection panel
                 # explains itself with.
                 result["match_score"] = score
-                if score >= 2:
+                if score >= 0:
                     result["exists"] = True
                     result["confidence"] = _confidence_label(score)
                     extract_metadata(result, meta)

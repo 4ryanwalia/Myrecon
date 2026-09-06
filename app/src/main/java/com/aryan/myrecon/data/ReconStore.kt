@@ -52,6 +52,18 @@ class ReconStore(private val context: Context) {
         val WATCHED_HANDLES = stringSetPreferencesKey("watched_handles")
         val LAST_SCAN = stringPreferencesKey("last_scan")
         val LAST_CHECK = stringPreferencesKey("last_breach_check")
+
+        /**
+         * Consent to send watched addresses to the lookup service.
+         *
+         * Separate from the watchlist itself, and required on top of it. The
+         * catalogue check transmits nothing; per-address checking does, and one
+         * switch must never silently buy the other.
+         */
+        val EMAIL_MONITORING = stringPreferencesKey("email_monitoring_consent")
+
+        /** Corpora already reported for one address, so alerts stay novel. */
+        fun seenSources(email: String) = stringSetPreferencesKey("seen_sources_$email")
     }
 
     // ── Breach alerting ──────────────────────────────────────────
@@ -95,11 +107,66 @@ class ReconStore(private val context: Context) {
     }
 
     suspend fun unwatchEmail(email: String) {
+        val clean = email.trim().lowercase()
         context.dataStore.edit { prefs ->
-            prefs[Keys.WATCHED_EMAILS] =
-                (prefs[Keys.WATCHED_EMAILS] ?: emptySet()) - email.trim().lowercase()
+            prefs[Keys.WATCHED_EMAILS] = (prefs[Keys.WATCHED_EMAILS] ?: emptySet()) - clean
+            // Drop the per-address history too. Leaving it behind would keep a
+            // record of an address the user just asked to stop watching, and
+            // would silently suppress alerts if they ever re-added it.
+            prefs.remove(Keys.seenSources(clean))
         }
     }
+
+    // ── Per-address monitoring (transmits; opt-in) ───────────────
+
+    /**
+     * Whether the user has agreed to send watched addresses to the lookup
+     * service. Defaults to false and is asked for separately from the
+     * catalogue alerts, which never transmit anything.
+     */
+    val emailMonitoring: Flow<Boolean> = context.dataStore.data
+        .map { it[Keys.EMAIL_MONITORING] == "true" }
+
+    suspend fun setEmailMonitoring(on: Boolean) {
+        context.dataStore.edit { prefs ->
+            if (on) {
+                prefs[Keys.EMAIL_MONITORING] = "true"
+            } else {
+                // Revoking clears every per-address history as well, so turning
+                // it back on re-baselines instead of replaying old findings.
+                prefs.remove(Keys.EMAIL_MONITORING)
+                (prefs[Keys.WATCHED_EMAILS] ?: emptySet()).forEach {
+                    prefs.remove(Keys.seenSources(it))
+                }
+            }
+        }
+    }
+
+    suspend fun isEmailMonitoringOn(): Boolean =
+        context.dataStore.data.first()[Keys.EMAIL_MONITORING] == "true"
+
+    suspend fun seenSourcesFor(email: String): Set<String> =
+        context.dataStore.data.first()[Keys.seenSources(email.trim().lowercase())] ?: emptySet()
+
+    suspend fun markSourcesSeen(email: String, names: Collection<String>) {
+        val key = Keys.seenSources(email.trim().lowercase())
+        context.dataStore.edit { prefs ->
+            prefs[key] = (prefs[key] ?: emptySet()) + names
+        }
+    }
+
+    /**
+     * True once an address has been checked at least once.
+     *
+     * The first check records what is already known *without* alerting: a newly
+     * watched address is usually in several old breaches, and opening with a
+     * push about a 2018 dump is noise, not news. Only what appears afterwards
+     * is worth interrupting for. The existing exposure is shown on screen
+     * instead, where the user asked for it.
+     */
+    suspend fun hasBaselineFor(email: String): Boolean =
+        context.dataStore.data.first()
+            .contains(Keys.seenSources(email.trim().lowercase()))
 
     val watchedHandles: Flow<Set<String>> = context.dataStore.data
         .map { it[Keys.WATCHED_HANDLES] ?: emptySet() }

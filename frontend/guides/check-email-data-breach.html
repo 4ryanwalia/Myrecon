@@ -30,9 +30,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary">
-        <a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/deep-search.html">Deep Search</a><a href="/#features">Features</a><a href="/about.html">About</a>
-      </nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -69,6 +67,35 @@
         <li><strong>Watch for phishing</strong> in the weeks after a breach. Be sceptical of unexpected messages that reference real details about you or create urgency.</li>
         <li><strong>Consider a fresh email</strong> for sensitive accounts (banking, government) that is different from the one you hand out publicly.</li>
       </ol>
+
+      <h2>Reading a breach result properly</h2>
+      <p>A breach checker returns a list of names and dates, and most people stop at the count. The count is the least useful part. What matters is <em>which fields</em> were exposed, because that determines what an attacker can actually do.</p>
+      <p>Sorted by how much trouble each one causes:</p>
+      <ul>
+        <li><strong>Plaintext passwords or weak hashes.</strong> The worst case. Anything hashed with MD5 or unsalted SHA-1 should be treated as plaintext — those are cracked in bulk. If a password appears here, every account where you reused it is compromised, not just the breached one.</li>
+        <li><strong>Security questions and answers.</strong> Underrated and often ignored. Your mother's maiden name does not change after a breach, and the same answers are used across many services. Where you cannot remove them, put random text in the answer field and store it in your password manager.</li>
+        <li><strong>Phone numbers.</strong> The route to SIM-swap attacks, which defeat SMS-based two-factor authentication. A breach exposing your number alongside your email is a reason to move off SMS codes for anything financial.</li>
+        <li><strong>Physical address, date of birth, government identifiers.</strong> Cannot be rotated. These feed identity fraud and, combined across several breaches, are enough to pass many "verify your identity" phone checks.</li>
+        <li><strong>Email address only.</strong> The mildest outcome. It means more targeted phishing, not account compromise.</li>
+      </ul>
+      <p>Dates matter too. A breach from 2013 that exposed a password you have since changed is history. One from last year exposing a password you still use is an emergency. Work the list newest-first and by field severity, not alphabetically.</p>
+
+      <h2>Checking a password without handing it over</h2>
+      <p>There is an obvious objection to password-checking services: to find out whether your password leaked, you appear to have to give it to a website. You do not, and the method that avoids it is worth understanding because it tells you which services to trust.</p>
+      <p>The technique is called <strong>k-anonymity</strong>. Your browser hashes the password with SHA-1 locally, then sends only the <em>first five characters</em> of that hash. The server replies with every leaked hash beginning with those five characters — typically a few hundred — and your browser checks the rest of the match locally.</p>
+      <p>The server therefore learns five hexadecimal characters, which correspond to hundreds of thousands of possible passwords. It never sees your password, never sees the full hash, and cannot determine which of the returned candidates was yours. If a password checker does not work this way, do not use it.</p>
+
+      <h2>What "not found" does and does not mean</h2>
+      <p>A clean result is good news, with three caveats worth holding onto.</p>
+      <p>First, it means your address is not in the breaches that particular service has indexed. No service has all of them. Many breaches are never published, traded privately, or published years after the fact — the average gap between a breach happening and becoming public is measured in months, sometimes years.</p>
+      <p>Second, checking one address checks one address. Most people have several: an old school or university address, a throwaway used for signups, a work address. Forgotten addresses are the highest-risk ones precisely because you are not watching them, and they are often the recovery address on accounts you still use.</p>
+      <p>Third, a failed check is not a clean check. If a service is rate-limited or unreachable and reports nothing, that is the absence of evidence and not evidence of absence — a distinction that matters more than it sounds, because a silent failure looks exactly like good news.</p>
+
+      <h2>Monitoring without giving your address away</h2>
+      <p>Checking once tells you about today. The useful version is being told when something new appears, and there are two ways to do that with very different privacy costs.</p>
+      <p><strong>The catalogue approach.</strong> The list of known breaches — names, dates, how many accounts, which fields — is public. A tool can download that list and compare it against what it showed you last time, entirely on your own device. Nothing about you is transmitted, no account is required, and you learn immediately when a breach is published so you can check whether you used the service.</p>
+      <p><strong>The per-address approach.</strong> Genuinely answering "was I in it" requires sending your address to a service that holds breach records. That is a real disclosure, and any service offering it should say so plainly rather than burying it. It gives you a definite answer where the catalogue approach only gives you a prompt to go and check.</p>
+      <p>Neither is wrong; they are different trades. What matters is that a service tells you which one it is doing. Anything advertising "we never send your data anywhere" while also telling you which specific breaches you appear in is describing something impossible.</p>
 
       <h2>How to reduce future exposure</h2>
       <p>You cannot un-leak data that is already out, but you can limit how much new data accumulates. Use unique passwords, delete accounts you no longer need, and think twice before handing your real email to every website that asks. Email aliases and "plus addressing" (for example, <span style="font-family:var(--mono)">you+shop@gmail.com</span>) can help you compartmentalise and even trace which service leaked or sold your address.</p>

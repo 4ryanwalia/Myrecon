@@ -1,5 +1,7 @@
 package com.aryan.myrecon.data
 
+import android.util.Log
+import com.aryan.myrecon.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
@@ -115,6 +117,7 @@ object UsernameSweep {
         Regex("""<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']""", RegexOption.IGNORE_CASE),
         Regex("""<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']""", RegexOption.IGNORE_CASE),
         Regex("""<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']""", RegexOption.IGNORE_CASE),
+        Regex("""<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']""", RegexOption.IGNORE_CASE),
     )
 
     private val OG_TITLE_RE =
@@ -180,9 +183,28 @@ object UsernameSweep {
     private fun avatarFromJson(body: String): String? =
         listOf(
             "profile_pic_url_hd", "profile_pic_url", "avatar_url", "icon_img", "image_url",
-            "image_xlarge_url", "image_large_url",
+            "image_xlarge_url", "image_large_url", "profile_image_url_https",
+            "profile_image_url", "avatar", "avatarUrl", "photo_url", "picture",
+            "thumbnail_url", "image",
         )
             .firstNotNullOfOrNull { cleanAvatar(jsonField(body, it)) }
+
+    /**
+     * Platforms pinned to the top of their own category.
+     *
+     * The sort is global but ResultViews groups by category afterwards, so
+     * each entry only ever competes with its own group: Instagram and
+     * Pinterest lead Social, YouTube leads Video. Relative order between
+     * different categories is therefore irrelevant — what matters is that a
+     * pinned platform outranks everything sharing its category, which the
+     * alphabetical fallback otherwise decided (YouTube lost to DailyMotion,
+     * Kick, Rumble, Twitch and Vimeo purely on spelling).
+     *
+     * Names must match PlatformCatalogue exactly. Kept in step with
+     * _PINNED_PLATFORMS in backend/services/search.py so both surfaces order
+     * results the same way.
+     */
+    private val PINNED = listOf("Instagram", "Pinterest", "YouTube")
 
     private const val CONCURRENCY = 16
 
@@ -196,10 +218,47 @@ object UsernameSweep {
      * matters on mobile data.
      */
     private const val BODY_PEEK_BYTES = 48_000L
-    // Pinterest's account object often follows its generic shell. Read a
-    // larger bounded slice for this one platform so a real profile does not
-    // get hidden as a low-confidence page merely because its title is generic.
-    private const val PINTEREST_PEEK_BYTES = 192_000L
+    /**
+     * Pinterest reads almost the whole document, because its profile data is
+     * at the very bottom of it.
+     *
+     * Measured on live profiles rather than estimated: the page decodes to
+     * 1.31-1.52 MB and the `"username"` field lands at 1,036,563
+     * (jamieoliver) and 1,242,000 (marthastewart), with `image_xlarge_url`
+     * about 90 KB further on. At the previous 192 KB every one of those sat
+     * far outside the slice, so [pinterestProfileIn] could never return true
+     * and [avatarFromJson] could never find the avatar - Pinterest was not
+     * merely unreliable here, it was undetectable.
+     *
+     * This costs no extra network. The response is Brotli-encoded and weighs
+     * ~140 KB on the wire either way; the peek only bounds how much of it is
+     * decompressed, so the old limit was saving heap, never data. 1.8 MB
+     * leaves headroom over the largest page measured (2.04 MB decoded for the
+     * @pinterest account itself, whose fields sit at ~1.75 MB).
+     */
+    private const val PINTEREST_PEEK_BYTES = 1_800_000L
+    // Mobile YouTube sends a large application shell before its real channel
+    // metadata. The channel's og:image is commonly hundreds of KB into the
+    // response, so the normal page window never reaches it.
+    private const val YOUTUBE_PEEK_BYTES = 1_000_000L
+
+    /**
+     * Instagram has a floor *and* a ceiling, and the ceiling is the subtle one.
+     *
+     * Floor: Instagram emits ~95 KB of inline script before `<head>` closes —
+     * `<title>` was measured at 94,964 — and og:image sits beside it. At 48 KB
+     * the window stopped short of every avatar signal, so a profile that was
+     * otherwise detected came back with no picture.
+     *
+     * Ceiling: do NOT raise this past ~300 KB. Instagram echoes the requested
+     * handle back at ~308,900 inside an `"httperrorpage"` routing object, and
+     * it does so for handles that do not exist — measured, `nasa` and
+     * `zzqnope99123xqq` both produce it, in shells whose sizes differ by 12
+     * bytes. A window that reaches the echo would make `mentionsHandle` true
+     * for every handle on earth and turn Instagram into a permanent false
+     * positive. 160 KB clears the head and stays far short of the echo.
+     */
+    private const val INSTAGRAM_PEEK_BYTES = 160_000L
 
     private fun pinterestProfileIn(body: String, handle: String): Boolean {
         val escaped = Regex.escape(handle.lowercase())
@@ -233,6 +292,7 @@ object UsernameSweep {
             launch {
                 gate.withPermit {
                     val hit = probe(p, handle)
+                    logHit(p, hit)
                     val n = checked.incrementAndGet()
                     if (hit != null && hit.exists) {
                         hits += hit
@@ -254,8 +314,19 @@ object UsernameSweep {
         // Wait for every probe before the terminal event, so Finished always
         // carries the complete set rather than whatever had arrived so far.
         jobs.joinAll()
-        send(Event.Finished(hits.sortedWith(compareByDescending<Hit> { it.confidence == "high" }
-            .thenBy { it.platform.name })))
+        // Pinned platforms first (Instagram, then Pinterest), then confidence,
+        // then name.
+        //
+        // Not cosmetic: while the reward gate is locked ResultViews shows only
+        // the first account in each category, so whatever sorts first in
+        // Social is the only social account most users ever see. Instagram is
+        // the one they are almost always looking for, and alphabetical order
+        // was burying it behind Ello, Facebook and Gab.
+        send(Event.Finished(hits.sortedWith(
+            compareBy<Hit> { PINNED.indexOf(it.platform.name).takeIf { i -> i >= 0 } ?: PINNED.size }
+                .thenByDescending { it.confidence == "high" }
+                .thenBy { it.platform.name },
+        )))
     }.flowOn(Dispatchers.IO).buffer()
 
     /**
@@ -275,9 +346,15 @@ object UsernameSweep {
             client.newCall(b.get().build()).execute().use { resp ->
                 when (resp.code) {
                     200 -> {
-                        // Larger peek than the existence check needs, because the
-                        // avatar URL can sit well into the payload.
-                        val body = runCatching { resp.peekBody(16_384).string() }.getOrDefault("")
+                        // Instagram's profile object can be much larger than
+                        // other API responses. Its avatar URL is sometimes
+                        // outside the first 16 KB, so give that endpoint a
+                        // bounded larger read before falling back to HTML.
+                        val limit = when (p.name) {
+                            "Instagram" -> 128_000L
+                            else -> 64_000L
+                        }
+                        val body = runCatching { resp.peekBody(limit).string() }.getOrDefault("")
                         // An empty array or null user is a 200 that still means absent.
                         val empty = body.isBlank() || body == "[]" ||
                             body.contains("\"user\": null") || body.contains("\"user\":null")
@@ -302,6 +379,26 @@ object UsernameSweep {
         }
     }
 
+    /**
+     * Debug-only trace of what each platform actually produced.
+     *
+     * An avatar that fails to appear is indistinguishable, on screen, from one
+     * that was never found — SubcomposeAsyncImage falls back to the same
+     * PlatformTile whether Coil errored or the URL was null. This says which,
+     * so a missing picture can be diagnosed from Logcat instead of inferred.
+     *
+     * Stripped from release by the BuildConfig.DEBUG guard; filter Logcat on
+     * the "MyReconSweep" tag.
+     */
+    private fun logHit(p: PlatformDef, hit: Hit?) {
+        if (!BuildConfig.DEBUG) return
+        Log.d(
+            "MyReconSweep",
+            "${p.name}: exists=${hit?.exists} conf=${hit?.confidence} " +
+                "status=${hit?.status} avatar=${hit?.avatar ?: "<none>"}",
+        )
+    }
+
     @Suppress("ReturnCount")
     private fun probe(p: PlatformDef, handle: String): Hit? {
         // Prefer an unambiguous API answer where the platform offers one.
@@ -324,10 +421,22 @@ object UsernameSweep {
 
                 // Bounded peek — whole pages for 117 platforms would burn the
                 // user's data allowance for no extra signal.
-                val peek = runCatching {
-                    val limit = if (p.name == "Pinterest") PINTEREST_PEEK_BYTES else BODY_PEEK_BYTES
-                    resp.peekBody(limit).string().lowercase()
+                // Two views of the same bytes, and the distinction matters.
+                // Marker matching wants lower case; anything handed back to
+                // the UI must keep the case it was served in. Pinterest's
+                // avatars live at paths like /280x280_RS/, and lowercasing
+                // that is a 403 from the CDN — the image simply never loads.
+                // Display names have the same problem, less visibly.
+                val raw = runCatching {
+                    val limit = when (p.name) {
+                        "Pinterest" -> PINTEREST_PEEK_BYTES
+                        "YouTube" -> YOUTUBE_PEEK_BYTES
+                        "Instagram" -> INSTAGRAM_PEEK_BYTES
+                        else -> BODY_PEEK_BYTES
+                    }
+                    resp.peekBody(limit).string()
                 }.getOrDefault("")
+                val peek = raw.lowercase()
 
                 val title = TITLE_RE.find(peek)?.groupValues?.get(1)?.trim().orEmpty()
 
@@ -371,8 +480,8 @@ object UsernameSweep {
                 }
                 Hit(
                     p, exists = conf != "unverified", url = url, status = code, confidence = conf,
-                    avatar = avatarFrom(peek) ?: avatarFromJson(peek),
-                    displayName = OG_TITLE_RE.find(peek)?.groupValues?.getOrNull(1)?.trim()
+                    avatar = avatarFrom(raw) ?: avatarFromJson(raw),
+                    displayName = OG_TITLE_RE.find(raw)?.groupValues?.getOrNull(1)?.trim()
                         ?.takeIf { it.isNotBlank() && !it.equals(p.name, ignoreCase = true) },
                 )
             }

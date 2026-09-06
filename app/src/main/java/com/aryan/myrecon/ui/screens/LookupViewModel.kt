@@ -141,8 +141,13 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
 
-    private val _deep = MutableStateFlow(false)
-    val deep: StateFlow<Boolean> = _deep.asStateFlow()
+    // The "Deep sweep" toggle was removed. It survived the move of the username
+    // sweep on-device but the parameter did not — UsernameSweep.run() takes no
+    // depth argument, so the switch changed nothing and the two modes were
+    // identical. A control that does nothing is worse than no control, and a
+    // rewarded ad unlocking it was paying users in nothing at all.
+    //
+    // Deep Search remains a genuinely separate tool and always runs deep.
 
     private val _state = MutableStateFlow<LookupState>(LookupState.Idle)
     val state: StateFlow<LookupState> = _state.asStateFlow()
@@ -158,7 +163,6 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setQuery(v: String) { _query.value = v }
-    fun toggleDeep() { _deep.value = !_deep.value }
 
     fun cancel() {
         job?.cancel()
@@ -255,7 +259,17 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
                     // Additive: a Keybase failure must not lose the sweep.
                     val identity = runCatching { KeybaseIntel.lookup(q) }.getOrNull()
 
-                    val profiles = ev.hits.map { h ->
+                    // Keep reachable-but-unconfirmed profiles visible. Some
+                    // social platforms, notably Instagram and Pinterest,
+                    // render the account data client-side or block parts of
+                    // the page from a mobile request. In that case the sweep
+                    // cannot make a strong claim, but hiding the returned
+                    // profile entirely is a false negative. The result card
+                    // labels these as low confidence rather than presenting
+                    // them as confirmed accounts.
+                    val profiles = ev.hits
+                        .filter { it.confidence != "unverified" }
+                        .map { h ->
                         Profile(
                             url = h.url,
                             platform = h.platform.name,
@@ -300,6 +314,7 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
                             identity = identity?.takeIf { it.found },
                         )
                     )
+                    fillMissingAvatars(q, profiles)
                 }
             }
         }
@@ -308,7 +323,8 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun runStreaming(t: Tool, q: String) {
         if (t == Tool.Username) return runSweep(q)
 
-        val flow = ReconApi.investigateStream(q, _deep.value)
+        // Deep Search is the deep mode — there is no shallow variant of it.
+        val flow = ReconApi.investigateStream(q, deep = true)
 
         val log = ArrayDeque<String>()
         flow.catch { e -> _state.value = LookupState.Failed(e.message ?: "The scan failed.") }
@@ -339,4 +355,63 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
     }
+
+    /**
+     * Ask the server for avatars the device could not get.
+     *
+     * Instagram decides who it answers by address, and a phone it has begun
+     * refusing cannot recover on its own — the profile is found, but comes
+     * back with no picture. The server is normally a different address and its
+     * enricher has fallbacks the on-device probe does not, so it can usually
+     * answer what the device could not.
+     *
+     * Deliberately narrow. It runs after results are already on screen, so the
+     * sweep never waits on the network; it only touches profiles that are
+     * missing an avatar, so a working local answer is never overwritten; and
+     * it cannot change whether a profile is reported, only how it looks. A
+     * failure leaves the placeholder tile exactly as it is.
+     */
+    private fun fillMissingAvatars(handle: String, profiles: List<Profile>) {
+        val needing = profiles.filter {
+            it.profilePicUrl.isNullOrBlank() && it.platform in SERVER_ENRICHED
+        }
+        if (needing.isEmpty()) return
+
+        viewModelScope.launch {
+            val filled = needing.mapNotNull { profile ->
+                val pic = runCatching { ReconApi.enrich(profile.platform, handle) }
+                    .getOrNull()?.profile?.profilePicUrl
+                    ?.takeIf { it.isNotBlank() }
+                pic?.let { profile.platform to it }
+            }.toMap()
+            if (filled.isEmpty()) return@launch
+
+            // Done.result is Any — this screen serves several lookup types —
+            // so re-check it is still a sweep before touching it. The user may
+            // have run something else while the enrichment was in flight.
+            val done = _state.value as? LookupState.Done ?: return@launch
+            val sweep = done.result as? SweepResult ?: return@launch
+            val updated = sweep.result.results.profiles.map { p ->
+                filled[p.platform]?.let { p.copy(profilePicUrl = it) } ?: p
+            }
+            _state.value = LookupState.Done(
+                sweep.copy(
+                    result = sweep.result.copy(
+                        results = sweep.result.results.copy(profiles = updated),
+                    ),
+                ),
+            )
+        }
+    }
+
+    private companion object {
+        /**
+         * Platforms worth a server round-trip when the device gets no avatar.
+         *
+         * Kept short on purpose: each entry is a request, and most platforms
+         * that yield no picture genuinely have none to give.
+         */
+        val SERVER_ENRICHED = setOf("Instagram", "Pinterest", "TikTok", "Threads")
+    }
+
 }

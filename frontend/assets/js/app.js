@@ -215,6 +215,8 @@
 
     (data.identity_clusters || []).forEach((c) => { html += clusterCard(c); });
 
+    html += exposuresPanel(data.exposures || []);
+
     if (!profiles.length && !documents.length && !mentions.length) {
       html += emptyState("No public profiles were found for this username.");
     } else {
@@ -222,8 +224,55 @@
       profiles.concat(documents, mentions).forEach((item) => { html += profileCard(item); });
       html += `</div>`;
     }
+
+    html += rejectedPanel(data.rejected || [], s.checked || 0);
     r.innerHTML = html;
     animateCountUps();
+  }
+
+  // Addresses and identifiers the handle leaks, as opposed to where it exists.
+  // Kept above the profile grid because it is the finding a person is least
+  // likely to already know about themselves.
+  function exposuresPanel(exposures) {
+    if (!exposures.length) return "";
+    let rows = "";
+    exposures.forEach((x) => {
+      (x.emails || []).forEach((m) => {
+        rows += `<div class="expo-row">
+          <div class="expo-val">${esc(m.email)}
+            <button class="pivot-chip" data-pivot data-tool="email" data-query="${esc(m.email)}"
+              title="Check this address for breaches">check breaches</button></div>
+          <div class="expo-why">published in ${m.commits} public commit${m.commits === 1 ? "" : "s"}
+            across ${(m.repos || []).length} repositor${(m.repos || []).length === 1 ? "y" : "ies"}
+            as “${esc(m.name || "")}”</div>
+        </div>`;
+      });
+      if (x.protected) {
+        rows += `<div class="expo-row ok"><div class="expo-val">No address exposed</div>
+          <div class="expo-why">every public commit uses GitHub's noreply address</div></div>`;
+      }
+      if (x.error) {
+        rows += `<div class="expo-row"><div class="expo-why">Commit check unavailable — ${esc(x.error)}</div></div>`;
+      }
+    });
+    if (!rows) return "";
+    return `<div class="panel expo">
+      <div class="section-label">Leaked in public commit metadata</div>${rows}</div>`;
+  }
+
+  // What we checked and deliberately did not report. Every other tool in this
+  // category shows these as green ticks; stating the reason is the whole point.
+  function rejectedPanel(rejected, checked) {
+    if (!rejected.length) return "";
+    const rows = rejected.map((x) => `<tr>
+      <td>${esc(x.platform)}</td>
+      <td class="rj-code">${esc(String(x.status_code || "—"))}</td>
+      <td class="rj-why">${esc(x.reason)}</td></tr>`).join("");
+    return `<details class="panel rejected">
+      <summary>${checked} platforms checked · ${rejected.length} not confirmed
+        <span class="hint">why we didn't report these</span></summary>
+      <div class="rj-scroll"><table class="rj-table"><tbody>${rows}</tbody></table></div>
+    </details>`;
   }
 
   function stat(n, label) {
@@ -255,13 +304,21 @@
     const cat = r.category || "mention";
     const fallback = (platform[0] || "?").toUpperCase();
     let meta = "";
-    if (r.confidence === "medium") meta += `<span class="meta-tag conf-medium">Possible match</span>`;
+    // "low" is reported, not hidden: the platform answered without an error but
+    // served nothing that distinguishes a real account from a missing one. The
+    // label has to say that, or an unverifiable hit reads as a confirmed one.
+    if (r.confidence === "low") meta += `<span class="meta-tag conf-low" title="This platform returns the same page whether or not the account exists">Unconfirmed</span>`;
+    else if (r.confidence === "medium") meta += `<span class="meta-tag conf-medium">Possible match</span>`;
     else if (r.confidence === "high") meta += `<span class="meta-tag conf-high">Confirmed</span>`;
     if (r.followers) meta += `<span class="meta-tag">${fmtNum(r.followers)} followers</span>`;
     if (r.is_verified) meta += `<span class="meta-tag">Verified</span>`;
     if (r.is_private) meta += `<span class="meta-tag">Private</span>`;
     if (r.repos) meta += `<span class="meta-tag">${fmtNum(r.repos)} repos</span>`;
     const href = r.url && /^https?:\/\//.test(r.url) ? r.url : null;
+    // On demand, never during the scan: archive.org needs ~10s per cold key
+    // and throttles under fan-out. A span, not a button — the card is an <a>.
+    if (href) meta += `<span class="meta-tag wb" data-wayback="${esc(href)}"
+      role="button" tabindex="0" title="Look up archive.org history">archive history</span>`;
     const inner = `
       <div class="card-head">
         ${avatarHTML(r, fallback)}
@@ -489,6 +546,37 @@
   function datalist(rows) {
     return `<div class="datalist">${rows.map(([k, v]) =>
       `<div class="datarow"><div class="k">${esc(k)}</div><div class="v">${v}</div></div>`).join("")}</div>`;
+  }
+
+  async function loadWayback(el) {
+    const url = el.dataset.wayback;
+    if (!url || el.dataset.busy) return;
+    el.dataset.busy = "1";
+    el.textContent = "checking archive…";
+    try {
+      const data = await api(CFG.endpoints.wayback, { url });
+      const h = data.history || {};
+      el.removeAttribute("data-wayback");
+      if (h.rate_limited) {
+        el.textContent = "archive.org is throttling — try again shortly";
+        el.classList.add("wb-warn");
+      } else if (h.snapshots) {
+        // A range is the useful part: "first seen" dates the account, and a
+        // last_seen well in the past on a dead link means it was deleted.
+        el.innerHTML = `archived ${esc(h.first_seen)} → ${esc(h.last_seen)}
+          (${h.snapshots} snapshot${h.snapshots === 1 ? "" : "s"})
+          <a href="${esc(h.archive_url)}" target="_blank" rel="noopener nofollow">view</a>`;
+        el.classList.add("wb-hit");
+      } else {
+        el.textContent = "never archived";
+        el.classList.add("wb-miss");
+      }
+    } catch (err) {
+      el.textContent = `archive lookup failed — ${err.message}`;
+      el.classList.add("wb-warn");
+    } finally {
+      delete el.dataset.busy;
+    }
   }
 
   function emptyState(msg) {
@@ -1218,6 +1306,15 @@
         if (!el) return;
         e.preventDefault();
         doPivot(el.dataset.tool, el.dataset.query);
+      });
+      // Archive history, asked for one result at a time. The tag sits inside
+      // the card's anchor, so the navigation has to be stopped explicitly.
+      resultsEl().addEventListener("click", (e) => {
+        const el = e.target.closest("[data-wayback]");
+        if (!el) return;
+        e.preventDefault();
+        e.stopPropagation();
+        loadWayback(el);
       });
       $("#revealBtn")?.addEventListener("click", () => {
         setReveal($("#queryInput").type === "password");

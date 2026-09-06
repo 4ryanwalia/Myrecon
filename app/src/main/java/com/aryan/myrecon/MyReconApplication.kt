@@ -47,10 +47,22 @@ class MyReconApplication : Application(), ImageLoaderFactory {
                     // Many avatar CDNs reject requests without a browser-like
                     // agent, which reads as a broken image rather than a block.
                     .addInterceptor { chain ->
+                        val request = chain.request()
+                        val host = request.url.host.lowercase()
+                        val headers = request.newBuilder()
+                            .header("User-Agent", "Mozilla/5.0 (Linux; Android 14) Mobile Safari/537.36")
+                            .header("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8")
+                            .header("Accept-Language", "en-US,en;q=0.9")
+
+                        // Instagram image URLs are served from its CDN rather
+                        // than instagram.com. That CDN can reject direct
+                        // image requests without the originating site, even
+                        // though the profile API supplied a valid URL.
+                        if (host.endsWith("cdninstagram.com") || host.endsWith("fbcdn.net")) {
+                            headers.header("Referer", "https://www.instagram.com/")
+                        }
                         chain.proceed(
-                            chain.request().newBuilder()
-                                .header("User-Agent", "Mozilla/5.0 (Linux; Android 14) Mobile Safari/537.36")
-                                .build()
+                            headers.build()
                         )
                     }
                     .build()

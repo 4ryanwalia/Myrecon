@@ -115,6 +115,23 @@ object ReconApi {
     fun investigateStream(handle: String, deep: Boolean = false): Flow<StreamEvent> =
         stream("/api/investigate/stream", """{"query":${handle.q()},"deep":$deep}""")
 
+    /**
+     * Profile detail for one platform, fetched through the server.
+     *
+     * The sweep runs on-device on purpose, and for almost everything that is
+     * the better address to ask from. Instagram is the exception: it decides
+     * by IP and by how much that IP has asked lately, and a phone it has
+     * started refusing cannot talk its way back in. The server is usually a
+     * different address, and its enricher has fallbacks the on-device probe
+     * does not — measured the same minute, it returned a full profile for a
+     * handle the local check could only get 401 for.
+     *
+     * Strictly additive: used to fill in an avatar the sweep could not get,
+     * never to decide whether an account exists.
+     */
+    suspend fun enrich(platform: String, handle: String): EnrichResult =
+        post("/api/enrich", """{"platform":${platform.q()},"username":${handle.q()}}""")
+
     // ── Helpers ──────────────────────────────────────────────────
 
     /** JSON-quote a string so a target containing quotes cannot break the body. */

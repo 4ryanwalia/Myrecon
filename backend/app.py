@@ -128,6 +128,8 @@ def _register_routes(app: Flask) -> None:
     from services.email import scan_email
     from services.image import scan_image
     from services.network import scan_domain, scan_dns, scan_whois, scan_ip, scan_subdomains
+    from services.enrich import enrich_profile
+    from modules.wayback import history as wayback_history
 
     cached_username = cached("username")(search_username)
     cached_fullname = cached("fullname")(search_fullname)
@@ -138,6 +140,16 @@ def _register_routes(app: Flask) -> None:
     cached_whois = cached("whois")(scan_whois)
     cached_ip = cached("ip")(scan_ip)
     cached_subdomains = cached("subdomains")(scan_subdomains)
+    cached_enrich = cached("enrich")(enrich_profile)
+
+    def _wayback(url: str) -> dict:
+        found = wayback_history(url)
+        # Being throttled is a temporary failure, not an answer. Tag it so the
+        # TTL cache refuses to pin it — otherwise one 429 would be served back
+        # as "never archived" for the whole cache window.
+        return {"status": "error", **found} if found.get("rate_limited") else found
+
+    cached_wayback = cached("wayback")(_wayback)
 
     @app.route("/api/health")
     def health():
@@ -302,6 +314,41 @@ def _register_routes(app: Flask) -> None:
         url = validation.image_url(body.get("image_url", ""))
         deep = validation.boolean(body.get("deep"))
         return responses.ok(cached_image(url, deep))
+
+    @app.route("/api/enrich", methods=["POST", "OPTIONS"])
+    def api_enrich():
+        """
+        Profile detail for one platform and handle.
+
+        For clients that a platform refuses to answer. The Android sweep runs
+        on-device by design, but Instagram blocks by address and a phone that
+        has been refused cannot recover on its own — so it asks the server,
+        which is usually not the address being refused. Cached, because the
+        answer is identical for every caller asking about the same handle.
+        """
+        if request.method == "OPTIONS":
+            return ("", 204)
+        body = _json_body()
+        platform = validation.platform_name(body.get("platform", ""))
+        handle = validation.username(body.get("username", ""))
+        return responses.ok(cached_enrich(platform, handle))
+
+    @app.route("/api/wayback", methods=["POST", "OPTIONS"])
+    def api_wayback():
+        """
+        Archive history for a single URL, asked for one result at a time.
+
+        Deliberately not folded into the username scan: the CDX index takes
+        ~10s for a cold key and rate-limits under fan-out, so twenty parallel
+        lookups return 429s and nothing else. Caching matters more here than
+        anywhere — a repeat lookup costs the user nothing and costs
+        archive.org nothing.
+        """
+        if request.method == "OPTIONS":
+            return ("", 204)
+        url = validation.page_url(_json_body().get("url", ""))
+        history = {k: v for k, v in cached_wayback(url).items() if k != "status"}
+        return responses.ok({"url": url, "history": history})
 
 
 # ── Error handling ───────────────────────────────────────────────

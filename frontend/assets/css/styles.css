@@ -313,6 +313,37 @@ a.card { display: block; }
 .datarow .v { flex: 1; font-size: 0.9rem; word-break: break-word; font-family: var(--mono); }
 .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); margin: 22px 0 10px; }
 
+/* Archive-history tag: a control living inside the card's anchor. */
+.meta-tag.wb { cursor: pointer; border-style: dashed; }
+.meta-tag.wb:hover { color: var(--text); border-color: var(--text-mute); }
+.meta-tag.wb-hit { color: var(--info); border-style: solid; border-color: color-mix(in srgb, var(--info) 40%, transparent); cursor: default; }
+.meta-tag.wb-hit a { color: inherit; text-decoration: underline; }
+.meta-tag.wb-miss { color: var(--text-mute); border-style: solid; cursor: default; }
+.meta-tag.wb-warn { color: var(--warn); border-style: solid; border-color: color-mix(in srgb, var(--warn) 40%, transparent); cursor: default; }
+
+/* Leaked identifiers — the finding a person least expects about themselves. */
+.panel.expo { margin-top: 18px; border-color: color-mix(in srgb, var(--danger) 34%, var(--border)); }
+.panel.expo .section-label { margin-top: 0; }
+.expo-row { padding: 10px 0; border-top: 1px solid var(--border); }
+.expo-row:first-of-type { border-top: 0; }
+.expo-val { font-family: var(--mono); font-size: 0.9rem; color: var(--danger); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; word-break: break-all; }
+.expo-row.ok .expo-val { color: var(--ok); }
+.expo-why { font-size: 0.8rem; color: var(--text-dim); margin-top: 4px; }
+
+/* What we checked and deliberately did not report. */
+.panel.rejected { margin-top: 18px; padding: 0; }
+.panel.rejected > summary { padding: 16px 20px; cursor: pointer; font-weight: 600; font-size: 0.9rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+.panel.rejected > summary::-webkit-details-marker { display: none; }
+.panel.rejected > summary::before { content: "▸"; color: var(--text-mute); }
+.panel.rejected[open] > summary::before { content: "▾"; }
+.panel.rejected[open] > summary { border-bottom: 1px solid var(--border); }
+.rj-scroll { max-height: 340px; overflow: auto; }
+.rj-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.rj-table td { padding: 8px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.rj-table tr:last-child td { border-bottom: 0; }
+.rj-code { font-family: var(--mono); color: var(--text-mute); text-align: right; white-space: nowrap; width: 1%; }
+.rj-why { color: var(--text-dim); }
+
 /* Cross-tool pivot chips */
 .pivot-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 4px; }
 .pivot-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); }
@@ -456,6 +487,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .scan-pct { font-family: var(--mono); font-weight: 700; font-size: 1.15rem; color: var(--accent); flex-shrink: 0; }
 .meta-tag.conf-medium { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
 .meta-tag.conf-high { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.meta-tag.conf-low { color: var(--text-mute); border-style: dashed; }
 
 /* History */
 .history-list { display: grid; gap: 8px; }

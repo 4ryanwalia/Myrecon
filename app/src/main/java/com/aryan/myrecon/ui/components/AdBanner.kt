@@ -13,6 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.aryan.myrecon.BuildConfig
 import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.Mono
@@ -20,6 +23,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -43,6 +47,32 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 private val adsInitialised = AtomicBoolean(false)
 
+/** AdMob's recommended banner refresh interval. Below 30s breaches policy. */
+private const val REFRESH_INTERVAL_MS = 60_000L
+
+/**
+ * Devices that must never generate a billable impression.
+ *
+ * The live ad unit is used in every build, including debug, so the developer's
+ * own handset has to be excluded here instead. Google serves it test creatives:
+ * the real ad unit is exercised end to end, but nothing is billed and nothing
+ * counts as invalid traffic. Repeated invalid traffic is the usual reason an
+ * AdMob account is suspended, and a suspension is far harder to undo than it is
+ * to avoid.
+ *
+ * To find the hash for a device, run the app once and look for this line in
+ * logcat:
+ *
+ *   Use RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("33BE..."))
+ *
+ * Then add it below. Until a real hash is added, EMULATOR covers the emulator
+ * but a physical handset is NOT protected.
+ */
+private val TEST_DEVICE_IDS = listOf(
+    AdRequest.DEVICE_ID_EMULATOR,
+    // TODO: add the hash logged by this device on first run — see above.
+)
+
 /**
  * Initialise the ad SDK once, off the main thread.
  *
@@ -52,7 +82,21 @@ private val adsInitialised = AtomicBoolean(false)
 fun initialiseAds(context: Context) {
     if (!adsInitialised.compareAndSet(false, true)) return
     Thread {
-        runCatching { MobileAds.initialize(context.applicationContext) {} }
+        runCatching {
+            MobileAds.setRequestConfiguration(
+                RequestConfiguration.Builder()
+                    .setTestDeviceIds(TEST_DEVICE_IDS)
+                    // The app is a general-purpose security tool, not directed
+                    // at children; declaring this explicitly keeps ad serving
+                    // compliant rather than leaving it unspecified.
+                    .setTagForChildDirectedTreatment(
+                        RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_FALSE
+                    )
+                    .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_T)
+                    .build()
+            )
+            MobileAds.initialize(context.applicationContext) {}
+        }
     }.apply { isDaemon = true }.start()
 }
 
@@ -60,6 +104,11 @@ fun initialiseAds(context: Context) {
 fun AdBanner(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val t = LocalReconTokens.current
+
+    // Disabled entirely in the screenshots variant, and nothing is drawn — not
+    // even reserved space — so listing images show the app as users would see
+    // it once the banner has loaded out of the way.
+    if (!BuildConfig.SHOW_ADS) return
 
     // Previews and tests must not attempt a real ad fetch.
     if (LocalInspectionMode.current) {
@@ -88,6 +137,10 @@ fun AdBanner(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
         )
 
+        // Held so the refresh loop can reload the same view rather than
+        // recreating it, which would flash and lose the current impression.
+        var adView by remember { mutableStateOf<AdView?>(null) }
+
         AndroidView(
             modifier = Modifier.fillMaxWidth(),
             factory = { ctx ->
@@ -99,9 +152,45 @@ fun AdBanner(modifier: Modifier = Modifier) {
                     )
                     adUnitId = BuildConfig.AD_BANNER_UNIT
                     loadAd(AdRequest.Builder().build())
+                    adView = this
                 }
             },
         )
+
+        // Refresh on a 60s cycle: more impressions per session, and 60s is
+        // AdMob's own recommended interval. Faster is counter-productive — under
+        // 30s breaches policy outright, and even 30-60s tends to lower eCPM
+        // because advertisers see impressions nobody had time to read.
+        //
+        // This must be the ONLY refresh in play. If auto-refresh is also
+        // enabled for this unit in the AdMob console, the two compound into a
+        // faster effective rate than either intends, which is a policy problem.
+        // Console auto-refresh should be set to Disabled for this unit.
+        LaunchedEffect(adView) {
+            val view = adView ?: return@LaunchedEffect
+            while (true) {
+                kotlinx.coroutines.delay(REFRESH_INTERVAL_MS)
+                runCatching { view.loadAd(AdRequest.Builder().build()) }
+            }
+        }
+
+        // Banners hold a live connection; pausing with the host stops them
+        // burning battery and requesting impressions nobody can see.
+        val lifecycle = LocalLifecycleOwner.current.lifecycle
+        DisposableEffect(lifecycle, adView) {
+            val observer = LifecycleEventObserver { _, event ->
+                when (event) {
+                    Lifecycle.Event.ON_RESUME -> adView?.resume()
+                    Lifecycle.Event.ON_PAUSE -> adView?.pause()
+                    else -> Unit
+                }
+            }
+            lifecycle.addObserver(observer)
+            onDispose {
+                lifecycle.removeObserver(observer)
+                adView?.destroy()
+            }
+        }
     }
 }
 

@@ -42,6 +42,28 @@
     public <init>(android.content.Context, androidx.work.WorkerParameters);
 }
 
+# WorkManager keeps its queue in a Room database whose implementation class is
+# generated at build time and constructed reflectively. R8 cannot see that link,
+# so it removed the no-arg constructor and the app died on launch with:
+#
+#   StartupException: NoSuchMethodException androidx.work.impl.WorkDatabase_Impl.<init> []
+#
+# This only appeared when a minified build was run on a device — it compiles
+# and packages perfectly without these rules, which is how it would have
+# reached production.
+-keep class androidx.work.impl.WorkDatabase_Impl { *; }
+-keep class * extends androidx.room.RoomDatabase { <init>(); }
+-keepclassmembers class * extends androidx.room.RoomDatabase {
+    <init>();
+}
+-keep class androidx.room.RoomDatabase { *; }
+-keep @androidx.room.Database class * { *; }
+-dontwarn androidx.room.paging.**
+
+# androidx.startup discovers initialisers by class name from the manifest.
+-keep class * extends androidx.startup.Initializer { *; }
+-keep class androidx.startup.** { *; }
+
 # ── Logging ────────────────────────────────────────────────────────
 # Strip Log calls from the release binary. Nothing sensitive is logged today,
 # but this makes that guarantee structural rather than a habit to maintain.

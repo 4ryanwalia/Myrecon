@@ -6,6 +6,9 @@ plugins {
 }
 
 android {
+    // Source package. Deliberately different from applicationId below: this only
+    // names the generated R and BuildConfig classes, so it can stay as it is
+    // while the installed identity matches the Play Console entry.
     namespace = "com.aryan.myrecon"
     compileSdk {
         version = release(36) {
@@ -14,11 +17,15 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.aryan.myrecon"
+        // Must match the Play Console listing character for character — a store
+        // entry's package name is fixed when the app is created and cannot be
+        // edited afterwards, so the app moves, not the listing. The capital M is
+        // unconventional but legal; it is kept because the Console has it.
+        applicationId = "com.Myrecon.osint"
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -26,32 +33,64 @@ android {
         // mirroring how the web frontend takes it from an env var. Override per
         // build type instead of editing source.
         buildConfigField("String", "API_BASE", "\"https://myrecon.onrender.com\"")
-    }
 
-    // AdMob identifiers.
-    //
-    // These are publisher IDs, not credentials — every published APK carries
-    // them in plain sight and the SDK requires it. The reason they are split by
-    // build type is policy, not secrecy: impressions or clicks a developer
-    // generates against a live ad unit count as invalid traffic, and repeated
-    // invalid traffic gets an AdMob account suspended. Debug therefore uses
-    // Google's public test units, which serve real-looking ads that bill
-    // nobody.
-    val realAppId = "ca-app-pub-6109270472398539~8843971332"
-    val realBanner = "ca-app-pub-6109270472398539/3567327992"
-    val testAppId = "ca-app-pub-3940256099942544~3347511713"
-    val testBanner = "ca-app-pub-3940256099942544/6300978111"
+        // Real AdMob IDs in every variant, debug included. Safety comes from
+        // registering this developer's handset as a test device at runtime, not
+        // from swapping the identifier per build type.
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-6109270472398539~8843971332"
+        buildConfigField(
+            "String",
+            "AD_BANNER_UNIT",
+            "\"ca-app-pub-6109270472398539/3567327992\"",
+        )
+        buildConfigField(
+            "String",
+            "AD_REWARDED_UNIT",
+            "\"ca-app-pub-6109270472398539/2229481585\"",
+        )
+        // Ads on everywhere by default; the screenshots variant turns them off.
+        buildConfigField("boolean", "SHOW_ADS", "true")
+    }
 
     buildTypes {
         debug {
             buildConfigField("String", "API_BASE", "\"https://myrecon.onrender.com\"")
-            buildConfigField("String", "AD_BANNER_UNIT", "\"$testBanner\"")
-            manifestPlaceholders["admobAppId"] = testAppId
+        }
+
+        /**
+         * Store-listing screenshots.
+         *
+         * Identical to debug except that no ad is requested or drawn. Play
+         * discourages listing images dominated by advertising, and a banner
+         * across the bottom of every screenshot makes the app look cheaper
+         * than it is.
+         *
+         * It is a separate variant rather than a runtime toggle so there is no
+         * chance of shipping a switch that disables monetisation in
+         * production. Debug signing keeps it installable alongside normal
+         * development.
+         *
+         *   gradlew installScreenshots
+         */
+        create("screenshots") {
+            initWith(getByName("debug"))
+            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("boolean", "SHOW_ADS", "false")
+            matchingFallbacks += listOf("debug")
+
+            // Minified like release. An unminified build is ~97 MB, which is
+            // more than a wireless-adb link reliably completes — the transfer
+            // was dropping mid-install. This also means the screenshots are
+            // taken against the same R8 output that ships, so anything
+            // minification breaks shows up here rather than in production.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
         release {
-            buildConfigField("String", "AD_BANNER_UNIT", "\"$realBanner\"")
-            manifestPlaceholders["admobAppId"] = realAppId
-
             // R8 shrinks and obfuscates. Beyond the size win, it strips the
             // readable class and method names that make an APK trivial to
             // reverse, which is the first thing any assessment looks at.
