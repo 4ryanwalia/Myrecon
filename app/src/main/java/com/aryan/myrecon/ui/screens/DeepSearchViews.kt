@@ -507,20 +507,3 @@ private fun Limits(notes: List<String>) {
         notes.forEach { NoteCard(it) }
     }
 }
-
-@Composable
-private fun NoteCard(text: String, tint: androidx.compose.ui.graphics.Color? = null) {
-    val t = LocalReconTokens.current
-    val colour = tint ?: t.border
-    Text(
-        text,
-        style = MaterialTheme.typography.bodySmall,
-        color = t.textDim,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(colour.copy(alpha = 0.07f))
-            .border(1.dp, colour.copy(alpha = 0.35f), RoundedCornerShape(12.dp))
-            .padding(13.dp),
-    )
-}

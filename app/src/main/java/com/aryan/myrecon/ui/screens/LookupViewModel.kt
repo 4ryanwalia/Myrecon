@@ -44,7 +44,10 @@ enum class Tool(
         Runs.OnDevice, Icons.Filled.Language,
     ),
     Dns(
-        "DNS", "A, AAAA, MX, NS, TXT, CNAME, SOA and CAA records.", "e.g. cloudflare.com",
+        "DNS",
+        "Records, spoofing exposure, the vendors behind them, and subdomains from " +
+            "Certificate Transparency.",
+        "e.g. cloudflare.com",
         Runs.OnDevice, Icons.Filled.Dns,
     ),
     Ip(
@@ -206,7 +209,10 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
         val result: Any = when (t) {
             Tool.Email -> orFallback({ OnDeviceIntel.email(q) }, { ReconApi.email(q) })
             Tool.Domain -> orFallback({ OnDeviceIntel.domain(q) }, { ReconApi.domain(q) })
-            Tool.Dns -> orFallback({ OnDeviceIntel.dns(q) }, { ReconApi.dns(q) })
+            // The full report is on-device. If it fails outright the server's
+            // plain record dump still answers, and DnsView renders that — a
+            // degraded answer rather than none.
+            Tool.Dns -> orFallback<Any>({ DnsIntel.report(q) }, { ReconApi.dns(q) })
             Tool.Ip -> orFallback({ OnDeviceIntel.ip(q) }, { ReconApi.ip(q) })
             else -> error("not a simple tool: $t")
         }

@@ -207,6 +207,7 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 is UsernameResult -> UsernameView(r)
                 is EmailResult -> EmailView(r)
                 is DomainResult -> DomainView(r)
+                is DnsIntel.Report -> DnsReportView(r)
                 is DnsResult -> DnsView(r)
                 is IpResult -> IpView(r)
                 is DeepSearch.Result -> DeepSearchView(r)

@@ -156,3 +156,26 @@ fun ChipRow(items: List<String>, strongPredicate: (String) -> Boolean = { false 
         items.forEach { Chip(it, strong = strongPredicate(it), danger = dangerPredicate(it)) }
     }
 }
+
+/**
+ * A tinted block of prose: a caveat, a limitation, a warning.
+ *
+ * Shared because several result screens need to say "here is what this does
+ * not tell you", and that sentence should look the same everywhere it appears.
+ */
+@Composable
+fun NoteCard(text: String, tint: Color? = null) {
+    val t = LocalReconTokens.current
+    val colour = tint ?: t.border
+    Text(
+        text,
+        style = MaterialTheme.typography.bodySmall,
+        color = t.textDim,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colour.copy(alpha = 0.07f))
+            .border(1.dp, colour.copy(alpha = 0.35f), RoundedCornerShape(12.dp))
+            .padding(13.dp),
+    )
+}
