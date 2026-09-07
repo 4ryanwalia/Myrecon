@@ -1,6 +1,7 @@
 package com.aryan.myrecon
 
 import android.app.Application
+import com.aryan.myrecon.ads.Ads
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
@@ -26,6 +27,20 @@ import java.util.concurrent.TimeUnit
  * into software bitmaps.
  */
 class MyReconApplication : Application(), ImageLoaderFactory {
+
+    /**
+     * Start the ad SDK here, not from a composable.
+     *
+     * It used to be kicked off by the banner, which meant every ad request in
+     * the app raced initialisation and any request that lost was discarded —
+     * fine on a fast emulator, silently broken on a handset. Starting it at
+     * process creation gives the SDK the whole cold start to get ready, and
+     * every ad path suspends on Ads.awaitReady() before requesting anyway.
+     */
+    override fun onCreate() {
+        super.onCreate()
+        Ads.start(this)
+    }
 
     override fun newImageLoader(): ImageLoader =
         ImageLoader.Builder(this)

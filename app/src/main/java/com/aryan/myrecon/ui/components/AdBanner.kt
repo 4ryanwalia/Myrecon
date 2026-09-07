@@ -1,6 +1,5 @@
 package com.aryan.myrecon.ui.components
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -12,19 +11,20 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
+import android.util.Log
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.aryan.myrecon.BuildConfig
+import com.aryan.myrecon.ads.Ads
 import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.Mono
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
-import java.util.concurrent.atomic.AtomicBoolean
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.LoadAdError
 
 /**
  * Anchored adaptive banner.
@@ -45,60 +45,8 @@ import java.util.concurrent.atomic.AtomicBoolean
  *   • Labelled. The eyebrow marks it as advertising, which keeps the app honest
  *     and satisfies the "clearly distinguishable from content" requirement.
  */
-private val adsInitialised = AtomicBoolean(false)
-
 /** AdMob's recommended banner refresh interval. Below 30s breaches policy. */
 private const val REFRESH_INTERVAL_MS = 60_000L
-
-/**
- * Devices that must never generate a billable impression.
- *
- * The live ad unit is used in every build, including debug, so the developer's
- * own handset has to be excluded here instead. Google serves it test creatives:
- * the real ad unit is exercised end to end, but nothing is billed and nothing
- * counts as invalid traffic. Repeated invalid traffic is the usual reason an
- * AdMob account is suspended, and a suspension is far harder to undo than it is
- * to avoid.
- *
- * To find the hash for a device, run the app once and look for this line in
- * logcat:
- *
- *   Use RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("33BE..."))
- *
- * Then add it below. Until a real hash is added, EMULATOR covers the emulator
- * but a physical handset is NOT protected.
- */
-private val TEST_DEVICE_IDS = listOf(
-    AdRequest.DEVICE_ID_EMULATOR,
-    // TODO: add the hash logged by this device on first run — see above.
-)
-
-/**
- * Initialise the ad SDK once, off the main thread.
- *
- * MobileAds.initialize does disk and network work; calling it on the main
- * thread during startup is a well-known cause of slow cold starts.
- */
-fun initialiseAds(context: Context) {
-    if (!adsInitialised.compareAndSet(false, true)) return
-    Thread {
-        runCatching {
-            MobileAds.setRequestConfiguration(
-                RequestConfiguration.Builder()
-                    .setTestDeviceIds(TEST_DEVICE_IDS)
-                    // The app is a general-purpose security tool, not directed
-                    // at children; declaring this explicitly keeps ad serving
-                    // compliant rather than leaving it unspecified.
-                    .setTagForChildDirectedTreatment(
-                        RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_FALSE
-                    )
-                    .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_T)
-                    .build()
-            )
-            MobileAds.initialize(context.applicationContext) {}
-        }
-    }.apply { isDaemon = true }.start()
-}
 
 @Composable
 fun AdBanner(modifier: Modifier = Modifier) {
@@ -115,8 +63,6 @@ fun AdBanner(modifier: Modifier = Modifier) {
         AdPlaceholder(modifier)
         return
     }
-
-    LaunchedEffect(Unit) { initialiseAds(context) }
 
     val widthDp = LocalConfiguration.current.screenWidthDp
 
@@ -151,7 +97,23 @@ fun AdBanner(modifier: Modifier = Modifier) {
                         AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(ctx, widthDp)
                     )
                     adUnitId = BuildConfig.AD_BANNER_UNIT
-                    loadAd(AdRequest.Builder().build())
+                    // A failed banner used to fail silently, which made this
+                    // indistinguishable from a layout bug. Now it says why.
+                    adListener = object : AdListener() {
+                        override fun onAdFailedToLoad(error: LoadAdError) {
+                            Log.w(
+                                "MyReconAds",
+                                "banner load failed: ${Ads.describe(error.code)} — ${error.message}",
+                            )
+                        }
+
+                        override fun onAdLoaded() {
+                            Log.i("MyReconAds", "banner loaded")
+                        }
+                    }
+                    // Deliberately no loadAd() here. The request is made below,
+                    // once the SDK reports ready — requesting from the factory
+                    // raced MobileAds.initialize and the request was discarded.
                     adView = this
                 }
             },
@@ -168,6 +130,8 @@ fun AdBanner(modifier: Modifier = Modifier) {
         // Console auto-refresh should be set to Disabled for this unit.
         LaunchedEffect(adView) {
             val view = adView ?: return@LaunchedEffect
+            Ads.awaitReady(context)
+            runCatching { view.loadAd(AdRequest.Builder().build()) }
             while (true) {
                 kotlinx.coroutines.delay(REFRESH_INTERVAL_MS)
                 runCatching { view.loadAd(AdRequest.Builder().build()) }
