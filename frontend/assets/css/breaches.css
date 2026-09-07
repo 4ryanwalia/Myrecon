@@ -1,0 +1,382 @@
+/* The Breach Files.
+ *
+ * Loaded only on /breaches/ pages, on top of styles.css. Every colour is a
+ * token from the main sheet, so the section inherits both themes and any
+ * later palette change rather than pinning its own.
+ */
+
+/* ── Index ───────────────────────────────────────────────────── */
+
+.bx-title {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 8px 0 10px;
+}
+
+/* styles.css centres headings and .sub inside .section — correct for a
+   marketing block, wrong for an archive that reads like a publication. */
+.bx-page h2,
+.bx-page p,
+.bx-page .sub {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+  max-width: none;
+}
+
+.bx-h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 40px 0 14px;
+}
+
+.bx-summary,
+.bx-stats {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin: 26px 0 8px;
+}
+
+.bx-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.bx-stat b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.bx-stat span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+/* Severity as colour as well as a number, so the shape of the archive is
+   readable at a glance and still legible without colour vision. */
+.sev-critical b { color: var(--danger); }
+.sev-severe b { color: var(--warn); }
+.sev-serious b { color: var(--accent); }
+.sev-moderate b { color: var(--text-dim); }
+
+/* ── Year bars ───────────────────────────────────────────────── */
+
+.bx-years {
+  display: grid;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.bx-year {
+  display: grid;
+  grid-template-columns: 3.4rem 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.bx-year-label {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.bx-year-track {
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.bx-year-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.bx-year-value {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-mute);
+  white-space: nowrap;
+}
+
+/* ── Cards ───────────────────────────────────────────────────── */
+
+.bx-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+}
+
+.bx-card {
+  display: block;
+  position: relative;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.bx-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.bx-card-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 12px;
+}
+
+.bx-card-head img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+  padding: 4px;
+  flex: none;
+}
+
+/* Fallback mark for collections with no company logo — an initial block
+   rather than a broken image or an empty gap. */
+.bx-card-mark {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.bx-card-head b {
+  display: block;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+}
+
+.bx-card-head span {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--text-mute);
+}
+
+.bx-card-count {
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.bx-card-count span {
+  font-family: var(--font);
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: var(--text-mute);
+}
+
+.bx-card-classes {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin: 0 0 34px;
+  line-height: 1.5;
+}
+
+.bx-badge {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+
+.bx-badge.sev-critical { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.bx-badge.sev-severe { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+.bx-badge.sev-serious { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+/* ── Article ─────────────────────────────────────────────────── */
+
+.bx-crumb {
+  font-size: 0.85rem;
+  margin-bottom: 18px;
+}
+
+.bx-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.bx-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px;
+  flex: none;
+}
+
+.bx-head h1 {
+  margin: 4px 0 6px;
+}
+
+/* Editorial sits above the generated analysis and is marked as written
+   rather than derived — the reader should always know which is which. */
+.bx-editorial {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 16px 18px;
+  margin: 26px 0;
+}
+
+.bx-byline {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.bx-source {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+
+.bx-credit {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.bx-classes {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0;
+  display: grid;
+  gap: 8px;
+}
+
+.bx-classes li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.bx-classes b {
+  display: block;
+  font-size: 0.92rem;
+  margin-bottom: 3px;
+}
+
+.bx-classes span {
+  font-size: 0.86rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+
+.bx-actions {
+  padding-left: 20px;
+  margin: 14px 0 20px;
+}
+
+.bx-actions li {
+  margin-bottom: 9px;
+  line-height: 1.6;
+}
+
+.bx-related {
+  padding-left: 20px;
+}
+
+.bx-related li {
+  margin-bottom: 6px;
+}
+
+/* The method note. Small, but present on every page: how the score was
+   reached and which words are ours is part of the claim, not a disclaimer. */
+.bx-method {
+  font-size: 0.8rem;
+  color: var(--text-mute);
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 34px;
+}
+
+@media (max-width: 560px) {
+  /* A ten-figure account count does not fit two-up on a phone, and shrinking
+     the type far enough to make it fit makes the headline number the smallest
+     thing on screen. One per row instead. */
+  .bx-summary,
+  .bx-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .bx-stat b {
+    font-size: 1.2rem;
+    overflow-wrap: anywhere;
+  }
+
+  .bx-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .bx-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .bx-year {
+    grid-template-columns: 3rem 1fr;
+    grid-template-areas: "label track" ". value";
+    row-gap: 2px;
+  }
+
+  .bx-year-label { grid-area: label; }
+  .bx-year-track { grid-area: track; }
+  .bx-year-value { grid-area: value; }
+}

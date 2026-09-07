@@ -1,0 +1,51 @@
+# Rebuilds /breaches/ from Have I Been Pwned once a day.
+#
+# The generator is the whole job: it fetches the catalogue, writes the article
+# pages, the JSON feed the app reads, and the sitemap entries. Committing the
+# result is what triggers a Vercel deploy, so the site updates itself without
+# anyone touching it.
+#
+# It commits only when something actually changed — a no-op run leaves no
+# commit behind, which keeps the history readable and avoids a daily deploy
+# that ships nothing.
+name: Breach Files
+
+on:
+  schedule:
+    # 06:15 UTC daily. Off the hour on purpose: GitHub queues scheduled jobs
+    # hardest exactly on it, and a delayed run is a stale page.
+    - cron: "15 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: breach-files
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate articles
+        working-directory: frontend
+        run: node scripts/build-breaches.js
+
+      - name: Commit if anything changed
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No breach updates today."
+            exit 0
+          fi
+          git config user.name "myrecon-bot"
+          git config user.email "bot@myrecon.xyz"
+          git add frontend/breaches frontend/assets/data/breaches.json frontend/sitemap.xml
+          git commit -m "Breach Files: daily update"
+          git push
