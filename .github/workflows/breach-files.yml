@@ -1,13 +1,13 @@
-# Rebuilds /breaches/ from Have I Been Pwned once a day.
+# Rebuilds /breaches/ from Have I Been Pwned, then tells the search engines.
 #
-# The generator is the whole job: it fetches the catalogue, writes the article
-# pages, the JSON feed the app reads, and the sitemap entries. Committing the
-# result is what triggers a Vercel deploy, so the site updates itself without
-# anyone touching it.
+# The generator is the bulk of the job: it fetches the catalogue, writes the
+# article pages, the JSON feed the app reads, and the sitemap entries.
+# Committing the result is what triggers a Vercel deploy, so the site updates
+# itself without anyone touching it.
 #
 # It commits only when something actually changed — a no-op run leaves no
-# commit behind, which keeps the history readable and avoids a daily deploy
-# that ships nothing.
+# commit behind, which keeps the history readable and avoids a deploy that
+# ships nothing.
 name: Breach Files
 
 on:
@@ -41,13 +41,31 @@ jobs:
         run: node scripts/build-breaches.js
 
       - name: Commit if anything changed
+        id: commit
         run: |
           if [ -z "$(git status --porcelain)" ]; then
-            echo "No breach updates today."
+            echo "No breach updates this run."
+            echo "changed=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+
+          # Which article URLs actually changed. Worked out before the commit,
+          # while git status still reports them as dirty. IndexNow asks for
+          # changed URLs only — re-submitting untouched pages on every run is
+          # how a domain gets its submissions throttled or ignored.
+          CHANGED=$(git status --porcelain frontend/breaches | awk '{print $NF}' | grep -E '^frontend/breaches/.*[.]html$' | sed 's|^frontend|https://www.myrecon.xyz|' | tr '\n' ' ')
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+
           git config user.name "myrecon-bot"
           git config user.email "bot@myrecon.xyz"
           git add frontend/breaches frontend/assets/data/breaches.json frontend/sitemap.xml
-          git commit -m "Breach Files: daily update"
+          git commit -m "Breach Files: scheduled update"
           git push
+
+      - name: Tell the search engines
+        # Runs after the push, because the push is what triggers the deploy.
+        # Submitting first would send a crawler to the previous version of the
+        # page, which is worse than not submitting at all.
+        if: steps.commit.outputs.changed != ''
+        working-directory: frontend
+        run: node scripts/indexnow.js ${{ steps.commit.outputs.changed }}
