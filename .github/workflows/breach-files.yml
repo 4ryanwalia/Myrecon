@@ -12,9 +12,11 @@ name: Breach Files
 
 on:
   schedule:
-    # 06:15 UTC daily. Off the hour on purpose: GitHub queues scheduled jobs
-    # hardest exactly on it, and a delayed run is a stale page.
-    - cron: "15 6 * * *"
+    # Every six hours, off the hour. Whoever publishes the first useful page
+    # on a new breach collects the links, so being early matters more here
+    # than it does on evergreen pages — and GitHub queues scheduled jobs
+    # hardest exactly on the hour, where a delay costs exactly that lead.
+    - cron: "15 */6 * * *"
   workflow_dispatch:
 
 permissions:

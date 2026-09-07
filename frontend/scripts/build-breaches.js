@@ -215,6 +215,43 @@ function actions(b) {
   return out;
 }
 
+
+/**
+ * Guides worth linking from a breach, chosen by what leaked.
+ *
+ * Internal links only earn anything when the anchor describes the
+ * destination and the destination genuinely follows from the page. Keying
+ * them on the data classes does both: a breach that exposed passwords links
+ * to the password guide because that is the next thing that reader needs,
+ * not because a template had a slot for it.
+ */
+const CLASS_GUIDES = [
+  ["Passwords", "/guides/strong-passwords-guide.html", "how to build passwords that survive a breach"],
+  ["Historical passwords", "/guides/strong-passwords-guide.html", "how to build passwords that survive a breach"],
+  ["Phone numbers", "/guides/two-factor-authentication.html", "why SMS two-factor is the weakest kind"],
+  ["Auth tokens", "/guides/two-factor-authentication.html", "why SMS two-factor is the weakest kind"],
+  ["Email addresses", "/guides/how-to-spot-phishing.html", "how to spot the phishing that follows a breach"],
+  ["Physical addresses", "/guides/reduce-your-digital-footprint.html", "how to reduce what is public about you"],
+  ["Names", "/guides/how-data-brokers-work.html", "how data brokers turn a leak into a profile"],
+  ["Usernames", "/guides/username-osint-search.html", "what a single username reveals across platforms"],
+];
+
+function guideLinks(b) {
+  const seen = new Set();
+  const out = [];
+  (b.DataClasses || []).forEach((c) => {
+    const hit = CLASS_GUIDES.find((g) => g[0] === c);
+    if (hit && !seen.has(hit[1])) {
+      seen.add(hit[1]);
+      out.push(hit);
+    }
+  });
+  if (!seen.has("/guides/check-email-data-breach.html")) {
+    out.push(["", "/guides/check-email-data-breach.html", "how to check whether your email is in a breach"]);
+  }
+  return out.slice(0, 4);
+}
+
 // ── Selection ────────────────────────────────────────────────────
 
 function withinWindow(b, cutoffISO) {
@@ -331,7 +368,8 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <link rel="stylesheet" href="/assets/css/breaches.css?v=1">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}</head>
+${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="${SITE}/breaches/feed.xml">
+</head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
@@ -354,6 +392,7 @@ const FOOT = `
   <script src="/assets/js/env.js?v=8"></script>
   <script src="/assets/js/config.js?v=8"></script>
   <script src="/assets/js/app.js?v=8"></script>
+  <script src="/assets/js/breach-check.js?v=1"></script>
 </body>
 </html>
 `;
@@ -386,6 +425,16 @@ function article(b, editorial, siblings) {
       : "") +
     `. MyRecon rates it ${sev.score}/100 — ${sev.band.toLowerCase()}.`;
 
+  const crumbs = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "MyRecon", item: SITE },
+      { "@type": "ListItem", position: 2, name: "The Breach Files", item: `${SITE}/breaches/` },
+      { "@type": "ListItem", position: 3, name: b.Title, item: url },
+    ],
+  });
+
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
@@ -416,6 +465,7 @@ function article(b, editorial, siblings) {
       ogType: "article",
       image: logo || undefined,
       jsonLd,
+      extraLd: crumbs,
     }) +
 `  <main id="main" class="container">
     <article class="article breach-article">
@@ -438,6 +488,18 @@ function article(b, editorial, siblings) {
       </div>
 
       <p class="lead">${esc(lead)}${scale ? " " + esc(scale) : ""}</p>
+
+      <!-- Above the fold on purpose. Someone arriving from "was my email in
+           the X breach" wants the answer, not a link to it further down. -->
+      <form class="bx-check" data-breach-check>
+        <label for="bxEmail">Was your address in this breach?</label>
+        <div class="bx-check-row">
+          <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required>
+          <button class="btn btn-sm" type="submit">Check free</button>
+        </div>
+        <p class="bx-check-note">Checked against this breach and every other on record. Your address is not stored, and the check runs against public breach data only.</p>
+      </form>
 
 ${editorial ? `      <section class="bx-editorial">
         <span class="bx-byline">MyRecon's take</span>
@@ -467,7 +529,34 @@ ${classes.map((c) => `        <li><b>${esc(c.name)}</b><span>${esc(c.why)}</span
       <ol class="bx-actions">
 ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
       </ol>
-      <p><a class="btn btn-sm" href="/#tool">Check your email against this breach →</a></p>
+      <h2>Questions people ask about this breach</h2>
+      <div class="bx-faq">
+        <h3>Was my email address in the ${esc(b.Title)} breach?</h3>
+        <p>Enter it in the box at the top of this page. MyRecon checks it against this breach and every other one on record, and the address is never stored.</p>
+
+        <h3>What data was leaked in the ${esc(b.Title)} breach?</h3>
+        <p>${classes.length ? esc(classes.map((c) => c.name.toLowerCase()).join(", ")) + "." : "No field list has been published for this breach."} ${classes.length ? "Each one is explained above, along with what it means for the person it belongs to." : ""}</p>
+
+        <h3>When did it happen, and when did it become public?</h3>
+        <p>The breach is dated ${esc(prettyDate(b.BreachDate))}. It was published to Have I Been Pwned on ${esc(prettyDate(b.AddedDate))}${
+          b.BreachDate && b.AddedDate && b.AddedDate.slice(0, 10) > b.BreachDate
+            ? `, a gap of ${Math.round((new Date(b.AddedDate) - new Date(b.BreachDate)) / 86400000)} days during which the data was already out`
+            : ""
+        }.</p>
+
+        <h3>Is the ${esc(b.Title)} breach real?</h3>
+        <p>${b.IsVerified
+          ? "Yes. Have I Been Pwned lists it as verified, meaning the data was checked against the source rather than taken on trust."
+          : "It is listed as unverified. The data exists and has been indexed, but it has not been confirmed against the named source, so treat the origin as unproven."}</p>
+
+        <h3>How many people were affected?</h3>
+        <p>${num(b.PwnCount)} accounts.${scale ? " " + esc(scale) : ""} That is accounts rather than people — one person often has several.</p>
+      </div>
+
+${guideLinks(b).length ? `      <h2>Read next</h2>
+      <ul class="bx-related">
+${guideLinks(b).map((g) => `        <li><a href="${g[1]}">${esc(g[2].charAt(0).toUpperCase() + g[2].slice(1))}</a></li>`).join("\n")}
+      </ul>\n` : ""}
 
 ${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${related}</ul>\n` : ""}
       <p class="bx-method">Severity is scored by MyRecon from the number of accounts, the sensitivity of the specific fields exposed, and whether the breach is confirmed — not by a language model. The description above is quoted from Have I Been Pwned; the analysis around it is ours.</p>
@@ -564,6 +653,50 @@ ${items
   );
 }
 
+
+/**
+ * RSS.
+ *
+ * Breach coverage is a news beat, and news beats get syndicated. A feed costs
+ * nothing to emit and is the difference between waiting to be discovered and
+ * being pulled in by every reader and aggregator that already follows this
+ * subject.
+ */
+function rssFeed(items) {
+  const now = new Date().toUTCString();
+  const entries = items
+    .slice(0, 40)
+    .map((b) => {
+      const sev = severity(b);
+      const link = `${SITE}/breaches/${slug(b.Name)}.html`;
+      const summary =
+        `${num(b.PwnCount)} accounts exposed. Severity ${sev.score}/100 (${sev.band}). ` +
+        `Data exposed: ${(b.DataClasses || []).join(", ") || "not published"}.`;
+      return `    <item>
+      <title>${esc(b.Title)} data breach — ${num(b.PwnCount)} accounts exposed</title>
+      <link>${link}</link>
+      <guid isPermaLink="true">${link}</guid>
+      <pubDate>${new Date(b.AddedDate || b.BreachDate || Date.now()).toUTCString()}</pubDate>
+      <description>${esc(summary)}</description>
+    </item>`;
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MyRecon — The Breach Files</title>
+    <link>${SITE}/breaches/</link>
+    <atom:link href="${SITE}/breaches/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Data breach coverage: who was hit, what was taken, how many people it reached and what to do about it.</description>
+    <language>en-GB</language>
+    <lastBuildDate>${now}</lastBuildDate>
+${entries}
+  </channel>
+</rss>
+`;
+}
+
 // ── Build ────────────────────────────────────────────────────────
 
 function readEditorial(name) {
@@ -601,6 +734,7 @@ async function main() {
     );
   });
   fs.writeFileSync(path.join(OUT_DIR, "index.html"), index(items), "utf8");
+  fs.writeFileSync(path.join(OUT_DIR, "feed.xml"), rssFeed(items), "utf8");
 
   // The feed the Android app reads. Everything the article shows, so a client
   // never has to reproduce the scoring or re-fetch from HIBP.

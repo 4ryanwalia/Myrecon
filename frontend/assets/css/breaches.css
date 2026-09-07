@@ -380,3 +380,60 @@
   .bx-year-track { grid-area: track; }
   .bx-year-value { grid-area: value; }
 }
+
+/* ── The email check ─────────────────────────────────────────── */
+
+/* Sits directly under the standfirst. Someone who searched "was my email in
+   the X breach" should be able to answer that without scrolling. */
+.bx-check {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 22px 0 28px;
+}
+
+.bx-check label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.bx-check-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bx-check input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.bx-check input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+.bx-check-note {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  margin: 10px 0 0;
+  line-height: 1.55;
+}
+
+.bx-faq h3 {
+  font-size: 1rem;
+  margin: 20px 0 5px;
+}
+
+.bx-faq p {
+  color: var(--text-dim);
+  margin: 0;
+}
