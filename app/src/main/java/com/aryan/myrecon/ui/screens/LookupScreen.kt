@@ -1,5 +1,6 @@
 package com.aryan.myrecon.ui.screens
 
+import android.app.Activity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
@@ -50,6 +51,10 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
     val context = LocalContext.current
     // One manager per screen; it caches a loaded ad between offers.
     val rewarded = remember(context) { RewardedAdManager(context.applicationContext) }
+
+    // Separate unit, separate manager: this one gates running a lookup, the one
+    // above reveals results already found.
+    val adGate = rememberActionAdGate()
 
     // Reset for every new result, so each scan is its own unlock rather than
     // one ad buying every future search.
@@ -135,7 +140,20 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 autoCorrectEnabled = false,
                 imeAction = ImeAction.Search,
             ),
-            keyboardActions = KeyboardActions(onSearch = { keyboard?.hide(); vm.run() }),
+            // Routed through the gate as well. The keyboard's search key is the
+            // same action as the button and must not be a way around it — but
+            // it carries no marker, so it only plays an ad once the button has
+            // already advertised one.
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    keyboard?.hide()
+                    adGate.run(
+                        activity = context as? Activity,
+                        onEarned = { haptics.complete() },
+                        action = { vm.run() },
+                    )
+                },
+            ),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -145,14 +163,45 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
             Spacer(Modifier.weight(1f))
             val running = state is LookupState.Running
             Button(
-                onClick = { keyboard?.hide(); if (running) vm.cancel() else vm.run() },
-                enabled = running || query.isNotBlank(),
+                // Every lookup goes through the gate — one button serves all
+                // six tools. Cancelling never does: charging someone an ad to
+                // stop something they already started is not a trade.
+                onClick = {
+                    keyboard?.hide()
+                    if (running) {
+                        vm.cancel()
+                    } else {
+                        haptics.tap()
+                        adGate.run(
+                            activity = context as? Activity,
+                            onEarned = { haptics.complete() },
+                            action = { vm.run() },
+                        )
+                    }
+                },
+                enabled = (running || query.isNotBlank()) && !adGate.showing,
                 shape = RoundedCornerShape(11.dp),
                 colors = if (running) {
                     ButtonDefaults.buttonColors(containerColor = t.surface2, contentColor = t.textDim)
                 } else ButtonDefaults.buttonColors(),
             ) {
-                Text(if (running) "Cancel" else "Investigate")
+                // The marker only appears when an ad is genuinely loaded, so
+                // the button never promises a video it cannot play — and never
+                // plays one it did not advertise.
+                AdMarker(visible = !running && adGate.willShowAd)
+                Text(
+                    when {
+                        running -> "Cancel"
+                        adGate.showing -> "Loading…"
+                        else -> "Investigate"
+                    }
+                )
+            }
+        }
+        if (state !is LookupState.Running) {
+            Row {
+                Spacer(Modifier.weight(1f))
+                AdGateHint(adGate)
             }
         }
 

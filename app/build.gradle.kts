@@ -48,6 +48,14 @@ android {
             "AD_REWARDED_UNIT",
             "\"ca-app-pub-6109270472398539/2229481585\"",
         )
+        // A separate unit for the run-an-action gate, so its performance can be
+        // read on its own in the AdMob console rather than blended into the
+        // reveal-results unit above.
+        buildConfigField(
+            "String",
+            "AD_REWARDED_ACTION_UNIT",
+            "\"ca-app-pub-6109270472398539/1640171645\"",
+        )
         // Ads on everywhere by default; the screenshots variant turns them off.
         buildConfigField("boolean", "SHOW_ADS", "true")
     }

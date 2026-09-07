@@ -41,9 +41,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aryan.myrecon.data.LinkSafety
 import com.aryan.myrecon.ui.LocalHaptics
+import com.aryan.myrecon.ui.components.ActionAdGateState
+import com.aryan.myrecon.ui.components.AdActionButton
 import com.aryan.myrecon.ui.components.DataList
 import com.aryan.myrecon.ui.components.SectionLabel
 import com.aryan.myrecon.ui.components.StatePanel
+import com.aryan.myrecon.ui.components.rememberActionAdGate
 import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.MonoStyle
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -97,6 +100,7 @@ fun ScanScreen(vm: ScanViewModel = viewModel()) {
     val context = LocalContext.current
     val state by vm.state.collectAsState()
     val haptics = LocalHaptics.current
+    val adGate = rememberActionAdGate()
 
     var granted by remember {
         mutableStateOf(
@@ -114,7 +118,8 @@ fun ScanScreen(vm: ScanViewModel = viewModel()) {
 
     when {
         !granted -> CameraRationale { ask.launch(Manifest.permission.CAMERA) }
-        state is ScanState.Result -> ScanResult((state as ScanState.Result).report) { vm.rescan() }
+        state is ScanState.Result ->
+            ScanResult((state as ScanState.Result).report, adGate) { vm.rescan() }
         else -> CameraViewfinder(
             analysing = state is ScanState.Analysing,
             onCode = { haptics.found(); vm.onCode(it) },
@@ -310,7 +315,11 @@ private fun Reticle(accent: Color, active: Boolean) {
 
 /** The verdict. */
 @Composable
-private fun ScanResult(r: LinkSafety.Report, onRescan: () -> Unit) {
+private fun ScanResult(
+    r: LinkSafety.Report,
+    gate: ActionAdGateState,
+    onRescan: () -> Unit,
+) {
     val t = LocalReconTokens.current
     val tint = when (r.verdict) {
         LinkSafety.Verdict.Safe -> t.ok
@@ -409,11 +418,14 @@ private fun ScanResult(r: LinkSafety.Report, onRescan: () -> Unit) {
         )
 
         Spacer(Modifier.height(18.dp))
-        Button(
+        // Gated: this scan's verdict is already on screen, and this is the
+        // next one.
+        AdActionButton(
+            gate = gate,
+            label = "Scan another",
             onClick = onRescan,
-            shape = RoundedCornerShape(11.dp),
             modifier = Modifier.fillMaxWidth(),
-        ) { Text("Scan another") }
+        )
 
         Spacer(Modifier.height(10.dp))
         Text(

@@ -30,7 +30,12 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
  * who feels trapped taps whatever dismisses the ad fastest — produces exactly
  * the accidental clicks that get an account flagged for invalid traffic.
  */
-class RewardedAdManager(private val appContext: Context) {
+class RewardedAdManager(
+    private val appContext: Context,
+    /** Which unit to fill from. The app runs two: one for revealing held-back
+     *  results, one for the run-an-action gate. */
+    private val unitId: String = BuildConfig.AD_REWARDED_UNIT,
+) {
 
     private var ad: RewardedAd? = null
     private var loading = false
@@ -52,7 +57,7 @@ class RewardedAdManager(private val appContext: Context) {
         loading = true
         RewardedAd.load(
             appContext,
-            BuildConfig.AD_REWARDED_UNIT,
+            unitId,
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(loaded: RewardedAd) {

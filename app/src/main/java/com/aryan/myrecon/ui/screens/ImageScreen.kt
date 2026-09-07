@@ -30,9 +30,12 @@ import coil.compose.AsyncImage
 import com.aryan.myrecon.data.GeoIntel
 import com.aryan.myrecon.data.ImageForensics
 import com.aryan.myrecon.ui.LocalHaptics
+import com.aryan.myrecon.ui.components.ActionAdGateState
+import com.aryan.myrecon.ui.components.AdActionButton
 import com.aryan.myrecon.ui.components.DataList
 import com.aryan.myrecon.ui.components.SectionLabel
 import com.aryan.myrecon.ui.components.StatePanel
+import com.aryan.myrecon.ui.components.rememberActionAdGate
 import com.aryan.myrecon.ui.pressScale
 import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.MonoStyle
@@ -83,6 +86,7 @@ fun ImageScreen(vm: ImageViewModel = viewModel()) {
     val state by vm.state.collectAsState()
     val haptics = LocalHaptics.current
     val t = LocalReconTokens.current
+    val adGate = rememberActionAdGate()
 
     // The photo picker needs no storage permission on any supported version —
     // the system UI hands back a single grant for the chosen item only.
@@ -151,7 +155,7 @@ fun ImageScreen(vm: ImageViewModel = viewModel()) {
                 PickTile(onPick = ::pick)
             }
 
-            is ImageState.Done -> ForensicsReport(s, onPick = ::pick)
+            is ImageState.Done -> ForensicsReport(s, onPick = ::pick, gate = adGate)
         }
     }
 }
@@ -191,7 +195,11 @@ private fun PickTile(onPick: () -> Unit) {
 }
 
 @Composable
-private fun ForensicsReport(s: ImageState.Done, onPick: () -> Unit) {
+private fun ForensicsReport(
+    s: ImageState.Done,
+    onPick: () -> Unit,
+    gate: ActionAdGateState,
+) {
     val t = LocalReconTokens.current
     val uriHandler = LocalUriHandler.current
     val r = s.report
@@ -354,7 +362,11 @@ private fun ForensicsReport(s: ImageState.Done, onPick: () -> Unit) {
     )
 
     Spacer(Modifier.height(20.dp))
-    Button(onClick = onPick, shape = RoundedCornerShape(11.dp), modifier = Modifier.fillMaxWidth()) {
-        Text("Analyse another photo")
-    }
+    // Gated: the report on screen was free, and this is the next one.
+    AdActionButton(
+        gate = gate,
+        label = "Analyse another photo",
+        onClick = onPick,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
