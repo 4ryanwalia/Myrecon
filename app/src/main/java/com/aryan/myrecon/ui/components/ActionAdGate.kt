@@ -90,6 +90,38 @@ class ActionAdGateState internal constructor(
             // Nothing runs, and the next tap offers the same trade again.
         }
     }
+
+    /**
+     * Start the work *now*, play the ad over the top of it, and undo if the ad
+     * is abandoned.
+     *
+     * The ad is a full-screen activity, so for the twenty or thirty seconds it
+     * is up the app is invisible — and under the old ordering it was also
+     * idle, which meant the user watched an ad and then waited again for a
+     * sweep that could have finished during it. Two waits, back to back, for
+     * one action. Starting first collapses them into one: by the time the ad
+     * closes the result is usually already on screen.
+     *
+     * The trade is preserved because the user cannot see any of it happen.
+     * Abandoning the ad calls [onAbandoned], which cancels the work and clears
+     * the screen, so skipping still buys nothing — it just wastes the work
+     * rather than the user's time.
+     */
+    fun runOverlapped(
+        activity: Activity?,
+        start: () -> Unit,
+        onAbandoned: () -> Unit,
+        onEarned: () -> Unit = {},
+    ) {
+        start()
+        if (!willShowAd || activity == null) return
+
+        showing = true
+        manager.show(activity) { earned ->
+            showing = false
+            if (earned) onEarned() else onAbandoned()
+        }
+    }
 }
 
 @Composable

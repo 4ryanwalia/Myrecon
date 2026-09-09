@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,23 +18,29 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.AdBanner
 import com.aryan.myrecon.ui.rememberHaptics
 import com.aryan.myrecon.ui.screens.ImageScreen
+import com.aryan.myrecon.data.ReconStore
 import com.aryan.myrecon.ui.screens.LookupScreen
+import com.aryan.myrecon.ui.screens.OnboardingScreen
 import com.aryan.myrecon.ui.screens.PasswordScreen
 import com.aryan.myrecon.ui.screens.ScanScreen
 import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.MyReconTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +68,33 @@ private enum class Destination(val label: String, val icon: ImageVector) {
 private fun MyReconApp() {
     var current by rememberSaveable { mutableStateOf(Destination.Lookup) }
     val t = LocalReconTokens.current
+    val context = LocalContext.current
+    val store = remember(context) { ReconStore(context.applicationContext) }
+    val scope = rememberCoroutineScope()
+
+    // null while the preference is still being read. Rendering nothing for that
+    // beat is better than flashing the intro at a returning user, which is what
+    // defaulting to false would do on every cold start.
+    val seen by store.onboarded.collectAsState(initial = null)
+
+    // Held separately so the question mark in the app bar can reopen the intro
+    // without clearing the stored flag.
+    var showIntro by rememberSaveable { mutableStateOf(false) }
+
+    // Each of these returns. A `when` that only emits and falls through would
+    // draw the whole app underneath for a frame before the intro replaced it,
+    // which is a visible flash of the thing the intro exists to explain.
+    if (seen == null) {
+        Box(Modifier.fillMaxSize())
+        return
+    }
+    if (seen == false || showIntro) {
+        OnboardingScreen(onDone = {
+            showIntro = false
+            scope.launch { store.setOnboarded(true) }
+        })
+        return
+    }
 
     Scaffold(
         topBar = {
@@ -81,6 +115,15 @@ private fun MyReconApp() {
                                 color = t.textMute,
                             )
                         }
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showIntro = true }) {
+                        Icon(
+                            Outlined.HelpOutline,
+                            contentDescription = "What can I do with this?",
+                            tint = t.textDim,
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

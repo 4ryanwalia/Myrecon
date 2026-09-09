@@ -147,10 +147,11 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
             keyboardActions = KeyboardActions(
                 onSearch = {
                     keyboard?.hide()
-                    adGate.run(
+                    adGate.runOverlapped(
                         activity = context as? Activity,
+                        start = { vm.run() },
+                        onAbandoned = { vm.cancel() },
                         onEarned = { haptics.complete() },
-                        action = { vm.run() },
                     )
                 },
             ),
@@ -172,10 +173,13 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                         vm.cancel()
                     } else {
                         haptics.tap()
-                        adGate.run(
+                        // The sweep starts before the ad does, so the two run
+                        // together instead of one after the other.
+                        adGate.runOverlapped(
                             activity = context as? Activity,
+                            start = { vm.run() },
+                            onAbandoned = { vm.cancel() },
                             onEarned = { haptics.complete() },
-                            action = { vm.run() },
                         )
                     }
                 },
@@ -261,6 +265,12 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 is IpResult -> IpView(r)
                 is DeepSearch.Result -> DeepSearchView(r)
                 else -> StatePanel("Unsupported result", "Nothing to display.")
+            }.also {
+                // Under the findings, never above them. Someone who has just
+                // seen what turned up has a live question; the same card on an
+                // empty screen is only an advert.
+                Spacer(Modifier.height(22.dp))
+                DetailedReportOffer()
             }
         }
         }

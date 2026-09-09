@@ -64,6 +64,34 @@ class ReconStore(private val context: Context) {
 
         /** Corpora already reported for one address, so alerts stay novel. */
         fun seenSources(email: String) = stringSetPreferencesKey("seen_sources_$email")
+
+        /**
+         * Whether the intro has been completed or skipped.
+         *
+         * Versioned in the key rather than stored as a number: if the intro
+         * changes enough to be worth showing again, bump to `_v2` and everyone
+         * sees the new one once. Reusing the key would silently hide it.
+         */
+        val ONBOARDED = stringPreferencesKey("onboarded_v1")
+    }
+
+    // ── First run ────────────────────────────────────────────────
+
+    /**
+     * False until the intro has been seen.
+     *
+     * Read as a flow so the very first frame can decide what to show without a
+     * blocking read on the main thread; null means "not loaded yet", which the
+     * caller renders as nothing rather than as the intro. Flashing the intro at
+     * a returning user for one frame is worse than a beat of blank.
+     */
+    val onboarded: Flow<Boolean> = context.dataStore.data
+        .map { it[Keys.ONBOARDED] == "true" }
+
+    suspend fun setOnboarded(done: Boolean) {
+        context.dataStore.edit { prefs ->
+            if (done) prefs[Keys.ONBOARDED] = "true" else prefs.remove(Keys.ONBOARDED)
+        }
     }
 
     // ── Breach alerting ──────────────────────────────────────────
