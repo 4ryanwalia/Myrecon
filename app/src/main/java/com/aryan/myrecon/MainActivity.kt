@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.HelpOutline
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.AdBanner
 import com.aryan.myrecon.ui.rememberHaptics
+import com.aryan.myrecon.ui.screens.BreachesScreen
 import com.aryan.myrecon.ui.screens.ImageScreen
 import com.aryan.myrecon.data.ReconStore
 import com.aryan.myrecon.ui.screens.LookupScreen
@@ -58,6 +60,7 @@ class MainActivity : ComponentActivity() {
 
 private enum class Destination(val label: String, val icon: ImageVector) {
     Lookup("Lookup", Icons.Filled.Search),
+    Breaches("Breaches", Icons.Filled.NewReleases),
     Scan("Scan", Icons.Filled.QrCodeScanner),
     Image("Image", Icons.Filled.Image),
     Password("Password", Icons.Filled.Lock),
@@ -164,6 +167,7 @@ private fun MyReconApp() {
             // not discard an in-flight scan or a rendered result.
             when (current) {
                 Destination.Lookup -> LookupScreen()
+                Destination.Breaches -> BreachesScreen()
                 Destination.Scan -> ScanScreen()
                 Destination.Image -> ImageScreen()
                 Destination.Password -> PasswordScreen()

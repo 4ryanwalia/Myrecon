@@ -708,6 +708,21 @@ ${entries}
 `;
 }
 
+
+/**
+ * Trim to a word boundary.
+ *
+ * A hard slice ends sentences mid-word — the app rendered one that stopped at
+ * "banki" — which reads as broken rather than abbreviated.
+ */
+function excerpt(text, max) {
+  const clean = String(text || "").trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[,;:.\s]+$/, "") + "…";
+}
+
 // ── Build ────────────────────────────────────────────────────────
 
 function readEditorial(name) {
@@ -774,7 +789,7 @@ async function main() {
         band: sev.band,
         // Who supplied the records to HIBP — a requested credit, not blame.
         data_provider: b.Attribution || null,
-        summary: sanitise(b.Description).replace(/<[^>]*>/g, "").slice(0, 400),
+        summary: excerpt(sanitise(b.Description).replace(/<[^>]*>/g, ""), 400),
       };
     }),
   };
