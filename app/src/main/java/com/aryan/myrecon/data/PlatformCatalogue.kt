@@ -462,6 +462,19 @@ object PlatformCatalogue {
         // catalogue, but a result from them is not evidence, so they are
         // labelled unverified and filtered out of the visible results.
         "BitChute", "Kik", "Nextdoor", "WordPress",
+        // Both render their profiles entirely in the browser, so the HTML is
+        // byte-for-byte the same shell whichever handle is asked for. Measured
+        // rather than assumed: thingiverse.com/makerbot and a nonsense handle
+        // both answer 200, both redirect to /<handle>/designs, and both carry
+        // the title "Thingiverse - The community for Open Hardware";
+        // topcoder.com/members/tourist and a nonsense handle are likewise
+        // identical, both titled just "Topcoder". Nothing in either response
+        // separates a real member from a missing one.
+        "Thingiverse", "Topcoder",
+        // Same shape: faceit.com/en/players/s1mple and a nonsense handle both
+        // return the identical Next.js shell titled "FACEIT.com", and when
+        // Cloudflare is not challenging, that shell mentions the handle.
+        "Faceit",
     )
 
     val size: Int get() = ALL.size

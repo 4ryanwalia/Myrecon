@@ -78,7 +78,43 @@ object UsernameSweep {
     private val LANDING_MISS = listOf(
         "/login", "/signin", "/sign_in", "/signup", "/register",
         "/accounts/login", "/404", "/not-found", "/error",
+        // NameMC answers an unknown name by bouncing the profile URL to
+        // /search?q=<handle>, with the handle all over the results page — so
+        // the "does it name its owner?" test fired on every miss. A real
+        // profile stays on /profile/.
+        "/search",
     )
+
+    /**
+     * Pages that are a bot check rather than an answer.
+     *
+     * These are the reason a sweep can confidently report accounts that do not
+     * exist. A challenge page is served for *any* handle, comes back with HTTP
+     * 200, and echoes the requested URL back into a hidden form — so it looks
+     * exactly like a profile that mentions its owner. Reddit's carries a
+     * js_challenge token; Cloudflare's is the "Just a moment..." interstitial.
+     *
+     * The right answer to a challenge is "unknown", never "found" and never
+     * "absent". Both of the other two would be a claim about an account nobody
+     * has actually looked at.
+     */
+    private val CHALLENGE_MARKERS = listOf(
+        "js_challenge", "jsc_token",
+        "challenge-platform", "cf-browser-verification", "_cf_chl", "cf_chl_opt",
+        "just a moment", "checking your browser", "attention required",
+        "verifying you are human", "enable javascript and cookies to continue",
+        "ddos protection by",
+    )
+
+    /**
+     * Statuses that mean the platform declined to answer.
+     *
+     * Previously these fell through the `code != okStatus` branch and were
+     * recorded as "no account here", which quietly understates a footprint:
+     * being rate-limited on a phone's carrier NAT is not evidence about the
+     * person being searched.
+     */
+    private val BLOCKED_STATUS = setOf(401, 403, 407, 429, 503)
 
     private const val UA =
         "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) " +
@@ -204,7 +240,7 @@ object UsernameSweep {
      * _PINNED_PLATFORMS in backend/services/search.py so both surfaces order
      * results the same way.
      */
-    private val PINNED = listOf("Instagram", "Pinterest", "YouTube")
+    internal val PINNED = listOf("Instagram", "Pinterest", "YouTube")
 
     private const val CONCURRENCY = 16
 
@@ -415,6 +451,9 @@ object UsernameSweep {
 
             client.newCall(req).execute().use { resp ->
                 val code = resp.code
+                // Refused, not answered. Returning null reports this platform
+                // as unchecked rather than inventing either verdict.
+                if (code in BLOCKED_STATUS) return null
                 if (code != p.okStatus) {
                     return Hit(p, exists = false, url = url, status = code, confidence = "none")
                 }
@@ -439,6 +478,12 @@ object UsernameSweep {
                 val peek = raw.lowercase()
 
                 val title = TITLE_RE.find(peek)?.groupValues?.get(1)?.trim().orEmpty()
+
+                // Signal 0 — a bot check, served for any handle at all. This
+                // has to run before every other signal: the challenge page
+                // echoes the requested URL back, so the handle-mention test
+                // would otherwise read it as a profile naming its owner.
+                if (CHALLENGE_MARKERS.any { it in peek }) return null
 
                 // Signal 1 — the page says outright that nothing is here.
                 if (NOT_FOUND_MARKERS.any { it in peek }) {
