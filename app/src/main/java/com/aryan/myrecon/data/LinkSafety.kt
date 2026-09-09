@@ -2,6 +2,7 @@ package com.aryan.myrecon.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.contentOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.IDN
@@ -46,11 +47,37 @@ object LinkSafety {
         val riskScore: Int,
         val verdict: Verdict,
         val kind: Kind,
+        val destination: Destination? = null,
+        val payee: Payee? = null,
         val error: String? = null,
     )
 
     /** QR codes carry more than URLs; each type needs different handling. */
-    enum class Kind { Url, WifiCredentials, ContactCard, PlainText, PhoneOrSms, Crypto }
+    enum class Kind { Url, WifiCredentials, ContactCard, PlainText, PhoneOrSms, Crypto, Payment }
+
+    /**
+     * What is actually at the other end, in words a person can act on.
+     *
+     * A final URL answers "where does this go" only for someone who reads
+     * URLs. Most people scanning a code want "it opens a YouTube video" or
+     * "it is a Google Form asking for your details", which is the difference
+     * between a destination they expected and one they did not.
+     */
+    data class Destination(
+        /** "YouTube video", "Play Store app", "Google Form". */
+        val what: String,
+        /** The page's own title, where one could be read. */
+        val title: String? = null,
+    )
+
+    /** Parsed payment request. Everything here decides whether money moves. */
+    data class Payee(
+        val address: String,
+        val name: String?,
+        val amount: String?,
+        val currency: String?,
+        val note: String?,
+    )
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(8, TimeUnit.SECONDS)
@@ -96,6 +123,22 @@ object LinkSafety {
 
     suspend fun analyse(scanned: String): Report = withContext(Dispatchers.IO) {
         val kind = classify(scanned)
+        if (kind == Kind.Payment) {
+            val payee = parsePayee(scanned)
+            val signals = paymentSignals(payee)
+            return@withContext Report(
+                scanned = scanned, finalUrl = null, host = null, redirectChain = emptyList(),
+                registered = null, ageDays = null, registrar = null,
+                signals = signals,
+                riskScore = signals.sumOf { it.weight }.coerceIn(0, 100),
+                // Never "Safe". A payment code is not dangerous by default, but
+                // nothing that moves money should carry a green tick.
+                verdict = Verdict.Caution,
+                kind = kind,
+                destination = Destination("Payment request", payee?.name),
+                payee = payee,
+            )
+        }
         if (kind != Kind.Url) {
             return@withContext nonUrlReport(scanned, kind)
         }
@@ -238,6 +281,15 @@ object LinkSafety {
             )
         }
 
+        // What this actually opens. Deliberately outside the scoring: a title
+        // is whatever the page calls itself, and a phishing page calls itself
+        // whatever it likes. It is context for the reader, not evidence.
+        val destination = finalUrl?.let { url ->
+            val what = knownDestination(url, host)
+            val title = pageTitle(url)
+            if (what == null && title == null) null else Destination(what ?: "Web page", title)
+        }
+
         val score = signals.sumOf { it.weight }.coerceIn(0, 100)
         Report(
             scanned = scanned,
@@ -256,8 +308,196 @@ object LinkSafety {
                 else -> Verdict.Safe
             },
             kind = Kind.Url,
+            destination = destination,
         )
     }
+
+
+    // ── Payment requests ─────────────────────────────────────────
+
+    /**
+     * Parse a payment intent, of which UPI is the one that matters here.
+     *
+     * `upi://pay?pa=someone@bank&pn=Name&am=250&cu=INR&tn=note`
+     */
+    fun parsePayee(raw: String): Payee? {
+        val query = raw.substringAfter('?', "")
+        if (query.isBlank()) return null
+        val params = query.split('&').mapNotNull {
+            val (k, v) = it.split('=', limit = 2).takeIf { p -> p.size == 2 } ?: return@mapNotNull null
+            k.lowercase() to runCatching { java.net.URLDecoder.decode(v, "UTF-8") }.getOrDefault(v)
+        }.toMap()
+        val address = params["pa"] ?: params["addr"] ?: return null
+        return Payee(
+            address = address,
+            name = params["pn"]?.takeIf { it.isNotBlank() },
+            amount = params["am"]?.takeIf { it.isNotBlank() },
+            currency = params["cu"]?.takeIf { it.isNotBlank() },
+            note = params["tn"]?.takeIf { it.isNotBlank() },
+        )
+    }
+
+    /**
+     * The signals that decide whether someone should let money leave.
+     *
+     * The load-bearing one is the last: scanning a QR code never *receives*
+     * money. "Scan this to get your refund/cashback/prize" is the single most
+     * common UPI fraud in India, and the victim authorises the payment
+     * themselves, which is why the bank will not reverse it. Saying so plainly
+     * at the moment of scanning is worth more than any score.
+     */
+    private fun paymentSignals(payee: Payee?): List<Signal> {
+        val out = mutableListOf<Signal>()
+        if (payee == null) {
+            out += Signal(
+                "Payment request",
+                "This code opens a payment app. Check who is being paid, and how much, on the " +
+                    "confirmation screen before approving anything.",
+                20,
+            )
+            return out
+        }
+
+        out += Signal(
+            "Pays ${payee.name ?: payee.address}",
+            "Money goes to ${payee.address}" +
+                (payee.name?.let { ", shown as \"$it\"" } ?: "") +
+                ". The name is chosen by whoever made the code and is not verified by anyone.",
+            18,
+        )
+
+        if (payee.amount != null) {
+            out += Signal(
+                "Amount is fixed at ${payee.currency ?: ""} ${payee.amount}".trim(),
+                "The code sets the amount, so the payment app may show it already filled in. " +
+                    "Confirm it is what you agreed.",
+                8,
+            )
+        } else {
+            out += Signal(
+                "Amount is left open",
+                "You type the amount. Normal for a shop counter, and also how an overcharge " +
+                    "goes unnoticed.",
+                4,
+            )
+        }
+
+        out += Signal(
+            "Scanning never receives money",
+            "A QR code can only send. If you were told this would pay you a refund, cashback " +
+                "or prize, it will take money instead — and because you approve it yourself, " +
+                "the bank will usually not reverse it.",
+            22,
+        )
+        return out
+    }
+
+    // ── What is at the other end ─────────────────────────────────
+
+    /**
+     * Well-known destinations, matched on host and path shape.
+     *
+     * Named explicitly rather than inferred, because "youtube.com/watch" being
+     * a video is a fact, while anything guessed from a page's own markup is
+     * whatever that page chose to claim.
+     */
+    private fun knownDestination(url: String, host: String?): String? {
+        val h = host?.removePrefix("www.")?.lowercase() ?: return null
+        val path = runCatching { java.net.URI(url).path.orEmpty() }.getOrDefault("")
+        return when {
+            h == "youtu.be" || h.endsWith("youtube.com") -> when {
+                path.startsWith("/watch") || h == "youtu.be" -> "YouTube video"
+                path.startsWith("/shorts") -> "YouTube Short"
+                path.startsWith("/playlist") -> "YouTube playlist"
+                else -> "YouTube page"
+            }
+            h.endsWith("play.google.com") -> "Google Play app listing"
+            h.endsWith("apps.apple.com") -> "App Store listing"
+            h.endsWith("docs.google.com") && path.contains("/forms") -> "Google Form — it can ask you for personal details"
+            h.endsWith("forms.gle") -> "Google Form — it can ask you for personal details"
+            h.endsWith("docs.google.com") -> "Google Docs file"
+            h.endsWith("drive.google.com") -> "Google Drive file"
+            h.endsWith("maps.google.com") || h == "maps.app.goo.gl" || h == "goo.gl" && path.startsWith("/maps") -> "Google Maps location"
+            h.endsWith("instagram.com") -> if (path.startsWith("/p/") || path.startsWith("/reel")) "Instagram post" else "Instagram profile"
+            h.endsWith("wa.me") || h.endsWith("api.whatsapp.com") -> "Opens a WhatsApp chat"
+            h.endsWith("t.me") -> "Opens a Telegram chat or channel"
+            h.endsWith("x.com") || h.endsWith("twitter.com") -> "Post or profile on X"
+            h.endsWith("linkedin.com") -> "LinkedIn page"
+            h.endsWith("facebook.com") || h.endsWith("fb.me") -> "Facebook page"
+            h.endsWith("spotify.com") -> "Spotify"
+            h.endsWith("github.com") -> "GitHub repository or profile"
+            h.endsWith("amazon.in") || h.endsWith("amazon.com") -> "Amazon product page"
+            h.endsWith("paypal.com") || h.endsWith("paypal.me") -> "PayPal payment page — it can ask you to send money"
+            h.endsWith("linktr.ee") -> "Link-in-bio page"
+            else -> null
+        }
+    }
+
+    /**
+     * The page's own title, read from the first few KB.
+     *
+     * Only ever presented as what the page calls itself. A phishing page will
+     * happily title itself "State Bank of India", so this is context for the
+     * reader, never evidence — which is why it does not feed the score.
+     */
+    private fun pageTitle(url: String): String? = oEmbedTitle(url) ?: htmlTitle(url)
+
+    /**
+     * Titles for hosts that will not give one to a plain HTTP client.
+     *
+     * YouTube answers a non-browser agent with a consent interstitial, so the
+     * <title> read from its HTML is useless — which showed up as "YouTube
+     * video" with no name attached, on the single most common kind of scanned
+     * link. Its oEmbed endpoint is keyless and returns the real title.
+     */
+    private fun oEmbedTitle(url: String): String? {
+        val host = hostOf(url)?.removePrefix("www.")?.lowercase() ?: return null
+        val endpoint = when {
+            host.endsWith("youtube.com") || host == "youtu.be" ->
+                "https://www.youtube.com/oembed?format=json&url="
+            host.endsWith("vimeo.com") -> "https://vimeo.com/api/oembed.json?url="
+            else -> return null
+        }
+        return runCatching {
+            val req = Request.Builder()
+                .url(endpoint + java.net.URLEncoder.encode(url, "UTF-8"))
+                .header("User-Agent", UA)
+                .build()
+            client.newCall(req).execute().use { resp ->
+                if (!resp.isSuccessful) return@use null
+                val body = resp.body?.string().orEmpty()
+                // Parsed, not pattern-matched. A title containing a quote or a
+                // backslash is ordinary, and hand-rolling that escaping is how
+                // the first attempt at this silently returned nothing.
+                val root = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
+                    .parseToJsonElement(body) as? kotlinx.serialization.json.JsonObject
+                (root?.get("title") as? kotlinx.serialization.json.JsonPrimitive)
+                    ?.contentOrNull
+                    ?.trim()?.take(120)?.takeIf { it.isNotBlank() }
+            }
+        }.getOrNull()
+    }
+
+    private fun htmlTitle(url: String): String? = runCatching {
+        val req = Request.Builder().url(url)
+            .header("User-Agent", UA)
+            .header("Accept", "text/html,*/*;q=0.8")
+            .build()
+        client.newCall(req).execute().use { resp ->
+            if (!resp.isSuccessful) return@use null
+            val head = resp.body?.source()?.let { src ->
+                src.request(48_000)
+                src.buffer.snapshot(minOf(src.buffer.size, 48_000L).toInt()).utf8()
+            } ?: return@use null
+            val m = Regex("""<title[^>]*>(.*?)</title>""",
+                setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)).find(head)
+            m?.groupValues?.get(1)
+                ?.replace(Regex("""\s+"""), " ")
+                ?.replace("&amp;", "&")?.replace("&quot;", "\"")
+                ?.replace("&#39;", "'")?.replace("&lt;", "<")?.replace("&gt;", ">")
+                ?.trim()?.take(120)?.takeIf { it.isNotBlank() }
+        }
+    }.getOrNull()
 
     // ── Helpers ──────────────────────────────────────────────────
 
@@ -269,6 +509,12 @@ object LinkSafety {
             s.startsWith("tel:", true) || s.startsWith("sms:", true) ||
                 s.startsWith("smsto:", true) -> Kind.PhoneOrSms
             s.startsWith("bitcoin:", true) || s.startsWith("ethereum:", true) -> Kind.Crypto
+            // upi:// is the most-scanned code in India and was landing in
+            // PlainText, so the one kind of QR that literally moves money got
+            // no analysis at all.
+            s.startsWith("upi://", true) || s.startsWith("upi:", true) ||
+                s.startsWith("paytmmp://", true) || s.startsWith("phonepe://", true) ||
+                s.startsWith("gpay://", true) || s.startsWith("tez://", true) -> Kind.Payment
             s.startsWith("http://", true) || s.startsWith("https://", true) -> Kind.Url
             // A bare domain with no scheme is still a link in practice.
             Regex("""^[a-z0-9-]+(\.[a-z0-9-]+)+(/.*)?$""", RegexOption.IGNORE_CASE).matches(s) -> Kind.Url

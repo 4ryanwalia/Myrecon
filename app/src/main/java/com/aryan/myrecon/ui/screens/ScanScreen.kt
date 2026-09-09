@@ -327,11 +327,14 @@ private fun ScanResult(
         LinkSafety.Verdict.Dangerous -> t.danger
         LinkSafety.Verdict.Unknown -> t.textMute
     }
-    val headline = when (r.verdict) {
-        LinkSafety.Verdict.Safe -> "Looks legitimate"
-        LinkSafety.Verdict.Caution -> "Be careful"
-        LinkSafety.Verdict.Dangerous -> "Do not open this"
-        LinkSafety.Verdict.Unknown -> "Could not verify"
+    val headline = when {
+        // A payment code is not "be careful", it is "this moves money" — and
+        // the destination is a person's bank account, not a web page.
+        r.kind == LinkSafety.Kind.Payment -> "This sends money"
+        r.verdict == LinkSafety.Verdict.Safe -> "Looks legitimate"
+        r.verdict == LinkSafety.Verdict.Caution -> "Be careful"
+        r.verdict == LinkSafety.Verdict.Dangerous -> "Do not open this"
+        else -> "Could not verify"
     }
 
     Column(
@@ -354,11 +357,50 @@ private fun ScanResult(
                     .padding(18.dp),
             ) {
                 Text(headline, style = MaterialTheme.typography.headlineSmall, color = tint)
+
+                // What it opens, in words, before the URL. Someone scanning a
+                // code wants "a YouTube video" or "a Google Form asking for
+                // your details" — the host is only useful to people who read
+                // URLs for a living.
+                r.destination?.let { d ->
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        d.what,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    d.title?.let { title ->
+                        Text(
+                            "“$title”",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = t.textDim,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+
+                r.payee?.let { pay ->
+                    Spacer(Modifier.height(10.dp))
+                    DataList(
+                        buildList {
+                            add("Paying" to (pay.name ?: "Not stated"))
+                            add("To account" to pay.address)
+                            add(
+                                "Amount" to (pay.amount
+                                    ?.let { listOfNotNull(pay.currency, it).joinToString(" ") }
+                                    ?: "You choose"),
+                            )
+                            pay.note?.let { add("Note" to it) }
+                        }
+                    )
+                }
+
                 Spacer(Modifier.height(8.dp))
                 Text(
                     r.host ?: r.scanned.take(90),
                     style = MonoStyle,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = t.textDim,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
