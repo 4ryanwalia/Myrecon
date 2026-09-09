@@ -551,7 +551,12 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .faq summary::after { content: "+"; position: absolute; right: 16px; top: 12px; font-size: 1.25rem; color: var(--text-mute); }
 .faq details[open] summary::after { content: "\2212"; }
 .faq details p { padding: 0 16px 16px; color: var(--text-dim); font-size: 0.92rem; }
-.prose a, .faq a { color: var(--accent); }
+/* Body links inside prose take the accent colour — but a button in prose is
+   still a button. Without the :not(), this rule ties on specificity with
+   `a.btn` and wins on order, painting accent-on-accent and leaving the label
+   invisible. That is what happened to "Get it on Google Play" on the home
+   page: the text was there, the same blue as the button behind it. */
+.prose a:not(.btn), .faq a:not(.btn) { color: var(--accent); }
 
 /* Article (guide) typography */
 .article { max-width: 760px; margin: 0 auto; padding: 40px 0 20px; }
