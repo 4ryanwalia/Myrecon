@@ -16,7 +16,12 @@ import androidx.compose.ui.unit.dp
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.theme.LocalReconTokens
 
-private const val SERVICES_URL = "https://www.myrecon.xyz/services.html"
+// Straight to the one place you can actually ask, not to the page that
+// explains it. Going via services.html meant reading a long page and then
+// choosing between "run a free scan" (which loops back into the app), a link
+// off to bugsnaps.in, and a Contact link in the footer — three next steps,
+// none of them obviously the one you wanted.
+private const val CONTACT_URL = "https://www.myrecon.xyz/contact.html#report"
 
 /**
  * The offer of a hand-done report, shown under a finished result.
@@ -45,7 +50,7 @@ fun DetailedReportOffer(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(3.dp))
             .background(MaterialTheme.colorScheme.surface)
             .bracketFrame(accent.copy(alpha = 0.55f))
-            .clickable { haptics.tap(); uri.openUri(SERVICES_URL) }
+            .clickable { haptics.tap(); uri.openUri(CONTACT_URL) }
             .padding(16.dp),
     ) {
         Text("Want the full picture?", style = MaterialTheme.typography.titleMedium)
@@ -70,7 +75,7 @@ fun DetailedReportOffer(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "See what's included",
+                "Ask about a report",
                 style = MaterialTheme.typography.labelLarge,
                 color = accent,
             )
