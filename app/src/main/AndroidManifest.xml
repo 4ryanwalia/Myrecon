@@ -75,6 +75,19 @@
                 android:resource="@xml/exposure_widget_info" />
         </receiver>
 
+        <!-- QR widget. A button, not a readout: it never updates itself, so it
+             costs nothing to keep on a home screen. -->
+        <receiver
+            android:name=".widget.QrWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/qr_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>

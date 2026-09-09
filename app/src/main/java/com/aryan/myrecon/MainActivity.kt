@@ -1,9 +1,12 @@
 package com.aryan.myrecon
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,17 +47,57 @@ import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.MyReconTheme
 import kotlinx.coroutines.launch
 
+/** A tab asked for from outside the app, with the tap that asked for it. */
+private data class TabRequest(val tab: String, val nonce: Long)
+
 class MainActivity : ComponentActivity() {
+
+    /**
+     * The tab the launching intent asked for, if any.
+     *
+     * The nonce is what makes a second tap on the widget count. Without it a
+     * repeat request carries the same value, the effect that applies it never
+     * re-runs, and the widget silently stops working once the user has
+     * navigated away from Scan.
+     */
+    private var tabRequest by mutableStateOf<TabRequest?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tabRequest = intent?.toTabRequest()
+
+        // Start CameraX before Compose rather than after it. The provider is a
+        // process singleton behind a future, and asking for it here means it
+        // initialises alongside the first frame instead of waiting for the
+        // viewfinder to be composed — which is most of the pause between
+        // tapping the widget and seeing the camera.
+        if (tabRequest?.tab == TAB_SCAN) {
+            runCatching { ProcessCameraProvider.getInstance(this) }
+        }
+
         enableEdgeToEdge()
         setContent {
             // One Haptics instance for the whole tree — screens reach for it
             // through LocalHaptics rather than each resolving the Vibrator.
             CompositionLocalProvider(LocalHaptics provides rememberHaptics()) {
-                MyReconTheme { MyReconApp() }
+                MyReconTheme { MyReconApp(tabRequest) }
             }
         }
+    }
+
+    /** Fired when the widget is tapped while the app is already running. */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        intent.toTabRequest()?.let { tabRequest = it }
+    }
+
+    private fun Intent.toTabRequest(): TabRequest? =
+        getStringExtra(EXTRA_TAB)?.let { TabRequest(it, SystemClock.uptimeMillis()) }
+
+    companion object {
+        const val EXTRA_TAB = "com.aryan.myrecon.extra.TAB"
+        const val TAB_SCAN = "scan"
     }
 }
 
@@ -66,10 +109,31 @@ private enum class Destination(val label: String, val icon: ImageVector) {
     Password("Password", Icons.Filled.Lock),
 }
 
+private fun destinationFor(tab: String?): Destination? = when (tab) {
+    MainActivity.TAB_SCAN -> Destination.Scan
+    else -> null
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MyReconApp() {
-    var current by rememberSaveable { mutableStateOf(Destination.Lookup) }
+private fun MyReconApp(request: TabRequest?) {
+    // Resolved in the initialiser, not in an effect. An effect would compose
+    // Lookup for a frame first, so a widget tap would flash the wrong screen
+    // on the way to the one it asked for.
+    var current by rememberSaveable {
+        mutableStateOf(destinationFor(request?.tab) ?: Destination.Lookup)
+    }
+
+    // Which request that initialiser already honoured. Saved, so a rotation
+    // does not read the launching intent a second time and yank the user back
+    // to Scan from wherever they have since navigated.
+    var appliedNonce by rememberSaveable { mutableLongStateOf(request?.nonce ?: 0L) }
+    LaunchedEffect(request) {
+        if (request == null || request.nonce == appliedNonce) return@LaunchedEffect
+        appliedNonce = request.nonce
+        destinationFor(request.tab)?.let { current = it }
+    }
+
     val t = LocalReconTokens.current
     val context = LocalContext.current
     val store = remember(context) { ReconStore(context.applicationContext) }
