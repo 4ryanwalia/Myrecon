@@ -109,7 +109,7 @@
     username: {
       label: "Username", icon: "user", placeholder: "e.g. johndoe or a profile URL",
       endpoint: CFG.endpoints.username, field: "username", deep: true,
-      sub: "Search a username across 100+ platforms and enrich matches with avatars and bios.",
+      sub: "Search a username across a wide range of platforms and enrich matches with avatars and bios.",
       examples: ["github", "torvalds", "nasa"],
     },
     email: {
@@ -897,7 +897,7 @@
           <div class="spinner"></div>
           <div class="scan-meta">
             <h3 id="scanPhase">Starting scan…</h3>
-            <p class="hint" id="scanDetail">Preparing to check 100+ platforms.</p>
+            <p class="hint" id="scanDetail">Preparing the platform sweep.</p>
           </div>
           <div class="scan-pct" id="scanPct">0%</div>
         </div>

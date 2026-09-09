@@ -215,6 +215,11 @@ button, input, select { font: inherit; color: inherit; }
 .btn-ghost:hover { box-shadow: none; border-color: var(--border-strong); }
 .btn-sm { padding: 8px 14px; font-size: 0.82rem; }
 
+/* Buttons carry their own colour. Without this an `a.btn` can inherit the
+   accent link colour and render blue-on-blue (invisible label). */
+a.btn, .btn-primary { background: var(--accent); color: #ffffff; }
+a.btn-ghost, .btn-ghost { background: var(--surface-2); color: var(--text); }
+
 .opt-row { display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
 .switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: var(--text-dim); }
 .switch input { accent-color: var(--accent); width: 16px; height: 16px; }
