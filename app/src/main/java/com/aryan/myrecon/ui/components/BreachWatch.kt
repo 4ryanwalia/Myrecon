@@ -22,10 +22,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.aryan.myrecon.data.ReconStore
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.theme.LocalReconTokens
+import com.aryan.myrecon.data.ReconStore
 import com.aryan.myrecon.work.BreachWatchWorker
+import com.aryan.myrecon.work.HandleWatchWorker
 import kotlinx.coroutines.launch
 
 /**
@@ -50,7 +51,18 @@ fun BreachWatchCard(modifier: Modifier = Modifier) {
     val t = LocalReconTokens.current
     val haptics = LocalHaptics.current
 
-    var enabled by rememberSaveable { mutableStateOf(false) }
+    // Persisted, not remembered. As rememberSaveable this read as off on every
+    // cold start while the worker carried on running — the switch disagreed
+    // with the app's actual behaviour, which is the worst thing a switch can do.
+    val store = remember(context) { ReconStore(context.applicationContext) }
+    val scope = rememberCoroutineScope()
+    val persisted by store.alertsEnabled.collectAsState(initial = false)
+    var enabled by remember(persisted) { mutableStateOf(persisted) }
+
+    fun persist(on: Boolean) {
+        enabled = on
+        scope.launch { store.setAlertsEnabled(on) }
+    }
     var granted by remember {
         mutableStateOf(
             Build.VERSION.SDK_INT < 33 ||
@@ -64,10 +76,11 @@ fun BreachWatchCard(modifier: Modifier = Modifier) {
     ) { ok ->
         granted = ok
         if (ok) {
-            enabled = true
+            persist(true)
             BreachWatchWorker.ensureChannel(context)
             BreachWatchWorker.schedule(context)
             BreachWatchWorker.runNow(context)
+            HandleWatchWorker.schedule(context)
         }
     }
 
@@ -100,14 +113,16 @@ fun BreachWatchCard(modifier: Modifier = Modifier) {
                 onCheckedChange = { want ->
                     haptics.tap()
                     if (!want) {
-                        enabled = false
+                        persist(false)
+                        HandleWatchWorker.cancel(context)
                         return@Switch
                     }
                     if (granted) {
-                        enabled = true
+                        persist(true)
                         BreachWatchWorker.ensureChannel(context)
                         BreachWatchWorker.schedule(context)
                         BreachWatchWorker.runNow(context)
+                        HandleWatchWorker.schedule(context)
                     } else {
                         ask.launch(Manifest.permission.POST_NOTIFICATIONS)
                     }

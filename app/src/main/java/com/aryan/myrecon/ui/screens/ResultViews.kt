@@ -80,6 +80,14 @@ fun SweepView(
     if (s.restored) RestoredBanner(s.result.query.username)
     s.identity?.let { VerifiedIdentity(it) }
     UsernameView(s.result, unlocked = unlocked, offer = offer)
+
+    // After the findings: watching means "tell me when this changes", and the
+    // list above is what it would be changing from.
+    val handle = s.result.query.username
+    if (handle.isNotBlank()) {
+        SectionLabel("Keep watching")
+        HandleWatchCard(handle)
+    }
 }
 
 /**
@@ -660,10 +668,6 @@ fun EmailView(r: EmailResult) {
         ChipRow(s.linkedAccounts, strongPredicate = { true })
     }
 
-    // Offered after a result, when the value of being told about the next one
-    // is obvious, rather than as an upfront prompt.
-    SectionLabel("Stay informed")
-    BreachWatchCard()
 }
 
 @Composable

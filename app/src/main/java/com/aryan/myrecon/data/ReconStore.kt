@@ -66,6 +66,23 @@ class ReconStore(private val context: Context) {
         fun seenSources(email: String) = stringSetPreferencesKey("seen_sources_$email")
 
         /**
+         * Whether breach alerts are on.
+         *
+         * The switch used to be `rememberSaveable`, which meant it read as off
+         * on every cold start while the worker was still happily scheduled —
+         * the control disagreed with the behaviour.
+         */
+        val ALERTS = stringPreferencesKey("alerts_enabled")
+
+        /**
+         * Profile URLs already reported for one handle.
+         *
+         * The baseline that makes "a new account appeared under your handle"
+         * a statement about change rather than a re-listing of the same sweep.
+         */
+        fun seenProfiles(handle: String) = stringSetPreferencesKey("seen_profiles_$handle")
+
+        /**
          * Whether the intro has been completed or skipped.
          *
          * Versioned in the key rather than stored as a number: if the intro
@@ -211,6 +228,34 @@ class ReconStore(private val context: Context) {
         context.dataStore.edit { prefs ->
             prefs[Keys.WATCHED_HANDLES] =
                 (prefs[Keys.WATCHED_HANDLES] ?: emptySet()) - handle.trim().lowercase()
+        }
+    }
+
+    /**
+     * Profiles already reported for a watched handle.
+     *
+     * Absent means no baseline yet, which the worker treats as "record what is
+     * there now and say nothing" — otherwise enabling the feature would
+     * immediately announce every account the user already knew about.
+     */
+    suspend fun seenProfiles(handle: String): Set<String>? =
+        context.dataStore.data.first()[Keys.seenProfiles(handle.trim().lowercase())]
+
+    suspend fun markProfilesSeen(handle: String, urls: Collection<String>) {
+        val clean = handle.trim().lowercase()
+        context.dataStore.edit { prefs ->
+            prefs[Keys.seenProfiles(clean)] = urls.map { it.trimEnd('/') }.toSet()
+        }
+    }
+
+    // ── Alerts ───────────────────────────────────────────────────
+
+    val alertsEnabled: Flow<Boolean> = context.dataStore.data
+        .map { it[Keys.ALERTS] == "true" }
+
+    suspend fun setAlertsEnabled(on: Boolean) {
+        context.dataStore.edit { prefs ->
+            if (on) prefs[Keys.ALERTS] = "true" else prefs.remove(Keys.ALERTS)
         }
     }
 

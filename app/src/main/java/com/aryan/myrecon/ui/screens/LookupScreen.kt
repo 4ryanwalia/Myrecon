@@ -269,6 +269,12 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 // Under the findings, never above them. Someone who has just
                 // seen what turned up has a live question; the same card on an
                 // empty screen is only an advert.
+                // Both offered after a finished result, where the value of
+                // each is obvious. The alert card used to live only at the
+                // bottom of an email lookup, so most users never met it.
+                Spacer(Modifier.height(22.dp))
+                SectionLabel("Stay informed")
+                BreachWatchCard()
                 Spacer(Modifier.height(22.dp))
                 DetailedReportOffer()
             }
