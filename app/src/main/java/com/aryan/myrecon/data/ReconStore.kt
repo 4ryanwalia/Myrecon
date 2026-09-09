@@ -83,6 +83,17 @@ class ReconStore(private val context: Context) {
         fun seenProfiles(handle: String) = stringSetPreferencesKey("seen_profiles_$handle")
 
         /**
+         * Cleanup progress, as two sets of profile URLs per handle.
+         *
+         * Two sets rather than a url→status map because the third state is the
+         * absence of a decision: anything in neither set is still to do. That
+         * makes a newly-discovered account default to "needs looking at"
+         * without any migration, which a stored enum would not.
+         */
+        fun cleanupKept(handle: String) = stringSetPreferencesKey("cleanup_kept_$handle")
+        fun cleanupDone(handle: String) = stringSetPreferencesKey("cleanup_done_$handle")
+
+        /**
          * Whether the intro has been completed or skipped.
          *
          * Versioned in the key rather than stored as a number: if the intro
@@ -248,6 +259,46 @@ class ReconStore(private val context: Context) {
         }
     }
 
+    // ── Cleanup progress ─────────────────────────────────────────
+
+    /** What the user has decided about one account. */
+    enum class Cleanup { Todo, Keeping, Deleted }
+
+    /** Every decision made for a handle, keyed by profile URL. */
+    fun cleanupFor(handle: String): Flow<Map<String, Cleanup>> {
+        val clean = handle.trim().removePrefix("@").lowercase()
+        return context.dataStore.data.map { prefs ->
+            val kept = prefs[Keys.cleanupKept(clean)] ?: emptySet()
+            val done = prefs[Keys.cleanupDone(clean)] ?: emptySet()
+            buildMap {
+                kept.forEach { put(it, Cleanup.Keeping) }
+                // Deleted wins a collision. It is the stronger statement, and a
+                // URL should never be in both.
+                done.forEach { put(it, Cleanup.Deleted) }
+            }
+        }
+    }
+
+    /**
+     * Record a decision. [Cleanup.Todo] clears it.
+     *
+     * Always removes from both sets first, so toggling between the two cannot
+     * leave a URL marked as kept *and* deleted.
+     */
+    suspend fun setCleanup(handle: String, url: String, state: Cleanup) {
+        // The widget shows the unhandled count; nudge it rather than letting it
+        // sit stale until the next hourly refresh.
+        widgetRefresh()
+        val clean = handle.trim().removePrefix("@").lowercase()
+        val key = url.trimEnd('/')
+        context.dataStore.edit { prefs ->
+            val kept = (prefs[Keys.cleanupKept(clean)] ?: emptySet()) - key
+            val done = (prefs[Keys.cleanupDone(clean)] ?: emptySet()) - key
+            prefs[Keys.cleanupKept(clean)] = if (state == Cleanup.Keeping) kept + key else kept
+            prefs[Keys.cleanupDone(clean)] = if (state == Cleanup.Deleted) done + key else done
+        }
+    }
+
     // ── Alerts ───────────────────────────────────────────────────
 
     val alertsEnabled: Flow<Boolean> = context.dataStore.data
@@ -263,6 +314,26 @@ class ReconStore(private val context: Context) {
 
     suspend fun saveScan(scan: SavedScan) {
         context.dataStore.edit { it[Keys.LAST_SCAN] = json.encodeToString(scan) }
+        widgetRefresh()
+    }
+
+    /**
+     * Redraw any placed widget.
+     *
+     * Reflective so the data layer keeps no compile-time dependency on the
+     * widget, and wrapped because a launcher that cannot host widgets must
+     * never break a save.
+     */
+    private fun widgetRefresh() {
+        runCatching {
+            Class.forName("com.aryan.myrecon.widget.ExposureWidget")
+                .getDeclaredField("Companion").get(null)
+                ?.let { companion ->
+                    companion.javaClass
+                        .getMethod("refresh", Context::class.java)
+                        .invoke(companion, context.applicationContext)
+                }
+        }
     }
 
     suspend fun lastScan(): SavedScan? =

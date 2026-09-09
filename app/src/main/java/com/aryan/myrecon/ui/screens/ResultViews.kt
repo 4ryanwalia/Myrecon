@@ -21,6 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
@@ -29,6 +31,7 @@ import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.*
 import com.aryan.myrecon.ui.pressScale
 import com.aryan.myrecon.ui.theme.*
+import kotlinx.coroutines.launch
 
 /**
  * Result renderers, one per lookup.
@@ -250,6 +253,20 @@ fun UsernameView(
     val uriHandler = LocalUriHandler.current
     val profiles = r.results.profiles
 
+    // Cleanup decisions for this handle. Read as a flow so a change made on one
+    // card updates the progress bar above without either knowing about the other.
+    val context = LocalContext.current
+    val store = remember(context) { ReconStore(context.applicationContext) }
+    val scope = rememberCoroutineScope()
+    val handle = r.query.username
+    val cleanup by store.cleanupFor(handle).collectAsState(initial = emptyMap())
+    val statusOf: (Profile) -> ReconStore.Cleanup = { p ->
+        cleanup[p.url.trimEnd('/')] ?: ReconStore.Cleanup.Todo
+    }
+    val onCleanup: (Profile, ReconStore.Cleanup) -> Unit = { p, state ->
+        scope.launch { store.setCleanup(handle, p.url, state) }
+    }
+
     if (profiles.isEmpty()) {
         StatePanel(
             "Nothing found",
@@ -257,6 +274,14 @@ fun UsernameView(
                 "if you were checking your own footprint.",
         )
         return
+    }
+
+    if (handle.isNotBlank()) {
+        CleanupProgress(
+            total = profiles.size,
+            handled = profiles.count { statusOf(it) != ReconStore.Cleanup.Todo },
+        )
+        Spacer(Modifier.height(14.dp))
     }
 
     val confirmed = profiles.filter { it.confidence != "unverified" }
@@ -325,7 +350,11 @@ fun UsernameView(
         val visible = if (unlocked) items else items.take(1)
         visible.forEach { p ->
             StaggeredIn(index = rank++) {
-                ProfileCard(p) { uriHandler.openUri(p.url) }
+                ProfileCard(
+                    p,
+                    status = statusOf(p),
+                    onStatus = { onCleanup(p, it) },
+                ) { uriHandler.openUri(p.url) }
             }
             Spacer(Modifier.height(8.dp))
         }
@@ -367,7 +396,11 @@ fun UsernameView(
             modifier = Modifier.padding(bottom = 10.dp),
         )
         unverified.forEach { p ->
-            ProfileCard(p) { uriHandler.openUri(p.url) }
+            ProfileCard(
+                p,
+                status = statusOf(p),
+                onStatus = { onCleanup(p, it) },
+            ) { uriHandler.openUri(p.url) }
             Spacer(Modifier.height(8.dp))
         }
     }
@@ -401,13 +434,23 @@ private fun StaggeredIn(index: Int, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun ProfileCard(p: Profile, onOpen: () -> Unit) {
+private fun ProfileCard(
+    p: Profile,
+    status: ReconStore.Cleanup = ReconStore.Cleanup.Todo,
+    onStatus: (ReconStore.Cleanup) -> Unit = {},
+    onOpen: () -> Unit,
+) {
     val t = LocalReconTokens.current
     val haptics = LocalHaptics.current
     val source = remember { MutableInteractionSource() }
-    val stripe = when (p.confidence?.lowercase()) {
-        "high" -> t.ok
-        "medium" -> t.warn
+    val handled = status != ReconStore.Cleanup.Todo
+    val stripe = when {
+        // A handled account keeps its place in the list but stops competing
+        // for attention with the ones still needing a decision.
+        status == ReconStore.Cleanup.Deleted -> t.info
+        status == ReconStore.Cleanup.Keeping -> t.ok
+        p.confidence?.lowercase() == "high" -> t.ok
+        p.confidence?.lowercase() == "medium" -> t.warn
         else -> t.textMute
     }
     ReconCard(
@@ -426,6 +469,10 @@ private fun ProfileCard(p: Profile, onOpen: () -> Unit) {
                 Text(
                     p.platform.ifBlank { "Unknown" },
                     style = MaterialTheme.typography.titleMedium,
+                    textDecoration = if (status == ReconStore.Cleanup.Deleted) {
+                        TextDecoration.LineThrough
+                    } else null,
+                    color = if (handled) t.textDim else MaterialTheme.colorScheme.onSurface,
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 // Prefer the name the platform displays; fall back to the URL.
@@ -456,6 +503,9 @@ private fun ProfileCard(p: Profile, onOpen: () -> Unit) {
             Spacer(Modifier.height(8.dp))
             Text(p.bio, style = MaterialTheme.typography.bodySmall, color = t.textDim, maxLines = 3, overflow = TextOverflow.Ellipsis)
         }
+
+        Spacer(Modifier.height(10.dp))
+        CleanupControl(state = status, onChange = onStatus)
     }
 }
 

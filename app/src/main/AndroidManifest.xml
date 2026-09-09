@@ -63,6 +63,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Home screen widget. Exported because the launcher hosts it. -->
+        <receiver
+            android:name=".widget.ExposureWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/exposure_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>
