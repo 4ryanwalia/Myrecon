@@ -27,7 +27,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.aryan.myrecon.data.CleanCopy
 import com.aryan.myrecon.data.GeoIntel
+import com.aryan.myrecon.data.ImageProvenance
 import com.aryan.myrecon.data.ImageForensics
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.ActionAdGateState
@@ -54,13 +56,37 @@ sealed interface ImageState {
     data class Failed(val message: String) : ImageState
 }
 
+/** The clean-copy action, which is separate from the report it sits under. */
+sealed interface CleanState {
+    data object Idle : CleanState
+    data object Saving : CleanState
+    data class Saved(val result: CleanCopy.Saved) : CleanState
+    data class Failed(val message: String) : CleanState
+}
+
 class ImageViewModel : ViewModel() {
     private val _state = MutableStateFlow<ImageState>(ImageState.Empty)
     val state = _state.asStateFlow()
 
+    private val _clean = MutableStateFlow<CleanState>(CleanState.Idle)
+    val clean = _clean.asStateFlow()
+
+    fun saveClean(context: android.content.Context, uri: Uri) {
+        if (_clean.value is CleanState.Saving) return
+        viewModelScope.launch {
+            _clean.value = CleanState.Saving
+            _clean.value = CleanCopy.save(context, uri).fold(
+                onSuccess = { CleanState.Saved(it) },
+                onFailure = { CleanState.Failed(it.message ?: "The copy could not be saved.") },
+            )
+        }
+    }
+
     fun analyse(context: android.content.Context, uri: Uri) {
         viewModelScope.launch {
             _state.value = ImageState.Working
+            // A saved-copy confirmation belongs to the photo it was made from.
+            _clean.value = CleanState.Idle
             val result = ImageForensics.analyse(context, uri)
             _state.value = result.fold(
                 onSuccess = { report ->
@@ -77,13 +103,17 @@ class ImageViewModel : ViewModel() {
         }
     }
 
-    fun reset() { _state.value = ImageState.Empty }
+    fun reset() {
+        _state.value = ImageState.Empty
+        _clean.value = CleanState.Idle
+    }
 }
 
 @Composable
 fun ImageScreen(vm: ImageViewModel = viewModel()) {
     val context = LocalContext.current
     val state by vm.state.collectAsState()
+    val clean by vm.clean.collectAsState()
     val haptics = LocalHaptics.current
     val t = LocalReconTokens.current
     val adGate = rememberActionAdGate()
@@ -155,7 +185,250 @@ fun ImageScreen(vm: ImageViewModel = viewModel()) {
                 PickTile(onPick = ::pick)
             }
 
-            is ImageState.Done -> ForensicsReport(s, onPick = ::pick, gate = adGate)
+            is ImageState.Done -> ForensicsReport(
+                s,
+                onPick = ::pick,
+                gate = adGate,
+                clean = clean,
+                onClean = { vm.saveClean(context, s.uri) },
+            )
+        }
+    }
+}
+
+/**
+ * What the file says about where it came from.
+ *
+ * Prominent only when there is something to say. A card reading "no AI marker
+ * found" on every holiday photo would be noise, and worse, it would read as a
+ * clean bill of health — which is exactly the claim the data cannot support.
+ * When nothing is declared the answer is a quiet line that says so and says why
+ * it proves nothing.
+ */
+@Composable
+private fun OriginCard(p: ImageProvenance.Report) {
+    val t = LocalReconTokens.current
+    val declared = p.origin != ImageProvenance.Origin.Undeclared || p.contentCredentials
+
+    if (!declared) {
+        SectionLabel("Origin")
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(1.dp, t.border, RoundedCornerShape(14.dp))
+                .padding(14.dp),
+        ) {
+            Text("Nothing declared", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(5.dp))
+            Text(
+                "This file carries no AI marker and no Content Credentials. That is not " +
+                    "evidence it is real — a screenshot, a re-save, or an upload through " +
+                    "almost any social platform removes these markers, so most genuine " +
+                    "photos you meet online have none either.",
+                style = MaterialTheme.typography.bodySmall,
+                color = t.textDim,
+            )
+        }
+        return
+    }
+
+    val (headline, tint) = when (p.origin) {
+        ImageProvenance.Origin.DeclaredAiGenerated ->
+            "This file declares it was AI-generated" to t.warn
+        ImageProvenance.Origin.DeclaredAiEdited ->
+            "Part of this was AI-generated" to t.warn
+        ImageProvenance.Origin.DeclaredCapture ->
+            "This file declares it was camera-captured" to t.ok
+        ImageProvenance.Origin.Undeclared ->
+            "Content Credentials attached" to t.info
+    }
+
+    SectionLabel("Origin")
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(tint.copy(alpha = 0.10f))
+            .border(1.dp, tint.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+            .padding(16.dp),
+    ) {
+        Text(headline, style = MaterialTheme.typography.titleLarge, color = tint)
+        p.generator?.let {
+            Spacer(Modifier.height(4.dp))
+            Text(it, style = MaterialTheme.typography.titleMedium)
+        }
+
+        Spacer(Modifier.height(10.dp))
+        Text(
+            "Read from the file's own metadata, not guessed from the picture.",
+            style = MaterialTheme.typography.bodySmall,
+            color = t.textDim,
+        )
+
+        if (p.markers.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            DataList(p.markers.map { it.source to it.value })
+        }
+
+        if (p.contentCredentials) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                // Presence is provable from the bytes; validity is not, and
+                // saying "verified" here would be a claim this app cannot make.
+                "A C2PA manifest is attached. MyRecon confirms it is present but does not " +
+                    "verify its signature, so treat it as a claim the file makes, not proof.",
+                style = MaterialTheme.typography.bodySmall,
+                color = t.textMute,
+            )
+        }
+
+        p.prompt?.let { prompt ->
+            Spacer(Modifier.height(12.dp))
+            Text("Prompt stored in the file", style = MaterialTheme.typography.titleSmall)
+            Spacer(Modifier.height(5.dp))
+            Text(
+                prompt,
+                style = MonoStyle,
+                color = t.textDim,
+            )
+        }
+    }
+}
+
+/**
+ * The report turned round to face the person holding the phone.
+ *
+ * Everything above answers "what is this file". This answers "what does it say
+ * about me", and pairs it with the only action on this screen — because a list
+ * of things your photo leaks, with nothing to do about it, is just anxiety.
+ */
+@Composable
+private fun ExposureSection(
+    r: ImageForensics.Report,
+    clean: CleanState,
+    onClean: () -> Unit,
+) {
+    val t = LocalReconTokens.current
+    if (r.leaks.isEmpty() && !r.cleanCopy.supported) return
+
+    SectionLabel("What this photo gives away")
+
+    if (r.leaks.isEmpty()) {
+        Text(
+            "Nothing identifying was found in this file. There is no location, no timestamp " +
+                "and no camera identity to remove.",
+            style = MaterialTheme.typography.bodySmall,
+            color = t.textDim,
+        )
+    }
+
+    r.leaks.forEach { leak ->
+        val c = when (leak.severity) {
+            "high" -> t.danger
+            "medium" -> t.warn
+            else -> t.textMute
+        }
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(1.dp, t.border, RoundedCornerShape(12.dp))
+                .padding(13.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    Modifier
+                        .size(7.dp)
+                        .clip(RoundedCornerShape(99.dp))
+                        .background(c),
+                )
+                Spacer(Modifier.width(9.dp))
+                Text(leak.what, style = MaterialTheme.typography.titleMedium)
+            }
+            Spacer(Modifier.height(5.dp))
+            Text(leak.detail, style = MaterialTheme.typography.bodySmall, color = t.textDim)
+        }
+    }
+
+    Spacer(Modifier.height(14.dp))
+
+    when (val c = clean) {
+        is CleanState.Saved -> {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(t.ok.copy(alpha = 0.10f))
+                    .border(1.dp, t.ok.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+                    .padding(15.dp),
+            ) {
+                Text("Clean copy saved", style = MaterialTheme.typography.titleMedium, color = t.ok)
+                Spacer(Modifier.height(5.dp))
+                Text(
+                    "Pictures › MyRecon › ${c.result.displayName}",
+                    style = MonoStyle,
+                    color = t.textDim,
+                )
+                if (c.result.removed.isNotEmpty()) {
+                    Spacer(Modifier.height(9.dp))
+                    DataList(c.result.removed.map { "Removed" to it })
+                }
+                Spacer(Modifier.height(9.dp))
+                Text(
+                    if (c.result.recompressed) {
+                        "This format could not be edited in place, so the copy was re-encoded " +
+                            "as a JPEG. The picture is very slightly recompressed."
+                    } else {
+                        "The picture itself is untouched — only the metadata blocks were " +
+                            "removed, so there is no quality loss."
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = t.textMute,
+                )
+            }
+        }
+
+        is CleanState.Failed -> StatePanel("Could not save a clean copy", c.message, tint = t.danger)
+
+        else -> {
+            Button(
+                onClick = onClean,
+                enabled = c !is CleanState.Saving,
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                if (c is CleanState.Saving) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(16.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text("Saving…")
+                } else {
+                    Text("Save a clean copy")
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                if (r.cleanCopy.supported) {
+                    "Writes a stripped copy to your gallery, ready to share. " +
+                        "Removes ${r.cleanCopy.removes.joinToString(", ").ifBlank { "any metadata" }}" +
+                        (if (r.cleanCopy.bytesSaved > 0)
+                            " · %.0f KB smaller".format(r.cleanCopy.bytesSaved / 1024.0)
+                        else "") +
+                        ". The original is left exactly as it is."
+                } else {
+                    "This format cannot be edited in place, so the copy will be re-encoded as " +
+                        "a JPEG. That removes everything, at the cost of a slight recompression."
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = t.textMute,
+            )
         }
     }
 }
@@ -199,6 +472,8 @@ private fun ForensicsReport(
     s: ImageState.Done,
     onPick: () -> Unit,
     gate: ActionAdGateState,
+    clean: CleanState,
+    onClean: () -> Unit,
 ) {
     val t = LocalReconTokens.current
     val uriHandler = LocalUriHandler.current
@@ -214,6 +489,8 @@ private fun ForensicsReport(
             .clip(RoundedCornerShape(16.dp))
             .background(t.surface2),
     )
+
+    OriginCard(r.provenance)
 
     // ── Location leads: it is the finding people care about most ──
     s.geo?.let { geo ->
@@ -331,6 +608,9 @@ private fun ForensicsReport(
             }
         }
     }
+
+    // ── What it gives away, and the fix ───────────────────────────
+    ExposureSection(r, clean, onClean)
 
     // ── File ──────────────────────────────────────────────────────
     SectionLabel("File")

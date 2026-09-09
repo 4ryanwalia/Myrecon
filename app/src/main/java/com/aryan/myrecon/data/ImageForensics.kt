@@ -30,6 +30,54 @@ object ImageForensics {
         val exif: Exif,
         val hashes: Hashes,
         val signals: List<Signal>,
+        val provenance: ImageProvenance.Report,
+        val thumbnail: ThumbnailCheck,
+        /** What this file discloses about the person who made it. */
+        val leaks: List<Leak>,
+        val cleanCopy: CleanCopyPlan,
+    )
+
+    /**
+     * The embedded thumbnail against the image it claims to represent.
+     *
+     * Cameras write a small preview at the moment of capture. Most editors
+     * rewrite the full image and leave that preview alone, so a thumbnail that
+     * no longer looks like the picture is evidence the picture changed after it
+     * was taken — deterministic, reproducible by anyone, and needing no model.
+     */
+    data class ThumbnailCheck(
+        val present: Boolean,
+        val width: Int? = null,
+        val height: Int? = null,
+        /** Differing bits between the two pHashes, out of 64. */
+        val distance: Int? = null,
+        val verdict: Match = Match.NoThumbnail,
+    )
+
+    enum class Match {
+        NoThumbnail,
+
+        /** The preview matches. No evidence of a later edit. */
+        Consistent,
+
+        /** Different enough to notice, not enough to claim anything. */
+        Inconclusive,
+
+        /** The preview is a different shape — the image was cropped. */
+        Cropped,
+
+        /** The preview shows a different picture. */
+        Mismatch,
+    }
+
+    /** Something the file gives away about its owner. */
+    data class Leak(val what: String, val detail: String, val severity: String)
+
+    /** What a stripped copy would remove, worked out from the real bytes. */
+    data class CleanCopyPlan(
+        val supported: Boolean,
+        val removes: List<String>,
+        val bytesSaved: Int,
     )
 
     data class FileFacts(
@@ -51,6 +99,8 @@ object ImageForensics {
         val software: String? = null,
         val capturedAt: String? = null,
         val modifiedAt: String? = null,
+        val artist: String? = null,
+        val owner: String? = null,
         val iso: String? = null,
         val aperture: String? = null,
         val exposure: String? = null,
@@ -88,8 +138,17 @@ object ImageForensics {
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
             require(bounds.outWidth > 0 && bounds.outHeight > 0) { "Not a readable image." }
 
-            val exif = readExif(bytes)
+            // Built once and shared: the thumbnail check needs the same
+            // instance the tag read used, and parsing the file twice to get it
+            // would double the work for nothing.
+            val exifInterface = runCatching { ExifInterface(bytes.inputStream()) }.getOrNull()
+            val exif = readExif(exifInterface)
             val hashes = hashesFor(bytes)
+            val provenance = ImageProvenance.analyse(bytes, exif.software)
+            val thumbnail = thumbnailCheck(
+                exifInterface, hashes.phash, bounds.outWidth, bounds.outHeight,
+            )
+            val cleanCopy = cleanCopyPlan(bytes)
 
             Report(
                 file = FileFacts(
@@ -103,7 +162,13 @@ object ImageForensics {
                 ),
                 exif = exif,
                 hashes = hashes,
-                signals = signalsFor(exif, bounds.outMimeType, bounds.outWidth, bounds.outHeight),
+                signals = signalsFor(
+                    exif, bounds.outMimeType, bounds.outWidth, bounds.outHeight, thumbnail,
+                ),
+                provenance = provenance,
+                thumbnail = thumbnail,
+                leaks = leaksFor(exif, provenance, cleanCopy),
+                cleanCopy = cleanCopy,
             )
         }
     }
@@ -116,9 +181,8 @@ object ImageForensics {
      * plain getAttribute. The Python port had to walk both IFDs by hand, and
      * silently returned null for most of the capture block until it did.
      */
-    private fun readExif(bytes: ByteArray): Exif {
-        val exif = runCatching { ExifInterface(bytes.inputStream()) }.getOrNull()
-            ?: return Exif(present = false)
+    private fun readExif(exif: ExifInterface?): Exif {
+        if (exif == null) return Exif(present = false)
 
         fun tag(name: String): String? =
             exif.getAttribute(name)?.trim()?.takeIf { it.isNotBlank() && it != "0" }
@@ -141,6 +205,8 @@ object ImageForensics {
             software = tag(ExifInterface.TAG_SOFTWARE),
             capturedAt = isoDate(tag(ExifInterface.TAG_DATETIME_ORIGINAL)),
             modifiedAt = isoDate(tag(ExifInterface.TAG_DATETIME)),
+            artist = tag(ExifInterface.TAG_ARTIST),
+            owner = tag(ExifInterface.TAG_CAMERA_OWNER_NAME),
             iso = tag(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY),
             aperture = tag(ExifInterface.TAG_F_NUMBER)?.let { "f/$it" },
             exposure = tag(ExifInterface.TAG_EXPOSURE_TIME)?.let { "${it}s" },
@@ -216,10 +282,210 @@ object ImageForensics {
         }
     }
 
+    // ── Embedded thumbnail ───────────────────────────────────────
+
+    /**
+     * Compare the capture-time preview against the image as it stands now.
+     *
+     * Two failure modes are separated on purpose, because they mean different
+     * things and only one of them is about content. A preview with a different
+     * *shape* means the frame was cropped, which is worth saying plainly; a
+     * preview of the same shape showing a different *picture* is the tamper
+     * signal. Running a pHash across a crop would only produce a large distance
+     * and a vague accusation, so the shape is checked first and the hashes are
+     * never compared across different aspect ratios.
+     *
+     * The threshold is deliberately loose. A thumbnail is a heavily compressed
+     * 160x120 preview of a 12-megapixel frame, so some distance is normal, and
+     * the middle band is reported as inconclusive rather than forced into a
+     * verdict. Calling an untouched holiday photo doctored is a much worse
+     * failure than saying nothing.
+     */
+    private fun thumbnailCheck(
+        exif: ExifInterface?,
+        mainPhash: String,
+        mainWidth: Int,
+        mainHeight: Int,
+    ): ThumbnailCheck {
+        val thumb = exif?.takeIf { it.hasThumbnail() }?.thumbnailBytes
+            ?: return ThumbnailCheck(present = false)
+
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(thumb, 0, thumb.size, bounds)
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0 || mainWidth <= 0 || mainHeight <= 0) {
+            return ThumbnailCheck(present = true)
+        }
+
+        val thumbAspect = bounds.outWidth.toDouble() / bounds.outHeight
+        val mainAspect = mainWidth.toDouble() / mainHeight
+        if (kotlin.math.abs(thumbAspect - mainAspect) / mainAspect > 0.06) {
+            return ThumbnailCheck(
+                present = true,
+                width = bounds.outWidth,
+                height = bounds.outHeight,
+                verdict = Match.Cropped,
+            )
+        }
+
+        val bitmap = BitmapFactory.decodeByteArray(thumb, 0, thumb.size)
+            ?: return ThumbnailCheck(present = true, bounds.outWidth, bounds.outHeight)
+        val thumbPhash = try {
+            PerceptualHash.perceptual(lumaGrid(bitmap, 32, 32))
+        } finally {
+            bitmap.recycle()
+        }
+
+        val distance = PerceptualHash.hamming(mainPhash, thumbPhash)
+        return ThumbnailCheck(
+            present = true,
+            width = bounds.outWidth,
+            height = bounds.outHeight,
+            distance = distance,
+            verdict = when {
+                distance == null -> Match.Inconclusive
+                distance <= 12 -> Match.Consistent
+                distance >= 24 -> Match.Mismatch
+                else -> Match.Inconclusive
+            },
+        )
+    }
+
+    // ── Clean copy ───────────────────────────────────────────────
+
+    /**
+     * What stripping would actually remove, computed from the bytes.
+     *
+     * Run now so the offer can name the real blocks in this file rather than a
+     * generic promise. The stripped bytes themselves are discarded — holding a
+     * second copy of a 25 MB image for the whole time a report is on screen, on
+     * the chance the user taps the button, is not a trade worth making.
+     */
+    private fun cleanCopyPlan(bytes: ByteArray): CleanCopyPlan {
+        if (!MetadataStrip.supports(bytes)) {
+            return CleanCopyPlan(supported = false, removes = emptyList(), bytesSaved = 0)
+        }
+        val stripped = MetadataStrip.strip(bytes)
+            ?: return CleanCopyPlan(supported = false, removes = emptyList(), bytesSaved = 0)
+        return CleanCopyPlan(
+            supported = true,
+            removes = stripped.removed,
+            bytesSaved = stripped.bytesSaved,
+        )
+    }
+
+    // ── What the file gives away ─────────────────────────────────
+
+    /**
+     * The same findings, read back from the owner's side.
+     *
+     * Everything above answers "what is this file". This answers "what does it
+     * say about me", which is the question the person holding the phone
+     * actually has before they upload something — and the one that turns a
+     * report into a decision.
+     */
+    private fun leaksFor(
+        exif: Exif,
+        provenance: ImageProvenance.Report,
+        plan: CleanCopyPlan,
+    ): List<Leak> {
+        val out = mutableListOf<Leak>()
+
+        if (exif.gps.present && exif.gps.latitude != null && exif.gps.longitude != null) {
+            out += Leak(
+                "Where you were",
+                "The file records %.6f, %.6f — a specific spot, not a general area. On a photo "
+                    .format(exif.gps.latitude, exif.gps.longitude) +
+                    "taken at home, that is your address.",
+                "high",
+            )
+        }
+        exif.capturedAt?.let {
+            out += Leak(
+                "When you were there",
+                "Captured $it. Combined with a location this places you somewhere at a time.",
+                if (exif.gps.present) "high" else "medium",
+            )
+        }
+        exif.serial?.let {
+            out += Leak(
+                "Your camera's serial number",
+                "Serial $it identifies one physical device. Anyone holding two of your photos " +
+                    "can prove the same camera took both, even across anonymous accounts.",
+                "high",
+            )
+        }
+        listOfNotNull(exif.artist, exif.owner).distinct().forEach {
+            out += Leak(
+                "Your name",
+                "Written into the file as the owner or author: \"$it\".",
+                "high",
+            )
+        }
+        provenance.prompt?.let {
+            out += Leak(
+                "The prompt you typed",
+                "The full generation prompt is stored inside the image and travels with it. " +
+                    "Anyone who downloads this file can read exactly what was asked for.",
+                "high",
+            )
+        }
+        if (exif.make != null || exif.model != null) {
+            out += Leak(
+                "The device you used",
+                listOfNotNull(exif.make, exif.model).joinToString(" ") +
+                    ". Narrows down who took it, though it does not identify you alone.",
+                "low",
+            )
+        }
+        if (plan.removes.any { it.contains("appended", ignoreCase = true) }) {
+            out += Leak(
+                "A video you may not know is there",
+                "Data is appended after the end of the image. Motion photos store a few " +
+                    "seconds of video and audio from around the moment of the shot, and it " +
+                    "goes wherever the photo goes.",
+                "high",
+            )
+        }
+        return out
+    }
+
     // ── Provenance ───────────────────────────────────────────────
 
-    private fun signalsFor(exif: Exif, mime: String?, width: Int, height: Int): List<Signal> {
+    private fun signalsFor(
+        exif: Exif,
+        mime: String?,
+        width: Int,
+        height: Int,
+        thumbnail: ThumbnailCheck,
+    ): List<Signal> {
         val out = mutableListOf<Signal>()
+
+        when (thumbnail.verdict) {
+            Match.Mismatch -> out += Signal(
+                "Embedded preview shows a different picture",
+                "The camera wrote a preview at capture, and it no longer matches the image " +
+                    "(${thumbnail.distance} of 64 bits differ). Editors usually rewrite the " +
+                    "full image and leave the preview behind, so this is a sign the picture " +
+                    "was changed after it was taken. Re-run it yourself: the comparison is " +
+                    "just two perceptual hashes.",
+                "high",
+            )
+            Match.Cropped -> out += Signal(
+                "Cropped after capture",
+                "The embedded preview is ${thumbnail.width}x${thumbnail.height}, a different " +
+                    "shape from the ${width}x$height image. The frame was cut down after the " +
+                    "camera wrote it.",
+                "medium",
+            )
+            Match.Consistent -> out += Signal(
+                "Embedded preview matches",
+                "The capture-time preview still matches the image (${thumbnail.distance} of 64 " +
+                    "bits differ). No sign of an edit after capture — though an editor that " +
+                    "rewrites both would leave no trace here.",
+                "low",
+            )
+            Match.Inconclusive, Match.NoThumbnail -> Unit
+        }
 
         if (!exif.present) {
             out += Signal(
