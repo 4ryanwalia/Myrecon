@@ -62,7 +62,7 @@ object CleanCopy {
                         out.toByteArray(),
                         "image/jpeg",
                         "jpg",
-                        listOf("All metadata (the image was re-encoded)"),
+                        listOf("Every hidden detail"),
                         true,
                     )
                 }

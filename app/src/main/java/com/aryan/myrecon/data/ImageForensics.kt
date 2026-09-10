@@ -437,12 +437,12 @@ object ImageForensics {
                 "low",
             )
         }
-        if (plan.removes.any { it.contains("appended", ignoreCase = true) }) {
+        if (plan.removes.any { it.contains("motion photo", ignoreCase = true) }) {
             out += Leak(
                 "A video you may not know is there",
-                "Data is appended after the end of the image. Motion photos store a few " +
-                    "seconds of video and audio from around the moment of the shot, and it " +
-                    "goes wherever the photo goes.",
+                "This is a motion photo. Your phone quietly recorded a few seconds of video " +
+                    "and sound from around the moment you pressed the button, and it is " +
+                    "tucked inside the file — so it goes wherever the photo goes.",
                 "high",
             )
         }
@@ -462,26 +462,24 @@ object ImageForensics {
 
         when (thumbnail.verdict) {
             Match.Mismatch -> out += Signal(
-                "Embedded preview shows a different picture",
-                "The camera wrote a preview at capture, and it no longer matches the image " +
-                    "(${thumbnail.distance} of 64 bits differ). Editors usually rewrite the " +
-                    "full image and leave the preview behind, so this is a sign the picture " +
-                    "was changed after it was taken. Re-run it yourself: the comparison is " +
-                    "just two perceptual hashes.",
+                "The thumbnail does not match the photo",
+                "Cameras save a tiny preview of the picture at the moment it is taken. " +
+                    "Editing apps update the photo but usually forget the preview — so when " +
+                    "the two show different things, it is a strong sign the photo was " +
+                    "changed after it was taken.",
                 "high",
             )
             Match.Cropped -> out += Signal(
-                "Cropped after capture",
-                "The embedded preview is ${thumbnail.width}x${thumbnail.height}, a different " +
-                    "shape from the ${width}x$height image. The frame was cut down after the " +
-                    "camera wrote it.",
+                "Cropped after it was taken",
+                "The tiny preview saved by the camera is a different shape from the photo " +
+                    "itself, which means the edges were trimmed off later.",
                 "medium",
             )
             Match.Consistent -> out += Signal(
-                "Embedded preview matches",
-                "The capture-time preview still matches the image (${thumbnail.distance} of 64 " +
-                    "bits differ). No sign of an edit after capture — though an editor that " +
-                    "rewrites both would leave no trace here.",
+                "The thumbnail still matches",
+                "The tiny preview the camera saved still looks like the photo, so there is " +
+                    "no sign it was edited afterwards. A careful editing app could update " +
+                    "both, so this is reassuring rather than proof.",
                 "low",
             )
             Match.Inconclusive, Match.NoThumbnail -> Unit
@@ -489,34 +487,37 @@ object ImageForensics {
 
         if (!exif.present) {
             out += Signal(
-                "No EXIF metadata",
-                "The file carries no metadata block. Most social and messaging platforms strip " +
-                    "it on upload, so this is expected for a downloaded image and is not itself " +
-                    "a sign of tampering.",
+                "No hidden details saved",
+                "There is nothing stored about the camera, date or location. This is normal " +
+                    "for a photo downloaded from the internet — WhatsApp, Instagram and most " +
+                    "other apps remove all of it when you upload. It is not a sign of anything " +
+                    "suspicious.",
                 "high",
             )
         } else {
             if (exif.make == null && exif.model == null) {
                 out += Signal(
-                    "Metadata present but no camera identity",
-                    "Tags exist without a make or model, which is typical of an image re-saved " +
-                        "by an editor rather than one straight off a device.",
+                    "Saved by an app, not a camera",
+                    "There are some hidden details, but no camera make or model. That usually " +
+                        "means the picture was opened and saved again by an app rather than " +
+                        "coming straight off a phone or camera.",
                     "medium",
                 )
             }
             exif.software?.let {
                 out += Signal(
-                    "Processed by software",
-                    "The Software tag reads \"$it\", so an application wrote this file rather " +
-                        "than a camera exporting it directly.",
+                    "Edited or re-saved by an app",
+                    "The file names \"$it\" as the app that last wrote it, so it did not come " +
+                        "straight from a camera.",
                     "high",
                 )
             }
             exif.serial?.let {
                 out += Signal(
-                    "Camera serial number present",
-                    "A body serial number is recorded. This ties the file to one specific " +
-                        "physical device and survives copying.",
+                    "The camera's serial number is in here",
+                    "This is the unique number of one physical camera, and it stays in the " +
+                        "file through every copy. Two photos with the same number came from " +
+                        "the same camera.",
                     "high",
                 )
             }
@@ -524,9 +525,9 @@ object ImageForensics {
                 exif.capturedAt != exif.modifiedAt
             ) {
                 out += Signal(
-                    "Modified after capture",
-                    "Captured ${exif.capturedAt}, last written ${exif.modifiedAt}. The gap " +
-                        "indicates a later re-save.",
+                    "Changed after it was taken",
+                    "Taken on ${exif.capturedAt}, but last saved on ${exif.modifiedAt}. " +
+                        "Something opened it and saved it again in between.",
                     "medium",
                 )
             }
@@ -534,26 +535,27 @@ object ImageForensics {
 
         if (exif.gps.present) {
             out += Signal(
-                "GPS coordinates embedded",
-                "The file records where it was taken. This is the strongest location finding " +
-                    "available from an image, and needs no external service to read.",
+                "The exact location is saved inside",
+                "The photo carries the spot on the map where it was taken. Anyone who gets " +
+                    "the file can read it — no special tools needed.",
                 "high",
             )
         }
 
         if (mime?.contains("png") == true && !exif.present) {
             out += Signal(
-                "Consistent with a screenshot",
-                "PNG with no metadata is the usual signature of a screen capture or a generated " +
-                    "image rather than a photograph.",
+                "Looks like a screenshot",
+                "The file type and the missing details match what a screen capture looks " +
+                    "like, rather than a photo taken with a camera.",
                 "low",
             )
         }
 
         if (width > 0 && height > 0 && kotlin.math.abs(width.toDouble() / height - 1.0) < 0.01) {
             out += Signal(
-                "Square aspect ratio",
-                "Exactly square dimensions suggest a deliberate crop, commonly a profile picture.",
+                "Cropped to a square",
+                "Perfectly square photos are usually cropped on purpose — most often for a " +
+                    "profile picture.",
                 "low",
             )
         }

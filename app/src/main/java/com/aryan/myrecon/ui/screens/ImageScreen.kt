@@ -147,12 +147,14 @@ fun ImageScreen(vm: ImageViewModel = viewModel()) {
         when (val s = state) {
             is ImageState.Empty -> {
                 Spacer(Modifier.height(20.dp))
-                Text("Image forensics", style = MaterialTheme.typography.headlineSmall)
+                Text("What's hidden in a photo", style = MaterialTheme.typography.headlineSmall)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Reads what a photo reveals about itself: the camera that took it, when, " +
-                        "and where. Everything is computed on this device from the file's own " +
-                        "bytes — the picture is never uploaded.",
+                    "Every photo carries hidden details you cannot see by looking at it: the " +
+                        "phone or camera that took it, the date, sometimes the exact spot on a " +
+                        "map, and whether an AI made it. Pick a photo and MyRecon will show you " +
+                        "what is in there — and offer to strip it out before you share it.\n\n" +
+                        "It all happens on your phone. The photo is never sent anywhere.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = t.textDim,
                 )
@@ -168,10 +170,10 @@ fun ImageScreen(vm: ImageViewModel = viewModel()) {
                 ) {
                     CircularProgressIndicator(strokeWidth = 2.dp)
                     Spacer(Modifier.height(14.dp))
-                    Text("Reading metadata…", style = MaterialTheme.typography.titleMedium)
+                    Text("Reading the photo…", style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "Hashing locally, then resolving any location",
+                        "Checking the hidden details, then looking up any location",
                         style = MaterialTheme.typography.bodySmall,
                         color = t.textMute,
                     )
@@ -211,7 +213,7 @@ private fun OriginCard(p: ImageProvenance.Report) {
     val declared = p.origin != ImageProvenance.Origin.Undeclared || p.contentCredentials
 
     if (!declared) {
-        SectionLabel("Origin")
+        SectionLabel("Was this made by AI?")
         Column(
             Modifier
                 .fillMaxWidth()
@@ -220,13 +222,14 @@ private fun OriginCard(p: ImageProvenance.Report) {
                 .border(1.dp, t.border, RoundedCornerShape(14.dp))
                 .padding(14.dp),
         ) {
-            Text("Nothing declared", style = MaterialTheme.typography.titleMedium)
+            Text("This photo does not say", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(5.dp))
             Text(
-                "This file carries no AI marker and no Content Credentials. That is not " +
-                    "evidence it is real — a screenshot, a re-save, or an upload through " +
-                    "almost any social platform removes these markers, so most genuine " +
-                    "photos you meet online have none either.",
+                "AI tools usually hide a small label inside the picture saying they made " +
+                    "it. This one has no label.\n\n" +
+                    "That does not mean it is real. The label is wiped whenever a picture " +
+                    "is screenshotted, saved again, or posted on social media — so most " +
+                    "genuine photos you see online have no label either.",
                 style = MaterialTheme.typography.bodySmall,
                 color = t.textDim,
             )
@@ -236,16 +239,16 @@ private fun OriginCard(p: ImageProvenance.Report) {
 
     val (headline, tint) = when (p.origin) {
         ImageProvenance.Origin.DeclaredAiGenerated ->
-            "This file declares it was AI-generated" to t.warn
+            "Yes — the photo says so itself" to t.warn
         ImageProvenance.Origin.DeclaredAiEdited ->
-            "Part of this was AI-generated" to t.warn
+            "Partly — AI was used on some of it" to t.warn
         ImageProvenance.Origin.DeclaredCapture ->
-            "This file declares it was camera-captured" to t.ok
+            "No — it says a camera took it" to t.ok
         ImageProvenance.Origin.Undeclared ->
-            "Content Credentials attached" to t.info
+            "It carries a record of how it was made" to t.info
     }
 
-    SectionLabel("Origin")
+    SectionLabel("Was this made by AI?")
     Column(
         Modifier
             .fillMaxWidth()
@@ -262,7 +265,8 @@ private fun OriginCard(p: ImageProvenance.Report) {
 
         Spacer(Modifier.height(10.dp))
         Text(
-            "Read from the file's own metadata, not guessed from the picture.",
+            "This comes from a hidden label inside the file. MyRecon is reading what the " +
+                "photo says about itself — it is not guessing by looking at the picture.",
             style = MaterialTheme.typography.bodySmall,
             color = t.textDim,
         )
@@ -277,8 +281,10 @@ private fun OriginCard(p: ImageProvenance.Report) {
             Text(
                 // Presence is provable from the bytes; validity is not, and
                 // saying "verified" here would be a claim this app cannot make.
-                "A C2PA manifest is attached. MyRecon confirms it is present but does not " +
-                    "verify its signature, so treat it as a claim the file makes, not proof.",
+                "This photo carries Content Credentials — a record of how it was made, " +
+                    "added by the camera or app. MyRecon can see the record is there, but " +
+                    "cannot check whether it is genuine, so treat it as a claim rather " +
+                    "than proof.",
                 style = MaterialTheme.typography.bodySmall,
                 color = t.textMute,
             )
@@ -286,7 +292,7 @@ private fun OriginCard(p: ImageProvenance.Report) {
 
         p.prompt?.let { prompt ->
             Spacer(Modifier.height(12.dp))
-            Text("Prompt stored in the file", style = MaterialTheme.typography.titleSmall)
+            Text("The words used to make it", style = MaterialTheme.typography.titleSmall)
             Spacer(Modifier.height(5.dp))
             Text(
                 prompt,
@@ -495,7 +501,7 @@ private fun ForensicsReport(
     // ── Location leads: it is the finding people care about most ──
     s.geo?.let { geo ->
         if (geo.place.found) {
-            SectionLabel("Where it was taken")
+            SectionLabel("Where this photo was taken")
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -559,7 +565,7 @@ private fun ForensicsReport(
 
     // ── Camera ────────────────────────────────────────────────────
     if (r.exif.present) {
-        SectionLabel("Camera")
+        SectionLabel("The camera that took it")
         DataList(
             listOfNotNull(
                 r.exif.make?.let { "Make" to it },
@@ -577,7 +583,7 @@ private fun ForensicsReport(
 
     // ── Signals ───────────────────────────────────────────────────
     if (r.signals.isNotEmpty()) {
-        SectionLabel("What this tells us")
+        SectionLabel("What this tells you")
         r.signals.forEach { sig ->
             val c = when (sig.weight) {
                 "high" -> t.info
@@ -613,30 +619,31 @@ private fun ForensicsReport(
     ExposureSection(r, clean, onClean)
 
     // ── File ──────────────────────────────────────────────────────
-    SectionLabel("File")
+    SectionLabel("About the file")
     DataList(
         listOfNotNull(
             r.file.name?.let { "Name" to it },
             "Type" to (r.file.mime ?: "unknown"),
             "Dimensions" to "${r.file.width} x ${r.file.height} (%.1f MP)".format(r.file.megapixels),
             "Size" to "%.2f MB".format(r.file.sizeBytes / 1e6),
-            "SHA-256" to r.file.sha256,
+            "Exact fingerprint" to r.file.sha256,
         )
     )
 
-    SectionLabel("Perceptual hashes")
+    SectionLabel("Picture fingerprint")
     DataList(
         listOf(
-            "aHash" to r.hashes.ahash,
-            "dHash" to r.hashes.dhash,
-            "pHash" to r.hashes.phash,
+            "Fingerprint 1" to r.hashes.ahash,
+            "Fingerprint 2" to r.hashes.dhash,
+            "Fingerprint 3" to r.hashes.phash,
         )
     )
     Spacer(Modifier.height(8.dp))
     Text(
-        "These survive re-compression and resizing, so the same photo re-uploaded elsewhere " +
-            "produces near-identical values. Two images within about 10 differing bits are " +
-            "very likely the same picture.",
+        "Three short codes worked out from what the picture looks like. Unlike the exact " +
+            "fingerprint above, these barely change when a photo is resized or re-saved — so " +
+            "the same picture posted somewhere else still produces almost the same codes. " +
+            "That is how you tell a copy of a photo from a different photo.",
         style = MaterialTheme.typography.bodySmall,
         color = t.textMute,
     )

@@ -93,13 +93,13 @@ object MetadataStrip {
                 val eoi = indexOfEoi(b, pos)
                 val end = if (eoi >= 0) eoi + 2 else b.size
                 out.write(b, pos, end - pos)
-                if (end < b.size) removed += "Data appended after the image (motion photo video)"
+                if (end < b.size) removed += "A hidden video clip (motion photo)"
                 pos = b.size
                 break
             }
             if (marker == 0xD9) {
                 out.write(0xFF); out.write(marker)
-                if (pos + 2 < b.size) removed += "Data appended after the image"
+                if (pos + 2 < b.size) removed += "Hidden data stored after the picture"
                 pos = b.size
                 break
             }
@@ -146,13 +146,13 @@ object MetadataStrip {
             marker == 0xE0 -> null                       // JFIF density
             marker == 0xE2 && starts("ICC_PROFILE") -> null
             marker == 0xEE && starts("Adobe") -> null
-            marker == 0xE1 && starts("Exif") -> "EXIF metadata"
-            marker == 0xE1 && starts("http://ns.adobe.com/xap") -> "XMP metadata"
-            marker == 0xE1 -> "Metadata block"
-            marker == 0xEB -> "Content Credentials (C2PA)"
-            marker == 0xED -> "IPTC / Photoshop data"
-            marker == 0xFE -> "Embedded comment"
-            marker in 0xE2..0xEF -> "Application data block"
+            marker == 0xE1 && starts("Exif") -> "Camera, date and location (EXIF)"
+            marker == 0xE1 && starts("http://ns.adobe.com/xap") -> "Extra hidden details"
+            marker == 0xE1 -> "Hidden details"
+            marker == 0xEB -> "The record of how it was made"
+            marker == 0xED -> "Editing app data"
+            marker == 0xFE -> "A hidden comment"
+            marker in 0xE2..0xEF -> "Extra hidden data"
             else -> null
         }
     }
@@ -206,11 +206,11 @@ object MetadataStrip {
     }
 
     private fun pngChunkName(type: String): String = when (type) {
-        "tEXt", "zTXt", "iTXt" -> "Embedded text"
-        "eXIf" -> "EXIF metadata"
-        "caBX" -> "Content Credentials (C2PA)"
-        "tIME" -> "Last-modified timestamp"
-        else -> "Extra chunk ($type)"
+        "tEXt", "zTXt", "iTXt" -> "Hidden text"
+        "eXIf" -> "Camera, date and location (EXIF)"
+        "caBX" -> "The record of how it was made"
+        "tIME" -> "The date it was last saved"
+        else -> "Extra hidden data"
     }
 
     private val PNG_KEEP = setOf(

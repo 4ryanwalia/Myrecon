@@ -188,8 +188,8 @@ object LinkSafety {
                 }
             } else {
                 signals += Signal(
-                    "No registration record",
-                    "RDAP returned nothing for $base. Unusual for a legitimate site.",
+                    "This website is not properly registered",
+                    "There is no public ownership record for $base. Real businesses have one.",
                     15,
                 )
             }
@@ -199,15 +199,17 @@ object LinkSafety {
         val hops = chain.size
         if (hops >= 3) {
             signals += Signal(
-                "$hops redirects before landing",
-                "Long redirect chains are used to hide a destination from scanners.",
+                "It bounces through $hops addresses",
+                "Scam links are often passed through several addresses to hide where they " +
+                    "really end up.",
                 20,
             )
         }
         chain.mapNotNull { hostOf(it) }.filter { it in SHORTENERS }.distinct().forEach {
             signals += Signal(
-                "Shortened via $it",
-                "The code did not show its destination. Resolved here so you can see it.",
+                "The link was shortened by $it",
+                "A short link hides where it goes. MyRecon followed it so you can see the " +
+                    "real destination.",
                 8,
             )
         }
@@ -219,7 +221,8 @@ object LinkSafety {
         if (schemeSource.startsWith("http://", ignoreCase = true)) {
             signals += Signal(
                 "Not encrypted",
-                "The destination uses plain HTTP, so anything submitted travels in clear text.",
+                "This site has no padlock. Anything you type into it — a password, a card " +
+                    "number — travels in a form others on the same network can read.",
                 18,
             )
         }
@@ -229,45 +232,49 @@ object LinkSafety {
             val tld = host.substringAfterLast('.', "")
             if (tld in RISKY_TLDS) {
                 signals += Signal(
-                    "Cheap top-level domain (.$tld)",
-                    "Free and low-cost TLDs are over-represented in phishing.",
+                    "Cheap web address (.$tld)",
+                    "Addresses ending in .$tld are free or nearly free, so scammers use " +
+                        "them heavily. Plenty of honest sites use them too.",
                     14,
                 )
             }
             if (host.matches(Regex("""^\d{1,3}(\.\d{1,3}){3}$"""))) {
                 signals += Signal(
-                    "Raw IP address instead of a name",
-                    "Legitimate services publish a hostname. A bare IP avoids domain records entirely.",
+                    "A bare IP address instead of a website name",
+                    "Real companies have a name, like example.com. A string of numbers avoids " +
+                        "leaving any ownership record at all.",
                     30,
                 )
             }
             impersonationOf(host)?.let { brand ->
                 signals += Signal(
-                    "Resembles \"$brand\" without being it",
-                    "The hostname contains a well-known brand as a decoration rather than its " +
-                        "real domain. This is the most common phishing pattern there is.",
+                    "Pretending to be \"$brand\"",
+                    "The address has a well-known name buried inside it, but the site is not " +
+                        "actually theirs. This is the single most common trick in scam links.",
                     40,
                 )
             }
             if (host != IDN.toASCII(host) || host.any { it.code > 127 }) {
                 signals += Signal(
-                    "Non-ASCII characters in the hostname",
-                    "Letters from other alphabets can be drawn to look like Latin ones, so the " +
-                        "name may not be the site you think it is.",
+                    "Look-alike letters in the address",
+                    "The address uses letters from another alphabet that are drawn to look " +
+                        "like ordinary ones. It may not be the site you think it is.",
                     35,
                 )
             }
             if (host.count { it == '-' } >= 3) {
                 signals += Signal(
-                    "Many hyphens in the hostname",
-                    "Strings like secure-login-verify-account are typical of throwaway domains.",
+                    "Lots of dashes in the address",
+                    "Addresses like secure-login-verify-account are typical of throwaway " +
+                        "sites set up for one scam.",
                     12,
                 )
             }
             if (host.split('.').size >= 5) {
                 signals += Signal(
-                    "Deeply nested subdomains",
-                    "A long prefix can push the real domain out of view on a phone's address bar.",
+                    "A very long address",
+                    "A long prefix pushes the real website name off the edge of a phone " +
+                        "screen, so you cannot see who you are actually visiting.",
                     15,
                 )
             }
@@ -275,8 +282,8 @@ object LinkSafety {
 
         if (finalUrl == null) {
             signals += Signal(
-                "Destination unreachable",
-                "The link could not be followed, so its destination is unverified.",
+                "The link did not open",
+                "MyRecon could not reach it, so there is no way to check where it goes.",
                 10,
             )
         }

@@ -148,9 +148,9 @@ private fun CameraRationale(onRequest: () -> Unit) {
         Text("Scan a QR code", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(10.dp))
         Text(
-            "MyRecon reads the code on your device and shows where the link actually goes " +
-                "before you open it — including how recently the domain was registered, which " +
-                "is the clearest sign of a scam.",
+            "Point your camera at a QR code and MyRecon will tell you where it really " +
+                "goes before you open it — what the page is, and whether the website is " +
+                "brand new, which is the clearest warning sign of a scam.",
             style = MaterialTheme.typography.bodyMedium,
             color = t.textDim,
         )
@@ -445,11 +445,11 @@ private fun ScanResult(
         }
 
         if (r.redirectChain.size > 1) {
-            SectionLabel("Redirect chain · ${r.redirectChain.size} hops")
+            SectionLabel("It passed through ${r.redirectChain.size} addresses")
             DataList(r.redirectChain.mapIndexed { i, u -> "${i + 1}" to u })
         }
 
-        SectionLabel("Raw content")
+        SectionLabel("The details")
         DataList(
             listOfNotNull(
                 "Type" to r.kind.name,
@@ -471,7 +471,8 @@ private fun ScanResult(
 
         Spacer(Modifier.height(10.dp))
         Text(
-            "MyRecon does not open links for you. If you trust this one, copy it deliberately.",
+            "MyRecon will never open a link for you. If you decide to trust this one, " +
+                "copy it across yourself.",
             style = MaterialTheme.typography.bodySmall,
             color = t.textMute,
         )
