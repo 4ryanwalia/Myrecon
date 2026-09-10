@@ -20,10 +20,19 @@ import org.junit.Test
  */
 class SweepNoiseTest {
 
+    /**
+     * Unregistered, but shaped like handles people actually have.
+     *
+     * The first version of this used twenty-one character strings, which
+     * several platforms reject as *invalid* rather than *not found* — a
+     * different code path that made them look stricter than they are. Twelve
+     * lowercase letters is an ordinary handle, so what comes back is the real
+     * not-found behaviour.
+     */
     private val nonsense = listOf(
-        "zzq7x4nvunlikely9k2qq",
-        "qq93zzxbvunreal7k4wwz",
-        "vv82mmqxnotreal5j1ppk",
+        "mravnkithlow",
+        "zelbufcrandy",
+        "qhinrelvasto",
     )
 
     private fun sweep(handle: String): List<UsernameSweep.Hit> = runBlocking {

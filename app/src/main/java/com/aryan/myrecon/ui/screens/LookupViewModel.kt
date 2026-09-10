@@ -301,7 +301,12 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     // Persist before publishing, so the result is already
                     // recoverable by the time the user can act on it.
-                    val saved = ev.hits.map {
+                    // Only real findings are persisted. Unverified hits are
+                    // carried in the result so the screen can show them under
+                    // its "not evidence" heading, but writing them here would
+                    // pad the cleanup checklist and the home screen widget
+                    // with accounts that were never found.
+                    val saved = ev.hits.filter { it.exists }.map {
                         SavedProfile(
                             platform = it.platform.name,
                             category = it.platform.category,
