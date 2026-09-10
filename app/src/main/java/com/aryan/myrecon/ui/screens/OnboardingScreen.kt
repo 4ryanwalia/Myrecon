@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.aryan.myrecon.data.PlatformCatalogue
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.GridBackdrop
 import com.aryan.myrecon.ui.components.bracketFrame
@@ -70,7 +71,7 @@ private val USE_CASES = listOf(
     UseCase(
         Icons.Filled.AlternateEmail,
         "You want to know what is public about you",
-        "Check your usual username across 284 websites, and your email against known data leaks. Most people find old accounts they had completely forgotten about.",
+        "Check your usual username across ${PlatformCatalogue.size} websites, and your email against known data leaks. Most people find old accounts they had completely forgotten about.",
         "Lookup › Username, Email",
     ),
     UseCase(
