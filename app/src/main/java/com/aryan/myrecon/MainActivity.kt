@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.NewReleases
@@ -37,6 +38,7 @@ import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.AdBanner
 import com.aryan.myrecon.ui.rememberHaptics
 import com.aryan.myrecon.ui.screens.BreachesScreen
+import com.aryan.myrecon.ui.screens.HistoryScreen
 import com.aryan.myrecon.ui.screens.ImageScreen
 import com.aryan.myrecon.data.ReconStore
 import com.aryan.myrecon.ui.screens.LookupScreen
@@ -148,6 +150,11 @@ private fun MyReconApp(request: TabRequest?) {
     // without clearing the stored flag.
     var showIntro by rememberSaveable { mutableStateOf(false) }
 
+    // History is a whole screen rather than a sixth tab. It is something people
+    // reach for occasionally, and a permanent tab would cost a fifth of the
+    // navigation bar for it.
+    var showHistory by rememberSaveable { mutableStateOf(false) }
+
     // Each of these returns. A `when` that only emits and falls through would
     // draw the whole app underneath for a frame before the intro replaced it,
     // which is a visible flash of the thing the intro exists to explain.
@@ -160,6 +167,10 @@ private fun MyReconApp(request: TabRequest?) {
             showIntro = false
             scope.launch { store.setOnboarded(true) }
         })
+        return
+    }
+    if (showHistory) {
+        HistoryScreen(onClose = { showHistory = false })
         return
     }
 
@@ -185,6 +196,13 @@ private fun MyReconApp(request: TabRequest?) {
                     }
                 },
                 actions = {
+                    IconButton(onClick = { showHistory = true }) {
+                        Icon(
+                            Icons.Filled.History,
+                            contentDescription = "Your past checks",
+                            tint = t.textDim,
+                        )
+                    }
                     IconButton(onClick = { showIntro = true }) {
                         Icon(
                             Outlined.HelpOutline,

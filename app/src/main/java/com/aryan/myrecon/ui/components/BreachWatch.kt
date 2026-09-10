@@ -28,6 +28,8 @@ import com.aryan.myrecon.data.ReconStore
 import com.aryan.myrecon.work.BreachWatchWorker
 import com.aryan.myrecon.work.HandleWatchWorker
 import kotlinx.coroutines.launch
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 
 /**
  * Opt-in for breach alerts.
@@ -109,6 +111,9 @@ fun BreachWatchCard(modifier: Modifier = Modifier) {
                 )
             }
             Switch(
+                modifier = Modifier.semantics {
+                    contentDescription = "Alert me about new breaches"
+                },
                 checked = enabled,
                 onCheckedChange = { want ->
                     haptics.tap()
@@ -206,6 +211,9 @@ private fun AddressWatchSection() {
                 )
             }
             Switch(
+                modifier = Modifier.semantics {
+                    contentDescription = "Check this email against new breaches"
+                },
                 checked = monitoring,
                 onCheckedChange = { want ->
                     haptics.tap()

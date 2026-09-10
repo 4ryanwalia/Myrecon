@@ -59,8 +59,23 @@ fun BreachesScreen() {
     }
 
     val current = selected
+    // Checked only on the failure path. Asking about connectivity before every
+    // render would replace a cached feed with an offline panel the moment a
+    // train went into a tunnel, when the articles already on screen are still
+    // perfectly readable.
+    val online = rememberOnline()
     when {
         current != null -> ArticleDetail(current) { selected = null }
+        error != null && feed == null && !online -> Column(
+            Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            OfflineNotice(
+                body = "The Breach Files are downloaded fresh each time. Once you are " +
+                    "back online they will load straight away.",
+                onRetry = { reloads++ },
+            )
+        }
         error != null && feed == null -> LoadFailed(error!!) { reloads++ }
         feed == null -> Loading()
         else -> ArticleList(feed!!) { selected = it }

@@ -32,6 +32,26 @@ data class SavedScan(
     val profiles: List<SavedProfile>,
 )
 
+/**
+ * One finished lookup, kept so it can be read again and sent to someone.
+ *
+ * The finished plain-text report is stored rather than the structured result.
+ * Re-rendering a saved sweep would mean versioning every result model forever,
+ * and the text is what a person actually wants out of this: something they can
+ * paste into a message to a parent, a partner or the police. It is capped so a
+ * long sweep cannot bloat the preference file.
+ */
+@Serializable
+data class HistoryEntry(
+    val id: String,
+    /** "Username", "Photo", "QR code" — the tool, in the user's words. */
+    val kind: String,
+    val query: String,
+    val at: Long,
+    val headline: String,
+    val report: String,
+)
+
 @Serializable
 data class SavedProfile(
     val platform: String,
@@ -51,6 +71,7 @@ class ReconStore(private val context: Context) {
         val WATCHED_EMAILS = stringSetPreferencesKey("watched_emails")
         val WATCHED_HANDLES = stringSetPreferencesKey("watched_handles")
         val LAST_SCAN = stringPreferencesKey("last_scan")
+        val HISTORY = stringPreferencesKey("history")
         val LAST_CHECK = stringPreferencesKey("last_breach_check")
 
         /**
@@ -343,5 +364,55 @@ class ReconStore(private val context: Context) {
 
     suspend fun clearScan() {
         context.dataStore.edit { it.remove(Keys.LAST_SCAN) }
+    }
+
+    // ── History ──────────────────────────────────────────────────
+
+    /**
+     * Newest first, and bounded.
+     *
+     * DataStore keeps the whole preference file in memory, so an unbounded
+     * history of full reports would grow until it hurt. Twenty is well past
+     * what anyone scrolls back through, and each report is trimmed on the way
+     * in rather than on the way out.
+     */
+    val history: Flow<List<HistoryEntry>> = context.dataStore.data.map { prefs ->
+        prefs[Keys.HISTORY]?.let { raw ->
+            runCatching { json.decodeFromString<List<HistoryEntry>>(raw) }.getOrNull()
+        } ?: emptyList()
+    }
+
+    suspend fun addHistory(entry: HistoryEntry) {
+        val trimmed = entry.copy(report = entry.report.take(MAX_REPORT_CHARS))
+        context.dataStore.edit { prefs ->
+            val existing = prefs[Keys.HISTORY]?.let { raw ->
+                runCatching { json.decodeFromString<List<HistoryEntry>>(raw) }.getOrNull()
+            } ?: emptyList()
+            // Re-running the same search replaces its old entry instead of
+            // stacking near-identical rows down the list.
+            val kept = existing.filterNot {
+                it.kind == entry.kind && it.query.equals(entry.query, ignoreCase = true)
+            }
+            val next = (listOf(trimmed) + kept).take(MAX_ENTRIES)
+            prefs[Keys.HISTORY] = json.encodeToString(next)
+        }
+    }
+
+    suspend fun deleteHistory(id: String) {
+        context.dataStore.edit { prefs ->
+            val existing = prefs[Keys.HISTORY]?.let { raw ->
+                runCatching { json.decodeFromString<List<HistoryEntry>>(raw) }.getOrNull()
+            } ?: return@edit
+            prefs[Keys.HISTORY] = json.encodeToString(existing.filterNot { it.id == id })
+        }
+    }
+
+    suspend fun clearHistory() {
+        context.dataStore.edit { it.remove(Keys.HISTORY) }
+    }
+
+    private companion object {
+        const val MAX_ENTRIES = 20
+        const val MAX_REPORT_CHARS = 6000
     }
 }

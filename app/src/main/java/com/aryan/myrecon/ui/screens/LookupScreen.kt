@@ -38,6 +38,11 @@ import com.aryan.myrecon.ui.pressScale
 import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.Mono
 import com.aryan.myrecon.ui.theme.MonoStyle
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.Role
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -238,6 +243,13 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                     ScanConsole(s)
                 }
 
+            is LookupState.Offline -> OfflineNotice(
+                onRetry = {
+                    haptics.tap()
+                    vm.run()
+                },
+            )
+
             is LookupState.Failed -> StatePanel("Lookup failed", s.message, tint = t.danger)
 
             is LookupState.Done -> when (val r = s.result) {
@@ -266,6 +278,31 @@ fun LookupScreen(vm: LookupViewModel = viewModel()) {
                 is DeepSearch.Result -> DeepSearchView(r)
                 else -> StatePanel("Unsupported result", "Nothing to display.")
             }.also {
+                // Sharing sits directly under the findings, before anything
+                // asking for attention. Someone who has just seen a result
+                // worth sending should not have to scroll past two offers to
+                // find the way to send it.
+                (s.result as? SweepResult)?.let { sweep ->
+                    val handle = sweep.result.query.username.orEmpty().ifBlank { query }
+                    val profiles = sweep.result.results.profiles
+                    Spacer(Modifier.height(18.dp))
+                    ShareButton(
+                        subject = "Accounts found for @$handle",
+                        body = ReportText.forSweep(
+                            handle,
+                            profiles.map { p ->
+                                SavedProfile(
+                                    platform = p.platform,
+                                    category = p.category,
+                                    url = p.url,
+                                    confidence = p.confidence.orEmpty(),
+                                )
+                            },
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+
                 // Under the findings, never above them. Someone who has just
                 // seen what turned up has a live question; the same card on an
                 // empty screen is only an advert.
@@ -332,6 +369,14 @@ private fun ToolGrid(selected: Tool, onSelect: (Tool) -> Unit) {
                             .clickable(interactionSource = source, indication = null) {
                                 haptics.tap()
                                 onSelect(item)
+                            }
+                            // Announced as one tab of a set, with its state —
+                            // otherwise the grid reads as six unrelated
+                            // buttons and the current choice is invisible.
+                            .semantics(mergeDescendants = true) {
+                                this.role = Role.Tab
+                                this.selected = isSel
+                                this.contentDescription = "${item.label}. ${item.hint}"
                             }
                             .padding(vertical = 13.dp, horizontal = 6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,

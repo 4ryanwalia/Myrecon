@@ -155,7 +155,7 @@ fun VerifiedIdentity(id: KeybaseIntel.Identity) {
             if (id.avatar != null) {
                 SubcomposeAsyncImage(
                     model = id.avatar,
-                    contentDescription = null,
+                    contentDescription = "Profile picture",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.size(42.dp).clip(RoundedCornerShape(12.dp)),
                     loading = { PlatformTile("Keybase", "Messaging", size = 42) },
@@ -216,7 +216,7 @@ fun VerifiedIdentity(id: KeybaseIntel.Identity) {
                     )
                     Icon(
                         Icons.AutoMirrored.Filled.OpenInNew,
-                        contentDescription = null,
+                        contentDescription = "Opens in your browser",
                         tint = t.textMute,
                         modifier = Modifier.size(14.dp),
                     )
@@ -590,7 +590,7 @@ private fun Avatar(url: String?, platform: String, category: String) {
     }
     SubcomposeAsyncImage(
         model = url,
-        contentDescription = null,
+        contentDescription = "$platform profile picture",
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .size(40.dp)

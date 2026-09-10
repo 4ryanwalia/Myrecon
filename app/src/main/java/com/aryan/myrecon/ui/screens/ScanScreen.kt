@@ -36,10 +36,15 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aryan.myrecon.data.LinkSafety
+import com.aryan.myrecon.ui.components.ShareButton
+import com.aryan.myrecon.data.ReportText
+import com.aryan.myrecon.data.ReconStore
+import com.aryan.myrecon.data.HistoryEntry
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.ActionAdGateState
 import com.aryan.myrecon.ui.components.AdActionButton
@@ -56,6 +61,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
+import androidx.compose.ui.semantics.semantics
 
 sealed interface ScanState {
     data object Scanning : ScanState
@@ -63,9 +69,13 @@ sealed interface ScanState {
     data class Result(val report: LinkSafety.Report) : ScanState
 }
 
-class ScanViewModel : ViewModel() {
+class ScanViewModel(app: android.app.Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow<ScanState>(ScanState.Scanning)
     val state = _state.asStateFlow()
+
+    // Needed only to record the check into history; the analysis itself is
+    // entirely self-contained.
+    private val store = ReconStore(app)
 
     /** Guards against the analyser firing repeatedly while the code stays in frame. */
     private var busy = false
@@ -82,6 +92,25 @@ class ScanViewModel : ViewModel() {
                     signals = emptyList(), riskScore = 0,
                     verdict = LinkSafety.Verdict.Unknown, kind = LinkSafety.Kind.PlainText,
                     error = it.message,
+                )
+            }
+            runCatching {
+                val at = System.currentTimeMillis()
+                store.addHistory(
+                    HistoryEntry(
+                        id = "qr-$at",
+                        kind = "QR code",
+                        query = report.destination?.what ?: report.host ?: raw.take(60),
+                        at = at,
+                        headline = when {
+                            report.kind == LinkSafety.Kind.Payment -> "This code sends money"
+                            report.verdict == LinkSafety.Verdict.Safe -> "Looks legitimate"
+                            report.verdict == LinkSafety.Verdict.Caution -> "Be careful"
+                            report.verdict == LinkSafety.Verdict.Dangerous -> "Do not open this"
+                            else -> "Could not verify"
+                        },
+                        report = ReportText.forScan(report, at),
+                    )
                 )
             }
             _state.value = ScanState.Result(report)
@@ -426,7 +455,9 @@ private fun ScanResult(
                         .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.surface)
                         .border(1.dp, t.border, RoundedCornerShape(12.dp))
-                        .padding(13.dp),
+                        .padding(13.dp)
+                    // Read as a single item: label then explanation.
+                    .semantics(mergeDescendants = true) {},
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
@@ -460,6 +491,13 @@ private fun ScanResult(
         )
 
         Spacer(Modifier.height(18.dp))
+        ShareButton(
+            subject = "QR code check",
+            body = ReportText.forScan(r),
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(Modifier.height(10.dp))
         // Gated: this scan's verdict is already on screen, and this is the
         // next one.
         AdActionButton(

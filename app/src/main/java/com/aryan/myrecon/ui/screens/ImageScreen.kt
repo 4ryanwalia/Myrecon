@@ -31,6 +31,10 @@ import com.aryan.myrecon.data.CleanCopy
 import com.aryan.myrecon.data.GeoIntel
 import com.aryan.myrecon.data.ImageProvenance
 import com.aryan.myrecon.data.ImageForensics
+import com.aryan.myrecon.ui.components.ShareButton
+import com.aryan.myrecon.data.ReportText
+import com.aryan.myrecon.data.ReconStore
+import com.aryan.myrecon.data.HistoryEntry
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.ActionAdGateState
 import com.aryan.myrecon.ui.components.AdActionButton
@@ -44,6 +48,7 @@ import com.aryan.myrecon.ui.theme.MonoStyle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import androidx.compose.ui.semantics.semantics
 
 sealed interface ImageState {
     data object Empty : ImageState
@@ -96,6 +101,33 @@ class ImageViewModel : ViewModel() {
                     val geo = if (gps.present && GeoIntel.validCoords(gps.latitude, gps.longitude)) {
                         runCatching { GeoIntel.investigate(gps.latitude!!, gps.longitude!!) }.getOrNull()
                     } else null
+
+                    runCatching {
+                        val at = System.currentTimeMillis()
+                        ReconStore(context.applicationContext).addHistory(
+                            HistoryEntry(
+                                id = "photo-$at",
+                                kind = "Photo",
+                                query = report.file.name ?: "Photo",
+                                at = at,
+                                headline = buildList {
+                                    if (report.provenance.origin ==
+                                        ImageProvenance.Origin.DeclaredAiGenerated
+                                    ) add("Says it was made by AI")
+                                    if (report.exif.gps.present) add("Location inside")
+                                    if (report.leaks.isNotEmpty()) {
+                                        add("${report.leaks.size} things it gives away")
+                                    }
+                                }.joinToString(" · ").ifBlank { "Nothing identifying found" },
+                                report = ReportText.forImage(
+                                    report.file.name,
+                                    report,
+                                    geo?.place?.name ?: geo?.place?.city,
+                                    at,
+                                ),
+                            )
+                        )
+                    }
                     ImageState.Done(uri, report, geo)
                 },
                 onFailure = { ImageState.Failed(it.message ?: "The image could not be read.") },
@@ -487,7 +519,7 @@ private fun ForensicsReport(
 
     AsyncImage(
         model = s.uri,
-        contentDescription = null,
+        contentDescription = "The photo you chose to check",
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .fillMaxWidth()
@@ -597,7 +629,9 @@ private fun ForensicsReport(
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.surface)
                     .border(1.dp, t.border, RoundedCornerShape(12.dp))
-                    .padding(13.dp),
+                    .padding(13.dp)
+                // Read as a single item: label then explanation.
+                .semantics(mergeDescendants = true) {},
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
@@ -649,6 +683,17 @@ private fun ForensicsReport(
     )
 
     Spacer(Modifier.height(20.dp))
+    ShareButton(
+        subject = "What this photo reveals",
+        body = ReportText.forImage(
+            r.file.name,
+            r,
+            s.geo?.place?.name ?: s.geo?.place?.city,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(Modifier.height(10.dp))
     // Gated: the report on screen was free, and this is the next one.
     AdActionButton(
         gate = gate,
