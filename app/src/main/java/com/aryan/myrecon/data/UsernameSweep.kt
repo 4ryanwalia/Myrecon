@@ -330,9 +330,15 @@ object UsernameSweep {
                     val hit = probe(p, handle)
                     logHit(p, hit)
                     val n = checked.incrementAndGet()
-                    if (hit != null && hit.exists) {
+                    // Unverified results are carried, not discarded. They were
+                    // being dropped here, which quietly made the "not evidence"
+                    // section of the results unreachable — so the only way to
+                    // mark a platform as undecidable was to hide it completely,
+                    // and hiding Instagram is how real accounts went missing
+                    // last time. Carried but never counted as found.
+                    if (hit != null && (hit.exists || hit.confidence == "unverified")) {
                         hits += hit
-                        found.incrementAndGet()
+                        if (hit.exists) found.incrementAndGet()
                     }
                     send(
                         Event.Progress(

@@ -77,6 +77,10 @@ object AccountRemoval {
         "Medium" to Route("https://medium.com/me/settings"),
         "Quora" to Route("https://www.quora.com/settings/privacy"),
         "Flickr" to Route("https://www.flickr.com/account/delete/"),
+        "Dribbble" to Route(
+            "https://dribbble.com/settings",
+            "Account deletion is in these settings.",
+        ),
         "Behance" to Route(
             "https://www.behance.net/settings",
             "Behance runs on an Adobe account — deleting that removes Behance with it.",

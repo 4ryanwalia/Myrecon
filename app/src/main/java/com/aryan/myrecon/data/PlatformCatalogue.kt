@@ -475,6 +475,26 @@ object PlatformCatalogue {
         // return the identical Next.js shell titled "FACEIT.com", and when
         // Cloudflare is not challenging, that shell mentions the handle.
         "Faceit",
+        // Measured, not guessed: each of these returned a hit for three
+        // unrelated handles that cannot exist (SweepNoiseTest). They serve a
+        // page for any input, so a result from them was never evidence about
+        // anyone. They stay in the catalogue and stay on screen — under the
+        // heading that says a result here proves nothing — because omitting
+        // them would understate a footprint as badly as counting them
+        // overstates it.
+        //
+        // Several are major platforms that render entirely in the browser.
+        // Where one has an API (Instagram, Reddit, GitHub) that answer is
+        // taken first and this list never applies, so marking them costs
+        // nothing on a phone and only corrects the fallback on a network
+        // where the API is blocked.
+        "Ansible Galaxy", "Battlefy", "BeReal", "Bento", "Bluesky", "Bookmooch",
+        "Care2", "Codeforces", "CoinMarketCap", "Crates.io", "DLive",
+        "DailyMotion", "Duelingbook", "Ello", "Glitch", "Guilded", "Imgur",
+        "Instagram", "Kick", "Kitsu", "Ko-fi", "Ko-fi Page", "Ko-fi Shop",
+        "Meetup", "Mirror.xyz", "Plurk", "Runkeeper", "SlideShare", "Taringa",
+        "Terraform Registry", "Threads", "TikTok", "Trello", "Twitch",
+        "Vidlii", "Xanga",
     )
 
     val size: Int get() = ALL.size
