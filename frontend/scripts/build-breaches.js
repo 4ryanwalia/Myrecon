@@ -310,6 +310,59 @@ const esc = (s) =>
 const slug = (s) =>
   String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
+/**
+ * Titles and descriptions that survive the search results page.
+ *
+ * Google cuts a title around 60 characters and a description around 160. The
+ * breach names come from HIBP and vary enormously — "Suno" and
+ * "SynthientCredentialStuffingThreatData" go through this same template — so
+ * one format string cannot serve both. The old one produced a 95-character
+ * title, cut mid-phrase in the results.
+ *
+ * So instead of truncating the finished string and leaving a severed word in
+ * front of searchers, the title is offered as a list of progressively shorter
+ * phrasings and the longest one that fits is chosen. Every candidate is a
+ * complete, readable line, so even the shortest reads as written.
+ */
+/**
+ * "<name> Data Breach", except that several HIBP titles already end in the
+ * word Data — "Synthient Credential Stuffing Threat Data" — which produced
+ * "Threat Data Data Breach" in the results page.
+ */
+const breachPhrase = (title) =>
+  /\bdata$/i.test(title.trim()) ? `${title} Breach` : `${title} Data Breach`;
+
+const TITLE_MAX = 60;
+function fitTitle(candidates) {
+  for (const c of candidates) if (c.length <= TITLE_MAX) return c;
+  // Every phrasing is still over: the name alone is enormous. Cut on a word
+  // boundary and mark the cut rather than slicing through a word.
+  const last = candidates[candidates.length - 1];
+  const cut = last.slice(0, TITLE_MAX - 1);
+  const space = cut.lastIndexOf(" ");
+  return (space > 0 ? cut.slice(0, space) : cut).trimEnd() + "…";
+}
+
+/**
+ * Trim to the description limit on a sentence boundary where there is one and
+ * a word boundary otherwise. The previous .slice(0, 180) was both over the
+ * limit and liable to stop mid-word.
+ */
+const DESC_MAX = 160;
+const DESC_MIN = 140;
+function fitDescription(text) {
+  if (text.length <= DESC_MAX) return text;
+  const window = text.slice(0, DESC_MAX);
+  // A clean full stop is the nicest ending, but only if it still leaves a
+  // description worth showing. Dropping a whole sentence to land on 127
+  // characters wastes a third of the space Google gives us, so below the
+  // useful floor we keep the words and mark the trim instead.
+  const stop = window.lastIndexOf(". ");
+  if (stop >= DESC_MIN) return window.slice(0, stop + 1);
+  const space = window.lastIndexOf(" ");
+  return (space > 0 ? window.slice(0, space) : window).trimEnd() + "…";
+}
+
 const num = (n) => Number(n || 0).toLocaleString("en-GB");
 
 function prettyDate(iso) {
@@ -354,12 +407,23 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="${esc(opts.url)}">
   <meta property="og:type" content="${opts.ogType || "website"}">
-  <meta property="og:title" content="${esc(opts.title)}">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="${esc(opts.ogTitle || opts.title)}">
   <meta property="og:description" content="${esc(opts.description)}">
   <meta property="og:url" content="${esc(opts.url)}">
-  <meta property="og:image" content="${esc(opts.image || SITE + "/assets/img/og-image.png")}">
+  <meta property="og:image" content="${SITE}/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(opts.ogTitle || opts.title)}">
+  <meta name="twitter:description" content="${esc(opts.description)}">
+  <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -424,6 +488,8 @@ function article(b, editorial, siblings) {
       : "") +
     `. MyRecon rates it ${sev.score}/100 — ${sev.band.toLowerCase()}.`;
 
+  const phrase = breachPhrase(b.Title);
+
   const crumbs = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -458,11 +524,23 @@ function article(b, editorial, siblings) {
 
   return (
     HEAD({
-      title: `${b.Title} data breach: ${num(b.PwnCount)} accounts exposed — MyRecon`,
-      description: lead.slice(0, 180),
+      title: fitTitle([
+        `${phrase}: ${num(b.PwnCount)} Accounts Exposed | MyRecon`,
+        `${phrase}: ${num(b.PwnCount)} Accounts Exposed`,
+        `${phrase}: ${num(b.PwnCount)} Accounts | MyRecon`,
+        `${phrase}: ${num(b.PwnCount)} Accounts`,
+        `${phrase} — What Was Exposed | MyRecon`,
+        `${phrase} — What Was Exposed`,
+        `${phrase} | MyRecon`,
+        phrase,
+      ]),
+      description: fitDescription(lead),
       url,
       ogType: "article",
-      image: logo || undefined,
+      // Social cards want 1200x630. The HIBP logo is a small square, so it
+      // stays in the JSON-LD (where a logo is the right shape) and the card
+      // uses the site image rather than a letterboxed mark.
+      ogTitle: phrase,
       jsonLd,
       extraLd: crumbs,
     }) +
@@ -599,7 +677,7 @@ function index(items) {
 
   return (
     HEAD({
-      title: "The Breach Files — data breach archive | MyRecon",
+      title: "Data Breach Archive: What Was Taken and From Whom | MyRecon",
       description,
       url,
       jsonLd: JSON.stringify({
