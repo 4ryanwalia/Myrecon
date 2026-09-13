@@ -1076,7 +1076,7 @@
     } else if (res.tool === "dns") {
       Object.entries(d.records || {}).forEach(([t, recs]) => L.push(`${t}: ${recs.map((r) => r.value).join(", ")}`));
     }
-    return L.join("\n") + `\n\nvia https://myrecon.xyz`;
+    return L.join("\n") + `\n\nvia https://www.myrecon.xyz`;
   }
 
   async function discoverSubdomains(btn) {

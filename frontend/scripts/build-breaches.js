@@ -37,7 +37,7 @@ const OUT_DIR = path.join(ROOT, "breaches");
 const DATA_DIR = path.join(ROOT, "assets", "data");
 const EDITORIAL_DIR = path.join(ROOT, "content", "breaches");
 
-const SITE = "https://myrecon.xyz";
+const SITE = "https://www.myrecon.xyz";
 const SOURCE = "https://haveibeenpwned.com/api/v3/breaches";
 const LICENCE = "https://creativecommons.org/licenses/by/4.0/";
 
@@ -214,7 +214,6 @@ function actions(b) {
   out.push("Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this.");
   return out;
 }
-
 
 /**
  * Guides worth linking from a breach, chosen by what leaked.
@@ -664,7 +663,6 @@ ${items
   );
 }
 
-
 /**
  * RSS.
  *
@@ -708,7 +706,6 @@ ${entries}
 `;
 }
 
-
 /**
  * Trim to a word boundary.
  *
@@ -735,7 +732,7 @@ function readEditorial(name) {
 async function main() {
   const res = await fetch(SOURCE, {
     headers: {
-      "User-Agent": "MyRecon-BreachFiles/1.0 (+https://myrecon.xyz)",
+      "User-Agent": "MyRecon-BreachFiles/1.0 (+https://www.myrecon.xyz)",
       Accept: "application/json",
     },
   });
@@ -795,47 +792,15 @@ async function main() {
   };
   fs.writeFileSync(path.join(DATA_DIR, "breaches.json"), JSON.stringify(feed, null, 2), "utf8");
 
-  updateSitemap(items);
+  // sitemap.xml is owned by scripts/build-sitemap.js, which walks the output
+  // directory after this script has written the articles. Maintaining a block
+  // inside a hand-written sitemap from here meant pages outside that block
+  // drifted out of date; generating the whole file from disk cannot drift.
 
   console.log(
     `[breaches] ${items.length} articles (${edited} with an editorial take), ` +
       `${num(feed.total_accounts)} accounts, feed written`,
   );
-}
-
-/**
- * Keep sitemap.xml in step.
- *
- * Rewrites only the block between the markers, so hand-maintained entries
- * around it survive a rebuild.
- */
-function updateSitemap(items) {
-  const file = path.join(ROOT, "sitemap.xml");
-  if (!fs.existsSync(file)) return;
-  const START = "<!-- breaches:start -->";
-  const END = "<!-- breaches:end -->";
-  const today = new Date().toISOString().slice(0, 10);
-
-  const block =
-    `${START}\n` +
-    `  <url><loc>${SITE}/breaches/</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>\n` +
-    items
-      .map(
-        (b) =>
-          `  <url><loc>${SITE}/breaches/${slug(b.Name)}.html</loc><lastmod>${(b.ModifiedDate || b.AddedDate || today).slice(0, 10)}</lastmod><priority>0.6</priority></url>`,
-      )
-      .join("\n") +
-    `\n  ${END}`;
-
-  let xml = fs.readFileSync(file, "utf8");
-  if (xml.includes(START) && xml.includes(END)) {
-    xml = xml.replace(new RegExp(`${START}[\\s\\S]*?${END}`), block);
-  } else {
-    xml = xml.replace("</urlset>", `  ${block}\n</urlset>`);
-  }
-  // .gitattributes normalises the repo to LF; writing CRLF back would show the
-  // whole file as changed on every build.
-  fs.writeFileSync(file, xml.replace(/\r\n/g, "\n"), "utf8");
 }
 
 main().catch((err) => {
