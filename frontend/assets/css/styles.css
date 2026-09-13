@@ -612,6 +612,29 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
   .datarow { flex-direction: column; gap: 3px; }
   .datarow .k { flex-basis: auto; }
   .footer-inner { flex-direction: column; }
+
+  /* Touch targets. Everything below measured under 44x44 on a 375px screen:
+     the two header icon buttons at 38x38, the tool tabs at 39 high, the
+     footer links at 31, the brand at 30, and the deep-search toggle label at
+     22. Sized up here only — on a pointer device the tighter desktop
+     proportions are correct and a 44px minimum would look padded. */
+  .icon-btn { width: 44px; height: 44px; }
+  .tab { min-height: 44px; }
+  .footer-col a { min-height: 44px; display: flex; align-items: center; padding: 0; }
+  .brand { min-height: 44px; }
+  label.switch { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
+
+  /* Body copy in the feature and step cards sat at 0.88rem and 0.92rem —
+     14.1px and 14.7px — which is genuinely small to read on a phone. These
+     are prose, not captions, so they go to 16px. The .hint lines stay small:
+     they are incidental helper text, not something anyone reads through. */
+  .feature p { font-size: 1rem; }
+  .step p { font-size: 1rem; }
+
+  /* The remaining controls that measured under 44 high: the example chips
+     under the search box at 33, and the small button variant at 37. */
+  .ex-chip { min-height: 44px; }
+  .btn, .btn-sm { min-height: 44px; }
 }
 
 /* ============================ Print / PDF report ============================ */

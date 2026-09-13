@@ -137,3 +137,10 @@
   .ds-console .ds-pulse { animation: none; }
   .ds-bar i { transition: none; }
 }
+
+/* Phone: the standfirst is prose people actually read, and .93rem lands at
+   14.9px. The footnote stays small — it is a caveat, not body copy. */
+@media (max-width: 820px) {
+  .ds-stand { font-size: 1rem; }
+  label.switch { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
+}
