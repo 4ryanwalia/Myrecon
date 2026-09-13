@@ -117,7 +117,9 @@ button, input, select { font: inherit; color: inherit; }
 .brand .logo { width: 30px; height: 30px; }
 .brand small {
   font-weight: 700; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--accent); padding: 3px 7px; border-radius: 6px; align-self: center;
+  /* Was var(--accent) on the tinted chip: 4.47:1, just under the 4.5 needed
+     at this size. --accent-text is the same hue lifted far enough to pass. */
+  color: var(--accent-text); padding: 3px 7px; border-radius: 6px; align-self: center;
   background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 .nav-links { display: flex; align-items: center; gap: 4px; margin-left: auto; }
@@ -588,7 +590,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .footer-col-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); margin-bottom: 10px; }
 .footer-col a { display: block; color: var(--text-dim); font-size: 0.88rem; padding: 4px 0; }
 .footer-col a:hover { color: var(--accent); }
-.footer-bottom { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-mute); font-size: 0.82rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.footer-bottom { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.82rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 
 /* Animations */
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -651,3 +653,21 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .related-guides li { margin-bottom: 8px; color: var(--text-dim); }
 .related-guides a { color: var(--accent); }
 .related-guides a:hover { text-decoration: underline; }
+
+/* Accent lifted until it clears 4.5:1 on the dark chip backgrounds. Defined
+   per theme so the light palette keeps its own darker accent. */
+:root { --accent-text: #60a5fa; }
+:root[data-theme="light"] { --accent-text: #1d4ed8; }
+
+/* Prose links are underlined. Colour alone measured 1.57:1 against the
+   surrounding text — under the 3:1 minimum — so a reader who does not
+   separate the hues could not tell a link from a word. Buttons, nav, cards
+   and the tag chips are excluded: they carry their own affordance. */
+.article p a, .article li a, .article td a,
+main > p a, main > ul li a, main > ol li a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.article p a:hover, .article li a:hover { text-decoration-thickness: 2px; }
+.article a.btn, main a.btn { text-decoration: none; }
