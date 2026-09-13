@@ -387,13 +387,29 @@ function sanitise(html) {
     if (!allowed.test(tag)) return "";
     if (/^<a\s/i.test(tag)) {
       const href = /href\s*=\s*["']([^"']*)["']/i.exec(tag);
-      const url = href && /^https?:\/\//i.test(href[1]) ? href[1] : null;
+      const url = href && /^https?:\/\//i.test(href[1]) ? normaliseUrl(href[1]) : null;
       return url
         ? `<a href="${esc(url)}" target="_blank" rel="noopener nofollow">`
         : "<span>";
     }
     return tag;
   });
+}
+
+/**
+ * Collapse redirect hops in links that arrive inside HIBP's descriptions.
+ *
+ * twitter.com/... has 301'd to x.com/... since the rename, so every one of
+ * these was costing a reader — and a crawler following the link — an extra
+ * round trip to land in the same place. The text is HIBP's under CC BY and is
+ * not touched; only the href target is pointed at where it already ends up.
+ */
+function normaliseUrl(url) {
+  let out = url.replace(/^https?:\/\/(?:www\.)?twitter\.com\//i, "https://x.com/");
+  // troyhunt.com -> www.troyhunt.com -> trailing slash is a two-hop chain.
+  out = out.replace(/^https?:\/\/troyhunt\.com\//i, "https://www.troyhunt.com/");
+  if (/^https:\/\/www\.troyhunt\.com\/[^?#]*[^/?#]$/.test(out)) out += "/";
+  return out;
 }
 
 const HEAD = (opts) => `<!DOCTYPE html>
@@ -513,9 +529,15 @@ function article(b, editorial, siblings) {
     ...(logo ? { image: logo } : {}),
   });
 
-  const related = siblings
-    .filter((s) => s.Name !== b.Name)
-    .slice(0, 3)
+  // Rotate the window rather than always taking the first three siblings.
+  // .slice(0, 3) pointed every article at the same three, which left the rest
+  // of the archive with a single inbound link each — from the index — and
+  // concentrated all the internal signal on whichever three sorted first.
+  // Starting at this article's own position and wrapping gives every article
+  // three inbound links from its siblings instead of none.
+  const pool = siblings.filter((s) => s.Name !== b.Name);
+  const start = Math.max(0, siblings.findIndex((s) => s.Name === b.Name));
+  const related = Array.from({ length: Math.min(3, pool.length) }, (_, i) => pool[(start + i) % pool.length])
     .map(
       (s) =>
         `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a> — ${num(s.PwnCount)} accounts</li>`,
