@@ -41,6 +41,20 @@ _CODES = {
     "magenta": "\033[35m",
     "cyan": "\033[36m",
     "grey": "\033[90m",
+    "bright_red": "\033[91m",
+}
+
+# The wordmark is drawn out of its own letters — every M is made of Ms. It
+# needs no box-drawing characters, so it survives a console on any code page,
+# which the usual block-glyph banner does not.
+_LETTERS = {
+    "M": ("M     M", "MM   MM", "M M M M", "M  M  M", "M     M", "M     M"),
+    "Y": ("Y     Y", " Y   Y ", "  Y Y  ", "   Y   ", "   Y   ", "   Y   "),
+    "R": ("RRRRRR ", "R     R", "R     R", "RRRRRR ", "R    R ", "R     R"),
+    "E": ("EEEEEEE", "E      ", "EEEEE  ", "E      ", "E      ", "EEEEEEE"),
+    "C": (" CCCCC ", "C     C", "C      ", "C      ", "C     C", " CCCCC "),
+    "O": (" OOOOO ", "O     O", "O     O", "O     O", "O     O", " OOOOO "),
+    "N": ("N     N", "NN    N", "N N   N", "N  N  N", "N   N N", "N     N"),
 }
 
 _GLYPHS = {
@@ -144,11 +158,31 @@ def _err(text: str = "") -> None:
 
 # ── Blocks ───────────────────────────────────────────────────────
 
+def logo_lines(word: str = "MYRECON") -> list:
+    """The wordmark as text rows, or [] if this terminal is too narrow."""
+    letters = [_LETTERS[c] for c in word if c in _LETTERS]
+    if not letters:
+        return []
+    rows = len(letters[0])
+    art = [" ".join(letter[row] for letter in letters) for row in range(rows)]
+    return art if len(art[0]) + 4 <= width() else []
+
+
 def banner(subtitle: str = "") -> None:
+    """The wordmark in red, with a compact fallback for narrow terminals."""
+    art = logo_lines()
     _out()
-    _out(paint("  MyRecon", "bold", "cyan") + paint("   OSINT from the terminal", "grey"))
+    if art:
+        for row in art:
+            _out("  " + paint(row, "bold", "bright_red"))
+        _out()
+        _out("  " + paint("OSINT from the terminal", "grey") +
+             paint("   myrecon.xyz", "grey"))
+    else:
+        _out("  " + paint("MyRecon", "bold", "bright_red") +
+             paint("   OSINT from the terminal", "grey"))
     if subtitle:
-        _out(paint("  " + subtitle, "grey"))
+        _out("  " + paint(subtitle, "grey"))
     _out()
 
 

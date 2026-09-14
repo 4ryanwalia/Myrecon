@@ -23,12 +23,12 @@ implementation and cannot drift apart.
 > the terminal client. The app is developed separately and is not tracked here.
 
 <p align="center">
-  <img src="docs/cli-username-scan.png" width="900"
-       alt="MyRecon in a terminal: a username sweep reporting 25 confirmed profiles out of 123 platforms checked, as a table of platform, detail and URL.">
+  <img src="docs/cli-home.png" width="760"
+       alt="The MyRecon terminal client: a red MYRECON wordmark drawn out of its own letters, above every command grouped by what it investigates — identity, email, infrastructure, images and places, web history.">
 </p>
 
 <p align="center">
-  <em>One handle, 123 platforms, no API key and no server — <code>python myrecon.py username &lt;handle&gt; --deep</code></em>
+  <em>Run <code>python myrecon.py</code> with no arguments for this screen.</em>
 </p>
 
 ---
@@ -150,8 +150,20 @@ python myrecon.py <command> [options]
 python -m cli <command> [options]     # identical
 ```
 
+Run it with no arguments for the command screen above; `python myrecon.py
+<command> --help` documents any one command.
+
 No server, no API key, no packaging step. Results print as a readable report;
 progress goes to stderr so `--json` redirects cleanly to a file.
+
+<p align="center">
+  <img src="docs/cli-username-scan.png" width="880"
+       alt="A username sweep in the terminal: 25 confirmed profiles out of 123 platforms checked, listed as a table of platform, detail and URL.">
+</p>
+
+<p align="center">
+  <em>One handle, 123 platforms — <code>python myrecon.py username &lt;handle&gt; --deep</code></em>
+</p>
 
 ### Commands
 

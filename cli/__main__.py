@@ -36,6 +36,30 @@ for _path in (_BACKEND, _ROOT):
 from cli import ui, views  # noqa: E402 - must follow the sys.path setup above
 
 
+# Filled in by _build_parser so the home screen quotes each command's real help
+# string instead of a second copy that can drift out of step with it.
+_COMMAND_HELP: dict = {}
+
+# Display order on the home screen. A command missing from here still shows up,
+# under "Other" — forgetting to list a new one costs a heading, not its listing.
+_GROUPS = (
+    ("Identity", ("username", "name", "enrich", "investigate")),
+    ("Email", ("email",)),
+    ("Infrastructure", ("domain", "dns", "whois", "ip", "subdomains")),
+    ("Images and places", ("image", "forensics", "geo")),
+    ("Web history", ("wayback",)),
+    ("This tool", ("platforms", "serve")),
+)
+
+
+class _BrandedParser(argparse.ArgumentParser):
+    """Top-level parser only: `--help` opens with the wordmark."""
+
+    def print_help(self, file=None):
+        ui.banner()
+        super().print_help(file)
+
+
 EPILOG = """\
 examples:
   myrecon username torvalds --deep
@@ -252,7 +276,7 @@ def _build_parser() -> argparse.ArgumentParser:
     common.add_argument("--color", choices=("auto", "always", "never"),
                         default="auto", help="colour output (default: auto)")
 
-    parser = argparse.ArgumentParser(
+    parser = _BrandedParser(
         prog="myrecon",
         description="MyRecon — OSINT lookups from the terminal, same engine as myrecon.xyz.",
         epilog=EPILOG,
@@ -260,13 +284,17 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="version",
                         version="myrecon " + __version__)
-    subs = parser.add_subparsers(dest="command", metavar="<command>")
+    # Plain parsers for subcommands: `myrecon username --help` should answer the
+    # question, not repaint the wordmark.
+    subs = parser.add_subparsers(dest="command", metavar="<command>",
+                                 parser_class=argparse.ArgumentParser)
 
     def add(name: str, help_text: str):
+        _COMMAND_HELP[name] = help_text
         return subs.add_parser(name, parents=[common], help=help_text,
                                description=help_text)
 
-    p = add("username", "Sweep 100+ platforms for a handle, then enrich and correlate.")
+    p = add("username", "Sweep 123 platforms for a handle, then enrich and correlate.")
     p.add_argument("username")
     p.add_argument("--deep", action="store_true", help="wider sweep, slower")
     p.add_argument("--all", action="store_true", help="show every row, including rejections")
@@ -345,16 +373,82 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+# ── Home screen ──────────────────────────────────────────────────
+
+def _home() -> None:
+    """What `python myrecon.py` with no arguments shows: the whole surface."""
+    ui.banner("Every source free and keyless. No account, no server, no API key.")
+
+    ui.line(ui.paint("usage", "bold") + "  python myrecon.py <command> [options]")
+
+    listed = set()
+    for title, names in _GROUPS:
+        rows = [(n, _COMMAND_HELP[n]) for n in names if n in _COMMAND_HELP]
+        if not rows:
+            continue
+        listed.update(n for n, _ in rows)
+        ui.section(title)
+        _command_rows(rows)
+
+    leftover = [(n, h) for n, h in _COMMAND_HELP.items() if n not in listed]
+    if leftover:
+        ui.section("Other")
+        _command_rows(leftover)
+
+    ui.section("Options")
+    for flag, text in (
+        ("--deep", "wider, slower sweep (username, name, image)"),
+        ("--all", "show every row, including platforms checked and rejected"),
+        ("--json", "raw result instead of a report — redirects cleanly"),
+        ("--quiet, -q", "no progress line"),
+        ("--color", "auto | always | never (NO_COLOR is honoured)"),
+    ):
+        ui.line(ui.paint(flag.ljust(14), "cyan") + ui.paint(text, "grey"), indent=4)
+
+    ui.section("Examples")
+    for example in (
+        "python myrecon.py username torvalds --deep",
+        "python myrecon.py email someone@example.com",
+        "python myrecon.py forensics ./photo.jpg",
+        "python myrecon.py domain example.com --json > domain.json",
+    ):
+        ui.line(example, indent=4)
+
+    ui.line("")
+    ui.line("Full help for any command:  python myrecon.py <command> --help",
+            indent=2, style="grey")
+    ui.line("")
+
+
+def _command_rows(rows) -> None:
+    room = max(0, ui.width() - 22)
+    for name, help_text in rows:
+        summary = help_text if len(help_text) <= room else help_text[: room - 1] + "…"
+        ui.line(ui.paint(name.ljust(14), "cyan") + ui.paint(summary, "grey"), indent=4)
+
+
+def _early_color(argv) -> str:
+    """Read --color before argparse runs, so --help is painted correctly too."""
+    args = list(sys.argv[1:] if argv is None else argv)
+    for i, arg in enumerate(args):
+        if arg == "--color" and i + 1 < len(args):
+            return args[i + 1]
+        if arg.startswith("--color="):
+            return arg.split("=", 1)[1]
+    return "auto"
+
+
 # ── Entry point ──────────────────────────────────────────────────
 
 def main(argv=None) -> int:
+    choice = _early_color(argv)
+    ui.configure(choice if choice in ("auto", "always", "never") else "auto")
+
     parser = _build_parser()
     args = parser.parse_args(argv)
 
     if not getattr(args, "command", None):
-        ui.configure("auto")
-        ui.banner("Same engine as myrecon.xyz, no server required.")
-        parser.print_help()
+        _home()
         return 0
 
     ui.configure(args.color)
