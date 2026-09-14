@@ -1,6 +1,6 @@
 # SEO overhaul — myrecon.xyz
 
-Branch `seo-overhaul`, 5 commits, nothing pushed or deployed.
+Branch `seo-overhaul`, 7 commits, nothing pushed or deployed.
 
 **Stack, for the record.** The Vercel deployment is `frontend/` — hand-written
 static HTML, **no framework, no `package.json`, no dependencies**. Build is
@@ -468,10 +468,44 @@ picture and would need re-verifying if the canonical host ever changed.
    working entry point the tool reads on load. It is a hash, so no server sees
    it, and **Google retired the sitelinks search box in 2024**. Harmless and
    accurate; say if you would rather it came out.
-5. **HSTS now asserts `includeSubDomains; preload`.** That commits *every*
-   subdomain of `myrecon.xyz` to HTTPS-only, permanently and hard to undo once
-   submitted to the preload list. If any subdomain (an API host, a staging box)
-   must serve plain HTTP, **tell me and I'll drop those two directives**.
+5. **HSTS `includeSubDomains; preload` — checked, and it is safe.** I raised
+   this as a risk and then verified it rather than leaving it as a caveat:
+
+   - `*.myrecon.xyz` is a **DNS wildcard** pointing at Vercel's anycast IPs.
+     `definitely-nothing-here-9182.myrecon.xyz` resolves, so a name resolving
+     proves nothing about a host existing. There are not 68 subdomains; there
+     is one wildcard.
+   - **Every subdomain already redirects HTTP to HTTPS with a 308** — Vercel
+     does it automatically. Tested `api`, `staging`, `mail`, `admin` and a
+     nonsense name: all 308 to `https://`.
+   - **Every subdomain returns 404 over HTTPS.** No service runs on any of them.
+   - **Certificate Transparency shows only three names ever issued**: the apex,
+     `www`, and the Let's Encrypt wildcard. No named subdomain has ever had its
+     own certificate.
+   - **No MX records**, so no mail is hosted here. (HSTS is HTTP-only in any
+     case — it never affects SMTP, IMAP or POP.)
+   - The API is same-origin under `/api/` on `www`, not a subdomain.
+
+   So `includeSubDomains` forces HTTPS on a set of hosts that are already
+   HTTPS-only and all 404. **Operationally it changes nothing.**
+
+   Two things worth knowing rather than assuming:
+
+   - **The `preload` token does nothing on its own.** A domain is only
+     preloaded once it is submitted at hstspreload.org and accepted into the
+     list browsers ship. Shipping this header is reversible; the *submission*
+     is the hard-to-undo step, and it is optional. Do not submit unless you
+     want it.
+   - If you do submit, the checker reads the header from the **apex**, and the
+     apex is a Vercel domain-level redirect. Whether that redirect response
+     carries this project's custom headers is not something I can test without
+     deploying — today the apex serves Vercel's own `max-age=63072000` with no
+     directives. If the submission is rejected for a missing header on the
+     apex, that is a rejection, not an outage.
+
+   The only future constraint: if you later put a subdomain on a host that
+   must serve plain HTTP, it would break in browsers that had seen the header.
+   Nothing today is in that position.
 6. **Asset cache lifetimes are conservative on purpose.** CSS/JS keep
    `must-revalidate` because their cache key is a **hand-maintained `?v=N`** —
    a long immutable lifetime plus a forgotten version bump serves a broken site
