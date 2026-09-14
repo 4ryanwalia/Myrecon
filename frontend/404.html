@@ -7,10 +7,15 @@
   <meta name="robots" content="noindex, follow">
   <meta name="theme-color" content="#070b12">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=8">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
 </head>
 <body>
   <header class="nav"><div class="container nav-inner">

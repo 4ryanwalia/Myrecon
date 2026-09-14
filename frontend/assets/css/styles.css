@@ -13,7 +13,11 @@
   --border-strong: #2c3c5a;
   --text: #e8eef7;
   --text-dim: #9aabc4;
-  --text-mute: #647089;
+  /* Was #647089: 3.85:1 on --bg and 3.49:1 on --surface, under the 4.5
+     WCAG AA needs for text this size. Lifted until it clears on --bg,
+     --surface and --surface-2 alike, while staying clearly dimmer than
+     --text-dim so the hierarchy is unchanged. */
+  --text-mute: #7d8aa3;
   --accent: #3b82f6;
   --accent-2: #2563eb;
   --ring: rgba(59, 130, 246, 0.40);
@@ -45,12 +49,24 @@
   --border-strong: #cbd5e1;
   --text: #0f172a;
   --text-dim: #475569;
-  --text-mute: #94a3b8;
+  --text-mute: #5f6f86;  /* was #94a3b8 — 2.56:1 on white */
   --accent: #2563eb;
   --accent-2: #1d4ed8;
   --ring: rgba(37, 99, 235, 0.35);
   --shadow: 0 18px 40px -20px rgba(15, 23, 42, 0.25);
   --shadow-sm: 0 6px 18px -12px rgba(15, 23, 42, 0.2);
+
+  /* The semantic colours were never given light-theme values, so the dark
+     palette's bright ones carried over onto a near-white background and were
+     used as TEXT in seventeen places — the exposure verdicts, the confidence
+     tags, the error box, the severity badges. Measured on white they ran
+     1.67:1 (warn), 1.92 (ok), 2.14 (info) and 2.69 (danger); the amber was
+     effectively invisible. These are the same hues darkened until each clears
+     4.5:1 on --bg, --surface and --surface-2 alike. */
+  --ok: #047857;
+  --warn: #b45309;
+  --danger: #be123c;
+  --info: #0369a1;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,7 +133,9 @@ button, input, select { font: inherit; color: inherit; }
 .brand .logo { width: 30px; height: 30px; }
 .brand small {
   font-weight: 700; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--accent); padding: 3px 7px; border-radius: 6px; align-self: center;
+  /* Was var(--accent) on the tinted chip: 4.47:1, just under the 4.5 needed
+     at this size. --accent-text is the same hue lifted far enough to pass. */
+  color: var(--accent-text); padding: 3px 7px; border-radius: 6px; align-self: center;
   background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 .nav-links { display: flex; align-items: center; gap: 4px; margin-left: auto; }
@@ -206,7 +224,9 @@ button, input, select { font: inherit; color: inherit; }
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 14px 24px; border-radius: var(--radius-sm); border: none; cursor: pointer;
   font-weight: 700; font-size: 0.95rem; transition: transform 0.12s, box-shadow 0.18s, opacity 0.18s;
-  background: var(--accent); color: #ffffff; white-space: nowrap;
+  /* --accent-2, not --accent: white on #3b82f6 is 3.67:1, and .btn text is
+     15.2px, below the large-text threshold that would allow 3:1. */
+  background: var(--accent-2); color: #ffffff; white-space: nowrap;
 }
 .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px -10px var(--accent); }
 .btn:active { transform: translateY(0); }
@@ -217,7 +237,9 @@ button, input, select { font: inherit; color: inherit; }
 
 /* Buttons carry their own colour. Without this an `a.btn` can inherit the
    accent link colour and render blue-on-blue (invisible label). */
-a.btn, .btn-primary { background: var(--accent); color: #ffffff; }
+/* Same 3.67:1 problem as .btn — this rule was putting --accent back for
+   links styled as buttons and for the primary variant. */
+a.btn, .btn-primary { background: var(--accent-2); color: #ffffff; }
 a.btn-ghost, .btn-ghost { background: var(--surface-2); color: var(--text); }
 
 .opt-row { display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
@@ -464,7 +486,10 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
   border: 1px dashed var(--border); border-radius: var(--radius); background: var(--surface);
 }
 .empty svg { margin: 0 auto 14px; opacity: 0.5; }
-.empty h3 { color: var(--text); font-size: 1.05rem; margin-bottom: 6px; }
+/* Was .empty h3. These are UI status messages ("Ready when you are"),
+   not document headings, and an h3 here followed no h2 — an invalid
+   heading order on the homepage. Styling is identical. */
+.empty-title { color: var(--text); font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
 .error-box { border-color: color-mix(in srgb, var(--danger) 40%, transparent); color: var(--danger); border-style: solid; }
 
 /* Skeleton loading */
@@ -575,7 +600,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .guide-card { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: transform 0.16s, border-color 0.16s; }
 .guide-card:hover { transform: translateY(-3px); border-color: var(--border-strong); }
-.guide-card h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text); }
+.guide-card h2 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text); }
 .guide-card p { font-size: 0.9rem; color: var(--text-dim); }
 .guide-card .read { color: var(--accent); font-size: 0.82rem; font-weight: 600; margin-top: 12px; display: inline-block; }
 
@@ -585,10 +610,10 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .footer .brand { font-size: 1rem; }
 .footer-tag { color: var(--text-mute); font-size: 0.85rem; margin-top: 8px; max-width: 280px; }
 .footer-cols { display: flex; gap: 46px; flex-wrap: wrap; }
-.footer-col h4 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); margin-bottom: 10px; }
+.footer-col-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); margin-bottom: 10px; }
 .footer-col a { display: block; color: var(--text-dim); font-size: 0.88rem; padding: 4px 0; }
 .footer-col a:hover { color: var(--accent); }
-.footer-bottom { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-mute); font-size: 0.82rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.footer-bottom { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.82rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 
 /* Animations */
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -610,6 +635,29 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
   .datarow { flex-direction: column; gap: 3px; }
   .datarow .k { flex-basis: auto; }
   .footer-inner { flex-direction: column; }
+
+  /* Touch targets. Everything below measured under 44x44 on a 375px screen:
+     the two header icon buttons at 38x38, the tool tabs at 39 high, the
+     footer links at 31, the brand at 30, and the deep-search toggle label at
+     22. Sized up here only — on a pointer device the tighter desktop
+     proportions are correct and a 44px minimum would look padded. */
+  .icon-btn { width: 44px; height: 44px; }
+  .tab { min-height: 44px; }
+  .footer-col a { min-height: 44px; display: flex; align-items: center; padding: 0; }
+  .brand { min-height: 44px; }
+  label.switch { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
+
+  /* Body copy in the feature and step cards sat at 0.88rem and 0.92rem —
+     14.1px and 14.7px — which is genuinely small to read on a phone. These
+     are prose, not captions, so they go to 16px. The .hint lines stay small:
+     they are incidental helper text, not something anyone reads through. */
+  .feature p { font-size: 1rem; }
+  .step p { font-size: 1rem; }
+
+  /* The remaining controls that measured under 44 high: the example chips
+     under the search box at 33, and the small button variant at 37. */
+  .ex-chip { min-height: 44px; }
+  .btn, .btn-sm { min-height: 44px; }
 }
 
 /* ============================ Print / PDF report ============================ */
@@ -643,3 +691,29 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
 }
+
+/* Related guides — the cross-links at the foot of each article. Indented list
+   markers sit outside the text so the links read as a list of destinations
+   rather than a paragraph of blue. */
+.related-guides { margin: 0 0 8px; padding-left: 20px; }
+.related-guides li { margin-bottom: 8px; color: var(--text-dim); }
+.related-guides a { color: var(--accent); }
+.related-guides a:hover { text-decoration: underline; }
+
+/* Accent lifted until it clears 4.5:1 on the dark chip backgrounds. Defined
+   per theme so the light palette keeps its own darker accent. */
+:root { --accent-text: #60a5fa; }
+:root[data-theme="light"] { --accent-text: #1d4ed8; }
+
+/* Prose links are underlined. Colour alone measured 1.57:1 against the
+   surrounding text — under the 3:1 minimum — so a reader who does not
+   separate the hues could not tell a link from a word. Buttons, nav, cards
+   and the tag chips are excluded: they carry their own affordance. */
+.article p a, .article li a, .article td a,
+main > p a, main > ul li a, main > ol li a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.article p a:hover, .article li a:hover { text-decoration-thickness: 2px; }
+.article a.btn, main a.btn { text-decoration: none; }

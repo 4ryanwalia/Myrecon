@@ -37,7 +37,7 @@ const OUT_DIR = path.join(ROOT, "breaches");
 const DATA_DIR = path.join(ROOT, "assets", "data");
 const EDITORIAL_DIR = path.join(ROOT, "content", "breaches");
 
-const SITE = "https://myrecon.xyz";
+const SITE = "https://www.myrecon.xyz";
 const SOURCE = "https://haveibeenpwned.com/api/v3/breaches";
 const LICENCE = "https://creativecommons.org/licenses/by/4.0/";
 
@@ -215,7 +215,6 @@ function actions(b) {
   return out;
 }
 
-
 /**
  * Guides worth linking from a breach, chosen by what leaked.
  *
@@ -311,6 +310,59 @@ const esc = (s) =>
 const slug = (s) =>
   String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
+/**
+ * Titles and descriptions that survive the search results page.
+ *
+ * Google cuts a title around 60 characters and a description around 160. The
+ * breach names come from HIBP and vary enormously — "Suno" and
+ * "SynthientCredentialStuffingThreatData" go through this same template — so
+ * one format string cannot serve both. The old one produced a 95-character
+ * title, cut mid-phrase in the results.
+ *
+ * So instead of truncating the finished string and leaving a severed word in
+ * front of searchers, the title is offered as a list of progressively shorter
+ * phrasings and the longest one that fits is chosen. Every candidate is a
+ * complete, readable line, so even the shortest reads as written.
+ */
+/**
+ * "<name> Data Breach", except that several HIBP titles already end in the
+ * word Data — "Synthient Credential Stuffing Threat Data" — which produced
+ * "Threat Data Data Breach" in the results page.
+ */
+const breachPhrase = (title) =>
+  /\bdata$/i.test(title.trim()) ? `${title} Breach` : `${title} Data Breach`;
+
+const TITLE_MAX = 60;
+function fitTitle(candidates) {
+  for (const c of candidates) if (c.length <= TITLE_MAX) return c;
+  // Every phrasing is still over: the name alone is enormous. Cut on a word
+  // boundary and mark the cut rather than slicing through a word.
+  const last = candidates[candidates.length - 1];
+  const cut = last.slice(0, TITLE_MAX - 1);
+  const space = cut.lastIndexOf(" ");
+  return (space > 0 ? cut.slice(0, space) : cut).trimEnd() + "…";
+}
+
+/**
+ * Trim to the description limit on a sentence boundary where there is one and
+ * a word boundary otherwise. The previous .slice(0, 180) was both over the
+ * limit and liable to stop mid-word.
+ */
+const DESC_MAX = 160;
+const DESC_MIN = 140;
+function fitDescription(text) {
+  if (text.length <= DESC_MAX) return text;
+  const window = text.slice(0, DESC_MAX);
+  // A clean full stop is the nicest ending, but only if it still leaves a
+  // description worth showing. Dropping a whole sentence to land on 127
+  // characters wastes a third of the space Google gives us, so below the
+  // useful floor we keep the words and mark the trim instead.
+  const stop = window.lastIndexOf(". ");
+  if (stop >= DESC_MIN) return window.slice(0, stop + 1);
+  const space = window.lastIndexOf(" ");
+  return (space > 0 ? window.slice(0, space) : window).trimEnd() + "…";
+}
+
 const num = (n) => Number(n || 0).toLocaleString("en-GB");
 
 function prettyDate(iso) {
@@ -335,13 +387,29 @@ function sanitise(html) {
     if (!allowed.test(tag)) return "";
     if (/^<a\s/i.test(tag)) {
       const href = /href\s*=\s*["']([^"']*)["']/i.exec(tag);
-      const url = href && /^https?:\/\//i.test(href[1]) ? href[1] : null;
+      const url = href && /^https?:\/\//i.test(href[1]) ? normaliseUrl(href[1]) : null;
       return url
         ? `<a href="${esc(url)}" target="_blank" rel="noopener nofollow">`
         : "<span>";
     }
     return tag;
   });
+}
+
+/**
+ * Collapse redirect hops in links that arrive inside HIBP's descriptions.
+ *
+ * twitter.com/... has 301'd to x.com/... since the rename, so every one of
+ * these was costing a reader — and a crawler following the link — an extra
+ * round trip to land in the same place. The text is HIBP's under CC BY and is
+ * not touched; only the href target is pointed at where it already ends up.
+ */
+function normaliseUrl(url) {
+  let out = url.replace(/^https?:\/\/(?:www\.)?twitter\.com\//i, "https://x.com/");
+  // troyhunt.com -> www.troyhunt.com -> trailing slash is a two-hop chain.
+  out = out.replace(/^https?:\/\/troyhunt\.com\//i, "https://www.troyhunt.com/");
+  if (/^https:\/\/www\.troyhunt\.com\/[^?#]*[^/?#]$/.test(out)) out += "/";
+  return out;
 }
 
 const HEAD = (opts) => `<!DOCTYPE html>
@@ -355,17 +423,33 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="${esc(opts.url)}">
   <meta property="og:type" content="${opts.ogType || "website"}">
-  <meta property="og:title" content="${esc(opts.title)}">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="${esc(opts.ogTitle || opts.title)}">
   <meta property="og:description" content="${esc(opts.description)}">
   <meta property="og:url" content="${esc(opts.url)}">
-  <meta property="og:image" content="${esc(opts.image || SITE + "/assets/img/og-image.png")}">
+  <meta property="og:image" content="${SITE}/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(opts.ogTitle || opts.title)}">
+  <meta name="twitter:description" content="${esc(opts.description)}">
+  <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=8">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=1">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=2">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
 ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="${SITE}/breaches/feed.xml">
@@ -374,7 +458,7 @@ ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n`
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -389,10 +473,10 @@ const FOOT = `
       <span><a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=8"></script>
-  <script src="/assets/js/config.js?v=8"></script>
-  <script src="/assets/js/app.js?v=8"></script>
-  <script src="/assets/js/breach-check.js?v=1"></script>
+  <script src="/assets/js/env.js?v=9"></script>
+  <script src="/assets/js/config.js?v=9"></script>
+  <script src="/assets/js/app.js?v=9"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
 </body>
 </html>
 `;
@@ -425,6 +509,8 @@ function article(b, editorial, siblings) {
       : "") +
     `. MyRecon rates it ${sev.score}/100 — ${sev.band.toLowerCase()}.`;
 
+  const phrase = breachPhrase(b.Title);
+
   const crumbs = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -448,9 +534,15 @@ function article(b, editorial, siblings) {
     ...(logo ? { image: logo } : {}),
   });
 
-  const related = siblings
-    .filter((s) => s.Name !== b.Name)
-    .slice(0, 3)
+  // Rotate the window rather than always taking the first three siblings.
+  // .slice(0, 3) pointed every article at the same three, which left the rest
+  // of the archive with a single inbound link each — from the index — and
+  // concentrated all the internal signal on whichever three sorted first.
+  // Starting at this article's own position and wrapping gives every article
+  // three inbound links from its siblings instead of none.
+  const pool = siblings.filter((s) => s.Name !== b.Name);
+  const start = Math.max(0, siblings.findIndex((s) => s.Name === b.Name));
+  const related = Array.from({ length: Math.min(3, pool.length) }, (_, i) => pool[(start + i) % pool.length])
     .map(
       (s) =>
         `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a> — ${num(s.PwnCount)} accounts</li>`,
@@ -459,11 +551,23 @@ function article(b, editorial, siblings) {
 
   return (
     HEAD({
-      title: `${b.Title} data breach: ${num(b.PwnCount)} accounts exposed — MyRecon`,
-      description: lead.slice(0, 180),
+      title: fitTitle([
+        `${phrase}: ${num(b.PwnCount)} Accounts Exposed | MyRecon`,
+        `${phrase}: ${num(b.PwnCount)} Accounts Exposed`,
+        `${phrase}: ${num(b.PwnCount)} Accounts | MyRecon`,
+        `${phrase}: ${num(b.PwnCount)} Accounts`,
+        `${phrase} — What Was Exposed | MyRecon`,
+        `${phrase} — What Was Exposed`,
+        `${phrase} | MyRecon`,
+        phrase,
+      ]),
+      description: fitDescription(lead),
       url,
       ogType: "article",
-      image: logo || undefined,
+      // Social cards want 1200x630. The HIBP logo is a small square, so it
+      // stays in the JSON-LD (where a logo is the right shape) and the card
+      // uses the site image rather than a letterboxed mark.
+      ogTitle: phrase,
       jsonLd,
       extraLd: crumbs,
     }) +
@@ -600,7 +704,7 @@ function index(items) {
 
   return (
     HEAD({
-      title: "The Breach Files — data breach archive | MyRecon",
+      title: "Data Breach Archive: What Was Taken and From Whom | MyRecon",
       description,
       url,
       jsonLd: JSON.stringify({
@@ -664,7 +768,6 @@ ${items
   );
 }
 
-
 /**
  * RSS.
  *
@@ -708,7 +811,6 @@ ${entries}
 `;
 }
 
-
 /**
  * Trim to a word boundary.
  *
@@ -735,7 +837,7 @@ function readEditorial(name) {
 async function main() {
   const res = await fetch(SOURCE, {
     headers: {
-      "User-Agent": "MyRecon-BreachFiles/1.0 (+https://myrecon.xyz)",
+      "User-Agent": "MyRecon-BreachFiles/1.0 (+https://www.myrecon.xyz)",
       Accept: "application/json",
     },
   });
@@ -795,47 +897,15 @@ async function main() {
   };
   fs.writeFileSync(path.join(DATA_DIR, "breaches.json"), JSON.stringify(feed, null, 2), "utf8");
 
-  updateSitemap(items);
+  // sitemap.xml is owned by scripts/build-sitemap.js, which walks the output
+  // directory after this script has written the articles. Maintaining a block
+  // inside a hand-written sitemap from here meant pages outside that block
+  // drifted out of date; generating the whole file from disk cannot drift.
 
   console.log(
     `[breaches] ${items.length} articles (${edited} with an editorial take), ` +
       `${num(feed.total_accounts)} accounts, feed written`,
   );
-}
-
-/**
- * Keep sitemap.xml in step.
- *
- * Rewrites only the block between the markers, so hand-maintained entries
- * around it survive a rebuild.
- */
-function updateSitemap(items) {
-  const file = path.join(ROOT, "sitemap.xml");
-  if (!fs.existsSync(file)) return;
-  const START = "<!-- breaches:start -->";
-  const END = "<!-- breaches:end -->";
-  const today = new Date().toISOString().slice(0, 10);
-
-  const block =
-    `${START}\n` +
-    `  <url><loc>${SITE}/breaches/</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>\n` +
-    items
-      .map(
-        (b) =>
-          `  <url><loc>${SITE}/breaches/${slug(b.Name)}.html</loc><lastmod>${(b.ModifiedDate || b.AddedDate || today).slice(0, 10)}</lastmod><priority>0.6</priority></url>`,
-      )
-      .join("\n") +
-    `\n  ${END}`;
-
-  let xml = fs.readFileSync(file, "utf8");
-  if (xml.includes(START) && xml.includes(END)) {
-    xml = xml.replace(new RegExp(`${START}[\\s\\S]*?${END}`), block);
-  } else {
-    xml = xml.replace("</urlset>", `  ${block}\n</urlset>`);
-  }
-  // .gitattributes normalises the repo to LF; writing CRLF back would show the
-  // whole file as changed on every build.
-  fs.writeFileSync(file, xml.replace(/\r\n/g, "\n"), "utf8");
 }
 
 main().catch((err) => {

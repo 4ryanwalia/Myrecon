@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.aryan.myrecon.data.PlatformCatalogue
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.GridBackdrop
 import com.aryan.myrecon.ui.components.bracketFrame
@@ -64,37 +65,37 @@ private val USE_CASES = listOf(
     UseCase(
         Icons.Filled.PersonSearch,
         "Someone messaged you and you are not sure they are real",
-        "Search their name or @handle. You get the accounts that genuinely carry it, what a public record says about them, and where the story does not line up.",
+        "Type their name or username. You will see which accounts really use it, what is publicly known about them, and where their story does not add up.",
         "Lookup › Deep Search",
     ),
     UseCase(
         Icons.Filled.AlternateEmail,
         "You want to know what is public about you",
-        "Check your usual handle across 284 platforms and your email against known breaches. Most people find accounts they forgot they made.",
+        "Check your usual username across ${PlatformCatalogue.size} websites, and your email against known data leaks. Most people find old accounts they had completely forgotten about.",
         "Lookup › Username, Email",
     ),
     UseCase(
         Icons.Filled.QrCodeScanner,
         "A QR code or link wants you to pay or sign in",
-        "Scan it before you tap. You see where it really goes, how old the domain is, and whether it is impersonating something.",
+        "Scan it first. You will see where it actually takes you, how new the website is, and whether it is pretending to be a company you trust.",
         "Scan",
     ),
     UseCase(
         Icons.Filled.Lock,
         "You reuse a password and quietly know you should not",
-        "Check it against 900M+ leaked credentials. It is hashed on your phone — only five characters of that hash ever leave.",
+        "Find out if it has already turned up in a data leak. Your password never leaves the phone — only a short scrambled fragment is sent, and it cannot be turned back into your password.",
         "Password",
     ),
     UseCase(
         Icons.Filled.Language,
         "A shop, job offer or invoice looks slightly off",
-        "Look up the domain. A site registered three weeks ago that cannot receive email is not the established company it claims to be.",
+        "Look the website up. One that was set up three weeks ago and cannot even receive email is not the long-established company it claims to be.",
         "Lookup › Domain, DNS",
     ),
     UseCase(
         Icons.Filled.Image,
         "A photo might not be from where someone says",
-        "Read its hidden data — camera, date, and GPS if it was left in. Runs entirely on your phone; the photo is never uploaded.",
+        "See the details hidden inside it — the camera, the date, the exact location if it was left in, and whether an AI made it. The photo never leaves your phone.",
         "Image",
     ),
 )
@@ -208,17 +209,17 @@ private fun WelcomePage() {
         )
         Spacer(Modifier.height(14.dp))
         Text(
-            "MyRecon looks up people, accounts, links and websites in public " +
-                "records — the same sources anyone could check by hand, gathered " +
-                "in one place and read for what they actually mean.",
+            "Check a person, a link, a photo or a website before you trust it. " +
+                "MyRecon gathers what is already out there in the open, puts it in " +
+                "one place, and explains in plain words what it means.",
             style = MaterialTheme.typography.bodyLarge,
             color = t.textDim,
         )
         Spacer(Modifier.height(20.dp))
         Text(
-            "It finds what is already public. It does not break into anything, " +
-                "and there is nothing here you could not look up yourself with " +
-                "enough time.",
+            "Nothing here is hacked or stolen. It is all public information you " +
+                "could find yourself, given enough hours — MyRecon just does the " +
+                "looking for you.",
             style = MaterialTheme.typography.bodyMedium,
             color = t.textMute,
         )
@@ -233,7 +234,7 @@ private fun UseCasePage() {
         Text("What people use it for", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(6.dp))
         Text(
-            "Six situations, and where each one lives.",
+            "Six everyday situations, and which tab handles each one.",
             style = MaterialTheme.typography.bodyMedium,
             color = t.textMute,
         )
@@ -291,10 +292,10 @@ private fun PrivacyPage() {
         // worth nothing on a tool like this, and a precise one is the whole
         // reason to trust it over a website that logs what you searched.
         listOf(
-            "Username, email, domain, DNS and IP lookups run from this device, straight to the public source.",
+            "Searches go straight from your phone to the public source. They do not pass through us.",
             "Photos are read on the phone. The image is never uploaded anywhere.",
-            "Passwords are hashed locally — only the first five characters of the hash are sent, so nobody learns what you typed.",
-            "Nothing you search is stored on a MyRecon server, because for these lookups there is no MyRecon server involved.",
+            "Your password is scrambled on the phone first. Only a short piece of that scramble is sent, and nobody — including us — can work out what you typed.",
+            "We keep no record of what you searched, because for these checks there is no server of ours involved at all.",
         ).forEach { line ->
             Row(Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
                 Box(
@@ -318,13 +319,13 @@ private fun PrivacyPage() {
                 .bracketFrame(t.warn.copy(alpha = 0.6f))
                 .padding(15.dp),
         ) {
-            Text("Use it on people, carefully", style = MaterialTheme.typography.titleSmall)
+            Text("Be careful with what you find", style = MaterialTheme.typography.titleSmall)
             Spacer(Modifier.height(6.dp))
             Text(
-                "Accounts sharing a handle often belong to different people, and a " +
-                    "match is evidence rather than proof. MyRecon shows you how " +
-                    "confident it is and why — read that before you conclude anything " +
-                    "about a real person.",
+                "Plenty of people share the same username, so two accounts with the " +
+                    "same name are often two different people. MyRecon always tells " +
+                    "you how sure it is and why. Read that before you decide anything " +
+                    "about someone.",
                 style = MaterialTheme.typography.bodySmall,
                 color = t.textDim,
                 textAlign = TextAlign.Start,

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- QR widget.
+
+     A single tap target, and nothing else. A home screen widget cannot show a
+     camera preview, so what this buys is the two taps and the tab hunt between
+     standing in front of a code and pointing the phone at it — which is the
+     entire moment a QR scanner is wanted.
+
+     Every view here is a plain LinearLayout, ImageView or TextView. RemoteViews
+     supports no others, and a widget that throws in a launcher process is a
+     widget the user removes. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_qr_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="12dp"
+    android:background="@drawable/widget_qr_bg">
+
+    <ImageView
+        android:id="@+id/widget_qr_icon"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:padding="9dp"
+        android:background="@drawable/widget_qr_badge"
+        android:src="@drawable/ic_qr_widget"
+        android:contentDescription="@null" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_qr_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_qr_title"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#E8EEF7"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/widget_qr_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/widget_qr_subtitle"
+            android:textSize="11sp"
+            android:textColor="#8497A9"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+</LinearLayout>

@@ -36,10 +36,15 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aryan.myrecon.data.LinkSafety
+import com.aryan.myrecon.ui.components.ShareButton
+import com.aryan.myrecon.data.ReportText
+import com.aryan.myrecon.data.ReconStore
+import com.aryan.myrecon.data.HistoryEntry
 import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.ActionAdGateState
 import com.aryan.myrecon.ui.components.AdActionButton
@@ -56,6 +61,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
+import androidx.compose.ui.semantics.semantics
 
 sealed interface ScanState {
     data object Scanning : ScanState
@@ -63,9 +69,13 @@ sealed interface ScanState {
     data class Result(val report: LinkSafety.Report) : ScanState
 }
 
-class ScanViewModel : ViewModel() {
+class ScanViewModel(app: android.app.Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow<ScanState>(ScanState.Scanning)
     val state = _state.asStateFlow()
+
+    // Needed only to record the check into history; the analysis itself is
+    // entirely self-contained.
+    private val store = ReconStore(app)
 
     /** Guards against the analyser firing repeatedly while the code stays in frame. */
     private var busy = false
@@ -82,6 +92,25 @@ class ScanViewModel : ViewModel() {
                     signals = emptyList(), riskScore = 0,
                     verdict = LinkSafety.Verdict.Unknown, kind = LinkSafety.Kind.PlainText,
                     error = it.message,
+                )
+            }
+            runCatching {
+                val at = System.currentTimeMillis()
+                store.addHistory(
+                    HistoryEntry(
+                        id = "qr-$at",
+                        kind = "QR code",
+                        query = report.destination?.what ?: report.host ?: raw.take(60),
+                        at = at,
+                        headline = when {
+                            report.kind == LinkSafety.Kind.Payment -> "This code sends money"
+                            report.verdict == LinkSafety.Verdict.Safe -> "Looks legitimate"
+                            report.verdict == LinkSafety.Verdict.Caution -> "Be careful"
+                            report.verdict == LinkSafety.Verdict.Dangerous -> "Do not open this"
+                            else -> "Could not verify"
+                        },
+                        report = ReportText.forScan(report, at),
+                    )
                 )
             }
             _state.value = ScanState.Result(report)
@@ -148,9 +177,9 @@ private fun CameraRationale(onRequest: () -> Unit) {
         Text("Scan a QR code", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(10.dp))
         Text(
-            "MyRecon reads the code on your device and shows where the link actually goes " +
-                "before you open it — including how recently the domain was registered, which " +
-                "is the clearest sign of a scam.",
+            "Point your camera at a QR code and MyRecon will tell you where it really " +
+                "goes before you open it — what the page is, and whether the website is " +
+                "brand new, which is the clearest warning sign of a scam.",
             style = MaterialTheme.typography.bodyMedium,
             color = t.textDim,
         )
@@ -327,11 +356,14 @@ private fun ScanResult(
         LinkSafety.Verdict.Dangerous -> t.danger
         LinkSafety.Verdict.Unknown -> t.textMute
     }
-    val headline = when (r.verdict) {
-        LinkSafety.Verdict.Safe -> "Looks legitimate"
-        LinkSafety.Verdict.Caution -> "Be careful"
-        LinkSafety.Verdict.Dangerous -> "Do not open this"
-        LinkSafety.Verdict.Unknown -> "Could not verify"
+    val headline = when {
+        // A payment code is not "be careful", it is "this moves money" — and
+        // the destination is a person's bank account, not a web page.
+        r.kind == LinkSafety.Kind.Payment -> "This sends money"
+        r.verdict == LinkSafety.Verdict.Safe -> "Looks legitimate"
+        r.verdict == LinkSafety.Verdict.Caution -> "Be careful"
+        r.verdict == LinkSafety.Verdict.Dangerous -> "Do not open this"
+        else -> "Could not verify"
     }
 
     Column(
@@ -354,11 +386,50 @@ private fun ScanResult(
                     .padding(18.dp),
             ) {
                 Text(headline, style = MaterialTheme.typography.headlineSmall, color = tint)
+
+                // What it opens, in words, before the URL. Someone scanning a
+                // code wants "a YouTube video" or "a Google Form asking for
+                // your details" — the host is only useful to people who read
+                // URLs for a living.
+                r.destination?.let { d ->
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        d.what,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    d.title?.let { title ->
+                        Text(
+                            "“$title”",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = t.textDim,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+
+                r.payee?.let { pay ->
+                    Spacer(Modifier.height(10.dp))
+                    DataList(
+                        buildList {
+                            add("Paying" to (pay.name ?: "Not stated"))
+                            add("To account" to pay.address)
+                            add(
+                                "Amount" to (pay.amount
+                                    ?.let { listOfNotNull(pay.currency, it).joinToString(" ") }
+                                    ?: "You choose"),
+                            )
+                            pay.note?.let { add("Note" to it) }
+                        }
+                    )
+                }
+
                 Spacer(Modifier.height(8.dp))
                 Text(
                     r.host ?: r.scanned.take(90),
                     style = MonoStyle,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = t.textDim,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -384,7 +455,9 @@ private fun ScanResult(
                         .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.surface)
                         .border(1.dp, t.border, RoundedCornerShape(12.dp))
-                        .padding(13.dp),
+                        .padding(13.dp)
+                    // Read as a single item: label then explanation.
+                    .semantics(mergeDescendants = true) {},
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
@@ -403,11 +476,11 @@ private fun ScanResult(
         }
 
         if (r.redirectChain.size > 1) {
-            SectionLabel("Redirect chain · ${r.redirectChain.size} hops")
+            SectionLabel("It passed through ${r.redirectChain.size} addresses")
             DataList(r.redirectChain.mapIndexed { i, u -> "${i + 1}" to u })
         }
 
-        SectionLabel("Raw content")
+        SectionLabel("The details")
         DataList(
             listOfNotNull(
                 "Type" to r.kind.name,
@@ -418,6 +491,13 @@ private fun ScanResult(
         )
 
         Spacer(Modifier.height(18.dp))
+        ShareButton(
+            subject = "QR code check",
+            body = ReportText.forScan(r),
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(Modifier.height(10.dp))
         // Gated: this scan's verdict is already on screen, and this is the
         // next one.
         AdActionButton(
@@ -429,7 +509,8 @@ private fun ScanResult(
 
         Spacer(Modifier.height(10.dp))
         Text(
-            "MyRecon does not open links for you. If you trust this one, copy it deliberately.",
+            "MyRecon will never open a link for you. If you decide to trust this one, " +
+                "copy it across yourself.",
             style = MaterialTheme.typography.bodySmall,
             color = t.textMute,
         )

@@ -82,6 +82,9 @@ data class SweepResult(
 sealed interface LookupState {
     data object Idle : LookupState
 
+    /** No usable connection. Distinct from a failure — nothing was attempted. */
+    data object Offline : LookupState
+
     data class Running(
         val phase: String,
         val detail: String,
@@ -178,6 +181,14 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
         val q = _query.value.trim()
         if (q.isEmpty()) return
         val t = _tool.value
+
+        // Fail in a second rather than in four minutes. Every lookup here needs
+        // the network, and without it the sweep would work through 284
+        // platforms collecting one timeout each while a progress bar crawled.
+        if (!Connectivity.isOnline(getApplication())) {
+            _state.value = LookupState.Offline
+            return
+        }
 
         job?.cancel()
         job = viewModelScope.launch {
@@ -290,21 +301,33 @@ class LookupViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     // Persist before publishing, so the result is already
                     // recoverable by the time the user can act on it.
+                    // Only real findings are persisted. Unverified hits are
+                    // carried in the result so the screen can show them under
+                    // its "not evidence" heading, but writing them here would
+                    // pad the cleanup checklist and the home screen widget
+                    // with accounts that were never found.
+                    val saved = ev.hits.filter { it.exists }.map {
+                        SavedProfile(
+                            platform = it.platform.name,
+                            category = it.platform.category,
+                            url = it.url,
+                            confidence = it.confidence,
+                            avatar = it.avatar,
+                            displayName = it.displayName,
+                        )
+                    }
                     runCatching {
-                        store.saveScan(
-                            SavedScan(
-                                handle = q,
-                                at = System.currentTimeMillis(),
-                                profiles = ev.hits.map {
-                                    SavedProfile(
-                                        platform = it.platform.name,
-                                        category = it.platform.category,
-                                        url = it.url,
-                                        confidence = it.confidence,
-                                        avatar = it.avatar,
-                                        displayName = it.displayName,
-                                    )
-                                },
+                        val at = System.currentTimeMillis()
+                        store.saveScan(SavedScan(handle = q, at = at, profiles = saved))
+                        store.addHistory(
+                            HistoryEntry(
+                                id = "sweep-$at",
+                                kind = "Username",
+                                query = "@$q",
+                                at = at,
+                                headline = if (saved.isEmpty()) "No accounts found"
+                                else "${saved.size} accounts found",
+                                report = ReportText.forSweep(q, saved, at),
                             )
                         )
                     }

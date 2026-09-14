@@ -155,7 +155,7 @@ fun VerifiedIdentity(id: KeybaseIntel.Identity) {
             if (id.avatar != null) {
                 SubcomposeAsyncImage(
                     model = id.avatar,
-                    contentDescription = null,
+                    contentDescription = "Profile picture",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.size(42.dp).clip(RoundedCornerShape(12.dp)),
                     loading = { PlatformTile("Keybase", "Messaging", size = 42) },
@@ -216,7 +216,7 @@ fun VerifiedIdentity(id: KeybaseIntel.Identity) {
                     )
                     Icon(
                         Icons.AutoMirrored.Filled.OpenInNew,
-                        contentDescription = null,
+                        contentDescription = "Opens in your browser",
                         tint = t.textMute,
                         modifier = Modifier.size(14.dp),
                     )
@@ -354,6 +354,7 @@ fun UsernameView(
                     p,
                     status = statusOf(p),
                     onStatus = { onCleanup(p, it) },
+                    handle = handle,
                 ) { uriHandler.openUri(p.url) }
             }
             Spacer(Modifier.height(8.dp))
@@ -400,6 +401,7 @@ fun UsernameView(
                 p,
                 status = statusOf(p),
                 onStatus = { onCleanup(p, it) },
+                handle = handle,
             ) { uriHandler.openUri(p.url) }
             Spacer(Modifier.height(8.dp))
         }
@@ -438,6 +440,8 @@ private fun ProfileCard(
     p: Profile,
     status: ReconStore.Cleanup = ReconStore.Cleanup.Todo,
     onStatus: (ReconStore.Cleanup) -> Unit = {},
+    /** The handle that was searched, so an erasure request can name it. */
+    handle: String? = null,
     onOpen: () -> Unit,
 ) {
     val t = LocalReconTokens.current
@@ -506,6 +510,9 @@ private fun ProfileCard(
 
         Spacer(Modifier.height(10.dp))
         CleanupControl(state = status, onChange = onStatus)
+        // Collapsed by default. A sweep can return seventy accounts, and two
+        // extra buttons on every row would bury the findings.
+        RemovalHelp(platform = p.platform, accountUrl = p.url, handle = handle)
     }
 }
 
@@ -590,7 +597,7 @@ private fun Avatar(url: String?, platform: String, category: String) {
     }
     SubcomposeAsyncImage(
         model = url,
-        contentDescription = null,
+        contentDescription = "$platform profile picture",
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .size(40.dp)

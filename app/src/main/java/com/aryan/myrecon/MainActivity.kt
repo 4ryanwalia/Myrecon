@@ -1,9 +1,12 @@
 package com.aryan.myrecon
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.NewReleases
@@ -34,6 +38,7 @@ import com.aryan.myrecon.ui.LocalHaptics
 import com.aryan.myrecon.ui.components.AdBanner
 import com.aryan.myrecon.ui.rememberHaptics
 import com.aryan.myrecon.ui.screens.BreachesScreen
+import com.aryan.myrecon.ui.screens.HistoryScreen
 import com.aryan.myrecon.ui.screens.ImageScreen
 import com.aryan.myrecon.data.ReconStore
 import com.aryan.myrecon.ui.screens.LookupScreen
@@ -44,17 +49,57 @@ import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.ui.theme.MyReconTheme
 import kotlinx.coroutines.launch
 
+/** A tab asked for from outside the app, with the tap that asked for it. */
+private data class TabRequest(val tab: String, val nonce: Long)
+
 class MainActivity : ComponentActivity() {
+
+    /**
+     * The tab the launching intent asked for, if any.
+     *
+     * The nonce is what makes a second tap on the widget count. Without it a
+     * repeat request carries the same value, the effect that applies it never
+     * re-runs, and the widget silently stops working once the user has
+     * navigated away from Scan.
+     */
+    private var tabRequest by mutableStateOf<TabRequest?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tabRequest = intent?.toTabRequest()
+
+        // Start CameraX before Compose rather than after it. The provider is a
+        // process singleton behind a future, and asking for it here means it
+        // initialises alongside the first frame instead of waiting for the
+        // viewfinder to be composed — which is most of the pause between
+        // tapping the widget and seeing the camera.
+        if (tabRequest?.tab == TAB_SCAN) {
+            runCatching { ProcessCameraProvider.getInstance(this) }
+        }
+
         enableEdgeToEdge()
         setContent {
             // One Haptics instance for the whole tree — screens reach for it
             // through LocalHaptics rather than each resolving the Vibrator.
             CompositionLocalProvider(LocalHaptics provides rememberHaptics()) {
-                MyReconTheme { MyReconApp() }
+                MyReconTheme { MyReconApp(tabRequest) }
             }
         }
+    }
+
+    /** Fired when the widget is tapped while the app is already running. */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        intent.toTabRequest()?.let { tabRequest = it }
+    }
+
+    private fun Intent.toTabRequest(): TabRequest? =
+        getStringExtra(EXTRA_TAB)?.let { TabRequest(it, SystemClock.uptimeMillis()) }
+
+    companion object {
+        const val EXTRA_TAB = "com.aryan.myrecon.extra.TAB"
+        const val TAB_SCAN = "scan"
     }
 }
 
@@ -66,10 +111,31 @@ private enum class Destination(val label: String, val icon: ImageVector) {
     Password("Password", Icons.Filled.Lock),
 }
 
+private fun destinationFor(tab: String?): Destination? = when (tab) {
+    MainActivity.TAB_SCAN -> Destination.Scan
+    else -> null
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MyReconApp() {
-    var current by rememberSaveable { mutableStateOf(Destination.Lookup) }
+private fun MyReconApp(request: TabRequest?) {
+    // Resolved in the initialiser, not in an effect. An effect would compose
+    // Lookup for a frame first, so a widget tap would flash the wrong screen
+    // on the way to the one it asked for.
+    var current by rememberSaveable {
+        mutableStateOf(destinationFor(request?.tab) ?: Destination.Lookup)
+    }
+
+    // Which request that initialiser already honoured. Saved, so a rotation
+    // does not read the launching intent a second time and yank the user back
+    // to Scan from wherever they have since navigated.
+    var appliedNonce by rememberSaveable { mutableLongStateOf(request?.nonce ?: 0L) }
+    LaunchedEffect(request) {
+        if (request == null || request.nonce == appliedNonce) return@LaunchedEffect
+        appliedNonce = request.nonce
+        destinationFor(request.tab)?.let { current = it }
+    }
+
     val t = LocalReconTokens.current
     val context = LocalContext.current
     val store = remember(context) { ReconStore(context.applicationContext) }
@@ -84,6 +150,11 @@ private fun MyReconApp() {
     // without clearing the stored flag.
     var showIntro by rememberSaveable { mutableStateOf(false) }
 
+    // History is a whole screen rather than a sixth tab. It is something people
+    // reach for occasionally, and a permanent tab would cost a fifth of the
+    // navigation bar for it.
+    var showHistory by rememberSaveable { mutableStateOf(false) }
+
     // Each of these returns. A `when` that only emits and falls through would
     // draw the whole app underneath for a frame before the intro replaced it,
     // which is a visible flash of the thing the intro exists to explain.
@@ -96,6 +167,10 @@ private fun MyReconApp() {
             showIntro = false
             scope.launch { store.setOnboarded(true) }
         })
+        return
+    }
+    if (showHistory) {
+        HistoryScreen(onClose = { showHistory = false })
         return
     }
 
@@ -121,6 +196,13 @@ private fun MyReconApp() {
                     }
                 },
                 actions = {
+                    IconButton(onClick = { showHistory = true }) {
+                        Icon(
+                            Icons.Filled.History,
+                            contentDescription = "Your past checks",
+                            tint = t.textDim,
+                        )
+                    }
                     IconButton(onClick = { showIntro = true }) {
                         Icon(
                             Outlined.HelpOutline,

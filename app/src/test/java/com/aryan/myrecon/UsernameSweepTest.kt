@@ -62,9 +62,13 @@ class UsernameSweepTest {
         )
         // Under two minutes is the bar for something a person waits on.
         assertTrue("sweep took too long: ${elapsed}ms", elapsed < 120_000)
-        // High-confidence hits must sort first.
-        val bands = hits.map { it.confidence }
-        assertEquals(bands.sortedByDescending { it == "high" }, bands)
+        // High-confidence hits must sort first — but *after* the pinned
+        // platforms, which lead the list on purpose. While the reward gate is
+        // locked only the first account in each category is shown, so Instagram
+        // heads Social whatever its confidence; asserting a plain
+        // confidence-first order would be asserting that pinning is a bug.
+        val tail = hits.dropWhile { it.platform.name in UsernameSweep.PINNED }.map { it.confidence }
+        assertEquals(tail.sortedByDescending { it == "high" }, tail)
     }
 
     @Test

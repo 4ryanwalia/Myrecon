@@ -23,6 +23,8 @@ import com.aryan.myrecon.ui.theme.LocalReconTokens
 import com.aryan.myrecon.work.BreachWatchWorker
 import com.aryan.myrecon.work.HandleWatchWorker
 import kotlinx.coroutines.launch
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 
 /**
  * Offers to keep watching a handle after a sweep has run.
@@ -104,6 +106,9 @@ fun HandleWatchCard(handle: String, modifier: Modifier = Modifier) {
                 )
             }
             Switch(
+                modifier = Modifier.semantics {
+                    contentDescription = "Watch @$clean for new accounts"
+                },
                 checked = on,
                 onCheckedChange = { want ->
                     haptics.tap()

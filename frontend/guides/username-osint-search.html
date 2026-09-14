@@ -3,33 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Username OSINT: How to Find Accounts Across Platforms — MyRecon</title>
-  <meta name="description" content="How username enumeration works across social and developer platforms, why a match isn't proof, and how to verify a profile with confidence signals.">
+  <title>Username OSINT: Find Accounts Across Platforms | MyRecon</title>
+  <meta name="description" content="How username enumeration works across social and developer platforms, why a match is not proof of identity, and how to verify a profile with confidence signals.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
-  <link rel="canonical" href="https://myrecon.xyz/guides/username-osint-search.html">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/username-osint-search.html">
+
+  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Username OSINT: How to Find Accounts Across Platforms">
   <meta property="og:description" content="How username enumeration works, why 'found' isn't proof, and how to verify a match.">
-  <meta property="og:url" content="https://myrecon.xyz/guides/username-osint-search.html">
-  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/username-osint-search.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Username OSINT: How to Find Accounts Across Platforms">
+  <meta name="twitter:description" content="How username enumeration works, why 'found' isn't proof, and how to verify a match.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"Username OSINT: How to Find Accounts Across Platforms","description":"How username enumeration works and how to verify a match with confidence.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/username-osint-search.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"Username OSINT: How to Find Accounts Across Platforms","description":"How username enumeration works and how to verify a match with confidence.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/username-osint-search.html"}
   </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Username OSINT: Find Accounts Across Platforms","item":"https://www.myrecon.xyz/guides/username-osint-search.html"}],"@context":"https://schema.org"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -105,6 +125,15 @@
       <h2>Turning a username into a fuller picture</h2>
       <p>A confirmed profile often exposes the next lead: a personal website, a public email, or another handle. That is where pivoting matters — a discovered domain becomes a WHOIS and DNS lookup, an email becomes a breach and provider check. Chaining these small, verified steps is what separates a genuine investigation from a list of guesses.</p>
 
+            <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that never existed</a></li>
+        <li><a href="/guides/verify-an-osint-finding.html">how to verify an OSINT finding before you act on it</a></li>
+        <li><a href="/guides/what-http-responses-reveal.html">what a site's HTTP response really tells you</a></li>
+        <li><a href="/deep-search.html">run a username across 100+ platforms in Deep Search</a></li>
+        <li><a href="/guides/reverse-image-search.html">how to trace a photograph back to where it came from</a></li>
+      </ul>
+
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
     </article>
   </main>
@@ -115,8 +144,8 @@
       <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=8"></script>
-  <script src="/assets/js/config.js?v=8"></script>
-  <script src="/assets/js/app.js?v=8"></script>
+  <script src="/assets/js/env.js?v=9"></script>
+  <script src="/assets/js/config.js?v=9"></script>
+  <script src="/assets/js/app.js?v=9"></script>
 </body>
 </html>

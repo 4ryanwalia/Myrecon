@@ -3,33 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Why Username Checkers Report Accounts That Don't Exist — MyRecon</title>
-  <meta name="description" content="We measured what 24 platforms return for a real handle and an invented one. On several, the responses are byte-for-byte identical — which is why username search tools report accounts that were never there.">
+  <title>Why Username Checkers Report Fake Accounts | MyRecon</title>
+  <meta name="description" content="We measured what 24 platforms return for a real handle and an invented one. On several the responses are identical — which is why checkers invent accounts.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
-  <link rel="canonical" href="https://myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html">
+
+  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Why Username Checkers Report Accounts That Don't Exist">
   <meta property="og:description" content="Measured evidence from 24 platforms: where the false positives come from, and how to tell a real hit from a page that answers everyone.">
-  <meta property="og:url" content="https://myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html">
-  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Why Username Checkers Report Accounts That Don't Exist">
+  <meta name="twitter:description" content="Measured evidence from 24 platforms: where the false positives come from, and how to tell a real hit from a page that answers everyone.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"Why Username Checkers Report Accounts That Don't Exist","description":"Measured evidence from 24 platforms on where username-search false positives come from.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-06","mainEntityOfPage":"https://myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"Why Username Checkers Report Accounts That Don't Exist","description":"Measured evidence from 24 platforms on where username-search false positives come from.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-06","mainEntityOfPage":"https://www.myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html"}
   </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Why Username Checkers Report Fake Accounts","item":"https://www.myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html"}],"@context":"https://schema.org"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -115,13 +135,21 @@ duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0     
       <p>MyRecon reports its results by confidence and tells you which platforms it checked but could not confirm, including the reason each one gave. Run your own handle, then run a string of nonsense, and compare — that comparison is the honest measure of any tool in this category, including ours.</p>
       <p><a href="/#tool" style="color:var(--accent)">Run a username search →</a></p>
 
+            <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/what-http-responses-reveal.html">what a site's HTTP response really tells you</a></li>
+        <li><a href="/guides/verify-an-osint-finding.html">how to verify an OSINT finding before you act on it</a></li>
+        <li><a href="/guides/username-osint-search.html">finding accounts across platforms from a single username</a></li>
+        <li><a href="/deep-search.html">how Deep Search scores the evidence behind a match</a></li>
+      </ul>
+
       <p style="margin-top:30px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
     </article>
   </main>
 
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon · myrecon.xyz</span><span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a></span></div></div></footer>
-  <script src="/assets/js/env.js?v=8"></script>
-  <script src="/assets/js/config.js?v=8"></script>
-  <script src="/assets/js/app.js?v=8"></script>
+  <script src="/assets/js/env.js?v=9"></script>
+  <script src="/assets/js/config.js?v=9"></script>
+  <script src="/assets/js/app.js?v=9"></script>
 </body>
 </html>

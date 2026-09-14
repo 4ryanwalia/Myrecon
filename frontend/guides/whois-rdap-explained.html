@@ -3,33 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WHOIS and RDAP Explained: Who Owns a Domain? — MyRecon</title>
-  <meta name="description" content="Understand a domain's registration record: registrar, creation and expiry dates, DNSSEC, status codes, and nameservers — and why RDAP is replacing WHOIS.">
+  <title>WHOIS and RDAP Explained: Who Owns a Domain? | MyRecon</title>
+  <meta name="description" content="Understand a domain's registration record: registrar, creation and expiry dates, DNSSEC, status codes and nameservers — and why RDAP is replacing WHOIS.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
-  <link rel="canonical" href="https://myrecon.xyz/guides/whois-rdap-explained.html">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/whois-rdap-explained.html">
+
+  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="WHOIS and RDAP Explained: Who Owns a Domain?">
   <meta property="og:description" content="Read a domain's registration record and understand why RDAP is replacing WHOIS.">
-  <meta property="og:url" content="https://myrecon.xyz/guides/whois-rdap-explained.html">
-  <meta property="og:image" content="https://myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/whois-rdap-explained.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WHOIS and RDAP Explained: Who Owns a Domain?">
+  <meta name="twitter:description" content="Read a domain's registration record and understand why RDAP is replacing WHOIS.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"WHOIS and RDAP Explained: Who Owns a Domain?","description":"Read a domain registration record and understand why RDAP is replacing WHOIS.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://myrecon.xyz/guides/whois-rdap-explained.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"WHOIS and RDAP Explained: Who Owns a Domain?","description":"Read a domain registration record and understand why RDAP is replacing WHOIS.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/whois-rdap-explained.html"}
   </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"WHOIS and RDAP Explained: Who Owns a Domain?","item":"https://www.myrecon.xyz/guides/whois-rdap-explained.html"}],"@context":"https://schema.org"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -71,6 +91,13 @@
       <h2>Putting it to use</h2>
       <p>A practical way to read a registration record: check the creation date against the site's claims, confirm the registrar and nameservers look consistent with a real business, and note whether DNSSEC and transfer locks are in place. Combined with the domain's DNS records and the geolocation of its server, you get a quick, evidence-based read on whether a domain is what it claims to be — useful for spotting phishing sites, verifying a company, or simply understanding infrastructure.</p>
 
+            <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/dns-records-explained.html">what each DNS record type actually does</a></li>
+        <li><a href="/guides/investigate-a-domain.html">a repeatable way to investigate a domain you don't trust</a></li>
+        <li><a href="/guides/ip-geolocation-reverse-dns.html">what an IP address and its reverse DNS actually reveal</a></li>
+      </ul>
+
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
     </article>
   </main>
@@ -81,8 +108,8 @@
       <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=8"></script>
-  <script src="/assets/js/config.js?v=8"></script>
-  <script src="/assets/js/app.js?v=8"></script>
+  <script src="/assets/js/env.js?v=9"></script>
+  <script src="/assets/js/config.js?v=9"></script>
+  <script src="/assets/js/app.js?v=9"></script>
 </body>
 </html>

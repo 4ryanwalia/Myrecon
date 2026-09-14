@@ -58,6 +58,22 @@ object PlatformCatalogue {
         "Reddit" to ("https://www.reddit.com/user/{username}/about.json" to emptyMap()),
     )
 
+    /**
+     * Removed on purpose, so they do not get pasted back in from a public
+     * platform list: Bluesky, Xanga, Ko-fi (all three entries) and DLive.
+     *
+     * Each answers 200 with a generic marketing page for any handle at all —
+     * checked against unregistered twelve-character handles, zero mentions of
+     * the name, titles like "Ko-fi | Make money doing what you love". They
+     * cannot report an account missing, so every result they produced was
+     * noise on every search. DLive's own page reads "DLive Service
+     * Discontinued" and Xanga serves "Xanga 2.0 is Here!", so two of them are
+     * not really running any more either.
+     *
+     * Dropped rather than marked unverified because an unverified result is
+     * still a row on the screen, and a row that is wrong every single time is
+     * worth less than no row.
+     */
     val ALL: List<PlatformDef> = buildList {
         addAll(group("Social",
             P("Twitter / X", "https://x.com/{username}", 200),
@@ -71,7 +87,6 @@ object PlatformCatalogue {
             P("VK", "https://vk.com/{username}", 200),
             P("Mastodon", "https://mastodon.social/@{username}", 200),
             P("Threads", "https://www.threads.net/@{username}", 200),
-            P("Bluesky", "https://bsky.app/profile/{username}.bsky.social", 200),
             P("Micro.blog", "https://micro.blog/{username}", 200),
             P("Minds", "https://www.minds.com/{username}", 200),
             P("Gab", "https://gab.com/{username}", 200),
@@ -99,7 +114,6 @@ object PlatformCatalogue {
             P("Tapatalk", "https://www.tapatalk.com/groups/u/{username}", 200),
             P("Houzz", "https://www.houzz.com/user/{username}", 200),
             P("Care2", "https://www.care2.com/c2c/people/profile.html?pid={username}", 200),
-            P("Xanga", "https://{username}.xanga.com", 200),
         ))
         addAll(group("Professional",
             P("LinkedIn", "https://www.linkedin.com/in/{username}", 200),
@@ -210,7 +224,6 @@ object PlatformCatalogue {
             P("Bio.link", "https://bio.link/{username}", 200),
             P("Beacons", "https://beacons.ai/{username}", 200),
             P("Buymeacoffee", "https://buymeacoffee.com/{username}", 200),
-            P("Ko-fi", "https://ko-fi.com/{username}", 200),
             P("Patreon", "https://www.patreon.com/{username}", 200),
             P("Gumroad", "https://gumroad.com/{username}", 200),
             P("Notion", "https://{username}.notion.site", 200),
@@ -264,7 +277,6 @@ object PlatformCatalogue {
             P("BitChute", "https://www.bitchute.com/channel/{username}/", 200),
             P("Vidlii", "https://www.vidlii.com/user/{username}", 200),
             P("Trovo", "https://trovo.live/{username}", 200),
-            P("DLive", "https://dlive.tv/{username}", 200),
             P("Caffeine", "https://www.caffeine.tv/{username}", 200),
         ))
         addAll(group("Audio",
@@ -296,7 +308,6 @@ object PlatformCatalogue {
             P("Pixiv", "https://www.pixiv.net/en/users/{username}", 200),
             P("Newgrounds", "https://{username}.newgrounds.com", 200),
             P("Cara", "https://cara.app/{username}", 200),
-            P("Ko-fi Shop", "https://ko-fi.com/{username}/shop", 200),
             P("Redbubble", "https://www.redbubble.com/people/{username}/shop", 200),
             P("Society6", "https://society6.com/{username}", 200),
             P("Threadless", "https://{username}.threadless.com", 200),
@@ -390,7 +401,6 @@ object PlatformCatalogue {
             P("Topmate", "https://topmate.io/{username}", 200),
             P("Cameo", "https://www.cameo.com/{username}", 200),
             P("OnlyFans", "https://onlyfans.com/{username}", 200),
-            P("Ko-fi Page", "https://ko-fi.com/{username}/gallery", 200),
         ))
 
         // ── Requested coverage expansion ──────────────────────────────
@@ -462,6 +472,32 @@ object PlatformCatalogue {
         // catalogue, but a result from them is not evidence, so they are
         // labelled unverified and filtered out of the visible results.
         "BitChute", "Kik", "Nextdoor", "WordPress",
+        // Both render their profiles entirely in the browser, so the HTML is
+        // byte-for-byte the same shell whichever handle is asked for. Measured
+        // rather than assumed: thingiverse.com/makerbot and a nonsense handle
+        // both answer 200, both redirect to /<handle>/designs, and both carry
+        // the title "Thingiverse - The community for Open Hardware";
+        // topcoder.com/members/tourist and a nonsense handle are likewise
+        // identical, both titled just "Topcoder". Nothing in either response
+        // separates a real member from a missing one.
+        "Thingiverse", "Topcoder",
+        // Same shape: faceit.com/en/players/s1mple and a nonsense handle both
+        // return the identical Next.js shell titled "FACEIT.com", and when
+        // Cloudflare is not challenging, that shell mentions the handle.
+        "Faceit",
+        // Confirmed against two unregistered twelve-character handles: BeReal
+        // returns 200 with the page titled "<handle> on BeReal." and the name
+        // repeated seventeen times, and Naver answers 200 echoing the handle.
+        // Both therefore scored medium — "likely this person" — for every
+        // handle ever searched, which is the worst kind of wrong this app can
+        // be.
+        "BeReal", "Naver",
+        // Weibo answers inconsistently from outside China — 302 to an empty
+        // body on one request, real content on the next — and it has twice
+        // produced a confident match for a handle nobody owns. It is kept in
+        // the catalogue because it works for the people it is for, but it is
+        // in no position to claim a match, so it reports unverified.
+        "Weibo",
     )
 
     val size: Int get() = ALL.size
