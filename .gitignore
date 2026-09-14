@@ -29,13 +29,26 @@ node_modules/
 *.swp
 *.swo
 
-# Android / Gradle
+# ── Android app — laptop-only, never on GitHub ───────────────────
+# This repo ships the website only: backend/ (Render) + frontend/ (Vercel).
+# The MyRecon Android app lives in this same working folder for convenience,
+# but it is deliberately NOT tracked here. Keep those files — they are the
+# only copy — just don't commit them. The frontend pages that advertise the
+# app (frontend/app.html, app-ads.txt) are website files and stay tracked.
+/app/
+/gradle/
+/gradlew
+/gradlew.bat
+/build.gradle.kts
+/settings.gradle.kts
+/gradle.properties
+/play-store/
+
 # local.properties holds this machine's SDK path and must never be committed —
 # Android Studio regenerates it per developer.
 local.properties
 .gradle/
 build/
-app/build/
 *.apk
 *.aab
 captures/
