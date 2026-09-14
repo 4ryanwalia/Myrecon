@@ -79,17 +79,31 @@ object ReportText {
     ): String = buildString {
         append(header("What this photo reveals", "Photo: ${name ?: "(no file name)"}", at))
 
-        val origin = when (report.provenance.origin) {
-            ImageProvenance.Origin.DeclaredAiGenerated -> "The file says it was made by AI"
-            ImageProvenance.Origin.DeclaredAiEdited -> "The file says AI made part of it"
-            ImageProvenance.Origin.DeclaredCapture -> "The file says a camera took it"
-            ImageProvenance.Origin.Undeclared ->
-                "The file does not say whether AI made it. That is not proof either way — " +
-                    "the label is removed by screenshots and by most social media uploads."
-        }
+        val origin = report.origin
         appendLine("Was this made by AI?")
-        appendLine("  $origin")
-        report.provenance.generator?.let { appendLine("  Made with: $it") }
+        appendLine("  ${origin.headline}")
+        report.provenance.generator?.let { appendLine("  Tool named: $it") }
+        appendLine()
+        // The reasoning travels with the verdict. A one-line answer pasted into
+        // a chat is exactly the thing this app exists to argue against, and a
+        // reader who can see the clues can disagree with them.
+        if (origin.towardAi.isNotEmpty()) {
+            appendLine("  Pointing at a generator:")
+            origin.towardAi.forEach { appendLine("    • ${it.text} — ${it.why}") }
+        }
+        if (origin.towardCamera.isNotEmpty()) {
+            appendLine("  Pointing at a real camera:")
+            origin.towardCamera.forEach { appendLine("    • ${it.text} — ${it.why}") }
+        }
+        if (origin.explained.isNotEmpty()) {
+            appendLine("  Ruled out:")
+            origin.explained.forEach { appendLine("    • ${it.text} — ${it.why}") }
+        }
+        appendLine()
+
+        appendLine("Has it been edited?")
+        appendLine("  ${editedLine(origin.touched)}")
+        origin.edits.forEach { appendLine("    • ${it.text} — ${it.why}") }
         appendLine()
 
         if (report.leaks.isNotEmpty()) {
@@ -127,6 +141,14 @@ object ReportText {
         appendLine("File fingerprint (SHA-256):")
         appendLine("  ${report.file.sha256}")
         append(footer())
+    }
+
+    private fun editedLine(touched: OriginCheck.Touched): String = when (touched) {
+        OriginCheck.Touched.Declared -> "Yes — the file names what changed it"
+        OriginCheck.Touched.Likely -> "Yes — the picture itself carries the traces"
+        OriginCheck.Touched.ReSaved -> "It has been squashed and saved again since it was made"
+        OriginCheck.Touched.NoSign -> "No sign of it"
+        OriginCheck.Touched.Unknown -> "Nothing in the file says either way"
     }
 
     /** A scanned code, with the reasoning that produced the verdict. */
