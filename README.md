@@ -1,7 +1,7 @@
 # MyRecon — OSINT Intelligence Platform
 
 **myrecon.xyz** — a fast, accurate, privacy-respecting open-source intelligence
-platform. Search usernames across 100+ platforms, analyse emails and breach
+platform. Search usernames across **123 platforms**, analyse emails and breach
 exposure, investigate domains, DNS and IP addresses, and read a photograph's own
 metadata — all from free, keyless public sources.
 
@@ -21,6 +21,15 @@ implementation and cannot drift apart.
 
 > **The Android app is not in this repository.** This repo is the website and
 > the terminal client. The app is developed separately and is not tracked here.
+
+<p align="center">
+  <img src="docs/cli-username-scan.png" width="900"
+       alt="MyRecon in a terminal: a username sweep reporting 25 confirmed profiles out of 123 platforms checked, as a table of platform, detail and URL.">
+</p>
+
+<p align="center">
+  <em>One handle, 123 platforms, no API key and no server — <code>python myrecon.py username &lt;handle&gt; --deep</code></em>
+</p>
 
 ---
 
@@ -78,7 +87,7 @@ requires an account, and no API key is needed to run the platform.
 
 | Capability | What it actually does | Where |
 | --- | --- | --- |
-| **Username search** | Checks 100+ platforms in parallel with per-platform validators to cut false positives, then enriches hits with avatars, bios and follower counts. Reports the platforms it checked and *rejected*, with the reason. | web, CLI, API |
+| **Username search** | Checks **123 platforms** in parallel — the first 50 in a fast scan, all 123 with `--deep` — using per-platform validators to cut false positives, then enriches hits with avatars, bios and follower counts. Reports the platforms it checked and *rejected*, with the reason. | web, CLI, API |
 | **Profile enrichment** | Fetches one profile's public detail from one platform — used when a client's own address gets refused and the server's does not. | web, CLI, API |
 | **Identity correlation** | Groups accounts that share a handle into clusters with a 0–100 confidence score and the factors behind it. | web, CLI, API |
 | **Investigation graph** | Builds an entity/relationship graph from a scan and writes a rule-based assessment over it. No language model is involved. | web, CLI, API |
@@ -148,7 +157,7 @@ progress goes to stderr so `--json` redirects cleanly to a file.
 
 | Command | What it does |
 | --- | --- |
-| `username <handle>` | Sweep 100+ platforms, enrich, correlate, report exposure. |
+| `username <handle>` | Sweep 123 platforms, enrich, correlate, report exposure. |
 | `name "<full name>"` | Full-name web search. *Needs a Google CSE key.* |
 | `email <address>` | Breach exposure, Gravatar, GitHub, address analysis. |
 | `domain <domain>` | Registration, DNS and hosting in one report. |
@@ -199,6 +208,14 @@ resolve them:
 ```bash
 python myrecon.py geo 51.5007 -0.1246
 ```
+
+<p align="center">
+  <img src="docs/cli-geo.png" width="880"
+       alt="MyRecon resolving coordinates in a terminal: Big Ben, Bridge Street, Westminster, with its Wikidata id, OpenStreetMap links and a 100/100 confidence score.">
+</p>
+
+Coordinates only. It reports what the GPS says, never what the picture looks
+like — see [Deliberately absent](#deliberately-absent).
 
 Pipe a scan into any JSON tool:
 
