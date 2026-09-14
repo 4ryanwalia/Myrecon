@@ -1,0 +1,7 @@
+<p>There is an unavoidable irony in a fraud prevention service losing its data, but the mechanism is the more interesting part. The records include both direct users of the service and people who simply placed orders with merchants that used it. Most of the second group had no idea the company existed, and no way to find out.</p>
+
+<p>This is what a verification layer does structurally: to check whether an order is fraudulent, it has to receive the order — the name, the address, the phone number, the partial card data. Hundreds of merchants send that in, and it accumulates in one place. The service is doing exactly what it was hired to do, and in doing so becomes a far more attractive target than any individual shop it protects.</p>
+
+<p>147 tables across 65GB also tells you something about how this data was kept. That is a warehouse, not a working set — years of retained transaction context long past the point where it could inform a fraud decision. The defensible version of this business holds each record for as long as the check requires and deletes it afterwards.</p>
+
+<p>For anyone in the file: the partial card data is not spendable, but it is persuasive. A caller who can recite the last four digits and your address sounds like your bank precisely because most people treat those details as proof. They are not proof; they are in this file.</p>

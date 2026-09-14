@@ -34,8 +34,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=2">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Combolists Posted to Telegram data breach — 361,468,099 accounts exposed","description":"On 28 May 2024, Combolists Posted to Telegram was breached. 361,468,099 accounts were exposed, including email addresses, passwords, usernames. MyRecon rates it 83/100 — critical.","datePublished":"2024-06-03","dateModified":"2024-06-11","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/telegramcombolists.html"}</script>
@@ -80,12 +80,20 @@
         <label for="bxEmail">Was your address in this breach?</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
-                 placeholder="you@example.com" required>
-          <button class="btn btn-sm" type="submit">Check free</button>
+                 placeholder="you@example.com" required aria-describedby="bxEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note">Checked against this breach and every other on record. Your address is not stored, and the check runs against public breach data only.</p>
+        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
+      <section class="bx-editorial">
+        <span class="bx-byline">MyRecon's take</span>
+<p>The detail that sets this collection apart from an ordinary password dump is in the description: in many cases the records include <em>the website the credentials were entered into</em>. That turns a list of email-and-password pairs into a targeting list — an attacker no longer has to spray a credential across a hundred services hoping for a match, because the file already says where it worked.</p>
+
+<p>The other half of the source is information-stealing malware, which changes what the data means for the person in it. Credentials harvested from an infected device were captured as they were typed. They can include accounts at sites that have never been breached, passwords created after every previous breach notification, and sessions from a browser's saved-password store in one sweep.</p>
+
+<p>So the honest read of an appearance here is: your password is known, possibly with the site it belongs to, and possibly because a machine you used was compromised rather than a company you trusted. Clean the device first if there is any chance it was the source. Then rotate credentials in order of what they can unlock — email before everything, because email resets everything.</p>
+      </section>
 
       <h2>What happened</h2>
       <div class="bx-source">
@@ -147,9 +155,11 @@
 
 
       <h2>Also in the archive</h2>
-      <ul class="bx-related"><li><a href="/breaches/demandscience.html">DemandScience by Pure Incubation</a> — 121,796,165 accounts</li><li><a href="/breaches/genesismarket.html">Genesis Market</a> — 8,000,000 accounts</li><li><a href="/breaches/eye4fraud.html">Eye4Fraud</a> — 16,000,591 accounts</li></ul>
+      <ul class="bx-related"><li><a href="/breaches/demandscience.html">DemandScience by Pure Incubation</a> — 121,796,165 accounts</li><li><a href="/breaches/hathway.html">Hathway</a> — 4,670,080 accounts</li><li><a href="/breaches/genesismarket.html">Genesis Market</a> — 8,000,000 accounts</li></ul>
+      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
-      <p class="bx-method">Severity is scored by MyRecon from the number of accounts, the sensitivity of the specific fields exposed, and whether the breach is confirmed — not by a language model. The description above is quoted from Have I Been Pwned; the analysis around it is ours.</p>
+
+      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself — every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
@@ -157,12 +167,13 @@
   <footer class="footer">
     <div class="container"><div class="footer-bottom">
       <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/app.js?v=9"></script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>

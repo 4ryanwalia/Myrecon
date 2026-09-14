@@ -22,6 +22,32 @@
   // ---------------------------------------------------------------- chrome
   function initChrome() {
     const apply = (t) => document.documentElement.setAttribute("data-theme", t);
+
+  /* Any URL that reaches an href or src attribute goes through here first.
+   *
+   * esc() makes a string safe to sit *inside* markup, but it has nothing to say
+   * about what the string means once it is there: "javascript:alert(1)" has no
+   * &<>"' in it, so it passes through esc() untouched and then runs on click.
+   * The URLs on this page are not all ours — avatar and profile links arrive in
+   * whatever a platform's API returned, and a Gravatar account link is filled
+   * in by whoever owns the Gravatar — so the scheme has to be checked rather
+   * than assumed.
+   *
+   * Anything that is not http(s) becomes "", which renders as a dead link
+   * instead of a live script.
+   */
+  const safeUrl = (u) => {
+    const raw = String(u ?? "").trim();
+    if (!raw) return "";
+    try {
+      // Resolved against the page so relative URLs keep working; the protocol
+      // check then sees what the browser would actually navigate to.
+      const parsed = new URL(raw, location.href);
+      return (parsed.protocol === "http:" || parsed.protocol === "https:") ? parsed.href : "";
+    } catch {
+      return "";
+    }
+  };
     const saved = localStorage.getItem(THEME_KEY);
     apply(saved || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
     $("#themeToggle")?.addEventListener("click", () => {
@@ -70,7 +96,7 @@
     const plat = a.platform || node.label || "";
     const initials = plat.slice(0, 2).toUpperCase();
     const avatar = a.avatar
-      ? `<img src="${esc(a.avatar)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+      ? `<img src="${esc(safeUrl(a.avatar))}" alt="" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.remove()">`
       : esc(initials);
 
@@ -84,7 +110,7 @@
         <div class="ds-av">${avatar}</div>
         <div class="ds-who">
           <div class="ds-plat">${esc(plat)}</div>
-          <div class="ds-url"><a href="${esc(a.url || "#")}" target="_blank" rel="noopener nofollow">${esc(a.url || "")}</a></div>
+          <div class="ds-url"><a href="${esc(safeUrl(a.url) || "#")}" target="_blank" rel="noopener nofollow">${esc(a.url || "")}</a></div>
           <div class="ds-why">${chips}</div>
         </div>
         <div class="ds-conf">

@@ -1,0 +1,91 @@
+<!--
+{
+  "headline": "SolarWinds, 2020: 18,000 organisations installed the backdoor themselves",
+  "seoTitle": "SolarWinds SUNBURST Hack 2020: How It Happened",
+  "subject": "SolarWinds supply chain attack",
+  "kicker": "2020 · Supply chain",
+  "description": "Attackers compromised SolarWinds' build system and shipped a backdoor inside a signed software update. Around 18,000 customers installed it. Fewer than 100 were the point.",
+  "cardBlurb": "The update was signed, the checksum matched and the vendor was reputable. Every control that was supposed to catch this passed it through.",
+  "records": "~18,000 organisations downloaded the backdoor",
+  "occurred": "September 2019 – June 2020",
+  "disclosed": "8 December 2020",
+  "vector": "Malicious code inserted into the SolarWinds Orion build pipeline and distributed as a digitally signed update",
+  "actor": "APT29 / Cozy Bear, attributed by the US government to Russia's SVR foreign intelligence service",
+  "cost": "Tens of millions in direct costs to SolarWinds; the SEC later sued the company and its security chief",
+  "exposed": ["Government and corporate email", "Internal network access", "Source code", "Authentication tokens"],
+  "sortDate": "2020-12-08",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["moveit-2023", "accellion-2021", "opm-2015"],
+  "faq": [
+    { "q": "Was SolarWinds a data breach?", "a": "Not in the usual sense. Almost no consumer records were stolen. What was stolen was access — to US federal departments, to security vendors, to technology companies — and in several cases email, source code and authentication material. It matters because it changed what the industry counts as a breach: the asset taken was a position inside other people's networks." },
+    { "q": "How many organisations were actually compromised?", "a": "Around 18,000 SolarWinds customers downloaded a trojanised Orion update. That number is usually quoted as the scale of the attack, and it overstates the damage. The backdoor only phoned home; the attackers then selected a much smaller set — commonly reported as fewer than 100 organisations — for hands-on intrusion. Everyone else had a dormant backdoor and a very bad month of incident response." },
+    { "q": "Who was behind the SolarWinds attack?", "a": "In April 2021 the US government formally attributed it to the SVR, Russia's foreign intelligence service. The industry tracks the same activity as APT29 or Cozy Bear. Russia denied involvement and no individual has been prosecuted." },
+    { "q": "What is SUNBURST?", "a": "SUNBURST is the name FireEye gave to the backdoor inserted into SolarWinds Orion. It was written to resemble ordinary Orion code, waited up to two weeks before activating, checked whether it was running inside a researcher's analysis environment, and disguised its command traffic as Orion's own telemetry protocol." }
+  ],
+  "sources": [
+    { "label": "FireEye (now Mandiant) — Highly Evasive Attacker Leverages SolarWinds Supply Chain", "url": "https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor", "note": "the original technical disclosure" },
+    { "label": "CISA Emergency Directive 21-01", "url": "https://www.cisa.gov/news-events/directives/ed-21-01-mitigate-solarwinds-orion-code-compromise", "note": "ordered federal agencies to disconnect Orion" },
+    { "label": "Joint statement by the FBI, CISA, ODNI and NSA attributing the campaign, January 2021" },
+    { "label": "SEC v. SolarWinds Corp. and Timothy G. Brown, filed October 2023", "note": "largely dismissed in July 2024" }
+  ]
+}
+-->
+<p class="lead">Every piece of security advice about software updates says the same thing: install them promptly, get them from the vendor, check the signature. In 2020, around 18,000 organisations did exactly that and installed a Russian intelligence backdoor. The update was genuine. It came from the real vendor, over the real update channel, signed with the real certificate. The compromise sat upstream of every control anyone had.</p>
+
+<h2>What happened</h2>
+
+<p>SolarWinds makes Orion, a network monitoring platform. Software of that kind occupies a particular position inside an organisation: to monitor a network it has to see the whole network, and to see the whole network it needs privileges almost nothing else is given. Orion was installed in US federal departments, across much of the Fortune 500, in telecoms operators, and in security companies.</p>
+
+<p>Some time around September 2019, attackers gained access to SolarWinds' software build environment. They did not tamper with the source repository in any way a developer would notice. They interfered with the build itself, so that when Orion was compiled the resulting binary contained code that was in nobody's checkout. The build system then did what build systems do: signed the output with SolarWinds' code-signing certificate and published it as an official release.</p>
+
+<p>Between March and June 2020, updates carrying that backdoor — named SUNBURST — went out to customers who had done nothing wrong except keep their software current.</p>
+
+<div class="callout">
+  <p><strong>Why a build system is the highest-value target in software.</strong> Source code gets reviewed, and a malicious commit has an author, a timestamp and a diff. A build system has none of that. It is the last point at which code is still changeable and the first point at which it is trusted, and its output inherits the vendor's signature automatically. Compromise it and you do not have to defeat code review, code signing or the customer's patch policy. You inherit all three.</p>
+</div>
+
+<h2>The backdoor was built to be boring</h2>
+
+<p>SUNBURST's design shows an unusual amount of patience. After installation it lay dormant for up to two weeks before doing anything at all. It checked the domain it had landed on and stopped if the environment looked like a malware analysis sandbox. It refused to run when certain security tools were present. Its command-and-control traffic was formatted to resemble Orion's own legitimate telemetry, so a defender reading network logs saw monitoring software sending monitoring data.</p>
+
+<p>That restraint was the operationally significant decision. A backdoor talking on 18,000 networks is loud. One that chooses to speak on a few dozen of them is not. The attackers were never trying to exploit 18,000 organisations — they were using 18,000 organisations as a catalogue to select from.</p>
+
+<h2>Who was selected</h2>
+
+<p>The confirmed follow-on victims read as a national security list: the US Treasury, the Commerce Department's telecommunications agency, and the Departments of State, Homeland Security, Energy and Justice, including the National Nuclear Security Administration. Microsoft confirmed that attackers had viewed some of its source code. Several cybersecurity vendors were hit as well.</p>
+
+<p>It was one of those vendors that ended the campaign. FireEye discovered in late 2020 that its own red-team tooling had been stolen, investigated, traced the intrusion back to Orion, and published on 8 December. SolarWinds confirmed on 13 December. CISA issued an emergency directive within a day ordering federal agencies to disconnect Orion from their networks entirely.</p>
+
+<p>Nobody knows how much longer the campaign would have run otherwise. Detection came from a victim that happened to have both the visibility to notice and the willingness to say so in public, which is not a control any organisation can plan around.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>September 2019</b> — Attackers gain access to the SolarWinds build environment and test their ability to inject code into a build without being noticed.</li>
+  <li><b>February 2020</b> — SUNBURST is compiled into an Orion build.</li>
+  <li><b>March – June 2020</b> — Trojanised updates are distributed to customers through the normal release channel.</li>
+  <li><b>8 December 2020</b> — FireEye discloses its own compromise and traces it to Orion.</li>
+  <li><b>13 December 2020</b> — SolarWinds confirms; CISA issues Emergency Directive 21-01 the following day.</li>
+  <li><b>April 2021</b> — The US government formally attributes the campaign to Russia's SVR and imposes sanctions.</li>
+  <li><b>October 2023</b> — The SEC sues SolarWinds and its chief information security officer over the company's security disclosures; most of the case is dismissed in July 2024.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Software supply chain security became a funded discipline.</strong> Before SolarWinds it was a research topic. Afterwards the US issued an executive order requiring vendors selling to government to attest to their build practices, and the software bill of materials — an ingredients list for software — went from a niche proposal to a procurement requirement.</p>
+
+<p><strong>Signed stopped meaning safe.</strong> The signature proved the file came from SolarWinds. It did not, and could not, prove that what SolarWinds built was what SolarWinds intended to build. Reproducible builds, where an independent party compiles the same source and gets a byte-identical binary, moved from an idealist's project to something major vendors actually do.</p>
+
+<p><strong>Security executives started reading their own disclosures like lawyers.</strong> The SEC's decision to name a chief information security officer personally in an enforcement action was, whatever its legal merits, noticed in every security team in the country. The complaint was largely dismissed, but the question it raised — what gets said publicly versus what is known internally — did not depend on the outcome.</p>
+
+<p><strong>"Trusted vendor" stopped being a category.</strong> Monitoring platforms, endpoint agents, backup software and remote access tools all share Orion's profile: deep privilege, broad reach, automatic updates. Many organisations now segment them, restrict their outbound network access, and treat an update channel as an attack surface rather than a convenience.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Assume your most privileged software is also your largest exposure.</strong> The tools with the widest access are the ones worth attacking, and they are usually the ones nobody wants to restrict.</li>
+  <li><strong>Give management software an outbound allowlist.</strong> SUNBURST had to reach the internet to be useful. A monitoring platform that can only talk to the things it monitors is a much smaller problem.</li>
+  <li><strong>Know which vendors can run code on your machines.</strong> Any vendor shipping you automatic updates has that power. The list is usually longer than people expect and almost never written down.</li>
+  <li><strong>For individuals the lesson is narrower but real.</strong> Take updates from the vendor rather than a mirror or a bundled installer. Supply chain attacks that reach consumers almost always arrive through the unofficial route, not the official one.</li>
+</ol>

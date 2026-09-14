@@ -49,7 +49,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -125,7 +125,7 @@
     <!-- Tool -->
     <section class="tool container" id="tool" aria-label="OSINT tools">
       <div class="tool-tabs" id="toolTabs" role="tablist" aria-label="Choose a lookup"></div>
-      <div class="panel" role="tabpanel">
+      <div class="panel" role="tabpanel" id="toolPanel" tabindex="0">
         <div class="panel-title">Run a lookup</div>
         <div class="panel-sub" id="panelSub"></div>
         <div class="field-row">
@@ -214,6 +214,33 @@
       </div>
     </section>
 
+    <!-- Written archive. The tool answers a question about one identifier;
+         these answer the questions people ask before and after running it,
+         which is most of why anyone arrives here from a search engine. -->
+    <section class="section" id="research">
+      <div class="container prose">
+        <h2>Read the archive</h2>
+        <p class="sub">Alongside the tools, MyRecon publishes a written record of how personal data actually gets exposed: a daily breach archive, long-form case files on the incidents that changed the rules, and practical guides to reducing your own exposure.</p>
+        <div class="feature-grid">
+          <div class="feature">
+            <h3><a href="/breaches/case-files/" style="color:inherit">Case Files</a></h3>
+            <p>Long-form accounts of the landmark breaches — Equifax's unpatched web form, the contractor's password that stopped a pipeline, the API that had no lock on it. What happened, how, what it cost, and what it changed. Sourced from regulatory findings, court records and company disclosures.</p>
+            <p><a href="/breaches/case-files/">Browse the case files →</a></p>
+          </div>
+          <div class="feature">
+            <h3><a href="/breaches/" style="color:inherit">The Breach Files</a></h3>
+            <p>Every breach worth understanding as it is confirmed: who was hit, what was taken, how many people it reached, and what each exposed field means for the person it belongs to. Updated daily, with our own severity scoring and analysis on every entry.</p>
+            <p><a href="/breaches/">Open the breach archive →</a></p>
+          </div>
+          <div class="feature">
+            <h3><a href="/guides/" style="color:inherit">Guides</a></h3>
+            <p>How the underlying systems work and what to do about them — checking an address against known breaches, reading DNS and WHOIS records, spotting phishing, shrinking a public footprint, and verifying an OSINT finding before acting on it.</p>
+            <p><a href="/guides/">Read the guides →</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Who it's for -->
     <section class="section alt" id="use-cases">
       <div class="container prose">
@@ -263,13 +290,14 @@
       </div>
       <div class="footer-bottom">
         <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-        <span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a></span>
+        <span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
       </div>
     </div>
   </footer>
 
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/app.js?v=9"></script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>

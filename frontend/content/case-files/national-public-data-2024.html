@@ -1,0 +1,97 @@
+<!--
+{
+  "headline": "National Public Data, 2024: a company you never used, holding everything about you",
+  "seoTitle": "National Public Data Breach: Billions of Records Leaked",
+  "subject": "National Public Data breach",
+  "kicker": "2024 · Data broker",
+  "description": "A background-check broker most people had never heard of leaked a file advertised at 2.9 billion records, including Social Security numbers, then went bankrupt.",
+  "cardBlurb": "Nobody in this file signed up for anything. The case that made data brokers a mainstream concern — and showed how meaningless a headline record count can be.",
+  "records": "advertised as 2.9 billion rows; researchers identified about 134 million unique email addresses",
+  "peopleCount": 134000000,
+  "occurred": "Late 2023 – April 2024",
+  "disclosed": "Offered for sale April 2024; published broadly in August 2024",
+  "vector": "Never fully established publicly; a sister site was separately found publishing a plaintext password file",
+  "actor": "An actor using the handle USDoD advertised the data; it was later posted free",
+  "cost": "The company filed for bankruptcy protection",
+  "exposed": ["Names", "Current and historic addresses", "Social Security numbers", "Phone numbers", "Relatives and associates"],
+  "sortDate": "2024-08-06",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["equifax-2017", "facebook-scrape-2021", "collection-1-2019"],
+  "faq": [
+    { "q": "Were 2.9 billion people affected?", "a": "No. That was the advertised row count, not a population — there are only about 8 billion people alive. The file contained enormous duplication, with the same person appearing many times across different addresses and name spellings, plus records of deceased people. Researchers who examined it found roughly 134 million unique email addresses. Treat any headline row count as a file size, not a victim count." },
+    { "q": "How did they have my data if I never used them?", "a": "That is what a data broker is. National Public Data aggregated information from public records, marketing lists and other brokers into background-check profiles. There was no signup, no notice and, in most US states at the time, no way to opt out. You were in the file because you exist, not because you used anything." },
+    { "q": "Was the data accurate?", "a": "Partially. Analyses found stale addresses, mismatched fields and duplicated identities. That cuts both ways: it makes the file less reliable for fraud than the headline suggests, and it means errors in it can still cause harm when a background-check customer treats the profile as fact." },
+    { "q": "What happened to the company?", "a": "Its parent, Jerico Pictures, filed for Chapter 11 bankruptcy protection amid the resulting lawsuits. Separately, researchers found that a sister site operated by the same company had been publishing an archive containing plaintext credentials for its own back end — which did nothing for the argument that the data had been well looked after." }
+  ],
+  "sources": [
+    { "label": "Class action filings in the US District Court for the Southern District of Florida, 2024" },
+    { "label": "Chapter 11 bankruptcy filing, October 2024" },
+    { "label": "Independent analyses of the published dataset by security researchers, August 2024" }
+  ]
+}
+-->
+<p class="lead">Every other case in this archive involves a company someone chose to deal with. This one does not. National Public Data was a background-check broker that compiled profiles on people who had never heard of it, never agreed to anything, and had no practical way to leave — and in 2024 the compilation went public.</p>
+
+<h2>What happened</h2>
+
+<p>In April 2024, an actor using the handle USDoD advertised a dataset said to contain 2.9 billion rows of personal data covering the United States, the United Kingdom and Canada, at an asking price of $3.5 million. Portions circulated through the summer, and in August large parts were published free on a criminal forum.</p>
+
+<p>The records contained names, current and historical addresses, Social Security numbers, phone numbers, and in many cases lists of relatives and associates — the standard shape of a background-check profile.</p>
+
+<div class="callout">
+  <p><strong>Why "2.9 billion records" is not "2.9 billion people".</strong> Brokers store one row per observed combination of name and address. A person who has lived at eight addresses, used a middle initial sometimes, and shared a household with three others can generate dozens of rows. The file also contained deceased people and obviously stale entries. Researchers who worked through it found roughly 134 million unique email addresses. The gap between the advertised figure and the useful one is the single most important thing to understand about broker breaches.</p>
+</div>
+
+<p>The company compounded the story: researchers found that a sister site operated by the same business was publishing an archive containing plaintext credentials for its own administrative back end. Whatever the original route in, the operational standard on display did not suggest a well-defended organisation.</p>
+
+<h2>The consent problem</h2>
+
+<p>The uncomfortable centre of this case is that no one in the file did anything.</p>
+
+<p>Brokers assemble profiles from public records — property filings, voter registrations, court records, licences — combined with marketing data, purchase histories and datasets bought from other brokers. The individual is neither a customer nor a user. They are inventory.</p>
+
+<p>That produces three distinct harms:</p>
+
+<ol class="cf-timeline">
+  <li><b>No notice.</b> Most people in the file only learned it existed when it leaked.</li>
+  <li><b>No control.</b> Opt-out processes, where they exist, are per-broker, manual, and have to be repeated because the data gets re-acquired from other brokers.</li>
+  <li><b>No accountability that matches the scale.</b> The company filed for bankruptcy. The data remains in circulation permanently.</li>
+</ol>
+
+<p>It is the argument for regulating the industry, made more persuasively by events than by any advocate.</p>
+
+<h2>What the data is actually good for</h2>
+
+<p>Being realistic about the risk matters more than being alarmed by the row count.</p>
+
+<p>A Social Security number with a name and date of birth supports new-account fraud, which a credit freeze blocks. Historic addresses and relatives' names support knowledge-based identity verification — the "which of these streets have you lived on?" questions that banks and telecoms still use — which is why those questions have been quietly dying for years.</p>
+
+<p>The most reliable use, though, is targeting. A caller who knows your previous address, your mother's name and the last four digits of your Social Security number sounds exactly like your bank. The data does not enable the fraud directly; it makes the person on the phone credible, and credibility is what the fraud actually needs.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Late 2023 – early 2024</b> — The data is obtained from National Public Data's systems.</li>
+  <li><b>April 2024</b> — A dataset advertised at 2.9 billion rows is offered for sale.</li>
+  <li><b>June–July 2024</b> — Portions circulate; class actions begin; researchers start analysing samples.</li>
+  <li><b>August 2024</b> — Large portions are published free; the company confirms a breach; a sister site is found exposing plaintext credentials.</li>
+  <li><b>October 2024</b> — The parent company files for Chapter 11 bankruptcy protection.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Data brokers entered public consciousness.</strong> The industry had been a specialist concern. A leak that touched most American adults, from a company none of them could name, made "who else holds my file?" a mainstream question and strengthened the case for state-level deletion mechanisms.</p>
+
+<p><strong>Knowledge-based verification lost more ground.</strong> If everyone's address history is public, questions about address history verify nothing. The migration towards document verification, device binding and one-time codes accelerated.</p>
+
+<p><strong>Bankruptcy as a liability exit got noticed.</strong> A broker that profits from compiling data, loses it, and then dissolves leaves victims with a permanent exposure and no counterparty. It is now a live question in policy discussions about bonding and insurance requirements for data brokers.</p>
+
+<h2>What to actually do</h2>
+
+<ol class="bx-actions">
+  <li><strong>Freeze your credit at all three US bureaus.</strong> It is free and it is the control that matches this specific exposure.</li>
+  <li><strong>Opt out of the larger brokers directly</strong>, and repeat it periodically — listings come back as data is re-acquired. <a href="/guides/how-data-brokers-work.html">How the industry works and where the opt-outs are</a>.</li>
+  <li><strong>Assume verification questions about you are answerable by strangers.</strong> Choose stronger authentication options wherever they are offered.</li>
+  <li><strong>Discount the headline number, not the risk.</strong> The row count was inflated; the Social Security numbers were real.</li>
+</ol>

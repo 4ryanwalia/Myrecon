@@ -1,0 +1,92 @@
+<!--
+{
+  "headline": "Optus, 2022: an API with no lock on it, and 9.8 million Australians",
+  "seoTitle": "Optus Data Breach 2022: The Unauthenticated API",
+  "subject": "Optus data breach",
+  "kicker": "2022 · Telecommunications",
+  "description": "An internet-facing Optus API required no authentication at all. Anyone who found it could walk the customer database, including identity document numbers.",
+  "cardBlurb": "No password, no token, no rate limit. The breach that rewrote Australian privacy law and put a price on identity documents.",
+  "records": "9.8 million customers; about 2.1 million with identity document numbers",
+  "peopleCount": 9800000,
+  "occurred": "September 2022",
+  "disclosed": "22 September 2022",
+  "vector": "An internet-facing API endpoint that required no authentication and allowed enumeration of customer records",
+  "actor": "An extortionist who posted samples, demanded US$1 million, then withdrew the demand",
+  "cost": "Regulatory proceedings by two Australian regulators, a class action, and the cost of reissuing identity documents nationwide",
+  "exposed": ["Names", "Dates of birth", "Phone numbers", "Email addresses", "Addresses", "Passport numbers", "Driver's licence numbers", "Medicare numbers"],
+  "sortDate": "2022-09-22",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["medibank-2022", "t-mobile-2021", "marriott-starwood-2018"],
+  "faq": [
+    { "q": "How did the Optus breach happen?", "a": "Through an API endpoint that was reachable from the public internet and required no authentication. Customer records were addressed by identifiers that could be incremented, so anyone who found the endpoint could iterate through the database. There was no intrusion in the conventional sense — the door was open and the records were numbered." },
+    { "q": "Why were identity documents the worst part?", "a": "Because a passport, driver's licence or Medicare number is what Australian banks and services use to verify identity. A stolen one supports account opening in the victim's name, and replacing them costs money and time. The scale forced state and federal governments into a mass reissue and a rethink of whether telcos should be holding those numbers at all." },
+    { "q": "Did Optus pay a ransom?", "a": "No. An extortionist posted 10,000 records publicly and demanded US$1 million, then withdrew the demand and issued an apology days later, claiming the data had been deleted. There is no way to verify a deletion claim, which is exactly why paying is a poor bet even when the demand is withdrawn." },
+    { "q": "What changed in Australian law afterwards?", "a": "Penalties under the Privacy Act were raised sharply in December 2022 — to the greater of A$50 million, three times the benefit obtained, or 30% of adjusted domestic turnover. Temporary rules also allowed telcos to share identity data with financial institutions and government agencies so compromised documents could be flagged rather than silently reused." }
+  ],
+  "sources": [
+    { "label": "Office of the Australian Information Commissioner — civil penalty proceedings against Singtel Optus Pty Ltd" },
+    { "label": "Australian Communications and Media Authority — federal court proceedings, 2023" },
+    { "label": "Privacy Legislation Amendment (Enforcement and Other Measures) Act 2022 (Cth)" },
+    { "label": "Optus customer notifications and public statements, September–October 2022" }
+  ]
+}
+-->
+<p class="lead">Most breaches require someone to break something. The Optus breach required someone to find an address. An internet-facing API served customer records to anyone who asked, with no authentication and no meaningful rate limiting, and the records were addressed by identifiers that could simply be counted upwards.</p>
+
+<h2>What happened</h2>
+
+<p>On 22 September 2022, Optus — Australia's second-largest telecommunications company — disclosed that customer data had been taken. The eventual figure was 9.8 million current and former customers, in a country of roughly 26 million people. Around 2.1 million of those records contained at least one government identity document number: a passport, a driver's licence, or a Medicare number.</p>
+
+<p>The mechanism, as set out in the regulatory proceedings that followed, was an API endpoint exposed to the public internet without any requirement to authenticate. Requests for customer records were accepted from anyone, and the identifiers used to address those records were sequential enough to enumerate. There was no exploit, no malware, and no stolen credential. Somebody found the endpoint and iterated.</p>
+
+<div class="callout">
+  <p><strong>The specific engineering failure.</strong> Two controls were missing at once. Authentication, so that only an authorised caller gets an answer. And authorisation on the object itself, so that even an authenticated caller can only fetch records they are entitled to — the flaw category known as insecure direct object reference. Either one alone would have limited this to a nuisance. Together, their absence turned a customer lookup into a public database export.</p>
+</div>
+
+<h2>The extortion that fizzled</h2>
+
+<p>Days after the breach, an account using the name "optusdata" posted a sample of 10,000 records and demanded US$1 million in cryptocurrency, threatening to release more daily. Then, abruptly, the demand was withdrawn with an apology and a claim that the only copy had been deleted.</p>
+
+<p>Whatever happened behind that reversal — the scale of the attention from Australian federal police is the usual assumption — the episode illustrates something important. A deletion claim is unverifiable. Once records have been copied, the only honest position for the affected company is that the data is gone and will not come back, which is what Optus and the government proceeded on.</p>
+
+<h2>Why identity documents made this a national problem</h2>
+
+<p>A leaked email address is a nuisance. A leaked passport number is an administrative emergency, because Australian identity verification — opening a bank account, taking out credit, getting a phone contract — runs on a small set of document numbers. Once those are in circulation, the verification system itself is degraded for the people affected.</p>
+
+<p>The response had to be structural:</p>
+
+<ol class="cf-timeline">
+  <li><b>Mass reissue.</b> State governments replaced driver's licences, in several cases at Optus's expense. Passport replacement became a public argument about who pays.</li>
+  <li><b>Emergency data sharing.</b> Temporary regulations let telcos pass limited identity data to banks and government agencies, so that compromised document numbers could be flagged for extra scrutiny rather than silently trusted.</li>
+  <li><b>A licence-number change.</b> Several states moved to card numbers that can be reissued independently of the licence itself, so a future leak does not require replacing the whole document.</li>
+</ol>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>September 2022</b> — The exposed endpoint is found and customer records are extracted.</li>
+  <li><b>22 September 2022</b> — Optus discloses the breach.</li>
+  <li><b>24–27 September</b> — An extortionist publishes 10,000 records, demands US$1 million, then withdraws the demand.</li>
+  <li><b>Late September</b> — State and federal governments begin coordinating document reissue; emergency data-sharing regulations are made.</li>
+  <li><b>December 2022</b> — The Privacy Act penalty regime is sharply increased.</li>
+  <li><b>2023</b> — The communications regulator begins federal court proceedings.</li>
+  <li><b>2024</b> — The privacy regulator commences civil penalty proceedings; class action litigation continues.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Australia's privacy penalties stopped being symbolic.</strong> The pre-2022 maximum — around A$2.2 million — was a rounding error for a telco. The new ceiling, tied to turnover, moved privacy into the same enforcement bracket as competition law.</p>
+
+<p><strong>Data minimisation became the headline lesson.</strong> The most-asked question in the aftermath was not how the endpoint was exposed, but why a telecommunications company still held passport numbers for former customers years after verifying them. Retaining identity documents after the verification is complete converts a one-off check into a permanent liability, and regulators across several countries have used Optus to make that argument since.</p>
+
+<p><strong>API security became a board-level term.</strong> Traditional security programmes were built around networks, endpoints and web applications. This breach was none of those: a documented, intentional interface with a missing control. API inventories and authorisation testing moved up every roadmap in the region.</p>
+
+<h2>If you were an Optus customer</h2>
+
+<ol class="bx-actions">
+  <li><strong>Replace any exposed document you have not already replaced.</strong> A licence or passport number in circulation does not expire on its own.</li>
+  <li><strong>Place a credit ban or credit report freeze</strong> with the Australian credit bureaus. It is the specific control against someone opening credit with your documents.</li>
+  <li><strong>Set a port-out protection on your mobile service.</strong> A number plus a full identity file is what makes SIM-swap fraud straightforward.</li>
+  <li><strong>Distrust contact that quotes your details back to you.</strong> Post-breach scam waves in Australia specifically used the leaked fields to sound legitimate — <a href="/guides/how-to-spot-phishing.html">what still gives those messages away</a>.</li>
+</ol>

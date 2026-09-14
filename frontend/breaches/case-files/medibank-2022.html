@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medibank Hack 2022: Refusing to Pay, and the Fallout</title>
+  <meta name="description" content="Medibank refused to pay the ransom. The attackers published 9.7 million customers' health claims data in tranches, organised to cause the most distress.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/medibank-2022.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Medibank Hack 2022: Refusing to Pay, and the Fallout">
+  <meta property="og:description" content="Medibank refused to pay the ransom. The attackers published 9.7 million customers' health claims data in tranches, organised to cause the most distress.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/medibank-2022.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Medibank Hack 2022: Refusing to Pay, and the Fallout">
+  <meta name="twitter:description" content="Medibank refused to pay the ransom. The attackers published 9.7 million customers' health claims data in tranches, organised to cause the most distress.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Medibank, 2022: the company said no, and the data went up anyway","description":"Medibank refused to pay the ransom. The attackers published 9.7 million customers' health claims data in tranches, organised to cause the most distress.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/medibank-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Medibank data breach"},"wordCount":921}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Medibank data breach","item":"https://www.myrecon.xyz/breaches/case-files/medibank-2022.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why did Medibank refuse to pay?","acceptedAnswer":{"@type":"Answer","text":"The company said publicly that paying would not guarantee the data was returned or deleted, and would make Australian organisations a more attractive target. The Australian government supported the position. It is the correct analysis in the general case, and it also meant the customers in the file bore the consequences of a decision made on behalf of everyone else — which is the uncomfortable part nobody enjoys stating."}},{"@type":"Question","name":"What made this breach different from Optus?","acceptedAnswer":{"@type":"Answer","text":"Optus lost identity documents, which can be replaced. Medibank lost health claims data — records of treatment, including procedures people had chosen not to tell anyone about. There is no reissue process for that. The attackers understood it, and published the most sensitive categories first."}},{"@type":"Question","name":"How did the attackers get in?","acceptedAnswer":{"@type":"Answer","text":"Through credentials belonging to a third-party IT services contractor. The credentials did not have multi-factor authentication, so possession of the password was sufficient. They were used to reach Medibank's network, and roughly 200GB of data was taken over several weeks before detection."}},{"@type":"Question","name":"Was anyone held responsible?","acceptedAnswer":{"@type":"Answer","text":"In January 2024 Australia used its cyber sanctions powers for the first time, against Aleksandr Ermakov, a Russian national it named as involved. Sanctions make it a criminal offence to provide him assets and freeze what can be reached. He has not stood trial. Separately, the privacy regulator commenced civil penalty proceedings against Medibank."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2022 · Health insurance</span>
+          <h1>Medibank, 2022: the company said no, and the data went up anyway</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>9.7 million current and former customers; health claims data for about 480,000</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>August – October 2022</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>October 2022</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Stolen credentials belonging to a third-party IT contractor, with no multi-factor authentication</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Actors linked to the REvil ransomware ecosystem; Australia sanctioned Aleksandr Ermakov in 2024</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>Regulatory proceedings, class actions, and a A$250 million capital requirement imposed by the prudential regulator</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Addresses · Phone numbers · Medicare and policy numbers · Health claims data including procedures and diagnoses</p>
+
+<p class="lead">Three weeks after Optus, Australia had a second national breach — and a much worse one. Medibank, the country's largest private health insurer, lost the records of 9.7 million current and former customers, including the claims histories of around 480,000. When it refused to pay, the attackers published the data in tranches, organised by diagnosis.</p>
+
+<h2>What happened</h2>
+
+<p>The intrusion began in August 2022 with credentials belonging to a third-party IT services contractor. Those credentials were not protected by multi-factor authentication, so whoever held the password held the access. They were used to reach Medibank's internal network, where the attackers moved through systems and eventually copied roughly 200 gigabytes of data.</p>
+
+<p>Medibank detected unusual activity in October and initially reported that no customer data appeared to have been taken. That position did not survive the week: the attackers contacted the company with a sample, and the disclosure was revised upward repeatedly until it covered essentially the entire customer base, past and present.</p>
+
+<div class="callout">
+  <p><strong>One missing control, again.</strong> The credential had no second factor. It is the same finding as <a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare</a> two years later and <a href="/breaches/case-files/colonial-pipeline-2021.html">Colonial Pipeline</a> the year before: an account belonging to a contractor or a legacy service, reachable from outside, protected by a password alone. The reason this keeps happening is not ignorance — every one of these organisations had an MFA programme. It is that the programme covered employees and missed the accounts at the edges.</p>
+</div>
+
+<h2>The extortion, and the refusal</h2>
+
+<p>The attackers demanded a ransom, reported at around US$10 million and later reduced. Medibank's chief executive announced that the company would not pay, on the reasoning that payment would not guarantee return or deletion of the data and would encourage further attacks on Australian organisations. The federal government publicly backed the decision.</p>
+
+<p>The attackers responded by publishing. Not all at once — in batches, over weeks, on a dark web site, with the files given names calculated to cause the maximum distress. One release was labelled for customers whose claims related to termination of pregnancy. Others grouped people by treatment for mental health and substance use.</p>
+
+<p>This was not monetisation. Nobody buys that data. It was pressure applied through the customers, and it worked in the sense that it dominated Australian news coverage for weeks — but Medibank did not reverse its decision.</p>
+
+<h2>Why health claims data is the worst category</h2>
+
+<p>Every other entry in this archive involves data that can, eventually, be neutralised. Cards get cancelled. Passwords get changed. Even passport numbers get reissued.</p>
+
+<p>A claims record says that a named person had a specific procedure on a specific date. It cannot be revoked, corrected or replaced, because it is true. The harm is not fraud; it is the fact of other people knowing — an employer, a family member, a community. For customers whose treatment involved reproductive health, mental health, addiction or HIV, the publication was the harm, complete on the day it happened.</p>
+
+<p>That is what puts Medibank in the same category as <a href="/breaches/case-files/ashley-madison-2015.html">Ashley Madison</a> rather than with the credential dumps, and it is why health data attracts the severity weighting it does.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>August 2022</b> — A contractor's credentials, without MFA, are used to access Medibank's network.</li>
+  <li><b>August–October</b> — Around 200GB of data is copied out.</li>
+  <li><b>12 October 2022</b> — Medibank detects unusual activity and takes systems offline.</li>
+  <li><b>19–26 October</b> — The scope is revised repeatedly; the attackers provide samples; the full customer base is confirmed as affected.</li>
+  <li><b>7 November 2022</b> — Medibank announces it will not pay the ransom.</li>
+  <li><b>9 November onwards</b> — Data is published in tranches on a dark web site, grouped by sensitive treatment category.</li>
+  <li><b>June 2023</b> — The prudential regulator imposes a A$250 million capital adjustment.</li>
+  <li><b>January 2024</b> — Australia imposes its first autonomous cyber sanctions, naming Aleksandr Ermakov.</li>
+  <li><b>June 2024</b> — The privacy regulator commences civil penalty proceedings.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Australia took a national position on ransom payments.</strong> Medibank is the reference case in every subsequent Australian discussion of whether to pay, and it shaped the ransomware reporting obligations introduced afterwards. The uncomfortable corollary — that refusing means the customers bear the consequence — is now argued openly rather than avoided.</p>
+
+<p><strong>Contractor access became the named weak point.</strong> Between Optus and Medibank, Australian regulators landed on the same conclusion within a month: the perimeter that matters is not the corporate network, it is every credential that can reach it, including those held by suppliers.</p>
+
+<p><strong>Sanctions entered the toolkit.</strong> Naming and sanctioning an individual was a deliberate shift from silence. It does not produce a trial, but it constrains the named person's ability to move money and signals that attribution work continues after the news cycle ends.</p>
+
+<h2>If you were a Medibank customer</h2>
+
+<ol class="bx-actions">
+  <li><strong>Nothing you do removes published claims data.</strong> That is a hard sentence, and it is the truthful one. What remains controllable is everything the data enables next.</li>
+  <li><strong>Expect targeted extortion and scams.</strong> Australians in the file received messages quoting their own claims history. That specificity is a sign of the leak, not a sign of legitimacy — no insurer or agency will demand payment to suppress your records.</li>
+  <li><strong>Protect the identity layer.</strong> Medicare and policy numbers were included; a credit ban and a port-out lock on your phone service are the two cheap controls that matter.</li>
+  <li><strong>Report extortion attempts</strong> to your national cybercrime service rather than engaging. Free counselling services were made available in Australia specifically for people affected by this breach, and using them is a reasonable response to a genuinely distressing situation.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>Why did Medibank refuse to pay?</h3>
+        <p>The company said publicly that paying would not guarantee the data was returned or deleted, and would make Australian organisations a more attractive target. The Australian government supported the position. It is the correct analysis in the general case, and it also meant the customers in the file bore the consequences of a decision made on behalf of everyone else — which is the uncomfortable part nobody enjoys stating.</p>
+
+        <h3>What made this breach different from Optus?</h3>
+        <p>Optus lost identity documents, which can be replaced. Medibank lost health claims data — records of treatment, including procedures people had chosen not to tell anyone about. There is no reissue process for that. The attackers understood it, and published the most sensitive categories first.</p>
+
+        <h3>How did the attackers get in?</h3>
+        <p>Through credentials belonging to a third-party IT services contractor. The credentials did not have multi-factor authentication, so possession of the password was sufficient. They were used to reach Medibank's network, and roughly 200GB of data was taken over several weeks before detection.</p>
+
+        <h3>Was anyone held responsible?</h3>
+        <p>In January 2024 Australia used its cyber sanctions powers for the first time, against Aleksandr Ermakov, a Russian national it named as involved. Sanctions make it a criminal offence to provide him assets and freeze what can be reached. He has not stood trial. Separately, the privacy regulator commenced civil penalty proceedings against Medibank.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Office of the Australian Information Commissioner — civil penalty proceedings against Medibank Private Limited, June 2024</b></li>
+        <li><b>Australian Government — autonomous cyber sanctions announcement, January 2024</b></li>
+        <li><b>Medibank cyber event updates and ASX announcements, October 2022 – 2023</b></li>
+        <li><b>Australian Prudential Regulation Authority — capital adjustment, June 2023</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/optus-2022.html">Optus, 2022: an API with no lock on it, and 9.8 million Australians</a></li>
+        <li><a href="/breaches/case-files/ashley-madison-2015.html">Ashley Madison, 2015: when the data itself was the weapon</a></li>
+        <li><a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare, 2024: one login, and American healthcare stopped billing</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

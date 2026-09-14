@@ -1,0 +1,85 @@
+<!--
+{
+  "headline": "Home Depot, 2014: 56 million cards through a supplier's login",
+  "seoTitle": "Home Depot Data Breach 2014: How 56 Million Cards Leaked",
+  "subject": "Home Depot data breach",
+  "kicker": "2014 · Retail",
+  "description": "Attackers used a third-party vendor's stolen credentials to reach Home Depot's network, then ran custom malware on self-checkout tills for five months.",
+  "cardBlurb": "Employees had warned for years that the tills were running outdated protection. The breach ran from April to September before a bank spotted the pattern.",
+  "records": "56 million payment cards and 53 million email addresses",
+  "peopleCount": 56000000,
+  "occurred": "April – September 2014",
+  "disclosed": "8 September 2014",
+  "vector": "Stolen third-party vendor credentials, privilege escalation, then memory-scraping malware on self-checkout point-of-sale terminals",
+  "actor": "Never publicly attributed to named individuals",
+  "cost": "Around $179 million in settlements and costs disclosed across consumer, financial institution and multistate agreements",
+  "exposed": ["Payment card numbers", "Card expiry dates", "Cardholder names", "Email addresses"],
+  "sortDate": "2014-09-08",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["target-2013", "tjx-2007", "heartland-2008"],
+  "faq": [
+    { "q": "How is this different from the Target breach?", "a": "It is almost the same breach, one year later, at a larger scale. Both started with a third-party vendor's credentials. Both ended with memory-scraping malware on point-of-sale terminals. Home Depot ran longer — five months against roughly three weeks — and took more cards. The uncomfortable implication is that a whole industry watched Target happen, and the same attack still worked." },
+    { "q": "Why were only self-checkout terminals affected?", "a": "The malware was deployed to the self-checkout systems in US and Canadian stores, which were on a segment the attackers could reach and which were individually addressable in a way the staffed lanes were not. It is a useful illustration that network segmentation is not binary: a network can be segmented well enough to limit a breach and badly enough to have one." },
+    { "q": "What is memory-scraping malware?", "a": "Card data is encrypted on the magnetic stripe reader and encrypted again in the database, but for a fraction of a second while the terminal processes the transaction, the full card details exist in the terminal's memory in plain text. Memory-scraping malware sits on the terminal and reads that moment, repeatedly, for every transaction. It defeats encryption by simply waiting for the point at which encryption cannot apply." },
+    { "q": "Did chip cards fix this?", "a": "Largely, for this specific crime. The stolen data was useful because it could be encoded onto a blank magnetic stripe card and used in a shop. A chip generates a unique code per transaction, so copied data cannot be replayed. The US liability shift in October 2015 — driven substantially by Target and Home Depot — pushed chip terminals out across the country, and card-present counterfeit fraud fell sharply afterwards. Card-not-present fraud online rose instead." }
+  ],
+  "sources": [
+    { "label": "The Home Depot Inc. — data breach notification and investor disclosures, 2014–2015", "url": "https://ir.homedepot.com/" },
+    { "label": "In re: The Home Depot Inc. Customer Data Security Breach Litigation, N.D. Ga.", "note": "consumer and financial institution settlements" },
+    { "label": "Multistate attorneys general settlement with Home Depot, November 2020", "note": "$17.5 million" },
+    { "label": "Contemporaneous reporting by Brian Krebs, KrebsOnSecurity, September 2014", "note": "the initial identification of the breach through bank card data" }
+  ]
+}
+-->
+<p class="lead">Home Depot did not learn about its breach from its own systems. It learned about it the way Target had a year earlier: banks noticed that a batch of stolen cards appearing for sale online all had one shop in common, and a journalist called the company for comment.</p>
+
+<h2>What happened</h2>
+
+<p>In April 2014, attackers obtained the credentials of a third-party vendor with access to Home Depot's network. Vendor accounts of this kind exist everywhere in retail — for refrigeration monitoring, for point-of-sale support, for logistics — and they typically have narrow legitimate purposes and broad practical reach.</p>
+
+<p>Those credentials alone would not have been enough. The attackers used a Windows vulnerability to escalate their privileges, moved through the corporate network, and eventually reached the environment serving self-checkout terminals in US and Canadian stores. There they deployed custom memory-scraping malware built for the specific point-of-sale software Home Depot used.</p>
+
+<p>From April to early September, every card swiped at an affected self-checkout was captured in the instant it was readable. Fifty-six million cards were taken, along with fifty-three million email addresses that were disclosed weeks later as a separate finding.</p>
+
+<div class="callout">
+  <p><strong>The warnings were internal and documented.</strong> Reporting after the breach, later echoed in litigation, described years of concern raised by Home Depot's own security staff about outdated antivirus software on store systems, the absence of network segmentation between corporate and payment environments, and infrequent vulnerability scanning. This is the most common shape of a large breach: not an absence of knowledge, but a backlog of known problems with no forcing function. The forcing function arrived in September.</p>
+</div>
+
+<h2>Five months is the number that matters</h2>
+
+<p>Fifty-six million cards is the headline. The duration is the operational finding. Memory-scraping malware running on retail terminals is not stealthy in any deep sense — it writes files, it stages collected data somewhere, and it periodically sends that data out of the network to a destination that has no business receiving anything from a till.</p>
+
+<p>Detecting it requires monitoring that most retailers did not have on store networks in 2014: file integrity checking on terminals, egress filtering so that a checkout cannot connect to arbitrary internet addresses, and someone reviewing the alerts. Home Depot's detection eventually came from outside, through the card networks, which is how the majority of card breaches of that era were found.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>April 2014</b> — Attackers use stolen vendor credentials to enter the network and escalate privileges.</li>
+  <li><b>April – September 2014</b> — Memory-scraping malware harvests card data from self-checkout terminals across US and Canadian stores.</li>
+  <li><b>2 September 2014</b> — Banks and researchers link a large batch of cards for sale to Home Depot; the story breaks publicly.</li>
+  <li><b>8 September 2014</b> — Home Depot confirms the breach.</li>
+  <li><b>18 September 2014</b> — The company puts the figure at 56 million cards and says the malware has been removed.</li>
+  <li><b>6 November 2014</b> — Home Depot discloses that 53 million email addresses were also taken.</li>
+  <li><b>October 2015</b> — The US card liability shift takes effect, accelerating chip adoption.</li>
+  <li><b>2016 – 2020</b> — Settlements conclude: $19.5 million for consumers, $25 million for financial institutions, and $17.5 million with state attorneys general.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>It ended the argument about chip cards in the United States.</strong> Target made the case; Home Depot made it impossible to defer. The October 2015 liability shift moved responsibility for counterfeit fraud to whichever party had not adopted chip technology, and terminals were replaced nationwide within a couple of years.</p>
+
+<p><strong>Point-to-point encryption became standard in retail.</strong> If card data is encrypted inside the reader itself and only decrypted at the payment processor, there is no plain-text moment in terminal memory to scrape. Home Depot deployed it during its response, as did most large US retailers over the following two years.</p>
+
+<p><strong>Vendor access got inventoried.</strong> Two consecutive mega-breaches through supplier credentials made it very hard to argue that third-party accounts were a minor administrative matter. Segmenting vendor access, time-limiting it, and requiring multi-factor authentication on it became standard retail practice.</p>
+
+<p><strong>Boards started reading their own security backlogs.</strong> The most damaging material in the litigation was not technical. It was evidence that the risks were known and documented internally. Directors' duties in relation to cybersecurity oversight have been tested repeatedly since, and this case is part of why.</p>
+
+<h2>If your card was in it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Cards from 2014 are long expired; the email address is not.</strong> Fifty-three million addresses tied to a known retail customer base still circulate and still get phished.</li>
+  <li><strong>Card-present fraud is the bank's problem, and it should stay that way.</strong> Report unrecognised transactions rather than absorbing small ones — a charge you ignore is a test for a larger one.</li>
+  <li><strong>Use a chip or a phone wallet in shops wherever you have the choice.</strong> A tokenised wallet transaction gives the merchant nothing worth stealing in the first place.</li>
+  <li><strong>If you run a shop, ask where card data exists in plain text.</strong> That list is short, and every item on it is the entire attack surface for this class of breach.</li>
+</ol>

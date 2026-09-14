@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air India Data Breach 2021: The SITA Supply Chain Hit</title>
+  <meta name="description" content="Air India lost 4.5 million passengers' data — including passport details going back a decade">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/air-india-2021.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Air India Data Breach 2021: The SITA Supply Chain Hit">
+  <meta property="og:description" content="Air India lost 4.5 million passengers' data — including passport details going back a decade">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/air-india-2021.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Air India Data Breach 2021: The SITA Supply Chain Hit">
+  <meta name="twitter:description" content="Air India lost 4.5 million passengers' data — including passport details going back a decade">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Air India, 2021: ten years of passengers, lost by a supplier","description":"Air India lost 4.5 million passengers' data — including passport details going back a decade — because the company that runs its reservation platform was breached.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/air-india-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Air India data breach"},"wordCount":689}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Air India data breach","item":"https://www.myrecon.xyz/breaches/case-files/air-india-2021.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Who is SITA and why did an airline breach start there?","acceptedAnswer":{"@type":"Answer","text":"SITA is an air transport technology provider whose Passenger Service System handles reservations and passenger processing for many airlines worldwide. Airlines rely on shared platforms like it rather than each building their own. When one such platform is compromised, the passengers of every airline using it are exposed at once — Air India was one of several carriers affected by this incident."}},{"@type":"Question","name":"How far back did the data go?","acceptedAnswer":{"@type":"Answer","text":"Air India said the compromised data covered passengers registered between August 2011 and February 2021 — roughly ten years. Long retention is the quiet multiplier in breaches like this: the intrusion lasted weeks, and the damage covered a decade."}},{"@type":"Question","name":"Was payment card data included?","acceptedAnswer":{"@type":"Answer","text":"Some card data was reported as affected, but Air India stated that CVV and CVC security codes were not held by it. Passport information is the more durable concern, since a passport number stays valid for years and supports identity fraud in ways an expiring card does not."}},{"@type":"Question","name":"What should affected passengers do?","acceptedAnswer":{"@type":"Answer","text":"Change frequent flyer passwords, particularly if reused; watch for travel-themed phishing that references real bookings; and be alert to identity verification requests that quote passport details. Where a passport has since been renewed, the risk from the old number falls away naturally."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2021 · Aviation</span>
+          <h1>Air India, 2021: ten years of passengers, lost by a supplier</h1>
+          <p class="meta">Case file · 3 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>about 4.5 million passengers</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>February 2021</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>21 May 2021</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Compromise of SITA Passenger Service System, a shared platform used by many airlines</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Not publicly identified</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Contact details · Passport information · Ticket information · Frequent flyer data · Some payment card data, without CVV</p>
+
+<p class="lead">In May 2021, Air India told 4.5 million passengers that their data had been taken — names, dates of birth, contact details, passport information, ticket data and frequent flyer records, covering everyone who had travelled with it between August 2011 and February 2021. The intrusion had not happened at Air India. It happened at the company that runs the reservation platform.</p>
+
+<h2>What happened</h2>
+
+<p>SITA is an air transport technology provider. Its Passenger Service System handles reservations, ticketing and passenger processing for a large number of airlines, which is why carriers do not each build their own: the industry runs on shared infrastructure that has to interoperate across every airline, airport and alliance in the world.</p>
+
+<p>SITA disclosed a security incident affecting that platform in early 2021. Airlines then worked out, individually, what data of theirs had been held there. Air India's notification followed in May, describing roughly 4.5 million affected passengers and a ten-year window of data. Several other carriers, including members of the same alliance, made their own disclosures.</p>
+
+<div class="callout">
+  <p><strong>The disclosure gap is structural, not evasive.</strong> The supplier detects the intrusion and tells its customers. Each customer then has to determine which of its own records were in the affected systems, in what fields, for which people, under which country's notification rules. That takes weeks even when everyone is competent and cooperative — which is why supply-chain breach notifications reach the people affected so much later than platform-level ones.</p>
+</div>
+
+<h2>The retention multiplier</h2>
+
+<p>The most consequential number in this case is not 4.5 million. It is ten years.</p>
+
+<p>A passenger who flew once in 2012 and never again was in this breach. Their passport number, date of birth and contact details were retained by a system serving an airline they had used once, nearly a decade earlier, because nothing in the process ever decided those records should expire.</p>
+
+<p>Airlines have real reasons to keep some history: loyalty programmes, dispute handling, regulatory requirements for passenger data. None of those reasons require a full passport number for a journey completed nine years ago. The gap between "we have a reason to keep something" and "we keep everything" is where most of the avoidable exposure in this archive lives.</p>
+
+<h2>Why travel data is worth more than it looks</h2>
+
+<ol class="cf-timeline">
+  <li><b>Passport numbers are durable identifiers.</b> Valid for up to a decade, accepted as proof of identity, and awkward and expensive to replace.</li>
+  <li><b>Itineraries reveal patterns.</b> Where someone goes, how often, with whom they are booked — a profile that supports both targeted fraud and physical tracking.</li>
+  <li><b>Loyalty accounts hold value directly.</b> Air miles are stolen and laundered through award bookings, and account takeovers of frequent flyer programmes are a small industry.</li>
+  <li><b>Travel context makes phishing work.</b> A message about a real booking reference, sent near a real travel date, defeats most people's scepticism.</li>
+</ol>
+
+<h2>The shared-platform problem</h2>
+
+<p>This case belongs in the same category as <a href="/breaches/case-files/moveit-2023.html">MOVEit</a>: the target is not the organisation whose customers suffer, but a platform many organisations depend on. Aviation is unusually concentrated in this respect — a handful of providers handle reservations, departure control and baggage systems for most of the world's carriers, because interoperability demands it.</p>
+
+<p>The trade-off is not resolvable by any single airline. Shared infrastructure is the reason a ticket bought in one country works on a partner airline in another, and it is also the reason one intrusion reaches passengers of many carriers at once. What an individual airline can control is what it puts into that shared system and how long it leaves it there.</p>
+
+<h2>If you flew before 2021</h2>
+
+<ol class="bx-actions">
+  <li><strong>Check whether the passport in question is still valid.</strong> If you have renewed since, the exposed number no longer authenticates anything.</li>
+  <li><strong>Change frequent flyer passwords and enable two-factor authentication.</strong> Loyalty accounts are directly monetisable and are attacked constantly.</li>
+  <li><strong>Treat booking-related messages with suspicion.</strong> Verify through the airline's app or website rather than a link — <a href="/guides/how-to-spot-phishing.html">what distinguishes a real travel notice from a good imitation</a>.</li>
+  <li><strong>Ask airlines and hotels to delete what they no longer need.</strong> Data protection rights differ by country, but the request costs nothing and the retention default is otherwise forever.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>Who is SITA and why did an airline breach start there?</h3>
+        <p>SITA is an air transport technology provider whose Passenger Service System handles reservations and passenger processing for many airlines worldwide. Airlines rely on shared platforms like it rather than each building their own. When one such platform is compromised, the passengers of every airline using it are exposed at once — Air India was one of several carriers affected by this incident.</p>
+
+        <h3>How far back did the data go?</h3>
+        <p>Air India said the compromised data covered passengers registered between August 2011 and February 2021 — roughly ten years. Long retention is the quiet multiplier in breaches like this: the intrusion lasted weeks, and the damage covered a decade.</p>
+
+        <h3>Was payment card data included?</h3>
+        <p>Some card data was reported as affected, but Air India stated that CVV and CVC security codes were not held by it. Passport information is the more durable concern, since a passport number stays valid for years and supports identity fraud in ways an expiring card does not.</p>
+
+        <h3>What should affected passengers do?</h3>
+        <p>Change frequent flyer passwords, particularly if reused; watch for travel-themed phishing that references real bookings; and be alert to identity verification requests that quote passport details. Where a passport has since been renewed, the risk from the old number falls away naturally.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Air India customer notification and statements, May 2021</b></li>
+        <li><b>SITA statements on the Passenger Service System security incident, March 2021</b></li>
+        <li><b>Disclosures from other affected carriers, March–May 2021</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/moveit-2023.html">MOVEit, 2023: one file transfer product, 2,700 organisations</a></li>
+        <li><a href="/breaches/case-files/marriott-starwood-2018.html">Marriott and Starwood, 2018: a breach that came with the acquisition</a></li>
+        <li><a href="/breaches/case-files/optus-2022.html">Optus, 2022: an API with no lock on it, and 9.8 million Australians</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

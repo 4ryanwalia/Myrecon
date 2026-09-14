@@ -1,0 +1,84 @@
+<!--
+{
+  "headline": "0ktapus, 2022: one text message, one hundred and thirty companies",
+  "seoTitle": "0ktapus Phishing 2022: Twilio, Signal and the MFA Lesson",
+  "subject": "0ktapus phishing campaign",
+  "kicker": "2022 · Phishing campaign",
+  "description": "A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies. Cloudflare was targeted with the same messages and lost nothing.",
+  "cardBlurb": "The difference between the companies that fell and the one that did not was not training, vigilance or luck. It was the type of second factor they used.",
+  "records": "~9,900 accounts and ~5,400 one-time codes captured across 130+ organisations",
+  "occurred": "July – August 2022",
+  "disclosed": "August 2022",
+  "vector": "SMS phishing to employees, directing them to convincing fake single sign-on pages that relayed credentials and one-time codes in real time",
+  "actor": "A group tracked as 0ktapus / Scatter Swine, overlapping with what later became known as Scattered Spider",
+  "cost": "Not disclosed; downstream compromises at Twilio, Signal, DoorDash, Mailchimp and others",
+  "exposed": ["Corporate credentials", "One-time passcodes", "Customer support tooling access", "Phone numbers of 1,900 Signal users"],
+  "sortDate": "2022-08-07",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["lastpass-2022", "mgm-resorts-2023", "twitter-2022"],
+  "faq": [
+    { "q": "If they had one-time codes, is two-factor authentication useless?", "a": "No — the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one." },
+    { "q": "What actually happened to Twilio customers?", "a": "Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them." },
+    { "q": "Why is it called 0ktapus?", "a": "Group-IB, which analysed the campaign, named it after the phishing pages themselves — most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises." },
+    { "q": "How did attackers know which employees to text?", "a": "Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file." }
+  ],
+  "sources": [
+    { "label": "Group-IB — Roasting 0ktapus: the phishing campaign going after Okta identity credentials", "url": "https://www.group-ib.com/blog/0ktapus/", "note": "the analysis that mapped the campaign's scale" },
+    { "label": "Twilio incident report, August 2022", "url": "https://www.twilio.com/en-us/blog/august-2022-social-engineering-attack" },
+    { "label": "Cloudflare — The mechanics of a sophisticated phishing scam and how we stopped it", "url": "https://blog.cloudflare.com/2022-07-sms-phishing-attacks/" },
+    { "label": "Signal statement on the Twilio incident, August 2022" }
+  ]
+}
+-->
+<p class="lead">In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p>
+
+<h2>What happened</h2>
+
+<p>The campaign was industrial rather than clever. The attackers registered domains combining a target company's name with words like <code>-sso</code>, <code>-okta</code> or <code>-help</code>, stood up phishing pages that mirrored each company's real login screen, and sent SMS messages to employees' personal mobile numbers claiming a password reset or schedule change required them to log in.</p>
+
+<p>The important mechanism was what happened next. The phishing page did not simply store the credentials for later. It relayed them to the real login page immediately, in real time, and when the real service asked for a one-time code, the phishing page asked the victim for it and relayed that too. The victim experienced a login that appeared to work. The attacker got a live session.</p>
+
+<p>Group-IB's later analysis found roughly 9,900 sets of credentials and about 5,400 one-time codes captured, across more than 130 organisations. The targeting concentrated on technology, telecoms and cryptocurrency companies — which is to say, on companies whose systems provide access to other companies' customers.</p>
+
+<div class="callout">
+  <p><strong>Why a one-time code is not phishing-resistant.</strong> A code from an app or a text message is a shared secret that the human copies from one place to another. Anything that can convince the human to copy it into the wrong box defeats it, and the attacker has thirty seconds to use it, which is plenty when the relay is automated. A security key or passkey is different in kind, not degree: the browser performs a cryptographic challenge that is bound to the real domain name. Present it a lookalike domain and it will not produce a signature at all. There is nothing for the user to get wrong.</p>
+</div>
+
+<h2>The company it did not work on</h2>
+
+<p>Cloudflare was targeted in the same campaign, with the same message format, within the same minutes. Its employees received 76 messages. Some of them clicked. Some of them entered their credentials on the fake page.</p>
+
+<p>The attack failed at the next step. Cloudflare required hardware security keys for all employees, and the keys would not authenticate to a domain that was not Cloudflare's. The attackers had valid passwords and no way to use them. Cloudflare published a detailed account of the attempt, including the fact that its own people had been fooled by the message — which is the part worth dwelling on. The control that saved them did not depend on anyone spotting anything.</p>
+
+<h2>What the access was used for</h2>
+
+<p>Compromised employee accounts were not the objective. Customer support and administrative tooling was.</p>
+
+<ol class="cf-timeline">
+  <li><b>Twilio</b> — Attackers reached internal customer support systems. Twilio reported 209 customer accounts and 93 Authy users affected.</li>
+  <li><b>Signal</b> — Twilio provides Signal's phone number verification. About 1,900 users' phone numbers were exposed and a small number of accounts were re-registered to attacker devices. Message history was not exposed; Signal cannot read it.</li>
+  <li><b>DoorDash</b> — Disclosed a breach traced to a compromised third-party vendor in the same campaign, exposing customer and delivery worker data.</li>
+  <li><b>Mailchimp</b> — A compromise of internal tooling led to access to customer accounts, which in turn led to the compromise of mailing lists belonging to its customers, including cryptocurrency firms.</li>
+</ol>
+
+<p>Each of these is one step further from the original phishing text, and each step multiplies the affected population. A campaign against employees ended up affecting people who had never heard of Twilio.</p>
+
+<h2>What it changed</h2>
+
+<p><strong>Hardware keys and passkeys moved from best practice to baseline.</strong> Cloudflare's published account did more for the adoption of phishing-resistant authentication than any advisory. It was a controlled comparison run by accident: same attacker, same messages, same human error rate, different outcome.</p>
+
+<p><strong>SMS-based second factors began to be retired.</strong> Not only because of interception, which is the usually cited risk, but because the real-time relay attack makes any user-transcribed code replayable.</p>
+
+<p><strong>Customer support tooling got treated as production infrastructure.</strong> Support consoles that can look up any customer, reset any account or read any number had often been secured as internal tools. After 2022 a great many of them acquired stronger authentication, tighter scoping and actual audit logging.</p>
+
+<p><strong>The campaign's people became the next few years of intrusions.</strong> The social engineering tradecraft visible in 0ktapus — targeting recovery flows, impersonating IT, exploiting the phone — recurs directly in the attacks on Las Vegas casinos in 2023 and in a long run of help desk compromises since.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Move your most important accounts to passkeys or a security key.</strong> Email first, because email resets everything else. This is the single change that defeats the technique described here.</li>
+  <li><strong>Treat any login page you arrived at from a message as hostile.</strong> Not because you will spot the fake — the people in this case did not — but because navigating there yourself removes the attack entirely.</li>
+  <li><strong>A code you were asked for is more dangerous than a password you volunteered.</strong> Legitimate services do not phone or text asking you to read a code back. That request is, on its own, sufficient evidence of an attack.</li>
+  <li><strong>Assume your work phone number is known.</strong> It leaks from directories, breaches and conference lists, and it is the delivery channel for this entire class of attack.</li>
+</ol>

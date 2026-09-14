@@ -34,8 +34,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=2">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Under Armour data breach — 72,742,892 accounts exposed","description":"On 17 November 2025, Under Armour was breached. 72,742,892 accounts were exposed, including dates of birth, email addresses, genders. MyRecon rates it 68/100 — severe.","datePublished":"2026-01-21","dateModified":"2026-01-21","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/underarmour.html","image":"https://logos.haveibeenpwned.com/UnderArmour.png"}</script>
@@ -57,7 +57,7 @@
       <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
 
       <header class="bx-head">
-        <img class="bx-logo" src="https://logos.haveibeenpwned.com/UnderArmour.png" alt="" width="72" height="72" loading="lazy">
+        <img class="bx-logo" src="https://logos.haveibeenpwned.com/UnderArmour.png" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">
         <div>
           <span class="kicker">2025 · Data breach</span>
           <h1>Under Armour</h1>
@@ -80,10 +80,10 @@
         <label for="bxEmail">Was your address in this breach?</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
-                 placeholder="you@example.com" required>
-          <button class="btn btn-sm" type="submit">Check free</button>
+                 placeholder="you@example.com" required aria-describedby="bxEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note">Checked against this breach and every other on record. Your address is not stored, and the check runs against public breach data only.</p>
+        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <section class="bx-editorial">
@@ -159,9 +159,11 @@ sounds like.</p>
 
 
       <h2>Also in the archive</h2>
-      <ul class="bx-related"><li><a href="/breaches/synthientcredentialstuffingthreatdata.html">Synthient Credential Stuffing Threat Data</a> — 1,957,476,021 accounts</li><li><a href="/breaches/1win.html">1win</a> — 96,166,543 accounts</li><li><a href="/breaches/telegramcombolists.html">Combolists Posted to Telegram</a> — 361,468,099 accounts</li></ul>
+      <ul class="bx-related"><li><a href="/breaches/canadiantire.html">Canadian Tire</a> — 38,306,562 accounts</li><li><a href="/breaches/synthientcredentialstuffingthreatdata.html">Synthient Credential Stuffing Threat Data</a> — 1,957,476,021 accounts</li><li><a href="/breaches/alienstealerlogs.html">ALIEN TXTBASE Stealer Logs</a> — 284,132,969 accounts</li></ul>
+      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
-      <p class="bx-method">Severity is scored by MyRecon from the number of accounts, the sensitivity of the specific fields exposed, and whether the breach is confirmed — not by a language model. The description above is quoted from Have I Been Pwned; the analysis around it is ours.</p>
+
+      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself — every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
@@ -169,12 +171,13 @@ sounds like.</p>
   <footer class="footer">
     <div class="container"><div class="footer-bottom">
       <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/app.js?v=9"></script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>

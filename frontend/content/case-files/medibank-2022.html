@@ -1,0 +1,92 @@
+<!--
+{
+  "headline": "Medibank, 2022: the company said no, and the data went up anyway",
+  "seoTitle": "Medibank Hack 2022: Refusing to Pay, and the Fallout",
+  "subject": "Medibank data breach",
+  "kicker": "2022 · Health insurance",
+  "description": "Medibank refused to pay the ransom. The attackers published 9.7 million customers' health claims data in tranches, organised to cause the most distress.",
+  "cardBlurb": "A contractor's credential with no second factor, 9.7 million customers, and an extortion campaign designed around shame rather than fraud.",
+  "records": "9.7 million current and former customers; health claims data for about 480,000",
+  "peopleCount": 9700000,
+  "occurred": "August – October 2022",
+  "disclosed": "October 2022",
+  "vector": "Stolen credentials belonging to a third-party IT contractor, with no multi-factor authentication",
+  "actor": "Actors linked to the REvil ransomware ecosystem; Australia sanctioned Aleksandr Ermakov in 2024",
+  "cost": "Regulatory proceedings, class actions, and a A$250 million capital requirement imposed by the prudential regulator",
+  "exposed": ["Names", "Dates of birth", "Addresses", "Phone numbers", "Medicare and policy numbers", "Health claims data including procedures and diagnoses"],
+  "sortDate": "2022-10-13",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["optus-2022", "ashley-madison-2015", "change-healthcare-2024"],
+  "faq": [
+    { "q": "Why did Medibank refuse to pay?", "a": "The company said publicly that paying would not guarantee the data was returned or deleted, and would make Australian organisations a more attractive target. The Australian government supported the position. It is the correct analysis in the general case, and it also meant the customers in the file bore the consequences of a decision made on behalf of everyone else — which is the uncomfortable part nobody enjoys stating." },
+    { "q": "What made this breach different from Optus?", "a": "Optus lost identity documents, which can be replaced. Medibank lost health claims data — records of treatment, including procedures people had chosen not to tell anyone about. There is no reissue process for that. The attackers understood it, and published the most sensitive categories first." },
+    { "q": "How did the attackers get in?", "a": "Through credentials belonging to a third-party IT services contractor. The credentials did not have multi-factor authentication, so possession of the password was sufficient. They were used to reach Medibank's network, and roughly 200GB of data was taken over several weeks before detection." },
+    { "q": "Was anyone held responsible?", "a": "In January 2024 Australia used its cyber sanctions powers for the first time, against Aleksandr Ermakov, a Russian national it named as involved. Sanctions make it a criminal offence to provide him assets and freeze what can be reached. He has not stood trial. Separately, the privacy regulator commenced civil penalty proceedings against Medibank." }
+  ],
+  "sources": [
+    { "label": "Office of the Australian Information Commissioner — civil penalty proceedings against Medibank Private Limited, June 2024" },
+    { "label": "Australian Government — autonomous cyber sanctions announcement, January 2024" },
+    { "label": "Medibank cyber event updates and ASX announcements, October 2022 – 2023" },
+    { "label": "Australian Prudential Regulation Authority — capital adjustment, June 2023" }
+  ]
+}
+-->
+<p class="lead">Three weeks after Optus, Australia had a second national breach — and a much worse one. Medibank, the country's largest private health insurer, lost the records of 9.7 million current and former customers, including the claims histories of around 480,000. When it refused to pay, the attackers published the data in tranches, organised by diagnosis.</p>
+
+<h2>What happened</h2>
+
+<p>The intrusion began in August 2022 with credentials belonging to a third-party IT services contractor. Those credentials were not protected by multi-factor authentication, so whoever held the password held the access. They were used to reach Medibank's internal network, where the attackers moved through systems and eventually copied roughly 200 gigabytes of data.</p>
+
+<p>Medibank detected unusual activity in October and initially reported that no customer data appeared to have been taken. That position did not survive the week: the attackers contacted the company with a sample, and the disclosure was revised upward repeatedly until it covered essentially the entire customer base, past and present.</p>
+
+<div class="callout">
+  <p><strong>One missing control, again.</strong> The credential had no second factor. It is the same finding as <a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare</a> two years later and <a href="/breaches/case-files/colonial-pipeline-2021.html">Colonial Pipeline</a> the year before: an account belonging to a contractor or a legacy service, reachable from outside, protected by a password alone. The reason this keeps happening is not ignorance — every one of these organisations had an MFA programme. It is that the programme covered employees and missed the accounts at the edges.</p>
+</div>
+
+<h2>The extortion, and the refusal</h2>
+
+<p>The attackers demanded a ransom, reported at around US$10 million and later reduced. Medibank's chief executive announced that the company would not pay, on the reasoning that payment would not guarantee return or deletion of the data and would encourage further attacks on Australian organisations. The federal government publicly backed the decision.</p>
+
+<p>The attackers responded by publishing. Not all at once — in batches, over weeks, on a dark web site, with the files given names calculated to cause the maximum distress. One release was labelled for customers whose claims related to termination of pregnancy. Others grouped people by treatment for mental health and substance use.</p>
+
+<p>This was not monetisation. Nobody buys that data. It was pressure applied through the customers, and it worked in the sense that it dominated Australian news coverage for weeks — but Medibank did not reverse its decision.</p>
+
+<h2>Why health claims data is the worst category</h2>
+
+<p>Every other entry in this archive involves data that can, eventually, be neutralised. Cards get cancelled. Passwords get changed. Even passport numbers get reissued.</p>
+
+<p>A claims record says that a named person had a specific procedure on a specific date. It cannot be revoked, corrected or replaced, because it is true. The harm is not fraud; it is the fact of other people knowing — an employer, a family member, a community. For customers whose treatment involved reproductive health, mental health, addiction or HIV, the publication was the harm, complete on the day it happened.</p>
+
+<p>That is what puts Medibank in the same category as <a href="/breaches/case-files/ashley-madison-2015.html">Ashley Madison</a> rather than with the credential dumps, and it is why health data attracts the severity weighting it does.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>August 2022</b> — A contractor's credentials, without MFA, are used to access Medibank's network.</li>
+  <li><b>August–October</b> — Around 200GB of data is copied out.</li>
+  <li><b>12 October 2022</b> — Medibank detects unusual activity and takes systems offline.</li>
+  <li><b>19–26 October</b> — The scope is revised repeatedly; the attackers provide samples; the full customer base is confirmed as affected.</li>
+  <li><b>7 November 2022</b> — Medibank announces it will not pay the ransom.</li>
+  <li><b>9 November onwards</b> — Data is published in tranches on a dark web site, grouped by sensitive treatment category.</li>
+  <li><b>June 2023</b> — The prudential regulator imposes a A$250 million capital adjustment.</li>
+  <li><b>January 2024</b> — Australia imposes its first autonomous cyber sanctions, naming Aleksandr Ermakov.</li>
+  <li><b>June 2024</b> — The privacy regulator commences civil penalty proceedings.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Australia took a national position on ransom payments.</strong> Medibank is the reference case in every subsequent Australian discussion of whether to pay, and it shaped the ransomware reporting obligations introduced afterwards. The uncomfortable corollary — that refusing means the customers bear the consequence — is now argued openly rather than avoided.</p>
+
+<p><strong>Contractor access became the named weak point.</strong> Between Optus and Medibank, Australian regulators landed on the same conclusion within a month: the perimeter that matters is not the corporate network, it is every credential that can reach it, including those held by suppliers.</p>
+
+<p><strong>Sanctions entered the toolkit.</strong> Naming and sanctioning an individual was a deliberate shift from silence. It does not produce a trial, but it constrains the named person's ability to move money and signals that attribution work continues after the news cycle ends.</p>
+
+<h2>If you were a Medibank customer</h2>
+
+<ol class="bx-actions">
+  <li><strong>Nothing you do removes published claims data.</strong> That is a hard sentence, and it is the truthful one. What remains controllable is everything the data enables next.</li>
+  <li><strong>Expect targeted extortion and scams.</strong> Australians in the file received messages quoting their own claims history. That specificity is a sign of the leak, not a sign of legitimacy — no insurer or agency will demand payment to suppress your records.</li>
+  <li><strong>Protect the identity layer.</strong> Medicare and policy numbers were included; a credit ban and a port-out lock on your phone service are the two cheap controls that matter.</li>
+  <li><strong>Report extortion attempts</strong> to your national cybercrime service rather than engaging. Free counselling services were made available in Australia specifically for people affected by this breach, and using them is a reasonable response to a genuinely distressing situation.</li>
+</ol>

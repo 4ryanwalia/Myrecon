@@ -1,0 +1,95 @@
+<!--
+{
+  "headline": "OPM, 2015: 21.5 million security clearance files, fingerprints included",
+  "seoTitle": "OPM Breach 2015: The Security Clearance Files",
+  "subject": "US Office of Personnel Management data breach",
+  "kicker": "2015 · Government",
+  "description": "The US government lost the background investigation files of 21.5 million people — every relationship, debt and indiscretion disclosed to get a security clearance.",
+  "cardBlurb": "Not identity theft. Counterintelligence. The SF-86 form exists to record everything that could be used to pressure someone, and all of it was taken.",
+  "records": "21.5 million background investigation records, 4.2 million personnel records, 5.6 million fingerprints",
+  "peopleCount": 21500000,
+  "occurred": "2014 – April 2015",
+  "disclosed": "June 2015",
+  "vector": "Stolen contractor credentials, then malware providing persistent access",
+  "actor": "Attributed by US officials to actors working for China; never formally charged",
+  "cost": "$63 million class settlement; the agency's director resigned",
+  "exposed": ["Names", "Social Security numbers", "Addresses", "Employment and residency history", "Foreign contacts", "Financial difficulties", "Drug use and arrests disclosed on clearance forms", "Mental health history", "Fingerprints"],
+  "sortDate": "2015-06-04",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["anthem-2015", "equifax-2017", "marriott-starwood-2018"],
+  "faq": [
+    { "q": "What is an SF-86 and why does it matter?", "a": "It is the questionnaire used for US national security positions. To be cleared, an applicant discloses every address and job for a decade, every foreign contact and foreign travel, financial problems, arrests, drug use, alcohol issues and mental health treatment — plus the names and details of relatives, neighbours and references. The form exists precisely to surface anything that could be used to pressure a person. Losing a database of completed forms hands that inventory to someone else." },
+    { "q": "Why were fingerprints a bigger deal than Social Security numbers?", "a": "Because you cannot reissue a fingerprint. A stolen identifier that can never be changed matters most for people whose work depends on not being recognised — and biometric checks at borders and in secure facilities have become far more common since 2015." },
+    { "q": "Was anyone prosecuted for the OPM breach?", "a": "No one has been charged with the OPM intrusion itself. US officials publicly attributed it to Chinese actors, and a Chinese national was later arrested over related malware used in other intrusions, but no OPM prosecution has followed." },
+    { "q": "How was it finally detected?", "a": "During a vendor demonstration. A security product being trialled at OPM flagged malicious traffic that existing tools had not, which is how the first intrusion came to light in April 2015. Investigating it uncovered the second, far larger theft of the background investigation archive." }
+  ],
+  "sources": [
+    { "label": "US House Committee on Oversight and Government Reform — \"The OPM Data Breach: How the Government Jeopardized Our National Security for More than a Generation\", September 2016" },
+    { "label": "OPM cybersecurity incident notifications, June and July 2015", "url": "https://www.opm.gov/cybersecurity/" },
+    { "label": "US Office of the Inspector General audit reports on OPM information security, 2014–2015" },
+    { "label": "In re US Office of Personnel Management Data Security Breach Litigation — $63 million settlement, 2022" }
+  ]
+}
+-->
+<p class="lead">Most breaches cost people money. This one cost the United States a generation of counterintelligence cover. The Office of Personnel Management holds the background investigation files for anyone who has applied for a federal security clearance, and in 2015 it lost 21.5 million of them — along with 5.6 million sets of fingerprints.</p>
+
+<h2>What was in the files</h2>
+
+<p>To understand why this breach is in a different category, you have to understand what a completed SF-86 contains. The form is the application for a national security clearance, and applicants must disclose:</p>
+
+<ol class="cf-timeline">
+  <li><b>A decade of addresses, jobs and the people who can verify them</b> — including neighbours and references who never applied for anything.</li>
+  <li><b>Every foreign contact and foreign national relationship</b>, with names and the nature of the connection.</li>
+  <li><b>Financial history</b>: debts, bankruptcies, gambling problems, unpaid taxes.</li>
+  <li><b>Arrests, drug use and alcohol problems</b>, disclosed on the understanding that honesty is safer than concealment.</li>
+  <li><b>Mental health treatment</b>, and the details of relatives and cohabitants.</li>
+</ol>
+
+<p>The form exists to compile, in one place, everything about a person that a hostile service might use to pressure them. Handing a completed archive of 21.5 million of these to a foreign intelligence service is, functionally, handing over the vulnerability assessment of an entire cleared workforce — plus the identities of their relatives, partners and references, none of whom ever consented to be in a government database at all.</p>
+
+<h2>How it happened</h2>
+
+<p>There were two intrusions, and OPM's own inspector general had been warning about the conditions that allowed them for years. Audit reports before 2015 repeatedly flagged systems operating without valid security authorisations, incomplete inventories and weak access controls.</p>
+
+<p>The initial foothold came through credentials belonging to a contractor that carried out background investigations. Once inside, the attackers installed malware for persistent access and moved laterally. The first intrusion, involving personnel records for 4.2 million current and former federal employees, was identified in April 2015 — and identified almost by accident, during a demonstration of a security product OPM was evaluating, which flagged traffic the incumbent tools had missed.</p>
+
+<div class="callout">
+  <p><strong>The second discovery was the serious one.</strong> Investigating the first intrusion revealed a separate, earlier and far larger theft: the background investigation archive itself, 21.5 million records, plus 5.6 million fingerprint images. The fingerprint figure was initially reported as 1.1 million and revised upwards in September 2015 — a familiar pattern in which the first number out of the door is the one everybody remembers and the wrong one.</p>
+</div>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>2013–2014</b> — Inspector general audits repeatedly report material weaknesses in OPM's information security.</li>
+  <li><b>2014</b> — Contractor credentials are compromised; attackers establish persistence.</li>
+  <li><b>April 2015</b> — A security tool under evaluation detects malicious traffic. The first intrusion is confirmed.</li>
+  <li><b>June 2015</b> — OPM announces the theft of 4.2 million personnel records.</li>
+  <li><b>July 2015</b> — The background investigation breach is announced: 21.5 million records. Director Katherine Archuleta resigns on 10 July.</li>
+  <li><b>September 2015</b> — The number of stolen fingerprint records is revised from 1.1 million to 5.6 million.</li>
+  <li><b>September 2016</b> — A House Oversight Committee report concludes the breach was preventable and that OPM's leadership had failed to act on years of warnings.</li>
+  <li><b>2022</b> — A $63 million class-action settlement is approved.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Federal cybersecurity got a sprint and then a strategy.</strong> The immediate response was a government-wide "cybersecurity sprint" — patch the critical vulnerabilities, cut the number of privileged users, and get multi-factor authentication onto privileged accounts at speed. The longer consequence was the creation of the National Background Investigation Bureau and, eventually, the transfer of that function to the Department of Defense, on the reasoning that a personnel agency was never the right custodian for counterintelligence-grade data.</p>
+
+<p><strong>Contractor access became a first-class control.</strong> The credentials that opened the door belonged to a company doing investigations on OPM's behalf. This is the same failure pattern as <a href="/breaches/case-files/target-2013.html">Target's refrigeration contractor</a> two years earlier, in a context where the consequences were national rather than financial.</p>
+
+<p><strong>Biometrics acquired a permanence problem in public.</strong> Before OPM, the argument that biometric identifiers cannot be reissued was largely theoretical. Afterwards there were 5.6 million concrete examples, and it shaped how fingerprint and face data have been regulated since.</p>
+
+<h2>Why it still matters a decade on</h2>
+
+<p>Stolen card numbers stop working. Stolen clearance files do not. A person who filled in an SF-86 in 2013 disclosing a relative abroad, a period of financial trouble and a course of counselling is still that person, and the file describing it is still accurate. The value of the archive to a foreign service is not what it enabled in 2015; it is what it enables across an entire career, as those applicants rise into more senior positions.</p>
+
+<p>That is the structural point worth taking from this case: for some categories of data, the exposure window is not measured in months. It is measured in working lifetimes.</p>
+
+<h2>If you were in it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Treat identity-verification questions as compromised for life.</strong> Anything a call centre might ask you to confirm — past addresses, employers, relatives' names — is in this file.</li>
+  <li><strong>Expect targeted approaches, not mass fraud.</strong> This data supports precise, patient social engineering rather than bulk card fraud. A message that knows your posting history and your relatives' names is the expected shape of the threat.</li>
+  <li><strong>Freeze credit anyway.</strong> The Social Security numbers in the file are also useful for ordinary financial fraud, and freezes are free.</li>
+  <li><strong>If you were a reference or relative on someone else's form</strong>, you are in the data without ever having applied. Apply the same assumptions.</li>
+</ol>

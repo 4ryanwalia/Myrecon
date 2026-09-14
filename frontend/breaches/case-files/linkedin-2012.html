@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn Breach 2012: From 6.5M Hashes to 165M | MyRecon</title>
+  <meta name="description" content="LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="LinkedIn Breach 2012: From 6.5M Hashes to 165M">
+  <meta property="og:description" content="LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LinkedIn Breach 2012: From 6.5M Hashes to 165M">
+  <meta name="twitter:description" content="LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts","description":"LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html","articleSection":"Case Files","about":{"@type":"Thing","name":"LinkedIn data breach"},"wordCount":956}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"LinkedIn data breach","item":"https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many LinkedIn accounts were breached?","acceptedAnswer":{"@type":"Answer","text":"Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale."}},{"@type":"Question","name":"What is an unsalted SHA-1 hash, and why was it a problem?","acceptedAnswer":{"@type":"Answer","text":"SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords — modern hardware tests billions of candidates per second. \"Unsalted\" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless."}},{"@type":"Question","name":"Was the 2021 \"700 million LinkedIn records\" leak the same thing?","acceptedAnswer":{"@type":"Answer","text":"No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event — no security control was bypassed, which is what makes scraping so hard to prevent."}},{"@type":"Question","name":"Did the LinkedIn breach cause other breaches?","acceptedAnswer":{"@type":"Answer","text":"Directly. A Dropbox employee reused their LinkedIn password on a corporate account, which led to the theft of 68 million Dropbox credentials. Mark Zuckerberg's Twitter and Pinterest accounts were taken over in 2016 using a password from the LinkedIn set. Reuse is what turns one company's failure into everyone's."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2012 · Professional network</span>
+          <h1>LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>165 million accounts (117 million with passwords)</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>June 2012</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>6 June 2012; full scale revealed May 2016</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Never fully detailed publicly; passwords stored as unsalted SHA-1</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Yevgeniy Nikulin, convicted in a US federal court in 2020</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>$1.25 million settlement with premium subscribers; a chain of secondary breaches at other companies</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Email addresses · Unsalted SHA-1 password hashes</p>
+
+<p class="lead">On 5 June 2012 someone posted a file of 6.5 million password hashes to a Russian password-cracking forum and asked for help with the ones they could not solve. The hashes were unsalted SHA-1. Within days, most of them were cracked, and LinkedIn confirmed the file was its own. It took another four years for anyone to learn that 6.5 million was a fraction of what had been taken.</p>
+
+<h2>What happened</h2>
+
+<p>LinkedIn's response in 2012 was the standard one: invalidate the affected passwords, email the users, and — belatedly — start salting and hashing properly. The company said 6.5 million accounts, because 6.5 million was what had appeared in public. The assumption everyone made, including LinkedIn, was that the leaked file was the extent of the theft.</p>
+
+<p>In May 2016 a seller using the name "Peace" listed 167 million LinkedIn accounts on a dark-web market for five bitcoin. The file contained roughly 117 million email-and-password pairs. It was the same 2012 intrusion; the rest of the haul had simply sat unsold for four years.</p>
+
+<p>That gap between a breach happening and a breach becoming fully known is the single most useful thing this case teaches. For four years, 110 million people had been told nothing was wrong with their account because nobody had yet chosen to sell their row.</p>
+
+<h2>Why the hashes fell so fast</h2>
+
+<p>SHA-1 is a cryptographic hash function built for speed — it exists to verify that a file has not changed, and it is very good at that. Speed is precisely the wrong property for password storage. A consumer graphics card can compute billions of SHA-1 hashes per second, so an attacker holding a list of hashes can simply try every word in a dictionary, every leaked password from every previous breach, and every plausible mutation of both.</p>
+
+<p>The missing salt made it worse. A salt is a unique random value stored with each user and mixed into the hash, so that two people who both choose <code>linkedin123</code> end up with completely different stored values. Without it, one cracking run answers for everybody at once: crack the hash for <code>linkedin123</code> once, and every account that used it falls simultaneously.</p>
+
+<div class="callout">
+  <p><strong>What proper storage looks like.</strong> A password-specific algorithm — bcrypt, scrypt or Argon2 — with a per-user salt and a cost factor tuned so that a single guess takes a measurable fraction of a second. That turns "billions of guesses per second" into "a few thousand", which is the difference between a file cracked over a weekend and a file that is not worth attacking. LinkedIn moved to salted hashing after 2012; the 2016 file was still the old format, because it was taken before the change.</p>
+</div>
+
+<h2>The damage other companies took</h2>
+
+<p>LinkedIn is the clearest case of a breach whose worst consequences landed somewhere else entirely.</p>
+
+<p><strong>Dropbox.</strong> A Dropbox employee had reused their LinkedIn password on a corporate account. Attackers used it to reach an internal system, and 68 million Dropbox credentials were taken. That file also surfaced in 2016.</p>
+
+<p><strong>Mark Zuckerberg.</strong> In June 2016 his Twitter and Pinterest accounts were taken over. The password reportedly came from the LinkedIn set and was, famously, <code>dadada</code>.</p>
+
+<p><strong>Everyone else.</strong> Once a hundred million real email-and-password pairs are in circulation, they become the fuel for credential stuffing: automated login attempts against banks, mailboxes, retailers and games, on the basis that a sizeable fraction of people reuse. The LinkedIn set has been folded into every large combination list since.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>5 June 2012</b> — 6.5 million unsalted SHA-1 hashes are posted to a cracking forum.</li>
+  <li><b>6 June 2012</b> — LinkedIn confirms the breach and begins resetting passwords.</li>
+  <li><b>2012–2013</b> — LinkedIn moves to salted hashing and adds optional two-factor authentication.</li>
+  <li><b>17 May 2016</b> — 167 million accounts are listed for sale; the true scale becomes clear.</li>
+  <li><b>June 2016</b> — Secondary account takeovers begin, including high-profile social media accounts.</li>
+  <li><b>October 2016</b> — Yevgeniy Nikulin is arrested in Prague at the request of the United States.</li>
+  <li><b>2020</b> — Nikulin is convicted of the intrusions at LinkedIn, Dropbox and Formspring and sentenced to 88 months.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>Three things came out of this case that are now simply how the industry works.</p>
+
+<p><strong>Salting stopped being optional.</strong> LinkedIn in 2012 was not an outlier — unsalted fast hashes were common. It became the example used to end the argument, and by the mid-2010s a security review that found unsalted SHA-1 treated it as a finding rather than a preference.</p>
+
+<p><strong>Breach numbers are provisional.</strong> The gap between 6.5 million and 165 million taught researchers to treat the first public figure as a floor, not a total. Have I Been Pwned's practice of revising records years later exists because of cases like this one.</p>
+
+<p><strong>Employee password reuse became a corporate risk, not a personal one.</strong> The Dropbox chain is the standard argument for enforcing password managers and phishing-resistant two-factor authentication on staff accounts: your company's security now depends on where your engineers signed up in 2011.</p>
+
+<h2>If you had a LinkedIn account before 2012</h2>
+
+<ol class="bx-actions">
+  <li><strong>The password is public.</strong> Assume it was cracked, because it almost certainly was. If any variation of it is still in use, replace it.</li>
+  <li><strong>Look for reuse, not just at LinkedIn.</strong> The value of this file to an attacker is what it opens elsewhere. Work through the accounts that matter — email first, then banking, then anything holding payment details.</li>
+  <li><strong>Turn on two-factor authentication.</strong> It is what makes a leaked password survivable. <a href="/guides/two-factor-authentication.html">The differences between SMS, app codes and security keys</a> matter here.</li>
+  <li><strong>Remember the scraped data is separate.</strong> Your public profile has also been copied wholesale into datasets that are traded openly; nothing about a password change touches that. Decide deliberately what your profile shows.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>How many LinkedIn accounts were breached?</h3>
+        <p>Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale.</p>
+
+        <h3>What is an unsalted SHA-1 hash, and why was it a problem?</h3>
+        <p>SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords — modern hardware tests billions of candidates per second. "Unsalted" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless.</p>
+
+        <h3>Was the 2021 &quot;700 million LinkedIn records&quot; leak the same thing?</h3>
+        <p>No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event — no security control was bypassed, which is what makes scraping so hard to prevent.</p>
+
+        <h3>Did the LinkedIn breach cause other breaches?</h3>
+        <p>Directly. A Dropbox employee reused their LinkedIn password on a corporate account, which led to the theft of 68 million Dropbox credentials. Mark Zuckerberg's Twitter and Pinterest accounts were taken over in 2016 using a password from the LinkedIn set. Reuse is what turns one company's failure into everyone's.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>LinkedIn security notices, June 2012 and May 2016</b></li>
+        <li><b>US Department of Justice — conviction of Yevgeniy Nikulin, 2020</b></li>
+        <li><b>In re LinkedIn User Privacy Litigation — $1.25 million settlement, 2015</b></li>
+        <li><a href="https://haveibeenpwned.com/PwnedWebsites#LinkedIn" target="_blank" rel="noopener nofollow">Have I Been Pwned — LinkedIn breach record</a></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/dropbox-2012.html">Dropbox, 2012: an employee reused a password, and 68 million accounts followed</a></li>
+        <li><a href="/breaches/case-files/myspace-2016.html">MySpace, 2016: 360 million accounts from a website nobody used any more</a></li>
+        <li><a href="/breaches/case-files/collection-1-2019.html">Collection #1, 2019: 773 million addresses, and nobody was breached</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

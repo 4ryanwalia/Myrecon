@@ -1,0 +1,79 @@
+<!--
+{
+  "headline": "Twitter, 2022: an API that confirmed which account owned which email",
+  "seoTitle": "Twitter Breach 2022: The API That Deanonymised Accounts",
+  "subject": "Twitter API data exposure",
+  "kicker": "2022 · Social network",
+  "description": "A bug let anyone submit an email address or phone number and be told which Twitter account it belonged to. For pseudonymous users, that is the whole threat model.",
+  "cardBlurb": "The damage was not stolen passwords. It was the link between a real identity and an anonymous account — which cannot be undone.",
+  "records": "5.4 million accounts confirmed; a larger compilation circulated later",
+  "peopleCount": 5400000,
+  "occurred": "June 2021 – January 2022",
+  "disclosed": "August 2022",
+  "vector": "An API flaw allowing an email address or phone number to be resolved to an account",
+  "actor": "Reported responsibly in January 2022; the data was later sold and then published",
+  "cost": "Regulatory inquiry in Ireland; irreversible deanonymisation for affected users",
+  "exposed": ["Email addresses", "Phone numbers", "The linked account handle and public profile data"],
+  "sortDate": "2022-08-05",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["facebook-scrape-2021", "23andme-2023", "linkedin-2012"],
+  "faq": [
+    { "q": "What was the actual bug?", "a": "A change introduced in 2021 meant that submitting an email address or phone number to a particular endpoint would return the associated account, if one existed. That is a feature in a contact-matching context and a deanonymisation tool in a platform where many users deliberately keep their identity separate from their handle." },
+    { "q": "Why is this worse than a password leak?", "a": "Because you can change a password. You cannot unlink a real identity from a pseudonymous account once someone has published the mapping. For activists, journalists' sources, people writing under a pseudonym about their health or sexuality, and anyone in a country where their speech is criminalised, that link is the thing the account existed to protect." },
+    { "q": "Was it reported responsibly first?", "a": "Yes. A researcher reported the flaw through Twitter's bug bounty programme in January 2022 and was paid for it, and the flaw was fixed. The data had already been extracted before the fix, and it was offered for sale that July and published later." },
+    { "q": "What about the \"200 million\" dataset?", "a": "A larger compilation circulated in early 2023. Analyses indicated it was substantially derived from the same underlying extraction, deduplicated and combined with other scraped data, rather than being a new and separate breach. As with all aggregate claims, the unique-record count is the number that matters." }
+  ],
+  "sources": [
+    { "label": "Twitter security incident statement, August 2022" },
+    { "label": "Irish Data Protection Commission — announcement of inquiry, December 2022" },
+    { "label": "HackerOne report and researcher disclosure, January 2022" }
+  ]
+}
+-->
+<p class="lead">The Twitter incident of 2022 exposed no passwords, no messages and no payment details. It exposed a mapping: this email address belongs to that account. For a platform where a large number of people deliberately keep their name and their handle apart, that single fact was the most damaging thing that could have leaked.</p>
+
+<h2>What happened</h2>
+
+<p>A change introduced to a Twitter API in June 2021 meant that an email address or phone number submitted to a particular endpoint would return the account associated with it. Contact-matching features work this way by design — it is how "find your friends" works — but exposing it in this form, at scale and without adequate limits, turns it into a lookup service.</p>
+
+<p>A researcher reported the flaw through Twitter's bug bounty programme in January 2022 and was paid; the flaw was fixed. Before that, however, someone had used it to build a dataset.</p>
+
+<p>In July 2022 a file covering 5.4 million accounts was offered for sale. Twitter confirmed the vulnerability and the resulting exposure in August. The data was later published freely, and in early 2023 a much larger compilation circulated, which analyses suggested was substantially the same extraction combined with other scraped material rather than a fresh breach.</p>
+
+<div class="callout">
+  <p><strong>Enumeration is a category, not an accident.</strong> Any function that answers "does an account exist for this identifier?" can be turned into a directory by someone willing to ask enough times. The same failure produced the <a href="/breaches/case-files/facebook-scrape-2021.html">533 million Facebook records</a>. The fix is never to remove the feature; it is to make bulk use expensive — rate limits per identity rather than per address, anomaly detection on query patterns, and returning answers that do not confirm existence to unauthenticated callers.</p>
+</div>
+
+<h2>Why deanonymisation is a different kind of harm</h2>
+
+<p>Most breach advice is about remediation: change this, freeze that, watch for the other. None of it applies here, because there is nothing to change.</p>
+
+<p>Consider who uses a pseudonymous account and why:</p>
+
+<ol class="cf-timeline">
+  <li><b>People writing about their own health, sexuality or faith</b> in contexts where being identified carries real social or legal consequences.</li>
+  <li><b>Sources and whistleblowers</b>, whose safety depends on their contact with journalists being unattributable.</li>
+  <li><b>Activists and dissidents</b> in countries where an identified critic is arrested rather than argued with.</li>
+  <li><b>People who have left abusive relationships</b>, for whom the link between an identity and an account is a physical safety matter.</li>
+  <li><b>Ordinary people</b> who simply preferred that their employer not read their opinions.</li>
+</ol>
+
+<p>For every group on that list, the mapping is the harm, it is permanent, and it was published.</p>
+
+<h2>What it changed</h2>
+
+<p><strong>Enumeration protections became standard.</strong> Platforms reviewed every endpoint that confirms an identifier resolves to an account — registration forms, password reset flows, contact matching — and moved to responses that do not distinguish between existing and non-existing accounts.</p>
+
+<p><strong>Pseudonymity got treated as a security property.</strong> It had often been framed as a nuisance in policy debates about real-name requirements. This case forced a clearer articulation of what pseudonymity protects and who relies on it, and it fed directly into European regulatory scrutiny of platform design.</p>
+
+<p><strong>The lifecycle of a reported bug got attention.</strong> The flaw was responsibly reported and fixed; the damage had already been done in the seven months it was live. Fixing a vulnerability does not remediate the exploitation that preceded it, and incident response has to start with "what was taken before we closed it?", not "is it closed now?".</p>
+
+<h2>If you use a pseudonymous account anywhere</h2>
+
+<ol class="bx-actions">
+  <li><strong>Register it with an address and number that are not linked to your name.</strong> A dedicated email address used for nothing else is the single most effective separation available.</li>
+  <li><strong>Do not attach a phone number you use elsewhere.</strong> Where two-factor authentication is required, use an authenticator app rather than SMS — <a href="/guides/two-factor-authentication.html">the practical differences</a>.</li>
+  <li><strong>Assume the link can be made and plan for it.</strong> If being identified would be dangerous, treat the account as potentially identifiable and post accordingly.</li>
+  <li><strong>Audit what your accounts already reveal about each other</strong> — reused handles, profile photos, writing style and posting times all link identities without any API assistance — <a href="/guides/username-osint-search.html">how that correlation actually works</a>.</li>
+</ol>

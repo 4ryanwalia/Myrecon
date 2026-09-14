@@ -1,0 +1,96 @@
+<!--
+{
+  "headline": "Ashley Madison, 2015: when the data itself was the weapon",
+  "seoTitle": "Ashley Madison Hack 2015: What Was Leaked and Why",
+  "subject": "Ashley Madison data breach",
+  "kicker": "2015 · Dating",
+  "description": "The Impact Team did not sell the Ashley Madison data. They published it — 32 million people, a paid deletion service that did not delete, and consequences measured in lives.",
+  "cardBlurb": "Good password hashing, catastrophic everything else. The breach that proved some data is dangerous purely because of what it implies about a person.",
+  "records": "32 million user records",
+  "peopleCount": 32000000,
+  "occurred": "July 2015",
+  "disclosed": "19 July 2015; data published 18–20 August 2015",
+  "vector": "Never publicly established; the attackers claimed insider-level access",
+  "actor": "A group calling itself The Impact Team. Never identified.",
+  "cost": "$1.6 million FTC and state settlement, $11.2 million class settlement, the chief executive's job",
+  "exposed": ["Names", "Email addresses", "Home addresses", "Partial card data and transaction records", "Sexual preferences stated on profiles", "bcrypt password hashes, plus a weak legacy token"],
+  "sortDate": "2015-08-18",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["medibank-2022", "23andme-2023", "sony-pictures-2014"],
+  "faq": [
+    { "q": "Were Ashley Madison passwords cracked?", "a": "Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password — a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase." },
+    { "q": "Did Ashley Madison really charge to delete data it kept?", "a": "It offered a paid \"full delete\" option, and regulators found that the deletion was not complete — payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case." },
+    { "q": "Were all the accounts real people?", "a": "No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address — which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users." },
+    { "q": "Was anyone caught?", "a": "No. The Impact Team was never identified, and no charges were ever brought. The company's chief executive resigned, the business was renamed Ruby Corp, and Ashley Madison continues to operate." }
+  ],
+  "sources": [
+    { "label": "Federal Trade Commission — Ashley Madison settlement, December 2016", "url": "https://www.ftc.gov/news-events/news/press-releases/2016/12/operators-ashleymadisoncom-settle-ftc-state-charges-resulting-massive-data-breach" },
+    { "label": "Joint report of the Privacy Commissioner of Canada and the Australian Privacy Commissioner, August 2016" },
+    { "label": "CynoSure Prime analysis of the legacy login token, September 2015" }
+  ]
+}
+-->
+<p class="lead">Every other case file here is about data being stolen for money. Ashley Madison is the one where the data was taken in order to be published, by people who wanted the exposure itself to be the punishment — and it is the clearest demonstration that the harm from a breach is not always fraud. Sometimes it is simply that someone now knows.</p>
+
+<h2>What happened</h2>
+
+<p>On 19 July 2015, visitors to Ashley Madison — a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media — were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently. This was not a ransom in the usual sense: there was no price. The demand was that the business cease to exist.</p>
+
+<p>Avid Life Media did not comply. On 18 and 20 August, the attackers published, in two releases: roughly 32 million user records, internal company documents, source code, and the chief executive's email archive. It was posted openly and mirrored instantly. Within days, searchable web front-ends existed for anyone to check a name or an email address.</p>
+
+<h2>The password story</h2>
+
+<p>Ashley Madison did something most breached companies of that era did not: it stored passwords with bcrypt at a high cost factor. That is real, correct password hashing — slow by design, salted per user, resistant to large-scale cracking. For a few weeks after the dump, the passwords held.</p>
+
+<div class="callout">
+  <p><strong>Then the second copy was found.</strong> Researchers working through the leaked source code found a legacy authentication token that had been generated from an MD5 hash of the username and password, lowercased. MD5 is fast and the token was effectively a weaker duplicate of the same secret. Around 11 million passwords fell almost immediately. The lesson is one that recurs in modern breaches: your password storage is only as strong as the weakest place that secret exists in your system, including the old code path nobody remembers.</p>
+</div>
+
+<h2>The parts that were not technical</h2>
+
+<p>Two findings from the joint Canadian and Australian privacy investigation stand out, because neither is about hackers.</p>
+
+<p><strong>The paid deletion that did not delete.</strong> Ashley Madison sold a "full delete" option: pay a fee, and your profile and data are removed. Regulators found the deletion was incomplete — the company retained information, including payment records, after taking money to erase it. Selling a privacy promise you do not keep converts a security incident into a deception case.</p>
+
+<p><strong>The fabricated trust mark.</strong> The site displayed a security award icon that no one had awarded it. Investigators found it had been created in-house. It is a small detail that tells you a great deal about how seriously the underlying controls were taken.</p>
+
+<p>And one more, which changes how the leaked list should be read: the service never verified email addresses at registration. Anyone could sign up with anyone's address. This is why the widely reported presence of government and military addresses in the file proved so little, and why treating the dump as a list of confirmed users was wrong from the first day.</p>
+
+<h2>The human cost</h2>
+
+<p>This is the part that separates Ashley Madison from every other entry in this archive. Within days of publication, extortion emails began arriving at addresses in the file — pay, or your spouse, employer and contacts get told. Some of the recipients had never used the service. It did not matter, because the accusation was the weapon.</p>
+
+<p>In Canada, police investigating the case reported suicides connected to the leak. A police captain in San Antonio took his own life days after the data appeared. Divorces, resignations and family breakdowns followed through the rest of the year, and in countries where same-sex relationships or adultery are criminalised, the exposure carried legal danger rather than social embarrassment.</p>
+
+<p>No fraud occurred in any of that. Nobody's money was stolen. The damage was done entirely by the fact of publication.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>19 July 2015</b> — The Impact Team announces the breach and demands the site be shut down.</li>
+  <li><b>18 and 20 August</b> — Around 32 million user records, internal documents and the CEO's emails are published.</li>
+  <li><b>Late August</b> — Extortion emails begin; searchable lookup sites appear; the first reported suicides.</li>
+  <li><b>28 August</b> — Chief executive Noel Biderman leaves the company.</li>
+  <li><b>September 2015</b> — Researchers recover roughly 11 million passwords through the legacy MD5 token.</li>
+  <li><b>August 2016</b> — Canadian and Australian privacy commissioners publish joint findings: inadequate security framework, retained data after paid deletion, a fabricated security trust mark.</li>
+  <li><b>December 2016</b> — FTC and 13 states settle for $1.6 million against a suspended $17.5 million judgment.</li>
+  <li><b>2017</b> — An $11.2 million class-action settlement is approved in the United States.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Sensitivity entered the risk calculation properly.</strong> Before Ashley Madison, breach severity was largely measured in identity-theft terms: how many card numbers, how many national identifiers. This case forced a second axis — what does this data imply about a person, and what happens to them if it is published? That axis now drives how health data, sexual-orientation data and location history are classified, and it is why the <a href="/breaches/">breach archive</a> weights those fields the way it does.</p>
+
+<p><strong>Deletion became auditable.</strong> "Delete my account" stopped being a UI affordance and became a claim regulators will test. The right to erasure written into the GDPR two years later has a very similar shape to the finding against Avid Life Media.</p>
+
+<p><strong>Unverified email addresses became a liability.</strong> Letting anyone register any address seemed harmless while the database was private. In a published dump it implicated people who had never visited the site, and there was no way to un-ring that bell.</p>
+
+<h2>If you were in it, or accused of being in it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Presence in the file is not proof of use.</strong> Addresses were never verified. Anyone reading the dump as a membership list is reading it wrong.</li>
+  <li><strong>Do not pay extortion demands.</strong> The data has been public for a decade; payment buys nothing and marks you as responsive. Report the attempt to your national cybercrime reporting service.</li>
+  <li><strong>Change any password used there, and anywhere it was reused.</strong> Eleven million were recovered from the weak token path.</li>
+  <li><strong>Think about what else you have signed up to under your real address.</strong> The general lesson of this case is that a service's discretion policy does not survive its database being published — see <a href="/guides/reduce-your-digital-footprint.html">how to find and shrink what is already out there</a>.</li>
+</ol>

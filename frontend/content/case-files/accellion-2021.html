@@ -1,0 +1,96 @@
+<!--
+{
+  "headline": "Accellion FTA, 2021: the rehearsal for MOVEit",
+  "seoTitle": "Accellion FTA Breach 2021: The First Mass File Transfer Hack",
+  "subject": "Accellion File Transfer Appliance breach",
+  "kicker": "2021 · Supply chain",
+  "description": "Attackers found zero-day flaws in a twenty-year-old file transfer appliance nearing end of life and used them to rob central banks, regulators and hospitals at once.",
+  "cardBlurb": "The vendor had been telling customers to migrate for years. The ones who had not were breached through a product that was already scheduled to die.",
+  "records": "Dozens of organisations; the Washington State Auditor alone reported 1.6 million individuals",
+  "occurred": "Mid-December 2020 – January 2021",
+  "disclosed": "January 2021",
+  "vector": "Chained zero-day vulnerabilities in Accellion's File Transfer Appliance, a legacy product approaching end of life",
+  "actor": "Cl0p, working with the group tracked as FIN11",
+  "cost": "Accellion settled a consolidated class action for $8.1 million in 2022; victim organisations bore their own costs",
+  "exposed": ["Personal and financial records", "Medical records", "Regulatory filings", "Legal documents", "Government and central bank data"],
+  "sortDate": "2021-01-12",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["moveit-2023", "solarwinds-2020", "change-healthcare-2024"],
+  "faq": [
+    { "q": "What is a file transfer appliance and why does it matter?", "a": "It is a server whose job is to move large, sensitive files between organisations — payroll to a bureau, claims to an insurer, evidence to a law firm. That makes it internet-facing by design and full of concentrated sensitive data by design, and it sits at the boundary between organisations so one compromise yields many parties' data. It is structurally the highest-leverage target class in enterprise software, and attackers worked that out before most defenders did." },
+    { "q": "How is this connected to the MOVEit breach?", "a": "Same crew, same playbook, two years earlier. Cl0p exploited Accellion FTA in December 2020, Fortra GoAnywhere in early 2023, and MOVEit in May 2023. Each time: a zero-day in managed file transfer software, mass automated exploitation, data theft rather than encryption, and extortion through a leak site. Accellion is where the model was proven." },
+    { "q": "Was the software out of date?", "a": "The File Transfer Appliance was roughly twenty years old and Accellion had been actively encouraging customers to migrate to its newer platform, with end of life scheduled for April 2021. The attack landed in the window between the vendor saying stop using this and customers actually stopping. That window is where a great deal of damage happens, because migration projects are slow and the deadline always feels soft until it is not." },
+    { "q": "Who was affected?", "a": "Among those who confirmed it publicly: the Reserve Bank of New Zealand, the Australian Securities and Investments Commission, the Washington State Auditor's Office, Kroger, Shell, Bombardier, the University of Colorado, Flagstar Bank, Health Net and the law firm Jones Day. The common factor was the appliance, not the sector — which is what makes supply chain incidents so hard to reason about in advance." }
+  ],
+  "sources": [
+    { "label": "Mandiant — Cyber Criminals Exploit Accellion FTA for Data Theft and Extortion", "url": "https://cloud.google.com/blog/topics/threat-intelligence/accellion-fta-exploit-detection-response", "note": "the technical analysis of the exploit chain" },
+    { "label": "Reserve Bank of New Zealand — independent review of the Accellion breach, August 2021", "url": "https://www.rbnz.govt.nz/", "note": "unusually candid post-incident report" },
+    { "label": "Washington State Auditor's Office breach notification, February 2021" },
+    { "label": "In re Accellion Inc. Data Breach Litigation, N.D. Cal.", "note": "$8.1 million settlement, 2022" }
+  ]
+}
+-->
+<p class="lead">Two and a half years before the MOVEit campaign put ninety million people's data on a leak site, the same criminal group ran the same attack against a different file transfer product and proved it worked. Almost nobody outside security noticed, which is why it happened again twice.</p>
+
+<h2>What happened</h2>
+
+<p>Accellion's File Transfer Appliance was a product with a long history. Organisations bought it to send sensitive files to external parties with encryption, access control and an audit trail — the kind of software that ends up holding payroll records, medical files, legal discovery and regulatory submissions, because that is exactly what it is for.</p>
+
+<p>By 2020 the product was around twenty years old. Accellion had a newer platform, had been encouraging customers to migrate, and had set end of life for April 2021.</p>
+
+<p>In mid-December 2020, attackers began exploiting a chain of previously unknown vulnerabilities in the appliance. The chain allowed unauthenticated access, execution of commands on the appliance, and installation of a web shell — a small piece of code giving persistent remote control. From there the attackers inventoried the files the appliance held and took them.</p>
+
+<p>Accellion issued patches within days of learning of each flaw. Further vulnerabilities in the same product surfaced in January as researchers and attackers both examined it more closely. Customers were patching against a moving target on a product they had already been told to stop using.</p>
+
+<div class="callout">
+  <p><strong>The end-of-life window is a predictable attack window.</strong> When a vendor announces a product's retirement, three things happen at once: engineering attention moves to the replacement, the remaining customer base is exactly those organisations least able to move quickly, and the announcement itself tells attackers which software is about to stop being defended. Attacking a product during its final year is close to optimal, and Accellion is the clearest demonstration of that logic being applied deliberately.</p>
+</div>
+
+<h2>Extortion without encryption</h2>
+
+<p>Cl0p did not deploy ransomware. It took files and threatened to publish them, listing victims on a leak site and releasing samples for organisations that did not engage.</p>
+
+<p>That model is now the dominant one, and Accellion is where it was validated at scale. Encryption is loud, triggers alarms, and can be defeated by good backups. Exfiltration is quiet, and there is no backup that protects against publication. A victim can restore every system perfectly and still be facing the same demand — which changes the negotiation completely.</p>
+
+<h2>Who it reached</h2>
+
+<ol class="cf-timeline">
+  <li><b>Reserve Bank of New Zealand</b> — A central bank, which commissioned and published an unusually frank independent review of its own failures afterwards.</li>
+  <li><b>Australian Securities and Investments Commission</b> — The corporate regulator, exposed through the appliance used for credit licence applications.</li>
+  <li><b>Washington State Auditor's Office</b> — Around 1.6 million individuals' unemployment claim data, including Social Security numbers and bank details.</li>
+  <li><b>Health Net, Flagstar Bank, Kroger, Shell, Bombardier, the University of Colorado, Jones Day</b> — Insurers, banks, retailers, manufacturers, universities and law firms, with no shared characteristic except the product.</li>
+</ol>
+
+<p>The Reserve Bank of New Zealand review is worth singling out. It found that the bank had treated the appliance as a self-contained system, had not fully understood what data was accumulating on it, and had not acted on the vendor's migration advice with sufficient urgency. Regulators being publicly honest about their own incidents is rare and disproportionately useful.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Mid-December 2020</b> — Exploitation of the first zero-day begins; Accellion patches within days.</li>
+  <li><b>January 2021</b> — Further vulnerabilities in the appliance are found and patched; victims begin disclosing.</li>
+  <li><b>February 2021</b> — Cl0p starts publishing stolen data and naming victims; the Washington State Auditor notifies 1.6 million people.</li>
+  <li><b>April 2021</b> — The File Transfer Appliance reaches its scheduled end of life.</li>
+  <li><b>August 2021</b> — The Reserve Bank of New Zealand publishes its independent review.</li>
+  <li><b>2022</b> — Accellion settles a consolidated class action for $8.1 million.</li>
+  <li><b>2023</b> — Cl0p runs the same playbook against Fortra GoAnywhere in February and MOVEit in May.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Not enough, which is the point of including it.</strong> The Accellion campaign established the target class, the technique and the extortion model in full public view. Two years later MOVEit produced a far larger version of the same event. The industry's collective response to a warning shot is the actual lesson here.</p>
+
+<p><strong>File transfer products started getting inventoried.</strong> Security teams that did the work after Accellion generally found more of these appliances than they expected, holding more data than anyone intended, going back further than anyone had realised.</p>
+
+<p><strong>Data retention on transfer systems became a control.</strong> The single most effective mitigation among victims was the least technical: not having years of completed transfers still sitting there. A transfer product that retains everything is a warehouse pretending to be a pipe.</p>
+
+<p><strong>End-of-life notices got read as risk notices.</strong> Vendor retirement dates moved from procurement paperwork into risk registers, with the deadline treated as a hard security boundary rather than a commercial suggestion.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Find out where your organisation sends large files externally.</strong> The answer is usually more systems than the official one, and the unofficial ones are the unpatched ones.</li>
+  <li><strong>Delete completed transfers on a schedule.</strong> Data you no longer hold cannot be taken, and nothing else you do will match that for effectiveness.</li>
+  <li><strong>Treat an end-of-life announcement as a countdown on a security control.</strong> The last year of a product's life is when it is least defended and most targeted.</li>
+  <li><strong>If you were notified by an organisation you deal with, the exposure depends on what they sent through it.</strong> Payroll, claims and benefits files are unusually complete records of a person — name, address, date of birth, national ID and bank details in a single row.</li>
+</ol>

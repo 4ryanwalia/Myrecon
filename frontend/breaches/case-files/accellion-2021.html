@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accellion FTA Breach 2021: The First Mass File Transfer Hack</title>
+  <meta name="description" content="Attackers found zero-day flaws in a twenty-year-old file transfer appliance nearing end of life and used them to rob central banks, regulators and hospitals…">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/accellion-2021.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Accellion FTA Breach 2021: The First Mass File Transfer Hack">
+  <meta property="og:description" content="Attackers found zero-day flaws in a twenty-year-old file transfer appliance nearing end of life and used them to rob central banks, regulators and hospitals…">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/accellion-2021.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Accellion FTA Breach 2021: The First Mass File Transfer Hack">
+  <meta name="twitter:description" content="Attackers found zero-day flaws in a twenty-year-old file transfer appliance nearing end of life and used them to rob central banks, regulators and hospitals…">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Accellion FTA, 2021: the rehearsal for MOVEit","description":"Attackers found zero-day flaws in a twenty-year-old file transfer appliance nearing end of life and used them to rob central banks, regulators and hospitals at once.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/accellion-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Accellion File Transfer Appliance breach"},"wordCount":948}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Accellion File Transfer Appliance breach","item":"https://www.myrecon.xyz/breaches/case-files/accellion-2021.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a file transfer appliance and why does it matter?","acceptedAnswer":{"@type":"Answer","text":"It is a server whose job is to move large, sensitive files between organisations — payroll to a bureau, claims to an insurer, evidence to a law firm. That makes it internet-facing by design and full of concentrated sensitive data by design, and it sits at the boundary between organisations so one compromise yields many parties' data. It is structurally the highest-leverage target class in enterprise software, and attackers worked that out before most defenders did."}},{"@type":"Question","name":"How is this connected to the MOVEit breach?","acceptedAnswer":{"@type":"Answer","text":"Same crew, same playbook, two years earlier. Cl0p exploited Accellion FTA in December 2020, Fortra GoAnywhere in early 2023, and MOVEit in May 2023. Each time: a zero-day in managed file transfer software, mass automated exploitation, data theft rather than encryption, and extortion through a leak site. Accellion is where the model was proven."}},{"@type":"Question","name":"Was the software out of date?","acceptedAnswer":{"@type":"Answer","text":"The File Transfer Appliance was roughly twenty years old and Accellion had been actively encouraging customers to migrate to its newer platform, with end of life scheduled for April 2021. The attack landed in the window between the vendor saying stop using this and customers actually stopping. That window is where a great deal of damage happens, because migration projects are slow and the deadline always feels soft until it is not."}},{"@type":"Question","name":"Who was affected?","acceptedAnswer":{"@type":"Answer","text":"Among those who confirmed it publicly: the Reserve Bank of New Zealand, the Australian Securities and Investments Commission, the Washington State Auditor's Office, Kroger, Shell, Bombardier, the University of Colorado, Flagstar Bank, Health Net and the law firm Jones Day. The common factor was the appliance, not the sector — which is what makes supply chain incidents so hard to reason about in advance."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2021 · Supply chain</span>
+          <h1>Accellion FTA, 2021: the rehearsal for MOVEit</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>Dozens of organisations; the Washington State Auditor alone reported 1.6 million individuals</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>Mid-December 2020 – January 2021</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>January 2021</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Chained zero-day vulnerabilities in Accellion's File Transfer Appliance, a legacy product approaching end of life</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Cl0p, working with the group tracked as FIN11</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>Accellion settled a consolidated class action for $8.1 million in 2022; victim organisations bore their own costs</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Personal and financial records · Medical records · Regulatory filings · Legal documents · Government and central bank data</p>
+
+<p class="lead">Two and a half years before the MOVEit campaign put ninety million people's data on a leak site, the same criminal group ran the same attack against a different file transfer product and proved it worked. Almost nobody outside security noticed, which is why it happened again twice.</p>
+
+<h2>What happened</h2>
+
+<p>Accellion's File Transfer Appliance was a product with a long history. Organisations bought it to send sensitive files to external parties with encryption, access control and an audit trail — the kind of software that ends up holding payroll records, medical files, legal discovery and regulatory submissions, because that is exactly what it is for.</p>
+
+<p>By 2020 the product was around twenty years old. Accellion had a newer platform, had been encouraging customers to migrate, and had set end of life for April 2021.</p>
+
+<p>In mid-December 2020, attackers began exploiting a chain of previously unknown vulnerabilities in the appliance. The chain allowed unauthenticated access, execution of commands on the appliance, and installation of a web shell — a small piece of code giving persistent remote control. From there the attackers inventoried the files the appliance held and took them.</p>
+
+<p>Accellion issued patches within days of learning of each flaw. Further vulnerabilities in the same product surfaced in January as researchers and attackers both examined it more closely. Customers were patching against a moving target on a product they had already been told to stop using.</p>
+
+<div class="callout">
+  <p><strong>The end-of-life window is a predictable attack window.</strong> When a vendor announces a product's retirement, three things happen at once: engineering attention moves to the replacement, the remaining customer base is exactly those organisations least able to move quickly, and the announcement itself tells attackers which software is about to stop being defended. Attacking a product during its final year is close to optimal, and Accellion is the clearest demonstration of that logic being applied deliberately.</p>
+</div>
+
+<h2>Extortion without encryption</h2>
+
+<p>Cl0p did not deploy ransomware. It took files and threatened to publish them, listing victims on a leak site and releasing samples for organisations that did not engage.</p>
+
+<p>That model is now the dominant one, and Accellion is where it was validated at scale. Encryption is loud, triggers alarms, and can be defeated by good backups. Exfiltration is quiet, and there is no backup that protects against publication. A victim can restore every system perfectly and still be facing the same demand — which changes the negotiation completely.</p>
+
+<h2>Who it reached</h2>
+
+<ol class="cf-timeline">
+  <li><b>Reserve Bank of New Zealand</b> — A central bank, which commissioned and published an unusually frank independent review of its own failures afterwards.</li>
+  <li><b>Australian Securities and Investments Commission</b> — The corporate regulator, exposed through the appliance used for credit licence applications.</li>
+  <li><b>Washington State Auditor's Office</b> — Around 1.6 million individuals' unemployment claim data, including Social Security numbers and bank details.</li>
+  <li><b>Health Net, Flagstar Bank, Kroger, Shell, Bombardier, the University of Colorado, Jones Day</b> — Insurers, banks, retailers, manufacturers, universities and law firms, with no shared characteristic except the product.</li>
+</ol>
+
+<p>The Reserve Bank of New Zealand review is worth singling out. It found that the bank had treated the appliance as a self-contained system, had not fully understood what data was accumulating on it, and had not acted on the vendor's migration advice with sufficient urgency. Regulators being publicly honest about their own incidents is rare and disproportionately useful.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Mid-December 2020</b> — Exploitation of the first zero-day begins; Accellion patches within days.</li>
+  <li><b>January 2021</b> — Further vulnerabilities in the appliance are found and patched; victims begin disclosing.</li>
+  <li><b>February 2021</b> — Cl0p starts publishing stolen data and naming victims; the Washington State Auditor notifies 1.6 million people.</li>
+  <li><b>April 2021</b> — The File Transfer Appliance reaches its scheduled end of life.</li>
+  <li><b>August 2021</b> — The Reserve Bank of New Zealand publishes its independent review.</li>
+  <li><b>2022</b> — Accellion settles a consolidated class action for $8.1 million.</li>
+  <li><b>2023</b> — Cl0p runs the same playbook against Fortra GoAnywhere in February and MOVEit in May.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Not enough, which is the point of including it.</strong> The Accellion campaign established the target class, the technique and the extortion model in full public view. Two years later MOVEit produced a far larger version of the same event. The industry's collective response to a warning shot is the actual lesson here.</p>
+
+<p><strong>File transfer products started getting inventoried.</strong> Security teams that did the work after Accellion generally found more of these appliances than they expected, holding more data than anyone intended, going back further than anyone had realised.</p>
+
+<p><strong>Data retention on transfer systems became a control.</strong> The single most effective mitigation among victims was the least technical: not having years of completed transfers still sitting there. A transfer product that retains everything is a warehouse pretending to be a pipe.</p>
+
+<p><strong>End-of-life notices got read as risk notices.</strong> Vendor retirement dates moved from procurement paperwork into risk registers, with the deadline treated as a hard security boundary rather than a commercial suggestion.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Find out where your organisation sends large files externally.</strong> The answer is usually more systems than the official one, and the unofficial ones are the unpatched ones.</li>
+  <li><strong>Delete completed transfers on a schedule.</strong> Data you no longer hold cannot be taken, and nothing else you do will match that for effectiveness.</li>
+  <li><strong>Treat an end-of-life announcement as a countdown on a security control.</strong> The last year of a product's life is when it is least defended and most targeted.</li>
+  <li><strong>If you were notified by an organisation you deal with, the exposure depends on what they sent through it.</strong> Payroll, claims and benefits files are unusually complete records of a person — name, address, date of birth, national ID and bank details in a single row.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>What is a file transfer appliance and why does it matter?</h3>
+        <p>It is a server whose job is to move large, sensitive files between organisations — payroll to a bureau, claims to an insurer, evidence to a law firm. That makes it internet-facing by design and full of concentrated sensitive data by design, and it sits at the boundary between organisations so one compromise yields many parties' data. It is structurally the highest-leverage target class in enterprise software, and attackers worked that out before most defenders did.</p>
+
+        <h3>How is this connected to the MOVEit breach?</h3>
+        <p>Same crew, same playbook, two years earlier. Cl0p exploited Accellion FTA in December 2020, Fortra GoAnywhere in early 2023, and MOVEit in May 2023. Each time: a zero-day in managed file transfer software, mass automated exploitation, data theft rather than encryption, and extortion through a leak site. Accellion is where the model was proven.</p>
+
+        <h3>Was the software out of date?</h3>
+        <p>The File Transfer Appliance was roughly twenty years old and Accellion had been actively encouraging customers to migrate to its newer platform, with end of life scheduled for April 2021. The attack landed in the window between the vendor saying stop using this and customers actually stopping. That window is where a great deal of damage happens, because migration projects are slow and the deadline always feels soft until it is not.</p>
+
+        <h3>Who was affected?</h3>
+        <p>Among those who confirmed it publicly: the Reserve Bank of New Zealand, the Australian Securities and Investments Commission, the Washington State Auditor's Office, Kroger, Shell, Bombardier, the University of Colorado, Flagstar Bank, Health Net and the law firm Jones Day. The common factor was the appliance, not the sector — which is what makes supply chain incidents so hard to reason about in advance.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><a href="https://cloud.google.com/blog/topics/threat-intelligence/accellion-fta-exploit-detection-response" target="_blank" rel="noopener nofollow">Mandiant — Cyber Criminals Exploit Accellion FTA for Data Theft and Extortion</a> — the technical analysis of the exploit chain</li>
+        <li><a href="https://www.rbnz.govt.nz/" target="_blank" rel="noopener nofollow">Reserve Bank of New Zealand — independent review of the Accellion breach, August 2021</a> — unusually candid post-incident report</li>
+        <li><b>Washington State Auditor's Office breach notification, February 2021</b></li>
+        <li><b>In re Accellion Inc. Data Breach Litigation, N.D. Cal.</b> — $8.1 million settlement, 2022</li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/moveit-2023.html">MOVEit, 2023: one file transfer product, 2,700 organisations</a></li>
+        <li><a href="/breaches/case-files/solarwinds-2020.html">SolarWinds, 2020: 18,000 organisations installed the backdoor themselves</a></li>
+        <li><a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare, 2024: one login, and American healthcare stopped billing</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

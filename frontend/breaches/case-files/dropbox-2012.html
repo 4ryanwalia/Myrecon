@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropbox Breach 2012: One Reused Employee Password | MyRecon</title>
+  <meta name="description" content="A Dropbox employee used their LinkedIn password on a corporate account. When LinkedIn was breached, so was Dropbox">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/dropbox-2012.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Dropbox Breach 2012: One Reused Employee Password">
+  <meta property="og:description" content="A Dropbox employee used their LinkedIn password on a corporate account. When LinkedIn was breached, so was Dropbox">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/dropbox-2012.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dropbox Breach 2012: One Reused Employee Password">
+  <meta name="twitter:description" content="A Dropbox employee used their LinkedIn password on a corporate account. When LinkedIn was breached, so was Dropbox">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Dropbox, 2012: an employee reused a password, and 68 million accounts followed","description":"A Dropbox employee used their LinkedIn password on a corporate account. When LinkedIn was breached, so was Dropbox — 68 million credentials, revealed four years later.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/dropbox-2012.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Dropbox data breach"},"wordCount":684}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Dropbox data breach","item":"https://www.myrecon.xyz/breaches/case-files/dropbox-2012.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How were Dropbox and LinkedIn connected?","acceptedAnswer":{"@type":"Answer","text":"A Dropbox employee used the same password on LinkedIn and on a Dropbox corporate account. The LinkedIn breach put that password into circulation, someone tried it against Dropbox, and it worked. Dropbox itself was not vulnerable to anything except its employee's password habits."}},{"@type":"Question","name":"Were the Dropbox passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Largely not. About half the hashes used bcrypt, which is designed for password storage and resists large-scale cracking; the rest used SHA-1 with a salt, which is weaker but far better than the unsalted hashes of the era. This is a case where good storage choices materially limited the damage."}},{"@type":"Question","name":"Why did it take four years to learn the real scale?","acceptedAnswer":{"@type":"Answer","text":"In 2012 Dropbox disclosed that a stolen employee credential had exposed a document containing user email addresses, and users saw a wave of spam. The full credential file did not surface publicly until August 2016, when it appeared in the same wave of old datasets as LinkedIn and MySpace. Dropbox then forced a password reset for accounts that had not changed since 2012."}},{"@type":"Question","name":"What is the actual lesson?","acceptedAnswer":{"@type":"Answer","text":"That employee password reuse is a corporate risk, not a personal one. Enforcing a password manager, phishing-resistant multi-factor authentication and single sign-on for staff is the control — and it is cheaper than being the second victim of somebody else's breach."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2012 · Cloud storage</span>
+          <h1>Dropbox, 2012: an employee reused a password, and 68 million accounts followed</h1>
+          <p class="meta">Case file · 3 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>68.6 million accounts</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>Mid-2012</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>Confirmed at the time as an email exposure; full scale revealed August 2016</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>An employee's password, stolen in the LinkedIn breach, reused on a corporate account</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Yevgeniy Nikulin, convicted in the United States in 2020</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Email addresses · Password hashes — about half bcrypt, about half salted SHA-1</p>
+
+<p class="lead">Dropbox's 2012 breach is the shortest causal chain in this archive. An employee used their LinkedIn password on a Dropbox corporate account. LinkedIn was breached. Somebody tried the password. Sixty-eight million user credentials went out of the door — and nobody outside the company knew the real size of it for another four years.</p>
+
+<h2>What happened</h2>
+
+<p>In mid-2012, Dropbox disclosed that a stolen employee credential had been used to access a document containing user email addresses, which explained a wave of spam that users had been reporting. At the time, that was the story: a limited exposure, addresses only.</p>
+
+<p>In August 2016 a file containing 68.6 million Dropbox account records — email addresses and password hashes — surfaced publicly, in the same wave of aged datasets that brought <a href="/breaches/case-files/linkedin-2012.html">LinkedIn</a> and <a href="/breaches/case-files/myspace-2016.html">MySpace</a> to market. Dropbox confirmed it was from the same 2012 incident and forced a password reset for every account that had not changed its password since.</p>
+
+<p>The intrusions were later tied to Yevgeniy Nikulin, who was convicted in the United States in 2020 for the LinkedIn, Dropbox and Formspring breaches.</p>
+
+<h2>The bit Dropbox got right</h2>
+
+<p>It is worth being fair here, because this archive is mostly a record of poor decisions and this was not one.</p>
+
+<div class="callout">
+  <p><strong>The hashing was good for 2012.</strong> Roughly half the passwords were hashed with bcrypt — a slow, salted, purpose-built password algorithm — and the remainder with SHA-1 plus a salt. Compare that with LinkedIn's unsalted SHA-1 the same year, or Adobe's reversible encryption the year after. The practical consequence is that the Dropbox file has never produced the mass password recovery that those breaches did. The credentials leaked; most of the passwords did not.</p>
+</div>
+
+<p>This is the strongest available argument for spending engineering time on password storage. It is invisible work that pays out only once, on the worst day, and on that day it is the difference between a notification and a catastrophe.</p>
+
+<h2>The bit that should have been prevented</h2>
+
+<p>The entry point was an employee using one password in two places, one of which was a company they did not control.</p>
+
+<p>In 2012 this was a widely tolerated habit. Today the controls are standard and none of them are expensive:</p>
+
+<ol class="cf-timeline">
+  <li><b>Single sign-on</b>, so employees have far fewer passwords to reuse in the first place.</li>
+  <li><b>Phishing-resistant multi-factor authentication</b> on every corporate account, so a correct password alone is not sufficient.</li>
+  <li><b>A managed password manager</b>, provided and mandated, so unique passwords are the path of least resistance.</li>
+  <li><b>Credential monitoring</b> against breach corpora for corporate domains, to detect exactly this pattern before an attacker does.</li>
+</ol>
+
+<p>Every one of those exists because of cases like this one. The reason they get funded is that the alternative is being the second victim of a breach at a company you have never done business with.</p>
+
+<h2>What it changed</h2>
+
+<p><strong>Password reuse became a board-level risk, not a hygiene lecture.</strong> The Dropbox chain is the standard slide in security awareness training for a reason: it is short, true, and shows the transmission mechanism clearly.</p>
+
+<p><strong>Breach scope acquired a permanent asterisk.</strong> Dropbox described what it knew in 2012 and was not being evasive; it simply did not know the rest until the file appeared. Anyone reading a fresh breach notice should assume the same is true of it.</p>
+
+<p><strong>Forced resets on stale passwords became normal.</strong> Dropbox's 2016 response — reset every password unchanged since the incident — is now the expected remediation when an old credential file resurfaces.</p>
+
+<h2>If you had a Dropbox account before 2013</h2>
+
+<ol class="bx-actions">
+  <li><strong>The password was probably not cracked, but assume it was anyway.</strong> Good hashing reduces risk; it does not eliminate it, particularly for weak passwords.</li>
+  <li><strong>Check for reuse of that password elsewhere</strong>, especially on accounts you have held for a long time.</li>
+  <li><strong>Turn on two-factor authentication on cloud storage specifically.</strong> Storage accounts hold the documents that let someone impersonate you everywhere else — <a href="/guides/two-factor-authentication.html">the options compared</a>.</li>
+  <li><strong>Review what is still in there.</strong> Old cloud storage accumulates scans of passports, tax returns and contracts that nobody would upload today — <a href="/guides/reduce-your-digital-footprint.html">an audit worth an afternoon</a>.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>How were Dropbox and LinkedIn connected?</h3>
+        <p>A Dropbox employee used the same password on LinkedIn and on a Dropbox corporate account. The LinkedIn breach put that password into circulation, someone tried it against Dropbox, and it worked. Dropbox itself was not vulnerable to anything except its employee's password habits.</p>
+
+        <h3>Were the Dropbox passwords cracked?</h3>
+        <p>Largely not. About half the hashes used bcrypt, which is designed for password storage and resists large-scale cracking; the rest used SHA-1 with a salt, which is weaker but far better than the unsalted hashes of the era. This is a case where good storage choices materially limited the damage.</p>
+
+        <h3>Why did it take four years to learn the real scale?</h3>
+        <p>In 2012 Dropbox disclosed that a stolen employee credential had exposed a document containing user email addresses, and users saw a wave of spam. The full credential file did not surface publicly until August 2016, when it appeared in the same wave of old datasets as LinkedIn and MySpace. Dropbox then forced a password reset for accounts that had not changed since 2012.</p>
+
+        <h3>What is the actual lesson?</h3>
+        <p>That employee password reuse is a corporate risk, not a personal one. Enforcing a password manager, phishing-resistant multi-factor authentication and single sign-on for staff is the control — and it is cheaper than being the second victim of somebody else's breach.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Dropbox security notices, 2012 and August 2016</b></li>
+        <li><b>US Department of Justice — conviction of Yevgeniy Nikulin, 2020</b></li>
+        <li><a href="https://haveibeenpwned.com/PwnedWebsites#Dropbox" target="_blank" rel="noopener nofollow">Have I Been Pwned — Dropbox breach record</a></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/linkedin-2012.html">LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</a></li>
+        <li><a href="/breaches/case-files/myspace-2016.html">MySpace, 2016: 360 million accounts from a website nobody used any more</a></li>
+        <li><a href="/breaches/case-files/lastpass-2022.html">LastPass, 2022: the vaults were stolen, and then attacked offline</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

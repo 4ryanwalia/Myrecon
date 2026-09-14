@@ -1,0 +1,88 @@
+<!--
+{
+  "headline": "TalkTalk, 2015: a nineteen-year-old and a webpage nobody owned",
+  "seoTitle": "TalkTalk Data Breach 2015: SQL Injection, Fines, Fallout",
+  "subject": "TalkTalk data breach",
+  "kicker": "2015 · Telecoms",
+  "description": "TalkTalk lost 156,959 customers' data to a SQL injection attack on three webpages it had inherited in an acquisition and forgotten about. Teenagers found them.",
+  "cardBlurb": "The vulnerable pages came with a company TalkTalk bought in 2009. Nobody had looked at them since, and the attack that worked was fifteen years old.",
+  "records": "156,959 customers, including 15,656 bank account numbers",
+  "peopleCount": 156959,
+  "occurred": "15 – 21 October 2015",
+  "disclosed": "22 October 2015",
+  "vector": "SQL injection against legacy webpages inherited from the Tiscali UK acquisition",
+  "actor": "A group of UK teenagers; several were convicted, the eldest sentenced to four years",
+  "cost": "£400,000 ICO fine, then a record; TalkTalk put the incident's cost at around £42 million and lost 101,000 customers",
+  "exposed": ["Names", "Addresses", "Dates of birth", "Email addresses", "Phone numbers", "TalkTalk account information", "Bank account numbers and sort codes"],
+  "sortDate": "2015-10-22",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["morrisons-2014", "british-airways-2018", "optus-2022"],
+  "faq": [
+    { "q": "What is SQL injection?", "a": "It is what happens when a website takes something you typed and hands it to its database as an instruction instead of as text. Type an ordinary word into a search box and you get results; type carefully chosen punctuation and database commands and, on a vulnerable site, the database runs them. It has been documented since 1998 and it is comprehensively preventable, which is why finding it in a live system in 2015 was so damaging to TalkTalk's case." },
+    { "q": "How much data was actually taken from TalkTalk?", "a": "The final ICO finding was 156,959 customers' personal data, including 15,656 bank account numbers and sort codes. The first public figures were far higher and far vaguer — early reporting and TalkTalk's own initial statements raised the possibility that all four million customers were affected, which turned out to be wrong." },
+    { "q": "Were TalkTalk customers' bank accounts emptied?", "a": "There were reports of fraud against TalkTalk customers, but the sort code and account number alone do not let someone take money out — they are printed on every cheque. The more serious risk was what followed: criminals used the stolen account details and TalkTalk account references to make cold calls that sounded exactly like a real support call, which is a far more effective route to a bank transfer than the raw data ever was." },
+    { "q": "Did anyone go to prison for the TalkTalk hack?", "a": "Several young men were convicted. Daniel Kelley, who was seventeen at the time of the offences, was sentenced in 2019 to four years in a young offender institution for blackmail and computer misuse across a series of attacks. Others received shorter sentences and community orders. The individuals who found the flaw were not a sophisticated organised group, which was part of the point the regulator made." }
+  ],
+  "sources": [
+    { "label": "Information Commissioner's Office — monetary penalty notice, TalkTalk Telecom Group plc, October 2016", "url": "https://ico.org.uk/action-weve-taken/enforcement/talktalk-telecom-group-plc/" },
+    { "label": "House of Commons Culture, Media and Sport Committee — Cyber Security: Protection of Personal Data Online, 2016" },
+    { "label": "ICO monetary penalty, TalkTalk, 2017", "note": "a further £100,000 over call centre access to 21,000 customers' data" },
+    { "label": "TalkTalk Telecom Group financial results, FY2016" }
+  ]
+}
+-->
+<p class="lead">In October 2015 the chief executive of TalkTalk went on national radio and was asked whether the stolen customer data had been encrypted. She said she did not know. That answer, more than the breach, is what the incident is remembered for in Britain — and the technical story underneath it is worse, because the way in had been sitting unattended on the company's own website for six years.</p>
+
+<h2>What happened</h2>
+
+<p>TalkTalk acquired Tiscali UK in 2009. Along with the customers came the infrastructure, including a set of webpages that continued to be served from TalkTalk's domain. Three of those pages contained a SQL injection vulnerability. The underlying database software was unsupported and had been for years. After the acquisition, nobody at TalkTalk had scanned, reviewed or apparently thought about those pages at all.</p>
+
+<p>Between 15 and 21 October 2015, attackers found them — trivially, using automated scanning tools available to anyone — and used the injection flaw to read data out of the database behind them. The ICO later found that the vulnerability could have been fixed with a software update that had been available since 2012, and that TalkTalk had no process that would have found it.</p>
+
+<p>The regulator also established that two earlier attacks on the same pages, in July and September 2015, had gone unnoticed.</p>
+
+<div class="callout">
+  <p><strong>The inherited estate problem.</strong> Every acquisition transfers systems that nobody in the buying company designed, documented or wants to own. They keep running because turning them off requires knowing what they do. They keep being served because a DNS record points at them. Years later they are outside every inventory, outside every patch cycle, and still on the public internet under the parent company's name. TalkTalk is the canonical example, but the pattern is close to universal in any company that has grown by acquisition.</p>
+</div>
+
+<h2>The disclosure made it worse</h2>
+
+<p>TalkTalk announced the breach quickly, which was to its credit, and then described it in terms it could not support. Early statements raised the possibility that all four million customers were affected. Reports referred to a "significant and sustained cyberattack", language that implied a sophisticated adversary. The eventual attackers were teenagers using off-the-shelf tools against a fifteen-year-old class of vulnerability.</p>
+
+<p>The confusion over encryption compounded it. Some fields were encrypted, some were not, and in the first days the company could not say clearly which. For customers deciding whether to change bank details, that distinction was the only thing that mattered, and they could not get it.</p>
+
+<p>Then came the fraud calls. Criminals with a customer's name, address, TalkTalk account number and in some cases bank details could open a phone call with verification data no stranger should have. Several victims reported losing substantial sums to callers who had been able to prove, convincingly, that they were TalkTalk.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>2009</b> — TalkTalk acquires Tiscali UK, inheriting the webpages that will later be attacked.</li>
+  <li><b>2012</b> — A fix for the underlying database vulnerability becomes available and is not applied.</li>
+  <li><b>July and September 2015</b> — Two earlier attacks exploit the same pages without being detected.</li>
+  <li><b>15 – 21 October 2015</b> — The main attack extracts customer data.</li>
+  <li><b>22 October 2015</b> — TalkTalk goes public, with figures that later prove much too high.</li>
+  <li><b>October – November 2015</b> — Several arrests follow; customers report fraud calls using their stolen details.</li>
+  <li><b>5 October 2016</b> — The ICO fines TalkTalk £400,000, the largest penalty it had ever issued.</li>
+  <li><b>August 2017</b> — A further £100,000 fine follows over call centre staff access to 21,000 customers' records.</li>
+  <li><b>2019</b> — Daniel Kelley is sentenced to four years.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>It became the case study for UK regulators and parliament.</strong> A Commons select committee ran an inquiry into the protection of personal data online off the back of it, and its recommendations — escalating fines, security as a board responsibility, clearer breach notification — fed directly into how GDPR was received in Britain two years later.</p>
+
+<p><strong>The £400,000 fine established a ceiling that was about to disappear.</strong> It was the maximum the ICO could then issue, and commentators noted repeatedly that under GDPR the same conduct could attract a penalty measured in percentage of turnover. That comparison did a great deal to get UK boards to take the incoming regulation seriously.</p>
+
+<p><strong>Asset inventory stopped being a paperwork exercise.</strong> TalkTalk lost 156,959 customers' data through pages it did not know it was serving. "What is on our public internet estate, and who owns each thing on it" became a first-order security question, and the external attack surface scanning industry grew out of exactly this problem.</p>
+
+<p><strong>The cost of the response dwarfed the fine.</strong> The £400,000 penalty is the number everyone remembers. TalkTalk's own reporting put the incident's cost at around £42 million and the company lost 101,000 customers in the following quarter. For a consumer business, the regulator is rarely the expensive part.</p>
+
+<h2>If you were affected</h2>
+
+<ol class="bx-actions">
+  <li><strong>Treat any call that already knows your account details as unverified.</strong> Knowing your account number proves the caller has data, not that they work for the company. Hang up and dial the number on your bill.</li>
+  <li><strong>A sort code and account number are not secrets.</strong> They are printed on cheques. If someone treats them as proof of identity, that is a weakness in their process, not evidence that your account is compromised.</li>
+  <li><strong>Set a passphrase on telecoms and utility accounts where offered.</strong> It is the one control that defeats a caller holding your leaked details.</li>
+  <li><strong>Date of birth and address do not expire.</strong> A 2015 leak still furnishes the answers to security questions being asked in 2026, which is a good reason to answer those questions with something other than the truth.</li>
+</ol>
