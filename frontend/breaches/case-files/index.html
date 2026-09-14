@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Breach Case Files: How They Actually Happened</title>
+  <meta name="description" content="In-depth case files on the data breaches that mattered: how the attackers actually got in, what was taken, what it cost, and what changed afterwards.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Data Breach Case Files: How They Actually Happened">
+  <meta property="og:description" content="In-depth case files on the data breaches that mattered: how the attackers actually got in, what was taken, what it cost, and what changed afterwards.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Data Breach Case Files: How They Actually Happened">
+  <meta name="twitter:description" content="In-depth case files on the data breaches that mattered: how the attackers actually got in, what was taken, what it cost, and what changed afterwards.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Case Files","description":"In-depth case files on the data breaches that mattered: how the attackers actually got in, what was taken, what it cost, and what changed afterwards.","url":"https://www.myrecon.xyz/breaches/case-files/"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"MyRecon Case Files","itemListElement":[{"@type":"ListItem","position":1,"name":"National Public Data, 2024: a company you never used, holding everything about you","url":"https://www.myrecon.xyz/breaches/case-files/national-public-data-2024.html"},{"@type":"ListItem","position":2,"name":"AT&T, 2024: who called whom, for nearly every customer","url":"https://www.myrecon.xyz/breaches/case-files/att-2024.html"},{"@type":"ListItem","position":3,"name":"Snowflake, 2024: 165 companies breached without anyone touching Snowflake","url":"https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html"},{"@type":"ListItem","position":4,"name":"Change Healthcare, 2024: one login, and American healthcare stopped billing","url":"https://www.myrecon.xyz/breaches/case-files/change-healthcare-2024.html"},{"@type":"ListItem","position":5,"name":"23andMe, 2023: 14,000 accounts opened the door to 6.9 million people","url":"https://www.myrecon.xyz/breaches/case-files/23andme-2023.html"},{"@type":"ListItem","position":6,"name":"MGM Resorts, 2023: a ten-minute phone call to the help desk","url":"https://www.myrecon.xyz/breaches/case-files/mgm-resorts-2023.html"},{"@type":"ListItem","position":7,"name":"MOVEit, 2023: one file transfer product, 2,700 organisations","url":"https://www.myrecon.xyz/breaches/case-files/moveit-2023.html"},{"@type":"ListItem","position":8,"name":"LastPass, 2022: the vaults were stolen, and then attacked offline","url":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html"},{"@type":"ListItem","position":9,"name":"Medibank, 2022: the company said no, and the data went up anyway","url":"https://www.myrecon.xyz/breaches/case-files/medibank-2022.html"},{"@type":"ListItem","position":10,"name":"Optus, 2022: an API with no lock on it, and 9.8 million Australians","url":"https://www.myrecon.xyz/breaches/case-files/optus-2022.html"},{"@type":"ListItem","position":11,"name":"0ktapus, 2022: one text message, one hundred and thirty companies","url":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html"},{"@type":"ListItem","position":12,"name":"Twitter, 2022: an API that confirmed which account owned which email","url":"https://www.myrecon.xyz/breaches/case-files/twitter-2022.html"},{"@type":"ListItem","position":13,"name":"T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers","url":"https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html"},{"@type":"ListItem","position":14,"name":"Air India, 2021: ten years of passengers, lost by a supplier","url":"https://www.myrecon.xyz/breaches/case-files/air-india-2021.html"},{"@type":"ListItem","position":15,"name":"Colonial Pipeline, 2021: one leaked password, and the fuel stopped","url":"https://www.myrecon.xyz/breaches/case-files/colonial-pipeline-2021.html"},{"@type":"ListItem","position":16,"name":"Facebook, 2021: 533 million phone numbers that were never \"hacked\"","url":"https://www.myrecon.xyz/breaches/case-files/facebook-scrape-2021.html"},{"@type":"ListItem","position":17,"name":"MobiKwik, 2021: the breach that was denied while people searched their own KYC files","url":"https://www.myrecon.xyz/breaches/case-files/mobikwik-2021.html"},{"@type":"ListItem","position":18,"name":"Accellion FTA, 2021: the rehearsal for MOVEit","url":"https://www.myrecon.xyz/breaches/case-files/accellion-2021.html"},{"@type":"ListItem","position":19,"name":"SolarWinds, 2020: 18,000 organisations installed the backdoor themselves","url":"https://www.myrecon.xyz/breaches/case-files/solarwinds-2020.html"},{"@type":"ListItem","position":20,"name":"Clearview AI, 2020: three billion faces, scraped and sold","url":"https://www.myrecon.xyz/breaches/case-files/clearview-ai-2020.html"},{"@type":"ListItem","position":21,"name":"Capital One, 2019: a firewall misconfiguration and 106 million applicants","url":"https://www.myrecon.xyz/breaches/case-files/capital-one-2019.html"},{"@type":"ListItem","position":22,"name":"Collection #1, 2019: 773 million addresses, and nobody was breached","url":"https://www.myrecon.xyz/breaches/case-files/collection-1-2019.html"},{"@type":"ListItem","position":23,"name":"Marriott and Starwood, 2018: a breach that came with the acquisition","url":"https://www.myrecon.xyz/breaches/case-files/marriott-starwood-2018.html"},{"@type":"ListItem","position":24,"name":"British Airways, 2018: twenty-two lines of JavaScript","url":"https://www.myrecon.xyz/breaches/case-files/british-airways-2018.html"},{"@type":"ListItem","position":25,"name":"Cambridge Analytica, 2018: the breach that was not a breach","url":"https://www.myrecon.xyz/breaches/case-files/cambridge-analytica-2018.html"},{"@type":"ListItem","position":26,"name":"Aadhaar, 2018: what the reported exposures actually showed","url":"https://www.myrecon.xyz/breaches/case-files/aadhaar-exposures-2018.html"},{"@type":"ListItem","position":27,"name":"Uber, 2016: the breach that was paid to disappear","url":"https://www.myrecon.xyz/breaches/case-files/uber-2016.html"},{"@type":"ListItem","position":28,"name":"Equifax, 2017: 147 million people, one unpatched web form","url":"https://www.myrecon.xyz/breaches/case-files/equifax-2017.html"},{"@type":"ListItem","position":29,"name":"NotPetya, 2017: the update that cost ten billion dollars","url":"https://www.myrecon.xyz/breaches/case-files/notpetya-2017.html"},{"@type":"ListItem","position":30,"name":"Yahoo, 2013–2014: three billion accounts, and three years of silence","url":"https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html"},{"@type":"ListItem","position":31,"name":"Dropbox, 2012: an employee reused a password, and 68 million accounts followed","url":"https://www.myrecon.xyz/breaches/case-files/dropbox-2012.html"},{"@type":"ListItem","position":32,"name":"MySpace, 2016: 360 million accounts from a website nobody used any more","url":"https://www.myrecon.xyz/breaches/case-files/myspace-2016.html"},{"@type":"ListItem","position":33,"name":"VTech, 2015: six million children in a toy company's database","url":"https://www.myrecon.xyz/breaches/case-files/vtech-2015.html"},{"@type":"ListItem","position":34,"name":"TalkTalk, 2015: a nineteen-year-old and a webpage nobody owned","url":"https://www.myrecon.xyz/breaches/case-files/talktalk-2015.html"},{"@type":"ListItem","position":35,"name":"Ashley Madison, 2015: when the data itself was the weapon","url":"https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html"},{"@type":"ListItem","position":36,"name":"OPM, 2015: 21.5 million security clearance files, fingerprints included","url":"https://www.myrecon.xyz/breaches/case-files/opm-2015.html"},{"@type":"ListItem","position":37,"name":"Anthem, 2015: 78.8 million health records and one query that looked wrong","url":"https://www.myrecon.xyz/breaches/case-files/anthem-2015.html"},{"@type":"ListItem","position":38,"name":"Sony Pictures, 2014: the breach that destroyed the computers on the way out","url":"https://www.myrecon.xyz/breaches/case-files/sony-pictures-2014.html"},{"@type":"ListItem","position":39,"name":"JPMorgan Chase, 2014: one server without two-factor authentication","url":"https://www.myrecon.xyz/breaches/case-files/jpmorgan-2014.html"},{"@type":"ListItem","position":40,"name":"Home Depot, 2014: 56 million cards through a supplier's login","url":"https://www.myrecon.xyz/breaches/case-files/home-depot-2014.html"},{"@type":"ListItem","position":41,"name":"eBay, 2014: 145 million users and a notice nobody saw","url":"https://www.myrecon.xyz/breaches/case-files/ebay-2014.html"},{"@type":"ListItem","position":42,"name":"Morrisons, 2014: the auditor who published the payroll","url":"https://www.myrecon.xyz/breaches/case-files/morrisons-2014.html"},{"@type":"ListItem","position":43,"name":"Target, 2013: 40 million cards, and the air-conditioning contractor","url":"https://www.myrecon.xyz/breaches/case-files/target-2013.html"},{"@type":"ListItem","position":44,"name":"Adobe, 2013: 153 million records and the world's worst crossword","url":"https://www.myrecon.xyz/breaches/case-files/adobe-2013.html"},{"@type":"ListItem","position":45,"name":"LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts","url":"https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html"},{"@type":"ListItem","position":46,"name":"PlayStation Network, 2011: 77 million accounts and 23 days offline","url":"https://www.myrecon.xyz/breaches/case-files/sony-psn-2011.html"},{"@type":"ListItem","position":47,"name":"RockYou, 2009: the 32 million plaintext passwords that became a wordlist","url":"https://www.myrecon.xyz/breaches/case-files/rockyou-2009.html"},{"@type":"ListItem","position":48,"name":"Heartland, 2008: 130 million cards from a company that had just passed its audit","url":"https://www.myrecon.xyz/breaches/case-files/heartland-2008.html"},{"@type":"ListItem","position":49,"name":"TJX, 2007: the wireless network in the car park","url":"https://www.myrecon.xyz/breaches/case-files/tjx-2007.html"}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="section">
+    <div class="container bx-page">
+      <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
+      <span class="kicker">Case Files</span>
+      <h1 class="bx-title">How the breaches that mattered actually happened</h1>
+      <p class="sub">The archive tells you what was taken. These tell you how — the unpatched server, the contractor's password, the API nobody put a login on — and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures, and sourced at the foot of every page.</p>
+
+      <div class="bx-summary">
+        <div class="bx-stat"><b>49</b><span>Case files</span></div>
+        <div class="bx-stat"><b>19</b><span>Years covered</span></div>
+        <div class="bx-stat"><b>178</b><span>Sources cited</span></div>
+
+      </div>
+
+      <section class="cf-era">
+        <h2 class="bx-h2">2024 onwards</h2>
+        <p class="cf-era-blurb">The third-party era. The intrusion is rarely at the company whose name ends up in the headline — it is at a supplier, a cloud tenant, or on an employee's home computer.</p>
+        <div class="guide-grid">
+          <a class="guide-card cf-card" href="/breaches/case-files/national-public-data-2024.html">
+            <span class="cf-card-kicker">2024 · Data broker</span>
+            <h3>National Public Data, 2024: a company you never used, holding everything about you</h3>
+            <p>Nobody in this file signed up for anything. The case that made data brokers a mainstream concern — and showed how meaningless a headline record count can be.</p>
+            <span class="cf-card-count">advertised as 2.9 billion rows; researchers identified about 134 million unique email addresses</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/att-2024.html">
+            <span class="cf-card-kicker">2024 · Telecommunications</span>
+            <h3>AT&amp;T, 2024: who called whom, for nearly every customer</h3>
+            <p>Metadata is not &quot;less than&quot; content. A complete record of who contacted whom identifies relationships that no message body would reveal.</p>
+            <span class="cf-card-count">call and text metadata for nearly all mobile customers, about 109 million accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/snowflake-2024.html">
+            <span class="cf-card-kicker">2024 · Cloud data</span>
+            <h3>Snowflake, 2024: 165 companies breached without anyone touching Snowflake</h3>
+            <p>No vulnerability, no intrusion at the platform. Just passwords harvested from employees' machines and accounts that accepted a password alone.</p>
+            <span class="cf-card-count">around 165 customer tenants; hundreds of millions of individual records</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/change-healthcare-2024.html">
+            <span class="cf-card-kicker">2024 · Healthcare payments</span>
+            <h3>Change Healthcare, 2024: one login, and American healthcare stopped billing</h3>
+            <p>The largest health data breach in US history, and a month in which pharmacies could not tell patients what their prescriptions cost.</p>
+            <span class="cf-card-count">about 190 million people</span>
+            <span class="read">Read the case file →</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="cf-era">
+        <h2 class="bx-h2">2019 – 2023</h2>
+        <p class="cf-era-blurb">Cloud misconfiguration, ransomware crews with a publicity operation, and the first breaches measured in whole national populations.</p>
+        <div class="guide-grid">
+          <a class="guide-card cf-card" href="/breaches/case-files/23andme-2023.html">
+            <span class="cf-card-kicker">2023 · Genetic testing</span>
+            <h3>23andMe, 2023: 14,000 accounts opened the door to 6.9 million people</h3>
+            <p>The clearest case of one person's weak password exposing thousands of strangers — and of ancestry data being used to build targeting lists.</p>
+            <span class="cf-card-count">about 6.9 million people, from 14,000 compromised accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/mgm-resorts-2023.html">
+            <span class="cf-card-kicker">2023 · Hospitality</span>
+            <h3>MGM Resorts, 2023: a ten-minute phone call to the help desk</h3>
+            <p>No exploit, no malware on the way in. A phone call, a name from LinkedIn, and a help desk doing what help desks are measured on: being helpful quickly.</p>
+            <span class="cf-card-count">Personal data of customers who transacted with MGM before March 2019</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/moveit-2023.html">
+            <span class="cf-card-kicker">2023 · Supply chain</span>
+            <h3>MOVEit, 2023: one file transfer product, 2,700 organisations</h3>
+            <p>The clearest example of supply-chain leverage: attack the software everyone uses to move sensitive files, and you attack everyone at once.</p>
+            <span class="cf-card-count">over 2,700 organisations; more than 90 million individuals</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/lastpass-2022.html">
+            <span class="cf-card-kicker">2022 · Password manager</span>
+            <h3>LastPass, 2022: the vaults were stolen, and then attacked offline</h3>
+            <p>Encryption held, mostly. But a stolen vault can be attacked forever, offline, with no rate limit and nobody watching.</p>
+            <span class="cf-card-count">backups of customer vaults, affecting tens of millions of accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/medibank-2022.html">
+            <span class="cf-card-kicker">2022 · Health insurance</span>
+            <h3>Medibank, 2022: the company said no, and the data went up anyway</h3>
+            <p>A contractor's credential with no second factor, 9.7 million customers, and an extortion campaign designed around shame rather than fraud.</p>
+            <span class="cf-card-count">9.7 million current and former customers; health claims data for about 480,000</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/optus-2022.html">
+            <span class="cf-card-kicker">2022 · Telecommunications</span>
+            <h3>Optus, 2022: an API with no lock on it, and 9.8 million Australians</h3>
+            <p>No password, no token, no rate limit. The breach that rewrote Australian privacy law and put a price on identity documents.</p>
+            <span class="cf-card-count">9.8 million customers; about 2.1 million with identity document numbers</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/twilio-0ktapus-2022.html">
+            <span class="cf-card-kicker">2022 · Phishing campaign</span>
+            <h3>0ktapus, 2022: one text message, one hundred and thirty companies</h3>
+            <p>The difference between the companies that fell and the one that did not was not training, vigilance or luck. It was the type of second factor they used.</p>
+            <span class="cf-card-count">~9,900 accounts and ~5,400 one-time codes captured across 130+ organisations</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/twitter-2022.html">
+            <span class="cf-card-kicker">2022 · Social network</span>
+            <h3>Twitter, 2022: an API that confirmed which account owned which email</h3>
+            <p>The damage was not stolen passwords. It was the link between a real identity and an anonymous account — which cannot be undone.</p>
+            <span class="cf-card-count">5.4 million accounts confirmed; a larger compilation circulated later</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/t-mobile-2021.html">
+            <span class="cf-card-kicker">2021 · Telecommunications</span>
+            <h3>T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers</h3>
+            <p>The carrier that has been breached more often than any other, and the year it lost the Social Security numbers of people who were never customers.</p>
+            <span class="cf-card-count">over 76 million records, including about 40 million former and prospective customers</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/air-india-2021.html">
+            <span class="cf-card-kicker">2021 · Aviation</span>
+            <h3>Air India, 2021: ten years of passengers, lost by a supplier</h3>
+            <p>One supplier, many airlines. Passengers who had never heard of SITA had their passport details taken from its systems.</p>
+            <span class="cf-card-count">about 4.5 million passengers</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/colonial-pipeline-2021.html">
+            <span class="cf-card-kicker">2021 · Energy</span>
+            <h3>Colonial Pipeline, 2021: one leaked password, and the fuel stopped</h3>
+            <p>Not a breach of personal data — a breach of everyday life. The case that turned ransomware from an IT problem into a national security one.</p>
+            <span class="cf-card-count">Operational shutdown; a limited number of personal records also taken</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/facebook-scrape-2021.html">
+            <span class="cf-card-kicker">2021 · Social network</span>
+            <h3>Facebook, 2021: 533 million phone numbers that were never &quot;hacked&quot;</h3>
+            <p>A feature, not a flaw — until it produced a free file of 533 million phone numbers matched to names. The case that made scraping a regulatory matter.</p>
+            <span class="cf-card-count">533 million users across 106 countries</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/mobikwik-2021.html">
+            <span class="cf-card-kicker">2021 · India · Disputed</span>
+            <h3>MobiKwik, 2021: the breach that was denied while people searched their own KYC files</h3>
+            <p>Users found their own identity documents in a searchable portal while the company was publicly denying that anything had been taken. It has never confirmed a breach.</p>
+            <span class="cf-card-count">Alleged 99 million users and 8.2 TB of data — never confirmed by the company</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/accellion-2021.html">
+            <span class="cf-card-kicker">2021 · Supply chain</span>
+            <h3>Accellion FTA, 2021: the rehearsal for MOVEit</h3>
+            <p>The vendor had been telling customers to migrate for years. The ones who had not were breached through a product that was already scheduled to die.</p>
+            <span class="cf-card-count">Dozens of organisations; the Washington State Auditor alone reported 1.6 million individuals</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/solarwinds-2020.html">
+            <span class="cf-card-kicker">2020 · Supply chain</span>
+            <h3>SolarWinds, 2020: 18,000 organisations installed the backdoor themselves</h3>
+            <p>The update was signed, the checksum matched and the vendor was reputable. Every control that was supposed to catch this passed it through.</p>
+            <span class="cf-card-count">~18,000 organisations downloaded the backdoor</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/clearview-ai-2020.html">
+            <span class="cf-card-kicker">2020 · Surveillance</span>
+            <h3>Clearview AI, 2020: three billion faces, scraped and sold</h3>
+            <p>Every photo in it was already public. That was the company's entire legal argument, and regulators across four continents rejected it.</p>
+            <span class="cf-card-count">Over 3 billion images scraped; later reported by the company as more than 30 billion</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/capital-one-2019.html">
+            <span class="cf-card-kicker">2019 · Banking</span>
+            <h3>Capital One, 2019: a firewall misconfiguration and 106 million applicants</h3>
+            <p>The breach that changed how cloud metadata works. One misconfigured firewall, one request to an internal address, and fourteen years of applications.</p>
+            <span class="cf-card-count">about 100 million US and 6 million Canadian applicants</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/collection-1-2019.html">
+            <span class="cf-card-kicker">2019 · Credential aggregate</span>
+            <h3>Collection #1, 2019: 773 million addresses, and nobody was breached</h3>
+            <p>The file that explained credential stuffing to the public. No company was breached to create it — it was thousands of older breaches, merged into one attack tool.</p>
+            <span class="cf-card-count">772,904,991 unique email addresses; 21,222,975 unique passwords</span>
+            <span class="read">Read the case file →</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="cf-era">
+        <h2 class="bx-h2">2014 – 2018</h2>
+        <p class="cf-era-blurb">The years that produced the regulation. Mega-breaches that ended careers, moved share prices and wrote the rules everyone now works under.</p>
+        <div class="guide-grid">
+          <a class="guide-card cf-card" href="/breaches/case-files/marriott-starwood-2018.html">
+            <span class="cf-card-kicker">2018 · Hospitality</span>
+            <h3>Marriott and Starwood, 2018: a breach that came with the acquisition</h3>
+            <p>Four years of guest records, five million unencrypted passport numbers, and a compromise that was already running when the company was bought.</p>
+            <span class="cf-card-count">about 339 million guest records</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/british-airways-2018.html">
+            <span class="cf-card-kicker">2018 · Airline</span>
+            <h3>British Airways, 2018: twenty-two lines of JavaScript</h3>
+            <p>Nothing was stolen from a database. The card numbers were copied out of the browser, one keystroke at a time, before BA ever received them.</p>
+            <span class="cf-card-count">About 429,612 customers and staff</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/cambridge-analytica-2018.html">
+            <span class="cf-card-kicker">2018 · Data misuse</span>
+            <h3>Cambridge Analytica, 2018: the breach that was not a breach</h3>
+            <p>About 270,000 people took a personality quiz. The API of the day let the quiz collect their friends too, and the friends were never asked.</p>
+            <span class="cf-card-count">Up to 87 million Facebook users</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/aadhaar-exposures-2018.html">
+            <span class="cf-card-kicker">2018 · National identity</span>
+            <h3>Aadhaar, 2018: what the reported exposures actually showed</h3>
+            <p>A disputed case, deliberately included. The exposure was in the ecosystem around the identity system rather than in its central database — which is where large identity systems usually fail.</p>
+            <span class="cf-card-count">Disputed; reports covered access to demographic details and third-party systems holding Aadhaar numbers</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/uber-2016.html">
+            <span class="cf-card-kicker">2016 · Ride-hailing</span>
+            <h3>Uber, 2016: the breach that was paid to disappear</h3>
+            <p>The data loss was ordinary. The response — payment, non-disclosure agreements, silence, and eventually a criminal conviction for the security chief — was not.</p>
+            <span class="cf-card-count">57 million riders and drivers; 600,000 driver's licence numbers</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/equifax-2017.html">
+            <span class="cf-card-kicker">2017 · Credit bureau</span>
+            <h3>Equifax, 2017: 147 million people, one unpatched web form</h3>
+            <p>A patch released in March. An intrusion in May. Discovery in July, because a certificate on the monitoring appliance had been expired for ten months.</p>
+            <span class="cf-card-count">147.9 million people</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/notpetya-2017.html">
+            <span class="cf-card-kicker">2017 · Destructive attack</span>
+            <h3>NotPetya, 2017: the update that cost ten billion dollars</h3>
+            <p>It looked like ransomware and was not. There was no way to pay and no way to recover — the decryption key it offered had never existed.</p>
+            <span class="cf-card-count">No data stolen — an estimated $10 billion in destroyed systems</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/yahoo-2013-2014.html">
+            <span class="cf-card-kicker">2013–2014 · Web portal</span>
+            <h3>Yahoo, 2013–2014: three billion accounts, and three years of silence</h3>
+            <p>Two intrusions, every account Yahoo had ever issued, and a disclosure that arrived three years late and mid-acquisition. Still the largest breach on record.</p>
+            <span class="cf-card-count">3 billion accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/dropbox-2012.html">
+            <span class="cf-card-kicker">2012 · Cloud storage</span>
+            <h3>Dropbox, 2012: an employee reused a password, and 68 million accounts followed</h3>
+            <p>The textbook demonstration that one company's breach becomes another company's breach, carried across by a single reused password.</p>
+            <span class="cf-card-count">68.6 million accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/myspace-2016.html">
+            <span class="cf-card-kicker">2008 · Social network</span>
+            <h3>MySpace, 2016: 360 million accounts from a website nobody used any more</h3>
+            <p>Dead site, live passwords. The largest breach on record at the time, and a lesson in why abandoning an account is not the same as closing it.</p>
+            <span class="cf-card-count">about 360 million accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/vtech-2015.html">
+            <span class="cf-card-kicker">2015 · Children's data</span>
+            <h3>VTech, 2015: six million children in a toy company's database</h3>
+            <p>Names, dates of birth, genders and the parents they linked to. For some children, also the photographs and messages they had sent.</p>
+            <span class="cf-card-count">Around 4.9 million parent accounts and 6.4 million child profiles</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/talktalk-2015.html">
+            <span class="cf-card-kicker">2015 · Telecoms</span>
+            <h3>TalkTalk, 2015: a nineteen-year-old and a webpage nobody owned</h3>
+            <p>The vulnerable pages came with a company TalkTalk bought in 2009. Nobody had looked at them since, and the attack that worked was fifteen years old.</p>
+            <span class="cf-card-count">156,959 customers, including 15,656 bank account numbers</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/ashley-madison-2015.html">
+            <span class="cf-card-kicker">2015 · Dating</span>
+            <h3>Ashley Madison, 2015: when the data itself was the weapon</h3>
+            <p>Good password hashing, catastrophic everything else. The breach that proved some data is dangerous purely because of what it implies about a person.</p>
+            <span class="cf-card-count">32 million user records</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/opm-2015.html">
+            <span class="cf-card-kicker">2015 · Government</span>
+            <h3>OPM, 2015: 21.5 million security clearance files, fingerprints included</h3>
+            <p>Not identity theft. Counterintelligence. The SF-86 form exists to record everything that could be used to pressure someone, and all of it was taken.</p>
+            <span class="cf-card-count">21.5 million background investigation records, 4.2 million personnel records, 5.6 million fingerprints</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/anthem-2015.html">
+            <span class="cf-card-kicker">2015 · Health insurance</span>
+            <h3>Anthem, 2015: 78.8 million health records and one query that looked wrong</h3>
+            <p>Found because one employee questioned a query he did not recognise. The largest US health data breach of its time, and the largest HIPAA penalty.</p>
+            <span class="cf-card-count">78.8 million people</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/sony-pictures-2014.html">
+            <span class="cf-card-kicker">2014 · Film studio</span>
+            <h3>Sony Pictures, 2014: the breach that destroyed the computers on the way out</h3>
+            <p>Theft, destruction and publication in one operation, aimed at a company over a film. The first breach treated as a national security incident.</p>
+            <span class="cf-card-count">about 47,000 individuals' details, plus the company's internal correspondence</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/jpmorgan-2014.html">
+            <span class="cf-card-kicker">2014 · Banking</span>
+            <h3>JPMorgan Chase, 2014: one server without two-factor authentication</h3>
+            <p>The rollout of two-factor authentication across the estate was complete except for one server. The attackers found the exception.</p>
+            <span class="cf-card-count">76 million households and 7 million small businesses</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/home-depot-2014.html">
+            <span class="cf-card-kicker">2014 · Retail</span>
+            <h3>Home Depot, 2014: 56 million cards through a supplier's login</h3>
+            <p>Employees had warned for years that the tills were running outdated protection. The breach ran from April to September before a bank spotted the pattern.</p>
+            <span class="cf-card-count">56 million payment cards and 53 million email addresses</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/ebay-2014.html">
+            <span class="cf-card-kicker">2014 · Marketplace</span>
+            <h3>eBay, 2014: 145 million users and a notice nobody saw</h3>
+            <p>No card data was taken, which eBay said often. What was taken was everything needed to impersonate 145 million people convincingly.</p>
+            <span class="cf-card-count">145 million user records</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/morrisons-2014.html">
+            <span class="cf-card-kicker">2014 · Insider</span>
+            <h3>Morrisons, 2014: the auditor who published the payroll</h3>
+            <p>He had legitimate access, a legitimate reason to use it, and a disciplinary record he was angry about. No control in the company was designed to stop that.</p>
+            <span class="cf-card-count">99,998 employees</span>
+            <span class="read">Read the case file →</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="cf-era">
+        <h2 class="bx-h2">Before 2014</h2>
+        <p class="cf-era-blurb">The foundational cases. Almost everything the industry believes about passwords, card data and disclosure was learned here, expensively.</p>
+        <div class="guide-grid">
+          <a class="guide-card cf-card" href="/breaches/case-files/target-2013.html">
+            <span class="cf-card-kicker">2013 · Retail</span>
+            <h3>Target, 2013: 40 million cards, and the air-conditioning contractor</h3>
+            <p>The breach that made &quot;third-party risk&quot; a board-level phrase. The way in was a heating and air-conditioning contractor's password.</p>
+            <span class="cf-card-count">40 million payment cards, 70 million customer records</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/adobe-2013.html">
+            <span class="cf-card-kicker">2013 · Software</span>
+            <h3>Adobe, 2013: 153 million records and the world's worst crossword</h3>
+            <p>A masterclass in how not to store passwords: one encryption key, no salt, and a plaintext hint column that gave the answers away.</p>
+            <span class="cf-card-count">153 million records</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/linkedin-2012.html">
+            <span class="cf-card-kicker">2012 · Professional network</span>
+            <h3>LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</h3>
+            <p>Unsalted SHA-1, a forum post asking for help cracking it, and four years later the rest of the database. The breach that compromised other companies.</p>
+            <span class="cf-card-count">165 million accounts (117 million with passwords)</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/sony-psn-2011.html">
+            <span class="cf-card-kicker">2011 · Gaming</span>
+            <h3>PlayStation Network, 2011: 77 million accounts and 23 days offline</h3>
+            <p>Sony said the passwords were not stored in plain text. It took a week to say what they were stored as, and by then the damage to trust was done.</p>
+            <span class="cf-card-count">77 million PSN accounts, plus 24.6 million Sony Online Entertainment accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/rockyou-2009.html">
+            <span class="cf-card-kicker">2009 · Social apps</span>
+            <h3>RockYou, 2009: the 32 million plaintext passwords that became a wordlist</h3>
+            <p>Small breach, enormous legacy. The file that taught everyone what people actually choose as a password — and that still ships with every penetration testing distribution.</p>
+            <span class="cf-card-count">32.6 million accounts</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/heartland-2008.html">
+            <span class="cf-card-kicker">2008 · Payments</span>
+            <h3>Heartland, 2008: 130 million cards from a company that had just passed its audit</h3>
+            <p>Compliant and breached. The case that separated &quot;passed the audit&quot; from &quot;is actually secure&quot;, permanently.</p>
+            <span class="cf-card-count">about 130 million card numbers</span>
+            <span class="read">Read the case file →</span>
+          </a>
+          <a class="guide-card cf-card" href="/breaches/case-files/tjx-2007.html">
+            <span class="cf-card-kicker">2007 · Retail</span>
+            <h3>TJX, 2007: the wireless network in the car park</h3>
+            <p>The first mega-breach of the card era. Weak wireless encryption, eighteen months of undetected access, and the reason PCI DSS grew teeth.</p>
+            <span class="cf-card-count">45.7 million cards confirmed; court filings suggested up to 94 million</span>
+            <span class="read">Read the case file →</span>
+          </a>
+        </div>
+      </section>
+
+      <p class="bx-method">Every case file is sourced. Where a headline figure was later revised — and it usually is — these pages use the number the organisation or its regulator finally settled on, and say what it was first reported as. Claims that remain disputed are labelled as disputed.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">The live breach archive →</a> <a class="btn btn-ghost" href="/guides/">Guides →</a></p>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

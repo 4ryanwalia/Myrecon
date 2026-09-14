@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NotPetya 2017: The Most Expensive Cyberattack Ever | MyRecon</title>
+  <meta name="description" content="A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/notpetya-2017.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="NotPetya 2017: The Most Expensive Cyberattack Ever">
+  <meta property="og:description" content="A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/notpetya-2017.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NotPetya 2017: The Most Expensive Cyberattack Ever">
+  <meta name="twitter:description" content="A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"NotPetya, 2017: the update that cost ten billion dollars","description":"A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours. Damage is estimated at $10 billion.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/notpetya-2017.html","articleSection":"Case Files","about":{"@type":"Thing","name":"NotPetya cyberattack"},"wordCount":1084}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"NotPetya cyberattack","item":"https://www.myrecon.xyz/breaches/case-files/notpetya-2017.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was NotPetya ransomware?","acceptedAnswer":{"@type":"Answer","text":"It was designed to look like ransomware and was not one. Real ransomware needs a working payment and decryption path, because a crew that never returns files stops being paid. NotPetya overwrote the key material it claimed to be holding and used a single hardcoded contact address that the email provider shut down within hours. Recovery was never on offer. The ransom screen was camouflage for a destructive weapon."}},{"@type":"Question","name":"Was any data stolen in NotPetya?","acceptedAnswer":{"@type":"Answer","text":"No. This is the unusual thing about it. Nothing was exfiltrated and nobody was blackmailed with leaked files. The entire cost came from destroyed machines, lost production and the months of rebuilding — which is why it remains the most expensive cyber incident on record despite exposing no personal data at all."}},{"@type":"Question","name":"How did NotPetya spread so fast?","acceptedAnswer":{"@type":"Answer","text":"It used three methods at once: EternalBlue, the leaked NSA exploit for a Windows file-sharing flaw; EternalRomance, a related exploit; and credential theft from the memory of each machine it reached, which let it log into other machines legitimately using Windows' own administration tools. That third method is why patched machines still fell. A fully updated computer will still accept a valid administrator password."}},{"@type":"Question","name":"Did insurance cover NotPetya losses?","acceptedAnswer":{"@type":"Answer","text":"Not without a fight. Insurers initially refused several of the largest claims by invoking war exclusions, arguing a state attack was an act of war. Mondelez settled with Zurich in 2022 and Merck settled in January 2024, after a New Jersey appellate court ruled that the exclusion did not apply to a cyberattack on this wording. Policies have been rewritten since with explicit state-actor clauses."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2017 · Destructive attack</span>
+          <h1>NotPetya, 2017: the update that cost ten billion dollars</h1>
+          <p class="meta">Case file · 5 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>No data stolen — an estimated $10 billion in destroyed systems</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>27 June 2017</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>27 June 2017</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Compromised update server for M.E.Doc, Ukrainian tax accounting software, then automatic spread using EternalBlue and stolen credentials</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Russia's GRU (Sandworm), attributed by the UK, US and allies in February 2018; six officers indicted by the US in October 2020</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>~$10 billion globally. Maersk ~$300m, Merck ~$870m, FedEx's TNT ~$400m, Mondelez ~$188m</dd></div>
+      </dl>
+
+<p class="lead">On 27 June 2017, accountants across Ukraine opened their tax software and it updated itself, as it had a hundred times before. Within hours, shipping terminals in India stopped moving containers, a chocolate factory in Australia stopped making chocolate, and hospitals in Pennsylvania could not access patient records. Nothing was stolen. That was never the objective.</p>
+
+<h2>What happened</h2>
+
+<p>M.E.Doc is accounting software used by most Ukrainian companies to file tax returns. For a business operating in Ukraine it is effectively mandatory, which makes its update server one of the most efficient distribution points into the country's economy that exists.</p>
+
+<p>Attackers compromised that update server and pushed a malicious update. On execution the payload did three things in quick succession: it harvested credentials from the memory of the machine it was on, it scanned the local network, and it spread — using the EternalBlue exploit against unpatched systems, and using the credentials it had just stolen to log into patched ones through Windows' own remote administration tools.</p>
+
+<p>That last mechanism is what made NotPetya different from WannaCry six weeks earlier. WannaCry stopped at patched machines. NotPetya did not need an exploit if it had a password, and on a typical corporate network a domain administrator's credentials sitting in memory on one machine are a key to thousands. Organisations that had patched properly were still taken down in minutes.</p>
+
+<p>Then it overwrote the master boot record and displayed a ransom demand.</p>
+
+<div class="callout">
+  <p><strong>The ransom note was a lie, and the lie was detectable.</strong> Researchers pulled it apart within a day. The installation key displayed on screen was random data rather than anything derived from the encryption, so the attackers could not have decrypted a victim's disk even if they had wanted to. Payment ran through a single hardcoded email address, which the provider suspended almost immediately — a detail no functioning criminal operation would design in. This was a wiper wearing a ransomware costume, and the costume bought it several days of being reported as an ordinary crime wave.</p>
+</div>
+
+<h2>The companies that were not the target</h2>
+
+<p>NotPetya was aimed at Ukraine. It reached everyone else because multinational companies run flat global networks, and any of them with a Ukrainian subsidiary — a sales office, a small logistics arm, one finance team filing local taxes — had a machine running M.E.Doc connected to the rest of the business.</p>
+
+<ol class="cf-timeline">
+  <li><b>Maersk</b>, the world's largest container shipping line, lost around 45,000 PCs and 4,000 servers. Terminals stopped operating. The loss was put at roughly $250–300 million.</li>
+  <li><b>Merck</b>, the pharmaceutical company, reported damage of around $870 million, including lost production of a vaccine.</li>
+  <li><b>FedEx</b> subsidiary TNT Express was hit for roughly $400 million and took months to restore full service.</li>
+  <li><b>Mondelez</b>, owner of Cadbury and Oreo, reported around $188 million and lost 1,700 servers and 24,000 laptops.</li>
+  <li><b>Saint-Gobain</b>, <b>Reckitt Benckiser</b>, <b>Rosneft</b> and Ukraine's own banks, metro and airport systems were all affected. So was the radiation monitoring at Chernobyl.</li>
+</ol>
+
+<p>The White House put total damage at more than $10 billion. It remains the most expensive cyberattack ever recorded, and no personal data was taken in it.</p>
+
+<h2>The domain controller in Ghana</h2>
+
+<p>The most-repeated detail of the Maersk recovery is also the most instructive. The company's Active Directory — the database that holds every account and permission — was destroyed on every domain controller it had, worldwide, near-simultaneously. Without it, restoring anything else was pointless: there would have been no way to authenticate to the restored systems.</p>
+
+<p>A single surviving copy was found in Ghana, where a power cut had taken the office offline before the malware arrived. Maersk's chairman described the recovery publicly the following year. The backup that saved a global shipping line was an accident of the local electricity supply.</p>
+
+<p>The reason this story gets told is not the luck. It is that Maersk's backup strategy was, on paper, sound, and it still did not account for the possibility that everything would be destroyed at the same moment. Backups that are online and reachable from the network being destroyed are not backups. They are copies.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>April – June 2017</b> — Attackers hold access to the M.E.Doc update infrastructure and stage the payload.</li>
+  <li><b>27 June 2017</b> — The malicious update ships. Global spread takes hours.</li>
+  <li><b>28 June 2017</b> — Researchers establish that decryption is impossible and the ransom is a fiction.</li>
+  <li><b>July – December 2017</b> — Affected multinationals rebuild; the first loss figures appear in quarterly filings.</li>
+  <li><b>February 2018</b> — The UK, US, Australia, Canada, New Zealand and Denmark jointly attribute the attack to the Russian military.</li>
+  <li><b>October 2020</b> — The US indicts six GRU officers over NotPetya and related operations.</li>
+  <li><b>2022 – 2024</b> — The insurance disputes settle, Mondelez in 2022 and Merck in January 2024.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Cyber insurance was rewritten.</strong> The war exclusion arguments failed on the wording that existed in 2017, and insurers responded by writing new wording. State-backed attack clauses are now explicit, negotiated, and frequently the most contested part of a cyber policy.</p>
+
+<p><strong>Flat networks became indefensible in practice, not just in theory.</strong> Segmentation had been recommended for years and widely ignored because it is expensive and inconvenient. NotPetya demonstrated the alternative cost in a single afternoon, and network segmentation moved onto board agendas.</p>
+
+<p><strong>Offline backups came back.</strong> A generation of IT teams had quietly moved to backup systems that were always connected because it was easier. Immutable and air-gapped backups returned as a standard requirement, and ransomware crews' habit of deleting backups first has kept them there.</p>
+
+<p><strong>The blast radius of a small subsidiary got taken seriously.</strong> Several victims had almost no Ukrainian business at all. Acquisition due diligence and subsidiary network isolation are now routine questions precisely because of this event.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Keep at least one backup the network cannot reach.</strong> Offline, immutable, or held by a third party — the test is whether an attacker with full administrator rights could destroy it.</li>
+  <li><strong>Patching is necessary and not sufficient.</strong> NotPetya spread to fully patched machines using valid credentials. Limiting where administrator accounts can log in matters as much as keeping software current.</li>
+  <li><strong>Know what would happen if your directory service vanished.</strong> Most organisations have never tested restoring it, and most recovery plans quietly assume it survives.</li>
+  <li><strong>For individuals: a ransom screen is not proof there is a key.</strong> Paying never guarantees recovery, and in this case it could not have delivered it. A current offline backup is the only reliable answer.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>Was NotPetya ransomware?</h3>
+        <p>It was designed to look like ransomware and was not one. Real ransomware needs a working payment and decryption path, because a crew that never returns files stops being paid. NotPetya overwrote the key material it claimed to be holding and used a single hardcoded contact address that the email provider shut down within hours. Recovery was never on offer. The ransom screen was camouflage for a destructive weapon.</p>
+
+        <h3>Was any data stolen in NotPetya?</h3>
+        <p>No. This is the unusual thing about it. Nothing was exfiltrated and nobody was blackmailed with leaked files. The entire cost came from destroyed machines, lost production and the months of rebuilding — which is why it remains the most expensive cyber incident on record despite exposing no personal data at all.</p>
+
+        <h3>How did NotPetya spread so fast?</h3>
+        <p>It used three methods at once: EternalBlue, the leaked NSA exploit for a Windows file-sharing flaw; EternalRomance, a related exploit; and credential theft from the memory of each machine it reached, which let it log into other machines legitimately using Windows' own administration tools. That third method is why patched machines still fell. A fully updated computer will still accept a valid administrator password.</p>
+
+        <h3>Did insurance cover NotPetya losses?</h3>
+        <p>Not without a fight. Insurers initially refused several of the largest claims by invoking war exclusions, arguing a state attack was an act of war. Mondelez settled with Zurich in 2022 and Merck settled in January 2024, after a New Jersey appellate court ruled that the exclusion did not apply to a cyberattack on this wording. Policies have been rewritten since with explicit state-actor clauses.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><a href="https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack" target="_blank" rel="noopener nofollow">UK National Cyber Security Centre — attribution statement, 15 February 2018</a></li>
+        <li><a href="https://www.justice.gov/opa/pr/six-russian-gru-officers-charged-connection-worldwide-deployment-destructive-malware-and" target="_blank" rel="noopener nofollow">US Department of Justice indictment of six GRU officers, October 2020</a></li>
+        <li><b>A.P. Moller-Maersk 2017 interim and annual reports</b> — the source of the ~$250–300m loss figure</li>
+        <li><b>Merck &amp; Co. securities filings and the New Jersey insurance litigation record</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/colonial-pipeline-2021.html">Colonial Pipeline, 2021: one leaked password, and the fuel stopped</a></li>
+        <li><a href="/breaches/case-files/solarwinds-2020.html">SolarWinds, 2020: 18,000 organisations installed the backdoor themselves</a></li>
+        <li><a href="/breaches/case-files/sony-pictures-2014.html">Sony Pictures, 2014: the breach that destroyed the computers on the way out</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

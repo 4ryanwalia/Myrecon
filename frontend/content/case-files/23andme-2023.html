@@ -1,0 +1,104 @@
+<!--
+{
+  "headline": "23andMe, 2023: 14,000 accounts opened the door to 6.9 million people",
+  "seoTitle": "23andMe Breach 2023: How 6.9 Million Were Exposed",
+  "subject": "23andMe credential stuffing breach",
+  "kicker": "2023 · Genetic testing",
+  "description": "Attackers logged into 14,000 accounts with recycled passwords. A feature that connects relatives then exposed 6.9 million people who had done nothing wrong.",
+  "cardBlurb": "The clearest case of one person's weak password exposing thousands of strangers — and of ancestry data being used to build targeting lists.",
+  "records": "about 6.9 million people, from 14,000 compromised accounts",
+  "peopleCount": 6900000,
+  "occurred": "April – September 2023",
+  "disclosed": "October 2023",
+  "vector": "Credential stuffing with passwords from earlier breaches, amplified by the DNA Relatives feature",
+  "actor": "Unidentified; data was advertised on a hacking forum",
+  "cost": "A $30 million settlement, a joint UK and Canadian regulatory finding, and the company's later bankruptcy",
+  "exposed": ["Names", "Profile photos", "Birth years", "Locations", "Ancestry and ethnicity estimates", "Relationship labels between matched relatives"],
+  "sortDate": "2023-10-06",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["collection-1-2019", "medibank-2022", "ashley-madison-2015"],
+  "faq": [
+    { "q": "Was 23andMe hacked?", "a": "Not in the sense of a system being breached. Attackers logged into roughly 14,000 individual accounts using email and password pairs recycled from other companies' breaches — credential stuffing. The accounts worked because those customers had reused passwords and had not turned on two-factor authentication." },
+    { "q": "How did 14,000 accounts become 6.9 million people?", "a": "Through DNA Relatives, an opt-in feature that shows you other users who share DNA with you, along with their display name, relationship estimate and profile details. Once inside one account, an attacker could see everyone matched to it. Multiply across thousands of accounts and the exposure compounds far beyond the accounts actually compromised." },
+    { "q": "Was raw genetic data stolen?", "a": "Not raw sequence data. What was exposed was profile information and the derived results: ancestry composition, ethnicity estimates, birth years, locations, and how users were related to one another. That is still genetic information about a person, and it is not information they can change." },
+    { "q": "Why was the ethnicity data particularly serious?", "a": "Because of how it was used. Subsets of the stolen data were advertised specifically as lists of people with Ashkenazi Jewish ancestry and of people with Chinese ancestry. A dataset organised by ethnicity, with names and locations attached, is a targeting list, and that is why this breach is discussed in terms of physical safety rather than fraud." }
+  ],
+  "sources": [
+    { "label": "Joint investigation findings of the UK Information Commissioner's Office and the Office of the Privacy Commissioner of Canada, 2025" },
+    { "label": "23andMe customer notifications and SEC filing, October and December 2023" },
+    { "label": "Class action settlement, 2024" }
+  ]
+}
+-->
+<p class="lead">Nobody broke into 23andMe. Attackers logged in — to about 14,000 accounts, using email and password pairs recycled from other companies' breaches. Because of one feature designed to connect relatives, those 14,000 logins exposed the profile data of roughly 6.9 million people, almost none of whom had done anything wrong.</p>
+
+<h2>What happened</h2>
+
+<p>From April 2023, attackers ran credential stuffing against 23andMe: automated login attempts using pairs harvested from unrelated breaches, on the reliable assumption that a percentage of people reuse passwords. Around 14,000 accounts accepted them.</p>
+
+<p>That alone would have been a minor incident. What made it a major one was DNA Relatives — an opt-in feature that shows a user other customers who share DNA with them, along with display names, relationship estimates, locations, birth years and ancestry results.</p>
+
+<div class="callout">
+  <p><strong>The amplification, in one sentence.</strong> Compromising one account exposes everyone that account can see. With a feature designed to connect you to hundreds of genetic relatives, 14,000 compromised accounts became 6.9 million exposed profiles — a multiplier of roughly 500. The people in that 6.9 million had strong passwords, two-factor authentication and good habits, and none of it mattered, because their exposure depended on a stranger's choices.</p>
+</div>
+
+<p>The company became aware of the problem in October 2023, after data from the breach was advertised on a hacking forum. It required password resets and later made two-factor authentication mandatory for all accounts.</p>
+
+<h2>The ethnicity lists</h2>
+
+<p>This is the part that separates 23andMe from an ordinary credential-stuffing incident. The data advertised for sale was not offered as a generic dump. Subsets were promoted specifically as lists of people with Ashkenazi Jewish ancestry — around a million records — and of people with Chinese ancestry.</p>
+
+<p>A list of named people, with locations, organised by ethnic origin, is not a fraud resource. It is a targeting resource, and its appearance amid rising antisemitic violence was understood as such immediately. The harm model here is not financial loss; it is the possibility of someone being found.</p>
+
+<p>Genetic ancestry also cannot be changed, revoked or reissued, and it is not solely yours: your results describe your siblings, your parents and your children, none of whom consented to the test you took.</p>
+
+<h2>Who is responsible when the password was the customer's?</h2>
+
+<p>23andMe's initial public position emphasised that the credentials were recycled from other breaches and that the accounts belonged to users who had reused passwords. That is factually true and it did not survive regulatory scrutiny.</p>
+
+<p>The joint UK and Canadian investigation focused on what the company was in a position to control:</p>
+
+<ol class="cf-timeline">
+  <li><b>Two-factor authentication was optional</b>, on a service holding genetic data, until after the breach.</li>
+  <li><b>Credential stuffing detection was inadequate</b> for the pattern of automated logins that ran for months.</li>
+  <li><b>The amplification through DNA Relatives</b> was a design decision. A feature that lets one compromised account read thousands of other people's profiles needs controls proportional to that reach.</li>
+  <li><b>The response was slow</b> relative to how long the activity had been running.</li>
+</ol>
+
+<p>The principle established is worth remembering: when your product design turns one weak password into thousands of victims, the design is the finding, not the password.</p>
+
+<h2>The afterlife of the data</h2>
+
+<p>23andMe's troubles did not end with the breach. The company's commercial position deteriorated and it filed for bankruptcy protection in 2025, which raised a question that had been theoretical until then: what happens to the genetic data of millions of people when the company holding it is sold for parts?</p>
+
+<p>Several US state attorneys general issued advisories telling residents how to delete their data and request destruction of their samples. It is the sharpest available illustration that a privacy policy is a promise by a going concern, and a going concern is not a permanent state.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>April 2023</b> — Credential stuffing begins.</li>
+  <li><b>August–September 2023</b> — Bulk scraping through DNA Relatives continues largely undetected.</li>
+  <li><b>October 2023</b> — Data is advertised on a hacking forum, including ethnicity-specific subsets; 23andMe confirms the incident and forces password resets.</li>
+  <li><b>November 2023</b> — Two-factor authentication is made mandatory for all accounts.</li>
+  <li><b>December 2023</b> — The company confirms approximately 6.9 million profiles were affected.</li>
+  <li><b>2024</b> — A $30 million class settlement is agreed.</li>
+  <li><b>2025</b> — UK and Canadian regulators publish joint findings; the company enters bankruptcy proceedings.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Mandatory MFA arrived for sensitive consumer services.</strong> Optional two-factor authentication on a genetic database is now understood as a design defect rather than a user choice.</p>
+
+<p><strong>Social features got reassessed for aggregation risk.</strong> Any feature that shows one user information about many others is now a recognised amplification vector, in genealogy, dating, fitness and social apps alike.</p>
+
+<p><strong>The question of data in insolvency became live.</strong> Regulators and legislators started asking what happens to sensitive datasets when the company holding them fails — a question the privacy framework of most countries answers badly.</p>
+
+<h2>If you used a genetic testing service</h2>
+
+<ol class="bx-actions">
+  <li><strong>Turn on two-factor authentication everywhere it exists</strong>, and treat any service holding health or genetic data as requiring it.</li>
+  <li><strong>Review relative-matching and profile visibility settings.</strong> Opting out of matching removes you from the amplification path entirely.</li>
+  <li><strong>Consider deleting data and requesting sample destruction</strong> if you no longer use the service. Most providers document this; it is worth doing while the company still exists to process the request.</li>
+  <li><strong>Remember it is not only your decision.</strong> Testing exposes information about relatives who never consented, and that is a conversation worth having with them rather than for them.</li>
+</ol>

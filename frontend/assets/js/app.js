@@ -12,6 +12,32 @@
       { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
     ));
 
+  /* Any URL that reaches an href or src attribute goes through here first.
+   *
+   * esc() makes a string safe to sit *inside* markup, but it has nothing to say
+   * about what the string means once it is there: "javascript:alert(1)" has no
+   * &<>"' in it, so it passes through esc() untouched and then runs on click.
+   * The URLs on this page are not all ours — avatar and profile links arrive in
+   * whatever a platform's API returned, and a Gravatar account link is filled
+   * in by whoever owns the Gravatar — so the scheme has to be checked rather
+   * than assumed.
+   *
+   * Anything that is not http(s) becomes "", which renders as a dead link
+   * instead of a live script.
+   */
+  const safeUrl = (u) => {
+    const raw = String(u ?? "").trim();
+    if (!raw) return "";
+    try {
+      // Resolved against the page so relative URLs keep working; the protocol
+      // check then sees what the browser would actually navigate to.
+      const parsed = new URL(raw, location.href);
+      return (parsed.protocol === "http:" || parsed.protocol === "https:") ? parsed.href : "";
+    } catch {
+      return "";
+    }
+  };
+
   const fmtNum = (n) => {
     n = Number(n) || 0;
     // Breach corpora run to billions of records, so B is a real bucket here.
@@ -75,7 +101,17 @@
 
   // ---------------------------------------------------------------- nav
   function initNav() {
-    $("#navToggle")?.addEventListener("click", () => $("#navLinks")?.classList.toggle("open"));
+    const btn = $("#navToggle");
+    const links = $("#navLinks");
+    if (!btn || !links) return;
+    // The button showed and hid the menu but never said so: no aria-expanded,
+    // so a screen reader announced the same thing open or closed.
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", "navLinks");
+    btn.addEventListener("click", () => {
+      const open = links.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+    });
   }
 
   // ---------------------------------------------------------------- API
@@ -174,13 +210,13 @@
         <h2>${esc(title)}</h2>
         <span class="hint">${count}</span>
         <div class="results-actions">
-          <button class="btn btn-sm" data-action="share-native">Share</button>
-          <button class="btn btn-ghost btn-sm" data-action="save">Save</button>
-          <button class="btn btn-ghost btn-sm" data-action="share">Copy link</button>
-          <button class="btn btn-ghost btn-sm" data-action="copy">Copy</button>
-          <button class="btn btn-ghost btn-sm" data-action="print">PDF</button>
-          <button class="btn btn-ghost btn-sm" data-export="json">JSON</button>
-          <button class="btn btn-ghost btn-sm" data-export="csv">CSV</button>
+          <button type="button" class="btn btn-sm" data-action="share-native">Share</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="save">Save</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="share">Copy link</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="copy">Copy results</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="print">Download PDF</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-export="json">Download JSON</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-export="csv">Download CSV</button>
         </div>
       </div>`;
   }
@@ -188,7 +224,7 @@
   function avatarHTML(r, fallbackChar) {
     const pic = r.profile_pic_url || r.avatar_url;
     if (pic) {
-      return `<div class="avatar"><img src="${esc(pic)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+      return `<div class="avatar"><img src="${esc(safeUrl(pic))}" alt="" loading="lazy" referrerpolicy="no-referrer"
         onerror="this.remove();this.parentElement.textContent='${esc(fallbackChar)}'"></div>`;
     }
     return `<div class="avatar">${esc(fallbackChar)}</div>`;
@@ -283,7 +319,7 @@
   function clusterCard(c) {
     const conf = c.confidence || 0;
     const platforms = (c.platforms || []).map((p) =>
-      `<a class="meta-tag" href="${esc(p.url)}" target="_blank" rel="noopener nofollow">${esc(p.platform)}</a>`
+      `<a class="meta-tag" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener nofollow">${esc(p.platform)}</a>`
     ).join("");
     return `<div class="card" style="grid-column:1/-1;margin-bottom:14px">
       <div class="card-head">
@@ -332,7 +368,7 @@
       ${r.bio ? `<div class="card-bio">${esc(r.bio.slice(0, 150))}</div>` : ""}
       ${meta ? `<div class="card-meta">${meta}</div>` : ""}`;
     if (href) {
-      return `<a class="card card-link" href="${esc(href)}" target="_blank" rel="noopener nofollow"
+      return `<a class="card card-link" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow"
         aria-label="Open ${esc(platform)} profile in a new tab">${inner}</a>`;
     }
     return `<div class="card">${inner}</div>`;
@@ -441,14 +477,14 @@
       html += `<div class="section-label">Gravatar profile</div>`;
       html += `<div class="card"><div class="card-head">${avatarHTML(g, "G")}
         <div style="min-width:0"><div class="card-title">${esc(g.display_name || "Gravatar")}</div>
-        <div class="card-url"><a href="${esc(g.profile_url)}" target="_blank" rel="noopener nofollow">${esc(hostOf(g.profile_url) || "gravatar.com")}</a></div></div></div>
+        <div class="card-url"><a href="${esc(safeUrl(g.profile_url))}" target="_blank" rel="noopener nofollow">${esc(hostOf(g.profile_url) || "gravatar.com")}</a></div></div></div>
         ${g.bio ? `<div class="card-bio">${esc(g.bio)}</div>` : ""}</div>`;
     }
     if (data.github) {
       html += `<div class="section-label">GitHub</div>`;
       html += `<div class="card"><div class="card-head">${avatarHTML({ avatar_url: data.github.avatar_url }, "GH")}
         <div style="min-width:0"><div class="card-title">${esc(data.github.username)}</div>
-        <div class="card-url"><a href="${esc(data.github.url)}" target="_blank" rel="noopener nofollow">github.com</a></div></div></div></div>`;
+        <div class="card-url"><a href="${esc(safeUrl(data.github.url))}" target="_blank" rel="noopener nofollow">github.com</a></div></div></div></div>`;
     }
     resultsEl().innerHTML = html;
     animateCountUps();
@@ -565,7 +601,7 @@
         // last_seen well in the past on a dead link means it was deleted.
         el.innerHTML = `archived ${esc(h.first_seen)} → ${esc(h.last_seen)}
           (${h.snapshots} snapshot${h.snapshots === 1 ? "" : "s"})
-          <a href="${esc(h.archive_url)}" target="_blank" rel="noopener nofollow">view</a>`;
+          <a href="${esc(safeUrl(h.archive_url))}" target="_blank" rel="noopener nofollow">view</a>`;
         el.classList.add("wb-hit");
       } else {
         el.textContent = "never archived";
@@ -1128,7 +1164,7 @@
         <div class="ico">${icon(TOOLS[x.tool] ? TOOLS[x.tool].icon : "search", 17)}</div>
         <div class="meta"><div class="q">${esc(x.query)}</div>
           <div class="t">${TOOLS[x.tool] ? esc(TOOLS[x.tool].label) : ""}${x.note ? " · " + esc(x.note) : ""}</div></div>
-        <button class="icon-btn btn-sm" data-del="${esc(x.tool)}|${esc(x.query)}" aria-label="Remove" title="Remove">&times;</button>
+        <button type="button" class="icon-btn btn-sm" data-del="${esc(x.tool)}|${esc(x.query)}" aria-label="Remove ${esc(x.query)} from saved" title="Remove ${esc(x.query)} from saved">&times;</button>
       </div>`).join("") + `</div>`;
     $$(".history-item", wrap).forEach((el) => el.addEventListener("click", (e) => {
       if (e.target.closest("[data-del]")) return;
@@ -1225,7 +1261,12 @@
   function switchTool(name) {
     if (!TOOLS[name]) return;
     activeTool = name;
-    $$(".tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tool === name)));
+    $$(".tab").forEach((t) => {
+      const on = t.dataset.tool === name;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+    });
+    $("#toolPanel")?.setAttribute("aria-labelledby", `tab-${name}`);
     const tool = TOOLS[name];
     const q = $("#queryInput");
     q.placeholder = tool.placeholder;
@@ -1259,10 +1300,26 @@
     const tabs = $("#toolTabs");
     if (!tabs) return;
     tabs.innerHTML = Object.entries(TOOLS).map(([k, t], i) =>
-      `<button class="tab" role="tab" data-tool="${k}" aria-selected="${i === 0}">
+      `<button type="button" class="tab" role="tab" id="tab-${k}" data-tool="${k}"
+        aria-controls="toolPanel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">
         <span class="tab-ico">${icon(t.icon, 17)}</span>${esc(t.label)}</button>`
     ).join("");
-    $$(".tab", tabs).forEach((el) => el.addEventListener("click", () => switchTool(el.dataset.tool)));
+    const all = $$(".tab", tabs);
+    all.forEach((el) => el.addEventListener("click", () => switchTool(el.dataset.tool)));
+    tabs.addEventListener("keydown", (e) => {
+      const i = all.indexOf(document.activeElement);
+      if (i < 0) return;
+      const last = all.length - 1;
+      let next = null;
+      if (e.key === "ArrowRight") next = i === last ? 0 : i + 1;
+      else if (e.key === "ArrowLeft") next = i === 0 ? last : i - 1;
+      else if (e.key === "Home") next = 0;
+      else if (e.key === "End") next = last;
+      if (next === null) return;
+      e.preventDefault();
+      switchTool(all[next].dataset.tool);
+      all[next].focus();
+    });
   }
 
   function initHeroRotate() {

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>British Airways Data Breach 2018: The Magecart Attack</title>
+  <meta name="description" content="A small change to a script on the BA payment page sent card details to the attackers as customers typed them.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/british-airways-2018.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="British Airways Data Breach 2018: The Magecart Attack">
+  <meta property="og:description" content="A small change to a script on the BA payment page sent card details to the attackers as customers typed them.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/british-airways-2018.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="British Airways Data Breach 2018: The Magecart Attack">
+  <meta name="twitter:description" content="A small change to a script on the BA payment page sent card details to the attackers as customers typed them.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"British Airways, 2018: twenty-two lines of JavaScript","description":"A small change to a script on the BA payment page sent card details to the attackers as customers typed them. It ran for fifteen days and cost the airline a £20 million fine.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/british-airways-2018.html","articleSection":"Case Files","about":{"@type":"Thing","name":"British Airways data breach"},"wordCount":930}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"British Airways data breach","item":"https://www.myrecon.xyz/breaches/case-files/british-airways-2018.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How were CVV codes stolen when nobody stores them?","acceptedAnswer":{"@type":"Answer","text":"Because they were never stored. Card rules forbid keeping the CVV after a transaction, and BA did not keep it. The skimmer captured the code in the browser at the moment the customer typed it, before it reached the airline's systems at all. This is exactly why client-side attacks are so effective against payment pages: they read the data upstream of every rule about what may be retained."}},{"@type":"Question","name":"Why was the British Airways fine reduced from £183 million to £20 million?","acceptedAnswer":{"@type":"Answer","text":"The £183.39 million figure published in July 2019 was a notice of intent, not a fine. It fell after BA made representations about the ICO's findings, after the regulator revised parts of its case, and after it took account of the effect of the COVID-19 pandemic on the aviation industry. The final penalty notice was issued in October 2020."}},{"@type":"Question","name":"Was I affected by the British Airways breach?","acceptedAnswer":{"@type":"Answer","text":"BA contacted affected customers directly. The window was 22 June to 5 September 2018, and it covered bookings made on the website and the mobile app. If you paid BA in that period and were never notified, you were most likely outside it — but a card used then should be treated as compromised regardless, and any card still in use from that era is long overdue for replacement."}},{"@type":"Question","name":"What is Magecart?","acceptedAnswer":{"@type":"Answer","text":"Magecart is not one group. It is the umbrella name for many crews running the same technique: get a small piece of JavaScript onto a checkout page, read the payment fields as they are filled in, and send a copy to a server you control. They usually get in through a third-party script the site embeds — analytics, chat widgets, ad tags — rather than through the site's own code."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2018 · Airline</span>
+          <h1>British Airways, 2018: twenty-two lines of JavaScript</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>About 429,612 customers and staff</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>22 June – 5 September 2018</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>6 September 2018</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Malicious JavaScript injected into the payment page — a Magecart-style client-side skimmer</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Magecart, a loose set of card-skimming crews; no individual has been charged</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>£20 million ICO fine, reduced from a £183.39 million notice of intent, plus a settled group claim</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Names · Billing addresses · Email addresses · Payment card numbers · Expiry dates · CVV security codes</p>
+
+<p class="lead">The British Airways breach took 429,612 people's card details, including the three-digit security codes that no company is allowed to store. British Airways did not store them. The attackers did not need it to — they read the numbers out of the customer's own browser as they were typed, and the airline's systems received exactly what they always had.</p>
+
+<h2>What happened</h2>
+
+<p>On 22 June 2018, a script served by ba.com was modified. The change was small, and it was appended to an existing, legitimate file — a widely used JavaScript library that had been on the site for years. Anyone reviewing the page would have seen a familiar library at a familiar path.</p>
+
+<p>The added code did one thing. When a customer submitted the payment form, it took a copy of what they had entered — name, address, card number, expiry date, CVV — and sent it to a server the attackers controlled. The booking then proceeded normally. There was no error, no delay, no failed payment. Customers completed their purchases, received their confirmations, and flew.</p>
+
+<p>The exfiltration domain was registered as <code>baways.com</code>, with a certificate that made the traffic look unremarkable in any log that only records where connections go. It ran for fifteen days before anyone noticed, and it was a third party — not BA — who did.</p>
+
+<div class="callout">
+  <p><strong>How the attackers got in, according to the regulator.</strong> The ICO's penalty notice found the initial access came through compromised credentials of an employee of a BA cargo handling supplier, used to log into a remote access gateway that did not require multi-factor authentication. From there the attackers moved laterally, found administrator credentials stored in plaintext on a server, and reached the environment serving the website. The clever part of this attack was the skimmer. The way in was an ordinary chain of missing controls.</p>
+</div>
+
+<h2>Why client-side skimming is so hard to see</h2>
+
+<p>Every defence a payment system has is built around the server: the database is encrypted, the CVV is discarded, the card number is tokenised, access is logged. All of that is downstream of the browser. A skimmer sits upstream of it, in the one place where the data is unavoidably in plain text — the form the customer is filling in.</p>
+
+<p>It also leaves almost no evidence on the victim's side. No database was queried unusually, no large export was taken, no volume anomaly appeared anywhere. The data left in thousands of small, individually unremarkable requests from customers' own computers, not from BA's network. Monitoring built to detect bulk extraction had nothing to detect.</p>
+
+<p>The mobile app was affected too, because it loaded the same compromised scripts inside a web view. Users who assumed a native app was a separate, safer path were in the same breach.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>22 June 2018</b> — The modified script goes live; card harvesting begins.</li>
+  <li><b>5 September 2018</b> — A third party alerts BA; the airline removes the script the same day.</li>
+  <li><b>6 September 2018</b> — BA discloses publicly and begins notifying customers, initially citing 380,000 transactions.</li>
+  <li><b>October 2018</b> — The affected period is revised to include a further set of reward bookings; the total rises.</li>
+  <li><b>July 2019</b> — The ICO announces a notice of intent to fine £183.39 million, then a record.</li>
+  <li><b>16 October 2020</b> — The final penalty is set at £20 million, citing BA's representations and the pandemic's impact on aviation.</li>
+  <li><b>July 2021</b> — A group claim brought on behalf of affected customers settles on confidential terms.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>The ICO published a working description of the attack.</strong> The penalty notice is unusually specific about what was missing: multi-factor authentication on remote access, credentials in plaintext on servers, insufficient monitoring of file changes on the website. It became a reference document, because regulators rarely publish that level of technical detail and security teams could take it straight to their own management.</p>
+
+<p><strong>Subresource integrity and content security policy became checkout requirements.</strong> Both existed in 2018 and both would have helped: integrity attributes make a browser refuse a script whose contents have changed, and a strict policy limits where a page can send data. PCI DSS version 4.0 later made script management and change detection on payment pages an explicit obligation rather than a recommendation.</p>
+
+<p><strong>Third-party scripts on payment pages got counted.</strong> A typical checkout page loaded a dozen or more scripts from other companies in 2018. Each one could read the form. Many retailers responded by stripping payment pages down to the minimum, or by moving card entry into an iframe hosted by the payment processor so the merchant's own page cannot read it.</p>
+
+<p><strong>The size of the first number stopped being the story.</strong> The gap between £183 million and £20 million was widely reported as a climbdown. What it actually demonstrated is that headline regulatory figures are opening positions, and the final number is a negotiation about findings, remediation and circumstance.</p>
+
+<h2>If you were affected</h2>
+
+<ol class="bx-actions">
+  <li><strong>Assume a card used on ba.com in that window is compromised, replaced or not.</strong> Card details from 2018 still circulate; they are simply worth less than fresh ones.</li>
+  <li><strong>Check statements for small test transactions rather than large ones.</strong> Stolen cards are usually validated with a trivial charge before anything significant is attempted.</li>
+  <li><strong>Expect the address and email to outlive the card.</strong> The card number expires. The name, billing address and email do not, and they are what makes a follow-up phishing message convincing.</li>
+  <li><strong>Treat any "British Airways compensation" contact as hostile until proven otherwise.</strong> Breach settlements attract impersonators, and a real scheme never asks for card details to pay you.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>How were CVV codes stolen when nobody stores them?</h3>
+        <p>Because they were never stored. Card rules forbid keeping the CVV after a transaction, and BA did not keep it. The skimmer captured the code in the browser at the moment the customer typed it, before it reached the airline's systems at all. This is exactly why client-side attacks are so effective against payment pages: they read the data upstream of every rule about what may be retained.</p>
+
+        <h3>Why was the British Airways fine reduced from £183 million to £20 million?</h3>
+        <p>The £183.39 million figure published in July 2019 was a notice of intent, not a fine. It fell after BA made representations about the ICO's findings, after the regulator revised parts of its case, and after it took account of the effect of the COVID-19 pandemic on the aviation industry. The final penalty notice was issued in October 2020.</p>
+
+        <h3>Was I affected by the British Airways breach?</h3>
+        <p>BA contacted affected customers directly. The window was 22 June to 5 September 2018, and it covered bookings made on the website and the mobile app. If you paid BA in that period and were never notified, you were most likely outside it — but a card used then should be treated as compromised regardless, and any card still in use from that era is long overdue for replacement.</p>
+
+        <h3>What is Magecart?</h3>
+        <p>Magecart is not one group. It is the umbrella name for many crews running the same technique: get a small piece of JavaScript onto a checkout page, read the payment fields as they are filled in, and send a copy to a server you control. They usually get in through a third-party script the site embeds — analytics, chat widgets, ad tags — rather than through the site's own code.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><a href="https://ico.org.uk/action-weve-taken/enforcement/british-airways/" target="_blank" rel="noopener nofollow">Information Commissioner's Office — penalty notice, British Airways, October 2020</a> — the detailed public account of the intrusion</li>
+        <li><b>RiskIQ — Inside the Magecart Breach of British Airways</b> — the original analysis identifying the modified script</li>
+        <li><b>British Airways statements to customers, September 2018</b></li>
+        <li><b>Group claim against British Airways, settled July 2021 on undisclosed terms</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/target-2013.html">Target, 2013: 40 million cards, and the air-conditioning contractor</a></li>
+        <li><a href="/breaches/case-files/tjx-2007.html">TJX, 2007: the wireless network in the car park</a></li>
+        <li><a href="/breaches/case-files/marriott-starwood-2018.html">Marriott and Starwood, 2018: a breach that came with the acquisition</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

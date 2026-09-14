@@ -1,0 +1,87 @@
+<!--
+{
+  "headline": "MGM Resorts, 2023: a ten-minute phone call to the help desk",
+  "seoTitle": "MGM Resorts Hack 2023: Scattered Spider Explained",
+  "subject": "MGM Resorts cyberattack",
+  "kicker": "2023 · Hospitality",
+  "description": "Attackers found an MGM employee on LinkedIn, called the IT help desk pretending to be them, and got a password reset. Slot machines and room keys stopped working for ten days.",
+  "cardBlurb": "No exploit, no malware on the way in. A phone call, a name from LinkedIn, and a help desk doing what help desks are measured on: being helpful quickly.",
+  "records": "Personal data of customers who transacted with MGM before March 2019",
+  "occurred": "September 2023",
+  "disclosed": "11 September 2023",
+  "vector": "Social engineering of the IT help desk to obtain a credential reset, then abuse of the identity provider",
+  "actor": "Scattered Spider (UNC3944) working with the ALPHV/BlackCat ransomware operation",
+  "cost": "MGM reported roughly $100 million in impact for the quarter, plus about $10 million in one-off costs",
+  "exposed": ["Names", "Contact details", "Dates of birth", "Driver's licence numbers", "A smaller set of Social Security and passport numbers"],
+  "sortDate": "2023-09-11",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["twilio-0ktapus-2022", "lastpass-2022", "uber-2016"],
+  "faq": [
+    { "q": "How did attackers get into MGM without hacking anything?", "a": "They identified an employee through public professional profiles, gathered enough detail to sound like that person, and called the internal IT help desk asking for account recovery. The help desk performed the reset. From there the attackers had a working corporate identity and went after the identity provider that sits behind every other system. The technical skill in this attack was almost entirely conversational." },
+    { "q": "Why did slot machines stop working?", "a": "They did not fail individually. MGM shut down large parts of its own network deliberately to stop the attackers moving further, and modern casino and hotel operations depend on that network for nearly everything — reservations, digital room keys, points of sale, gaming floor systems. The visible chaos was the containment decision, not the attack itself, and that trade-off is one every victim has to make quickly and with poor information." },
+    { "q": "Did MGM pay a ransom?", "a": "MGM has said publicly that it did not pay. Caesars Entertainment, targeted by the same crew shortly before, was widely reported to have paid approximately $15 million. The contrast is instructive: Caesars avoided the operational collapse, MGM avoided funding the group, and both ended up in regulatory filings and class actions regardless." },
+    { "q": "Who is Scattered Spider?", "a": "A loosely organised, largely English-speaking group — many members reportedly young, some teenagers — tracked under names including UNC3944 and Octo Tempest. Their signature is social engineering rather than exploitation: help desk impersonation, SIM swapping, and phishing that targets the account recovery process rather than the password. Several arrests have been made in the US and UK since 2024." }
+  ],
+  "sources": [
+    { "label": "MGM Resorts International Form 8-K filings, September and October 2023", "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MGM&type=8-K", "note": "the source of the ~$100m impact figure" },
+    { "label": "MGM Resorts customer notification, October 2023" },
+    { "label": "Caesars Entertainment Form 8-K, September 2023" },
+    { "label": "CISA and FBI joint advisory AA23-320A on Scattered Spider", "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-320a" }
+  ]
+}
+-->
+<p class="lead">On the Las Vegas Strip in September 2023, guests queued at reception because digital room keys had stopped working, slot machines sat dark, and staff wrote restaurant orders on paper. The intrusion that caused it did not involve a vulnerability. It involved a phone call to the IT help desk by somebody who had read an employee's LinkedIn profile.</p>
+
+<h2>What happened</h2>
+
+<p>The attackers identified an MGM employee from public professional information — the kind of profile everyone in a corporate role maintains — and assembled enough personal and organisational detail to impersonate them convincingly. They then called MGM's internal IT support and asked for help getting back into their account.</p>
+
+<p>The help desk did what help desks exist to do. It verified the caller against the information it was trained to ask for, all of which the caller had, and reset the credentials. That included the multi-factor authentication enrolment, which is the step that matters: a password reset alone is manageable, but a reset that also re-enrols the second factor hands over the whole identity.</p>
+
+<p>With a valid employee identity the attackers went after the identity provider — the single system that issues access to everything else. Having a foothold there converts one employee's account into an ability to issue access at will, and it is why identity infrastructure has become the primary objective in intrusions of this kind rather than an obstacle on the way to one.</p>
+
+<p>ALPHV, the ransomware operation working with them, then deployed ransomware against part of the estate. MGM responded by shutting systems down.</p>
+
+<div class="callout">
+  <p><strong>The help desk is not a weak link by accident.</strong> It is measured on speed and on user satisfaction, staffed by people rewarded for unblocking colleagues, and its entire function is to restore access to people who have lost it. Every incentive in the role points towards saying yes. Meanwhile the information used to verify a caller — employee number, manager's name, date of birth, office location — is exactly the information that leaks, gets scraped from professional networks, or can be obtained from a previous breach. The verification step is asking for secrets that are not secret.</p>
+</div>
+
+<h2>Ten days of paper</h2>
+
+<p>The operational effect was the part the public saw. Room keys stopped working. Check-in ran on manual processes. Slot machines were taken offline, reservations could not be made online, and payouts were handled by hand. Guests filmed the queues.</p>
+
+<p>Almost all of that was self-inflicted, in the sense that MGM chose it. Faced with attackers holding valid identity credentials and moving through the network, the options are to shut things down and lose revenue, or to stay up and risk losing everything. MGM shut down. Recovery took roughly ten days and the company put the financial effect at around $100 million for the quarter.</p>
+
+<p>Caesars Entertainment had been hit by the same crew days earlier and made the other choice, reportedly paying about $15 million. It stayed open. Both companies ended up notifying customers and facing class actions.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Late August 2023</b> — Caesars Entertainment is compromised via a social engineering attack on an outsourced IT support vendor.</li>
+  <li><b>~8 September 2023</b> — The help desk call to MGM takes place; the attackers obtain a credential reset.</li>
+  <li><b>10 – 11 September 2023</b> — MGM detects the intrusion, shuts down major systems, and files an 8-K disclosure.</li>
+  <li><b>14 September 2023</b> — ALPHV publishes a statement about the attack, disputing parts of the public account.</li>
+  <li><b>20 September 2023</b> — MGM reports that its systems are largely restored.</li>
+  <li><b>October 2023</b> — MGM notifies customers that personal data, including driver's licence numbers and a smaller set of Social Security and passport numbers, was taken for customers who transacted before March 2019.</li>
+  <li><b>2024 onwards</b> — Arrests connected to Scattered Spider are announced in the US and UK; class actions consolidate.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Help desk verification was rebuilt across entire industries.</strong> The fixes that followed are unglamorous and effective: requiring a video call with an identity document, requiring a manager to approve resets out of band, imposing a mandatory delay on MFA re-enrolment, and refusing to perform resets for privileged accounts over the phone at all.</p>
+
+<p><strong>Identity providers became the crown jewels.</strong> Once single sign-on mediates access to every application, its administrative interface is the most valuable surface in the organisation. Separate, phishing-resistant, hardware-backed authentication for those administrative roles became a standard recommendation rather than a mature-programme nicety.</p>
+
+<p><strong>Everyone learned what their own containment decision costs.</strong> Most incident response plans in 2023 had no answer to "at what point do we take the revenue-generating systems offline, and who decides". MGM made that decision in public, expensively, and a great many tabletop exercises since have been built around it.</p>
+
+<p><strong>Youth stopped being a proxy for harmlessness.</strong> A group whose members included teenagers took a $14 billion company off the internet for ten days. The skills that mattered were research and confidence on the telephone, neither of which requires resources or experience.</p>
+
+<h2>If you stayed at an MGM property</h2>
+
+<ol class="bx-actions">
+  <li><strong>The exposure depends on when you transacted, not on whether you stayed recently.</strong> MGM's notification covered customers who dealt with it before March 2019, which surprised people who assumed older data had been deleted.</li>
+  <li><strong>Driver's licence and passport numbers are identity documents, not passwords.</strong> You cannot rotate them. Where your jurisdiction allows a credit freeze, that is the control that actually blocks their use.</li>
+  <li><strong>Expect hotel-themed phishing.</strong> A loyalty account, a stay history and a real name make a convincing "your recent booking" email, and these lists get resold for years.</li>
+  <li><strong>At work, ask what your own help desk requires to reset your MFA.</strong> If the answer is a set of facts about you that a stranger could find, that is the finding.</li>
+</ol>

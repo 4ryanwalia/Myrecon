@@ -31,6 +31,8 @@ import com.aryan.myrecon.data.CleanCopy
 import com.aryan.myrecon.data.GeoIntel
 import com.aryan.myrecon.data.ImageProvenance
 import com.aryan.myrecon.data.ImageForensics
+import com.aryan.myrecon.data.JpegStructure
+import com.aryan.myrecon.data.OriginCheck
 import com.aryan.myrecon.ui.components.ShareButton
 import com.aryan.myrecon.data.ReportText
 import com.aryan.myrecon.data.ReconStore
@@ -111,9 +113,18 @@ class ImageViewModel : ViewModel() {
                                 query = report.file.name ?: "Photo",
                                 at = at,
                                 headline = buildList {
-                                    if (report.provenance.origin ==
-                                        ImageProvenance.Origin.DeclaredAiGenerated
-                                    ) add("Says it was made by AI")
+                                    when (report.origin.made) {
+                                        OriginCheck.Made.DeclaredAi ->
+                                            add("Says it was made by AI")
+                                        OriginCheck.Made.DeclaredAiEdited ->
+                                            add("AI used on part of it")
+                                        OriginCheck.Made.LooksAi ->
+                                            add("Probably made by AI")
+                                        else -> Unit
+                                    }
+                                    if (report.origin.touched == OriginCheck.Touched.Declared ||
+                                        report.origin.touched == OriginCheck.Touched.Likely
+                                    ) add("Edited")
                                     if (report.exif.gps.present) add("Location inside")
                                     if (report.leaks.isNotEmpty()) {
                                         add("${report.leaks.size} things it gives away")
@@ -184,8 +195,12 @@ fun ImageScreen(vm: ImageViewModel = viewModel()) {
                 Text(
                     "Every photo carries hidden details you cannot see by looking at it: the " +
                         "phone or camera that took it, the date, sometimes the exact spot on a " +
-                        "map, and whether an AI made it. Pick a photo and MyRecon will show you " +
-                        "what is in there — and offer to strip it out before you share it.\n\n" +
+                        "map, and whether an AI made it.\n\n" +
+                        "MyRecon also reads how the picture was squashed to make the file " +
+                        "smaller. That part cannot be wiped, so it still has something to say " +
+                        "about a screenshot or a picture saved off the internet: whether it " +
+                        "came out of a real camera, and whether it has been through an editor " +
+                        "since.\n\n" +
                         "It all happens on your phone. The photo is never sent anywhere.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = t.textDim,
@@ -231,53 +246,64 @@ fun ImageScreen(vm: ImageViewModel = viewModel()) {
 }
 
 /**
- * What the file says about where it came from.
+ * One finding and the reason it counts.
  *
- * Prominent only when there is something to say. A card reading "no AI marker
- * found" on every holiday photo would be noise, and worse, it would read as a
- * clean bill of health — which is exactly the claim the data cannot support.
- * When nothing is declared the answer is a quiet line that says so and says why
- * it proves nothing.
+ * The reason is not optional decoration. A bare list of observations is a
+ * verdict the reader has to take on faith, and this screen's whole claim is
+ * that it does not ask for faith — every line says what was found and what
+ * would make it mean something else.
  */
 @Composable
-private fun OriginCard(p: ImageProvenance.Report) {
+private fun ClueRow(clue: OriginCheck.Clue, tint: androidx.compose.ui.graphics.Color) {
     val t = LocalReconTokens.current
-    val declared = p.origin != ImageProvenance.Origin.Undeclared || p.contentCredentials
-
-    if (!declared) {
-        SectionLabel("Was this made by AI?")
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(MaterialTheme.colorScheme.surface)
-                .border(1.dp, t.border, RoundedCornerShape(14.dp))
-                .padding(14.dp),
-        ) {
-            Text("This photo does not say", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(5.dp))
-            Text(
-                "AI tools usually hide a small label inside the picture saying they made " +
-                    "it. This one has no label.\n\n" +
-                    "That does not mean it is real. The label is wiped whenever a picture " +
-                    "is screenshotted, saved again, or posted on social media — so most " +
-                    "genuine photos you see online have no label either.",
-                style = MaterialTheme.typography.bodySmall,
-                color = t.textDim,
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .semantics(mergeDescendants = true) {},
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier
+                    .size(6.dp)
+                    .clip(RoundedCornerShape(99.dp))
+                    .background(tint),
             )
+            Spacer(Modifier.width(9.dp))
+            Text(clue.text, style = MaterialTheme.typography.titleSmall)
         }
-        return
+        Spacer(Modifier.height(3.dp))
+        Text(
+            clue.why,
+            style = MaterialTheme.typography.bodySmall,
+            color = t.textDim,
+            modifier = Modifier.padding(start = 15.dp),
+        )
     }
+}
 
-    val (headline, tint) = when (p.origin) {
-        ImageProvenance.Origin.DeclaredAiGenerated ->
-            "Yes — the photo says so itself" to t.warn
-        ImageProvenance.Origin.DeclaredAiEdited ->
-            "Partly — AI was used on some of it" to t.warn
-        ImageProvenance.Origin.DeclaredCapture ->
-            "No — it says a camera took it" to t.ok
-        ImageProvenance.Origin.Undeclared ->
-            "It carries a record of how it was made" to t.info
+/**
+ * Was this made by AI?
+ *
+ * The card shows the answer and then immediately shows its working, because
+ * when there is no label inside the file the answer is assembled out of clues
+ * and the user is entitled to see which ones. Both directions are listed —
+ * what points at a generator and what points at a real camera — so a verdict
+ * that leans the wrong way is visibly thin rather than merely wrong.
+ *
+ * "Ruled out" is at the bottom on purpose. It is where a screenshot or a
+ * WhatsApp forward gets to explain why its file is empty, which is the single
+ * most common reason a picture looks suspicious and is not.
+ */
+@Composable
+private fun OriginCard(v: OriginCheck.Verdict, p: ImageProvenance.Report) {
+    val t = LocalReconTokens.current
+
+    val tint = when (v.made) {
+        OriginCheck.Made.DeclaredAi, OriginCheck.Made.LooksAi -> t.warn
+        OriginCheck.Made.DeclaredAiEdited -> t.warn
+        OriginCheck.Made.DeclaredCamera, OriginCheck.Made.LooksCamera -> t.ok
+        OriginCheck.Made.Unknown -> null
     }
 
     SectionLabel("Was this made by AI?")
@@ -285,51 +311,114 @@ private fun OriginCard(p: ImageProvenance.Report) {
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(tint.copy(alpha = 0.10f))
-            .border(1.dp, tint.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+            .background(tint?.copy(alpha = 0.10f) ?: MaterialTheme.colorScheme.surface)
+            .border(1.dp, tint?.copy(alpha = 0.4f) ?: t.border, RoundedCornerShape(14.dp))
             .padding(16.dp),
     ) {
-        Text(headline, style = MaterialTheme.typography.titleLarge, color = tint)
-        p.generator?.let {
-            Spacer(Modifier.height(4.dp))
-            Text(it, style = MaterialTheme.typography.titleMedium)
+        Text(
+            v.headline,
+            style = MaterialTheme.typography.titleLarge,
+            color = tint ?: MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(v.plain, style = MaterialTheme.typography.bodySmall, color = t.textDim)
+
+        if (v.towardAi.isNotEmpty()) {
+            Spacer(Modifier.height(14.dp))
+            Text("What points that way", style = MaterialTheme.typography.titleSmall, color = t.warn)
+            v.towardAi.forEach { ClueRow(it, t.warn) }
         }
 
-        Spacer(Modifier.height(10.dp))
-        Text(
-            "This comes from a hidden label inside the file. MyRecon is reading what the " +
-                "photo says about itself — it is not guessing by looking at the picture.",
-            style = MaterialTheme.typography.bodySmall,
-            color = t.textDim,
-        )
+        if (v.towardCamera.isNotEmpty()) {
+            Spacer(Modifier.height(14.dp))
+            Text(
+                "What points at a real camera",
+                style = MaterialTheme.typography.titleSmall,
+                color = t.ok,
+            )
+            v.towardCamera.forEach { ClueRow(it, t.ok) }
+        }
 
         if (p.markers.isNotEmpty()) {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
+            Text("Labels found inside", style = MaterialTheme.typography.titleSmall)
+            Spacer(Modifier.height(4.dp))
             DataList(p.markers.map { it.source to it.value })
         }
 
         if (p.contentCredentials) {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
             Text(
                 // Presence is provable from the bytes; validity is not, and
                 // saying "verified" here would be a claim this app cannot make.
-                "This photo carries Content Credentials — a record of how it was made, " +
-                    "added by the camera or app. MyRecon can see the record is there, but " +
-                    "cannot check whether it is genuine, so treat it as a claim rather " +
-                    "than proof.",
+                "This photo carries Content Credentials — a record of how it was made, added " +
+                    "by the camera or app. MyRecon can see the record is there, but cannot " +
+                    "check whether it is genuine, so treat it as a claim rather than proof.",
                 style = MaterialTheme.typography.bodySmall,
                 color = t.textMute,
             )
         }
 
         p.prompt?.let { prompt ->
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(14.dp))
             Text("The words used to make it", style = MaterialTheme.typography.titleSmall)
             Spacer(Modifier.height(5.dp))
+            Text(prompt, style = MonoStyle, color = t.textDim)
+        }
+
+        if (v.explained.isNotEmpty()) {
+            Spacer(Modifier.height(14.dp))
+            Text("Ruled out", style = MaterialTheme.typography.titleSmall, color = t.textMute)
+            v.explained.forEach { ClueRow(it, t.textMute) }
+        }
+    }
+}
+
+/**
+ * Has it been changed since it was made?
+ *
+ * A separate question from the one above and often the more useful of the two:
+ * a genuine photograph that has been through an editor is still a genuine
+ * photograph, and it is still not what it appears to be.
+ *
+ * Shown only when there is something to report. "Nothing found" on a file that
+ * was never going to reveal anything reads as a clean bill of health, and the
+ * absence of a trace is not one.
+ */
+@Composable
+private fun EditedCard(v: OriginCheck.Verdict) {
+    val t = LocalReconTokens.current
+    if (v.edits.isEmpty()) return
+
+    val (headline, tint) = when (v.touched) {
+        OriginCheck.Touched.Declared -> "Yes — the file names what changed it" to t.warn
+        OriginCheck.Touched.Likely -> "Yes — the picture itself shows the traces" to t.warn
+        OriginCheck.Touched.ReSaved -> "It has been saved again since it was made" to t.info
+        OriginCheck.Touched.NoSign -> "No sign of it" to t.ok
+        OriginCheck.Touched.Unknown -> "Nothing in the file says either way" to t.textMute
+    }
+
+    SectionLabel("Has it been edited?")
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, t.border, RoundedCornerShape(14.dp))
+            .padding(16.dp),
+    ) {
+        Text(headline, style = MaterialTheme.typography.titleMedium, color = tint)
+        Spacer(Modifier.height(6.dp))
+        v.edits.forEach { ClueRow(it, tint) }
+
+        if (v.touched == OriginCheck.Touched.ReSaved) {
+            Spacer(Modifier.height(10.dp))
             Text(
-                prompt,
-                style = MonoStyle,
-                color = t.textDim,
+                "Being saved again is not suspicious on its own — every website, messaging " +
+                    "app and photo gallery does it. It only means this is not the original " +
+                    "file that came off the camera.",
+                style = MaterialTheme.typography.bodySmall,
+                color = t.textMute,
             )
         }
     }
@@ -528,7 +617,8 @@ private fun ForensicsReport(
             .background(t.surface2),
     )
 
-    OriginCard(r.provenance)
+    OriginCard(r.origin, r.provenance)
+    EditedCard(r.origin)
 
     // ── Location leads: it is the finding people care about most ──
     s.geo?.let { geo ->
@@ -610,6 +700,46 @@ private fun ForensicsReport(
                 r.exif.aperture?.let { "Aperture" to it },
                 r.exif.exposure?.let { "Exposure" to it },
             ).ifEmpty { listOf("Camera" to "No camera tags") }
+        )
+    }
+
+    // ── How it was squashed ───────────────────────────────────────
+    // This is the half of the evidence that survives a metadata strip, so it
+    // is shown as facts a user can check rather than left inside the verdict.
+    if (r.jpeg.present || r.grid != null) {
+        SectionLabel("How it was saved")
+        DataList(
+            listOfNotNull(
+                when (r.jpeg.tables) {
+                    JpegStructure.Tables.Standard -> "Squashed like" to "Ordinary software"
+                    JpegStructure.Tables.Custom -> "Squashed like" to "A camera"
+                    JpegStructure.Tables.None -> null
+                },
+                r.jpeg.quality?.takeIf { r.jpeg.tables == JpegStructure.Tables.Standard }
+                    ?.let { "Quality used" to "$it out of 100" },
+                r.jpeg.subsampling?.let { "Colour detail kept" to it },
+                r.jpeg.takeIf { it.present }?.let {
+                    "Layout" to if (it.progressive) "Web (loads blurry first)" else "Standard"
+                },
+                r.jpeg.makerNoteBytes?.let { "Camera's private block" to "$it bytes" },
+                r.grid?.let {
+                    "Compression grid" to if (it.aligned) {
+                        "Lined up with the corner"
+                    } else {
+                        "Offset by ${it.phaseX} across and ${it.phaseY} down"
+                    }
+                },
+            ).ifEmpty { listOf("Compression" to "Nothing readable") }
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Squashing a picture to make the file smaller leaves a pattern behind, and the " +
+                "pattern is different depending on what did the squashing. Camera makers each " +
+                "use their own settings; ordinary programs all use the same one out of the " +
+                "manual. Unlike the hidden details above, this cannot be wiped — the picture " +
+                "would have to be squashed again, which leaves its own mark.",
+            style = MaterialTheme.typography.bodySmall,
+            color = t.textMute,
         )
     }
 

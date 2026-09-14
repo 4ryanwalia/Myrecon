@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AT&amp;T Breach 2024: Call Records of 109 Million | MyRecon</title>
+  <meta name="description" content="AT&amp;T lost six months of call and text metadata for nearly all its mobile customers. Not what was said — who spoke to whom, how often, and from roughly where.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/att-2024.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="AT&amp;T Breach 2024: Call Records of 109 Million">
+  <meta property="og:description" content="AT&amp;T lost six months of call and text metadata for nearly all its mobile customers. Not what was said — who spoke to whom, how often, and from roughly where.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/att-2024.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AT&amp;T Breach 2024: Call Records of 109 Million">
+  <meta name="twitter:description" content="AT&amp;T lost six months of call and text metadata for nearly all its mobile customers. Not what was said — who spoke to whom, how often, and from roughly where.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"AT&T, 2024: who called whom, for nearly every customer","description":"AT&T lost six months of call and text metadata for nearly all its mobile customers. Not what was said — who spoke to whom, how often, and from roughly where.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/att-2024.html","articleSection":"Case Files","about":{"@type":"Thing","name":"AT&T call records breach"},"wordCount":864}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"AT&T call records breach","item":"https://www.myrecon.xyz/breaches/case-files/att-2024.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were the contents of my calls or messages stolen?","acceptedAnswer":{"@type":"Answer","text":"No. The data was metadata: which numbers interacted, how many times, and for how long, plus cell site identifiers for a subset of records. The words spoken and the text of messages were not included."}},{"@type":"Question","name":"If it is only metadata, why does it matter?","acceptedAnswer":{"@type":"Answer","text":"Because a complete record of who you contact reveals relationships that content often does not. A sequence of calls to an oncology practice, a divorce lawyer, a rehabilitation clinic or a domestic violence helpline tells the story without a single word being read. Metadata at scale is also easy to analyse automatically, which content is not."}},{"@type":"Question","name":"I was not an AT&T customer. Am I in it?","acceptedAnswer":{"@type":"Answer","text":"Possibly. The records cover numbers that AT&T customers interacted with, and that includes people on other networks. You can be in a telephone metadata set without ever having had a relationship with the carrier that lost it."}},{"@type":"Question","name":"Was this the same as the other AT&T leak in 2024?","acceptedAnswer":{"@type":"Answer","text":"No, they are separate. In March 2024, a dataset of about 73 million current and former customer records from 2019 or earlier surfaced publicly, including Social Security numbers and account passcodes, prompting a mass passcode reset. The July disclosure concerned call and text metadata taken from a cloud data warehouse in April 2024."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2024 · Telecommunications</span>
+          <h1>AT&amp;T, 2024: who called whom, for nearly every customer</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>call and text metadata for nearly all mobile customers, about 109 million accounts</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>April 2024 (covering records from 2022)</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>12 July 2024</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>A third-party cloud data warehouse account without multi-factor authentication</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Part of the campaign tracked as UNC5537; charges followed in late 2024</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>A proposed $177 million settlement covering both 2024 incidents</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Phone numbers contacted · Counts of calls and texts · Call durations · Cell site identifiers for some records</p>
+
+<p class="lead">In July 2024, AT&T disclosed that call and text metadata for nearly all of its mobile customers — roughly 109 million accounts — had been copied from a cloud data warehouse. The records covered a six-month window in 2022. No conversations were taken, and that fact has been used to soften the story ever since. It should not.</p>
+
+<h2>What was taken</h2>
+
+<p>For the period from 1 May to 31 October 2022, plus a further day in January 2023, the data described which phone numbers interacted with which, the number of calls and texts between them, and call durations. For a subset of records it also included cell site identifiers — meaning an approximate location for where the device was when the call took place.</p>
+
+<p>It did not include the contents of calls or messages, names, or dates of birth. AT&T noted that the numbers are not directly linked to names in the data — although publicly available lookup tools make that a thin protection, since a phone number is one of the easiest identifiers in the world to resolve to a person.</p>
+
+<p>The route in was the same as the <a href="/breaches/case-files/snowflake-2024.html">wider 2024 campaign against cloud data warehouses</a>: a customer account on a third-party analytics platform, accessible with a password and no second factor.</p>
+
+<h2>Why metadata is not the lesser category</h2>
+
+<p>This is the argument worth making carefully, because "no message content was affected" appears in almost every telecommunications breach notice.</p>
+
+<div class="callout">
+  <p><strong>Content is ambiguous; patterns are not.</strong> A phone call to a cancer clinic followed by three calls to close family members, then a call to an employer, is a diagnosis narrative. Repeated late-night calls between two numbers over four months is a relationship. A single call to a domestic violence helpline is a disclosure. None of those inferences requires a word of what was actually said, and all of them can be drawn by a script across a hundred million records.</p>
+</div>
+
+<p>Metadata has three properties that make it more dangerous in bulk than content:</p>
+
+<ol class="cf-timeline">
+  <li><b>It is structured.</b> Content requires interpretation; metadata is already a graph of who contacts whom, ready to query.</li>
+  <li><b>It is complete.</b> Interception captures some conversations. Carrier records capture every connection.</li>
+  <li><b>It resists denial.</b> You can dispute what was said in a call. You cannot dispute that it happened, for how long, and from where.</li>
+</ol>
+
+<p>For most people the practical risk from this breach is modest. For journalists and their sources, for people in abusive situations, for anyone whose contacts are sensitive, a complete six-month connection graph is a serious exposure that no password change addresses.</p>
+
+<h2>The two AT&T incidents of 2024</h2>
+
+<p>Confusion between them is common, so it is worth separating them:</p>
+
+<ol class="cf-timeline">
+  <li><b>March 2024.</b> A dataset containing roughly 73 million current and former customer records — dating from 2019 or earlier and including Social Security numbers and account passcodes — appeared publicly. AT&T reset passcodes for affected accounts. Its origin was disputed for some time.</li>
+  <li><b>July 2024.</b> The call and text metadata disclosure covered here, from a cloud data warehouse compromised in April 2024.</li>
+</ol>
+
+<p>A third matter, a 2023 incident involving a cloud vendor, was settled separately with the Federal Communications Commission. Three unrelated failures inside eighteen months at one carrier is itself the finding.</p>
+
+<h2>The delayed disclosure</h2>
+
+<p>AT&T's July filing noted that the US Department of Justice had determined a delay to public disclosure was warranted, twice, on national security and public safety grounds. The SEC's 2023 cybersecurity disclosure rules allow exactly this: a company can postpone reporting a material incident if the Attorney General determines that immediate disclosure would pose a substantial risk.</p>
+
+<p>It is a legitimate mechanism and it was used here in what appears to be the way it was designed to be used. It is also worth noticing, because it means the four-business-day disclosure rule people cite is not absolute, and the public timeline of a major breach can legally be weeks or months behind the private one.</p>
+
+<h2>What it changed</h2>
+
+<p><strong>Metadata protection climbed the agenda.</strong> Regulators had treated customer proprietary network information as a privacy category for decades; this breach turned it into a security one, and reinforced the FCC's more aggressive posture towards carriers' data handling.</p>
+
+<p><strong>Cloud analytics platforms got audited.</strong> The AT&T disclosure is what moved the Snowflake campaign from a security-industry story into a mainstream one, and it prompted a wave of enterprise reviews of where bulk data had been copied for analysis and who could log into it.</p>
+
+<h2>If you were an AT&T customer in 2022</h2>
+
+<ol class="bx-actions">
+  <li><strong>There is no remediation for a connection graph</strong>, and it would be dishonest to suggest otherwise. Changing your number would break the link going forward and is disruptive enough that it is only worth it for people at genuine risk.</li>
+  <li><strong>If your contacts are sensitive, adjust the channel rather than the number.</strong> End-to-end encrypted messaging that does not route through carrier records is the control that actually addresses this.</li>
+  <li><strong>Set a port-out PIN.</strong> Separate risk, cheap fix, and relevant to every carrier breach.</li>
+  <li><strong>For the March 2024 dataset, treat your old account passcode as public</strong> and make sure it is not reused anywhere else — <a href="/guides/strong-passwords-guide.html">the reuse problem in practical terms</a>.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>Were the contents of my calls or messages stolen?</h3>
+        <p>No. The data was metadata: which numbers interacted, how many times, and for how long, plus cell site identifiers for a subset of records. The words spoken and the text of messages were not included.</p>
+
+        <h3>If it is only metadata, why does it matter?</h3>
+        <p>Because a complete record of who you contact reveals relationships that content often does not. A sequence of calls to an oncology practice, a divorce lawyer, a rehabilitation clinic or a domestic violence helpline tells the story without a single word being read. Metadata at scale is also easy to analyse automatically, which content is not.</p>
+
+        <h3>I was not an AT&amp;T customer. Am I in it?</h3>
+        <p>Possibly. The records cover numbers that AT&T customers interacted with, and that includes people on other networks. You can be in a telephone metadata set without ever having had a relationship with the carrier that lost it.</p>
+
+        <h3>Was this the same as the other AT&amp;T leak in 2024?</h3>
+        <p>No, they are separate. In March 2024, a dataset of about 73 million current and former customer records from 2019 or earlier surfaced publicly, including Social Security numbers and account passcodes, prompting a mass passcode reset. The July disclosure concerned call and text metadata taken from a cloud data warehouse in April 2024.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>AT&amp;T Form 8-K filing and customer notice, July 2024</b></li>
+        <li><b>Mandiant analysis of UNC5537 and the Snowflake-related campaign, June 2024</b></li>
+        <li><b>Federal Communications Commission enforcement actions against AT&amp;T, 2024</b></li>
+        <li><b>Proposed class settlement filings, 2025</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/snowflake-2024.html">Snowflake, 2024: 165 companies breached without anyone touching Snowflake</a></li>
+        <li><a href="/breaches/case-files/t-mobile-2021.html">T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers</a></li>
+        <li><a href="/breaches/case-files/facebook-scrape-2021.html">Facebook, 2021: 533 million phone numbers that were never &quot;hacked&quot;</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

@@ -7,9 +7,12 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.aryan.myrecon.data.BlockGrid
 import com.aryan.myrecon.data.CleanCopy
 import com.aryan.myrecon.data.ImageForensics
 import com.aryan.myrecon.data.ImageProvenance
+import com.aryan.myrecon.data.JpegStructure
+import com.aryan.myrecon.data.OriginCheck
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
@@ -100,13 +103,100 @@ class ImageForensicsDeviceTest {
         assertEquals(HEIGHT, decoded.height)
     }
 
+    // ── The compression trace, which only a real decoder can produce ──
+
+    @Test
+    fun a_compressed_photo_carries_a_grid_lined_up_with_the_corner() = runBlocking {
+        // The JVM tests prove the arithmetic. This proves the part they cannot
+        // reach: that the region decoder hands back full-resolution pixels with
+        // the grid still in them. Decode that region scaled by even a factor of
+        // two and every measurement here collapses to nothing.
+        val uri = publish("myrecon-test-q30.jpg", jpeg(photo(), 30), "image/jpeg")
+        val report = ImageForensics.analyse(context, uri).getOrElse {
+            fail("analysis failed: ${it.message}"); return@runBlocking
+        }
+
+        val grid = report.grid
+        assertNotNull("a compressed photo should show a grid", grid)
+        assertTrue("strength was ${grid!!.strength}", grid.strength >= BlockGrid.PRESENT)
+        assertTrue("should be lined up, got ${grid.phaseX},${grid.phaseY}", grid.aligned)
+
+        // ...and being lined up must not be held against it.
+        assertFalse(
+            "every JPEG has an aligned grid; it is not evidence of editing",
+            report.origin.edits.any { it.text.contains("Cropped") },
+        )
+    }
+
+    @Test
+    fun a_cropped_and_resaved_photo_is_reported_as_cropped() = runBlocking {
+        val first = jpeg(photo(), 30)
+        val once = android.graphics.BitmapFactory.decodeByteArray(first, 0, first.size)
+        val cropped = Bitmap.createBitmap(once, 3, 3, once.width - 8, once.height - 8)
+        val uri = publish("myrecon-test-crop.jpg", jpeg(cropped, 95), "image/jpeg")
+
+        val report = ImageForensics.analyse(context, uri).getOrElse {
+            fail("analysis failed: ${it.message}"); return@runBlocking
+        }
+        val grid = report.grid
+        assertNotNull("the older grid should still be there", grid)
+        assertEquals("across", 5, grid!!.phaseX)
+        assertEquals("down", 5, grid.phaseY)
+        assertTrue(
+            "the report should say it was cropped",
+            report.origin.edits.any { it.text.contains("Cropped") },
+        )
+    }
+
+    @Test
+    fun androids_own_encoder_is_recognised_as_software_rather_than_a_camera() = runBlocking {
+        // Android compresses through libjpeg, so its output must come back as
+        // the published tables. If this ever fails, the camera/software
+        // distinction has stopped meaning anything.
+        val uri = publish("myrecon-test-tables.jpg", jpeg(photo(), 85), "image/jpeg")
+        val report = ImageForensics.analyse(context, uri).getOrElse {
+            fail("analysis failed: ${it.message}"); return@runBlocking
+        }
+        assertTrue(report.jpeg.present)
+        assertEquals(JpegStructure.Tables.Standard, report.jpeg.tables)
+        assertFalse("no camera wrote this", report.jpeg.makerNote)
+        assertNotEquals(
+            "an empty re-encode is not evidence of a camera",
+            OriginCheck.Made.LooksCamera, report.origin.made,
+        )
+    }
+
     // ── Fixtures ─────────────────────────────────────────────────
 
+    /**
+     * Something with the structure of a photograph.
+     *
+     * Not noise: noise has no low frequencies for the encoder to keep and no
+     * high ones it can afford to discard, so compressing it produces mush
+     * rather than blocks and there would be no grid to find.
+     */
+    private fun photo(side: Int = 384, seed: Int = 3): Bitmap {
+        val rng = java.util.Random(seed.toLong())
+        val pixels = IntArray(side * side)
+        for (y in 0 until side) for (x in 0 until side) {
+            val wave = kotlin.math.sin(x / 11.0) * 40 + kotlin.math.sin(y / 7.0) * 35 +
+                kotlin.math.sin((x + y) / 23.0) * 45
+            val v = (128 + wave + rng.nextInt(30) - 15).toInt().coerceIn(0, 255)
+            pixels[y * side + x] = 0xFF000000.toInt() or
+                ((v * 105 / 100).coerceIn(0, 255) shl 16) or (v shl 8) or (v * 9 / 10)
+        }
+        return Bitmap.createBitmap(pixels, side, side, Bitmap.Config.ARGB_8888)
+    }
+
+    private fun jpeg(bitmap: Bitmap, quality: Int): ByteArray = ByteArrayOutputStream()
+        .also { bitmap.compress(Bitmap.CompressFormat.JPEG, quality, it) }
+        .toByteArray()
+
     /** Put an image into the gallery and hand back the uri the app would get. */
-    private fun publish(name: String, bytes: ByteArray): Uri {
+    private fun publish(name: String, bytes: ByteArray, mime: String = "image/png"): Uri {
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, name)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            put(MediaStore.Images.Media.MIME_TYPE, mime)
             put(
                 MediaStore.Images.Media.RELATIVE_PATH,
                 "${Environment.DIRECTORY_PICTURES}/MyReconTest",

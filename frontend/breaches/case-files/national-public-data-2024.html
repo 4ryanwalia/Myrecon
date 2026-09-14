@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>National Public Data Breach: Billions of Records Leaked</title>
+  <meta name="description" content="A background-check broker most people had never heard of leaked a file advertised at 2.9 billion records, including Social Security numbers, then went…">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/national-public-data-2024.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="National Public Data Breach: Billions of Records Leaked">
+  <meta property="og:description" content="A background-check broker most people had never heard of leaked a file advertised at 2.9 billion records, including Social Security numbers, then went…">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/national-public-data-2024.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="National Public Data Breach: Billions of Records Leaked">
+  <meta name="twitter:description" content="A background-check broker most people had never heard of leaked a file advertised at 2.9 billion records, including Social Security numbers, then went…">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"National Public Data, 2024: a company you never used, holding everything about you","description":"A background-check broker most people had never heard of leaked a file advertised at 2.9 billion records, including Social Security numbers, then went bankrupt.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/national-public-data-2024.html","articleSection":"Case Files","about":{"@type":"Thing","name":"National Public Data breach"},"wordCount":827}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"National Public Data breach","item":"https://www.myrecon.xyz/breaches/case-files/national-public-data-2024.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were 2.9 billion people affected?","acceptedAnswer":{"@type":"Answer","text":"No. That was the advertised row count, not a population — there are only about 8 billion people alive. The file contained enormous duplication, with the same person appearing many times across different addresses and name spellings, plus records of deceased people. Researchers who examined it found roughly 134 million unique email addresses. Treat any headline row count as a file size, not a victim count."}},{"@type":"Question","name":"How did they have my data if I never used them?","acceptedAnswer":{"@type":"Answer","text":"That is what a data broker is. National Public Data aggregated information from public records, marketing lists and other brokers into background-check profiles. There was no signup, no notice and, in most US states at the time, no way to opt out. You were in the file because you exist, not because you used anything."}},{"@type":"Question","name":"Was the data accurate?","acceptedAnswer":{"@type":"Answer","text":"Partially. Analyses found stale addresses, mismatched fields and duplicated identities. That cuts both ways: it makes the file less reliable for fraud than the headline suggests, and it means errors in it can still cause harm when a background-check customer treats the profile as fact."}},{"@type":"Question","name":"What happened to the company?","acceptedAnswer":{"@type":"Answer","text":"Its parent, Jerico Pictures, filed for Chapter 11 bankruptcy protection amid the resulting lawsuits. Separately, researchers found that a sister site operated by the same company had been publishing an archive containing plaintext credentials for its own back end — which did nothing for the argument that the data had been well looked after."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2024 · Data broker</span>
+          <h1>National Public Data, 2024: a company you never used, holding everything about you</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>advertised as 2.9 billion rows; researchers identified about 134 million unique email addresses</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>Late 2023 – April 2024</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>Offered for sale April 2024; published broadly in August 2024</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Never fully established publicly; a sister site was separately found publishing a plaintext password file</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>An actor using the handle USDoD advertised the data; it was later posted free</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>The company filed for bankruptcy protection</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Names · Current and historic addresses · Social Security numbers · Phone numbers · Relatives and associates</p>
+
+<p class="lead">Every other case in this archive involves a company someone chose to deal with. This one does not. National Public Data was a background-check broker that compiled profiles on people who had never heard of it, never agreed to anything, and had no practical way to leave — and in 2024 the compilation went public.</p>
+
+<h2>What happened</h2>
+
+<p>In April 2024, an actor using the handle USDoD advertised a dataset said to contain 2.9 billion rows of personal data covering the United States, the United Kingdom and Canada, at an asking price of $3.5 million. Portions circulated through the summer, and in August large parts were published free on a criminal forum.</p>
+
+<p>The records contained names, current and historical addresses, Social Security numbers, phone numbers, and in many cases lists of relatives and associates — the standard shape of a background-check profile.</p>
+
+<div class="callout">
+  <p><strong>Why "2.9 billion records" is not "2.9 billion people".</strong> Brokers store one row per observed combination of name and address. A person who has lived at eight addresses, used a middle initial sometimes, and shared a household with three others can generate dozens of rows. The file also contained deceased people and obviously stale entries. Researchers who worked through it found roughly 134 million unique email addresses. The gap between the advertised figure and the useful one is the single most important thing to understand about broker breaches.</p>
+</div>
+
+<p>The company compounded the story: researchers found that a sister site operated by the same business was publishing an archive containing plaintext credentials for its own administrative back end. Whatever the original route in, the operational standard on display did not suggest a well-defended organisation.</p>
+
+<h2>The consent problem</h2>
+
+<p>The uncomfortable centre of this case is that no one in the file did anything.</p>
+
+<p>Brokers assemble profiles from public records — property filings, voter registrations, court records, licences — combined with marketing data, purchase histories and datasets bought from other brokers. The individual is neither a customer nor a user. They are inventory.</p>
+
+<p>That produces three distinct harms:</p>
+
+<ol class="cf-timeline">
+  <li><b>No notice.</b> Most people in the file only learned it existed when it leaked.</li>
+  <li><b>No control.</b> Opt-out processes, where they exist, are per-broker, manual, and have to be repeated because the data gets re-acquired from other brokers.</li>
+  <li><b>No accountability that matches the scale.</b> The company filed for bankruptcy. The data remains in circulation permanently.</li>
+</ol>
+
+<p>It is the argument for regulating the industry, made more persuasively by events than by any advocate.</p>
+
+<h2>What the data is actually good for</h2>
+
+<p>Being realistic about the risk matters more than being alarmed by the row count.</p>
+
+<p>A Social Security number with a name and date of birth supports new-account fraud, which a credit freeze blocks. Historic addresses and relatives' names support knowledge-based identity verification — the "which of these streets have you lived on?" questions that banks and telecoms still use — which is why those questions have been quietly dying for years.</p>
+
+<p>The most reliable use, though, is targeting. A caller who knows your previous address, your mother's name and the last four digits of your Social Security number sounds exactly like your bank. The data does not enable the fraud directly; it makes the person on the phone credible, and credibility is what the fraud actually needs.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Late 2023 – early 2024</b> — The data is obtained from National Public Data's systems.</li>
+  <li><b>April 2024</b> — A dataset advertised at 2.9 billion rows is offered for sale.</li>
+  <li><b>June–July 2024</b> — Portions circulate; class actions begin; researchers start analysing samples.</li>
+  <li><b>August 2024</b> — Large portions are published free; the company confirms a breach; a sister site is found exposing plaintext credentials.</li>
+  <li><b>October 2024</b> — The parent company files for Chapter 11 bankruptcy protection.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Data brokers entered public consciousness.</strong> The industry had been a specialist concern. A leak that touched most American adults, from a company none of them could name, made "who else holds my file?" a mainstream question and strengthened the case for state-level deletion mechanisms.</p>
+
+<p><strong>Knowledge-based verification lost more ground.</strong> If everyone's address history is public, questions about address history verify nothing. The migration towards document verification, device binding and one-time codes accelerated.</p>
+
+<p><strong>Bankruptcy as a liability exit got noticed.</strong> A broker that profits from compiling data, loses it, and then dissolves leaves victims with a permanent exposure and no counterparty. It is now a live question in policy discussions about bonding and insurance requirements for data brokers.</p>
+
+<h2>What to actually do</h2>
+
+<ol class="bx-actions">
+  <li><strong>Freeze your credit at all three US bureaus.</strong> It is free and it is the control that matches this specific exposure.</li>
+  <li><strong>Opt out of the larger brokers directly</strong>, and repeat it periodically — listings come back as data is re-acquired. <a href="/guides/how-data-brokers-work.html">How the industry works and where the opt-outs are</a>.</li>
+  <li><strong>Assume verification questions about you are answerable by strangers.</strong> Choose stronger authentication options wherever they are offered.</li>
+  <li><strong>Discount the headline number, not the risk.</strong> The row count was inflated; the Social Security numbers were real.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>Were 2.9 billion people affected?</h3>
+        <p>No. That was the advertised row count, not a population — there are only about 8 billion people alive. The file contained enormous duplication, with the same person appearing many times across different addresses and name spellings, plus records of deceased people. Researchers who examined it found roughly 134 million unique email addresses. Treat any headline row count as a file size, not a victim count.</p>
+
+        <h3>How did they have my data if I never used them?</h3>
+        <p>That is what a data broker is. National Public Data aggregated information from public records, marketing lists and other brokers into background-check profiles. There was no signup, no notice and, in most US states at the time, no way to opt out. You were in the file because you exist, not because you used anything.</p>
+
+        <h3>Was the data accurate?</h3>
+        <p>Partially. Analyses found stale addresses, mismatched fields and duplicated identities. That cuts both ways: it makes the file less reliable for fraud than the headline suggests, and it means errors in it can still cause harm when a background-check customer treats the profile as fact.</p>
+
+        <h3>What happened to the company?</h3>
+        <p>Its parent, Jerico Pictures, filed for Chapter 11 bankruptcy protection amid the resulting lawsuits. Separately, researchers found that a sister site operated by the same company had been publishing an archive containing plaintext credentials for its own back end — which did nothing for the argument that the data had been well looked after.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Class action filings in the US District Court for the Southern District of Florida, 2024</b></li>
+        <li><b>Chapter 11 bankruptcy filing, October 2024</b></li>
+        <li><b>Independent analyses of the published dataset by security researchers, August 2024</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/equifax-2017.html">Equifax, 2017: 147 million people, one unpatched web form</a></li>
+        <li><a href="/breaches/case-files/facebook-scrape-2021.html">Facebook, 2021: 533 million phone numbers that were never &quot;hacked&quot;</a></li>
+        <li><a href="/breaches/case-files/collection-1-2019.html">Collection #1, 2019: 773 million addresses, and nobody was breached</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

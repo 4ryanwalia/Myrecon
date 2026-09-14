@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aadhaar Data Exposure 2018: What Was Reported | MyRecon</title>
+  <meta name="description" content="Reports of Aadhaar data being sold and leaked through third-party systems were denied by the authority as breaches of its database.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/aadhaar-exposures-2018.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Aadhaar Data Exposure 2018: What Was Reported">
+  <meta property="og:description" content="Reports of Aadhaar data being sold and leaked through third-party systems were denied by the authority as breaches of its database.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/aadhaar-exposures-2018.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Aadhaar Data Exposure 2018: What Was Reported">
+  <meta name="twitter:description" content="Reports of Aadhaar data being sold and leaked through third-party systems were denied by the authority as breaches of its database.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Aadhaar, 2018: what the reported exposures actually showed","description":"Reports of Aadhaar data being sold and leaked through third-party systems were denied by the authority as breaches of its database. Both positions can be true, and that is the lesson.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/aadhaar-exposures-2018.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Aadhaar data exposure reports"},"wordCount":793}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Aadhaar data exposure reports","item":"https://www.myrecon.xyz/breaches/case-files/aadhaar-exposures-2018.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was the Aadhaar central database hacked?","acceptedAnswer":{"@type":"Answer","text":"There is no public evidence that it was, and the Unique Identification Authority of India has consistently said the biometric database was not breached. The reported incidents concerned access through intermediaries and third-party systems that held or could query Aadhaar data — which is a different failure with much of the same effect for the people whose details appeared."}},{"@type":"Question","name":"What did the January 2018 report actually claim?","acceptedAnswer":{"@type":"Answer","text":"A newspaper reported that its journalists had paid an intermediary a small sum for access to a service that returned demographic details for an Aadhaar number. The authority denied any breach of its database and filed a police complaint; the initial inclusion of the reporter in that complaint drew criticism from press freedom organisations, and the authority later said it did not intend action against the journalist."}},{"@type":"Question","name":"What is the difference between a leak and an exposure here?","acceptedAnswer":{"@type":"Answer","text":"A leak of the central database would mean the authority's own records were taken. An exposure through the ecosystem means a bank, utility, state programme or vendor that had legitimately received Aadhaar numbers published or exposed them — through an open interface, a public web page or an unsecured server. Most documented incidents in this period were the second kind."}},{"@type":"Question","name":"What changed afterwards?","acceptedAnswer":{"@type":"Answer","text":"The authority introduced Virtual IDs — a revocable number a person can share instead of their Aadhaar number — and limited KYC, which lets a service verify identity without receiving the full number. In September 2018 the Supreme Court of India upheld Aadhaar for welfare delivery and tax purposes while striking down the provision that had allowed private companies to demand it."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2018 · National identity</span>
+          <h1>Aadhaar, 2018: what the reported exposures actually showed</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>Disputed; reports covered access to demographic details and third-party systems holding Aadhaar numbers</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>Reported January – March 2018</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>January 2018 onwards</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Reported unauthorised access via intermediaries, and third-party systems exposing Aadhaar numbers through unsecured interfaces</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Various; the authority disputed the characterisation of these reports as breaches of its database</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Names · Aadhaar numbers · Addresses and other demographic details, as reported by journalists and researchers</p>
+
+<p class="lead">This case file is included precisely because it is disputed. The reported Aadhaar exposures of 2018 were characterised by journalists and researchers as leaks of India's national identity data, and by the Unique Identification Authority of India as nothing of the kind. Both descriptions can be accurate at once, and understanding why is more useful than picking a side.</p>
+
+<h2>What was reported</h2>
+
+<p>In January 2018, a newspaper reported that its reporters had paid a small sum to an intermediary and obtained access to a service that returned demographic details — name, address, photograph and other fields — for a given Aadhaar number. The report described an informal market in access granted through operators who had legitimate credentials for enrolment or update systems.</p>
+
+<p>The authority responded that its central database, including the biometric records, had not been breached, and filed a police complaint. That complaint initially named the reporter among those listed, which drew criticism from press freedom organisations; the authority subsequently said it did not intend to act against the journalist.</p>
+
+<p>Through the same period, security researchers documented separate exposures in which Aadhaar numbers held by other organisations became accessible — most prominently an interface operated by a utility that could be queried for customer records. Again, the authority's position was that these were not breaches of its own systems.</p>
+
+<div class="callout">
+  <p><strong>Why both sides can be right.</strong> A national identity system has a central database and an ecosystem: banks, telecoms, utilities, state welfare programmes, enrolment operators and software vendors, all of which hold or query identity data. The central database can be well defended and the ecosystem can still leak, because the ecosystem is thousands of organisations of wildly varying competence. For the person whose details appear in a file, that distinction changes nothing at all.</p>
+</div>
+
+<h2>The structural problem this illustrates</h2>
+
+<p>Any identity number that is used everywhere has a specific failure mode, and it is not a database breach. It is that the number becomes a shared secret used as proof of identity by organisations that also store it — which means every one of them is a copy, and any one of them can lose it.</p>
+
+<p>This is the same dynamic that makes the US Social Security number so damaging when it appears in a breach like <a href="/breaches/case-files/equifax-2017.html">Equifax</a>: a number designed as an identifier gets used as an authenticator, and identifiers are not secret by construction.</p>
+
+<p>India's response addressed exactly this, which is why the mitigations are worth understanding regardless of what one concludes about the 2018 reports:</p>
+
+<ol class="cf-timeline">
+  <li><b>Virtual ID.</b> A temporary, revocable 16-digit number that can be shared in place of the Aadhaar number, so the permanent number does not have to be handed over.</li>
+  <li><b>Limited KYC.</b> A mechanism allowing a service to verify identity and receive only a service-specific reference, rather than storing the underlying number.</li>
+  <li><b>Restrictions on who may demand it.</b> The Supreme Court's September 2018 judgment upheld Aadhaar for welfare delivery and tax administration while striking down the provision that had let private companies require it, cutting the number of organisations legitimately holding copies.</li>
+</ol>
+
+<p>All three are attempts to stop an identifier being treated as a secret — the correct architectural answer, and one that arrived after hundreds of millions of copies had already been distributed.</p>
+
+<h2>How to read contested breach claims</h2>
+
+<p>Reports of this kind follow a recognisable pattern, and the reasoning generalises well beyond this case:</p>
+
+<ol class="cf-timeline">
+  <li><b>Separate the claims.</b> "Data about Aadhaar holders was accessible" and "the Aadhaar database was hacked" are different assertions requiring different evidence.</li>
+  <li><b>Ask where the data would have come from.</b> An exposed dataset containing fields a central system does not hold, but a bank does, tells you which system leaked.</li>
+  <li><b>Treat a denial as a claim about scope, not a rebuttal.</b> "Our database was not breached" is frequently true and frequently beside the point.</li>
+  <li><b>Watch what changes afterwards.</b> Mitigations are the most reliable signal available. Virtual ID and limited KYC were significant engineering efforts, and organisations do not build those in response to nothing.</li>
+</ol>
+
+<h2>If you hold an Aadhaar number</h2>
+
+<ol class="bx-actions">
+  <li><strong>Use a Virtual ID where a service accepts one.</strong> It is generated from the official channels, it can be regenerated, and it means the organisation never stores your permanent number.</li>
+  <li><strong>Lock your biometrics through the authority's own service</strong> when you are not actively using them for authentication, and unlock temporarily when required.</li>
+  <li><strong>Push back on unnecessary demands.</strong> Since 2018 the categories of organisation entitled to require Aadhaar have been narrowed; a shop or private service asking for a photocopy is usually asking for convenience rather than exercising a right.</li>
+  <li><strong>Never share a photograph of the card in a chat or email.</strong> Those copies persist in backups and on other people's devices indefinitely — <a href="/guides/reduce-your-digital-footprint.html">the general version of this problem</a>.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>Was the Aadhaar central database hacked?</h3>
+        <p>There is no public evidence that it was, and the Unique Identification Authority of India has consistently said the biometric database was not breached. The reported incidents concerned access through intermediaries and third-party systems that held or could query Aadhaar data — which is a different failure with much of the same effect for the people whose details appeared.</p>
+
+        <h3>What did the January 2018 report actually claim?</h3>
+        <p>A newspaper reported that its journalists had paid an intermediary a small sum for access to a service that returned demographic details for an Aadhaar number. The authority denied any breach of its database and filed a police complaint; the initial inclusion of the reporter in that complaint drew criticism from press freedom organisations, and the authority later said it did not intend action against the journalist.</p>
+
+        <h3>What is the difference between a leak and an exposure here?</h3>
+        <p>A leak of the central database would mean the authority's own records were taken. An exposure through the ecosystem means a bank, utility, state programme or vendor that had legitimately received Aadhaar numbers published or exposed them — through an open interface, a public web page or an unsecured server. Most documented incidents in this period were the second kind.</p>
+
+        <h3>What changed afterwards?</h3>
+        <p>The authority introduced Virtual IDs — a revocable number a person can share instead of their Aadhaar number — and limited KYC, which lets a service verify identity without receiving the full number. In September 2018 the Supreme Court of India upheld Aadhaar for welfare delivery and tax purposes while striking down the provision that had allowed private companies to demand it.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Unique Identification Authority of India — public statements and press releases, January–March 2018</b></li>
+        <li><b>Supreme Court of India, Justice K.S. Puttaswamy (Retd.) v. Union of India, September 2018</b></li>
+        <li><b>Contemporaneous reporting by The Tribune (India), January 2018, and subsequent researcher disclosures</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/air-india-2021.html">Air India, 2021: ten years of passengers, lost by a supplier</a></li>
+        <li><a href="/breaches/case-files/national-public-data-2024.html">National Public Data, 2024: a company you never used, holding everything about you</a></li>
+        <li><a href="/breaches/case-files/equifax-2017.html">Equifax, 2017: 147 million people, one unpatched web form</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

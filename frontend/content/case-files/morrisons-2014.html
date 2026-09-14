@@ -1,0 +1,81 @@
+<!--
+{
+  "headline": "Morrisons, 2014: the auditor who published the payroll",
+  "seoTitle": "Morrisons Data Leak 2014: The Insider Case That Set UK Law",
+  "subject": "Morrisons payroll data leak",
+  "kicker": "2014 · Insider",
+  "description": "A senior internal auditor with a grudge copied the payroll file of nearly 100,000 Morrisons staff and posted it online. The case ran to the UK Supreme Court and changed employer liability.",
+  "cardBlurb": "He had legitimate access, a legitimate reason to use it, and a disciplinary record he was angry about. No control in the company was designed to stop that.",
+  "records": "99,998 employees",
+  "peopleCount": 99998,
+  "occurred": "January – March 2014",
+  "disclosed": "13 March 2014",
+  "vector": "Abuse of authorised access by a senior internal auditor, exfiltrated on a personal USB drive",
+  "actor": "Andrew Skelton, a Morrisons employee, convicted in 2015 and sentenced to eight years",
+  "cost": "Morrisons reported spending more than £2 million on the response; the civil litigation ran for six years",
+  "exposed": ["Names", "Addresses", "Dates of birth", "National Insurance numbers", "Bank account details", "Salaries"],
+  "sortDate": "2014-03-13",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["talktalk-2015", "capital-one-2019", "uber-2016"],
+  "faq": [
+    { "q": "What did the Supreme Court actually decide?", "a": "In April 2020, in WM Morrison Supermarkets plc v Various Claimants, the Supreme Court held that Morrisons was not vicariously liable for Skelton's actions. Two lower courts had found the opposite. The Supreme Court's reasoning was that Skelton was not engaged, however badly, in furthering his employer's business — he was pursuing a personal vendetta against it, and the fact that his job gave him the opportunity was not enough to make the employer liable." },
+    { "q": "Does that mean employers are not responsible for rogue staff?", "a": "No, and reading it that way is the common mistake. The ruling was about vicarious liability for a deliberate act aimed at harming the employer. An employer can still be directly liable for its own failures — inadequate access controls, no monitoring, no data protection measures — and the Supreme Court explicitly left that route open. Morrisons won on vicarious liability, not on the proposition that employers owe no duty." },
+    { "q": "How did one person get the entire payroll?", "a": "Because his job required it. Skelton was a senior internal auditor and Morrisons was arranging its external audit; he was legitimately asked to transfer payroll data to the auditors. He copied it to a personal USB drive at the same time. Every access he made was authorised, in the ordinary course of a task he was supposed to be performing." },
+    { "q": "Were staff compensated?", "a": "Not through the group claim. 5,518 employees brought a representative action and won at first instance and on appeal, but the Supreme Court's 2020 decision ended it. Skelton himself was convicted of fraud, computer misuse and disclosing personal data and sentenced to eight years in 2015." }
+  ],
+  "sources": [
+    { "label": "WM Morrison Supermarkets plc v Various Claimants [2020] UKSC 12", "url": "https://www.supremecourt.uk/cases/uksc-2018-0213.html", "note": "the judgment and press summary" },
+    { "label": "Various Claimants v WM Morrisons Supermarkets plc [2017] EWHC 3113 (QB)", "note": "the first instance decision that went the other way" },
+    { "label": "Bradford Crown Court sentencing of Andrew Skelton, July 2015" },
+    { "label": "Information Commissioner's Office statements on the Morrisons disclosure, 2014" }
+  ]
+}
+-->
+<p class="lead">Almost every control in a corporate security programme assumes the threat is outside. Morrisons lost the complete payroll file of 99,998 employees to a man whose job was to look at it. He needed no exploit, defeated no authentication, and triggered no alert, because everything he did was something he was supposed to be able to do.</p>
+
+<h2>What happened</h2>
+
+<p>Andrew Skelton was a senior internal auditor at Morrisons, the UK supermarket chain. In 2013 he had been disciplined over an unrelated matter — using the company's post room to send personal eBay items — and was, by the court's later account, deeply aggrieved about it.</p>
+
+<p>In early 2014, Morrisons was preparing for its external audit, and Skelton was tasked with transferring payroll data to KPMG. This was routine work and he was the right person to do it. He copied the file to a personal USB drive at the same time.</p>
+
+<p>On 13 March 2014 the data appeared on a file-sharing website. Skelton also sent it to three UK newspapers, apparently expecting them to publish. Instead, one of them contacted Morrisons, which took the file down within hours and called the police.</p>
+
+<p>The data was complete in the way payroll data always is: name, address, date of birth, National Insurance number, bank account and sort code, and salary, for nearly a hundred thousand people. It is arguably the most damaging single file a company holds about its staff.</p>
+
+<div class="callout">
+  <p><strong>The attempt to frame a colleague.</strong> Skelton did not use his own identity. He set up the file-sharing account and the accompanying communications using the personal details of another Morrisons employee — a colleague he had a grievance with — in an attempt to have the leak attributed to him. Investigators traced it back anyway, partly because the exfiltration itself left a trail on Morrisons' systems. Internal fraud with an attempt to misdirect blame is common; it is also one of the things that most reliably converts a civil matter into a custodial sentence.</p>
+</div>
+
+<h2>Six years in the courts</h2>
+
+<p>Skelton was convicted in July 2015 and sentenced to eight years. That settled the criminal question. The civil question — whether Morrisons had to compensate its own staff for what its employee had done to them — took five more years and three courts.</p>
+
+<ol class="cf-timeline">
+  <li><b>2015</b> — 5,518 affected employees bring a representative claim against Morrisons for breach of data protection duties, misuse of private information and breach of confidence.</li>
+  <li><b>December 2017</b> — The High Court finds Morrisons not primarily at fault, but <em>vicariously</em> liable for Skelton's actions. It notes, with evident discomfort, that this outcome renders the company liable for conduct aimed at destroying it.</li>
+  <li><b>October 2018</b> — The Court of Appeal upholds that finding.</li>
+  <li><b>1 April 2020</b> — The Supreme Court reverses it. Skelton's wrongful conduct was not so closely connected with his employment that it could fairly be regarded as done while acting in the ordinary course of it. His motive — harming Morrisons — was central.</li>
+</ol>
+
+<p>The employees received nothing from the claim. Morrisons spent more than £2 million on its response and six years in litigation to reach that result.</p>
+
+<h2>What it changed</h2>
+
+<p><strong>It set the boundary of employer liability for insider acts in UK law.</strong> The judgment is cited in almost every subsequent argument about whether a company answers for a rogue employee. The test it confirmed is about whether the employee was furthering the employer's business, however improperly — not merely whether the job created the opportunity.</p>
+
+<p><strong>It did not let employers off.</strong> The route the claimants did not win on is the route that still works: direct liability for the employer's own security failures. After GDPR, that route is considerably stronger than it was in 2014, and a company relying on Morrisons as a defence while running no monitoring on bulk data access is misreading it badly.</p>
+
+<p><strong>Data loss prevention for privileged staff got a business case.</strong> The uncomfortable finding in this case is that the controls which would have caught Skelton are ones most organisations still find awkward: monitoring what senior, trusted people do with data they are entitled to see; blocking removable media for staff who have a legitimate reason to move files; requiring two people for bulk exports of sensitive datasets.</p>
+
+<p><strong>The payroll file got reclassified.</strong> Many organisations discovered through this case that their crown-jewel dataset was not their customer database. Employee payroll contains the identity documents, bank details and salary of everyone in the company, held in one file, transferred routinely to external auditors and pension administrators.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Log access to bulk data by the people most entitled to it.</strong> Insiders do not defeat controls; they use them. Detection has to look for unusual volume and timing by authorised users, not for unauthorised ones.</li>
+  <li><strong>Treat a live disciplinary process as a security event.</strong> Not as a reason to punish someone twice, but because the overlap between grievance and insider incident is well documented and access reviews at that moment are cheap.</li>
+  <li><strong>Know where payroll goes.</strong> Audit, pensions, benefits and payroll bureaux all receive a copy. Each transfer is a copy leaving your control.</li>
+  <li><strong>If your details were in a leak like this, change what you can and monitor what you cannot.</strong> Bank details can be changed. A National Insurance number and a date of birth cannot, which is why they keep surfacing in identity fraud years later.</li>
+</ol>

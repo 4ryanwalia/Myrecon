@@ -1,0 +1,80 @@
+<!--
+{
+  "headline": "Aadhaar, 2018: what the reported exposures actually showed",
+  "seoTitle": "Aadhaar Data Exposure 2018: What Was Reported",
+  "subject": "Aadhaar data exposure reports",
+  "kicker": "2018 · National identity",
+  "description": "Reports of Aadhaar data being sold and leaked through third-party systems were denied by the authority as breaches of its database. Both positions can be true, and that is the lesson.",
+  "cardBlurb": "A disputed case, deliberately included. The exposure was in the ecosystem around the identity system rather than in its central database — which is where large identity systems usually fail.",
+  "records": "Disputed; reports covered access to demographic details and third-party systems holding Aadhaar numbers",
+  "occurred": "Reported January – March 2018",
+  "disclosed": "January 2018 onwards",
+  "vector": "Reported unauthorised access via intermediaries, and third-party systems exposing Aadhaar numbers through unsecured interfaces",
+  "actor": "Various; the authority disputed the characterisation of these reports as breaches of its database",
+  "exposed": ["Names", "Aadhaar numbers", "Addresses and other demographic details, as reported by journalists and researchers"],
+  "sortDate": "2018-01-04",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["air-india-2021", "national-public-data-2024", "equifax-2017"],
+  "faq": [
+    { "q": "Was the Aadhaar central database hacked?", "a": "There is no public evidence that it was, and the Unique Identification Authority of India has consistently said the biometric database was not breached. The reported incidents concerned access through intermediaries and third-party systems that held or could query Aadhaar data — which is a different failure with much of the same effect for the people whose details appeared." },
+    { "q": "What did the January 2018 report actually claim?", "a": "A newspaper reported that its journalists had paid an intermediary a small sum for access to a service that returned demographic details for an Aadhaar number. The authority denied any breach of its database and filed a police complaint; the initial inclusion of the reporter in that complaint drew criticism from press freedom organisations, and the authority later said it did not intend action against the journalist." },
+    { "q": "What is the difference between a leak and an exposure here?", "a": "A leak of the central database would mean the authority's own records were taken. An exposure through the ecosystem means a bank, utility, state programme or vendor that had legitimately received Aadhaar numbers published or exposed them — through an open interface, a public web page or an unsecured server. Most documented incidents in this period were the second kind." },
+    { "q": "What changed afterwards?", "a": "The authority introduced Virtual IDs — a revocable number a person can share instead of their Aadhaar number — and limited KYC, which lets a service verify identity without receiving the full number. In September 2018 the Supreme Court of India upheld Aadhaar for welfare delivery and tax purposes while striking down the provision that had allowed private companies to demand it." }
+  ],
+  "sources": [
+    { "label": "Unique Identification Authority of India — public statements and press releases, January–March 2018" },
+    { "label": "Supreme Court of India, Justice K.S. Puttaswamy (Retd.) v. Union of India, September 2018" },
+    { "label": "Contemporaneous reporting by The Tribune (India), January 2018, and subsequent researcher disclosures" }
+  ]
+}
+-->
+<p class="lead">This case file is included precisely because it is disputed. The reported Aadhaar exposures of 2018 were characterised by journalists and researchers as leaks of India's national identity data, and by the Unique Identification Authority of India as nothing of the kind. Both descriptions can be accurate at once, and understanding why is more useful than picking a side.</p>
+
+<h2>What was reported</h2>
+
+<p>In January 2018, a newspaper reported that its reporters had paid a small sum to an intermediary and obtained access to a service that returned demographic details — name, address, photograph and other fields — for a given Aadhaar number. The report described an informal market in access granted through operators who had legitimate credentials for enrolment or update systems.</p>
+
+<p>The authority responded that its central database, including the biometric records, had not been breached, and filed a police complaint. That complaint initially named the reporter among those listed, which drew criticism from press freedom organisations; the authority subsequently said it did not intend to act against the journalist.</p>
+
+<p>Through the same period, security researchers documented separate exposures in which Aadhaar numbers held by other organisations became accessible — most prominently an interface operated by a utility that could be queried for customer records. Again, the authority's position was that these were not breaches of its own systems.</p>
+
+<div class="callout">
+  <p><strong>Why both sides can be right.</strong> A national identity system has a central database and an ecosystem: banks, telecoms, utilities, state welfare programmes, enrolment operators and software vendors, all of which hold or query identity data. The central database can be well defended and the ecosystem can still leak, because the ecosystem is thousands of organisations of wildly varying competence. For the person whose details appear in a file, that distinction changes nothing at all.</p>
+</div>
+
+<h2>The structural problem this illustrates</h2>
+
+<p>Any identity number that is used everywhere has a specific failure mode, and it is not a database breach. It is that the number becomes a shared secret used as proof of identity by organisations that also store it — which means every one of them is a copy, and any one of them can lose it.</p>
+
+<p>This is the same dynamic that makes the US Social Security number so damaging when it appears in a breach like <a href="/breaches/case-files/equifax-2017.html">Equifax</a>: a number designed as an identifier gets used as an authenticator, and identifiers are not secret by construction.</p>
+
+<p>India's response addressed exactly this, which is why the mitigations are worth understanding regardless of what one concludes about the 2018 reports:</p>
+
+<ol class="cf-timeline">
+  <li><b>Virtual ID.</b> A temporary, revocable 16-digit number that can be shared in place of the Aadhaar number, so the permanent number does not have to be handed over.</li>
+  <li><b>Limited KYC.</b> A mechanism allowing a service to verify identity and receive only a service-specific reference, rather than storing the underlying number.</li>
+  <li><b>Restrictions on who may demand it.</b> The Supreme Court's September 2018 judgment upheld Aadhaar for welfare delivery and tax administration while striking down the provision that had let private companies require it, cutting the number of organisations legitimately holding copies.</li>
+</ol>
+
+<p>All three are attempts to stop an identifier being treated as a secret — the correct architectural answer, and one that arrived after hundreds of millions of copies had already been distributed.</p>
+
+<h2>How to read contested breach claims</h2>
+
+<p>Reports of this kind follow a recognisable pattern, and the reasoning generalises well beyond this case:</p>
+
+<ol class="cf-timeline">
+  <li><b>Separate the claims.</b> "Data about Aadhaar holders was accessible" and "the Aadhaar database was hacked" are different assertions requiring different evidence.</li>
+  <li><b>Ask where the data would have come from.</b> An exposed dataset containing fields a central system does not hold, but a bank does, tells you which system leaked.</li>
+  <li><b>Treat a denial as a claim about scope, not a rebuttal.</b> "Our database was not breached" is frequently true and frequently beside the point.</li>
+  <li><b>Watch what changes afterwards.</b> Mitigations are the most reliable signal available. Virtual ID and limited KYC were significant engineering efforts, and organisations do not build those in response to nothing.</li>
+</ol>
+
+<h2>If you hold an Aadhaar number</h2>
+
+<ol class="bx-actions">
+  <li><strong>Use a Virtual ID where a service accepts one.</strong> It is generated from the official channels, it can be regenerated, and it means the organisation never stores your permanent number.</li>
+  <li><strong>Lock your biometrics through the authority's own service</strong> when you are not actively using them for authentication, and unlock temporarily when required.</li>
+  <li><strong>Push back on unnecessary demands.</strong> Since 2018 the categories of organisation entitled to require Aadhaar have been narrowed; a shop or private service asking for a photocopy is usually asking for convenience rather than exercising a right.</li>
+  <li><strong>Never share a photograph of the card in a chat or email.</strong> Those copies persist in backups and on other people's devices indefinitely — <a href="/guides/reduce-your-digital-footprint.html">the general version of this problem</a>.</li>
+</ol>

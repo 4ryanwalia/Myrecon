@@ -1,0 +1,76 @@
+<!--
+{
+  "headline": "MySpace, 2016: 360 million accounts from a website nobody used any more",
+  "seoTitle": "MySpace Breach: 360 Million Old Accounts, Still Dangerous",
+  "subject": "MySpace data breach",
+  "kicker": "2008 · Social network",
+  "description": "The MySpace passwords were years old and the site was long abandoned. That is exactly why the breach worked — abandoned accounts still hold passwords people reuse.",
+  "cardBlurb": "Dead site, live passwords. The largest breach on record at the time, and a lesson in why abandoning an account is not the same as closing it.",
+  "records": "about 360 million accounts",
+  "peopleCount": 360000000,
+  "occurred": "Around 2008; surfaced May 2016",
+  "disclosed": "May 2016",
+  "vector": "Never publicly detailed; passwords stored as unsalted SHA-1 of the first ten characters, lowercased",
+  "actor": "Offered for sale by a seller using the name Peace, the same handle that sold the LinkedIn and Tumblr data",
+  "exposed": ["Email addresses", "Usernames", "Unsalted SHA-1 password hashes"],
+  "sortDate": "2016-05-27",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["linkedin-2012", "dropbox-2012", "rockyou-2009"],
+  "faq": [
+    { "q": "Why does a breach of an abandoned site matter?", "a": "Because the password is not abandoned. People who used a password on MySpace in 2008 frequently used it, or a small variation of it, on accounts they still hold. The site's irrelevance is what makes it dangerous: nobody thinks to change a password for a service they have not opened in fifteen years." },
+    { "q": "What was wrong with how the passwords were stored?", "a": "Three things at once. SHA-1 is fast, so guessing is cheap. There was no salt, so identical passwords produced identical hashes and one crack solved many accounts. And only the first ten characters were used, lowercased — so a 20-character password with careful capitalisation was reduced to ten lowercase characters before hashing." },
+    { "q": "When did the breach actually happen?", "a": "The data dates to around 2008, but it did not surface publicly until May 2016, when it was offered for sale alongside other large old datasets. Eight years is a long time for data to circulate privately, and it is a good reason to treat every old password as compromised regardless of whether you have heard of a breach." },
+    { "q": "Is MySpace data still being used?", "a": "Yes, indirectly. It was absorbed into the combination lists used for credential stuffing, so those email-and-password pairs are still tried automatically against current services." }
+  ],
+  "sources": [
+    { "label": "Time Inc. statement on the MySpace account data, May 2016" },
+    { "label": "Have I Been Pwned — MySpace breach record", "url": "https://haveibeenpwned.com/PwnedWebsites#MySpace" },
+    { "label": "LeakedSource analysis of the dataset, 2016" }
+  ]
+}
+-->
+<p class="lead">When roughly 360 million MySpace accounts appeared for sale in May 2016, the reaction in most places was amusement. MySpace? The data was eight years old, from a site that had been culturally irrelevant for most of a decade. The amusement was misplaced: it was the largest breach loaded into public breach databases at the time, and its age was the point rather than the punchline.</p>
+
+<h2>What happened</h2>
+
+<p>The dataset contained email addresses, usernames and password hashes for accounts dating to around 2008. It surfaced in the same 2016 wave that brought the full <a href="/breaches/case-files/linkedin-2012.html">LinkedIn</a> file and the Tumblr data to market, offered by the same seller — a period when several enormous old breaches were monetised at once.</p>
+
+<p>MySpace, by then owned by Time Inc., invalidated passwords for affected accounts. For most users this was a notification about a service they had forgotten they had.</p>
+
+<h2>The password storage, which was remarkable</h2>
+
+<p>The hashing scheme deserves its own paragraph because it manages three separate failures simultaneously:</p>
+
+<ol class="cf-timeline">
+  <li><b>SHA-1, unsalted.</b> Fast to compute and identical for identical inputs, so one cracking run resolves every account sharing a password.</li>
+  <li><b>Lowercased.</b> Capitalisation was discarded before hashing, collapsing the search space.</li>
+  <li><b>Truncated to ten characters.</b> Only the first ten characters were used. A careful user with a 24-character passphrase was protected by the first ten characters of it, in lowercase.</li>
+</ol>
+
+<div class="callout">
+  <p><strong>What truncation destroys.</strong> Every additional character in a password multiplies the work an attacker must do. Truncating at ten caps that work at a fixed, modest ceiling regardless of what the user chose — which means the site silently overrode its most security-conscious users. If you ever wonder why security people are suspicious of undocumented password length limits, this is the reason: a limit usually implies something is being done to the password before it is stored.</p>
+</div>
+
+<h2>Why old breaches keep working</h2>
+
+<p>The value of a fifteen-year-old password file rests on a simple, well-evidenced fact about people: passwords are sticky. Someone who chose a password in 2008 often still uses it, or a version with a digit incremented, or the same base word with a different site's name appended. Human-generated passwords evolve; they rarely get replaced.</p>
+
+<p>Meanwhile the account itself sits abandoned. No one monitors it, no one receives its notifications — often the registered email address is itself defunct — and no one ever changes its password because they have no reason to think about it.</p>
+
+<p>That combination is why the MySpace file went straight into combination lists and is still being tried against banks and mailboxes today. It is also why the honest answer to "should I worry about a breach at a site I stopped using?" is yes, if you ever reused that password.</p>
+
+<h2>The other MySpace data loss</h2>
+
+<p>Worth recording alongside it: in 2019 MySpace confirmed that a server migration had destroyed roughly twelve years of user-uploaded music, photos and video — an estimated fifty million tracks from fourteen million artists, gone with no recoverable backup.</p>
+
+<p>That is not a breach, and it belongs here anyway, because it is the other half of the same lesson. Handing your only copy of something to a platform means accepting its retention decisions, its migration competence and its survival. Availability failures rarely make the news the way breaches do, and for the person who lost the only recording of a song they wrote, the outcome is worse.</p>
+
+<h2>What to do about accounts you abandoned</h2>
+
+<ol class="bx-actions">
+  <li><strong>List the services you used before about 2015</strong> — forums, games, social networks, shopping sites. Most people can name fifteen in five minutes, which is fifteen more than they were thinking about.</li>
+  <li><strong>Check which of them have appeared in breaches</strong>, using the addresses you had then — <a href="/guides/check-email-data-breach.html">how to do that safely</a>.</li>
+  <li><strong>Retire the password family, not just one password.</strong> If your 2008 password was a word plus a number, every variation on that theme should be considered known.</li>
+  <li><strong>Close what you can, and secure what you cannot.</strong> Where deletion is not offered, change the password, remove saved payment details, and unlink recovery addresses you still use for anything important.</li>
+</ol>

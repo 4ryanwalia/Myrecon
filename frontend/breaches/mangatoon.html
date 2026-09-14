@@ -34,8 +34,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=2">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Mangatoon data breach — 23,040,238 accounts exposed","description":"On 13 May 2022, Mangatoon was breached. 23,040,238 accounts were exposed, including auth tokens, avatars, email addresses. MyRecon rates it 75/100 — severe.","datePublished":"2022-07-06","dateModified":"2022-07-06","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/mangatoon.html","image":"https://logos.haveibeenpwned.com/Mangatoon.png"}</script>
@@ -57,11 +57,11 @@
       <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
 
       <header class="bx-head">
-        <img class="bx-logo" src="https://logos.haveibeenpwned.com/Mangatoon.png" alt="" width="72" height="72" loading="lazy">
+        <img class="bx-logo" src="https://logos.haveibeenpwned.com/Mangatoon.png" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">
         <div>
           <span class="kicker">2022 · Data breach</span>
           <h1>Mangatoon</h1>
-          <p class="meta">Breached 13 May 2022 · Published 6 July 2022 · mangatoon.mobi</p>
+          <p class="meta">Breached 13 May 2022 · Published 7 July 2022 · mangatoon.mobi</p>
         </div>
       </header>
 
@@ -80,12 +80,20 @@
         <label for="bxEmail">Was your address in this breach?</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
-                 placeholder="you@example.com" required>
-          <button class="btn btn-sm" type="submit">Check free</button>
+                 placeholder="you@example.com" required aria-describedby="bxEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note">Checked against this breach and every other on record. Your address is not stored, and the check runs against public breach data only.</p>
+        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
+      <section class="bx-editorial">
+        <span class="bx-byline">MyRecon's take</span>
+<p>Two things in this record matter more than the 23 million total. The first is salted MD5 password hashing, which is a 1990s answer to a 2022 problem: the salt prevents one cracking run solving every shared password, but MD5 is fast enough that ordinary hardware grinds through common passwords regardless. Anything that appears in a wordlist should be considered recovered.</p>
+
+<p>The second is the auth tokens from social logins. Those are not passwords — they are the credentials a site holds so it can act against the account you signed in with. Their value to an attacker depends entirely on what scope was granted and whether the tokens are still valid, which is why "revoke third-party app access" belongs on the response list alongside "change your password". Most people have never opened that settings page and would be surprised by what is on it.</p>
+
+<p>The note that the company did not respond to repeated contact attempts is worth registering too. A breach where the operator is unreachable means no notification, no forced password reset, and no invalidation of those tokens — so the only person who can act is the user. If you had an account here, go into the social account you used to sign in and revoke the connection yourself.</p>
+      </section>
 
       <h2>What happened</h2>
       <div class="bx-source">
@@ -134,7 +142,7 @@
         <p>auth tokens, avatars, email addresses, genders, names, passwords, social media profiles, usernames. Each one is explained above, along with what it means for the person it belongs to.</p>
 
         <h3>When did it happen, and when did it become public?</h3>
-        <p>The breach is dated 13 May 2022. It was published to Have I Been Pwned on 6 July 2022, a gap of 55 days during which the data was already out.</p>
+        <p>The breach is dated 13 May 2022. It was published to Have I Been Pwned on 7 July 2022, a gap of 55 days during which the data was already out.</p>
 
         <h3>Is the Mangatoon breach real?</h3>
         <p>Yes. Have I Been Pwned lists it as verified, meaning the data was checked against the source rather than taken on trust.</p>
@@ -153,9 +161,11 @@
 
 
       <h2>Also in the archive</h2>
-      <ul class="bx-related"><li><a href="/breaches/mckesson.html">McKesson</a> — 6,404,340 accounts</li><li><a href="/breaches/chess2026.html">Chess.com (2026)</a> — 4,653,212 accounts</li><li><a href="/breaches/paidwork.html">Paidwork</a> — 23,272,765 accounts</li></ul>
+      <ul class="bx-related"><li><a href="/breaches/linkedinscrape.html">LinkedIn Scraped Data (2021)</a> — 125,698,496 accounts</li><li><a href="/breaches/luxottica.html">Luxottica</a> — 77,093,812 accounts</li><li><a href="/breaches/twitter200m.html">Twitter (200M)</a> — 211,524,284 accounts</li></ul>
+      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
-      <p class="bx-method">Severity is scored by MyRecon from the number of accounts, the sensitivity of the specific fields exposed, and whether the breach is confirmed — not by a language model. The description above is quoted from Have I Been Pwned; the analysis around it is ours.</p>
+
+      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself — every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
@@ -163,12 +173,13 @@
   <footer class="footer">
     <div class="container"><div class="footer-bottom">
       <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/app.js?v=9"></script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Depot Data Breach 2014: How 56 Million Cards Leaked</title>
+  <meta name="description" content="Attackers used a third-party vendor's stolen credentials to reach Home Depot's network, then ran custom malware on self-checkout tills for five months.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/home-depot-2014.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Home Depot Data Breach 2014: How 56 Million Cards Leaked">
+  <meta property="og:description" content="Attackers used a third-party vendor's stolen credentials to reach Home Depot's network, then ran custom malware on self-checkout tills for five months.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/home-depot-2014.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Home Depot Data Breach 2014: How 56 Million Cards Leaked">
+  <meta name="twitter:description" content="Attackers used a third-party vendor's stolen credentials to reach Home Depot's network, then ran custom malware on self-checkout tills for five months.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Home Depot, 2014: 56 million cards through a supplier's login","description":"Attackers used a third-party vendor's stolen credentials to reach Home Depot's network, then ran custom malware on self-checkout tills for five months.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/home-depot-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Home Depot data breach"},"wordCount":840}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Home Depot data breach","item":"https://www.myrecon.xyz/breaches/case-files/home-depot-2014.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How is this different from the Target breach?","acceptedAnswer":{"@type":"Answer","text":"It is almost the same breach, one year later, at a larger scale. Both started with a third-party vendor's credentials. Both ended with memory-scraping malware on point-of-sale terminals. Home Depot ran longer — five months against roughly three weeks — and took more cards. The uncomfortable implication is that a whole industry watched Target happen, and the same attack still worked."}},{"@type":"Question","name":"Why were only self-checkout terminals affected?","acceptedAnswer":{"@type":"Answer","text":"The malware was deployed to the self-checkout systems in US and Canadian stores, which were on a segment the attackers could reach and which were individually addressable in a way the staffed lanes were not. It is a useful illustration that network segmentation is not binary: a network can be segmented well enough to limit a breach and badly enough to have one."}},{"@type":"Question","name":"What is memory-scraping malware?","acceptedAnswer":{"@type":"Answer","text":"Card data is encrypted on the magnetic stripe reader and encrypted again in the database, but for a fraction of a second while the terminal processes the transaction, the full card details exist in the terminal's memory in plain text. Memory-scraping malware sits on the terminal and reads that moment, repeatedly, for every transaction. It defeats encryption by simply waiting for the point at which encryption cannot apply."}},{"@type":"Question","name":"Did chip cards fix this?","acceptedAnswer":{"@type":"Answer","text":"Largely, for this specific crime. The stolen data was useful because it could be encoded onto a blank magnetic stripe card and used in a shop. A chip generates a unique code per transaction, so copied data cannot be replayed. The US liability shift in October 2015 — driven substantially by Target and Home Depot — pushed chip terminals out across the country, and card-present counterfeit fraud fell sharply afterwards. Card-not-present fraud online rose instead."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2014 · Retail</span>
+          <h1>Home Depot, 2014: 56 million cards through a supplier's login</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>56 million payment cards and 53 million email addresses</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>April – September 2014</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>8 September 2014</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Stolen third-party vendor credentials, privilege escalation, then memory-scraping malware on self-checkout point-of-sale terminals</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Never publicly attributed to named individuals</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>Around $179 million in settlements and costs disclosed across consumer, financial institution and multistate agreements</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Payment card numbers · Card expiry dates · Cardholder names · Email addresses</p>
+
+<p class="lead">Home Depot did not learn about its breach from its own systems. It learned about it the way Target had a year earlier: banks noticed that a batch of stolen cards appearing for sale online all had one shop in common, and a journalist called the company for comment.</p>
+
+<h2>What happened</h2>
+
+<p>In April 2014, attackers obtained the credentials of a third-party vendor with access to Home Depot's network. Vendor accounts of this kind exist everywhere in retail — for refrigeration monitoring, for point-of-sale support, for logistics — and they typically have narrow legitimate purposes and broad practical reach.</p>
+
+<p>Those credentials alone would not have been enough. The attackers used a Windows vulnerability to escalate their privileges, moved through the corporate network, and eventually reached the environment serving self-checkout terminals in US and Canadian stores. There they deployed custom memory-scraping malware built for the specific point-of-sale software Home Depot used.</p>
+
+<p>From April to early September, every card swiped at an affected self-checkout was captured in the instant it was readable. Fifty-six million cards were taken, along with fifty-three million email addresses that were disclosed weeks later as a separate finding.</p>
+
+<div class="callout">
+  <p><strong>The warnings were internal and documented.</strong> Reporting after the breach, later echoed in litigation, described years of concern raised by Home Depot's own security staff about outdated antivirus software on store systems, the absence of network segmentation between corporate and payment environments, and infrequent vulnerability scanning. This is the most common shape of a large breach: not an absence of knowledge, but a backlog of known problems with no forcing function. The forcing function arrived in September.</p>
+</div>
+
+<h2>Five months is the number that matters</h2>
+
+<p>Fifty-six million cards is the headline. The duration is the operational finding. Memory-scraping malware running on retail terminals is not stealthy in any deep sense — it writes files, it stages collected data somewhere, and it periodically sends that data out of the network to a destination that has no business receiving anything from a till.</p>
+
+<p>Detecting it requires monitoring that most retailers did not have on store networks in 2014: file integrity checking on terminals, egress filtering so that a checkout cannot connect to arbitrary internet addresses, and someone reviewing the alerts. Home Depot's detection eventually came from outside, through the card networks, which is how the majority of card breaches of that era were found.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>April 2014</b> — Attackers use stolen vendor credentials to enter the network and escalate privileges.</li>
+  <li><b>April – September 2014</b> — Memory-scraping malware harvests card data from self-checkout terminals across US and Canadian stores.</li>
+  <li><b>2 September 2014</b> — Banks and researchers link a large batch of cards for sale to Home Depot; the story breaks publicly.</li>
+  <li><b>8 September 2014</b> — Home Depot confirms the breach.</li>
+  <li><b>18 September 2014</b> — The company puts the figure at 56 million cards and says the malware has been removed.</li>
+  <li><b>6 November 2014</b> — Home Depot discloses that 53 million email addresses were also taken.</li>
+  <li><b>October 2015</b> — The US card liability shift takes effect, accelerating chip adoption.</li>
+  <li><b>2016 – 2020</b> — Settlements conclude: $19.5 million for consumers, $25 million for financial institutions, and $17.5 million with state attorneys general.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>It ended the argument about chip cards in the United States.</strong> Target made the case; Home Depot made it impossible to defer. The October 2015 liability shift moved responsibility for counterfeit fraud to whichever party had not adopted chip technology, and terminals were replaced nationwide within a couple of years.</p>
+
+<p><strong>Point-to-point encryption became standard in retail.</strong> If card data is encrypted inside the reader itself and only decrypted at the payment processor, there is no plain-text moment in terminal memory to scrape. Home Depot deployed it during its response, as did most large US retailers over the following two years.</p>
+
+<p><strong>Vendor access got inventoried.</strong> Two consecutive mega-breaches through supplier credentials made it very hard to argue that third-party accounts were a minor administrative matter. Segmenting vendor access, time-limiting it, and requiring multi-factor authentication on it became standard retail practice.</p>
+
+<p><strong>Boards started reading their own security backlogs.</strong> The most damaging material in the litigation was not technical. It was evidence that the risks were known and documented internally. Directors' duties in relation to cybersecurity oversight have been tested repeatedly since, and this case is part of why.</p>
+
+<h2>If your card was in it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Cards from 2014 are long expired; the email address is not.</strong> Fifty-three million addresses tied to a known retail customer base still circulate and still get phished.</li>
+  <li><strong>Card-present fraud is the bank's problem, and it should stay that way.</strong> Report unrecognised transactions rather than absorbing small ones — a charge you ignore is a test for a larger one.</li>
+  <li><strong>Use a chip or a phone wallet in shops wherever you have the choice.</strong> A tokenised wallet transaction gives the merchant nothing worth stealing in the first place.</li>
+  <li><strong>If you run a shop, ask where card data exists in plain text.</strong> That list is short, and every item on it is the entire attack surface for this class of breach.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>How is this different from the Target breach?</h3>
+        <p>It is almost the same breach, one year later, at a larger scale. Both started with a third-party vendor's credentials. Both ended with memory-scraping malware on point-of-sale terminals. Home Depot ran longer — five months against roughly three weeks — and took more cards. The uncomfortable implication is that a whole industry watched Target happen, and the same attack still worked.</p>
+
+        <h3>Why were only self-checkout terminals affected?</h3>
+        <p>The malware was deployed to the self-checkout systems in US and Canadian stores, which were on a segment the attackers could reach and which were individually addressable in a way the staffed lanes were not. It is a useful illustration that network segmentation is not binary: a network can be segmented well enough to limit a breach and badly enough to have one.</p>
+
+        <h3>What is memory-scraping malware?</h3>
+        <p>Card data is encrypted on the magnetic stripe reader and encrypted again in the database, but for a fraction of a second while the terminal processes the transaction, the full card details exist in the terminal's memory in plain text. Memory-scraping malware sits on the terminal and reads that moment, repeatedly, for every transaction. It defeats encryption by simply waiting for the point at which encryption cannot apply.</p>
+
+        <h3>Did chip cards fix this?</h3>
+        <p>Largely, for this specific crime. The stolen data was useful because it could be encoded onto a blank magnetic stripe card and used in a shop. A chip generates a unique code per transaction, so copied data cannot be replayed. The US liability shift in October 2015 — driven substantially by Target and Home Depot — pushed chip terminals out across the country, and card-present counterfeit fraud fell sharply afterwards. Card-not-present fraud online rose instead.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><a href="https://ir.homedepot.com/" target="_blank" rel="noopener nofollow">The Home Depot Inc. — data breach notification and investor disclosures, 2014–2015</a></li>
+        <li><b>In re: The Home Depot Inc. Customer Data Security Breach Litigation, N.D. Ga.</b> — consumer and financial institution settlements</li>
+        <li><b>Multistate attorneys general settlement with Home Depot, November 2020</b> — $17.5 million</li>
+        <li><b>Contemporaneous reporting by Brian Krebs, KrebsOnSecurity, September 2014</b> — the initial identification of the breach through bank card data</li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/target-2013.html">Target, 2013: 40 million cards, and the air-conditioning contractor</a></li>
+        <li><a href="/breaches/case-files/tjx-2007.html">TJX, 2007: the wireless network in the car park</a></li>
+        <li><a href="/breaches/case-files/heartland-2008.html">Heartland, 2008: 130 million cards from a company that had just passed its audit</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

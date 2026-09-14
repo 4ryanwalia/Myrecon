@@ -34,8 +34,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=2">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Addi data breach — 34,532,941 accounts exposed","description":"On 25 March 2026, Addi was breached. 34,532,941 accounts were exposed, including age groups, credit scores, device information. MyRecon rates it 77/100 — severe.","datePublished":"2026-05-18","dateModified":"2026-05-18","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/addi.html","image":"https://logos.haveibeenpwned.com/ADDI.png"}</script>
@@ -57,11 +57,11 @@
       <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
 
       <header class="bx-head">
-        <img class="bx-logo" src="https://logos.haveibeenpwned.com/ADDI.png" alt="" width="72" height="72" loading="lazy">
+        <img class="bx-logo" src="https://logos.haveibeenpwned.com/ADDI.png" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">
         <div>
           <span class="kicker">2026 · Data breach</span>
           <h1>Addi</h1>
-          <p class="meta">Breached 25 March 2026 · Published 18 May 2026 · addi.com</p>
+          <p class="meta">Breached 25 March 2026 · Published 19 May 2026 · addi.com</p>
         </div>
       </header>
 
@@ -80,12 +80,20 @@
         <label for="bxEmail">Was your address in this breach?</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
-                 placeholder="you@example.com" required>
-          <button class="btn btn-sm" type="submit">Check free</button>
+                 placeholder="you@example.com" required aria-describedby="bxEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note">Checked against this breach and every other on record. Your address is not stored, and the check runs against public breach data only.</p>
+        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
+      <section class="bx-editorial">
+        <span class="bx-byline">MyRecon's take</span>
+<p>Credit scores, income levels, government-issued IDs and latitude and longitude pairs, in the same file. Each is serious on its own; together they describe a person's financial position and physical location precisely enough to select targets from the data itself.</p>
+
+<p>That is the specific risk with lending platforms, and it is different from the risk at a retailer. A shop knows what you bought. A lender knows what you can afford, what you owe, how you were assessed and where you were when you applied. Fraud built on that is not scattergun — it is addressed to the people the file identifies as most likely to accept an offer of credit, using the detail that makes the offer look like it came from someone who already holds their business.</p>
+
+<p>The government ID numbers are the part with no expiry date. A password is a weekend of work to replace; a national identity document number is not replaceable on request in most countries, and it will still be valid years from now. Where your jurisdiction offers a credit freeze or credit ban, this is the record that justifies using it — it blocks the specific fraud this combination of fields enables.</p>
+      </section>
 
       <h2>What happened</h2>
       <div class="bx-source">
@@ -140,7 +148,7 @@
         <p>age groups, credit scores, device information, email addresses, government issued ids, income levels, ip addresses, latitude and longitude pairs, names, phone numbers, physical addresses, purchases, socioeconomic levels. Each one is explained above, along with what it means for the person it belongs to.</p>
 
         <h3>When did it happen, and when did it become public?</h3>
-        <p>The breach is dated 25 March 2026. It was published to Have I Been Pwned on 18 May 2026, a gap of 55 days during which the data was already out.</p>
+        <p>The breach is dated 25 March 2026. It was published to Have I Been Pwned on 19 May 2026, a gap of 55 days during which the data was already out.</p>
 
         <h3>Is the Addi breach real?</h3>
         <p>Yes. Have I Been Pwned lists it as verified, meaning the data was checked against the source rather than taken on trust.</p>
@@ -159,9 +167,11 @@
 
 
       <h2>Also in the archive</h2>
-      <ul class="bx-related"><li><a href="/breaches/suno.html">Suno</a> — 55,282,226 accounts</li><li><a href="/breaches/underarmour.html">Under Armour</a> — 72,742,892 accounts</li><li><a href="/breaches/synthientcredentialstuffingthreatdata.html">Synthient Credential Stuffing Threat Data</a> — 1,957,476,021 accounts</li></ul>
+      <ul class="bx-related"><li><a href="/breaches/suno.html">Suno</a> — 55,282,226 accounts</li><li><a href="/breaches/underarmour.html">Under Armour</a> — 72,742,892 accounts</li><li><a href="/breaches/canadiantire.html">Canadian Tire</a> — 38,306,562 accounts</li></ul>
+      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
-      <p class="bx-method">Severity is scored by MyRecon from the number of accounts, the sensitivity of the specific fields exposed, and whether the breach is confirmed — not by a language model. The description above is quoted from Have I Been Pwned; the analysis around it is ours.</p>
+
+      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself — every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
@@ -169,12 +179,13 @@
   <footer class="footer">
     <div class="container"><div class="footer-bottom">
       <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/app.js?v=9"></script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>

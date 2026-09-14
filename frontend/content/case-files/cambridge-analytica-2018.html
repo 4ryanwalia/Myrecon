@@ -1,0 +1,90 @@
+<!--
+{
+  "headline": "Cambridge Analytica, 2018: the breach that was not a breach",
+  "seoTitle": "Cambridge Analytica Scandal: What Actually Happened",
+  "subject": "Facebook and Cambridge Analytica data scandal",
+  "kicker": "2018 · Data misuse",
+  "description": "Data on 87 million Facebook users reached a political consultancy. Nothing was hacked. The platform handed it over through a documented feature working exactly as designed.",
+  "cardBlurb": "About 270,000 people took a personality quiz. The API of the day let the quiz collect their friends too, and the friends were never asked.",
+  "records": "Up to 87 million Facebook users",
+  "peopleCount": 87000000,
+  "occurred": "2013 – 2015, disclosed publicly in March 2018",
+  "disclosed": "17 March 2018",
+  "vector": "Legitimate use of Facebook's Graph API by a third-party app, then onward transfer of the data in breach of platform terms",
+  "actor": "Aleksandr Kogan's app, data subsequently transferred to SCL Elections and Cambridge Analytica",
+  "cost": "$5 billion FTC penalty against Facebook, a $100 million SEC settlement, a £500,000 ICO fine, and the closure of Cambridge Analytica",
+  "exposed": ["Profile data", "Page likes", "Locations", "Friend lists", "Some private messages for a small subset"],
+  "sortDate": "2018-03-17",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["facebook-scrape-2021", "clearview-ai-2020", "23andme-2023"],
+  "faq": [
+    { "q": "Was Cambridge Analytica a data breach?", "a": "Facebook argued strenuously that it was not, and on a narrow technical reading it was right: no system was compromised and no access control failed. The data was collected through an API doing precisely what it was built to do. The term still stuck, because from the perspective of the 87 million people involved, information about them ended up somewhere they had never agreed to and could not have prevented. That gap between what is technically a breach and what is experienced as one is the whole reason this case matters." },
+    { "q": "How did 270,000 quiz takers become 87 million people?", "a": "Facebook's Graph API in that era let an app request not only the installing user's data but data about their friends. So one person taking a personality quiz handed over their own profile and a slice of everyone they were connected to. The friends were never asked, never notified, and had no way to find out. Facebook restricted this in 2014 and removed it in 2015, but apps that had already collected data kept what they had." },
+    { "q": "Did Cambridge Analytica actually swing an election?", "a": "This is genuinely disputed and worth stating as such. The company marketed psychographic targeting as decisively effective; academic researchers have been consistently sceptical that the technique performs meaningfully better than conventional demographic targeting. What is not disputed is that the data was obtained, transferred and used. Whether it worked is a separate question from whether it was permissible." },
+    { "q": "What happened to the companies involved?", "a": "Cambridge Analytica and SCL Elections entered insolvency proceedings in May 2018. Facebook paid a $5 billion penalty to the FTC in 2019 — the largest privacy penalty in US history at that point — settled with the SEC for $100 million over its disclosures to investors, and was fined £500,000 by the UK ICO, the maximum available under the pre-GDPR regime that applied to the conduct." }
+  ],
+  "sources": [
+    { "label": "Federal Trade Commission — FTC imposes $5 billion penalty on Facebook, July 2019", "url": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook" },
+    { "label": "Information Commissioner's Office — Investigation into the use of data analytics in political campaigns, final report to Parliament, November 2018", "url": "https://ico.org.uk/action-weve-taken/investigation-into-data-analytics-for-political-purposes/" },
+    { "label": "UK Digital, Culture, Media and Sport Committee — Disinformation and fake news, final report, February 2019" },
+    { "label": "Securities and Exchange Commission settlement with Facebook Inc., July 2019", "note": "$100 million over risk disclosures" }
+  ]
+}
+-->
+<p class="lead">Nothing was hacked. No password was stolen, no server was compromised, no vulnerability was exploited. Data on up to 87 million people moved from a social network to a political consultancy through a documented feature, used as documented, by an app that had been approved. This is a case file about a platform working correctly and that being the problem.</p>
+
+<h2>What happened</h2>
+
+<p>In 2013, Aleksandr Kogan, a researcher at Cambridge University, built a Facebook app called thisisyourdigitallife — a personality quiz. Around 270,000 people installed it and consented to it collecting their data for research purposes.</p>
+
+<p>Facebook's Graph API at the time permitted an app to request information about the installing user's friends as well: profile details, page likes, locations. So each of those 270,000 installations delivered a slice of that person's entire social graph. The friends had not installed anything, had not consented to anything, and had no mechanism to discover that it had happened.</p>
+
+<p>The total reached, by Facebook's own later estimate, up to 87 million people, the majority in the United States.</p>
+
+<p>The data was then transferred to SCL Elections and its affiliate Cambridge Analytica, which used it to build voter profiles marketed as psychographic — modelling personality traits in order to target political messaging. That transfer breached Facebook's platform policies. Facebook learned of it in 2015, demanded certification that the data had been deleted, received assurances, and did not verify them or tell the affected users.</p>
+
+<div class="callout">
+  <p><strong>Consent that scales past the person giving it.</strong> The 270,000 installers consented. The 87 million did not, and could not have, because consent in a social graph is not an individual act — accepting a friend request in 2011 turned out to be the operative decision. Every platform that lets one user share data about another inherits this structure: address book uploads, photo tagging, contact syncing, shared genetic relatives. It is the same shape every time, and it is why the case still gets cited in privacy law arguments that have nothing to do with Facebook.</p>
+</div>
+
+<h2>Why it took five years to surface</h2>
+
+<p>The collection happened in 2013 and 2014. Facebook restricted friend data access in 2014 and removed it in 2015. Reporting in late 2015 described the arrangement and drew limited attention.</p>
+
+<p>What changed in March 2018 was a person. Christopher Wylie, who had worked at SCL, went on the record with documents. The story landed in The Observer, The Guardian and The New York Times simultaneously, and this time it went everywhere.</p>
+
+<p>The distance between the events and the reckoning is not incidental. Data misuse of this kind leaves no alarm to trigger. There is no intrusion detection system for a permitted API call, no anomaly in the logs, no forensic artefact. It surfaces when a person decides to talk, which is a discovery mechanism no organisation can plan around and no regulator can rely on.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>2013 – 2014</b> — thisisyourdigitallife collects data from around 270,000 installers and their friends.</li>
+  <li><b>2014 – 2015</b> — Facebook restricts and then removes friend data access for new apps.</li>
+  <li><b>December 2015</b> — Initial reporting describes the transfer to Cambridge Analytica; Facebook seeks deletion certifications.</li>
+  <li><b>17 March 2018</b> — Coordinated reporting based on Christopher Wylie's account breaks internationally.</li>
+  <li><b>March 2018</b> — Facebook's share price falls sharply; #DeleteFacebook trends; the UK ICO raids Cambridge Analytica's offices.</li>
+  <li><b>April 2018</b> — Mark Zuckerberg testifies before the US Congress over two days.</li>
+  <li><b>May 2018</b> — Cambridge Analytica and SCL Elections enter insolvency. GDPR takes effect three weeks later.</li>
+  <li><b>October 2018</b> — The ICO fines Facebook £500,000, the maximum under the earlier regime.</li>
+  <li><b>July 2019</b> — The FTC imposes a $5 billion penalty; the SEC settles for $100 million.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Platform APIs were rebuilt around data minimisation.</strong> Facebook, and every comparable platform, cut the data available to third-party apps, introduced app review, added expiring permissions and built user-facing dashboards showing which apps hold what. The era in which an app could ask for the social graph and receive it ended here.</p>
+
+<p><strong>Privacy regulation acquired political urgency.</strong> GDPR was already law when the story broke, but the scandal gave it a public narrative at the exact moment it came into force. California's Consumer Privacy Act passed in June 2018, three months later. Legislators who had found data protection abstract suddenly had a case involving elections.</p>
+
+<p><strong>"We asked them to delete it and they said they had" stopped being an answer.</strong> Facebook's reliance on certification without verification became a textbook example of inadequate third-party oversight, and contractual assurance without audit is now treated sceptically by regulators as a matter of course.</p>
+
+<p><strong>It permanently blurred the meaning of "data breach" in public use.</strong> Security professionals still object that this was not one. The public settled the question the other way, and the practical effect is that organisations are now judged on where data ends up rather than on whether a control failed — which is, on balance, the more useful standard for the people in the data.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Audit which apps have access to your accounts.</strong> Every major platform now exposes this list. Most people find services they used once, years ago, still connected.</li>
+  <li><strong>Assume anything a friend can see about you can leave with them.</strong> Their app permissions, their screenshots, their account compromise. Privacy settings govern visibility, not what happens afterwards.</li>
+  <li><strong>Quizzes and personality tests remain a collection method, not a pastime.</strong> The format survived the scandal because it works, and the permissions it requests are the entire product.</li>
+  <li><strong>Page likes are more revealing than you would guess.</strong> The research underpinning this case showed that a modest set of likes predicts attributes people consider private. The data does not need to be sensitive to produce a sensitive inference.</li>
+</ol>

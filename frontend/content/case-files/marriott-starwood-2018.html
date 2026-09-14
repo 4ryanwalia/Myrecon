@@ -1,0 +1,85 @@
+<!--
+{
+  "headline": "Marriott and Starwood, 2018: a breach that came with the acquisition",
+  "seoTitle": "Marriott Starwood Breach: 339 Million Guest Records",
+  "subject": "Marriott Starwood guest reservation database breach",
+  "kicker": "2018 · Hospitality",
+  "description": "Marriott bought Starwood in 2016. The reservation database it acquired had already been compromised for two years, and nobody found out until 2018.",
+  "cardBlurb": "Four years of guest records, five million unencrypted passport numbers, and a compromise that was already running when the company was bought.",
+  "records": "about 339 million guest records",
+  "peopleCount": 339000000,
+  "occurred": "2014 – September 2018",
+  "disclosed": "30 November 2018",
+  "vector": "Long-running compromise of the Starwood reservation system, present before the acquisition",
+  "actor": "Publicly linked by US officials to Chinese state actors; never charged",
+  "cost": "£18.4 million fine from the UK Information Commissioner's Office",
+  "exposed": ["Names", "Addresses", "Phone numbers", "Email addresses", "Passport numbers (5.25 million unencrypted)", "Arrival and departure dates", "Reservation details", "Some encrypted payment cards"],
+  "sortDate": "2018-11-30",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["opm-2015", "equifax-2017", "optus-2022"],
+  "faq": [
+    { "q": "How many people were affected by the Marriott breach?", "a": "Marriott's first statement said up to 500 million guest records. A revised estimate in January 2019 put it at around 339 million, of which roughly 5.25 million contained unencrypted passport numbers and about 20.3 million contained encrypted ones. Records are not people: frequent travellers appear many times." },
+    { "q": "Why does a travel record matter more than it sounds?", "a": "Because it is a movement history. Names, passport numbers, arrival and departure dates and hotel locations, held over four years, reconstruct who was where and when — and, by correlation, who was there at the same time. For most travellers that is a privacy loss. For diplomats, executives and intelligence officers it is an operational one, which is why this breach was read as espionage rather than fraud." },
+    { "q": "Did the breach start before Marriott owned Starwood?", "a": "Yes. The compromise of the Starwood reservation system dates to 2014; Marriott completed its acquisition of Starwood in 2016 and continued operating the inherited system until 2018. That sequence is why this case is cited in every discussion of cybersecurity due diligence in mergers and acquisitions." },
+    { "q": "What was the fine?", "a": "The UK Information Commissioner's Office issued a notice of intent to fine Marriott £99 million in 2019 and settled on £18.4 million in October 2020, reducing it for remediation and for the economic impact of the pandemic. It remains one of the larger GDPR penalties issued by the UK regulator." }
+  ],
+  "sources": [
+    { "label": "UK Information Commissioner's Office — Marriott International penalty notice, October 2020", "url": "https://ico.org.uk/action-weve-taken/enforcement/marriott-international-inc/" },
+    { "label": "Marriott International guest reservation database security incident statements, November 2018 and January 2019" },
+    { "label": "US Senate and congressional testimony on the incident, 2019" }
+  ]
+}
+-->
+<p class="lead">Marriott announced in November 2018 that its Starwood guest reservation database had been compromised. The striking detail was not the number of records. It was the start date: 2014 — two years before Marriott bought Starwood, and four years before anyone noticed.</p>
+
+<h2>What happened</h2>
+
+<p>Starwood Hotels and Resorts operated brands including Sheraton, Westin, W and Le Méridien. Its central reservation database held guest records going back years. Attackers were inside that system from 2014.</p>
+
+<p>Marriott completed its $13 billion acquisition of Starwood in September 2016, creating the largest hotel group in the world. It continued to run the inherited Starwood reservation platform alongside its own while migration work proceeded. In September 2018, an internal security tool flagged an attempt to access the Starwood database. The investigation found the long-running compromise.</p>
+
+<p>The first public figure was "up to 500 million guest records". By January 2019 Marriott had revised it to roughly 339 million, of which about 5.25 million held unencrypted passport numbers, 20.3 million held encrypted ones, and some 8.6 million contained encrypted payment card details.</p>
+
+<div class="callout">
+  <p><strong>Why the passport numbers mattered most.</strong> Card numbers were encrypted, and cards expire. A passport number does not expire for a decade and cannot be casually reissued; in most countries replacing one costs the holder money and time. Five million of them, matched to names, addresses and travel dates, is a durable identity dataset and a precise record of international movement.</p>
+</div>
+
+<h2>Why this reads as espionage rather than crime</h2>
+
+<p>Criminal groups monetise breaches: cards get sold, credentials get stuffed, identity kits get traded. Four years of hotel reservation data attached to passport numbers has an obvious market value — and none of it showed up on carding forums.</p>
+
+<p>US officials publicly linked the intrusion to Chinese state actors, and the reasoning offered at the time turned on this absence. A dataset that records where specific named people slept, on which nights, in which cities, is a counterintelligence tool. Cross-referenced with the <a href="/breaches/case-files/opm-2015.html">OPM clearance files</a> and the <a href="/breaches/case-files/anthem-2015.html">Anthem membership records</a>, both attributed to the same country, it starts to look less like three unrelated thefts and more like an assembly job: who people are, what could pressure them, and where they have been.</p>
+
+<p>No charges have been brought, so the attribution remains an assessment by officials rather than a finding in court. It is worth stating that plainly rather than repeating it as established fact.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>2014</b> — Attackers compromise the Starwood guest reservation system.</li>
+  <li><b>November 2015</b> — Starwood discloses a separate malware incident affecting payment systems at some properties.</li>
+  <li><b>September 2016</b> — Marriott completes its acquisition of Starwood.</li>
+  <li><b>2016–2018</b> — The inherited Starwood platform continues in service; the compromise continues undetected.</li>
+  <li><b>8 September 2018</b> — An internal tool alerts on an access attempt against the Starwood database.</li>
+  <li><b>30 November 2018</b> — Marriott discloses: up to 500 million records.</li>
+  <li><b>4 January 2019</b> — The estimate is revised to around 339 million, with passport and card detail broken out.</li>
+  <li><b>July 2019</b> — The UK ICO issues a notice of intent to fine £99 million.</li>
+  <li><b>October 2020</b> — The final penalty is set at £18.4 million.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Security due diligence entered the deal process.</strong> Before Marriott, technical due diligence in an acquisition meant systems, licences and technical debt. Afterwards, "has the target been compromised, and how would we know?" became a standard pre-close question, with compromise assessments commissioned as part of diligence. The reasoning is simple and expensive: you inherit the breach along with the balance sheet, and you inherit the regulatory liability for it too.</p>
+
+<p><strong>Legacy platform migration acquired urgency.</strong> Running an acquired company's systems in parallel for years is normal, and it is also a period in which nobody quite owns them. Marriott's case made that interim ownership gap a named risk.</p>
+
+<p><strong>Regulators showed they would discount penalties.</strong> The gap between the £99 million notice of intent and the £18.4 million final figure is one of the clearest illustrations of how European regulators weigh remediation, cooperation and circumstance. It cut both ways: campaigners read it as a regulator retreating, and practitioners read it as evidence that investing in response demonstrably reduces the bill.</p>
+
+<h2>If you stayed at a Starwood hotel before 2018</h2>
+
+<ol class="bx-actions">
+  <li><strong>Check whether your passport number was in the unencrypted set</strong> if you were notified. Some governments and Marriott itself offered to cover replacement costs where fraud could be shown.</li>
+  <li><strong>Assume your travel dates are known.</strong> There is no remediation for that, but it changes how you should read a message that references a trip you actually took — familiarity is not authentication.</li>
+  <li><strong>Watch for travel-themed phishing.</strong> Loyalty account takeovers and "problem with your booking" messages are the direct downstream use of this data.</li>
+  <li><strong>Review what your loyalty accounts still hold.</strong> Old profiles accumulate passport details, addresses and card tokens long after the trip — <a href="/guides/reduce-your-digital-footprint.html">clearing out what you no longer need</a> is the only control you hold yourself.</li>
+</ol>

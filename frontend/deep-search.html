@@ -37,8 +37,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
-  <link rel="stylesheet" href="/assets/css/deep-search.css?v=9">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/deep-search.css?v=10">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Deep Search: Username Correlation Console","description":"Check a username across 100+ public platforms and see every match correlated into a confidence-scored graph, with the evidence behind each score shown.","url":"https://www.myrecon.xyz/deep-search.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Deep Search","item":"https://www.myrecon.xyz/deep-search.html"}]}}</script>
   <script type="application/ld+json">{"@type":"WebApplication","name":"MyRecon Deep Search","applicationCategory":"SecurityApplication","operatingSystem":"Any","url":"https://www.myrecon.xyz/deep-search.html","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"description":"Checks a username across 100+ public platforms and correlates the matches into a confidence-scored graph.","@context":"https://schema.org"}</script>
 </head>
@@ -104,15 +104,50 @@
       Every finding cites its source and carries a confidence band. MyRecon reports correlations
       between public accounts — it does not confirm identities.
     </p>
+
+    <!-- Written explanation of the method. A tool screen with no prose is a
+         screen nobody can evaluate: a reader cannot judge a confidence score
+         without knowing what produced it, and a search engine cannot tell what
+         the page is for. Both problems have the same fix. -->
+    <section class="prose" style="max-width:760px;margin:48px auto 0;text-align:left">
+      <h2 style="font-size:1.3rem;margin-bottom:10px">How Deep Search decides something is a match</h2>
+      <p style="color:var(--text-dim)">A username check is easy to run and easy to get wrong. Most tools report a "hit" whenever a profile URL returns HTTP 200, which is why they routinely claim accounts that do not exist. Deep Search is built around the opposite assumption: a response is evidence, not an answer, and every platform lies in its own particular way.</p>
+
+      <h3 style="margin:22px 0 8px;font-size:1.05rem">The three tiers of evidence</h3>
+      <ul style="color:var(--text-dim);padding-left:20px;line-height:1.9">
+        <li><strong>Confirmed.</strong> The platform returns a profile containing the handle, and content unique to that profile — a display name, an avatar, a join date, a follower count. Something exists that could only come from a real account.</li>
+        <li><strong>Probable.</strong> The response distinguishes a registered handle from an unregistered one, but returns nothing further. The account exists; nothing about who holds it is established.</li>
+        <li><strong>Unconfirmed.</strong> The platform answers identically for a real handle and an invented one — a soft 404, a catch-all landing page, a login wall, or a rate-limit response dressed up as a result. These are reported as unconfirmed rather than quietly counted, because counting them is how other tools reach impressive totals that fall apart on inspection.</li>
+      </ul>
+
+      <h3 style="margin:22px 0 8px;font-size:1.05rem">What the score actually measures</h3>
+      <p style="color:var(--text-dim)">The correlation score answers one narrow question: how strongly do these accounts look like they belong to the same person? It rises with evidence that is expensive to fake or coincidental to share — a matching avatar image, a bio linking to the same domain, a rare handle, cross-links between two profiles. It falls for handles that are common English words, for platforms that permit anyone to reserve a name, and for matches resting on a single weak signal.</p>
+      <p style="color:var(--text-dim)">It is never a measure of identity. A high score says the accounts are related; establishing that a real person holds them is a separate exercise, and one this tool deliberately leaves to the investigator. Our guide on <a href="/guides/verify-an-osint-finding.html" style="color:var(--accent)">verifying an OSINT finding before you act on it</a> sets out how that is done properly.</p>
+
+      <h3 style="margin:22px 0 8px;font-size:1.05rem">Why there is no search by personal name</h3>
+      <p style="color:var(--text-dim)">Because it does not work, and the failure is not obvious to the person reading the output. Guessing handles from a name — firstnamelastname, first initial plus surname, name plus birth year — returns whoever happened to register those strings, which on any large platform is almost never the person you had in mind. The results look authoritative, are wrong far more often than they are right, and the mistake lands on an uninvolved stranger. We would rather answer a narrower question accurately than a broader one badly.</p>
+
+      <h3 style="margin:22px 0 8px;font-size:1.05rem">The limits, stated plainly</h3>
+      <ul style="color:var(--text-dim);padding-left:20px;line-height:1.9">
+        <li>Platforms change their responses without notice; a check that was reliable last month can start producing soft 404s at any time.</li>
+        <li>Results vary by network. The same query from a data-centre IP and from a home connection can return different answers, because rate limiting and bot detection treat them differently — explained in <a href="/guides/what-http-responses-reveal.html" style="color:var(--accent)">what a website's response actually tells you</a>.</li>
+        <li>Absence of a match is not absence of an account. Private accounts, renamed handles and platforms we do not check all produce silence.</li>
+        <li>Nothing here reaches non-public data. If a profile is not visible to a logged-out visitor, it is not visible to this tool.</li>
+      </ul>
+
+      <h3 style="margin:22px 0 8px;font-size:1.05rem">What it is for</h3>
+      <p style="color:var(--text-dim)">Auditing your own footprint — which is what most people arrive to do — and authorised research where you have a legitimate reason to establish whether a set of public accounts are connected. It is not for profiling private individuals, and using it to harass, stalk or dox anyone is prohibited by our <a href="/terms.html" style="color:var(--accent)">terms of use</a>. If you are here to reduce your own exposure, <a href="/guides/reduce-your-digital-footprint.html" style="color:var(--accent)">the footprint guide</a> is the more useful starting point.</p>
+    </section>
   </main>
 
   <footer class="footer"><div class="container"><div class="footer-bottom">
     <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-    <span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a></span>
+    <span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
   </div></div></footer>
 
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/deep-search.js?v=9"></script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/deep-search.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>

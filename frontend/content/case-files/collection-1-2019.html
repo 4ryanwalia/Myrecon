@@ -1,0 +1,80 @@
+<!--
+{
+  "headline": "Collection #1, 2019: 773 million addresses, and nobody was breached",
+  "seoTitle": "Collection #1 Explained: 773 Million Email Addresses",
+  "subject": "Collection #1 credential aggregate",
+  "kicker": "2019 · Credential aggregate",
+  "description": "Collection #1 was not a hack. It was 87GB of everyone else's hacks, merged and deduplicated into a single file built for one purpose: automated login attempts.",
+  "cardBlurb": "The file that explained credential stuffing to the public. No company was breached to create it — it was thousands of older breaches, merged into one attack tool.",
+  "records": "772,904,991 unique email addresses; 21,222,975 unique passwords",
+  "peopleCount": 772904991,
+  "occurred": "Circulating from late 2018",
+  "disclosed": "17 January 2019",
+  "vector": "Aggregation of thousands of earlier breaches into one deduplicated combination list",
+  "actor": "Unknown; distributed openly on a cloud storage service and a hacking forum",
+  "exposed": ["Email addresses", "Cracked plaintext passwords"],
+  "sortDate": "2019-01-17",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["rockyou-2009", "linkedin-2012", "snowflake-2024"],
+  "faq": [
+    { "q": "Which company was breached in Collection #1?", "a": "None. That is the point. Collection #1 is an aggregate — thousands of separate breaches, many of them years old, merged and deduplicated into one file. Finding your address in it tells you that you appeared in at least one of those sources, not that any particular service was compromised in 2019." },
+    { "q": "What is credential stuffing?", "a": "Feeding a list of real email-and-password pairs into automated software that tries them against other services. It works because password reuse is common: a small success rate against tens of millions of pairs still yields a large number of working accounts, and each one looks like a normal login rather than an attack." },
+    { "q": "How big were Collections #2 to #5?", "a": "Far bigger — roughly 845GB in total against Collection #1's 87GB, across tens of billions of rows, though with heavy duplication between them. Size is a poor measure of danger here: what matters is how many unique, still-valid credential pairs a file contains, and that number is always much smaller than the headline." },
+    { "q": "Was my password in Collection #1?", "a": "Around 21 million unique plaintext passwords were in it. Services such as Have I Been Pwned's Pwned Passwords let you check a password without sending it anywhere, using a technique called k-anonymity that only transmits the first five characters of its hash. If a password of yours appears, replace it everywhere it has ever been used." }
+  ],
+  "sources": [
+    { "label": "Troy Hunt, \"The 773 Million Record Collection #1 Data Breach\", 17 January 2019", "url": "https://www.troyhunt.com/the-773-million-record-collection-1-data-reach/" },
+    { "label": "Have I Been Pwned — Pwned Passwords", "url": "https://haveibeenpwned.com/Passwords" },
+    { "label": "Hasso Plattner Institute analysis of the subsequent Collections, 2019" }
+  ]
+}
+-->
+<p class="lead">In January 2019, a file called Collection #1 appeared on a popular cloud storage service and then on a hacking forum: 87 gigabytes, 12,000 files, 772,904,991 unique email addresses and 21,222,975 unique passwords. It was the largest set of credentials ever loaded into Have I Been Pwned. No company had been breached to produce it. That is what makes it worth a case file.</p>
+
+<h2>What it actually was</h2>
+
+<p>Collection #1 was a <em>combination list</em> — a merged, deduplicated set of email-and-password pairs assembled from thousands of separate, older breaches. Some of the source material was a decade old. Much of it had been cracked from hashes long after the original theft. The compiler's contribution was not intrusion; it was data cleaning.</p>
+
+<p>And data cleaning is the valuable part. A hundred separate breach dumps, in a hundred formats, full of duplicates and dead addresses, is an awkward thing to attack with. One normalised file of unique pairs is a weapon you can point at a login page and leave running.</p>
+
+<div class="callout">
+  <p><strong>Why this reframes what "a breach" means.</strong> Most people think of breach exposure as a set of events: a site you used got hacked, you got an email, you changed the password. Collection #1 shows the other half — the long secondary market in which those events are merged, cracked, cleaned and re-traded for years afterwards. Your exposure is not a list of incidents. It is a moving aggregate that keeps growing without anyone new being attacked.</p>
+</div>
+
+<h2>How the file gets used</h2>
+
+<p>Credential stuffing is the whole purpose. The mechanics are unglamorous:</p>
+
+<ol class="cf-timeline">
+  <li><b>Load the list</b> into stuffing software — the well-known tools are sold openly and have graphical interfaces.</li>
+  <li><b>Point it at a target's login endpoint</b>, often the mobile API rather than the web form, because mobile endpoints historically had weaker rate limiting.</li>
+  <li><b>Route the attempts through proxies</b> so they appear to come from thousands of residential addresses rather than one server.</li>
+  <li><b>Harvest the hits.</b> A success rate of a fraction of a percent, against tens of millions of pairs, still produces a very large number of working accounts.</li>
+  <li><b>Sell them by category.</b> Streaming accounts, food delivery credit, loyalty points, gaming inventories, and — the valuable ones — email accounts, which can reset everything else.</li>
+</ol>
+
+<p>Nothing here requires a vulnerability in the service being attacked. Every request is a correctly formatted login attempt with a correct password. That is precisely what makes it so hard to block, and why defenders moved from "keep attackers out" to "detect anomalous login patterns" over this period.</p>
+
+<h2>The Collections that followed</h2>
+
+<p>Collection #1 turned out to be one part of a set. Collections #2 through #5 followed within weeks, totalling roughly 845GB — an order of magnitude larger. Researchers at the Hasso Plattner Institute worked through the full set and found, unsurprisingly, enormous duplication.</p>
+
+<p>This is the trap in reading any aggregate announcement. A claim of "26 billion records" or "10 billion passwords" is a file size statement, not an exposure statement. What matters is the number of unique, current, valid pairs, and that figure is always dramatically smaller — often by two orders of magnitude — than the headline. Since 2019, every few months has produced a new compilation announced in terms designed to be alarming. The honest response is to ask how many unique credentials are actually new.</p>
+
+<h2>Why the 2019 file still matters</h2>
+
+<p>Collection #1 is the moment credential stuffing became a mainstream concept rather than an industry term. It gave the public a concrete answer to a question people had been asking since 2012: <em>why does an old breach at a site I do not use matter?</em> Because the password does not stay at the site. It joins a list, the list gets cleaned, and the list gets tried everywhere.</p>
+
+<p>It also made breached-password checking normal. Before 2019, blocking a password because it appeared in a public breach list was an unusual control. Afterwards it became a standard feature of identity platforms, browsers and password managers, and it is written into NIST's guidance: check the candidate password against a list of known-compromised values, and stop demanding arbitrary composition rules that push people towards predictable choices.</p>
+
+<h2>What to do about it</h2>
+
+<p>Finding your address in an aggregate is not an emergency, but it is a signal that your reuse habit has already been tested.</p>
+
+<ol class="bx-actions">
+  <li><strong>Fix reuse in priority order.</strong> Email first — it can reset everything else — then banking and payment, then anything holding personal documents. Unique passwords everywhere, stored in a manager.</li>
+  <li><strong>Check the passwords themselves, not just the addresses.</strong> A breached-password service will tell you whether a specific password is already in circulation without ever seeing the password.</li>
+  <li><strong>Turn on two-factor authentication.</strong> It is the control that makes stuffing fail even when the password is correct — <a href="/guides/two-factor-authentication.html">the options ranked by how well they hold up</a>.</li>
+  <li><strong>Ignore the size of the headline.</strong> When the next "largest leak ever" is announced, ask how many unique credentials in it are new. The answer is usually "almost none" — <a href="/breaches/">the archive of individually confirmed breaches</a> is the more useful thing to watch.</li>
+</ol>

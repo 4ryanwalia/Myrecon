@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optus Data Breach 2022: The Unauthenticated API | MyRecon</title>
+  <meta name="description" content="An internet-facing Optus API required no authentication at all. Anyone who found it could walk the customer database, including identity document numbers.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/optus-2022.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Optus Data Breach 2022: The Unauthenticated API">
+  <meta property="og:description" content="An internet-facing Optus API required no authentication at all. Anyone who found it could walk the customer database, including identity document numbers.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/optus-2022.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Optus Data Breach 2022: The Unauthenticated API">
+  <meta name="twitter:description" content="An internet-facing Optus API required no authentication at all. Anyone who found it could walk the customer database, including identity document numbers.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies — a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Optus, 2022: an API with no lock on it, and 9.8 million Australians","description":"An internet-facing Optus API required no authentication at all. Anyone who found it could walk the customer database, including identity document numbers.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/optus-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Optus data breach"},"wordCount":844}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Optus data breach","item":"https://www.myrecon.xyz/breaches/case-files/optus-2022.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How did the Optus breach happen?","acceptedAnswer":{"@type":"Answer","text":"Through an API endpoint that was reachable from the public internet and required no authentication. Customer records were addressed by identifiers that could be incremented, so anyone who found the endpoint could iterate through the database. There was no intrusion in the conventional sense — the door was open and the records were numbered."}},{"@type":"Question","name":"Why were identity documents the worst part?","acceptedAnswer":{"@type":"Answer","text":"Because a passport, driver's licence or Medicare number is what Australian banks and services use to verify identity. A stolen one supports account opening in the victim's name, and replacing them costs money and time. The scale forced state and federal governments into a mass reissue and a rethink of whether telcos should be holding those numbers at all."}},{"@type":"Question","name":"Did Optus pay a ransom?","acceptedAnswer":{"@type":"Answer","text":"No. An extortionist posted 10,000 records publicly and demanded US$1 million, then withdrew the demand and issued an apology days later, claiming the data had been deleted. There is no way to verify a deletion claim, which is exactly why paying is a poor bet even when the demand is withdrawn."}},{"@type":"Question","name":"What changed in Australian law afterwards?","acceptedAnswer":{"@type":"Answer","text":"Penalties under the Privacy Act were raised sharply in December 2022 — to the greater of A$50 million, three times the benefit obtained, or 30% of adjusted domestic turnover. Temporary rules also allowed telcos to share identity data with financial institutions and government agencies so compromised documents could be flagged rather than silently reused."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2022 · Telecommunications</span>
+          <h1>Optus, 2022: an API with no lock on it, and 9.8 million Australians</h1>
+          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>9.8 million customers; about 2.1 million with identity document numbers</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>September 2022</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>22 September 2022</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>An internet-facing API endpoint that required no authentication and allowed enumeration of customer records</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>An extortionist who posted samples, demanded US$1 million, then withdrew the demand</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>Regulatory proceedings by two Australian regulators, a class action, and the cost of reissuing identity documents nationwide</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Phone numbers · Email addresses · Addresses · Passport numbers · Driver's licence numbers · Medicare numbers</p>
+
+<p class="lead">Most breaches require someone to break something. The Optus breach required someone to find an address. An internet-facing API served customer records to anyone who asked, with no authentication and no meaningful rate limiting, and the records were addressed by identifiers that could simply be counted upwards.</p>
+
+<h2>What happened</h2>
+
+<p>On 22 September 2022, Optus — Australia's second-largest telecommunications company — disclosed that customer data had been taken. The eventual figure was 9.8 million current and former customers, in a country of roughly 26 million people. Around 2.1 million of those records contained at least one government identity document number: a passport, a driver's licence, or a Medicare number.</p>
+
+<p>The mechanism, as set out in the regulatory proceedings that followed, was an API endpoint exposed to the public internet without any requirement to authenticate. Requests for customer records were accepted from anyone, and the identifiers used to address those records were sequential enough to enumerate. There was no exploit, no malware, and no stolen credential. Somebody found the endpoint and iterated.</p>
+
+<div class="callout">
+  <p><strong>The specific engineering failure.</strong> Two controls were missing at once. Authentication, so that only an authorised caller gets an answer. And authorisation on the object itself, so that even an authenticated caller can only fetch records they are entitled to — the flaw category known as insecure direct object reference. Either one alone would have limited this to a nuisance. Together, their absence turned a customer lookup into a public database export.</p>
+</div>
+
+<h2>The extortion that fizzled</h2>
+
+<p>Days after the breach, an account using the name "optusdata" posted a sample of 10,000 records and demanded US$1 million in cryptocurrency, threatening to release more daily. Then, abruptly, the demand was withdrawn with an apology and a claim that the only copy had been deleted.</p>
+
+<p>Whatever happened behind that reversal — the scale of the attention from Australian federal police is the usual assumption — the episode illustrates something important. A deletion claim is unverifiable. Once records have been copied, the only honest position for the affected company is that the data is gone and will not come back, which is what Optus and the government proceeded on.</p>
+
+<h2>Why identity documents made this a national problem</h2>
+
+<p>A leaked email address is a nuisance. A leaked passport number is an administrative emergency, because Australian identity verification — opening a bank account, taking out credit, getting a phone contract — runs on a small set of document numbers. Once those are in circulation, the verification system itself is degraded for the people affected.</p>
+
+<p>The response had to be structural:</p>
+
+<ol class="cf-timeline">
+  <li><b>Mass reissue.</b> State governments replaced driver's licences, in several cases at Optus's expense. Passport replacement became a public argument about who pays.</li>
+  <li><b>Emergency data sharing.</b> Temporary regulations let telcos pass limited identity data to banks and government agencies, so that compromised document numbers could be flagged for extra scrutiny rather than silently trusted.</li>
+  <li><b>A licence-number change.</b> Several states moved to card numbers that can be reissued independently of the licence itself, so a future leak does not require replacing the whole document.</li>
+</ol>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>September 2022</b> — The exposed endpoint is found and customer records are extracted.</li>
+  <li><b>22 September 2022</b> — Optus discloses the breach.</li>
+  <li><b>24–27 September</b> — An extortionist publishes 10,000 records, demands US$1 million, then withdraws the demand.</li>
+  <li><b>Late September</b> — State and federal governments begin coordinating document reissue; emergency data-sharing regulations are made.</li>
+  <li><b>December 2022</b> — The Privacy Act penalty regime is sharply increased.</li>
+  <li><b>2023</b> — The communications regulator begins federal court proceedings.</li>
+  <li><b>2024</b> — The privacy regulator commences civil penalty proceedings; class action litigation continues.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Australia's privacy penalties stopped being symbolic.</strong> The pre-2022 maximum — around A$2.2 million — was a rounding error for a telco. The new ceiling, tied to turnover, moved privacy into the same enforcement bracket as competition law.</p>
+
+<p><strong>Data minimisation became the headline lesson.</strong> The most-asked question in the aftermath was not how the endpoint was exposed, but why a telecommunications company still held passport numbers for former customers years after verifying them. Retaining identity documents after the verification is complete converts a one-off check into a permanent liability, and regulators across several countries have used Optus to make that argument since.</p>
+
+<p><strong>API security became a board-level term.</strong> Traditional security programmes were built around networks, endpoints and web applications. This breach was none of those: a documented, intentional interface with a missing control. API inventories and authorisation testing moved up every roadmap in the region.</p>
+
+<h2>If you were an Optus customer</h2>
+
+<ol class="bx-actions">
+  <li><strong>Replace any exposed document you have not already replaced.</strong> A licence or passport number in circulation does not expire on its own.</li>
+  <li><strong>Place a credit ban or credit report freeze</strong> with the Australian credit bureaus. It is the specific control against someone opening credit with your documents.</li>
+  <li><strong>Set a port-out protection on your mobile service.</strong> A number plus a full identity file is what makes SIM-swap fraud straightforward.</li>
+  <li><strong>Distrust contact that quotes your details back to you.</strong> Post-breach scam waves in Australia specifically used the leaked fields to sound legitimate — <a href="/guides/how-to-spot-phishing.html">what still gives those messages away</a>.</li>
+</ol>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>How did the Optus breach happen?</h3>
+        <p>Through an API endpoint that was reachable from the public internet and required no authentication. Customer records were addressed by identifiers that could be incremented, so anyone who found the endpoint could iterate through the database. There was no intrusion in the conventional sense — the door was open and the records were numbered.</p>
+
+        <h3>Why were identity documents the worst part?</h3>
+        <p>Because a passport, driver's licence or Medicare number is what Australian banks and services use to verify identity. A stolen one supports account opening in the victim's name, and replacing them costs money and time. The scale forced state and federal governments into a mass reissue and a rethink of whether telcos should be holding those numbers at all.</p>
+
+        <h3>Did Optus pay a ransom?</h3>
+        <p>No. An extortionist posted 10,000 records publicly and demanded US$1 million, then withdrew the demand and issued an apology days later, claiming the data had been deleted. There is no way to verify a deletion claim, which is exactly why paying is a poor bet even when the demand is withdrawn.</p>
+
+        <h3>What changed in Australian law afterwards?</h3>
+        <p>Penalties under the Privacy Act were raised sharply in December 2022 — to the greater of A$50 million, three times the benefit obtained, or 30% of adjusted domestic turnover. Temporary rules also allowed telcos to share identity data with financial institutions and government agencies so compromised documents could be flagged rather than silently reused.</p>
+      </div>
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Office of the Australian Information Commissioner — civil penalty proceedings against Singtel Optus Pty Ltd</b></li>
+        <li><b>Australian Communications and Media Authority — federal court proceedings, 2023</b></li>
+        <li><b>Privacy Legislation Amendment (Enforcement and Other Measures) Act 2022 (Cth)</b></li>
+        <li><b>Optus customer notifications and public statements, September–October 2022</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/medibank-2022.html">Medibank, 2022: the company said no, and the data went up anyway</a></li>
+        <li><a href="/breaches/case-files/t-mobile-2021.html">T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers</a></li>
+        <li><a href="/breaches/case-files/marriott-starwood-2018.html">Marriott and Starwood, 2018: a breach that came with the acquisition</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+</body>
+</html>

@@ -6,6 +6,12 @@
  *
  * If API_BASE_URL is unset, the app falls back to same-origin requests (use
  * this together with a rewrite proxy in vercel.json).
+ *
+ * IMPORTANT: the value set here must also appear in the `connect-src`
+ * directive of the Content-Security-Policy in vercel.json. The browser
+ * enforces that list, so pointing this at a new API host without adding it
+ * there means every lookup is blocked before it leaves the page — and the
+ * only sign is a CSP error in the console.
  */
 const fs = require("fs");
 const path = require("path");

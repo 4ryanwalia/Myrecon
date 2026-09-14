@@ -59,6 +59,12 @@ object ImageProvenance {
         /** Embedded text fields, which double as a leak surface. */
         val textFields: List<Pair<String, String>>,
         val xmpPresent: Boolean,
+        /** Apps the file's own edit log names, when it keeps one. */
+        val editHistory: List<String> = emptyList(),
+        /** The file records being made from an earlier one. */
+        val derivedFrom: Boolean = false,
+        /** The app that created the file, as it names itself. */
+        val creatorTool: String? = null,
     )
 
     // ── Entry point ──────────────────────────────────────────────
@@ -132,6 +138,21 @@ object ImageProvenance {
             if (origin == Origin.Undeclared) origin = Origin.DeclaredAiGenerated
         }
 
+        // Tools that rebuild part of an existing photo rather than invent a new
+        // one: a face smoothed, a background replaced, a blurry picture
+        // "enhanced" into detail that was never captured. The file is a
+        // photograph *and* partly invented, so it is neither of the two answers
+        // people expect and both halves have to be said.
+        val aiEditor = AI_EDITORS.firstOrNull { (needle, _) ->
+            haystack.contains(needle, ignoreCase = true)
+        }?.second
+        if (aiEditor != null) {
+            markers += Marker("Changed with", aiEditor)
+            if (origin == Origin.Undeclared || origin == Origin.DeclaredCapture) {
+                origin = Origin.DeclaredAiEdited
+            }
+        }
+
         // Automatic1111 writes the prompt into a `parameters` chunk verbatim.
         // Only that key is treated as evidence: `Description` is an ordinary
         // caption field on any PNG, so reading a prompt out of it would call
@@ -163,17 +184,69 @@ object ImageProvenance {
             )
         }
 
+        val history = xmp?.let { editHistory(it) }.orEmpty()
+        if (history.isNotEmpty()) {
+            markers += Marker("Edit log", history.take(3).joinToString(", "))
+        }
+
         return Report(
             container = container,
             origin = origin,
-            generator = generator,
+            generator = generator ?: aiEditor,
             prompt = prompt?.trim()?.take(1200)?.takeIf { it.isNotBlank() },
             contentCredentials = c2pa,
             markers = markers,
             textFields = text,
             xmpPresent = xmp != null,
+            editHistory = history,
+            derivedFrom = xmp?.contains("xmpMM:DerivedFrom") == true,
+            creatorTool = xmp?.let { first(it, CREATOR_TOOL) }?.take(120),
         )
     }
+
+    // ── The edit log Adobe leaves behind ─────────────────────────
+
+    /**
+     * Which applications the file's own history says have written to it.
+     *
+     * Adobe's tools, and anything else that implements the XMP media-management
+     * schema, append an entry every time a file is saved: what was done and
+     * which program did it. It is the closest thing to a chain of custody a
+     * picture ever carries, and unlike a thumbnail or a compression trace it
+     * says so in words.
+     *
+     * The catch is that the *first* entry is usually the file being created,
+     * not edited. A camera app that writes a single "produced" event has not
+     * edited anything, and reporting it as an edit history would put "this has
+     * been altered" on untouched photos from the phones that do this. So an
+     * entry only counts once some action other than creation appears.
+     */
+    fun editHistory(xmp: String): List<String> {
+        if (!xmp.contains("xmpMM:History")) return emptyList()
+        val actions = all(xmp, ACTION).map { it.lowercase() }
+        val agents = all(xmp, SOFTWARE_AGENT)
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+            .distinct()
+
+        val edited = if (actions.isEmpty()) agents.size > 1 else {
+            actions.any { it !in CREATION_ACTIONS }
+        }
+        return if (edited) agents.take(6) else emptyList()
+    }
+
+    /**
+     * XMP writes the same property either as an attribute or as an element,
+     * and which one you get depends on the serialiser rather than the schema.
+     * Both spellings are matched, and whichever group participated is taken.
+     */
+    private fun all(xmp: String, pattern: Regex): List<String> =
+        pattern.findAll(xmp).mapNotNull { m ->
+            m.groupValues.drop(1).firstOrNull { it.isNotBlank() }
+        }.toList()
+
+    private fun first(xmp: String, pattern: Regex): String? =
+        all(xmp, pattern).firstOrNull()?.trim()?.takeIf { it.isNotBlank() }
 
     // ── Container ────────────────────────────────────────────────
 
@@ -384,6 +457,20 @@ object ImageProvenance {
     private const val MAX_XMP = 64 * 1024
     private const val MAX_FIELD = 4000
 
+    private val ACTION = Regex(
+        """stEvt:action\s*=\s*"([^"]{1,40})"|<stEvt:action>([^<]{1,40})</stEvt:action>"""
+    )
+    private val SOFTWARE_AGENT = Regex(
+        """stEvt:softwareAgent\s*=\s*"([^"]{1,120})"|""" +
+            """<stEvt:softwareAgent>([^<]{1,120})</stEvt:softwareAgent>"""
+    )
+    private val CREATOR_TOOL = Regex(
+        """xmp:CreatorTool\s*=\s*"([^"]{1,160})"|<xmp:CreatorTool>([^<]{1,160})</xmp:CreatorTool>"""
+    )
+
+    /** Making the file, as opposed to changing one that already existed. */
+    private val CREATION_ACTIONS = setOf("produced", "created")
+
     /**
      * Needles specific enough not to fire on ordinary text.
      *
@@ -410,6 +497,53 @@ object ImageProvenance {
         // as part of the string Google actually writes.
         "google imagen" to "Google Imagen",
         "made with google ai" to "Google AI",
+        "gemini_generated" to "Google Gemini",
         "openai" to "OpenAI",
+        "chatgpt" to "ChatGPT",
+        "flux.1" to "FLUX",
+        "recraft" to "Recraft",
+        "playground.ai" to "Playground",
+        "nightcafe" to "NightCafe",
+        "dreamstudio" to "DreamStudio",
+        "invokeai" to "InvokeAI",
+        "fooocus" to "Fooocus",
+        "seedream" to "Seedream",
+        "getimg.ai" to "getimg.ai",
+        "clipdrop" to "Clipdrop",
+        "artbreeder" to "Artbreeder",
+        "starryai" to "StarryAI",
+        "craiyon" to "Craiyon",
+        "bing image creator" to "Bing Image Creator",
+    )
+
+    /**
+     * Tools that rewrite part of a real photograph.
+     *
+     * Separated from [GENERATORS] because the honest answer about their output
+     * is neither "AI made this" nor "a camera took this" — a camera took it and
+     * then a model replaced some of it, and a user deciding whether to trust a
+     * face needs to be told the second half.
+     *
+     * The same specificity rule applies. "Remini" and "Lensa" are invented
+     * words and safe; "enhance", "magic" and "portrait" appear in the name of
+     * every second camera app and are not here.
+     */
+    private val AI_EDITORS: List<Pair<String, String>> = listOf(
+        "generative fill" to "Photoshop Generative Fill",
+        "generative expand" to "Photoshop Generative Expand",
+        "neural filters" to "Photoshop Neural Filters",
+        "magic editor" to "Google Magic Editor",
+        "magic eraser" to "Google Magic Eraser",
+        "galaxy ai" to "Samsung Galaxy AI",
+        "generative edit" to "Samsung Generative Edit",
+        "remini" to "Remini",
+        "lensa" to "Lensa",
+        "faceapp" to "FaceApp",
+        "photoroom" to "PhotoRoom",
+        "cleanup.pictures" to "Cleanup.pictures",
+        "topaz gigapixel" to "Topaz Gigapixel",
+        "topaz photo ai" to "Topaz Photo AI",
+        "luminar neo" to "Luminar Neo",
+        "facetune" to "Facetune",
     )
 }

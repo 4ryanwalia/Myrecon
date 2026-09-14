@@ -37,42 +37,226 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Terms of Use — Lawful OSINT and Research Only","description":"The terms covering MyRecon: lawful use and authorised research only, no harassment or doxxing, results provided as is, rate limits, and liability limits.","url":"https://www.myrecon.xyz/terms.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Terms of use","item":"https://www.myrecon.xyz/terms.html"}]}}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav"><div class="container nav-inner">
     <a class="brand" href="/"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
     <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
-    <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
-    <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+    <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
   </div></header>
 
-  <main class="container" style="max-width:820px;padding-top:40px;padding-bottom:40px">
-    <h1 style="font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800">Terms of Use</h1>
-    <p style="color:var(--text-mute);margin:8px 0 24px">Last updated: 12 July 2026</p>
+  <main class="container legal" id="main">
+    <h1>Terms of Use</h1>
+    <p class="legal-meta">Last updated: 14 September 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
 
-    <h2 style="margin:22px 0 8px">Acceptable use</h2>
-    <p style="color:var(--text-dim)">MyRecon aggregates information that is already publicly available. You agree to use it only for lawful purposes, including authorized security research, personal digital-footprint review, and investigations you are permitted to conduct.</p>
+    <div class="legal-summary">
+      <h2>The short version</h2>
+      <ul>
+        <li><strong>Lawful use only.</strong> Authorised research, your own digital footprint, investigations you are permitted to run.</li>
+        <li><strong>Never for harassment, stalking, doxxing or discrimination.</strong> This is not negotiable and we act on reports.</li>
+        <li><strong>Results come from public third-party sources</strong> and can be wrong, stale or incomplete. Verify before you act.</li>
+        <li><strong>You are responsible for what you do</strong> with what you find. We are not.</li>
+      </ul>
+    </div>
 
-    <h2 style="margin:22px 0 8px">Prohibited use</h2>
-    <p style="color:var(--text-dim)">You may not use MyRecon to harass, stalk, threaten, dox, or harm any person, to violate any platform's terms of service, or to breach any applicable law or regulation. You are solely responsible for how you use the information returned.</p>
+    <nav class="legal-toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol>
+        <li><a href="#agreement">Agreement and who we are</a></li>
+        <li><a href="#definitions">Definitions</a></li>
+        <li><a href="#eligibility">Eligibility</a></li>
+        <li><a href="#licence">What you may do</a></li>
+        <li><a href="#acceptable">Acceptable use</a></li>
+        <li><a href="#prohibited">Prohibited use</a></li>
+        <li><a href="#accuracy">Accuracy, and what results are not</a></li>
+        <li><a href="#content">The breach archive and takedowns</a></li>
+        <li><a href="#ip">Intellectual property</a></li>
+        <li><a href="#thirdparty">Third-party sources and links</a></li>
+        <li><a href="#availability">Availability and rate limits</a></li>
+        <li><a href="#app">The Android app</a></li>
+        <li><a href="#warranty">No warranty</a></li>
+        <li><a href="#liability">Limitation of liability</a></li>
+        <li><a href="#indemnity">Indemnity</a></li>
+        <li><a href="#suspension">Suspension</a></li>
+        <li><a href="#law">Governing law</a></li>
+        <li><a href="#changes">Changes and general</a></li>
+        <li><a href="#contact">Contact and grievances</a></li>
+      </ol>
+    </nav>
 
-    <h2 style="margin:22px 0 8px">No warranty</h2>
-    <p style="color:var(--text-dim)">Results are provided "as is" and may be incomplete or inaccurate because they depend on third-party public sources. MyRecon makes no warranty as to accuracy, completeness, or fitness for a particular purpose.</p>
+    <section id="agreement">
+      <h2>1. Agreement and who we are</h2>
+      <p>These terms are a binding agreement between you and the operator of MyRecon. By using the site or the app you accept them. If you do not accept them, do not use the service.</p>
+      <div class="legal-table-wrap">
+        <table>
+          <caption>Operator details.</caption>
+          <thead><tr><th scope="col">Detail</th><th scope="col">Value</th></tr></thead>
+          <tbody>
+            <tr><td>Operator</td><td>Aryan Walia, sole proprietor, trading as MyRecon</td></tr>
+            <tr><td>Principal place of business</td><td><span class="legal-todo">FILL IN: city</span>, India</td></tr>
+            <tr><td>Contact</td><td><a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a></td></tr>
+            <tr><td>Grievance Officer</td><td>Aryan Walia — <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>How we handle data is covered separately in our <a href="/privacy.html">privacy policy</a> and <a href="/cookies.html">cookie policy</a>, which form part of these terms.</p>
+    </section>
 
-    <h2 style="margin:22px 0 8px">Rate limits</h2>
-    <p style="color:var(--text-dim)">To keep the service available for everyone, requests are rate-limited. Automated or abusive access may be blocked.</p>
+    <section id="definitions">
+      <h2>2. Definitions</h2>
+      <ul>
+        <li><strong>Service</strong> — the myrecon.xyz website, its lookup tools, the written guides and breach archive, and the MyRecon Android app.</li>
+        <li><strong>You</strong> — anyone using the Service, and any organisation on whose behalf you use it.</li>
+        <li><strong>Results</strong> — whatever the Service returns for a lookup, including data drawn from third-party public sources.</li>
+        <li><strong>Target</strong> — the identifier you look up: a username, email address, domain, IP address or name.</li>
+      </ul>
+    </section>
 
-    <h2 style="margin:22px 0 8px">Limitation of liability</h2>
-    <p style="color:var(--text-dim)">To the maximum extent permitted by law, MyRecon shall not be liable for any damages arising from your use of, or inability to use, the service.</p>
+    <section id="eligibility">
+      <h2>3. Eligibility</h2>
+      <p>You must be at least 18 years old, or the age of majority where you live, to use the Service. It is intended for adults and is not directed at children. By using it you confirm you meet this requirement and that nothing in law bars you from doing so.</p>
+      <p>If you use the Service for an employer or a client, you confirm you are authorised to accept these terms on their behalf.</p>
+    </section>
 
-    <p style="margin-top:28px"><a class="btn btn-ghost" href="/">← Back home</a></p>
+    <section id="licence">
+      <h2>4. What you may do</h2>
+      <p>Subject to these terms, you may use the Service for your own lawful purposes, personal or commercial. There is no account, no fee and no licence key for the free tools. You may quote and link to our written guides and breach articles with attribution.</p>
+      <p>We grant you no rights beyond that, and we reserve everything not expressly granted.</p>
+    </section>
+
+    <section id="acceptable">
+      <h2>5. Acceptable use</h2>
+      <p>MyRecon aggregates information that is <strong>already publicly available</strong>. It finds what is out there; it does not break into anything. Use it only for lawful purposes, which in practice means:</p>
+      <ul>
+        <li><strong>Reviewing your own digital footprint</strong> — the use we built it for.</li>
+        <li><strong>Authorised security research</strong> — penetration testing, red teaming or reconnaissance you have written permission to perform.</li>
+        <li><strong>Investigations you are permitted to conduct</strong> — journalism, due diligence, fraud and threat investigation, and similar work, within the law that applies to you.</li>
+        <li><strong>Learning</strong> — understanding how exposed public data actually is.</li>
+      </ul>
+      <div class="legal-note">
+        <p>Being public is not the same as being fair game. Data protection law applies to publicly available personal data in most places, including under the GDPR and India&rsquo;s DPDP Act. <strong>If you process personal data you find here, you are the controller of it and the obligations are yours.</strong> That includes having a lawful basis, minimising what you keep, and securing it.</p>
+      </div>
+    </section>
+
+    <section id="prohibited">
+      <h2>6. Prohibited use</h2>
+      <p>You may not use the Service:</p>
+      <ul>
+        <li>To <strong>harass, stalk, threaten, intimidate, dox or harm</strong> any person, or to help anyone else do so.</li>
+        <li>To build or contribute to a <strong>profile or dossier on a private individual</strong> without a lawful basis.</li>
+        <li>To <strong>discriminate</strong> — to make decisions about employment, housing, credit, insurance or education on what you find here. Results are not verified and are not a background check within the meaning of any consumer-reporting law.</li>
+        <li>To attempt to <strong>access, recover, compromise or monitor an account that is not yours</strong>, or to check credentials that are not yours.</li>
+        <li>To breach any <strong>platform&rsquo;s terms of service</strong>, or any applicable law, regulation or court order.</li>
+        <li>To <strong>scrape, mirror, resell or redistribute</strong> the Service or its output in bulk, or to present it as your own product.</li>
+        <li>To <strong>automate access</strong> beyond the published rate limits, to circumvent those limits, or to run the Service as infrastructure inside another product without our written permission.</li>
+        <li>To attack, overload, probe or reverse-engineer the Service, except for good-faith security research reported privately to us first.</li>
+        <li>To upload or transmit anything unlawful, or malicious code.</li>
+      </ul>
+      <p><strong>You are solely responsible for how you use the information returned.</strong> We do not run investigations on third parties on request, and we cannot help you reach an account that is not yours. Requests of that kind are declined without exception.</p>
+      <p>If you are being harassed or impersonated, contact the platform involved and your local authorities. We can advise on gathering evidence about your own accounts — write to us.</p>
+    </section>
+
+    <section id="accuracy">
+      <h2>7. Accuracy, and what results are not</h2>
+      <p>Results are assembled from third-party public sources in real time. They may be <strong>incomplete, out of date, mistaken, or about a different person with the same name or handle</strong>. A username matching on a platform does not prove the same person owns both accounts, and an absence of results does not prove an absence of exposure.</p>
+      <p>Results are <strong>not</strong>: a background check, a credit or consumer report, a criminal-records check, an identity verification, legal advice, or evidence. Do not treat them as any of those. Verify anything that matters at its source before you act on it, and never take an adverse decision about a person on the strength of a MyRecon result alone.</p>
+      <p>The password checker tells you whether a password appears in known breach corpora. It is not an assessment of whether any particular account of yours is safe.</p>
+    </section>
+
+    <section id="content">
+      <h2>8. The breach archive and takedowns</h2>
+      <p>Our breach articles and case files describe incidents that are already a matter of public record, drawing on published reporting, regulatory filings and breach databases including Have I Been Pwned, whose descriptions are used under a Creative Commons BY 4.0 licence and attributed on each page.</p>
+      <p>We publish <strong>no breached data itself</strong> — no credentials, no records, no dumps, and no links to them. Where a breach has not been formally attributed, we do not name a party as responsible.</p>
+      <p>If you believe something we have published is factually wrong, defamatory, infringes your rights, or discloses your personal data without a basis, write to <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a> with the page URL and what is wrong with it. We review these seriously and correct or remove what should be corrected or removed.</p>
+    </section>
+
+    <section id="ip">
+      <h2>9. Intellectual property</h2>
+      <p>The MyRecon name and logo, the site design, the software, and the written guides and articles are owned by the operator or licensed to us, and are protected by copyright and other laws. Material drawn from third parties — such as HIBP breach descriptions — remains theirs and is used under the licences noted on the page.</p>
+      <p>You may quote our written material with attribution and a link. You may not copy the Service wholesale, republish the archive, or use our name or logo in a way that suggests we endorse you.</p>
+    </section>
+
+    <section id="thirdparty">
+      <h2>10. Third-party sources and links</h2>
+      <p>The Service queries third-party sources and links to third-party sites. We do not control them, do not endorse them, and are not responsible for their content, accuracy or practices. Their terms and privacy policies apply when you deal with them. A source going away, changing its rules, or blocking us can change or remove what the Service can return, without notice.</p>
+    </section>
+
+    <section id="availability">
+      <h2>11. Availability and rate limits</h2>
+      <p>The Service is provided free and without any uptime commitment. We may change, suspend or discontinue any part of it at any time.</p>
+      <p>To keep it available for everyone, requests are <strong>rate-limited</strong> — by default 30 requests a minute per IP address. Exceeding that returns an error and asks you to slow down. Automated or abusive access may be blocked without notice.</p>
+    </section>
+
+    <section id="app">
+      <h2>12. The Android app</h2>
+      <p>These terms cover the MyRecon Android app as well as the website. Your use of the app is additionally subject to Google Play&rsquo;s terms, and the app is licensed to you, not sold.</p>
+      <p>The app runs its lookups from your own device, which means <strong>your device&rsquo;s IP address contacts the platforms being checked</strong>. Use of the app is subject to the same acceptable and prohibited use rules above. The app carries advertising, including rewarded ads you may choose to watch; see the <a href="/privacy.html#app">privacy policy</a> for what that involves.</p>
+    </section>
+
+    <section id="warranty">
+      <h2>13. No warranty</h2>
+      <p>The Service is provided <strong>&ldquo;as is&rdquo; and &ldquo;as available&rdquo;</strong>, without warranty of any kind, express or implied. To the maximum extent permitted by law we disclaim all warranties including merchantability, fitness for a particular purpose, non-infringement, and any warranty as to accuracy, completeness, reliability or uninterrupted availability.</p>
+      <p>Some jurisdictions do not allow the exclusion of certain warranties. Where that is so, the exclusions above apply to you only as far as the law allows, and nothing here removes a right you have that cannot be waived.</p>
+    </section>
+
+    <section id="liability">
+      <h2>14. Limitation of liability</h2>
+      <p>To the maximum extent permitted by law, the operator is not liable for any indirect, incidental, special, consequential, punitive or exemplary damages, or for loss of profits, revenue, data, goodwill or business, however caused and on any theory of liability, arising out of or relating to your use of, or inability to use, the Service.</p>
+      <p>This includes, without limitation, anything arising from your reliance on Results, from a third-party source being wrong or unavailable, and from anything anyone does with information obtained through the Service.</p>
+      <p>Where liability cannot lawfully be excluded, our total aggregate liability to you for all claims is limited to the greater of the amount you paid us for the Service in the twelve months before the claim, or <strong>INR 1,000</strong>.</p>
+      <p>Nothing in these terms excludes or limits liability for death or personal injury caused by negligence, for fraud or fraudulent misrepresentation, or for anything else that cannot lawfully be excluded.</p>
+    </section>
+
+    <section id="indemnity">
+      <h2>15. Indemnity</h2>
+      <p>You agree to indemnify and hold harmless the operator against any claim, liability, loss, damage, cost or expense (including reasonable legal fees) arising from your use of the Service, your breach of these terms, your violation of any law or the rights of any third party, or what you do with information you obtained through the Service.</p>
+    </section>
+
+    <section id="suspension">
+      <h2>16. Suspension</h2>
+      <p>We may block, rate-limit or refuse access at any time, without notice, where we reasonably believe these terms are being broken or the Service is being used to harm someone. There is no account to close; blocking is technical. Sections that by their nature should survive — accuracy, intellectual property, warranty, liability, indemnity and governing law — survive any such action.</p>
+    </section>
+
+    <section id="law">
+      <h2>17. Governing law</h2>
+      <p>These terms and any dispute arising out of them are governed by the <strong>laws of India</strong>, without regard to conflict-of-laws rules. The courts at <strong><span class="legal-todo">FILL IN: city</span>, India</strong> have exclusive jurisdiction, and you submit to that jurisdiction.</p>
+      <p>If you are a consumer resident elsewhere, this does not deprive you of the protection of mandatory consumer-law provisions in your country of residence, or of the right to bring proceedings in your local courts where the law gives you that right.</p>
+    </section>
+
+    <section id="changes">
+      <h2>18. Changes and general</h2>
+      <p><strong>Changes.</strong> We may update these terms. The date at the top changes when we do, and continued use after a change means you accept the updated terms. Check back when it matters to you.</p>
+      <p><strong>Severability.</strong> If any provision is held unenforceable, it is severed and the rest continues in force.</p>
+      <p><strong>No waiver.</strong> Not enforcing a provision is not a waiver of it.</p>
+      <p><strong>Entire agreement.</strong> These terms, with the privacy and cookie policies, are the whole agreement between us about the Service.</p>
+      <p><strong>Assignment.</strong> You may not assign these terms. We may assign them as part of a transfer of the business.</p>
+    </section>
+
+    <section id="contact">
+      <h2>19. Contact and grievances</h2>
+      <p>Questions about these terms, reports of misuse, and takedown or correction requests all go to the same place, and a person reads them.</p>
+      <address>
+        <strong>Aryan Walia</strong> — operator and Grievance Officer<br>
+        Email: <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a><br>
+        <span class="legal-todo">FILL IN: city</span>, India
+      </address>
+      <p style="margin-top:12px">The Grievance Officer is named under India&rsquo;s Information Technology Rules. Complaints are acknowledged and answered as quickly as we can, and in any event within the period the law requires. See also our <a href="/contact.html">contact page</a>, <a href="/privacy.html">privacy policy</a> and <a href="/cookies.html">cookie policy</a>.</p>
+    </section>
+
+    <p style="margin-top:34px"><a class="btn btn-ghost" href="/">← Back home</a></p>
   </main>
 
-  <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon · myrecon.xyz</span><span><a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span></div></div></footer>
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/app.js?v=9"></script>
+  <footer class="footer"><div class="container"><div class="footer-bottom">
+    <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+    <span><a href="/contact.html">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+  </div></div></footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>

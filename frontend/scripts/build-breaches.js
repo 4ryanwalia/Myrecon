@@ -17,9 +17,10 @@
  * article body rather than buried in a footer. Everything around that
  * description is generated here from the structured fields: the severity
  * score, what each leaked data class means for a person, the scale
- * comparison, the timeline, and what to do now. No language model is
- * involved anywhere; every sentence is derived from a number or a flag in
- * the record, so nothing can drift from the evidence.
+ * comparison, the timeline, and what to do now. Every sentence in that
+ * generated section derives from a number or a flag in the record, so the
+ * analysis cannot drift from the evidence — which is the whole reason it is
+ * computed rather than written.
  *
  * Where a hand-written take exists in content/breaches/<Name>.html it is
  * placed above the generated analysis under a clear byline. That is the seam
@@ -42,22 +43,32 @@ const SOURCE = "https://haveibeenpwned.com/api/v3/breaches";
 const LICENCE = "https://creativecommons.org/licenses/by/4.0/";
 
 /** How far back the archive reaches. */
-const YEARS = 5;
+const YEARS = 7;
 
 /**
- * The seed set: ten breaches to open the archive with.
+ * The seed set that opens the archive.
  *
- * Split rather than simply "the ten biggest", because the ten biggest are
- * almost entirely credential dumps and stealer-log collections — enormous,
- * genuinely important, and completely faceless. There is no company to name,
- * no incident to describe and no logo to show, so ten of those makes an
- * archive nobody wants to read. Weighting toward named companies gives the
- * archive the thing it is for: a story with somebody in it. The largest
- * aggregates still get their slots, because leaving out the biggest exposures
- * on record to make the page prettier would be its own kind of dishonesty.
+ * Split rather than simply "the biggest", because the biggest are almost
+ * entirely credential dumps and stealer-log collections — enormous, genuinely
+ * important, and completely faceless. There is no company to name, no incident
+ * to describe and no logo to show, so an archive of those is one nobody wants
+ * to read. Weighting toward named companies gives the archive the thing it is
+ * for: a story with somebody in it. The largest aggregates still get their
+ * slots, because leaving out the biggest exposures on record to make the page
+ * prettier would be its own kind of dishonesty.
+ *
+ * THREE PER YEAR, NOT MORE
+ * The seed is deliberately bounded rather than "everything HIBP has". These
+ * pages quote HIBP's description under CC BY and generate the rest from the
+ * record, which makes them genuinely useful and also makes them thin if there
+ * are enough of them — a site whose bulk is templated summaries of somebody
+ * else's dataset reads as replicated content however good the analysis is.
+ * The long-form original reporting lives in /breaches/case-files/, and the
+ * ratio between the two sections is a thing to keep an eye on: the archive
+ * should stay the index, not the body of work.
  */
-const SEED_NAMED_TOTAL = 10;
-const SEED_AGGREGATE = 2;
+const SEED_NAMED_TOTAL = 21;
+const SEED_AGGREGATE = 4;
 
 /**
  * Everything HIBP publishes from this date onward gets an article.
@@ -448,8 +459,8 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=2">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
 ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="${SITE}/breaches/feed.xml">
@@ -470,13 +481,14 @@ const FOOT = `
   <footer class="footer">
     <div class="container"><div class="footer-bottom">
       <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
     </div></div>
   </footer>
-  <script src="/assets/js/env.js?v=9"></script>
-  <script src="/assets/js/config.js?v=9"></script>
-  <script src="/assets/js/app.js?v=9"></script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
 </body>
 </html>
 `;
@@ -576,7 +588,7 @@ function article(b, editorial, siblings) {
       <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
 
       <header class="bx-head">
-        ${logo ? `<img class="bx-logo" src="${esc(logo)}" alt="" width="72" height="72" loading="lazy">` : ""}
+        ${logo ? `<img class="bx-logo" src="${esc(logo)}" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">` : ""}
         <div>
           <span class="kicker">${esc(year)} · Data breach</span>
           <h1>${esc(b.Title)}</h1>
@@ -599,10 +611,10 @@ function article(b, editorial, siblings) {
         <label for="bxEmail">Was your address in this breach?</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
-                 placeholder="you@example.com" required>
-          <button class="btn btn-sm" type="submit">Check free</button>
+                 placeholder="you@example.com" required aria-describedby="bxEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note">Checked against this breach and every other on record. Your address is not stored, and the check runs against public breach data only.</p>
+        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
 ${editorial ? `      <section class="bx-editorial">
@@ -673,8 +685,10 @@ ${guideLinks(b).length ? `      <h2>Read next</h2>
 ${guideLinks(b).map((g) => `        <li><a href="${g[1]}">${esc(g[2].charAt(0).toUpperCase() + g[2].slice(1))}</a></li>`).join("\n")}
       </ul>\n` : ""}
 
-${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${related}</ul>\n` : ""}
-      <p class="bx-method">Severity is scored by MyRecon from the number of accounts, the sensitivity of the specific fields exposed, and whether the breach is confirmed — not by a language model. The description above is quoted from Have I Been Pwned; the analysis around it is ours.</p>
+${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${related}</ul>\n` : ""}      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
+
+
+      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself — every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
@@ -727,6 +741,16 @@ function index(items) {
         <div class="bx-stat"><b>${years.length}</b><span>Years covered</span></div>
       </div>
 
+      <!-- The archive answers "what was taken". The case files answer "how",
+           which is the question people actually arrive with. Promoted here
+           rather than buried in the footer, because a reader who wants the
+           story of a breach will not find it in a record. -->
+      <aside class="bx-offer">
+        <h3>Case Files: how the breaches that mattered actually happened</h3>
+        <p>In-depth write-ups of the landmark incidents — Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
+        <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a></p>
+      </aside>
+
 ${years.length ? `      <h2 class="bx-h2">By year</h2>
       <div class="bx-years">
 ${years
@@ -761,7 +785,7 @@ ${items
   .join("\n")}
       </div>
 
-      <p class="bx-method">Breach records come from <a href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a> and are used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>. Severity scoring, the analysis of what each field means, and everything else on these pages is MyRecon's own and is generated from the records rather than written by a language model.</p>
+      <p class="bx-method">Breach records come from <a href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a> and are used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>. Severity scoring and the analysis of what each exposed field means are MyRecon's own, computed from the record so that every claim traces back to a value in it. Editorial commentary is marked as such on each article, and the long-form reporting lives in the <a href="/breaches/case-files/">case files</a>, where every page cites its sources.</p>
     </div>
   </main>` +
     FOOT

@@ -1,0 +1,87 @@
+<!--
+{
+  "headline": "Clearview AI, 2020: three billion faces, scraped and sold",
+  "seoTitle": "Clearview AI: The Face Search Engine Regulators Banned",
+  "subject": "Clearview AI facial recognition database",
+  "kicker": "2020 · Surveillance",
+  "description": "Clearview AI built a face search engine from three billion images scraped off the public web, sold it to police forces, and then had its client list stolen.",
+  "cardBlurb": "Every photo in it was already public. That was the company's entire legal argument, and regulators across four continents rejected it.",
+  "records": "Over 3 billion images scraped; later reported by the company as more than 30 billion",
+  "occurred": "2017 – 2020, exposed publicly in January 2020",
+  "disclosed": "18 January 2020",
+  "vector": "Mass automated scraping of public social media and websites, plus a February 2020 breach of the company's own client list",
+  "actor": "Clearview AI itself; the client list theft was never attributed",
+  "cost": "Fines and orders from the UK, France, Italy, Greece, Australia and Canada; a US settlement restricting sales to private companies",
+  "exposed": ["Face images", "Source URLs linking each face to its original profile", "Clearview's own client list and search counts"],
+  "sortDate": "2020-01-18",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["facebook-scrape-2021", "cambridge-analytica-2018", "23andme-2023"],
+  "faq": [
+    { "q": "Is scraping public photos illegal?", "a": "It depends entirely on where you are, and the answer differs sharply between jurisdictions. Under GDPR and similar regimes, a photograph processed to identify a person is biometric data, and processing it needs a lawful basis that Clearview did not have — several European regulators said so explicitly and issued fines. In the United States there is no equivalent general rule, and enforcement has come through state biometric laws, notably Illinois' BIPA. Public and free to process are different questions." },
+    { "q": "What was actually breached at Clearview?", "a": "In February 2020, the company disclosed that an intruder had obtained its client list, along with the number of searches each client had run. Clearview described the flaw as fixed and said its database of images was not accessed. The significance was not technical: the company's defence had rested on being a responsible custodian trusted by law enforcement, and the list revealed private companies and individuals among the accounts." },
+    { "q": "Can I get my face removed?", "a": "It depends on where you live, and this is one of the clearest illustrations of privacy law being a geographic lottery. Residents of the EU, the UK and some other jurisdictions have deletion rights that regulators have ordered Clearview to honour. Residents of most US states have no comparable right. Illinois residents gained relief through the BIPA settlement. Everyone else is largely dependent on whichever regulator has authority over them." },
+    { "q": "Why does an OSINT site care about this?", "a": "Because it defines the boundary of the field. Open-source intelligence works from information that is public, and Clearview is the extreme case of what happens when public information is aggregated at scale and made searchable by face. The techniques are not exotic — scraping, indexing, matching. What distinguishes legitimate investigative work from this is purpose, consent and proportionality, not technical capability." }
+  ],
+  "sources": [
+    { "label": "Information Commissioner's Office — enforcement notice and monetary penalty, Clearview AI Inc., May 2022", "url": "https://ico.org.uk/action-weve-taken/enforcement/clearview-ai-inc-mpn/" },
+    { "label": "Office of the Privacy Commissioner of Canada — joint investigation findings, February 2021", "url": "https://www.priv.gc.ca/en/opc-news/news-and-announcements/2021/nr-c_210203/" },
+    { "label": "CNIL (France) — decision fining Clearview AI, October 2022" },
+    { "label": "ACLU v. Clearview AI, Illinois BIPA settlement, May 2022" }
+  ]
+}
+-->
+<p class="lead">Clearview AI did not steal anything. It collected photographs that were already publicly visible — from social media, from news sites, from employer pages and school listings — ran them through facial recognition, and built a search engine where the query is a face. Then somebody stole its client list, and the company found itself explaining a breach while arguing that what it did was not one.</p>
+
+<h2>What happened</h2>
+
+<p>From around 2017, Clearview AI ran automated collection across the public web, gathering images of faces along with the URLs they came from. That second part matters more than the first: the product is not a face database, it is a face-to-source index. Submit a photograph and it returns other images of the same person, each linked to the page it appeared on — which is to say, to the person's name, employer, city and social accounts.</p>
+
+<p>The company sold access primarily to law enforcement agencies. By January 2020 it claimed over three billion images. It later reported holding more than thirty billion.</p>
+
+<p>Its existence became widely known through a New York Times investigation published on 18 January 2020. Until then it had operated with almost no public profile despite having been used in thousands of investigations.</p>
+
+<p>Three weeks later, in February 2020, Clearview disclosed that an intruder had obtained its customer list and the number of searches each customer had run.</p>
+
+<div class="callout">
+  <p><strong>Why aggregation changes the nature of public data.</strong> Each photograph Clearview collected was visible to anyone who looked. The objection is not to any single image; it is that assembling billions of them into a searchable index creates a capability that did not previously exist. Before, identifying a stranger from a photograph required knowing where to look. After, it requires uploading the photograph. European regulators grounded their decisions in exactly this: the images were public, the processing was not, and it is processing that data protection law governs.</p>
+</div>
+
+<h2>The regulators</h2>
+
+<p>What followed is one of the clearest demonstrations that jurisdiction, not technology, determines privacy outcomes.</p>
+
+<ol class="cf-timeline">
+  <li><b>Canada, February 2021</b> — Federal and provincial privacy commissioners find the collection to be mass surveillance and unlawful, and call on the company to delete Canadians' images.</li>
+  <li><b>United Kingdom, May 2022</b> — The ICO issues a fine of over £7.5 million and orders deletion of UK residents' data. Clearview appeals on jurisdictional grounds, and the question of whether UK law reaches a US company serving only foreign law enforcement has been litigated since.</li>
+  <li><b>France, Italy and Greece, 2022</b> — Each regulator issues a fine of €20 million and orders deletion.</li>
+  <li><b>Australia, 2021</b> — The Information Commissioner finds the collection breached Australian privacy law and orders destruction of the images.</li>
+  <li><b>United States, May 2022</b> — A settlement in the Illinois BIPA litigation bars Clearview from selling access to most private companies and individuals nationwide, and restricts sales to Illinois state entities.</li>
+</ol>
+
+<p>Collecting fines and collecting money are different things. Enforcement against a company with no assets or presence in the fining jurisdiction is difficult, and several of these penalties have been contested or remain unpaid. The orders nonetheless established the legal position across much of the democratic world.</p>
+
+<h2>The client list</h2>
+
+<p>The February 2020 intrusion took no faces. It took the customer list and per-client search counts, and it was damaging for a reason that had nothing to do with information security.</p>
+
+<p>Clearview's public position was that it was a tool for law enforcement, used by trained investigators under supervision. Reporting on the leaked list, and on related material, described accounts extending beyond that: private companies, and individual users running searches. Whether any particular use was improper is contested. The structural point is not — a company whose safety case rests on who its customers are has made its customer list a security-critical asset, and it had not protected it like one.</p>
+
+<h2>What it changed</h2>
+
+<p><strong>Facial recognition acquired a specific legal shape.</strong> Before Clearview the debate was abstract. Afterwards there were decisions, with reasoning, from at least six national regulators, all reaching a similar conclusion about scraped biometric data. That body of decisions is now the reference point for every new entrant.</p>
+
+<p><strong>Platforms tried to enforce their terms and mostly could not.</strong> Facebook, Google, Twitter, YouTube and LinkedIn all sent cease-and-desist letters. Scraping at this scale is hard to distinguish from ordinary traffic, and the legal position on scraping public pages in the US has been, at best, unsettled. Terms of service turned out to be a weak instrument.</p>
+
+<p><strong>It sharpened where open-source investigation stops.</strong> The methods are shared with legitimate research and journalism. What separates them is purpose, proportionality and consent — and this case forced practitioners to articulate that distinction rather than assume it.</p>
+
+<p><strong>Biometric identifiers were confirmed as unrevocable.</strong> A leaked password is changed in a minute. A face is not. This is the argument for treating biometric data as categorically different, and it is now written into law in most of Europe and in a growing number of US states.</p>
+
+<h2>What you can actually do</h2>
+
+<ol class="bx-actions">
+  <li><strong>Check whether your jurisdiction gives you a deletion right.</strong> In the EU, the UK and several other countries you can make a subject access and erasure request to Clearview directly. In most of the US you cannot.</li>
+  <li><strong>Audit which photos of you are public.</strong> Profile pictures remain visible on most platforms regardless of other privacy settings, and they are the highest-quality training images of you that exist.</li>
+  <li><strong>Remember that other people post you too.</strong> Group photos, event pages, employer bios and school listings are outside your settings entirely, and they are a substantial share of what scrapers collect.</li>
+  <li><strong>Do not rely on obscurity.</strong> The premise that a photo among billions is effectively anonymous is exactly the premise this technology removed.</li>
+</ol>

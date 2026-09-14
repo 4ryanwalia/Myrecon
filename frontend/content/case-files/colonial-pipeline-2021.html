@@ -1,0 +1,88 @@
+<!--
+{
+  "headline": "Colonial Pipeline, 2021: one leaked password, and the fuel stopped",
+  "seoTitle": "Colonial Pipeline Ransomware 2021: One VPN Password",
+  "subject": "Colonial Pipeline ransomware attack",
+  "kicker": "2021 · Energy",
+  "description": "A disused VPN account with no second factor let ransomware into the company that supplies nearly half the US East Coast's fuel. The pipeline stopped for six days.",
+  "cardBlurb": "Not a breach of personal data — a breach of everyday life. The case that turned ransomware from an IT problem into a national security one.",
+  "records": "Operational shutdown; a limited number of personal records also taken",
+  "occurred": "6–7 May 2021",
+  "disclosed": "8 May 2021",
+  "vector": "A legacy VPN account with no multi-factor authentication, using a password found in a breach dump",
+  "actor": "The DarkSide ransomware group",
+  "cost": "A $4.4 million ransom, of which about $2.3 million was later recovered by the FBI",
+  "exposed": ["Business systems and billing data", "Personal data of a small number of individuals"],
+  "sortDate": "2021-05-08",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["change-healthcare-2024", "moveit-2023", "medibank-2022"],
+  "faq": [
+    { "q": "Did hackers take control of the pipeline?", "a": "No. The ransomware hit the business IT network, including billing systems. Colonial shut the pipeline itself as a precaution, because it could not reliably bill for fuel it delivered and could not be certain the intrusion had not reached operational systems. The physical shutdown was a business and safety decision, not a hijacking." },
+    { "q": "How did the attackers get in?", "a": "Through a virtual private network account that was no longer in active use and was not protected by multi-factor authentication. The password appeared in a batch of leaked credentials, suggesting it had been reused elsewhere and harvested from an unrelated breach. One dormant account, one reused password, no second factor." },
+    { "q": "Did Colonial pay?", "a": "Yes — around $4.4 million in bitcoin, within hours. The decryption tool provided in return worked so slowly that the company largely restored from its own backups anyway. In June 2021 the US Department of Justice announced it had seized about $2.3 million of the payment." },
+    { "q": "Why did petrol stations run dry if the pipeline restarted in six days?", "a": "Panic buying. The shortages across the south-eastern United States were driven mainly by consumers filling every container they could find, not by the volume of fuel lost. It is a useful reminder that the second-order effects of an incident can be larger than the incident." }
+  ],
+  "sources": [
+    { "label": "Testimony of Colonial Pipeline CEO Joseph Blount before US Senate and House committees, June 2021" },
+    { "label": "US Department of Justice — seizure of ransom proceeds, June 2021", "url": "https://www.justice.gov/opa/pr/department-justice-seizes-23-million-cryptocurrency-paid-ransomware-extortionists-darkside" },
+    { "label": "Transportation Security Administration security directives for pipeline owners and operators, 2021" }
+  ]
+}
+-->
+<p class="lead">On 7 May 2021, a ransomware group encrypted the business systems of a company most Americans had never heard of. Within days, petrol stations across the south-eastern United States had bags over their pumps, airlines were rerouting to refuel, and the president was giving press conferences about fuel supply. The way in was a dormant VPN account with a reused password and no second factor.</p>
+
+<h2>What happened</h2>
+
+<p>Colonial Pipeline moves refined fuel — petrol, diesel, jet fuel — from the Gulf Coast to the eastern United States, supplying a large share of the region's consumption. It is private infrastructure performing a public function, which is a description that fits a great deal of what modern countries run on.</p>
+
+<p>The DarkSide ransomware group obtained credentials for a virtual private network account that was no longer in active use. The account had no multi-factor authentication. The password, according to the subsequent investigation, appeared in a set of leaked credentials — the signature of password reuse, where a password harvested from an unrelated breach is tried against corporate remote access.</p>
+
+<p>They entered, moved through the IT environment, exfiltrated data and deployed ransomware against business systems including billing. Colonial discovered the attack on the morning of 7 May and shut down pipeline operations.</p>
+
+<div class="callout">
+  <p><strong>The shutdown was not the hack.</strong> This distinction gets lost constantly. Nobody took control of valves or pumps. The pipeline stopped because the company could not bill for deliveries and could not immediately prove the intrusion had not reached the operational side of the business. In an environment where IT and operational technology are connected in ways nobody has fully mapped, "we are not sure how far this goes" resolves to "stop".</p>
+</div>
+
+<h2>The ransom, and the recovery of it</h2>
+
+<p>Colonial paid roughly $4.4 million in bitcoin within hours of the attack. The chief executive later told Congress it was the hardest decision of his career and that he authorised it because he did not know how long restoration would take.</p>
+
+<p>The decryptor DarkSide supplied was so slow that the company relied largely on its own backups regardless — a common outcome, and a reason paying is a worse bet than it looks in the moment.</p>
+
+<p>What happened next was more interesting. In June 2021 the Department of Justice announced it had seized about 63.7 bitcoin, then worth roughly $2.3 million, from the ransom wallet. It demonstrated publicly that cryptocurrency payments are traceable and, with the right access, recoverable — and it marked the start of a US policy of pursuing the money rather than only the intruders.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>29 April 2021</b> — The dormant VPN account is used to gain access.</li>
+  <li><b>6 May 2021</b> — Roughly 100GB of data is exfiltrated.</li>
+  <li><b>7 May 2021</b> — Ransomware is deployed; Colonial halts pipeline operations; the ransom is paid the same day.</li>
+  <li><b>9 May 2021</b> — A regional emergency declaration relaxes fuel transport rules; panic buying begins.</li>
+  <li><b>12 May 2021</b> — Pipeline operations restart; supply normalises over the following days.</li>
+  <li><b>7 June 2021</b> — The Department of Justice announces the seizure of about $2.3 million of the payment.</li>
+  <li><b>Mid-2021</b> — The TSA issues the first mandatory cybersecurity directives for pipeline operators.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Critical infrastructure security became mandatory rather than voluntary.</strong> Pipeline cybersecurity in the United States had been governed by guidance. Within weeks, the Transportation Security Administration issued binding directives requiring incident reporting, a cybersecurity coordinator, vulnerability assessment and remediation plans. Industry pushback was substantial and the directives were revised, but the principle — that this is regulated safety, not discretionary IT spending — held.</p>
+
+<p><strong>Ransomware became a national security matter.</strong> The attack reframed the problem for governments: a criminal group with no political objective had produced fuel queues in a G7 country. Sanctions, disruption operations against ransomware infrastructure, and diplomatic pressure on jurisdictions harbouring these groups all accelerated from this point.</p>
+
+<p><strong>Dormant accounts got audited.</strong> The specific technical lesson is embarrassingly small next to the consequences. Disable accounts when people leave. Require multi-factor authentication on every remote access path, including the legacy one nobody uses. Check corporate credentials against breach corpora, because your employees reuse passwords and the evidence of it is published.</p>
+
+<h2>The uncomfortable arithmetic</h2>
+
+<p>Every element of this attack was ordinary. Commodity ransomware bought as a service. A credential probably harvested from a breach dump. An account someone forgot to disable. No zero-day, no nation-state, no novel technique.</p>
+
+<p>That is the part worth carrying forward. The gap between "ordinary attack" and "national fuel emergency" was not attacker sophistication; it was a set of routine controls that had not been applied to a legacy corner of one company's network. Most infrastructure operators, examined honestly, have that corner.</p>
+
+<h2>What to take from it</h2>
+
+<ol class="bx-actions">
+  <li><strong>If you administer anything: inventory every remote access path and put MFA on all of them.</strong> Including the ones you think are unused — those are the ones that get used.</li>
+  <li><strong>Check corporate email domains against breach corpora.</strong> Reused employee passwords are visible in public data long before they are used against you.</li>
+  <li><strong>Decide the payment question before you need to answer it</strong>, in writing, with legal and executive input. Colonial's chief executive made a multi-million dollar decision in hours with no prepared position.</li>
+  <li><strong>As an individual, the lesson is the same as always:</strong> the password you reused at work came from somewhere — <a href="/guides/strong-passwords-guide.html">how to stop that being true of you</a>.</li>
+</ol>

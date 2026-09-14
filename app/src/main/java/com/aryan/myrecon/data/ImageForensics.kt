@@ -35,6 +35,12 @@ object ImageForensics {
         /** What this file discloses about the person who made it. */
         val leaks: List<Leak>,
         val cleanCopy: CleanCopyPlan,
+        /** How the file was compressed, which survives metadata being stripped. */
+        val jpeg: JpegStructure.Report,
+        /** The eight-pixel trace compression leaves in the pixels themselves. */
+        val grid: BlockGrid.Result?,
+        /** Everything above, weighed into an answer about AI and about editing. */
+        val origin: OriginCheck.Verdict,
     )
 
     /**
@@ -149,10 +155,42 @@ object ImageForensics {
                 exifInterface, hashes.phash, bounds.outWidth, bounds.outHeight,
             )
             val cleanCopy = cleanCopyPlan(bytes)
+            val jpeg = JpegStructure.analyse(bytes)
+            val grid = blockGrid(bytes, bounds.outWidth, bounds.outHeight)
+            val name = displayName(context, uri)
+
+            val origin = OriginCheck.of(
+                OriginCheck.Evidence(
+                    fileName = name,
+                    container = provenance.container,
+                    width = bounds.outWidth,
+                    height = bounds.outHeight,
+                    declared = provenance.origin,
+                    contentCredentials = provenance.contentCredentials,
+                    generator = provenance.generator,
+                    editHistory = provenance.editHistory,
+                    derivedFrom = provenance.derivedFrom,
+                    creatorTool = provenance.creatorTool,
+                    exifPresent = exif.present,
+                    cameraMake = exif.make,
+                    cameraModel = exif.model,
+                    software = exif.software,
+                    serial = exif.serial,
+                    hasGps = exif.gps.present,
+                    captureSettings = listOfNotNull(
+                        exif.iso, exif.aperture, exif.exposure, exif.focalLength,
+                    ).size,
+                    capturedAt = exif.capturedAt,
+                    modifiedAt = exif.modifiedAt,
+                    jpeg = jpeg,
+                    thumbnail = thumbnail.verdict,
+                    grid = grid,
+                )
+            )
 
             Report(
                 file = FileFacts(
-                    name = displayName(context, uri),
+                    name = name,
                     mime = bounds.outMimeType ?: resolver.getType(uri),
                     sizeBytes = bytes.size.toLong(),
                     width = bounds.outWidth,
@@ -162,16 +200,74 @@ object ImageForensics {
                 ),
                 exif = exif,
                 hashes = hashes,
-                signals = signalsFor(
-                    exif, bounds.outMimeType, bounds.outWidth, bounds.outHeight, thumbnail,
-                ),
+                signals = signalsFor(exif, bounds.outMimeType, bounds.outWidth, bounds.outHeight),
                 provenance = provenance,
                 thumbnail = thumbnail,
                 leaks = leaksFor(exif, provenance, cleanCopy),
                 cleanCopy = cleanCopy,
+                jpeg = jpeg,
+                grid = grid,
+                origin = origin,
             )
         }
     }
+
+    // ── The compression trace in the pixels ──────────────────────
+
+    /**
+     * Measure the eight-pixel grid on a square cut out of the middle.
+     *
+     * Two details decide whether this works at all. The crop is decoded at full
+     * resolution, because scaling averages neighbouring pixels together and
+     * that is precisely the difference being measured — a downsampled image has
+     * no grid left to find. And both the origin and the size are snapped to
+     * multiples of eight, so an offset grid stays offset by the same amount
+     * inside the crop; land the crop on an odd pixel and every picture looks
+     * cropped.
+     *
+     * The middle is taken rather than the corner because corners are where
+     * pictures put sky, blur and vignette, and a region with no detail in it
+     * cannot answer the question.
+     */
+    private fun blockGrid(bytes: ByteArray, width: Int, height: Int): BlockGrid.Result? {
+        return runCatching {
+            val span = (minOf(GRID_SPAN, width, height) / 8) * 8
+            if (span < GRID_MIN) return null
+            val left = (((width - span) / 2) / 8) * 8
+            val top = (((height - span) / 2) / 8) * 8
+
+            @Suppress("DEPRECATION")
+            val decoder = android.graphics.BitmapRegionDecoder
+                .newInstance(bytes, 0, bytes.size, false) ?: return null
+            val bitmap = try {
+                decoder.decodeRegion(
+                    android.graphics.Rect(left, top, left + span, top + span),
+                    BitmapFactory.Options().apply { inPreferredConfig = Bitmap.Config.ARGB_8888 },
+                )
+            } finally {
+                decoder.recycle()
+            } ?: return null
+
+            try {
+                val pixels = IntArray(span * span)
+                bitmap.getPixels(pixels, 0, span, 0, 0, span, span)
+                BlockGrid.analyse(IntArray(pixels.size) { luma(pixels[it]) }, span, span)
+            } finally {
+                bitmap.recycle()
+            }
+        }.getOrNull()
+    }
+
+    /** Rec. 601 luma, matching the weighting the perceptual hashes use. */
+    private fun luma(pixel: Int): Int {
+        val r = (pixel shr 16) and 0xFF
+        val g = (pixel shr 8) and 0xFF
+        val b = pixel and 0xFF
+        return (r * 299 + g * 587 + b * 114) / 1000
+    }
+
+    private const val GRID_SPAN = 512
+    private const val GRID_MIN = 128
 
     // ── EXIF ─────────────────────────────────────────────────────
 
@@ -451,39 +547,22 @@ object ImageForensics {
 
     // ── Provenance ───────────────────────────────────────────────
 
+    /**
+     * The leftovers: facts worth stating that are nobody else's job.
+     *
+     * Anything bearing on "was this made by AI" or "has this been edited" now
+     * belongs to [OriginCheck], which weighs it against the evidence pointing
+     * the other way and shows its working. Repeating those findings here would
+     * put the same sentence on screen twice in two different tones of voice,
+     * and the second copy would carry none of the reasoning.
+     */
     private fun signalsFor(
         exif: Exif,
         mime: String?,
         width: Int,
         height: Int,
-        thumbnail: ThumbnailCheck,
     ): List<Signal> {
         val out = mutableListOf<Signal>()
-
-        when (thumbnail.verdict) {
-            Match.Mismatch -> out += Signal(
-                "The thumbnail does not match the photo",
-                "Cameras save a tiny preview of the picture at the moment it is taken. " +
-                    "Editing apps update the photo but usually forget the preview — so when " +
-                    "the two show different things, it is a strong sign the photo was " +
-                    "changed after it was taken.",
-                "high",
-            )
-            Match.Cropped -> out += Signal(
-                "Cropped after it was taken",
-                "The tiny preview saved by the camera is a different shape from the photo " +
-                    "itself, which means the edges were trimmed off later.",
-                "medium",
-            )
-            Match.Consistent -> out += Signal(
-                "The thumbnail still matches",
-                "The tiny preview the camera saved still looks like the photo, so there is " +
-                    "no sign it was edited afterwards. A careful editing app could update " +
-                    "both, so this is reassuring rather than proof.",
-                "low",
-            )
-            Match.Inconclusive, Match.NoThumbnail -> Unit
-        }
 
         if (!exif.present) {
             out += Signal(
@@ -501,33 +580,6 @@ object ImageForensics {
                     "There are some hidden details, but no camera make or model. That usually " +
                         "means the picture was opened and saved again by an app rather than " +
                         "coming straight off a phone or camera.",
-                    "medium",
-                )
-            }
-            exif.software?.let {
-                out += Signal(
-                    "Edited or re-saved by an app",
-                    "The file names \"$it\" as the app that last wrote it, so it did not come " +
-                        "straight from a camera.",
-                    "high",
-                )
-            }
-            exif.serial?.let {
-                out += Signal(
-                    "The camera's serial number is in here",
-                    "This is the unique number of one physical camera, and it stays in the " +
-                        "file through every copy. Two photos with the same number came from " +
-                        "the same camera.",
-                    "high",
-                )
-            }
-            if (exif.capturedAt != null && exif.modifiedAt != null &&
-                exif.capturedAt != exif.modifiedAt
-            ) {
-                out += Signal(
-                    "Changed after it was taken",
-                    "Taken on ${exif.capturedAt}, but last saved on ${exif.modifiedAt}. " +
-                        "Something opened it and saved it again in between.",
                     "medium",
                 )
             }

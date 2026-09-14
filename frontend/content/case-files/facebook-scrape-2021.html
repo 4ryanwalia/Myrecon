@@ -1,0 +1,84 @@
+<!--
+{
+  "headline": "Facebook, 2021: 533 million phone numbers that were never \"hacked\"",
+  "seoTitle": "Facebook 533 Million Leak: Scraping, Not Hacking",
+  "subject": "Facebook 533 million record scrape",
+  "kicker": "2021 · Social network",
+  "description": "Facebook was right that nobody broke in. Attackers abused a feature working as designed to match hundreds of millions of phone numbers to real profiles.",
+  "cardBlurb": "A feature, not a flaw — until it produced a free file of 533 million phone numbers matched to names. The case that made scraping a regulatory matter.",
+  "records": "533 million users across 106 countries",
+  "peopleCount": 533000000,
+  "occurred": "Before September 2019",
+  "disclosed": "Data sold in 2020; published free in April 2021",
+  "vector": "Abuse of the contact importer feature to match bulk phone numbers to profiles",
+  "actor": "Unknown; the file was eventually posted publicly at no cost",
+  "cost": "€265 million fine from Ireland's Data Protection Commission",
+  "exposed": ["Phone numbers", "Facebook IDs", "Names", "Genders", "Locations", "Relationship statuses", "Employers", "Some email addresses and dates of birth"],
+  "sortDate": "2021-04-03",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["twitter-2022", "linkedin-2012", "national-public-data-2024"],
+  "faq": [
+    { "q": "Was Facebook hacked in 2021?", "a": "No, and the distinction is real even though it sounds like an excuse. No system was broken into and no password was stolen. The contact importer — a feature that matched phone numbers in your address book to Facebook profiles — was queried at enormous scale with generated numbers instead of real contacts, which turned a convenience feature into a lookup service for the entire user base." },
+    { "q": "Why does scraped data still matter?", "a": "Because the harm to the person is identical. A file that maps your phone number to your real name, employer and location supports SIM-swap attacks, targeted phishing and account recovery abuse regardless of whether it was obtained by intrusion or by abuse of a feature. \"Publicly accessible\" and \"harmless in bulk\" are not the same claim." },
+    { "q": "Can I change a leaked phone number?", "a": "You can, and it is disruptive — every account using it for recovery or two-factor codes has to be updated. For most people the better response is to remove the number as a recovery method where an app-based or hardware authenticator is available, and to set a port-out PIN with the mobile operator to make SIM-swapping harder." },
+    { "q": "Was Facebook fined?", "a": "Yes. Ireland's Data Protection Commission fined Meta €265 million in November 2022, finding a failure of data protection by design and by default — that is, a failure to build the feature in a way that anticipated this abuse — rather than a failure to prevent an intrusion." }
+  ],
+  "sources": [
+    { "label": "Irish Data Protection Commission — inquiry decision and €265 million fine, November 2022", "url": "https://www.dataprotection.ie/en/news-media/press-releases" },
+    { "label": "Meta statement, \"How We Combat Scraping\", April 2021" },
+    { "label": "Have I Been Pwned — Facebook scrape record", "url": "https://haveibeenpwned.com/PwnedWebsites#Facebook" }
+  ]
+}
+-->
+<p class="lead">On 3 April 2021, a file containing records for 533 million Facebook users across 106 countries was posted on a hacking forum for free. It had been sold privately the year before. Facebook's response was that this was old scraped data, not a breach — and the company was technically correct, which is precisely why the case is interesting.</p>
+
+<h2>What the contact importer did</h2>
+
+<p>Facebook, like most social networks, offered a contact importer: upload your address book and the service tells you which of your contacts are on Facebook so you can add them. It is a genuinely useful feature, and it works by matching a phone number to a profile.</p>
+
+<p>That matching function is the whole vulnerability. If a system will tell you which profile belongs to a phone number, then someone who submits every possible phone number gets a complete map of numbers to profiles. Attackers did not need to guess intelligently; mobile number ranges are structured and finite, and the importer accepted bulk queries.</p>
+
+<div class="callout">
+  <p><strong>This is an enumeration problem, not a hacking one.</strong> Nothing was bypassed. Every query was a legitimate, authorised use of a working feature. The failure was in the design: a lookup that is harmless for a hundred contacts is a directory when it is answered a hundred million times, and the feature had no rate limiting, cost, or abuse detection sufficient to notice the difference.</p>
+</div>
+
+<p>Facebook says it changed the feature in September 2019, after the abuse was identified. The data in the 2021 file predates that fix.</p>
+
+<h2>Why "it's only scraping" is the wrong defence</h2>
+
+<p>Meta's position was that the information was public profile data and no systems were compromised. Both halves are accurate. It still misses the point, for three reasons.</p>
+
+<p><strong>Aggregation changes the nature of the data.</strong> Your name is not secret. Your employer is not secret. Your phone number may be known to hundreds of people. A file in which all three are joined for half a billion people is a different object from any of those facts individually, and it is one nobody consented to.</p>
+
+<p><strong>The phone number is the pivot.</strong> A mobile number is the recovery mechanism for email accounts, banks and messaging apps. Tied to a verified real name, it is the raw material for SIM-swap fraud, in which an attacker persuades a mobile operator to move the number to their own SIM and then resets everything that sends codes to it.</p>
+
+<p><strong>Regulators did not accept the distinction either.</strong> Ireland's Data Protection Commission fined Meta €265 million in November 2022 — not for failing to stop an intrusion, but for failing to design the feature with data protection built in. Under the GDPR, "the feature worked as intended" is not exculpatory if the intended behaviour foreseeably exposed people's data at scale.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Before September 2019</b> — The contact importer is abused at scale to match phone numbers to profiles.</li>
+  <li><b>September 2019</b> — Facebook says it changed the feature to prevent this use.</li>
+  <li><b>2020</b> — The resulting dataset is sold privately, including through an automated bot service.</li>
+  <li><b>3 April 2021</b> — The full file — 533 million records, 106 countries — is published free on a hacking forum.</li>
+  <li><b>April 2021</b> — Meta publishes a statement describing the data as scraped and previously reported; Have I Been Pwned loads the phone numbers.</li>
+  <li><b>November 2022</b> — The Irish Data Protection Commission fines Meta €265 million.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Scraping became a compliance category.</strong> Before this case, bulk collection of public profile data sat in a grey zone: uncomfortable, but not obviously anyone's regulatory problem. The Irish decision put the obligation on the platform to design against enumeration, and every major network has since added friction to contact-matching, search-by-number and profile-lookup features.</p>
+
+<p><strong>Phone numbers lost their status as a trusted identifier.</strong> The security community had been arguing against SMS as a second factor for years on interception and SIM-swap grounds. A free file of half a billion verified number-to-identity mappings made the argument concrete, and accelerated the shift to authenticator apps and passkeys.</p>
+
+<p><strong>"Not a breach" stopped being a useful public statement.</strong> It is technically meaningful and rhetorically useless: the person whose number is in the file does not care about the taxonomy. Communications teams learned — slowly — that arguing about the definition reads as evasion regardless of accuracy.</p>
+
+<h2>If your number was in it</h2>
+
+<ol class="bx-actions">
+  <li><strong>Set a port-out PIN or account lock with your mobile operator.</strong> This is the single control that most reduces SIM-swap risk, it is free, and almost nobody does it.</li>
+  <li><strong>Move two-factor authentication off SMS</strong> wherever an authenticator app, passkey or hardware key is offered — <a href="/guides/two-factor-authentication.html">the comparison in practical terms</a>.</li>
+  <li><strong>Check what your own profiles expose by default.</strong> The file was assembled from data people did not realise was queryable — <a href="/guides/social-media-privacy.html">the settings that leak most</a>.</li>
+  <li><strong>Expect messaging-app targeting.</strong> A verified number attached to a real name and employer is what makes a WhatsApp or SMS approach convincing. Treat any unexpected contact claiming to be a person you know as unverified until confirmed by another channel.</li>
+</ol>

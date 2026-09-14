@@ -1,0 +1,95 @@
+<!--
+{
+  "headline": "VTech, 2015: six million children in a toy company's database",
+  "seoTitle": "VTech Breach 2015: When Children's Data Leaked",
+  "subject": "VTech data breach",
+  "kicker": "2015 · Children's data",
+  "description": "A breach of a children's tablet maker exposed 6.4 million child profiles, along with chat logs and photographs. The attacker's stated motive was to prove it was possible.",
+  "cardBlurb": "Names, dates of birth, genders and the parents they linked to. For some children, also the photographs and messages they had sent.",
+  "records": "Around 4.9 million parent accounts and 6.4 million child profiles",
+  "peopleCount": 6400000,
+  "occurred": "14 November 2015",
+  "disclosed": "27 November 2015",
+  "vector": "SQL injection against the Learning Lodge app store, with passwords protected only by unsalted MD5 and security answers stored in plain text",
+  "actor": "An individual who gave the data to a journalist rather than selling it; a related arrest was made in the UK",
+  "cost": "$650,000 FTC settlement in 2018 over children's privacy violations",
+  "exposed": ["Children's names", "Dates of birth", "Genders", "Parents' names and addresses", "Email addresses", "Password hashes and plain-text security answers", "Chat logs and photographs from Kid Connect"],
+  "sortDate": "2015-11-27",
+  "published": "2026-09-14",
+  "updated": "2026-09-14",
+  "related": ["ashley-madison-2015", "talktalk-2015", "23andme-2023"],
+  "faq": [
+    { "q": "Why is children's data treated as a special category?", "a": "Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service." },
+    { "q": "What actually made this breach so bad technically?", "a": "Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection — such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit." },
+    { "q": "What did the attacker do with the data?", "a": "Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful — an arrest followed in the UK — but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested." },
+    { "q": "Did VTech face consequences?", "a": "The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites." }
+  ],
+  "sources": [
+    { "label": "Federal Trade Commission — Electronic toy maker VTech settles FTC allegations, January 2018", "url": "https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-us-law" },
+    { "label": "Troy Hunt — analysis of the VTech data, November 2015", "url": "https://www.troyhunt.com/when-children-are-breached-inside/", "note": "the independent technical assessment of what was exposed" },
+    { "label": "Motherboard reporting on the breach and interviews with the attacker, November 2015" },
+    { "label": "VTech Holdings Limited public statements and FAQ, November–December 2015" }
+  ]
+}
+-->
+<p class="lead">Most breach write-ups can tell you what the victims should do next. This one largely cannot, because the victims were four, six and nine years old, and the identifiers that leaked are ones they will carry for the rest of their lives.</p>
+
+<h2>What happened</h2>
+
+<p>VTech makes electronic learning toys — tablets and devices aimed at young children. Around them it ran online services: Learning Lodge, an app store for downloading content to the devices, and Kid Connect, a messaging feature that let children exchange text, voice messages and photographs with their parents.</p>
+
+<p>On 14 November 2015, an attacker used SQL injection against Learning Lodge to reach the database behind it. The compromise was disclosed on 27 November after the attacker contacted a journalist.</p>
+
+<p>The database held about 4.9 million parent accounts and 6.4 million child profiles. The parent records contained names, postal addresses, email addresses, download history, IP addresses, password hashes and — stored in plain text — the answers to their security questions. The child profiles contained names, dates of birth and genders, each linked to the parent account.</p>
+
+<p>Because the parent and child records were linked, the dataset resolved to something more specific than either: a named child, their age, and the home address they live at.</p>
+
+<p>For a subset of users, Kid Connect data was also exposed, including photographs children had taken and messages they had exchanged.</p>
+
+<div class="callout">
+  <p><strong>The technical findings were all in the category of long-settled.</strong> SQL injection had been comprehensively documented for seventeen years by 2015. Unsalted MD5 password hashing had been unacceptable for roughly a decade — such hashes fall in bulk on commodity hardware almost immediately. Storing security question answers in plain text defeats the purpose of having them, since the recovery mechanism becomes readable to anyone who reaches the table. None of these required a sophisticated attacker to find, and none required expertise to avoid.</p>
+</div>
+
+<h2>The attacker who did not sell it</h2>
+
+<p>What happened next is the reason the harm was contained. The attacker did not publish the data, did not offer it for sale, and did not extort the company. They provided it to a journalist at Motherboard, stating that the intent was to demonstrate how badly it had been protected. Troy Hunt, who runs Have I Been Pwned, examined the data independently and published a detailed technical assessment.</p>
+
+<p>The dataset did not, as far as is known, enter the criminal market. An arrest was made in the UK.</p>
+
+<p>The uncomfortable observation is that the difference between this being a footnote and being a decade-long identity fraud problem for millions of children was the personal choice of one person who had already broken the law. Nothing VTech did produced that outcome. It is the least reliable control imaginable, and in this instance it was the only one that operated.</p>
+
+<h2>The terms of service</h2>
+
+<p>In the weeks after the breach, VTech amended its terms of service. The revised language stated that users acknowledged and agreed that any information transmitted to its sites might not be secure, and assumed the risk of it being accessed by unauthorised parties.</p>
+
+<p>The reaction was severe and largely on one point: a company cannot contract out of its obligation to secure children's data, and attempting to do so shortly after failing to secure children's data reads as a statement of intent rather than a legal precaution. Regulators in several jurisdictions took note, and the clause became a widely cited example of what not to do after an incident.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>14 November 2015</b> — SQL injection against Learning Lodge gives access to the database.</li>
+  <li><b>23 November 2015</b> — The attacker contacts a journalist and provides the data.</li>
+  <li><b>27 November 2015</b> — VTech confirms the breach and suspends affected services.</li>
+  <li><b>30 November 2015</b> — Independent analysis establishes that child profiles, photographs and chat logs were included, and documents the password and security-answer failures.</li>
+  <li><b>December 2015</b> — An arrest is made in the UK; VTech amends its terms of service, drawing widespread criticism.</li>
+  <li><b>January 2018</b> — The FTC settles with VTech for $650,000 over children's privacy violations.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p><strong>Connected toys became a regulated category.</strong> The FTC action was an early signal that the Children's Online Privacy Protection Act applied to a toy manufacturer's cloud services just as it applies to a website. Regulators in Europe and elsewhere began examining connected toys specifically, and several products were subsequently withdrawn or banned in individual countries.</p>
+
+<p><strong>It established the argument for data minimisation about children.</strong> The strongest question in the aftermath was not how the attacker got in. It was why a company selling tablets needed to hold a child's date of birth, gender and photographs on a server at all, indefinitely, to deliver an app store.</p>
+
+<p><strong>Parents learned that the account is the attack surface.</strong> The device is not usually the risk. The account created to set it up is, along with the vendor's cloud service behind it, and that is now the standard advice for every connected product bought for a child.</p>
+
+<p><strong>It has aged badly in the right way.</strong> Children exposed in 2015 are in their late teens and twenties now. Their names, dates of birth and childhood addresses were published — briefly and in a contained fashion, but published. Long-tail harm from children's data breaches is inherently hard to measure, and this case is the reason people started trying to.</p>
+
+<h2>What parents can do</h2>
+
+<ol class="bx-actions">
+  <li><strong>Give a connected toy the minimum it will accept.</strong> A nickname rather than a full name, an approximate date of birth where the service only uses it for age banding, and an email alias rather than your main address.</li>
+  <li><strong>Never reuse a household password on a toy or children's service.</strong> These are among the least well-secured consumer services in existence, and this case is the proof.</li>
+  <li><strong>Check whether the messaging feature stores anything centrally.</strong> If a child can send a photograph through the product, that photograph is on a server somewhere with a retention policy you have not read.</li>
+  <li><strong>Where a jurisdiction gives children deletion rights, use them when a device is retired.</strong> The account usually outlives the toy by many years, and nobody goes back to close it.</li>
+</ol>
