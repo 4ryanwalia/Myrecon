@@ -580,7 +580,7 @@
   }
 
   function emptyState(msg) {
-    return `<div class="empty"><h3>Nothing found</h3><p>${esc(msg)}</p></div>`;
+    return `<div class="empty"><p class="empty-title">Nothing found</p><p>${esc(msg)}</p></div>`;
   }
 
   // ---------------------------------------------------------------- pivoting
@@ -1250,7 +1250,7 @@
     return `<div class="empty">
       <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-      <h3>Ready when you are</h3><p>Pick a tool, enter a target, and MyRecon will gather open-source intelligence from reliable public sources.</p>
+      <p class="empty-title">Ready when you are</p><p>Pick a tool, enter a target, and MyRecon will gather open-source intelligence from reliable public sources.</p>
     </div>`;
   }
 

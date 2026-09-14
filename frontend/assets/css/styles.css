@@ -13,7 +13,11 @@
   --border-strong: #2c3c5a;
   --text: #e8eef7;
   --text-dim: #9aabc4;
-  --text-mute: #647089;
+  /* Was #647089: 3.85:1 on --bg and 3.49:1 on --surface, under the 4.5
+     WCAG AA needs for text this size. Lifted until it clears on --bg,
+     --surface and --surface-2 alike, while staying clearly dimmer than
+     --text-dim so the hierarchy is unchanged. */
+  --text-mute: #7d8aa3;
   --accent: #3b82f6;
   --accent-2: #2563eb;
   --ring: rgba(59, 130, 246, 0.40);
@@ -45,12 +49,24 @@
   --border-strong: #cbd5e1;
   --text: #0f172a;
   --text-dim: #475569;
-  --text-mute: #94a3b8;
+  --text-mute: #5f6f86;  /* was #94a3b8 — 2.56:1 on white */
   --accent: #2563eb;
   --accent-2: #1d4ed8;
   --ring: rgba(37, 99, 235, 0.35);
   --shadow: 0 18px 40px -20px rgba(15, 23, 42, 0.25);
   --shadow-sm: 0 6px 18px -12px rgba(15, 23, 42, 0.2);
+
+  /* The semantic colours were never given light-theme values, so the dark
+     palette's bright ones carried over onto a near-white background and were
+     used as TEXT in seventeen places — the exposure verdicts, the confidence
+     tags, the error box, the severity badges. Measured on white they ran
+     1.67:1 (warn), 1.92 (ok), 2.14 (info) and 2.69 (danger); the amber was
+     effectively invisible. These are the same hues darkened until each clears
+     4.5:1 on --bg, --surface and --surface-2 alike. */
+  --ok: #047857;
+  --warn: #b45309;
+  --danger: #be123c;
+  --info: #0369a1;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -208,7 +224,9 @@ button, input, select { font: inherit; color: inherit; }
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 14px 24px; border-radius: var(--radius-sm); border: none; cursor: pointer;
   font-weight: 700; font-size: 0.95rem; transition: transform 0.12s, box-shadow 0.18s, opacity 0.18s;
-  background: var(--accent); color: #ffffff; white-space: nowrap;
+  /* --accent-2, not --accent: white on #3b82f6 is 3.67:1, and .btn text is
+     15.2px, below the large-text threshold that would allow 3:1. */
+  background: var(--accent-2); color: #ffffff; white-space: nowrap;
 }
 .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px -10px var(--accent); }
 .btn:active { transform: translateY(0); }
@@ -219,7 +237,9 @@ button, input, select { font: inherit; color: inherit; }
 
 /* Buttons carry their own colour. Without this an `a.btn` can inherit the
    accent link colour and render blue-on-blue (invisible label). */
-a.btn, .btn-primary { background: var(--accent); color: #ffffff; }
+/* Same 3.67:1 problem as .btn — this rule was putting --accent back for
+   links styled as buttons and for the primary variant. */
+a.btn, .btn-primary { background: var(--accent-2); color: #ffffff; }
 a.btn-ghost, .btn-ghost { background: var(--surface-2); color: var(--text); }
 
 .opt-row { display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
@@ -466,7 +486,10 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
   border: 1px dashed var(--border); border-radius: var(--radius); background: var(--surface);
 }
 .empty svg { margin: 0 auto 14px; opacity: 0.5; }
-.empty h3 { color: var(--text); font-size: 1.05rem; margin-bottom: 6px; }
+/* Was .empty h3. These are UI status messages ("Ready when you are"),
+   not document headings, and an h3 here followed no h2 — an invalid
+   heading order on the homepage. Styling is identical. */
+.empty-title { color: var(--text); font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
 .error-box { border-color: color-mix(in srgb, var(--danger) 40%, transparent); color: var(--danger); border-style: solid; }
 
 /* Skeleton loading */

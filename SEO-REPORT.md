@@ -174,7 +174,7 @@ Chrome, default mobile throttling. Before = the branch at end of Phase 3.
 | | Before | After |
 |---|---|---|
 | Performance | 67 (65/67/67) | 68 (68/65/70) |
-| Accessibility | 91 | **100** |
+| Accessibility | 91 | **100 on all 15 URLs tested** |
 | Best Practices | 79 | 79 |
 | **SEO** | 100 | **100** |
 | CLS (Lighthouse, warm cache) | 0–0.007 | 0–0.007 |
@@ -184,8 +184,15 @@ Chrome, default mobile throttling. Before = the branch at end of Phase 3.
 **Read this honestly.** The Performance score did not move, and I am not going
 to claim it did — it is dominated by the AdSense third-party scripts, not by
 anything in this codebase. The genuine wins this phase are accessibility
-(91→100, zero failing audits) and the cold-load CLS, which Lighthouse's own run
-never saw because its cache was warm.
+(91→100) and the cold-load CLS, which Lighthouse's own run never saw because
+its cache was warm.
+
+**Correction to an earlier draft of this report.** The first version claimed
+"Accessibility 100, zero failing audits" on the strength of a single run
+against `/about.html`. That was not a safe generalisation: re-running across
+every template found `/` at 96 (colour contrast + an invalid heading order),
+`/breaches/suno.html` at 96, `/services.html` at 95 and `/deep-search.html` at
+95. Those are now genuinely fixed and 100 is verified per URL — see §10.
 
 | Weight | Value |
 |---|---|
@@ -474,9 +481,12 @@ picture and would need re-verifying if the canonical host ever changed.
    slots, which means Auto Ads injects units at runtime. That is the one CLS
    source I cannot reserve space for from here. If layout shift on production
    matters, switching to fixed, sized slots is the fix.
-8. **The `?v=8` cache-buster is stale** across CSS and JS even though both
-   changed in this pass. Bump it before deploying, or repeat visitors get the
-   old stylesheet until it revalidates.
+8. **~~The `?v=8` cache-buster is stale~~ — done.** Bumped to `?v=9` (and the
+   breach stylesheet `?v=1`→`?v=2`) across all 45 files plus the generator,
+   because every CSS and JS file changed in this pass. Worth knowing: the cache
+   key is still hand-maintained, so the next person to edit a stylesheet has to
+   remember. Content-hashing filenames at build time remains the real fix
+   (follow-up #6).
 9. **Keyword mapping correction.** My initial proposal gave
    `/deep-search.html` "osint people search". **That is wrong** — the page
    states name search is deliberately *not* offered. It is mapped to username
@@ -498,3 +508,116 @@ CHROME_PATH="/c/Program Files/Google/Chrome/Application/chrome.exe" \
 
 Run Lighthouse at least 3 times. Single runs on a loaded machine vary by 30
 points, which is how the one early "96" in this session happened.
+
+---
+
+## 10. Second pass — what a re-audit found
+
+The first pass verified accessibility against **one page** and generalised from
+it. Re-running every template found four more defects, one of them a regression
+introduced by this work. All are fixed and verified below.
+
+### 10.1 A regression this work introduced
+
+**The brand link's `aria-label` fix was being undone on every build.** Phase 2
+rewrote `aria-label="MyRecon home"` to `"MyRecon OSINT — home"` across the HTML
+— including the 14 generated breach articles — but the *generator template* in
+`scripts/build-breaches.js` still held the old string. The next
+`node scripts/build-breaches.js` wrote it straight back. Lighthouse caught it
+as `label-content-name-mismatch` on `/breaches/suno.html`.
+
+Fixed at the template. The general lesson applies to this repo: **editing
+generated output is always temporary** — only the generator counts.
+
+### 10.2 Colour contrast, in the theme nobody tested
+
+`--text-mute` (`#647089`) was used for the trust chips, article bylines, stat
+labels, hints, idle tool tabs and the Deep Search kicker. It measured **3.85:1
+on `--bg` and 3.49:1 on `--surface`** — under the 4.5:1 WCAG AA needs. Raised
+to `#7d8aa3` (dark) and `#5f6f86` (light), which clears 4.5 on `--bg`,
+`--surface` and `--surface-2` in both themes while staying clearly dimmer than
+`--text-dim`, so the visual hierarchy is unchanged.
+
+White on `--accent` in primary buttons measured **3.67:1** at 15.2px — below
+the large-text threshold that would have permitted 3:1. Buttons now use
+`--accent-2`, the palette's own darker blue: 5.17:1 in dark, 6.7:1 in light.
+`.btn-ghost` is unaffected.
+
+**The significant find: the light theme never defined the semantic colours at
+all.** `--ok`, `--warn`, `--danger` and `--info` were declared once, tuned for a
+dark background, and inherited straight into the light palette — where they are
+used as **text** in seventeen places, including the exposure verdicts, the
+confidence tags, the error box and the breach severity badges. Measured on
+white:
+
+| Token | Was (light) | Now | Ratio now (bg / surface / surface-2) |
+|---|---|---|---|
+| `--warn` | `#fbbf24` — **1.67:1** | `#b45309` | 4.68 / 5.02 / 4.64 |
+| `--ok` | `#34d399` — **1.92:1** | `#047857` | 5.11 / 5.48 / 5.07 |
+| `--info` | `#38bdf8` — **2.14:1** | `#0369a1` | 5.53 / 5.93 / 5.48 |
+| `--danger` | `#fb7185` — **2.69:1** | `#be123c` | 5.86 / 6.29 / 5.81 |
+
+The amber at 1.67:1 was effectively invisible. This is pre-existing, not
+introduced here, and Lighthouse never reports it because it only ever renders
+the default theme.
+
+The `sev-serious` breach badge (`--accent` on `--surface-2`, 4.31:1) now uses
+the `--accent-text` token added in Phase 4: 6.24:1.
+
+### 10.3 Invalid heading order on the homepage
+
+The tool's empty and ready states rendered their status line as `<h3>`
+(`"Ready when you are"`, `"Nothing found"`), putting an h3 in a section with no
+h2 above it. They are UI status messages, not document headings, so they are
+now `<p class="empty-title">` with identical styling — the same treatment the
+footer labels got in Phase 2.
+
+### 10.4 Cache-buster bumped
+
+`?v=8` → `?v=9` and `?v=1` → `?v=2` across 45 files and the generator. Without
+this, every returning visitor would have kept the old stylesheet and received
+none of the contrast, tap-target or CLS fixes.
+
+### 10.5 Two false alarms, recorded so they are not re-investigated
+
+- **`.ex-chip` "loses its colour in light theme" — it does not.** The Browser
+  pane was hidden, so CSS transitions never advanced and `getComputedStyle`
+  returned the frozen start value of a 0.16s colour transition. Measuring with
+  transitions disabled shows it correct at 6.79:1 dark and 7.00:1 light.
+- **`min-height: 44px` on `.ex-chip` "pushes its text to the top" — it does
+  not.** The element is a `<button>`, which centres its content by default; the
+  text measures 14px above and 15px below. Verified rather than assumed.
+
+### 10.6 Verified state
+
+Lighthouse, clean profile per run, every template:
+
+| URL | Accessibility | SEO |
+|---|---|---|
+| `/` | 100 | 100 |
+| `/about.html` | 100 | 100 |
+| `/services.html` | 100 | 100 |
+| `/app.html` | 100 | 100 |
+| `/contact.html` | 100 | 100 |
+| `/founder.html` | 100 | 100 |
+| `/privacy.html` | 100 | 100 |
+| `/terms.html` | 100 | 100 |
+| `/deep-search.html` | 100 | 100 |
+| `/guides/` | 100 | 100 |
+| `/guides/what-is-osint.html` | 100 | 100 |
+| `/guides/two-factor-authentication.html` | 100 | 100 |
+| `/breaches/` | 100 | 100 |
+| `/breaches/suno.html` | 100 | 100 |
+| `/breaches/underarmour.html` | 100 | 100 |
+
+Also re-verified after these changes: cold-load CLS still 0 on both templates
+measured; no horizontal overflow and no sub-44px tap target at 375px; 43
+sitemap URLs; 82 JSON-LD blocks all parsing with required properties; zero
+broken internal links; no control characters in any tracked text file.
+
+**One caveat worth stating plainly.** Lighthouse renders only the default
+(dark) theme, so its 100s do not certify the light theme. The light-theme
+figures above were measured directly in the browser with transitions disabled,
+element by element — that is a narrower check than a full axe pass, and a
+light-theme audit of the tool's *result* views (which only exist after a live
+lookup) has not been done.

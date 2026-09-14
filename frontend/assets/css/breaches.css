@@ -69,7 +69,8 @@
    readable at a glance and still legible without colour vision. */
 .sev-critical b { color: var(--danger); }
 .sev-severe b { color: var(--warn); }
-.sev-serious b { color: var(--accent); }
+/* --accent is 4.31:1 on --surface-2; --accent-text is 6.24. */
+.sev-serious b { color: var(--accent-text); }
 .sev-moderate b { color: var(--text-dim); }
 
 /* ── Year bars ───────────────────────────────────────────────── */
@@ -224,7 +225,7 @@
 
 .bx-badge.sev-critical { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
 .bx-badge.sev-severe { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
-.bx-badge.sev-serious { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.bx-badge.sev-serious { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 
 /* ── Article ─────────────────────────────────────────────────── */
 
