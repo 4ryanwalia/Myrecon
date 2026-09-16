@@ -609,7 +609,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .guide-card { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: transform 0.16s, border-color 0.16s; }
 .guide-card:hover { transform: translateY(-3px); border-color: var(--border-strong); }
-.guide-card h2 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text); }
+.guide-card h2, .guide-card h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text); }
 .guide-card p { font-size: 0.9rem; color: var(--text-dim); }
 .guide-card .read { color: var(--accent); font-size: 0.82rem; font-weight: 600; margin-top: 12px; display: inline-block; }
 
@@ -816,3 +816,174 @@ main > p a, main > ul li a, main > ol li a {
 }
 .article p a:hover, .article li a:hover { text-decoration-thickness: 2px; }
 .article a.btn, main a.btn { text-decoration: none; }
+
+/* ───────────────────────────────────────────────────────────────────────
+   The Android section: a handset that shows the app working.
+
+   The section used to be a heading, a paragraph and two buttons. Nobody
+   installs an app they have not seen, and the one thing a visitor cannot do
+   from a web page is watch the sweep run — so the phone below does it in
+   miniature: a command types itself, results land one at a time, and a
+   summary settles underneath. It is the same sequence the app's own first-run
+   screen plays, so the promise made here is the first thing the app keeps.
+
+   Drawn rather than screenshotted, deliberately. A screenshot is stale the
+   moment a tab is added, weighs half a megabyte, and cannot move. This is a
+   few hundred bytes of markup in the site's own tokens, and it is honest
+   about being an illustration — the handle is @yourhandle and the panel is
+   labelled EXAMPLE, exactly as in the app.
+   ─────────────────────────────────────────────────────────────────────── */
+.android-split {
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px;
+  align-items: center; max-width: 980px; margin: 0 auto;
+}
+.android-copy p { color: var(--text-dim); }
+.android-points { list-style: none; padding: 0; margin: 20px 0 24px; }
+.android-points li {
+  position: relative; padding-left: 22px; margin-bottom: 11px;
+  color: var(--text-dim); font-size: 0.95rem;
+}
+.android-points li::before {
+  content: ""; position: absolute; left: 4px; top: 8px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--ok);
+}
+.android-points strong { color: var(--text); font-weight: 650; }
+
+/* The handset. A frame, a rail for the speaker, and the app inside it. The
+   aspect ratio is a real phone's so the mock does not read as a browser card. */
+.phone-mock {
+  width: 100%; max-width: 290px; margin: 0 auto; aspect-ratio: 9 / 14.2;
+  background: var(--bg); border: 1px solid var(--border-strong);
+  border-radius: 30px; padding: 12px 10px;
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.9), 0 0 0 7px var(--bg-soft);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.phone-rail {
+  width: 52px; height: 4px; border-radius: 99px; background: var(--border-strong);
+  margin: 0 auto 12px; flex: none;
+}
+.phone-app { flex: 1; display: flex; flex-direction: column; padding: 0 6px; min-height: 0; }
+.phone-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.phone-bar img { width: 22px; height: 22px; }
+.phone-bar b { font-size: 0.86rem; letter-spacing: -0.01em; }
+.phone-bar span { display: block; font-family: var(--mono); font-size: 0.56rem; color: var(--text-mute); }
+
+/* The instrument panel, matching the app's bracketed frame. */
+.phone-panel-label {
+  display: flex; align-items: center; gap: 7px; margin-bottom: 6px;
+  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--accent-text);
+}
+.phone-panel-label i { flex: 1; height: 1px; background: var(--border); font-style: normal; }
+.phone-panel-label u { text-decoration: none; color: var(--text-mute); }
+.phone-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 11px 10px;
+}
+.phone-cmd { display: flex; align-items: center; font-family: var(--mono); font-size: 0.62rem; }
+.phone-cmd > i { color: var(--accent-text); font-style: normal; margin-right: 6px; }
+.phone-cmd > span {
+  overflow: hidden; white-space: nowrap; border-right: 2px solid var(--accent-text);
+  width: 17ch;
+}
+.phone-row {
+  display: flex; align-items: baseline; gap: 6px; margin-top: 9px;
+  font-family: var(--mono); font-size: 0.58rem; color: var(--text-mute);
+}
+.phone-row i { flex: 1; height: 1px; background: var(--border); font-style: normal; }
+.phone-row b { font-weight: 500; color: var(--text-dim); }
+.phone-row .v-found { color: var(--ok); }
+.phone-row .v-none { color: var(--text-mute); }
+.phone-row .v-maybe { color: var(--warn); }
+.phone-sum {
+  margin-top: 12px; font-family: var(--mono); font-size: 0.56rem;
+  color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 9px;
+}
+
+/* The bottom bar, which is also what stops the handset reading as an empty
+   shell: five tabs is what the app actually has, and the void under a short
+   panel was the tell that this was a card pretending to be a phone. */
+.phone-nav {
+  margin-top: auto; display: flex; gap: 2px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.phone-nav span {
+  flex: 1; text-align: center; font-size: 0.48rem; letter-spacing: 0.04em;
+  color: var(--text-mute); text-transform: uppercase;
+}
+.phone-nav span:first-child { color: var(--accent-text); }
+.phone-nav span::before {
+  content: ""; display: block; width: 12px; height: 12px; margin: 0 auto 4px;
+  border: 1.5px solid currentColor; border-radius: 3px; opacity: 0.75;
+}
+.phone-nav span:first-child::before { border-radius: 50%; }
+
+/* The sequence, on one 9s cycle.
+   ~0.0-1.8s the command types, 2.0-3.4s the results land one at a time, the
+   summary settles at 4.0s, everything holds until 7.7s and clears.
+
+   Each row carries its own keyframes rather than one shared animation with a
+   delay. A delay looks equivalent and is not: on a loop it only shifts the
+   phase, so every row sits at a different point of its own cycle and they
+   drift out of step with the typing within one pass. Percentages of a shared
+   timeline are the only way to keep a CSS-only sequence honest. */
+.phone-cmd > span { animation: mock-type 9s steps(17, end) infinite; }
+.phone-cmd > i { animation: mock-caret 1s steps(1) infinite; }
+.phone-row, .phone-sum { opacity: 0; }
+.phone-row:nth-child(2) { animation: mock-r1 9s ease infinite; }
+.phone-row:nth-child(3) { animation: mock-r2 9s ease infinite; }
+.phone-row:nth-child(4) { animation: mock-r3 9s ease infinite; }
+.phone-row:nth-child(5) { animation: mock-r4 9s ease infinite; }
+.phone-row:nth-child(6) { animation: mock-r5 9s ease infinite; }
+.phone-sum { animation: mock-sum 9s ease infinite; }
+
+@keyframes mock-type {
+  0%, 2% { width: 0; }
+  20%, 86% { width: 17ch; }
+  92%, 100% { width: 0; }
+}
+@keyframes mock-caret { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.25; } }
+
+@keyframes mock-r1 {
+  0%, 22% { opacity: 0; transform: translateY(5px); }
+  25%, 86% { opacity: 1; transform: none; }
+  93%, 100% { opacity: 0; transform: none; }
+}
+@keyframes mock-r2 {
+  0%, 26% { opacity: 0; transform: translateY(5px); }
+  29%, 86% { opacity: 1; transform: none; }
+  93%, 100% { opacity: 0; transform: none; }
+}
+@keyframes mock-r3 {
+  0%, 30% { opacity: 0; transform: translateY(5px); }
+  33%, 86% { opacity: 1; transform: none; }
+  93%, 100% { opacity: 0; transform: none; }
+}
+@keyframes mock-r4 {
+  0%, 34% { opacity: 0; transform: translateY(5px); }
+  37%, 86% { opacity: 1; transform: none; }
+  93%, 100% { opacity: 0; transform: none; }
+}
+@keyframes mock-r5 {
+  0%, 38% { opacity: 0; transform: translateY(5px); }
+  41%, 86% { opacity: 1; transform: none; }
+  93%, 100% { opacity: 0; transform: none; }
+}
+@keyframes mock-sum {
+  0%, 44% { opacity: 0; }
+  47%, 86% { opacity: 1; }
+  93%, 100% { opacity: 0; }
+}
+
+/* Nothing here carries information the still frame does not, so motion is
+   dropped entirely rather than slowed: the panel simply reads as a result. */
+@media (prefers-reduced-motion: reduce) {
+  .phone-cmd > span, .phone-cmd > i, .phone-row, .phone-sum { animation: none; }
+  .phone-row, .phone-sum { opacity: 1; }
+  .phone-cmd > span { width: 17ch; }
+}
+
+@media (max-width: 820px) {
+  .android-split { grid-template-columns: 1fr; gap: 30px; }
+  .phone-mock { max-width: 255px; }
+}

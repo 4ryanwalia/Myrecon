@@ -185,18 +185,52 @@
     <section class="section alt" id="android">
       <div class="container">
         <h2>Now on Android</h2>
-        <p class="sub">The same investigation, run from your own phone — where platforms answer far more readily than they answer a server.</p>
-        <div class="prose" style="max-width:760px">
-          <p style="color:var(--text-dim)">
-            MyRecon for Android checks a username across <strong>a wide range of platforms</strong> directly from
-            your handset, watches for newly published data breaches without ever sending your address
-            anywhere, reads the metadata still buried in a photo, and shows you where a QR code
-            actually leads before you open it. No account, no signup.
-          </p>
-          <p style="margin-top:18px">
-            <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener">Get it on Google Play</a>
-            <a class="btn btn-ghost" href="/app.html" style="margin-left:8px">What it does</a>
-          </p>
+        <p class="sub">The same investigation, run from your own phone &mdash; where platforms answer far more readily than they answer a server.</p>
+
+        <div class="android-split">
+          <div class="android-copy">
+            <p>
+              MyRecon for Android checks a username across <strong>a wide range of platforms</strong> directly
+              from your handset, watches for newly published data breaches without ever sending your address
+              anywhere, reads the metadata still buried in a photo, and shows you where a QR code actually
+              leads before you open it.
+            </p>
+            <ul class="android-points">
+              <li><strong>No account, no signup.</strong> Nothing to create, nothing to remember.</li>
+              <li><strong>Every result is verified.</strong> A site answering &ldquo;200 OK&rdquo; is not treated as proof an account exists &mdash; and anything unconfirmed says so instead of padding the total.</li>
+              <li><strong>Photos and passwords never leave the phone.</strong> Metadata is read on-device; a password is hashed before anything is sent.</li>
+            </ul>
+            <p>
+              <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener">Get it on Google Play</a>
+              <a class="btn btn-ghost" href="/app.html" style="margin-left:8px">What it does</a>
+            </p>
+          </div>
+
+          <!-- An illustration of the sweep, not a screenshot. See styles.css. -->
+          <div class="phone-mock" role="img" aria-label="The MyRecon Android app running a username sweep: github found, reddit found, instagram not found, medium found, steam unconfirmed.">
+            <div class="phone-rail"></div>
+            <div class="phone-app" aria-hidden="true">
+              <div class="phone-bar">
+                <img src="/assets/img/logo.svg" alt="" width="22" height="22">
+                <div><b>MyRecon</b><span>OSINT &middot; public sources only</span></div>
+              </div>
+
+              <div class="phone-panel-label">live sweep <i></i> <u>example</u></div>
+              <div class="phone-panel">
+                <div class="phone-cmd"><i>&rsaquo;</i><span>sweep @yourhandle</span></div>
+                <div class="phone-row"><b>github</b><i></i><span class="v-found">FOUND</span></div>
+                <div class="phone-row"><b>reddit</b><i></i><span class="v-found">FOUND</span></div>
+                <div class="phone-row"><b>instagram</b><i></i><span class="v-none">NOT FOUND</span></div>
+                <div class="phone-row"><b>medium</b><i></i><span class="v-found">FOUND</span></div>
+                <div class="phone-row"><b>steam</b><i></i><span class="v-maybe">UNCONFIRMED</span></div>
+                <div class="phone-sum">= 3 found &middot; 1 unconfirmed &middot; the rest checked and clear</div>
+              </div>
+
+              <div class="phone-nav">
+                <span>Lookup</span><span>Breaches</span><span>Scan</span><span>Photo</span><span>Password</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -284,7 +318,7 @@
         </div>
         <div class="footer-cols">
           <div class="footer-col"><p class="footer-col-title">Platform</p><a href="#tool">Tools</a><a href="#features">Features</a><a href="#faq">FAQ</a></div>
-          <div class="footer-col"><p class="footer-col-title">Guides</p><a href="/guides/">All guides</a><a href="/guides/check-email-data-breach.html">Email breach check</a><a href="/guides/reduce-your-digital-footprint.html">Digital footprint</a></div>
+          <div class="footer-col"><p class="footer-col-title">Guides</p><a href="/guides/">All guides</a><a href="/guides/check-email-data-breach.html">Email breach check</a><a href="/guides/reduce-your-digital-footprint.html">Digital footprint</a><a href="/guides/passkeys-explained.html">Passkeys</a><a href="/guides/account-hacked-what-to-do.html">Account hacked?</a></div>
           <div class="footer-col"><p class="footer-col-title">Company</p><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div>
         </div>
       </div>

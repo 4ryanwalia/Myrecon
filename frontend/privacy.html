@@ -51,7 +51,7 @@
 
   <main class="container legal" id="main">
     <h1>Privacy Policy</h1>
-    <p class="legal-meta">Last updated: 14 September 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
+    <p class="legal-meta">Last updated: 16 September 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
 
     <div class="legal-summary">
       <h2>The short version</h2>
@@ -97,7 +97,7 @@
           <thead><tr><th scope="col">Detail</th><th scope="col">Value</th></tr></thead>
           <tbody>
             <tr><td>Operator</td><td>Aryan Walia, sole proprietor, trading as MyRecon</td></tr>
-            <tr><td>Principal place of business</td><td><span class="legal-todo">FILL IN: city</span>, India</td></tr>
+            <tr><td>Principal place of business</td><td>Gurugram, India</td></tr>
             <tr><td>Website</td><td>https://www.myrecon.xyz/</td></tr>
             <tr><td>Contact for privacy matters</td><td><a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a></td></tr>
             <tr><td>Grievance Officer</td><td>Aryan Walia — <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a></td></tr>
@@ -292,7 +292,7 @@
       <ul>
         <li><strong>Sensitive personal data.</strong> We do not collect passwords, financial information, health data, biometrics or any other category of sensitive personal data or information under the 2011 Rules. The password checker is deliberately built so that a password is never received.</li>
         <li><strong>Your rights as a Data Principal</strong> under the DPDP Act include access to a summary of your personal data and the processing, correction and erasure, nomination, and grievance redressal. Exercise them by writing to the Grievance Officer below.</li>
-        <li><strong>Grievance Officer:</strong> Aryan Walia, <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>, <span class="legal-todo">FILL IN: city</span>, India. Complaints are acknowledged and answered as quickly as we can, and in any event within the period the law requires.</li>
+        <li><strong>Grievance Officer:</strong> Aryan Walia, <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>, Gurugram, India. Complaints are acknowledged and answered as quickly as we can, and in any event within the period the law requires.</li>
         <li>If a grievance is not resolved to your satisfaction, you may approach the Data Protection Board of India once it is operational.</li>
       </ul>
     </section>
@@ -332,6 +332,9 @@
         <li><strong>Password checks</strong> work exactly as <a href="#password">section 3</a> describes: hashed on the device, five characters of the hash sent to <code>api.pwnedpasswords.com</code>, the password itself never transmitted.</li>
         <li><strong>The image tools are entirely on-device.</strong> Photos come from the system picker, not the camera, and EXIF inspection, perceptual hashing and metadata stripping all run locally. <strong>No photo you open in the app is ever uploaded</strong>, to us or to anyone else.</li>
         <li><strong>Camera permission is for the QR code scanner.</strong> The code is read and decoded on your device, and the camera image is never uploaded or saved. Acting on what it finds does use the network: to tell you where a code really leads, the app follows the link&rsquo;s redirects &mdash; so each server in that chain sees a request from your device &mdash; and looks the final domain up in the public RDAP registry (<code>rdap.org</code>) to see how recently it was registered.</li>
+        <li><strong>If a source will not answer your phone, that check is retried through us.</strong> Some services refuse requests from mobile networks, and rather than show you nothing, the app retries that single lookup through the MyRecon API at <code>myrecon.onrender.com</code> &mdash; which means, for that lookup only, the identifier you typed and your device&rsquo;s IP address reach our server. It applies to the email, domain, DNS and IP tools. We keep no record of it. The username sweep and the on-device tools never take this path.</li>
+        <li><strong>The self-scan reads your own connection.</strong> To tell you what your phone reveals, the app asks <code>ipwho.is</code> about the address you are connecting from &mdash; which returns your approximate area, provider and whether you are behind a VPN &mdash; and resolves names through <code>cloudflare-dns.com</code>. Both see your IP address, as any website you visit does. Nothing about the phone itself is sent to us.</li>
+        <li><strong>Deep Search queries public search engines.</strong> Searches run from your handset against <code>lite.duckduckgo.com</code> and <code>www.bing.com</code>, and against the open registries <code>wikidata.org</code>, <code>orcid.org</code> and <code>api.github.com</code>. Each sees the query and your device&rsquo;s IP address. None of it passes through us.</li>
         <li><strong>Other lookups reach the services they need.</strong> Domain and certificate work uses <code>rdap.org</code> and <code>api.certspotter.com</code>; GitHub lookups use <code>api.github.com</code>. Each receives the identifier you asked about and your device&rsquo;s IP address.</li>
         <li><strong>Notification permission</strong> is used to tell you when a breach matches something you are watching.</li>
         <li><strong>What the app stores</strong> — your watch list, settings and results — is kept on your device in Android&rsquo;s own app storage, and is removed when you uninstall the app. There is no account and no sync.</li>
@@ -352,7 +355,7 @@
       <address>
         <strong>Aryan Walia</strong> — operator and Grievance Officer<br>
         Email: <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a><br>
-        <span class="legal-todo">FILL IN: city</span>, India
+        Gurugram, India
       </address>
       <p style="margin-top:12px">We aim to acknowledge within a few working days and to answer fully within 30 days, which is the outer limit the GDPR allows. See also our <a href="/contact.html">contact page</a>, our <a href="/cookies.html">cookie policy</a> and our <a href="/terms.html">terms of use</a>.</p>
     </section>
