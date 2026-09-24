@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXIF Data: What Your Photos Reveal About You | MyRecon</title>
+  <meta name="description" content="What is stored inside an image file, which platforms strip it and which do not, how to read it, and why a missing timestamp proves nothing either way.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/photo-metadata-exif.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="What Your Photos Give Away: EXIF and Image Metadata">
+  <meta property="og:description" content="What is stored inside an image file, which platforms strip it and which do not, how to read it, and why a missing timestamp proves nothing either way.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/photo-metadata-exif.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="What Your Photos Give Away: EXIF and Image Metadata">
+  <meta name="twitter:description" content="What is stored inside an image file, which platforms strip it and which do not, how to read it, and why a missing timestamp proves nothing either way.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"What Your Photos Give Away: EXIF and Image Metadata","description":"What is stored inside an image file, which platforms strip it and which do not, how to read it, and why a missing timestamp proves nothing either way.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1257,"mainEntityOfPage":"https://www.myrecon.xyz/guides/photo-metadata-exif.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"What Your Photos Give Away: EXIF and Image Metadata","item":"https://www.myrecon.xyz/guides/photo-metadata-exif.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does posting a photo on social media reveal my location?","acceptedAnswer":{"@type":"Answer","text":"Usually not through EXIF: the major platforms strip metadata when they re-encode uploads. The location leak on social media is far more often the visible content of the photo, a street sign, a view from a window, a repeated background, or a location tag you added yourself."}},{"@type":"Question","name":"Where does EXIF survive?","acceptedAnswer":{"@type":"Answer","text":"In files sent as email attachments, shared through messaging apps that preserve originals or send as a document, downloaded from cloud storage, and hosted on personal websites and forums that do not re-encode. Anywhere the original file moves rather than a re-compressed copy of it."}},{"@type":"Question","name":"Can EXIF data be faked?","acceptedAnswer":{"@type":"Answer","text":"Easily. Every field is editable with free tools, including the timestamp and the GPS coordinates. Metadata is a claim made by whoever last saved the file, which is why it corroborates other evidence rather than establishing anything on its own."}},{"@type":"Question","name":"How do I remove metadata before sharing a photo?","acceptedAnswer":{"@type":"Answer","text":"On Windows, the file properties dialog has a \"remove properties and personal information\" option. On macOS, Preview can strip location. Phones offer a location toggle in the share sheet, and screenshotting an image produces a new file with none of the original metadata at all."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Image intelligence</span>
+      <h1>What Your Photos Give Away: EXIF and Image Metadata</h1>
+      <p class="meta">Published 14 September 2026 · 7 min read</p>
+
+<p class="lead">An image file is not only an image. Cameras and phones write a block of data into it describing the device, the settings, the moment and sometimes the exact coordinates, and whether any of that reaches the person who receives the photo depends entirely on the route it travelled.</p>
+
+      <h2>What is actually in there</h2>
+      <p>The main standard is EXIF, accompanied in many files by IPTC and XMP blocks used by publishers and editing software. Between them a photograph can carry:</p>
+      <ul>
+        <li><strong>Device.</strong> Make and model, and often the lens. Enough to say "these two photos came from the same model of phone", which is weaker than it sounds and still occasionally decisive.</li>
+        <li><strong>Timestamps.</strong> When the shutter fired, when the file was created, when it was last modified, as set by the device's own clock, in the device's own time zone.</li>
+        <li><strong>Camera settings.</strong> Exposure, aperture, ISO, focal length, flash. Mostly of interest for establishing that two images were or were not taken in the same session.</li>
+        <li><strong>GPS coordinates,</strong> where location services were enabled, latitude, longitude, frequently altitude and a compass bearing. This is the field with real consequences.</li>
+        <li><strong>Software history.</strong> The editor that last wrote the file, which is how you learn a photograph has been through an image editor at all.</li>
+        <li><strong>A thumbnail.</strong> A small embedded preview, which in older files was sometimes not regenerated after editing, so the thumbnail could still show the uncropped original. Modern tools handle this correctly, and older files in circulation do not.</li>
+        <li><strong>Serial numbers,</strong> on some cameras. A body or lens serial number links every photograph a camera ever took.</li>
+        <li><strong>Authorship and copyright fields,</strong> in IPTC and XMP, where a professional workflow has filled them in.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>The coordinates are the part that matters.</strong> A phone with location services on writes where the shutter was pressed, to within a few metres. One photograph is a place. A set of photographs is a pattern: a home, a workplace, a school, a route and the hours each is occupied. The risk is not usually a single revealing image, it is that a person's photo library, shared piecemeal over years, describes their life geographically without any of it being intended.</p>
+      </div>
+
+      <h2>Who strips it and who does not</h2>
+      <p>This is where most assumptions go wrong in both directions.</p>
+      <p><strong>Metadata is usually removed</strong> by the large social platforms, which re-encode every upload into their own formats and sizes, and by most messaging apps when sending as a photo rather than a file. The stripping is a side effect of compression rather than a privacy feature, which is why it is not guaranteed and not announced.</p>
+      <p><strong>Metadata usually survives</strong> when the original file travels rather than a copy of it: email attachments, messaging apps used in "send as document" or "original quality" mode, cloud storage downloads, files transferred between devices, and images hosted on personal sites, forums and smaller platforms that do not re-encode.</p>
+      <p>So the practical rules are two, pointing in opposite directions. If you are sharing, do not rely on a platform to protect you, strip it yourself. If you are investigating, always look, because the assumption that "platforms remove it" causes people to skip a check that costs seconds.</p>
+
+      <h2>How to read it</h2>
+      <p>Every operating system exposes some of it without extra software. On Windows, right-click a file, open properties and look at the details tab. On macOS, open the image in Preview and inspect the info panel, which has a dedicated tab for GPS when coordinates are present. On a phone, the photo details view in the gallery app shows the device, the timestamp and a map when location is recorded.</p>
+      <p>Dedicated metadata tools show considerably more, including the vendor-specific blocks the system dialogs ignore, and are worth using when the question matters.</p>
+      <p>One caution about online metadata viewers: using one means uploading the image to a third party. For a photograph you are investigating that may be acceptable; for a private photograph of your own, you have just published it to a stranger's server in order to check whether it was private.</p>
+
+      <h2>How much weight it carries</h2>
+      <p>Less than people assume, in both directions.</p>
+      <p><strong>Metadata is trivially editable.</strong> Free tools rewrite any field, including timestamps and coordinates. It is a claim made by whoever last saved the file, not a property of reality, and treating a GPS tag as proof of where a photograph was taken is how confident wrong conclusions get made in public.</p>
+      <p><strong>Absence proves nothing.</strong> A file with no metadata may have been deliberately cleaned, or it may simply have passed through one platform that re-encodes uploads. The second is far more common. "The EXIF was stripped, so they are hiding something" is an inference the evidence does not support.</p>
+      <p><strong>Timestamps drift.</strong> The clock belongs to the device and may be wrong, unset, or in a different time zone from the one you assume, a three-hour discrepancy is more often a traveller who did not update their phone than a fabrication.</p>
+      <p>Where metadata earns its place is as corroboration: consistent with the other evidence, or inconsistent with it in a way that demands explanation. On its own it settles nothing, which is the same standard applied in <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a>.</p>
+
+      <h2>What the picture itself gives away</h2>
+      <p>Because metadata is so often absent, the durable signal is the content, and it is usually richer. House numbers, street signs, shop fronts, vehicle number plates, school uniforms and logos, the view from a window, a distinctive skyline, the language on a menu, seasonal foliage, shadow direction and length, and reflections in glass, screens and eyes.</p>
+      <p>Geolocation of images as practised by investigators and open-source researchers is built almost entirely on these, not on EXIF, precisely because the coordinates are so rarely present in published images. The <a href="/guides/reverse-image-search.html">reverse image search guide</a> covers how to search these elements independently of the photograph as a whole.</p>
+
+      <h2>Practical protection</h2>
+      <ol>
+        <li><strong>Turn off location tagging in the camera app.</strong> The single highest-value change, and it costs almost nothing, you can still add a location to the posts where you want one.</li>
+        <li><strong>Strip metadata before sharing anything outside a platform.</strong> Windows offers this in the file properties dialog; macOS in Preview; phone share sheets increasingly include a location toggle.</li>
+        <li><strong>Screenshot when you only need the image.</strong> A screenshot is a new file with none of the original's metadata, which is the quickest reliable strip available.</li>
+        <li><strong>Watch the sending mode in messaging apps.</strong> "Send as file" or "original quality" preserves everything the compressed path would have removed.</li>
+        <li><strong>Check photos of documents</strong> before sending them, metadata aside, the visible background of a photographed document frequently includes things nobody meant to send.</li>
+        <li><strong>Audit what you have already posted</strong> where it sits on your own site or in a forum, since those are the places the original file is most likely to still be online intact.</li>
+      </ol>
+
+      <div class="callout">
+        <p><strong>Provenance metadata is the emerging counterweight.</strong> Content Credentials, under the C2PA standard, attach a signed record of how an image was created and edited, and are now being written by some cameras and editing tools. It is designed to be evidence of origin rather than a privacy risk, and it is becoming one of the few durable ways to say where an image came from, relevant precisely because generated images have no earlier existence for a reverse search to find.</p>
+      </div>
+
+      <h2>Questions people ask</h2>
+      <h3>Does posting a photo on social media reveal my location?</h3>
+      <p>Usually not through EXIF: the major platforms strip metadata when they re-encode uploads. The location leak on social media is far more often the visible content of the photo, a street sign, a view from a window, a repeated background, or a location tag you added yourself.</p>
+
+      <h3>Where does EXIF survive?</h3>
+      <p>In files sent as email attachments, shared through messaging apps that preserve originals or send as a document, downloaded from cloud storage, and hosted on personal websites and forums that do not re-encode. Anywhere the original file moves rather than a re-compressed copy of it.</p>
+
+      <h3>Can EXIF data be faked?</h3>
+      <p>Easily. Every field is editable with free tools, including the timestamp and the GPS coordinates. Metadata is a claim made by whoever last saved the file, which is why it corroborates other evidence rather than establishing anything on its own.</p>
+
+      <h3>How do I remove metadata before sharing a photo?</h3>
+      <p>On Windows, the file properties dialog has a "remove properties and personal information" option. On macOS, Preview can strip location. Phones offer a location toggle in the share sheet, and screenshotting an image produces a new file with none of the original metadata at all.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dphoto_metadata_exif" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/reverse-image-search.html">tracing where a photo has appeared before</a></li>
+        <li><a href="/guides/social-media-privacy.html">what else your posts give away</a></li>
+        <li><a href="/guides/verify-an-osint-finding.html">how much weight a metadata field can carry</a></li>
+        <li><a href="/guides/reduce-your-digital-footprint.html">the wider routine for shrinking your exposure</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="VTech Breach 2015: When Children's Data Leaked">
   <meta name="twitter:description" content="A breach of a children's tablet maker exposed 6.4 million child profiles, along with chat logs and photographs.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"VTech, 2015: six million children in a toy company's database","description":"A breach of a children's tablet maker exposed 6.4 million child profiles, along with chat logs and photographs. The attacker's stated motive was to prove it was possible.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/vtech-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"VTech data breach"},"wordCount":1027}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"VTech data breach","item":"https://www.myrecon.xyz/breaches/case-files/vtech-2015.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is children's data treated as a special category?","acceptedAnswer":{"@type":"Answer","text":"Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service."}},{"@type":"Question","name":"What actually made this breach so bad technically?","acceptedAnswer":{"@type":"Answer","text":"Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection — such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit."}},{"@type":"Question","name":"What did the attacker do with the data?","acceptedAnswer":{"@type":"Answer","text":"Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful — an arrest followed in the UK — but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested."}},{"@type":"Question","name":"Did VTech face consequences?","acceptedAnswer":{"@type":"Answer","text":"The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is children's data treated as a special category?","acceptedAnswer":{"@type":"Answer","text":"Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service."}},{"@type":"Question","name":"What actually made this breach so bad technically?","acceptedAnswer":{"@type":"Answer","text":"Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection, such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit."}},{"@type":"Question","name":"What did the attacker do with the data?","acceptedAnswer":{"@type":"Answer","text":"Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful, an arrest followed in the UK, but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested."}},{"@type":"Question","name":"Did VTech face consequences?","acceptedAnswer":{"@type":"Answer","text":"The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -79,18 +80,18 @@
 
 <h2>What happened</h2>
 
-<p>VTech makes electronic learning toys — tablets and devices aimed at young children. Around them it ran online services: Learning Lodge, an app store for downloading content to the devices, and Kid Connect, a messaging feature that let children exchange text, voice messages and photographs with their parents.</p>
+<p>VTech makes electronic learning toys, tablets and devices aimed at young children. Around them it ran online services: Learning Lodge, an app store for downloading content to the devices, and Kid Connect, a messaging feature that let children exchange text, voice messages and photographs with their parents.</p>
 
 <p>On 14 November 2015, an attacker used SQL injection against Learning Lodge to reach the database behind it. The compromise was disclosed on 27 November after the attacker contacted a journalist.</p>
 
-<p>The database held about 4.9 million parent accounts and 6.4 million child profiles. The parent records contained names, postal addresses, email addresses, download history, IP addresses, password hashes and — stored in plain text — the answers to their security questions. The child profiles contained names, dates of birth and genders, each linked to the parent account.</p>
+<p>The database held about 4.9 million parent accounts and 6.4 million child profiles. The parent records contained names, postal addresses, email addresses, download history, IP addresses, password hashes and, stored in plain text, the answers to their security questions. The child profiles contained names, dates of birth and genders, each linked to the parent account.</p>
 
 <p>Because the parent and child records were linked, the dataset resolved to something more specific than either: a named child, their age, and the home address they live at.</p>
 
 <p>For a subset of users, Kid Connect data was also exposed, including photographs children had taken and messages they had exchanged.</p>
 
 <div class="callout">
-  <p><strong>The technical findings were all in the category of long-settled.</strong> SQL injection had been comprehensively documented for seventeen years by 2015. Unsalted MD5 password hashing had been unacceptable for roughly a decade — such hashes fall in bulk on commodity hardware almost immediately. Storing security question answers in plain text defeats the purpose of having them, since the recovery mechanism becomes readable to anyone who reaches the table. None of these required a sophisticated attacker to find, and none required expertise to avoid.</p>
+  <p><strong>The technical findings were all in the category of long-settled.</strong> SQL injection had been comprehensively documented for seventeen years by 2015. Unsalted MD5 password hashing had been unacceptable for roughly a decade, such hashes fall in bulk on commodity hardware almost immediately. Storing security question answers in plain text defeats the purpose of having them, since the recovery mechanism becomes readable to anyone who reaches the table. None of these required a sophisticated attacker to find, and none required expertise to avoid.</p>
 </div>
 
 <h2>The attacker who did not sell it</h2>
@@ -110,12 +111,12 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>14 November 2015</b> — SQL injection against Learning Lodge gives access to the database.</li>
-  <li><b>23 November 2015</b> — The attacker contacts a journalist and provides the data.</li>
-  <li><b>27 November 2015</b> — VTech confirms the breach and suspends affected services.</li>
-  <li><b>30 November 2015</b> — Independent analysis establishes that child profiles, photographs and chat logs were included, and documents the password and security-answer failures.</li>
-  <li><b>December 2015</b> — An arrest is made in the UK; VTech amends its terms of service, drawing widespread criticism.</li>
-  <li><b>January 2018</b> — The FTC settles with VTech for $650,000 over children's privacy violations.</li>
+  <li><b>14 November 2015</b>: SQL injection against Learning Lodge gives access to the database.</li>
+  <li><b>23 November 2015</b>: The attacker contacts a journalist and provides the data.</li>
+  <li><b>27 November 2015</b>: VTech confirms the breach and suspends affected services.</li>
+  <li><b>30 November 2015</b>: Independent analysis establishes that child profiles, photographs and chat logs were included, and documents the password and security-answer failures.</li>
+  <li><b>December 2015</b>: An arrest is made in the UK; VTech amends its terms of service, drawing widespread criticism.</li>
+  <li><b>January 2018</b>: The FTC settles with VTech for $650,000 over children's privacy violations.</li>
 </ol>
 
 <h2>What it changed</h2>
@@ -126,7 +127,7 @@
 
 <p><strong>Parents learned that the account is the attack surface.</strong> The device is not usually the risk. The account created to set it up is, along with the vendor's cloud service behind it, and that is now the standard advice for every connected product bought for a child.</p>
 
-<p><strong>It has aged badly in the right way.</strong> Children exposed in 2015 are in their late teens and twenties now. Their names, dates of birth and childhood addresses were published — briefly and in a contained fashion, but published. Long-tail harm from children's data breaches is inherently hard to measure, and this case is the reason people started trying to.</p>
+<p><strong>It has aged badly in the right way.</strong> Children exposed in 2015 are in their late teens and twenties now. Their names, dates of birth and childhood addresses were published, briefly and in a contained fashion, but published. Long-tail harm from children's data breaches is inherently hard to measure, and this case is the reason people started trying to.</p>
 
 <h2>What parents can do</h2>
 
@@ -147,7 +148,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -156,18 +157,30 @@
         <p>Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service.</p>
 
         <h3>What actually made this breach so bad technically?</h3>
-        <p>Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection — such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit.</p>
+        <p>Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection, such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit.</p>
 
         <h3>What did the attacker do with the data?</h3>
-        <p>Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful — an arrest followed in the UK — but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested.</p>
+        <p>Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful, an arrest followed in the UK, but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested.</p>
 
         <h3>Did VTech face consequences?</h3>
         <p>The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-us-law" target="_blank" rel="noopener nofollow">Federal Trade Commission — Electronic toy maker VTech settles FTC allegations, January 2018</a></li>
-        <li><a href="https://www.troyhunt.com/when-children-are-breached-inside/" target="_blank" rel="noopener nofollow">Troy Hunt — analysis of the VTech data, November 2015</a> — the independent technical assessment of what was exposed</li>
+        <li><a href="https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-us-law" target="_blank" rel="noopener nofollow">Federal Trade Commission, Electronic toy maker VTech settles FTC allegations, January 2018</a></li>
+        <li><a href="https://www.troyhunt.com/when-children-are-breached-inside/" target="_blank" rel="noopener nofollow">Troy Hunt, analysis of the VTech data, November 2015</a>: the independent technical assessment of what was exposed</li>
         <li><b>Motherboard reporting on the breach and interviews with the attacker, November 2015</b></li>
         <li><b>VTech Holdings Limited public statements and FAQ, November–December 2015</b></li>
       </ul>
@@ -178,7 +191,7 @@
         <li><a href="/breaches/case-files/23andme-2023.html">23andMe, 2023: 14,000 accounts opened the door to 6.9 million people</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -194,5 +207,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 /* ==========================================================================
-   MyRecon — Design System
+   MyRecon, Design System
    Modern OSINT/cybersecurity aesthetic. Dark by default, full light theme.
    ========================================================================== */
 
 :root {
-  /* Dark theme (default) — solid, professional palette (no gradients) */
+  /* Dark theme (default), solid, professional palette (no gradients) */
   --bg: #0a0f1a;
   --bg-soft: #0e1524;
   --surface: #111a2b;
@@ -57,7 +57,7 @@
   --border-strong: #cbd5e1;
   --text: #0f172a;
   --text-dim: #475569;
-  --text-mute: #5f6f86;  /* was #94a3b8 — 2.56:1 on white */
+  --text-mute: #5f6f86;  /* was #94a3b8, 2.56:1 on white */
   --accent: #2563eb;
   --accent-2: #1d4ed8;
   --border-control: #748399;
@@ -67,13 +67,13 @@
 
   /* The semantic colours were never given light-theme values, so the dark
      palette's bright ones carried over onto a near-white background and were
-     used as TEXT in seventeen places — the exposure verdicts, the confidence
+     used as TEXT in seventeen places, the exposure verdicts, the confidence
      tags, the error box, the severity badges. Measured on white they ran
      1.67:1 (warn), 1.92 (ok), 2.14 (info) and 2.69 (danger); the amber was
      effectively invisible. These are the same hues darkened until each clears
      4.5:1 on --bg, --surface and --surface-2 alike. */
   --ok: #047857;
-  --warn: #a84d08;  /* was #b45309 — 4.47:1 on --bg-soft, just under AA */
+  --warn: #a84d08;  /* was #b45309, 4.47:1 on --bg-soft, just under AA */
   --danger: #be123c;
   --info: #0369a1;
 }
@@ -98,12 +98,12 @@ h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
 /* Theme switch transitions borders/text only. Transitioning a var()-derived
    background can get stuck in Chromium (seen on <body> and .panel), so
-   backgrounds switch instantly — which is imperceptible and bug-free. */
+   backgrounds switch instantly, which is imperceptible and bug-free. */
 .nav, .panel, .card, .feature, .stat, .datarow, .input, .btn-ghost {
   transition: border-color 0.25s ease, color 0.25s ease;
 }
 
-/* Flat background — no ambient gradients. */
+/* Flat background, no ambient gradients. */
 
 a { color: inherit; text-decoration: none; }
 img, svg { max-width: 100%; display: block; }
@@ -202,7 +202,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 .tab[aria-selected="true"] .tab-ico { color: var(--accent); }
 .tab .tab-ico { display: inline-flex; align-items: center; }
-/* Inline icon alignment (no emoji — clean line icons) */
+/* Inline icon alignment (no emoji, clean line icons) */
 .tab-ico svg, .pivot svg, .history-item .ico svg, .chip svg, .feature .fico svg { display: block; }
 .pivot svg { flex-shrink: 0; }
 
@@ -246,7 +246,7 @@ button, input, select { font: inherit; color: inherit; }
 
 /* Buttons carry their own colour. Without this an `a.btn` can inherit the
    accent link colour and render blue-on-blue (invisible label). */
-/* Same 3.67:1 problem as .btn — this rule was putting --accent back for
+/* Same 3.67:1 problem as .btn, this rule was putting --accent back for
    links styled as buttons and for the primary variant. */
 a.btn, .btn-primary { background: var(--accent-2); color: #ffffff; }
 a.btn-ghost, .btn-ghost { background: var(--surface-2); color: var(--text); }
@@ -357,7 +357,7 @@ a.card { display: block; }
 .meta-tag.wb-miss { color: var(--text-mute); border-style: solid; cursor: default; }
 .meta-tag.wb-warn { color: var(--warn); border-style: solid; border-color: color-mix(in srgb, var(--warn) 40%, transparent); cursor: default; }
 
-/* Leaked identifiers — the finding a person least expects about themselves. */
+/* Leaked identifiers, the finding a person least expects about themselves. */
 .panel.expo { margin-top: 18px; border-color: color-mix(in srgb, var(--danger) 34%, var(--border)); }
 .panel.expo .section-label { margin-top: 0; }
 .expo-row { padding: 10px 0; border-top: 1px solid var(--border); }
@@ -405,6 +405,32 @@ a.card { display: block; }
 }
 .ex-chip:hover { border-color: var(--accent); color: var(--accent); }
 
+/* "That looks like an email", offered under the input, never forced */
+.detect-hint { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; font-size: 0.85rem; color: var(--text-dim); }
+.detect-hint[hidden] { display: none; }
+.detect-hint svg { color: var(--accent); flex-shrink: 0; }
+.linklike {
+  background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.linklike:hover { text-decoration-thickness: 2px; }
+
+/* Question-first starts in the empty results state */
+.quick-starts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px;
+  max-width: 760px; margin: 20px auto 0; text-align: left;
+}
+.quick-start {
+  display: flex; align-items: flex-start; gap: 12px; padding: 14px; cursor: pointer;
+  font-family: inherit; text-align: left; color: var(--text);
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  transition: border-color 0.16s, transform 0.12s;
+}
+.quick-start:hover { border-color: var(--accent); transform: translateY(-1px); }
+.empty .quick-start svg { flex-shrink: 0; margin: 2px 0 0; opacity: 1; color: var(--accent); }
+.quick-start strong { display: block; font-size: 0.9rem; font-weight: 650; }
+.quick-start small { display: block; margin-top: 3px; font-size: 0.8rem; line-height: 1.45; color: var(--text-mute); }
+
 /* Saved-item remove button */
 .history-item [data-del] { margin-left: auto; width: 28px; height: 28px; font-size: 1.05rem; line-height: 1; flex-shrink: 0; }
 .pill { cursor: pointer; }
@@ -420,6 +446,13 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
   border-color: color-mix(in srgb, var(--ok) 40%, transparent);
   background: color-mix(in srgb, var(--ok) 10%, var(--surface));
 }
+.breach.incomplete {
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
+  background: color-mix(in srgb, var(--warn) 10%, var(--surface));
+}
+.breach p { margin-top: 10px; }
+.source-coverage { padding-left: 20px; margin: 12px 0; }
+.source-coverage li { margin: 7px 0; overflow-wrap: anywhere; }
 .breach h3 { display: flex; align-items: center; gap: 10px; font-size: 1rem; }
 .breach .sev { margin-left: auto; font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
@@ -437,7 +470,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .bm span { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-mute); }
 .bm strong { display: block; margin-top: 3px; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
 
-/* Horizontal ranked bars — "what leaked" */
+/* Horizontal ranked bars, "what leaked" */
 .bars { display: grid; gap: 8px; }
 .bar-row { display: grid; grid-template-columns: minmax(90px, 1.1fr) 3fr auto; align-items: center; gap: 10px; }
 .bar-k { font-size: 0.82rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -485,6 +518,16 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
    revealing swaps the type to text, also via .revealing on the wrapper. */
 .input[type="password"], .input-wrap.revealing .input { padding-right: 48px; }
 
+/* "Get alerted", the Android app, after an email result */
+.app-cta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin: 18px 0 6px; padding: 16px 18px;
+  border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+.app-cta-text { flex: 1 1 260px; }
+.app-cta-text strong { display: block; font-size: 0.95rem; }
+.app-cta-text p { margin-top: 4px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+
 /* Guidance list */
 .tips { display: grid; gap: 9px; padding-left: 20px; }
 .tips li { font-size: 0.88rem; color: var(--text-dim); line-height: 1.55; }
@@ -496,7 +539,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 }
 .empty svg { margin: 0 auto 14px; opacity: 0.5; }
 /* Was .empty h3. These are UI status messages ("Ready when you are"),
-   not document headings, and an h3 here followed no h2 — an invalid
+   not document headings, and an h3 here followed no h2, an invalid
    heading order on the homepage. Styling is identical. */
 .empty-title { color: var(--text); font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
 .error-box { border-color: color-mix(in srgb, var(--danger) 40%, transparent); color: var(--danger); border-style: solid; }
@@ -552,6 +595,10 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 
 /* Features section */
 .section { padding: 46px 0; }
+/* Saved and history are both .section and .container on one element, and the
+   shorthand above zeroed the container's side padding, flush to the screen
+   edge on a phone. */
+.section.container { padding-left: 20px; padding-right: 20px; }
 .section h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; letter-spacing: -0.02em; text-align: center; }
 .section .sub { text-align: center; color: var(--text-dim); margin: 10px auto 30px; max-width: 560px; }
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
@@ -585,7 +632,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .faq summary::after { content: "+"; position: absolute; right: 16px; top: 12px; font-size: 1.25rem; color: var(--text-mute); }
 .faq details[open] summary::after { content: "\2212"; }
 .faq details p { padding: 0 16px 16px; color: var(--text-dim); font-size: 0.92rem; }
-/* Body links inside prose take the accent colour — but a button in prose is
+/* Body links inside prose take the accent colour, but a button in prose is
    still a button. Without the :not(), this rule ties on specificity with
    `a.btn` and wins on order, painting accent-on-accent and leaving the label
    invisible. That is what happened to "Get it on Google Play" on the home
@@ -606,6 +653,41 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .article .lead { font-size: 1.1rem; color: var(--text); }
 .article .callout { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius-sm); padding: 16px 18px; margin: 22px 0; }
 .article .callout p:last-child { margin-bottom: 0; }
+
+/* The one block of an article that has to survive being quoted on its own.
+   A retrieval system lifting a paragraph out of context needs the claim, the
+   number, the date and the method in the same place, a finding stated in one
+   place and dated in another arrives as an undated claim. Visually loud for
+   the same reason: it is what a reader should leave with. */
+.article .key-finding { background: var(--bg-soft); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 20px 22px; margin: 26px 0; }
+.article .key-finding h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin: 0 0 10px; }
+.article .key-finding p { color: var(--text); font-size: 1.02rem; }
+.article .key-finding p:last-child { margin-bottom: 0; }
+.article .key-finding .method { color: var(--text-mute); font-size: 0.86rem; margin-top: 12px; }
+
+/* Measured data as a real table, not a <pre> block. Pre-formatted columns
+   read fine to a person and arrive as one undifferentiated string to anything
+   parsing the page, the column headings are the part that makes the numbers
+   mean something, and in a <pre> they are just more text. */
+.article .table-wrap { overflow-x: auto; margin: 0 0 18px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.article .data-table { border-collapse: collapse; width: 100%; min-width: 460px; font-size: 0.9rem; }
+.article .data-table th, .article .data-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.article .data-table thead th { background: var(--surface); color: var(--text); font-weight: 600; white-space: nowrap; font-size: 0.82rem; }
+.article .data-table tbody tr:last-child td { border-bottom: none; }
+.article .data-table td { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.article .data-table td:first-child { color: var(--text); font-weight: 500; }
+.article .data-table caption { caption-side: bottom; text-align: left; padding: 10px 14px; color: var(--text-mute); font-size: 0.82rem; }
+
+/* Code blocks. There were none on the site until the API documentation needed
+   them, so browser defaults were doing the job, which on a dark ground means
+   unstyled black-on-transparent monospace at whatever size the UA picked.
+   `white-space: pre` with horizontal scroll rather than wrapping: a wrapped
+   curl command cannot be copied and pasted back. */
+.article pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin: 0 0 18px; overflow-x: auto; }
+.article pre code { font-family: var(--mono); font-size: 0.86rem; line-height: 1.6; color: var(--text); background: none; padding: 0; border: 0; white-space: pre; display: block; }
+.article :not(pre) > code { font-family: var(--mono); font-size: 0.88em; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; color: var(--text); word-break: break-word; }
+.article pre + .pre-label, .article .pre-label { color: var(--text-mute); font-size: 0.8rem; margin: -10px 0 18px; }
+
 .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .guide-card { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: transform 0.16s, border-color 0.16s; }
 .guide-card:hover { transform: translateY(-3px); border-color: var(--border-strong); }
@@ -640,8 +722,8 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 }
 
 /* Links inside prose must not rely on colour alone (WCAG 1.4.1). The accent
-   measures 1.42:1 against --text-dim in dark and 1.47:1 in light — nowhere
-   near the 3:1 that would let colour carry the distinction by itself — so a
+   measures 1.42:1 against --text-dim in dark and 1.47:1 in light, nowhere
+   near the 3:1 that would let colour carry the distinction by itself, so a
    link in a paragraph was, to anyone who does not see the hue, just text.
    Underlined here rather than sitewide: nav items, cards, chips and buttons
    are identifiable by shape and position, which is the accepted alternative. */
@@ -689,7 +771,7 @@ main :is(p, li, td, address) a:not(:where(.btn, .chip, .pivot, .ex-chip)) {
 .legal a { color: var(--accent); }
 .legal address { font-style: normal; color: var(--text-dim); }
 
-/* Wide tables must scroll inside their own box — the page body never does. */
+/* Wide tables must scroll inside their own box, the page body never does. */
 .legal-table-wrap { overflow-x: auto; margin: 0 0 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .legal table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.88rem; }
 .legal caption { text-align: left; padding: 12px 14px 0; color: var(--text-mute); font-size: 0.82rem; }
@@ -738,7 +820,7 @@ main :is(p, li, td, address) a:not(:where(.btn, .chip, .pivot, .ex-chip)) {
   /* Touch targets. Everything below measured under 44x44 on a 375px screen:
      the two header icon buttons at 38x38, the tool tabs at 39 high, the
      footer links at 31, the brand at 30, and the deep-search toggle label at
-     22. Sized up here only — on a pointer device the tighter desktop
+     22. Sized up here only, on a pointer device the tighter desktop
      proportions are correct and a 44px minimum would look padded. */
   .icon-btn { width: 44px; height: 44px; }
   .tab { min-height: 44px; }
@@ -746,8 +828,8 @@ main :is(p, li, td, address) a:not(:where(.btn, .chip, .pivot, .ex-chip)) {
   .brand { min-height: 44px; }
   label.switch { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
 
-  /* Body copy in the feature and step cards sat at 0.88rem and 0.92rem —
-     14.1px and 14.7px — which is genuinely small to read on a phone. These
+  /* Body copy in the feature and step cards sat at 0.88rem and 0.92rem,
+     14.1px and 14.7px, which is genuinely small to read on a phone. These
      are prose, not captions, so they go to 16px. The .hint lines stay small:
      they are incidental helper text, not something anyone reads through. */
   .feature p { font-size: 1rem; }
@@ -782,7 +864,7 @@ main :is(p, li, td, address) a:not(:where(.btn, .chip, .pivot, .ex-chip)) {
 
 /* A single, unmissable next step. Used where a page would otherwise offer
    three competing links and leave the reader to work out which one they
-   wanted — the state the report enquiry was in. */
+   wanted, the state the report enquiry was in. */
 .cta-card {
   margin: 26px 0 34px;
   padding: 22px 24px;
@@ -791,7 +873,7 @@ main :is(p, li, td, address) a:not(:where(.btn, .chip, .pivot, .ex-chip)) {
   border-radius: var(--radius);
 }
 
-/* Related guides — the cross-links at the foot of each article. Indented list
+/* Related guides, the cross-links at the foot of each article. Indented list
    markers sit outside the text so the links read as a list of destinations
    rather than a paragraph of blue. */
 .related-guides { margin: 0 0 8px; padding-left: 20px; }
@@ -805,7 +887,7 @@ main :is(p, li, td, address) a:not(:where(.btn, .chip, .pivot, .ex-chip)) {
 :root[data-theme="light"] { --accent-text: #1d4ed8; }
 
 /* Prose links are underlined. Colour alone measured 1.57:1 against the
-   surrounding text — under the 3:1 minimum — so a reader who does not
+   surrounding text, under the 3:1 minimum, so a reader who does not
    separate the hues could not tell a link from a word. Buttons, nav, cards
    and the tag chips are excluded: they carry their own affordance. */
 .article p a, .article li a, .article td a,
@@ -822,7 +904,7 @@ main > p a, main > ul li a, main > ol li a {
 
    The section used to be a heading, a paragraph and two buttons. Nobody
    installs an app they have not seen, and the one thing a visitor cannot do
-   from a web page is watch the sweep run — so the phone below does it in
+   from a web page is watch the sweep run, so the phone below does it in
    miniature: a command types itself, results land one at a time, and a
    summary settles underneath. It is the same sequence the app's own first-run
    screen plays, so the promise made here is the first thing the app keeps.
@@ -830,7 +912,7 @@ main > p a, main > ul li a, main > ol li a {
    Drawn rather than screenshotted, deliberately. A screenshot is stale the
    moment a tab is added, weighs half a megabyte, and cannot move. This is a
    few hundred bytes of markup in the site's own tokens, and it is honest
-   about being an illustration — the handle is @yourhandle and the panel is
+   about being an illustration, the handle is @yourhandle and the panel is
    labelled EXAMPLE, exactly as in the app.
    ─────────────────────────────────────────────────────────────────────── */
 .android-split {

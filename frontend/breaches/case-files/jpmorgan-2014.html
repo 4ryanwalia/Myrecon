@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="JPMorgan Chase Hack 2014: 83 Million Households">
   <meta name="twitter:description" content="A bank spending a quarter of a billion dollars a year on security lost contact data for 83 million households because a single server had been missed in an…">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"JPMorgan Chase, 2014: one server without two-factor authentication","description":"A bank spending a quarter of a billion dollars a year on security lost contact data for 83 million households because a single server had been missed in an upgrade.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/jpmorgan-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"JPMorgan Chase data breach"},"wordCount":863}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"JPMorgan Chase data breach","item":"https://www.myrecon.xyz/breaches/case-files/jpmorgan-2014.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was any money stolen from JPMorgan customers?","acceptedAnswer":{"@type":"Answer","text":"No. The bank stated that account numbers, passwords, dates of birth and Social Security numbers were not taken and that it saw no unusual fraud against customer accounts. What was taken was contact information for 83 million households and businesses — which was, for these particular attackers, the more valuable asset."}},{"@type":"Question","name":"Why would criminals want contact details from a bank?","acceptedAnswer":{"@type":"Answer","text":"Because prosecutors said they were running pump-and-dump stock fraud. A list of people known to hold accounts at a major bank, complete with names and addresses, is a pre-qualified target list for investment spam — vastly more effective than a random mailing list. The breach was an input to a securities fraud operation rather than an end in itself."}},{"@type":"Question","name":"How did one missed server cause this?","acceptedAnswer":{"@type":"Answer","text":"JPMorgan had been rolling out two-factor authentication across its remote access infrastructure. One server was overlooked. When attackers obtained an employee's credentials, that server accepted the password alone, and from that foothold they moved through the internal network over roughly two months. Security controls are only as good as their coverage, and coverage gaps are the normal state of any large estate."}},{"@type":"Question","name":"Did JPMorgan face a fine?","acceptedAnswer":{"@type":"Answer","text":"No significant regulatory penalty followed in the US, where there was then no general federal breach standard covering this kind of contact data. The consequence was reputational and political: the bank's chief executive had publicly described its security spending, which made the single missed server an uncomfortable illustration that budget is not the constraint."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was any money stolen from JPMorgan customers?","acceptedAnswer":{"@type":"Answer","text":"No. The bank stated that account numbers, passwords, dates of birth and Social Security numbers were not taken and that it saw no unusual fraud against customer accounts. What was taken was contact information for 83 million households and businesses, which was, for these particular attackers, the more valuable asset."}},{"@type":"Question","name":"Why would criminals want contact details from a bank?","acceptedAnswer":{"@type":"Answer","text":"Because prosecutors said they were running pump-and-dump stock fraud. A list of people known to hold accounts at a major bank, complete with names and addresses, is a pre-qualified target list for investment spam, vastly more effective than a random mailing list. The breach was an input to a securities fraud operation rather than an end in itself."}},{"@type":"Question","name":"How did one missed server cause this?","acceptedAnswer":{"@type":"Answer","text":"JPMorgan had been rolling out two-factor authentication across its remote access infrastructure. One server was overlooked. When attackers obtained an employee's credentials, that server accepted the password alone, and from that foothold they moved through the internal network over roughly two months. Security controls are only as good as their coverage, and coverage gaps are the normal state of any large estate."}},{"@type":"Question","name":"Did JPMorgan face a fine?","acceptedAnswer":{"@type":"Answer","text":"No significant regulatory penalty followed in the US, where there was then no general federal breach standard covering this kind of contact data. The consequence was reputational and political: the bank's chief executive had publicly described its security spending, which made the single missed server an uncomfortable illustration that budget is not the constraint."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -79,7 +80,7 @@
 
 <h2>What happened</h2>
 
-<p>The bank had been extending two-factor authentication across its remote access infrastructure — a programme every large financial institution was running at the time and precisely the right control for the threat. The programme was essentially complete.</p>
+<p>The bank had been extending two-factor authentication across its remote access infrastructure, a programme every large financial institution was running at the time and precisely the right control for the threat. The programme was essentially complete.</p>
 
 <p>One server had not been upgraded. It still accepted a username and password alone.</p>
 
@@ -102,20 +103,20 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>June 2014</b> — Attackers use stolen employee credentials against a server lacking two-factor authentication.</li>
-  <li><b>June – August 2014</b> — Movement through the internal network; contact data for 83 million households and businesses is taken.</li>
-  <li><b>July – August 2014</b> — JPMorgan detects the intrusion and begins remediation.</li>
-  <li><b>2 October 2014</b> — The bank files an 8-K disclosing the scale.</li>
-  <li><b>November 2015</b> — Three men are indicted; prosecutors describe the wider fraud enterprise.</li>
-  <li><b>2016 – 2018</b> — Extradition and proceedings run in the US and Israel.</li>
-  <li><b>2020</b> — Guilty pleas are entered in the Southern District of New York.</li>
+  <li><b>June 2014</b>: Attackers use stolen employee credentials against a server lacking two-factor authentication.</li>
+  <li><b>June – August 2014</b>: Movement through the internal network; contact data for 83 million households and businesses is taken.</li>
+  <li><b>July – August 2014</b>: JPMorgan detects the intrusion and begins remediation.</li>
+  <li><b>2 October 2014</b>: The bank files an 8-K disclosing the scale.</li>
+  <li><b>November 2015</b>: Three men are indicted; prosecutors describe the wider fraud enterprise.</li>
+  <li><b>2016 – 2018</b>: Extradition and proceedings run in the US and Israel.</li>
+  <li><b>2020</b>: Guilty pleas are entered in the Southern District of New York.</li>
 </ol>
 
 <h2>What it changed</h2>
 
 <p><strong>Financial regulators stopped treating security as an IT matter.</strong> New York's Department of Financial Services introduced its cybersecurity regulation in 2017, requiring named accountability, multi-factor authentication, and annual certification by a senior officer. JPMorgan is not the only reason, but a breach of this size at this institution made the political case unanswerable.</p>
 
-<p><strong>Asset inventory became a regulated control rather than good housekeeping.</strong> "How do you know the control is deployed everywhere" turned into a question examiners ask, with evidence expected. Continuous configuration monitoring — checking that every server still has the agent, the patch and the authentication requirement — grew directly out of failures of this shape.</p>
+<p><strong>Asset inventory became a regulated control rather than good housekeeping.</strong> "How do you know the control is deployed everywhere" turned into a question examiners ask, with evidence expected. Continuous configuration monitoring, checking that every server still has the agent, the patch and the authentication requirement, grew directly out of failures of this shape.</p>
 
 <p><strong>It complicated the story about spending.</strong> The bank's security budget had been cited publicly as evidence of seriousness. After 2014 that argument was much harder to make anywhere, and attention moved towards demonstrating coverage and effectiveness instead of investment.</p>
 
@@ -140,16 +141,16 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>Was any money stolen from JPMorgan customers?</h3>
-        <p>No. The bank stated that account numbers, passwords, dates of birth and Social Security numbers were not taken and that it saw no unusual fraud against customer accounts. What was taken was contact information for 83 million households and businesses — which was, for these particular attackers, the more valuable asset.</p>
+        <p>No. The bank stated that account numbers, passwords, dates of birth and Social Security numbers were not taken and that it saw no unusual fraud against customer accounts. What was taken was contact information for 83 million households and businesses, which was, for these particular attackers, the more valuable asset.</p>
 
         <h3>Why would criminals want contact details from a bank?</h3>
-        <p>Because prosecutors said they were running pump-and-dump stock fraud. A list of people known to hold accounts at a major bank, complete with names and addresses, is a pre-qualified target list for investment spam — vastly more effective than a random mailing list. The breach was an input to a securities fraud operation rather than an end in itself.</p>
+        <p>Because prosecutors said they were running pump-and-dump stock fraud. A list of people known to hold accounts at a major bank, complete with names and addresses, is a pre-qualified target list for investment spam, vastly more effective than a random mailing list. The breach was an input to a securities fraud operation rather than an end in itself.</p>
 
         <h3>How did one missed server cause this?</h3>
         <p>JPMorgan had been rolling out two-factor authentication across its remote access infrastructure. One server was overlooked. When attackers obtained an employee's credentials, that server accepted the password alone, and from that foothold they moved through the internal network over roughly two months. Security controls are only as good as their coverage, and coverage gaps are the normal state of any large estate.</p>
@@ -157,10 +158,22 @@
         <h3>Did JPMorgan face a fine?</h3>
         <p>No significant regulatory penalty followed in the US, where there was then no general federal breach standard covering this kind of contact data. The consequence was reputational and political: the bank's chief executive had publicly described its security spending, which made the single missed server an uncomfortable illustration that budget is not the constraint.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=JPM&amp;type=8-K" target="_blank" rel="noopener nofollow">JPMorgan Chase &amp; Co. Form 8-K, 2 October 2014</a></li>
-        <li><a href="https://www.justice.gov/usao-sdny" target="_blank" rel="noopener nofollow">US Department of Justice — indictment of Gery Shalon, Joshua Samuel Aaron and Ziv Orenstein, November 2015</a></li>
+        <li><a href="https://www.justice.gov/usao-sdny" target="_blank" rel="noopener nofollow">US Department of Justice, indictment of Gery Shalon, Joshua Samuel Aaron and Ziv Orenstein, November 2015</a></li>
         <li><b>Securities and Exchange Commission complaint in the related securities fraud matter, 2015</b></li>
         <li><b>Guilty pleas entered in the Southern District of New York, 2020</b></li>
       </ul>
@@ -171,7 +184,7 @@
         <li><a href="/breaches/case-files/equifax-2017.html">Equifax, 2017: 147 million people, one unpatched web form</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -187,5 +200,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

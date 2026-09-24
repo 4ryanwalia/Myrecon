@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRecon vs WhatsMyName: Username Checkers Compared | MyRecon</title>
+  <meta name="description" content="WhatsMyName is a community dataset of 700+ sites built to reduce false positives. How its detection compares with MyRecon&#x27;s scoring, and what each does beyond usernames.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/vs/whatsmyname.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="MyRecon vs WhatsMyName: Username Checkers Compared | MyRecon">
+  <meta property="og:description" content="WhatsMyName is a community dataset of 700+ sites built to reduce false positives. How its detection compares with MyRecon&#x27;s scoring, and what each does beyond usernames.">
+  <meta property="og:url" content="https://www.myrecon.xyz/vs/whatsmyname.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MyRecon vs WhatsMyName: Username Checkers Compared | MyRecon">
+  <meta name="twitter:description" content="WhatsMyName is a community dataset of 700+ sites built to reduce false positives. How its detection compares with MyRecon&#x27;s scoring, and what each does beyond usernames.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=12">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "MyRecon vs WhatsMyName", "description": "WhatsMyName is a community dataset of 700+ sites built to reduce false positives. How its detection compares with MyRecon's scoring, and what each does beyond usernames.", "url": "https://www.myrecon.xyz/vs/whatsmyname.html", "dateModified": "2026-09-25", "datePublished": "2026-09-25", "isPartOf": {"@id": "https://www.myrecon.xyz/#website"}, "publisher": {"@id": "https://www.myrecon.xyz/#organization"}, "mainEntityOfPage": "https://www.myrecon.xyz/vs/whatsmyname.html", "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MyRecon", "item": "https://www.myrecon.xyz/"}, {"@type": "ListItem", "position": 2, "name": "Comparisons", "item": "https://www.myrecon.xyz/vs/"}, {"@type": "ListItem", "position": 3, "name": "MyRecon vs WhatsMyName", "item": "https://www.myrecon.xyz/vs/whatsmyname.html"}]}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does MyRecon use the WhatsMyName dataset?", "acceptedAnswer": {"@type": "Answer", "text": "No. MyRecon's platform list and scoring are maintained separately. WhatsMyName's data is licensed CC BY-SA 4.0, and any tool that does use it is required to credit it."}}, {"@type": "Question", "name": "Why do two username checkers give different results for the same handle?", "acceptedAnswer": {"@type": "Answer", "text": "They check different sites, decide existence with different rules, and send requests from different networks, some of which a platform may block. A result both tools agree on is much more likely to be real."}}, {"@type": "Question", "name": "Which is better for checking my own footprint?", "acceptedAnswer": {"@type": "Answer", "text": "Either works for usernames. MyRecon also checks your email against breach data and your passwords with k-anonymity, which covers the other half of a personal footprint review."}}]}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/" class="active">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="vs-hero container">
+      <nav aria-label="Breadcrumb" style="font-size:.85rem;color:var(--text-mute);margin-bottom:18px">
+        <a href="/" style="color:var(--text-mute)">Home</a> › <a href="/vs/" style="color:var(--text-mute)">Comparisons</a> › <span>WhatsMyName</span>
+      </nav>
+      <h1><span data-scramble>MyRecon vs</span> <span class="fx-grad">WhatsMyName</span></h1>
+      <p class="lead">WhatsMyName was built in 2015 for the same reason we built our scoring: username checkers kept reporting accounts that did not exist. Of all the tools we compare against, this is the one whose philosophy is closest to ours.</p>
+      <div class="vs-duel" aria-hidden="true">
+        <div class="vs-side us">MyRecon<small>browser, multi-tool</small></div>
+        <div class="vs-badge"><span>VS</span></div>
+        <div class="vs-side">WhatsMyName<small>Dataset + web app, CC BY-SA</small></div>
+      </div>
+      <p class="vs-date" style="margin-top:18px">Checked against WhatsMyName's own documentation on 25 September 2026</p>
+    </section>
+    <article class="vs-article container">
+    <div class="vs-verdict">
+      <h2>Short answer</h2>
+      <p style="margin:0">For <strong>username coverage</strong>, WhatsMyName wins: 700+ sites, a web app, and detection rules that require both a positive and a negative signal. <strong>MyRecon</strong> wins when the investigation goes past the username, into email, breaches, domains, DNS and IPs, and when you want each match scored rather than matched against a rule. Both are free; using both is sensible.</p>
+    </div>
+    <div class="vs-table-wrap"><table class="vs-table">
+      <caption class="visually-hidden">MyRecon compared with WhatsMyName</caption>
+      <thead><tr><th scope="col">Feature</th><th scope="col">MyRecon</th><th scope="col">WhatsMyName</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">What it is</th><td>A multi-lookup OSINT tool</td><td>A community dataset, plus the whatsmyname.app front end</td></tr>
+        <tr><th scope="row">Sites</th><td>123 on the web, 560 in the Android app</td><td>700+, per its README</td></tr>
+        <tr><th scope="row">How a hit is decided</th><td>Scored evidence: status, content, metadata, redirects</td><td>Per-site rules: expected code and string for found, and for missing</td></tr>
+        <tr><th scope="row">Confidence label per match</th><td class="vs-yes">Yes, high / medium / low</td><td class="vs-no">No, a rule matches or it does not</td></tr>
+        <tr><th scope="row">Shows what it rejected, and why</th><td class="vs-yes">Yes</td><td class="vs-no">No</td></tr>
+        <tr><th scope="row">Email, breach, domain, DNS, IP</th><td class="vs-yes">Yes</td><td class="vs-no">No</td></tr>
+        <tr><th scope="row">Export</th><td>JSON, CSV</td><td>CSV from the web app</td></tr>
+        <tr><th scope="row">Data licence</th><td>Code MIT</td><td>Dataset CC BY-SA 4.0</td></tr>
+        <tr><th scope="row">Used inside other tools</th><td class="vs-no">No</td><td class="vs-yes">Yes, many OSINT tools consume the dataset</td></tr>
+      </tbody></table></div>
+    <h2>What WhatsMyName is</h2>
+    <p>WhatsMyName is a community-maintained dataset of more than 700 websites, started in 2015 by Micah Hoffman (WebBreacher) specifically to deal with false positives in existing username checkers. Each site entry describes how to tell a real account from a missing one: an expected status code and a string that should appear when the account exists, and a separate code and string that indicate it does not. The data is licensed CC BY-SA 4.0 and is used by a long list of other OSINT tools. The public front end at whatsmyname.app lets you run a search in the browser, filter by category and export to CSV.</p>
+
+    <h2>Two answers to the same problem</h2>
+    <p>The false-positive problem is simple to state. Many sites answer "200 OK" whether or not a profile exists, or show a login wall, or redirect every unknown name to the homepage. A checker that reads only the status code will report accounts that are not there.</p>
+    <p>WhatsMyName's answer is a stricter rule per site: a hit needs the right code <em>and</em> the right text, and the dataset also records what "missing" looks like. That is a real improvement over status-only detection, and it is why the dataset is so widely reused.</p>
+    <p>MyRecon's answer is to score rather than match. Status, page content, profile metadata such as an avatar or display name, and redirect behaviour are combined into a score, and the match is labelled high, medium or low. Anything that answered but did not clear the bar is listed in a "not confirmed" panel with its status code and the reason. The trade-off is honest: rules are transparent and easy to audit per site; scoring is more forgiving of small page changes and tells you <em>how</em> sure it is. Our Android app adds a third layer, requesting an impossible control handle on every platform so a site that answers both alike cannot produce a match.</p>
+
+    <h2>Where WhatsMyName beats MyRecon</h2>
+    <ul>
+      <li><strong>Coverage.</strong> 700+ sites to our 123 on the web.</li>
+      <li><strong>A shared, open dataset.</strong> It improves every tool that consumes it. Our platform list serves our own tools.</li>
+      <li><strong>Transparent per-site rules.</strong> You can read exactly why a site reported a hit. That is excellent for training and for auditing a result in a report.</li>
+      <li><strong>Category filtering.</strong> Useful when you only care about, say, gaming or developer platforms.</li>
+    </ul>
+
+    <h2>Where MyRecon beats WhatsMyName</h2>
+    <ul>
+      <li><strong>It does not stop at the username.</strong> Email intelligence, breach exposure, RDAP registration data, DNS records, IP ownership, SPF and DMARC verdicts, and a k-anonymity password check, all on one page with one-click pivots between them.</li>
+      <li><strong>Graded confidence.</strong> A medium match is still shown, and labelled, instead of being a silent miss because one string changed on the site.</li>
+      <li><strong>Visible rejects.</strong> You see which platforms were reachable but inconclusive, so "not found" and "could not tell" are never the same thing.</li>
+      <li><strong>Profile enrichment.</strong> Avatars and bios on confirmed matches help you judge at a glance whether two accounts are the same person.</li>
+    </ul>
+
+    <h2>Which one should you use?</h2>
+    <p>For a pure username sweep with the widest reach, use WhatsMyName, and read its results with the same care you would give any checker. For an investigation that will move from a handle to an email, a domain or an IP, or when you want each match graded, use MyRecon. Accounts that show up in both are the ones to trust first.</p>
+    <h2>Questions people ask</h2>
+    <div class="faq">
+      <details><summary>Does MyRecon use the WhatsMyName dataset?</summary><p>No. MyRecon's platform list and scoring are maintained separately. WhatsMyName's data is licensed CC BY-SA 4.0, and any tool that does use it is required to credit it.</p></details>
+      <details><summary>Why do two username checkers give different results for the same handle?</summary><p>They check different sites, decide existence with different rules, and send requests from different networks, some of which a platform may block. A result both tools agree on is much more likely to be real.</p></details>
+      <details><summary>Which is better for checking my own footprint?</summary><p>Either works for usernames. MyRecon also checks your email against breach data and your passwords with k-anonymity, which covers the other half of a personal footprint review.</p></details>
+    </div>
+    <h2>Other comparisons</h2>
+    <div class="vs-grid">
+      <a class="vs-card" href="/vs/sherlock.html"><span class="kind">CLI scanner</span><h3>MyRecon vs Sherlock</h3><p>400+ sites from a terminal against a confidence-scored search in the browser.</p><span class="go">Compare</span></a>
+      <a class="vs-card" href="/vs/maigret.html"><span class="kind">CLI scanner</span><h3>MyRecon vs Maigret</h3><p>The largest site list in open source, and what a bigger list does and does not buy you.</p><span class="go">Compare</span></a>
+      <a class="vs-card" href="/vs/have-i-been-pwned.html"><span class="kind">Breach search</span><h3>MyRecon vs Have I Been Pwned</h3><p>The breach authority, which we build on, and what we add around it.</p><span class="go">Compare</span></a>
+    </div>
+    <div class="vs-cta">
+      <h2>Run the test yourself</h2>
+      <p>Search a handle you own, then one that cannot exist, like <code>zq-no-such-user-8841</code>. A tool worth trusting reports nothing for the second.</p>
+      <a class="btn" href="/#tool=username">Open the username search</a>
+      <a class="btn btn-ghost" href="/is-myrecon-legit.html" style="margin-left:8px">Six tests for any tool</a>
+    </div>
+    </article>
+  </main>
+  <footer class="footer"><div class="container"><div class="footer-bottom">
+    <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+    <span><a href="/vs/" style="color:var(--text-dim)">Comparisons</a> · <a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+  </div></div></footer>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=14"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

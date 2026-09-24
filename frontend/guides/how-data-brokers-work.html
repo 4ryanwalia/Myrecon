@@ -19,29 +19,30 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="How Data Brokers Collect and Sell Your Personal Data">
   <meta name="twitter:description" content="Where data brokers get your information, how they profit, and how to opt out.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"How Data Brokers Collect and Sell Your Personal Data","description":"Where data brokers get your information, how they profit, and how to opt out.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/how-data-brokers-work.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"How Data Brokers Collect and Sell Your Personal Data","description":"Where data brokers get your information, how they profit, and how to opt out.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-14","mainEntityOfPage":"https://www.myrecon.xyz/guides/how-data-brokers-work.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"How Data Brokers Collect and Sell Your Data","item":"https://www.myrecon.xyz/guides/how-data-brokers-work.html"}],"@context":"https://schema.org"}</script>
 </head>
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -58,54 +59,103 @@
 
   <main id="main" class="container">
     <article class="article">
-      <span class="kicker">Privacy</span>
+<span class="kicker">Privacy</span>
       <h1>How Data Brokers Collect and Sell Your Personal Data</h1>
-      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+      <p class="meta">Updated 14 September 2026 · 7 min read</p>
 
-      <p class="lead">There is an entire industry built on compiling profiles of ordinary people and selling them — and most of us have never heard of the companies doing it. Understanding how data brokers work is the first step to limiting how much of your life they can package up.</p>
+      <p class="lead">There is an industry built on holding a file about you. You have no relationship with these companies, most of them you could not name, and several hold more about your household than any organisation you have actually dealt with. Here is where it comes from, what is in it, and what the opt-out process really achieves.</p>
 
-      <h2>Who data brokers are</h2>
-      <p>A data broker is a company whose business is collecting personal information about people from many sources, combining it into detailed profiles, and selling access to those profiles. Their customers include advertisers, marketers, background-check services, insurers, and "people search" websites — the sites that pop up with your name, age, and past addresses when you search yourself. You never signed up with them, and you probably cannot name a single one, yet many hold a startlingly complete picture of you.</p>
-
-      <h2>Where they get your data</h2>
+      <h2>Three industries wearing one name</h2>
+      <p>"Data broker" covers businesses with quite different models, and conflating them makes the whole subject harder to act on.</p>
       <ul>
-        <li><strong>Public records</strong> — voter rolls, property and court records, business filings, and licences.</li>
-        <li><strong>Online activity</strong> — tracking pixels and cookies that follow you across websites and apps.</li>
-        <li><strong>Purchases and loyalty programs</strong> — shopping histories sold or shared by retailers.</li>
-        <li><strong>Apps and services</strong> — data harvested through permissions you granted, often buried in a privacy policy.</li>
-        <li><strong>Other brokers</strong> — they buy and sell datasets among themselves, so one leak spreads everywhere.</li>
+        <li><strong>Consumer data aggregators.</strong> Large companies compiling detailed household-level files, sold to marketers, insurers, financial institutions and risk-scoring products. You will not encounter their interface; their customers are businesses.</li>
+        <li><strong>People-search sites.</strong> The consumer-facing tier. They publish a profile of you, addresses, relatives, phone numbers, age, as a free teaser, and charge for the full report. These are the ones that appear when someone searches your name, and the ones most worth removing yourself from.</li>
+        <li><strong>Identity graph and ad-tech firms.</strong> They do not sell a readable dossier; they sell resolution, the ability to recognise that a device, a hashed email address and a loyalty account are the same person. This is the least visible tier and the fastest growing.</li>
       </ul>
 
-      <h2>How the profiles are built</h2>
-      <p>Individually, these sources are fragments. The broker's real product is <em>correlation</em>: matching records by name, email, phone number, and address to merge them into a single profile. That profile can include your relatives, your estimated income, your interests, your approximate location history, and inferences the broker <em>guesses</em> about you — inferences that are sometimes wrong but still sold as fact.</p>
+      <h2>Where the data actually comes from</h2>
+      <p>Very little of it is stolen. Almost all of it is collected lawfully, which is precisely what makes it difficult to undo.</p>
+      <ul>
+        <li><strong>Public records.</strong> Property and land registries, voter rolls where public, court and bankruptcy filings, business registrations, professional licences, marriage and divorce records. This is the foundation, and it is the part you cannot opt out of because it is public by statute.</li>
+        <li><strong>Commercial transactions.</strong> Loyalty schemes, warranty registrations, subscriptions, magazine lists, charity donor lists, many of which grant a right to share with "partners" in terms nobody reads.</li>
+        <li><strong>Surveys, quizzes and competitions.</strong> Frequently operated for no other purpose. A free prize draw asking for your date of birth and phone number is a collection instrument, not a competition.</li>
+        <li><strong>Mobile applications.</strong> Embedded advertising and analytics kits transmitting device identifiers and, historically, location at high frequency. Location data has been resold widely enough to have produced repeated scandals about the tracking of individuals.</li>
+        <li><strong>Web tracking.</strong> Pixels and tags on ordinary websites, increasingly keyed to a hashed email address rather than a cookie, which is what makes the tracking survive cookie deletion and move between your devices.</li>
+        <li><strong>Other brokers.</strong> The most important source, and the reason removal is difficult: the industry buys, merges and resells from itself continuously, so a record deleted at one company is re-acquired from another within months.</li>
+      </ul>
+
+      <h2>How a file gets built</h2>
+      <p>The technical core of the business is <strong>identity resolution</strong>: deciding that scattered fragments describe one person. Matching runs on hashed email addresses, phone numbers, device identifiers, names paired with addresses, and household composition, a probabilistic process producing a persistent internal identifier that follows you across sources.</p>
+      <p>What results is not a transcript. It is a set of <strong>inferences</strong>, and this is the part people consistently underestimate. Alongside name, address history, age, relatives and phone numbers sit estimates: income band, home ownership, likely education, presence of children and their approximate ages, purchasing categories, and life events, recently moved, recently married, newly a parent, probably expecting, recently bereaved, financially stressed.</p>
+      <p>Life-event segments are commercially valuable because they mark moments when people change providers. They are also the segments that feel most invasive when encountered, because an inference does not need to have been disclosed by you and cannot be corrected by you in any practical way.</p>
 
       <div class="callout">
-        <p><strong>Why this matters.</strong> These profiles power targeted scams, make identity theft easier, expose home addresses to strangers, and can influence decisions about you that you never see. The information is also a goldmine for anyone trying to impersonate or locate you.</p>
+        <p><strong>The inferences can simply be wrong, and you will not be told.</strong> A file can attribute the wrong address, the wrong relatives, an inaccurate income band or a health-adjacent category derived from unrelated purchases. Where that file feeds a marketing decision, the cost is irrelevant advertising. Where it feeds a tenancy screening, an insurance quote or a fraud score, an error you never saw can produce a decision you cannot explain, which is why the rights of access described below are worth exercising even when you do not intend to opt out.</p>
       </div>
 
-      <h2>How to see what's out there</h2>
-      <p>Start by searching your own name, along with your city, on a search engine — the people-search sites that appear are broker listings. Then audit the accounts and breaches tied to your email and usernames; the more of your data that is already public, the easier it is for brokers to enrich their profile of you. MyRecon's <a href="/#tool">tools</a> help with that self-audit, and our guide on <a href="/guides/check-email-data-breach.html">checking for breaches</a> covers the exposure side.</p>
+      <h2>Who buys it</h2>
+      <ul>
+        <li><strong>Marketers,</strong> the original and largest customer.</li>
+        <li><strong>Insurers and lenders,</strong> for risk modelling and prospecting.</li>
+        <li><strong>Employment and tenant screening services,</strong> where in some jurisdictions the use is regulated and in others it is not.</li>
+        <li><strong>Debt collectors and skip tracers,</strong> for whom locating people is the product.</li>
+        <li><strong>Government and law enforcement,</strong> which in several countries have purchased commercially available data of a kind they would otherwise have needed legal process to compel. The legal debate about this is live and unresolved.</li>
+        <li><strong>Fraudsters,</strong> who buy the same reports as everyone else. A people-search profile listing your address history, relatives and previous phone numbers is a working script for a social-engineering call to a support desk, and for answering security questions.</li>
+      </ul>
 
-      <h2>How to opt out and limit exposure</h2>
+      <div class="callout">
+        <p><strong>Brokers get breached, and their breaches are unusually damaging.</strong> In 2024 a background-check data broker leaked a file covering a large share of the United States population, names, address histories and national identifiers, about people who had never heard of the company and had no relationship with it to sever. Ordinary breach advice assumes you can change something at the company that lost your data. Here there is nothing to change and nobody to leave. <a href="/breaches/case-files/national-public-data-2024.html">The case file covers what happened.</a></p>
+      </div>
+
+      <h2>Why this is lawful, and what rights you actually have</h2>
+      <p>It varies sharply by where you live, and the practical difference is large.</p>
+      <p>In <strong>the European Union and the United Kingdom</strong>, data protection law gives you a right of access, a right to erasure, and an absolute right to object to processing for direct marketing, meaning a broker must stop on request, without balancing it against their interests. A company that obtained your data from somewhere other than you is also obliged to tell you where it came from, which makes an access request the most informative single action available: it maps the supply chain, and the upstream sources are what you then address.</p>
+      <p>In <strong>the United States</strong> there is no general federal privacy statute. Sectoral laws cover specific uses, credit, employment screening and health care among them, while general marketing data is largely unregulated at federal level. State law has moved substantially: several states operate broker registries, and California's deletion mechanism under its Delete Act is designed to let one request propagate to registered brokers rather than requiring hundreds of individual ones.</p>
+      <p>In <strong>India</strong>, the Digital Personal Data Protection Act establishes consent requirements and rights of correction and erasure, with obligations phasing in through subordinate rules.</p>
+      <p>Everywhere, the same asymmetry applies: the right exists, and exercising it is manual, repetitive and adversarial by design.</p>
+
+      <h2>Opting out, realistically</h2>
       <ol>
-        <li><strong>Opt out of the big brokers directly.</strong> Most operate a removal process; search "[broker name] opt out." It is tedious but effective for the largest listings.</li>
-        <li><strong>Use privacy rights where you have them.</strong> Laws such as the GDPR in Europe and the CCPA/CPRA in California give you the right to request deletion of your data.</li>
-        <li><strong>Reduce new collection.</strong> Limit app permissions, decline non-essential cookies, and avoid loyalty schemes that monetise your purchases.</li>
-        <li><strong>Shrink your public footprint</strong> so there is less to compile — see our full <a href="/guides/reduce-your-digital-footprint.html">digital-footprint guide</a>.</li>
-        <li><strong>Repeat periodically.</strong> Brokers re-list data over time, so opting out once is not permanent.</li>
+        <li><strong>Find out who lists you.</strong> Search your name with your city, your previous cities, your phone number and your email address. The people-search sites surface quickly. Record each one and its opt-out URL.</li>
+        <li><strong>Use the official opt-out page only,</strong> which is usually buried in the footer or on a privacy page. Never pay the company that listed you to remove you, and be wary of "removal" pages on unrelated domains.</li>
+        <li><strong>Expect to give data to remove data.</strong> Most require an email address, and some require identity documents. Use an alias address dedicated to this and nothing else, and redact everything not needed to establish identity.</li>
+        <li><strong>Exercise the statutory right where you have one.</strong> In the EU or UK, a written erasure and objection request to a named data protection contact carries a legal deadline and an escalation route to a regulator; the informal web form does not.</li>
+        <li><strong>Check again in three to six months.</strong> Records return, because the upstream sources were never removed. This is maintenance, not a task that completes.</li>
+        <li><strong>Consider a removal service with clear eyes.</strong> They automate a genuinely tedious process and they cannot do more than you could; assess them on the number of brokers covered and whether they re-check, and note that you are handing your details to another company to do it.</li>
       </ol>
 
-      <h2>The realistic goal</h2>
-      <p>You will probably never remove yourself from every broker — the industry is large and constantly re-compiling. But you do not need perfection. Removing yourself from the biggest people-search sites and cutting off new collection dramatically reduces how easily a stranger, scammer, or stalker can find and profile you. Even partial control is a real improvement over doing nothing.</p>
+      <h2>What actually reduces the supply</h2>
+      <p>Removal addresses the existing file. These reduce what flows in next:</p>
+      <ul>
+        <li><strong>A different email alias per service,</strong> which breaks the matching key the industry relies on and tells you who leaked or sold your address when one starts receiving spam.</li>
+        <li><strong>A secondary phone number</strong> for retail, deliveries and forms.</li>
+        <li><strong>Declining loyalty schemes, quizzes and prize draws,</strong> which exist to collect.</li>
+        <li><strong>Restricting app location permissions</strong> to "while using", and resetting or disabling the advertising identifier on your phone.</li>
+        <li><strong>Opting out of off-platform activity collection</strong> on the large social platforms, see <a href="/guides/social-media-privacy.html">the social media privacy guide</a>.</li>
+        <li><strong>A credit freeze</strong> where available, which does not affect brokers but blocks the fraud their files enable.</li>
+        <li><strong>Suppressing public-record disclosure</strong> where the law allows it, several jurisdictions permit an unpublished option on electoral or land registers, and it stops the foundational source rather than one downstream copy.</li>
+      </ul>
 
-      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">See where the data comes from →</a></p>
-            <h2>Related guides</h2>
+      <div class="callout">
+        <p>See what is already publicly attached to your email address and handles with the <a href="/#tool">MyRecon tools</a>, or work through <a href="/guides/reduce-your-digital-footprint.html">the digital footprint routine</a> for the full sequence.</p>
+      </div>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dhow_data_brokers_work" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
       <ul class="related-guides">
-        <li><a href="/guides/reduce-your-digital-footprint.html">how to find and shrink your public digital footprint</a></li>
-        <li><a href="/guides/social-media-privacy.html">locking down the social media settings that leak the most</a></li>
-        <li><a href="/guides/check-email-data-breach.html">check whether your email address was in a data breach</a></li>
-        <li><a href="/services.html">what a guided footprint removal involves</a></li>
-        <li><a href="/guides/what-is-osint.html">what OSINT is and how it works</a></li>
+        <li><a href="/guides/reduce-your-digital-footprint.html">a step-by-step routine for shrinking your public data</a></li>
+        <li><a href="/guides/social-media-privacy.html">locking down what platforms expose</a></li>
+        <li><a href="/guides/check-email-data-breach.html">checking what your address is exposed in</a></li>
+        <li><a href="/guides/how-to-spot-phishing.html">the scams that run on purchased data</a></li>
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
@@ -122,5 +172,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 Local development entry point.
 
 `python app.py` starts the server but leaves FLASK_ENV unset, and config.py
-defaults that to "production" — which swaps the CORS allowlist to the live
+defaults that to "production", which swaps the CORS allowlist to the live
 domains and makes every request from a localhost frontend fail preflight. The
 symptom ("Could not reach the MyRecon API") looks like the backend is down
 when it is actually running fine and refusing the origin.

@@ -1,14 +1,14 @@
 """
-Username checker — multi-platform enumeration engine.
+Username checker, multi-platform enumeration engine.
 
 Checks a username across the platform database and, crucially, **verifies**
 each hit before reporting it. A username resolving to an HTTP 200 page is not
-proof of a real profile — many sites return 200 for any handle (SPA shells,
+proof of a real profile, many sites return 200 for any handle (SPA shells,
 login walls, soft 404s, redirects to a home/login page). To avoid false
 positives we require positive corroborating signals (the handle echoed in the
 title/canonical URL, a profile-type OpenGraph tag, a real avatar, follower
-stats, …) and score confidence. Hard negatives — a page that says the account
-does not exist, or a redirect to a login wall — are rejected. Everything else
+stats, …) and score confidence. Hard negatives, a page that says the account
+does not exist, or a redirect to a login wall, are rejected. Everything else
 is reported with a confidence label rather than hidden, because platforms that
 render client-side give no evidence either way and silence there reads as
 "no account" when it should read "cannot tell".
@@ -17,9 +17,12 @@ render client-side give no evidence either way and silence there reads as
 import re
 import time
 import html as _html
-import requests
-from urllib.parse import urlparse, urlsplit, urlunsplit
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib.parse import urlparse, urlsplit, urlunsplit
+
+import requests
+
+from core.netguard import BlockedRequest, safe_get
 
 # ──────────────────────────────────────────────────────────────
 #  Platform database:  (name, url_template, expected_status)
@@ -290,13 +293,13 @@ def confidence_score(resp, username: str, meta: dict) -> int:
     tell an account from an empty one. Sites that answer 200 for every handle
     serve the *same* page either way: same meta description, same default share
     image, same canonical echoing back whatever path was requested. Award
-    points for those and a made-up handle scores exactly what a real one does —
+    points for those and a made-up handle scores exactly what a real one does,
     which is how a result ends up reported as found and then 404s when clicked.
 
     So a match needs at least one signal that could only come from a page
     rendered for this specific account: the handle in the page title, or
     follower/following counts. Everything else is corroboration and only
-    counts once one of those has fired. Note what this gives up — a real
+    counts once one of those has fired. Note what this gives up, a real
     profile on a site that renders entirely client-side scores 0, because
     nothing in the response distinguishes it from a nonexistent one. Silence
     is the honest answer there.
@@ -333,7 +336,7 @@ def confidence_score(resp, username: str, meta: dict) -> int:
             # profiles, "username" lands around 1,238,000 and <title> around
             # 1,220,828, so a 160,000-char window missed every signal and this
             # branch never fired. Scanning the rest is close to free, because
-            # requests has already read the full body into resp.text — the
+            # requests has already read the full body into resp.text, the
             # slice only ever limited the search, never the download.
             body = resp.text.lower()
             escaped = re.escape(uname)
@@ -353,13 +356,13 @@ def confidence_score(resp, username: str, meta: dict) -> int:
     # anything without it was dropped. That gate was too strict in practice:
     # platforms that render client-side carry none of the evidence above even
     # for accounts that plainly exist, so real profiles were being hidden.
-    # Nothing is dropped for weak evidence now — a page that showed no error
+    # Nothing is dropped for weak evidence now, a page that showed no error
     # and did not bounce us to a login wall is reported, and the confidence
     # label carries the uncertainty instead of the visibility.
     #
     # The cost is real and worth stating: on a site that answers 200 for every
     # handle, a made-up name scores the same as a real one. That is a property
-    # of those sites, not of the scoring — they return the same bytes either
+    # of those sites, not of the scoring, they return the same bytes either
     # way. Hence the "low" tier below.
     if _mentions_handle(urls, uname):                    # canonical names the handle
         score += 1
@@ -374,9 +377,9 @@ def confidence_score(resp, username: str, meta: dict) -> int:
 
 def _confidence_label(score: int) -> str:
     """
-    high   — account-specific evidence (handle in title, follower counts)
-    medium — several corroborating signals, no direct evidence
-    low    — reachable, no error, nothing that distinguishes it from the
+    high, account-specific evidence (handle in title, follower counts)
+    medium, several corroborating signals, no direct evidence
+    low, reachable, no error, nothing that distinguishes it from the
              site's generic page. Shown, but never presented as confirmed.
     """
     if score >= 3:
@@ -409,7 +412,7 @@ def rejection_reason(status_code: int, score=None) -> str:
         return "the page itself says this account does not exist"
     if score <= 0:
         return "answered 200, but the page has no account-specific content"
-    return "only weak signals — not enough to confirm"
+    return "only weak signals, not enough to confirm"
 
 
 def extract_metadata(result: dict, meta: dict) -> None:
@@ -444,7 +447,7 @@ _VERIFY_HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
 
-# Hosts that serve a scripted shell to anything that isn't a real browser —
+# Hosts that serve a scripted shell to anything that isn't a real browser,
 # reddit.com returns the same contentless 200 for a live account and a made-up
 # one, so every profile there scored as unverifiable. The old.* mirror still
 # serves plain HTML with a real title and a real 404. We fetch the mirror and
@@ -484,8 +487,14 @@ def verify_profile_url(url: str, username: str, timeout: int = 8) -> dict:
         # shell, the mobile one carries the OG tags the score is built from.
         headers = {**_VERIFY_HEADERS, "User-Agent": MOBILE_UA}
     try:
-        resp = requests.get(_fetchable(url), headers=headers, timeout=timeout,
-                            allow_redirects=True)
+        # `url` here is a search-engine result, not a link we built, so it is
+        # fetched through the guard rather than handed straight to requests,
+        # an indexed URL resolving to an internal address is still an internal
+        # address. Redirects are followed inside safe_get, a hop at a time.
+        resp = safe_get(_fetchable(url), headers=headers, timeout=timeout)
+    except BlockedRequest:
+        out["status_code"] = -4
+        return out
     except requests.exceptions.Timeout:
         out["status_code"] = -1
         return out
@@ -610,7 +619,7 @@ class UsernameChecker:
                     status = "found" if result["exists"] else "no match"
                     callback(
                         module="Username Check",
-                        message=f"[{completed}/{total}] {result['platform']} — {status}",
+                        message=f"[{completed}/{total}] {result['platform']}, {status}",
                         progress=progress,
                         results=[result] if result["exists"] else [],
                     )

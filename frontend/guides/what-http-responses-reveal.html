@@ -13,31 +13,32 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="What a Website's Response Actually Tells You">
-  <meta property="og:description" content="How to read 200, 404, 403 and 429 when verifying an account — with measurements from real platforms.">
+  <meta property="og:description" content="How to read 200, 404, 403 and 429 when verifying an account, with measurements from real platforms.">
   <meta property="og:url" content="https://www.myrecon.xyz/guides/what-http-responses-reveal.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="What a Website's Response Actually Tells You">
-  <meta name="twitter:description" content="How to read 200, 404, 403 and 429 when verifying an account — with measurements from real platforms.">
+  <meta name="twitter:description" content="How to read 200, 404, 403 and 429 when verifying an account, with measurements from real platforms.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -60,31 +61,31 @@
     <article class="article">
       <span class="kicker">Research</span>
       <h1>What a Website's Response Actually Tells You</h1>
-      <p class="meta">Updated 6 September 2026 · 10 min read</p>
+      <p class="meta">Updated 6 September 2026 · 6 min read</p>
 
-      <p class="lead">Every online lookup ends with a server sending back a number and some text. Reading those correctly is the difference between an investigation and a guess — and almost every mistake in automated OSINT comes from treating one kind of answer as though it were another.</p>
+      <p class="lead">Every online lookup ends with a server sending back a number and some text. Reading those correctly is the difference between an investigation and a guess, and almost every mistake in automated OSINT comes from treating one kind of answer as though it were another.</p>
 
       <h2>The four answers you will actually get</h2>
       <p>Strip away the detail and a platform can tell you one of four things when you ask about a handle. They are not equally informative, and only two are answers at all.</p>
 
-      <h3>200 — "here is a page"</h3>
+      <h3>200: "here is a page"</h3>
       <p>The most common response and the least meaningful. It says a page was produced. It does not say the account exists, because the page may be a login wall, an empty application shell, or a branded "not found" screen. Treating 200 as proof of existence is the single most common error in this field.</p>
 
-      <h3>404 — "there is nothing here"</h3>
-      <p>The most useful response, and rarer than you would hope. A genuine 404 for a profile URL is strong evidence of absence — provided you have confirmed the same platform returns 200 for a handle you know is real. Without that control, you cannot distinguish "this account does not exist" from "this URL pattern is wrong".</p>
+      <h3>404: "there is nothing here"</h3>
+      <p>The most useful response, and rarer than you would hope. A genuine 404 for a profile URL is strong evidence of absence, provided you have confirmed the same platform returns 200 for a handle you know is real. Without that control, you cannot distinguish "this account does not exist" from "this URL pattern is wrong".</p>
       <p>That control matters. We tested Clubhouse for a handle a user was certain existed:</p>
       <pre><code>clubhouse.com/@rohanseth        200
 clubhouse.com/@paul             200
 clubhouse.com/@elonmusk         200
 clubhouse.com/@&lt;the handle&gt;     404
 clubhouse.com/@zzqnope99123x    404   (invented, for comparison)</code></pre>
-      <p>Real handles resolve; the handle in question behaved exactly like a string we made up. That is a reliable negative. The explanation turned out to be mundane — the handle contained a dot, and Clubhouse usernames do not permit them, so the account could never have existed there.</p>
+      <p>Real handles resolve; the handle in question behaved exactly like a string we made up. That is a reliable negative. The explanation turned out to be mundane, the handle contained a dot, and Clubhouse usernames do not permit them, so the account could never have existed there.</p>
 
-      <h3>403 — "not for you"</h3>
+      <h3>403: "not for you"</h3>
       <p>You have been blocked, usually by a web application firewall reacting to the network you are asking from rather than to anything about the handle. This tells you nothing about the account.</p>
-      <p>We probed a set of platforms from a datacentre address, using a full set of browser headers, and got 403 from Lemmy, CodeSandbox, Crunchbase, Audius, Mod DB, Nexus Mods and Pexels — for real and invented handles alike. The block was on us, not the handles.</p>
+      <p>We probed a set of platforms from a datacentre address, using a full set of browser headers, and got 403 from Lemmy, CodeSandbox, Crunchbase, Audius, Mod DB, Nexus Mods and Pexels, for real and invented handles alike. The block was on us, not the handles.</p>
 
-      <h3>429 — "you have asked too much"</h3>
+      <h3>429: "you have asked too much"</h3>
       <p>Rate limiting. Also not an answer about the account, and the most dangerous to misread, because it usually appears only after a tool has been working correctly for a while. Results silently get worse the more you use it.</p>
 
       <h2>The error shell</h2>
@@ -92,8 +93,8 @@ clubhouse.com/@zzqnope99123x    404   (invented, for comparison)</code></pre>
       <p>Requesting profile pages from a blocked network returned this:</p>
       <pre><code>instagram.com/nasa               200   612,900 bytes
 instagram.com/zzqnope99123xqq    200   612,912 bytes</code></pre>
-      <p>NASA's account — one of the most followed on the platform — and a string invented for the test, differing by twelve bytes in six hundred thousand. Both pages contained an internal marker reading <code>"httperrorpage"</code>, and both echoed the requested handle back inside a routing object roughly 309,000 characters into the document.</p>
-      <p>That echo is a trap worth naming, because it is exactly the sort of thing that looks like a signal. A tool searching the page for the handle would find it — for every handle, real or not — and report a match every time. The handle appears because we asked for it, not because anyone is there.</p>
+      <p>NASA's account, one of the most followed on the platform, and a string invented for the test, differing by twelve bytes in six hundred thousand. Both pages contained an internal marker reading <code>"httperrorpage"</code>, and both echoed the requested handle back inside a routing object roughly 309,000 characters into the document.</p>
+      <p>That echo is a trap worth naming, because it is exactly the sort of thing that looks like a signal. A tool searching the page for the handle would find it, for every handle, real or not, and report a match every time. The handle appears because we asked for it, not because anyone is there.</p>
 
       <h2>Who is asking changes the answer</h2>
       <p>The same request, sent at the same moment to the same URL, gets different responses depending on the network it comes from. This is not a quirk; it is deliberate anti-abuse design, and it has real consequences for anyone comparing tools.</p>
@@ -108,11 +109,11 @@ from a hosted server elsewhere:       full profile, 104,000,000 followers</code>
       <p>A redirect is not automatically a negative. Reddit answers 301 and YouTube 302 for perfectly real profiles, simply canonicalising the URL. What matters is the destination.</p>
       <p>Landing on any of these means the platform has nothing to show you:</p>
       <ul>
-        <li><code>/login</code>, <code>/signin</code>, <code>/accounts/login</code> — an authentication wall</li>
-        <li>the site root — the profile was not recognised and you were sent home</li>
-        <li><code>/404</code>, <code>/not-found</code>, <code>/error</code> — a soft error page</li>
+        <li><code>/login</code>, <code>/signin</code>, <code>/accounts/login</code>: an authentication wall</li>
+        <li>the site root, the profile was not recognised and you were sent home</li>
+        <li><code>/404</code>, <code>/not-found</code>, <code>/error</code>: a soft error page</li>
       </ul>
-      <p>We watched Reddit change behaviour mid-investigation. Requests for a well-known, definitely-real account began redirecting to <code>/login/?reason=lor2</code>, returning a 352,259-byte login page — and an invented handle returned the same page at 352,369 bytes. Once that started, no reading of the response could tell the two apart.</p>
+      <p>We watched Reddit change behaviour mid-investigation. Requests for a well-known, definitely-real account began redirecting to <code>/login/?reason=lor2</code>, returning a 352,259-byte login page, and an invented handle returned the same page at 352,369 bytes. Once that started, no reading of the response could tell the two apart.</p>
 
       <h2>Reading the body, not just the number</h2>
       <p>Because status codes are unreliable, the body matters. Three things worth checking, in order of value:</p>
@@ -130,13 +131,13 @@ from a hosted server elsewhere:       full profile, 104,000,000 followers</code>
 "username" field at         1,036,563 - 1,242,000
 profile image URL at        ~90,000 characters further on</code></pre>
       <p>A tool reading the first 192 KB reaches none of it and concludes there is no profile. Instagram has the same shape for a different reason: roughly 95,000 characters of inline script arrive before the <code>&lt;title&gt;</code> tag.</p>
-      <p>Worth knowing before you assume this is expensive: the Pinterest page is about 140 KB compressed on the wire. The full document costs almost nothing extra to download — the limit was only ever on how much got decompressed and searched.</p>
+      <p>Worth knowing before you assume this is expensive: the Pinterest page is about 140 KB compressed on the wire. The full document costs almost nothing extra to download, the limit was only ever on how much got decompressed and searched.</p>
 
       <h2>A checklist for verifying anything yourself</h2>
       <ol>
         <li>Open the profile URL in a private browsing window, logged out. This is what an automated tool sees.</li>
         <li>Check the page title. Does it name the account, or the site?</li>
-        <li>Look for per-account data — followers, posts, a join date.</li>
+        <li>Look for per-account data, followers, posts, a join date.</li>
         <li>Test an invented handle on the same platform. If it looks the same, the platform cannot answer this question.</li>
         <li>If you get 403 or 429, stop and try later from a different connection. You have learned nothing yet.</li>
       </ol>
@@ -144,6 +145,16 @@ profile image URL at        ~90,000 characters further on</code></pre>
       <h2>The honest summary</h2>
       <p>Only two of the four responses are answers. A verified 404 means absent. A 200 with account-specific content means present. A 200 with a generic page, a 403, or a 429 all mean the same thing: <em>you do not know</em>, and any tool that renders those three as a green tick is manufacturing certainty it does not have.</p>
       <p><a href="/guides/why-username-checkers-report-fake-accounts.html" style="color:var(--accent)">Read next: why username checkers report accounts that don't exist →</a></p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dwhat_http_responses_reveal" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
 
             <h2>Related guides</h2>
       <ul class="related-guides">
@@ -161,5 +172,6 @@ profile image URL at        ~90,000 characters further on</code></pre>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

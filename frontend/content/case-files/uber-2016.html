@@ -5,7 +5,7 @@
   "subject": "Uber data breach and cover-up",
   "kicker": "2016 · Ride-hailing",
   "description": "Uber lost 57 million records, paid the attackers $100,000 through its bug bounty programme, called it a research payment, and said nothing for a year.",
-  "cardBlurb": "The data loss was ordinary. The response — payment, non-disclosure agreements, silence, and eventually a criminal conviction for the security chief — was not.",
+  "cardBlurb": "The data loss was ordinary. The response, payment, non-disclosure agreements, silence, and eventually a criminal conviction for the security chief, was not.",
   "records": "57 million riders and drivers; 600,000 driver's licence numbers",
   "peopleCount": 57000000,
   "occurred": "October 2016",
@@ -19,26 +19,26 @@
   "updated": "2026-09-14",
   "related": ["capital-one-2019", "lastpass-2022", "yahoo-2013-2014"],
   "faq": [
-    { "q": "What did Uber actually do wrong?", "a": "Two separate things. The breach itself was a credential-handling failure: access keys in a private code repository that reached a cloud storage account. The far more serious conduct was the response — paying the attackers $100,000 through the bug bounty programme, having them sign non-disclosure agreements describing the theft as research, and not notifying users, drivers or regulators for more than a year, while the company was already under investigation for an earlier breach." },
+    { "q": "What did Uber actually do wrong?", "a": "Two separate things. The breach itself was a credential-handling failure: access keys in a private code repository that reached a cloud storage account. The far more serious conduct was the response, paying the attackers $100,000 through the bug bounty programme, having them sign non-disclosure agreements describing the theft as research, and not notifying users, drivers or regulators for more than a year, while the company was already under investigation for an earlier breach." },
     { "q": "Was the chief security officer really convicted?", "a": "Yes. Joe Sullivan was convicted in October 2022 of obstructing a Federal Trade Commission proceeding and misprision of a felony, and sentenced in 2023 to three years of probation. It is the case that established personal criminal exposure for a security executive over the handling of a breach, rather than the breach itself." },
-    { "q": "Is paying a bug bounty for stolen data legitimate?", "a": "Paying a researcher who finds a flaw is normal and valuable. Paying people who have already taken customer data, in exchange for silence and a signed agreement, is something else — and prosecutors treated the bounty framing as concealment rather than disclosure. The distinction is whether data was exfiltrated and whether the people affected were told." },
+    { "q": "Is paying a bug bounty for stolen data legitimate?", "a": "Paying a researcher who finds a flaw is normal and valuable. Paying people who have already taken customer data, in exchange for silence and a signed agreement, is something else, and prosecutors treated the bounty framing as concealment rather than disclosure. The distinction is whether data was exfiltrated and whether the people affected were told." },
     { "q": "What data was taken?", "a": "Names, email addresses and mobile numbers for around 57 million riders and drivers, plus roughly 600,000 US driver's licence numbers belonging to drivers. No trip history, card numbers or dates of birth were reported as taken." }
   ],
   "sources": [
-    { "label": "US Department of Justice — conviction of Joe Sullivan, October 2022" },
+    { "label": "US Department of Justice, conviction of Joe Sullivan, October 2022" },
     { "label": "Uber statement by chief executive Dara Khosrowshahi, 21 November 2017" },
     { "label": "Multistate attorneys general settlement, September 2018" },
     { "label": "UK Information Commissioner's Office monetary penalty notice, November 2018" }
   ]
 }
 -->
-<p class="lead">By the standards of this archive, Uber's 2016 breach is small. Fifty-seven million names, email addresses and phone numbers, plus 600,000 driver's licence numbers — serious, but not remarkable. It is here because of what happened afterwards, which ended with a chief security officer being convicted in a federal court for the way a breach was handled.</p>
+<p class="lead">By the standards of this archive, Uber's 2016 breach is small. Fifty-seven million names, email addresses and phone numbers, plus 600,000 driver's licence numbers, serious, but not remarkable. It is here because of what happened afterwards, which ended with a chief security officer being convicted in a federal court for the way a breach was handled.</p>
 
 <h2>How the data was taken</h2>
 
 <p>The technical story is short and depressingly common. Uber engineers used a private code repository. Credentials for the company's cloud storage were present in that repository. Attackers obtained access to the repository, found the keys, and used them to reach a storage account containing rider and driver records.</p>
 
-<p>Keys in source control is a failure that predates cloud computing and has survived every attempt to design it out. The reason it persists is that it is convenient at exactly the moment an engineer is trying to make something work, and invisible thereafter. The modern answer — short-lived credentials issued to a workload rather than long-lived keys held by a person, plus automated secret scanning on every commit — exists largely because of cases like this one.</p>
+<p>Keys in source control is a failure that predates cloud computing and has survived every attempt to design it out. The reason it persists is that it is convenient at exactly the moment an engineer is trying to make something work, and invisible thereafter. The modern answer, short-lived credentials issued to a workload rather than long-lived keys held by a person, plus automated secret scanning on every commit, exists largely because of cases like this one.</p>
 
 <h2>What made it a criminal matter</h2>
 
@@ -55,20 +55,20 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>2014</b> — An earlier Uber breach leads to an FTC investigation.</li>
-  <li><b>October 2016</b> — Attackers obtain repository access, find cloud credentials, and copy 57 million records. They contact Uber demanding payment.</li>
-  <li><b>November 2016</b> — Uber pays $100,000 through its bug bounty programme; the attackers sign non-disclosure agreements.</li>
-  <li><b>August 2017</b> — Dara Khosrowshahi becomes chief executive.</li>
-  <li><b>21 November 2017</b> — Uber discloses the breach and the payment. Joe Sullivan and a colleague are dismissed.</li>
-  <li><b>September 2018</b> — A $148 million settlement with 50 US states and the District of Columbia, the largest multistate data breach settlement at the time.</li>
-  <li><b>November 2018</b> — The UK Information Commissioner's Office fines Uber £385,000; the Dutch regulator adds €600,000.</li>
-  <li><b>2019</b> — The two attackers plead guilty in US federal court.</li>
-  <li><b>October 2022</b> — Sullivan is convicted of obstruction and misprision of a felony. <b>May 2023</b> — sentenced to three years' probation.</li>
+  <li><b>2014</b>: An earlier Uber breach leads to an FTC investigation.</li>
+  <li><b>October 2016</b>: Attackers obtain repository access, find cloud credentials, and copy 57 million records. They contact Uber demanding payment.</li>
+  <li><b>November 2016</b>: Uber pays $100,000 through its bug bounty programme; the attackers sign non-disclosure agreements.</li>
+  <li><b>August 2017</b>: Dara Khosrowshahi becomes chief executive.</li>
+  <li><b>21 November 2017</b>: Uber discloses the breach and the payment. Joe Sullivan and a colleague are dismissed.</li>
+  <li><b>September 2018</b>: A $148 million settlement with 50 US states and the District of Columbia, the largest multistate data breach settlement at the time.</li>
+  <li><b>November 2018</b>: The UK Information Commissioner's Office fines Uber £385,000; the Dutch regulator adds €600,000.</li>
+  <li><b>2019</b>: The two attackers plead guilty in US federal court.</li>
+  <li><b>October 2022</b>: Sullivan is convicted of obstruction and misprision of a felony. <b>May 2023</b>: sentenced to three years' probation.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p><strong>Security executives acquired personal legal exposure.</strong> Before Sullivan's conviction, the worst realistic outcome for a security leader who mishandled a breach was dismissal. Afterwards, general counsel across the industry rewrote incident response plans to make the disclosure decision a documented, collective, legally supervised one — not because the law changed, but because a prosecution had demonstrated where the line sits.</p>
+<p><strong>Security executives acquired personal legal exposure.</strong> Before Sullivan's conviction, the worst realistic outcome for a security leader who mishandled a breach was dismissal. Afterwards, general counsel across the industry rewrote incident response plans to make the disclosure decision a documented, collective, legally supervised one, not because the law changed, but because a prosecution had demonstrated where the line sits.</p>
 
 <p><strong>Bug bounty programmes had to define their boundaries.</strong> Platforms and companies tightened the rules: a bounty is for a vulnerability report, and any case involving exfiltrated data is an incident, not a submission. Several programmes added explicit language after this case.</p>
 
@@ -85,5 +85,5 @@
 <ol class="bx-actions">
   <li><strong>The exposed fields are contact details, so expect targeting rather than fraud.</strong> A phone number tied to a real name and a known service is exactly what a smishing campaign needs.</li>
   <li><strong>Drivers should watch identity documents.</strong> 600,000 driver's licence numbers were in the set; a licence number supports impersonation in ways a phone number does not.</li>
-  <li><strong>Re-check which apps hold your identity documents today</strong>, and remove what is no longer needed — see <a href="/guides/reduce-your-digital-footprint.html">how to audit that footprint</a>.</li>
+  <li><strong>Re-check which apps hold your identity documents today</strong>, and remove what is no longer needed, see <a href="/guides/reduce-your-digital-footprint.html">how to audit that footprint</a>.</li>
 </ol>

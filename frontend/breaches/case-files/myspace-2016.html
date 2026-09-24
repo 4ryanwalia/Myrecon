@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MySpace Breach: 360 Million Old Accounts, Still Dangerous">
   <meta name="twitter:description" content="The MySpace passwords were years old and the site was long abandoned. That is exactly why the breach worked">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"MySpace, 2016: 360 million accounts from a website nobody used any more","description":"The MySpace passwords were years old and the site was long abandoned. That is exactly why the breach worked — abandoned accounts still hold passwords people reuse.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/myspace-2016.html","articleSection":"Case Files","about":{"@type":"Thing","name":"MySpace data breach"},"wordCount":682}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"MySpace, 2016: 360 million accounts from a website nobody used any more","description":"The MySpace passwords were years old and the site was long abandoned. That is exactly why the breach worked, abandoned accounts still hold passwords people reuse.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/myspace-2016.html","articleSection":"Case Files","about":{"@type":"Thing","name":"MySpace data breach"},"wordCount":682}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"MySpace data breach","item":"https://www.myrecon.xyz/breaches/case-files/myspace-2016.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does a breach of an abandoned site matter?","acceptedAnswer":{"@type":"Answer","text":"Because the password is not abandoned. People who used a password on MySpace in 2008 frequently used it, or a small variation of it, on accounts they still hold. The site's irrelevance is what makes it dangerous: nobody thinks to change a password for a service they have not opened in fifteen years."}},{"@type":"Question","name":"What was wrong with how the passwords were stored?","acceptedAnswer":{"@type":"Answer","text":"Three things at once. SHA-1 is fast, so guessing is cheap. There was no salt, so identical passwords produced identical hashes and one crack solved many accounts. And only the first ten characters were used, lowercased — so a 20-character password with careful capitalisation was reduced to ten lowercase characters before hashing."}},{"@type":"Question","name":"When did the breach actually happen?","acceptedAnswer":{"@type":"Answer","text":"The data dates to around 2008, but it did not surface publicly until May 2016, when it was offered for sale alongside other large old datasets. Eight years is a long time for data to circulate privately, and it is a good reason to treat every old password as compromised regardless of whether you have heard of a breach."}},{"@type":"Question","name":"Is MySpace data still being used?","acceptedAnswer":{"@type":"Answer","text":"Yes, indirectly. It was absorbed into the combination lists used for credential stuffing, so those email-and-password pairs are still tried automatically against current services."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does a breach of an abandoned site matter?","acceptedAnswer":{"@type":"Answer","text":"Because the password is not abandoned. People who used a password on MySpace in 2008 frequently used it, or a small variation of it, on accounts they still hold. The site's irrelevance is what makes it dangerous: nobody thinks to change a password for a service they have not opened in fifteen years."}},{"@type":"Question","name":"What was wrong with how the passwords were stored?","acceptedAnswer":{"@type":"Answer","text":"Three things at once. SHA-1 is fast, so guessing is cheap. There was no salt, so identical passwords produced identical hashes and one crack solved many accounts. And only the first ten characters were used, lowercased, so a 20-character password with careful capitalisation was reduced to ten lowercase characters before hashing."}},{"@type":"Question","name":"When did the breach actually happen?","acceptedAnswer":{"@type":"Answer","text":"The data dates to around 2008, but it did not surface publicly until May 2016, when it was offered for sale alongside other large old datasets. Eight years is a long time for data to circulate privately, and it is a good reason to treat every old password as compromised regardless of whether you have heard of a breach."}},{"@type":"Question","name":"Is MySpace data still being used?","acceptedAnswer":{"@type":"Answer","text":"Yes, indirectly. It was absorbed into the combination lists used for credential stuffing, so those email-and-password pairs are still tried automatically against current services."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -78,7 +79,7 @@
 
 <h2>What happened</h2>
 
-<p>The dataset contained email addresses, usernames and password hashes for accounts dating to around 2008. It surfaced in the same 2016 wave that brought the full <a href="/breaches/case-files/linkedin-2012.html">LinkedIn</a> file and the Tumblr data to market, offered by the same seller — a period when several enormous old breaches were monetised at once.</p>
+<p>The dataset contained email addresses, usernames and password hashes for accounts dating to around 2008. It surfaced in the same 2016 wave that brought the full <a href="/breaches/case-files/linkedin-2012.html">LinkedIn</a> file and the Tumblr data to market, offered by the same seller, a period when several enormous old breaches were monetised at once.</p>
 
 <p>MySpace, by then owned by Time Inc., invalidated passwords for affected accounts. For most users this was a notification about a service they had forgotten they had.</p>
 
@@ -93,28 +94,28 @@
 </ol>
 
 <div class="callout">
-  <p><strong>What truncation destroys.</strong> Every additional character in a password multiplies the work an attacker must do. Truncating at ten caps that work at a fixed, modest ceiling regardless of what the user chose — which means the site silently overrode its most security-conscious users. If you ever wonder why security people are suspicious of undocumented password length limits, this is the reason: a limit usually implies something is being done to the password before it is stored.</p>
+  <p><strong>What truncation destroys.</strong> Every additional character in a password multiplies the work an attacker must do. Truncating at ten caps that work at a fixed, modest ceiling regardless of what the user chose, which means the site silently overrode its most security-conscious users. If you ever wonder why security people are suspicious of undocumented password length limits, this is the reason: a limit usually implies something is being done to the password before it is stored.</p>
 </div>
 
 <h2>Why old breaches keep working</h2>
 
 <p>The value of a fifteen-year-old password file rests on a simple, well-evidenced fact about people: passwords are sticky. Someone who chose a password in 2008 often still uses it, or a version with a digit incremented, or the same base word with a different site's name appended. Human-generated passwords evolve; they rarely get replaced.</p>
 
-<p>Meanwhile the account itself sits abandoned. No one monitors it, no one receives its notifications — often the registered email address is itself defunct — and no one ever changes its password because they have no reason to think about it.</p>
+<p>Meanwhile the account itself sits abandoned. No one monitors it, no one receives its notifications, often the registered email address is itself defunct, and no one ever changes its password because they have no reason to think about it.</p>
 
 <p>That combination is why the MySpace file went straight into combination lists and is still being tried against banks and mailboxes today. It is also why the honest answer to "should I worry about a breach at a site I stopped using?" is yes, if you ever reused that password.</p>
 
 <h2>The other MySpace data loss</h2>
 
-<p>Worth recording alongside it: in 2019 MySpace confirmed that a server migration had destroyed roughly twelve years of user-uploaded music, photos and video — an estimated fifty million tracks from fourteen million artists, gone with no recoverable backup.</p>
+<p>Worth recording alongside it: in 2019 MySpace confirmed that a server migration had destroyed roughly twelve years of user-uploaded music, photos and video, an estimated fifty million tracks from fourteen million artists, gone with no recoverable backup.</p>
 
 <p>That is not a breach, and it belongs here anyway, because it is the other half of the same lesson. Handing your only copy of something to a platform means accepting its retention decisions, its migration competence and its survival. Availability failures rarely make the news the way breaches do, and for the person who lost the only recording of a song they wrote, the outcome is worse.</p>
 
 <h2>What to do about accounts you abandoned</h2>
 
 <ol class="bx-actions">
-  <li><strong>List the services you used before about 2015</strong> — forums, games, social networks, shopping sites. Most people can name fifteen in five minutes, which is fifteen more than they were thinking about.</li>
-  <li><strong>Check which of them have appeared in breaches</strong>, using the addresses you had then — <a href="/guides/check-email-data-breach.html">how to do that safely</a>.</li>
+  <li><strong>List the services you used before about 2015</strong>: forums, games, social networks, shopping sites. Most people can name fifteen in five minutes, which is fifteen more than they were thinking about.</li>
+  <li><strong>Check which of them have appeared in breaches</strong>, using the addresses you had then, <a href="/guides/check-email-data-breach.html">how to do that safely</a>.</li>
   <li><strong>Retire the password family, not just one password.</strong> If your 2008 password was a word plus a number, every variation on that theme should be considered known.</li>
   <li><strong>Close what you can, and secure what you cannot.</strong> Where deletion is not offered, change the password, remove saved payment details, and unlink recovery addresses you still use for anything important.</li>
 </ol>
@@ -129,7 +130,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -138,7 +139,7 @@
         <p>Because the password is not abandoned. People who used a password on MySpace in 2008 frequently used it, or a small variation of it, on accounts they still hold. The site's irrelevance is what makes it dangerous: nobody thinks to change a password for a service they have not opened in fifteen years.</p>
 
         <h3>What was wrong with how the passwords were stored?</h3>
-        <p>Three things at once. SHA-1 is fast, so guessing is cheap. There was no salt, so identical passwords produced identical hashes and one crack solved many accounts. And only the first ten characters were used, lowercased — so a 20-character password with careful capitalisation was reduced to ten lowercase characters before hashing.</p>
+        <p>Three things at once. SHA-1 is fast, so guessing is cheap. There was no salt, so identical passwords produced identical hashes and one crack solved many accounts. And only the first ten characters were used, lowercased, so a 20-character password with careful capitalisation was reduced to ten lowercase characters before hashing.</p>
 
         <h3>When did the breach actually happen?</h3>
         <p>The data dates to around 2008, but it did not surface publicly until May 2016, when it was offered for sale alongside other large old datasets. Eight years is a long time for data to circulate privately, and it is a good reason to treat every old password as compromised regardless of whether you have heard of a breach.</p>
@@ -146,10 +147,22 @@
         <h3>Is MySpace data still being used?</h3>
         <p>Yes, indirectly. It was absorbed into the combination lists used for credential stuffing, so those email-and-password pairs are still tried automatically against current services.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><b>Time Inc. statement on the MySpace account data, May 2016</b></li>
-        <li><a href="https://haveibeenpwned.com/PwnedWebsites#MySpace" target="_blank" rel="noopener nofollow">Have I Been Pwned — MySpace breach record</a></li>
+        <li><a href="https://haveibeenpwned.com/PwnedWebsites#MySpace" target="_blank" rel="noopener nofollow">Have I Been Pwned, MySpace breach record</a></li>
         <li><b>LeakedSource analysis of the dataset, 2016</b></li>
       </ul>
       <h2>Read next</h2>
@@ -159,7 +172,7 @@
         <li><a href="/breaches/case-files/rockyou-2009.html">RockYou, 2009: the 32 million plaintext passwords that became a wordlist</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -175,5 +188,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

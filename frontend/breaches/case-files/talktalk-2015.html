@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="TalkTalk Data Breach 2015: SQL Injection, Fines, Fallout">
   <meta name="twitter:description" content="TalkTalk lost 156,959 customers' data to a SQL injection attack on three webpages it had inherited in an acquisition and forgotten about.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"TalkTalk, 2015: a nineteen-year-old and a webpage nobody owned","description":"TalkTalk lost 156,959 customers' data to a SQL injection attack on three webpages it had inherited in an acquisition and forgotten about. Teenagers found them.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/talktalk-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"TalkTalk data breach"},"wordCount":949}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"TalkTalk data breach","item":"https://www.myrecon.xyz/breaches/case-files/talktalk-2015.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is SQL injection?","acceptedAnswer":{"@type":"Answer","text":"It is what happens when a website takes something you typed and hands it to its database as an instruction instead of as text. Type an ordinary word into a search box and you get results; type carefully chosen punctuation and database commands and, on a vulnerable site, the database runs them. It has been documented since 1998 and it is comprehensively preventable, which is why finding it in a live system in 2015 was so damaging to TalkTalk's case."}},{"@type":"Question","name":"How much data was actually taken from TalkTalk?","acceptedAnswer":{"@type":"Answer","text":"The final ICO finding was 156,959 customers' personal data, including 15,656 bank account numbers and sort codes. The first public figures were far higher and far vaguer — early reporting and TalkTalk's own initial statements raised the possibility that all four million customers were affected, which turned out to be wrong."}},{"@type":"Question","name":"Were TalkTalk customers' bank accounts emptied?","acceptedAnswer":{"@type":"Answer","text":"There were reports of fraud against TalkTalk customers, but the sort code and account number alone do not let someone take money out — they are printed on every cheque. The more serious risk was what followed: criminals used the stolen account details and TalkTalk account references to make cold calls that sounded exactly like a real support call, which is a far more effective route to a bank transfer than the raw data ever was."}},{"@type":"Question","name":"Did anyone go to prison for the TalkTalk hack?","acceptedAnswer":{"@type":"Answer","text":"Several young men were convicted. Daniel Kelley, who was seventeen at the time of the offences, was sentenced in 2019 to four years in a young offender institution for blackmail and computer misuse across a series of attacks. Others received shorter sentences and community orders. The individuals who found the flaw were not a sophisticated organised group, which was part of the point the regulator made."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is SQL injection?","acceptedAnswer":{"@type":"Answer","text":"It is what happens when a website takes something you typed and hands it to its database as an instruction instead of as text. Type an ordinary word into a search box and you get results; type carefully chosen punctuation and database commands and, on a vulnerable site, the database runs them. It has been documented since 1998 and it is comprehensively preventable, which is why finding it in a live system in 2015 was so damaging to TalkTalk's case."}},{"@type":"Question","name":"How much data was actually taken from TalkTalk?","acceptedAnswer":{"@type":"Answer","text":"The final ICO finding was 156,959 customers' personal data, including 15,656 bank account numbers and sort codes. The first public figures were far higher and far vaguer, early reporting and TalkTalk's own initial statements raised the possibility that all four million customers were affected, which turned out to be wrong."}},{"@type":"Question","name":"Were TalkTalk customers' bank accounts emptied?","acceptedAnswer":{"@type":"Answer","text":"There were reports of fraud against TalkTalk customers, but the sort code and account number alone do not let someone take money out, they are printed on every cheque. The more serious risk was what followed: criminals used the stolen account details and TalkTalk account references to make cold calls that sounded exactly like a real support call, which is a far more effective route to a bank transfer than the raw data ever was."}},{"@type":"Question","name":"Did anyone go to prison for the TalkTalk hack?","acceptedAnswer":{"@type":"Answer","text":"Several young men were convicted. Daniel Kelley, who was seventeen at the time of the offences, was sentenced in 2019 to four years in a young offender institution for blackmail and computer misuse across a series of attacks. Others received shorter sentences and community orders. The individuals who found the flaw were not a sophisticated organised group, which was part of the point the regulator made."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,13 +76,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Addresses · Dates of birth · Email addresses · Phone numbers · TalkTalk account information · Bank account numbers and sort codes</p>
 
-<p class="lead">In October 2015 the chief executive of TalkTalk went on national radio and was asked whether the stolen customer data had been encrypted. She said she did not know. That answer, more than the breach, is what the incident is remembered for in Britain — and the technical story underneath it is worse, because the way in had been sitting unattended on the company's own website for six years.</p>
+<p class="lead">In October 2015 the chief executive of TalkTalk went on national radio and was asked whether the stolen customer data had been encrypted. She said she did not know. That answer, more than the breach, is what the incident is remembered for in Britain, and the technical story underneath it is worse, because the way in had been sitting unattended on the company's own website for six years.</p>
 
 <h2>What happened</h2>
 
 <p>TalkTalk acquired Tiscali UK in 2009. Along with the customers came the infrastructure, including a set of webpages that continued to be served from TalkTalk's domain. Three of those pages contained a SQL injection vulnerability. The underlying database software was unsupported and had been for years. After the acquisition, nobody at TalkTalk had scanned, reviewed or apparently thought about those pages at all.</p>
 
-<p>Between 15 and 21 October 2015, attackers found them — trivially, using automated scanning tools available to anyone — and used the injection flaw to read data out of the database behind them. The ICO later found that the vulnerability could have been fixed with a software update that had been available since 2012, and that TalkTalk had no process that would have found it.</p>
+<p>Between 15 and 21 October 2015, attackers found them, trivially, using automated scanning tools available to anyone, and used the injection flaw to read data out of the database behind them. The ICO later found that the vulnerability could have been fixed with a software update that had been available since 2012, and that TalkTalk had no process that would have found it.</p>
 
 <p>The regulator also established that two earlier attacks on the same pages, in July and September 2015, had gone unnoticed.</p>
 
@@ -100,20 +101,20 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>2009</b> — TalkTalk acquires Tiscali UK, inheriting the webpages that will later be attacked.</li>
-  <li><b>2012</b> — A fix for the underlying database vulnerability becomes available and is not applied.</li>
-  <li><b>July and September 2015</b> — Two earlier attacks exploit the same pages without being detected.</li>
-  <li><b>15 – 21 October 2015</b> — The main attack extracts customer data.</li>
-  <li><b>22 October 2015</b> — TalkTalk goes public, with figures that later prove much too high.</li>
-  <li><b>October – November 2015</b> — Several arrests follow; customers report fraud calls using their stolen details.</li>
-  <li><b>5 October 2016</b> — The ICO fines TalkTalk £400,000, the largest penalty it had ever issued.</li>
-  <li><b>August 2017</b> — A further £100,000 fine follows over call centre staff access to 21,000 customers' records.</li>
-  <li><b>2019</b> — Daniel Kelley is sentenced to four years.</li>
+  <li><b>2009</b>: TalkTalk acquires Tiscali UK, inheriting the webpages that will later be attacked.</li>
+  <li><b>2012</b>: A fix for the underlying database vulnerability becomes available and is not applied.</li>
+  <li><b>July and September 2015</b>: Two earlier attacks exploit the same pages without being detected.</li>
+  <li><b>15 – 21 October 2015</b>: The main attack extracts customer data.</li>
+  <li><b>22 October 2015</b>: TalkTalk goes public, with figures that later prove much too high.</li>
+  <li><b>October – November 2015</b>: Several arrests follow; customers report fraud calls using their stolen details.</li>
+  <li><b>5 October 2016</b>: The ICO fines TalkTalk £400,000, the largest penalty it had ever issued.</li>
+  <li><b>August 2017</b>: A further £100,000 fine follows over call centre staff access to 21,000 customers' records.</li>
+  <li><b>2019</b>: Daniel Kelley is sentenced to four years.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p><strong>It became the case study for UK regulators and parliament.</strong> A Commons select committee ran an inquiry into the protection of personal data online off the back of it, and its recommendations — escalating fines, security as a board responsibility, clearer breach notification — fed directly into how GDPR was received in Britain two years later.</p>
+<p><strong>It became the case study for UK regulators and parliament.</strong> A Commons select committee ran an inquiry into the protection of personal data online off the back of it, and its recommendations, escalating fines, security as a board responsibility, clearer breach notification, fed directly into how GDPR was received in Britain two years later.</p>
 
 <p><strong>The £400,000 fine established a ceiling that was about to disappear.</strong> It was the maximum the ICO could then issue, and commentators noted repeatedly that under GDPR the same conduct could attract a penalty measured in percentage of turnover. That comparison did a great deal to get UK boards to take the incoming regulation seriously.</p>
 
@@ -140,7 +141,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -149,19 +150,31 @@
         <p>It is what happens when a website takes something you typed and hands it to its database as an instruction instead of as text. Type an ordinary word into a search box and you get results; type carefully chosen punctuation and database commands and, on a vulnerable site, the database runs them. It has been documented since 1998 and it is comprehensively preventable, which is why finding it in a live system in 2015 was so damaging to TalkTalk's case.</p>
 
         <h3>How much data was actually taken from TalkTalk?</h3>
-        <p>The final ICO finding was 156,959 customers' personal data, including 15,656 bank account numbers and sort codes. The first public figures were far higher and far vaguer — early reporting and TalkTalk's own initial statements raised the possibility that all four million customers were affected, which turned out to be wrong.</p>
+        <p>The final ICO finding was 156,959 customers' personal data, including 15,656 bank account numbers and sort codes. The first public figures were far higher and far vaguer, early reporting and TalkTalk's own initial statements raised the possibility that all four million customers were affected, which turned out to be wrong.</p>
 
         <h3>Were TalkTalk customers' bank accounts emptied?</h3>
-        <p>There were reports of fraud against TalkTalk customers, but the sort code and account number alone do not let someone take money out — they are printed on every cheque. The more serious risk was what followed: criminals used the stolen account details and TalkTalk account references to make cold calls that sounded exactly like a real support call, which is a far more effective route to a bank transfer than the raw data ever was.</p>
+        <p>There were reports of fraud against TalkTalk customers, but the sort code and account number alone do not let someone take money out, they are printed on every cheque. The more serious risk was what followed: criminals used the stolen account details and TalkTalk account references to make cold calls that sounded exactly like a real support call, which is a far more effective route to a bank transfer than the raw data ever was.</p>
 
         <h3>Did anyone go to prison for the TalkTalk hack?</h3>
         <p>Several young men were convicted. Daniel Kelley, who was seventeen at the time of the offences, was sentenced in 2019 to four years in a young offender institution for blackmail and computer misuse across a series of attacks. Others received shorter sentences and community orders. The individuals who found the flaw were not a sophisticated organised group, which was part of the point the regulator made.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://ico.org.uk/action-weve-taken/enforcement/talktalk-telecom-group-plc/" target="_blank" rel="noopener nofollow">Information Commissioner's Office — monetary penalty notice, TalkTalk Telecom Group plc, October 2016</a></li>
-        <li><b>House of Commons Culture, Media and Sport Committee — Cyber Security: Protection of Personal Data Online, 2016</b></li>
-        <li><b>ICO monetary penalty, TalkTalk, 2017</b> — a further £100,000 over call centre access to 21,000 customers' data</li>
+        <li><a href="https://ico.org.uk/action-weve-taken/enforcement/talktalk-telecom-group-plc/" target="_blank" rel="noopener nofollow">Information Commissioner's Office, monetary penalty notice, TalkTalk Telecom Group plc, October 2016</a></li>
+        <li><b>House of Commons Culture, Media and Sport Committee, Cyber Security: Protection of Personal Data Online, 2016</b></li>
+        <li><b>ICO monetary penalty, TalkTalk, 2017</b>: a further £100,000 over call centre access to 21,000 customers' data</li>
         <li><b>TalkTalk Telecom Group financial results, FY2016</b></li>
       </ul>
       <h2>Read next</h2>
@@ -171,7 +184,7 @@
         <li><a href="/breaches/case-files/optus-2022.html">Optus, 2022: an API with no lock on it, and 9.8 million Australians</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -187,5 +200,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Read a Data Breach Notification Email | MyRecon</title>
+  <meta name="description" content="What the phrases in a breach notice actually mean, which exposed fields matter most, how to tell a real notice from a phishing email, and what to do first.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/read-a-breach-notification.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="How to Read a Data Breach Notification">
+  <meta property="og:description" content="What the phrases in a breach notice actually mean, which exposed fields matter most, how to tell a real notice from a phishing email, and what to do first.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/read-a-breach-notification.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Read a Data Breach Notification">
+  <meta name="twitter:description" content="What the phrases in a breach notice actually mean, which exposed fields matter most, how to tell a real notice from a phishing email, and what to do first.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"How to Read a Data Breach Notification","description":"What the phrases in a breach notice actually mean, which exposed fields matter most, how to tell a real notice from a phishing email, and what to do first.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-21","dateModified":"2026-09-21","mainEntityOfPage":"https://www.myrecon.xyz/guides/read-a-breach-notification.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"How to Read a Data Breach Notification","item":"https://www.myrecon.xyz/guides/read-a-breach-notification.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this breach notification email real or phishing?","acceptedAnswer":{"@type":"Answer","text":"Do not use any link or phone number in the message to check. Open a new tab, type the company's address yourself, and look for the notice on their site, real breaches are almost always posted publicly as well as emailed. A genuine notice also never asks you to confirm a password, a full card number or a one-time code. Breach notices are one of the most impersonated email types there is, precisely because the recipient is alarmed and expecting to take action."}},{"@type":"Question","name":"What does \"we have no evidence of misuse\" actually mean?","acceptedAnswer":{"@type":"Answer","text":"It means nobody has reported harm yet, not that the data is safe. Breached records are often held or traded for months before they are used, and misuse by a third party is largely invisible to the breached company. Treat it as a statement about what they can see, not as reassurance."}},{"@type":"Question","name":"Which exposed data types are the most serious?","acceptedAnswer":{"@type":"Answer","text":"Roughly in order: government identity numbers and financial account details, because they are hard or impossible to change; passwords, especially if unhashed or weakly hashed, because they unlock other accounts; date of birth combined with full name and address, because that trio passes most identity checks; then phone numbers and email addresses, which mainly raise your risk of targeted phishing. An email address alone is the least severe and the most common."}},{"@type":"Question","name":"Should I accept the free credit monitoring they offer?","acceptedAnswer":{"@type":"Answer","text":"It is usually worth taking since it costs nothing, but understand what it does: it tells you after something has happened, it does not prevent it. Where your jurisdiction offers a credit freeze, that is the stronger measure because it blocks new accounts being opened rather than reporting them afterwards. Check whether accepting the offer requires waiving any right to join a claim, in some jurisdictions it has."}},{"@type":"Question","name":"What should I do in the first hour?","acceptedAnswer":{"@type":"Answer","text":"Verify the notice is genuine by going to the company's site directly. Change the password on that account and on any other account where you reused it, which is the step that actually limits damage. Turn on two-factor authentication there. Then check whether the breach included anything you cannot change, such as an identity number, and act on that separately."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Breaches</span>
+      <h1>How to Read a Data Breach Notification</h1>
+      <p class="meta">Published 21 September 2026 · 8 min read</p>
+
+      <p class="lead">A company you barely remember signing up to emails to say there has been an "incident". The language is careful, the apology is warm, and it is genuinely hard to tell whether you need to do something in the next ten minutes or nothing at all. These notices are written by lawyers, and once you know what the standard phrases are doing, they are much easier to read.</p>
+
+      <section class="key-finding">
+        <h2>Before anything else</h2>
+        <p><strong>Do not click the links in the email.</strong> Breach notices are among the most impersonated messages there are, precisely because the recipient is alarmed and expecting to act. Open a new tab, type the company's address yourself, and find the notice on their site, a real breach is almost always posted publicly as well as emailed.</p>
+        <p class="method">A genuine notice will never ask you to confirm a password, a full card number, or a code sent to your phone.</p>
+      </section>
+
+      <h2>What the standard phrases mean</h2>
+      <p>Breach notices are drafted under legal constraints, usually to a deadline set by a regulator, and often before the investigation has finished. That produces a recognisable vocabulary.</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>The recurring phrases and what they are and are not saying.</caption>
+          <thead><tr><th scope="col">The phrase</th><th scope="col">What it actually means</th></tr></thead>
+          <tbody>
+            <tr><td>"We have no evidence of misuse"</td><td>Nobody has reported harm yet. Data is often held for months before use, and misuse by a third party is largely invisible to them.</td></tr>
+            <tr><td>"A limited number of individuals"</td><td>Limited relative to their user base. It can still be millions, and you are in it or you would not have the email.</td></tr>
+            <tr><td>"May have been accessed"</td><td>They cannot prove it was, and frequently cannot prove it was not. Logging rarely settles this after the fact.</td></tr>
+            <tr><td>"An unauthorised third party"</td><td>Someone got in. It says nothing about who, or how.</td></tr>
+            <tr><td>"Passwords were encrypted"</td><td>Ask which algorithm. Modern hashing is strong; MD5, SHA-1 and unsalted hashes are cracked in bulk. "Encrypted" is sometimes used loosely for "hashed", which is not the same thing.</td></tr>
+            <tr><td>"We take your privacy seriously"</td><td>Carries no information. Skip it and read the list of exposed fields.</td></tr>
+            <tr><td>"Out of an abundance of caution"</td><td>Usually precedes a forced password reset. Harmless, and sometimes means the scope is wider than confirmed.</td></tr>
+            <tr><td>"The incident has been contained"</td><td>The intruder no longer has access. It says nothing about what left the building first.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The only part that really matters</h2>
+      <p>Skip to the list of what was exposed. Everything else is framing; this is the part that determines what you do next, because the fields differ enormously in how much damage they can do and in whether you can undo them.</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Roughly ordered by how much harm exposure causes and how little you can do about it.</caption>
+          <thead><tr><th scope="col">Exposed</th><th scope="col">Why it matters</th><th scope="col">Can you change it?</th></tr></thead>
+          <tbody>
+            <tr><td>Government ID numbers</td><td>Used to prove identity to banks and telecoms; opens accounts in your name.</td><td>Effectively never</td></tr>
+            <tr><td>Financial account details</td><td>Direct fraud, and enough for many identity checks.</td><td>Yes, but painful</td></tr>
+            <tr><td>Passwords</td><td>Unlocks every other account where you reused it. This is the usual route from breach to takeover.</td><td>Yes, do it now</td></tr>
+            <tr><td>Date of birth</td><td>With name and address, passes most knowledge-based identity checks.</td><td>No</td></tr>
+            <tr><td>Physical address</td><td>Physical risk in some circumstances; strong phishing material always.</td><td>Rarely</td></tr>
+            <tr><td>Security question answers</td><td>Often reused across services, and rarely changed after a breach.</td><td>Yes, and do</td></tr>
+            <tr><td>Phone number</td><td>Raises SIM-swap and smishing risk; used to make a scam call look legitimate.</td><td>Difficult</td></tr>
+            <tr><td>Health or medical data</td><td>Not changeable, sensitive by nature, and attractive to extortion.</td><td>No</td></tr>
+            <tr><td>Email address</td><td>The most common and the least severe alone. Mainly means more targeted phishing.</td><td>Possible, disruptive</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <p><strong>A breach is not one event with one fixed severity.</strong> The same intrusion is trivial for someone who used a unique password and serious for someone who reused it everywhere. What decides your exposure is mostly what <em>you</em> did before it happened, not how bad the breach was.</p>
+      </div>
+
+      <h2>What to do, in order</h2>
+      <ol>
+        <li><strong>Verify the notice.</strong> Company's site, typed by hand. If there is no public statement and no press coverage, treat the email as suspicious. <a href="/guides/how-to-spot-phishing.html">Spotting the fake version</a> is its own skill.</li>
+        <li><strong>Change that password.</strong> Then change it everywhere you reused it. This is the single step that limits real damage, and it is the one most people skip.</li>
+        <li><strong>Turn on two-factor authentication</strong> on that account and on your email account, which resets everything else. <a href="/guides/two-factor-authentication.html">Not all second factors are equal</a>.</li>
+        <li><strong>Check what else is out there.</strong> One notice usually means several older breaches you never heard about. <a href="/guides/check-email-data-breach.html">Check the address against known breach data</a>.</li>
+        <li><strong>Deal with the unchangeable separately.</strong> If an identity number was exposed, a password change does nothing. Where available, a credit freeze is the stronger measure.</li>
+        <li><strong>Expect the follow-up scam.</strong> Breach lists get resold, and one reliable buyer is whoever wants to phone victims claiming to be the breached company's fraud team. They will know real details about you. That is not proof of anything.</li>
+      </ol>
+
+      <h2>The credit monitoring offer</h2>
+      <p>Most notices include a year or two of free monitoring. Take it, it costs nothing, but be clear about what it is. Monitoring tells you <em>after</em> an account has been opened in your name. It does not stop it happening.</p>
+      <p>Where your jurisdiction offers a credit freeze, that is the stronger measure, because it blocks new credit being extended rather than reporting it afterwards. And read the enrolment terms: in some jurisdictions accepting an offer has been tied to waiving the right to join a collective claim.</p>
+
+      <h2>If you got no notice at all</h2>
+      <p>Common, and not reassuring. Notification duties vary by country and by the type of data involved; companies sometimes only notify those they can positively identify as affected; and email addresses go stale. Plenty of breaches in public archives were never individually notified to anyone.</p>
+      <p>This is why checking on your own initiative beats waiting to be told, and why "I have never had a breach notice" is not evidence of anything. <a href="/guides/stealer-logs-explained.html">Stealer logs</a> are the extreme case: your password can be circulating with no company having been breached at all, so there is nobody with a duty to write to you.</p>
+
+      <h2>Common questions</h2>
+
+      <h3>Is this breach notification real or phishing?</h3>
+      <p>Do not use any link or number in the message to find out. Type the company's address into a new tab and look for the notice on their site, real breaches are almost always posted publicly too. A genuine notice never asks you to confirm a password, a full card number or a one-time code.</p>
+
+      <h3>What does "no evidence of misuse" mean?</h3>
+      <p>That nobody has reported harm yet, not that the data is safe. Records are often traded for months before use, and misuse is largely invisible to the breached company. It describes what they can see, not your risk.</p>
+
+      <h3>Which exposed data types are most serious?</h3>
+      <p>Government identity numbers and financial details first, because they are hard or impossible to change. Then passwords, because they unlock other accounts. Then date of birth with name and address, which passes most identity checks. Phone and email mainly raise your phishing risk.</p>
+
+      <h3>Should I accept the free credit monitoring?</h3>
+      <p>Usually yes, since it is free, but it reports after the fact rather than preventing anything. A credit freeze, where available, is stronger. Check whether enrolling waives any right to join a claim.</p>
+
+      <h3>What should I do in the first hour?</h3>
+      <p>Verify the notice on the company's own site. Change that password and every reuse of it. Enable two-factor authentication. Then deal separately with anything exposed that you cannot change.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dread_a_breach_notification" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/check-email-data-breach.html">check an address against known breach data</a></li>
+        <li><a href="/guides/how-breaches-actually-happen.html">how the intrusion itself usually works</a></li>
+        <li><a href="/guides/stealer-logs-explained.html">when your password leaks with no breach at all</a></li>
+        <li><a href="/guides/account-hacked-what-to-do.html">if the account is already taken</a></li>
+        <li><a href="/breaches/">the breach archive, incident by incident</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/developers.html" style="color:var(--text-dim)">API</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

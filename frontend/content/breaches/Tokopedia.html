@@ -1,0 +1,19 @@
+<p>Seventy-one million accounts at Indonesia's largest online marketplace. At
+that share of a national population a breach stops behaving like a corporate
+incident and starts behaving like a demographic dataset, names, genders and
+dates of birth for a substantial part of the country's online public, in one
+file, freely circulating.</p>
+
+<p>The passwords were stored as SHA2-384 hashes, and the number in that name
+does more harm than good. SHA-2 is not a broken algorithm; it is the wrong kind
+of algorithm for this job. It is built to be fast, and for password storage
+speed is the defect, the whole point of bcrypt, scrypt and Argon2 is to be
+deliberately, tunably slow, so that an attacker with the file cannot test
+billions of guesses a second. A reassuring hash name is one of the most
+reliable ways to be wrong about password security.</p>
+
+<p>Assume anything short or guessable in that file was recovered years ago, and
+change it anywhere it was reused. The other half of the record never expires
+and never gets rotated: a name, a gender and a date of birth do not change, and
+a date of birth is one of the three details call centres still accept as proof
+that the person on the line is who they say they are.</p>

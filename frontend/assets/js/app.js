@@ -1,4 +1,4 @@
-/* MyRecon — application logic (vanilla JS, no dependencies). */
+/* MyRecon, application logic (vanilla JS, no dependencies). */
 (function () {
   "use strict";
 
@@ -17,9 +17,9 @@
    * esc() makes a string safe to sit *inside* markup, but it has nothing to say
    * about what the string means once it is there: "javascript:alert(1)" has no
    * &<>"' in it, so it passes through esc() untouched and then runs on click.
-   * The URLs on this page are not all ours — avatar and profile links arrive in
+   * The URLs on this page are not all ours, avatar and profile links arrive in
    * whatever a platform's API returned, and a Gravatar account link is filled
-   * in by whoever owns the Gravatar — so the scheme has to be checked rather
+   * in by whoever owns the Gravatar, so the scheme has to be checked rather
    * than assumed.
    *
    * Anything that is not http(s) becomes "", which renders as a dead link
@@ -157,13 +157,13 @@
     domain: {
       label: "Domain", icon: "globe", placeholder: "e.g. example.com",
       endpoint: CFG.endpoints.domain, field: "domain",
-      sub: "WHOIS/RDAP registration, DNS records, subdomains, and the resolved server's geolocation.",
+      sub: "WHOIS/RDAP registration, DNS records, email spoofing protection (SPF / DMARC), subdomains, and the resolved server's geolocation.",
       examples: ["github.com", "stripe.com", "wikipedia.org"],
     },
     dns: {
       label: "DNS", icon: "compass", placeholder: "e.g. example.com",
       endpoint: CFG.endpoints.dns, field: "domain",
-      sub: "A, AAAA, MX, NS, TXT, CNAME, SOA and CAA records via DNS-over-HTTPS.",
+      sub: "A, AAAA, MX, NS, TXT, CNAME, SOA and CAA records via DNS-over-HTTPS, with an SPF / DMARC spoofing check.",
       examples: ["cloudflare.com", "google.com"],
     },
     ip: {
@@ -173,12 +173,12 @@
       examples: ["8.8.8.8", "1.1.1.1"],
     },
     // `local: true` keeps this tool entirely in the browser. It has no
-    // endpoint, is refused by hash routing, and never sets lastResult — so
+    // endpoint, is refused by hash routing, and never sets lastResult, so
     // save / share / export / history cannot reach the typed secret.
     password: {
       label: "Password", icon: "lock", placeholder: "Type or paste a password to check",
       local: true, secret: true, field: "password",
-      sub: "Checks a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser — only the first 5 characters of the hash are ever sent.",
+      sub: "Checks a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser, only the first 5 characters of the hash are ever sent.",
       examples: ["password", "qwerty123", "letmein"],
     },
   };
@@ -288,7 +288,7 @@
           <div class="expo-why">every public commit uses GitHub's noreply address</div></div>`;
       }
       if (x.error) {
-        rows += `<div class="expo-row"><div class="expo-why">Commit check unavailable — ${esc(x.error)}</div></div>`;
+        rows += `<div class="expo-row"><div class="expo-why">Commit check unavailable, ${esc(x.error)}</div></div>`;
       }
     });
     if (!rows) return "";
@@ -302,7 +302,7 @@
     if (!rejected.length) return "";
     const rows = rejected.map((x) => `<tr>
       <td>${esc(x.platform)}</td>
-      <td class="rj-code">${esc(String(x.status_code || "—"))}</td>
+      <td class="rj-code">${esc(String(x.status_code || "-"))}</td>
       <td class="rj-why">${esc(x.reason)}</td></tr>`).join("");
     return `<details class="panel rejected">
       <summary>${checked} platforms checked · ${rejected.length} not confirmed
@@ -352,7 +352,7 @@
     if (r.repos) meta += `<span class="meta-tag">${fmtNum(r.repos)} repos</span>`;
     const href = r.url && /^https?:\/\//.test(r.url) ? r.url : null;
     // On demand, never during the scan: archive.org needs ~10s per cold key
-    // and throttles under fan-out. A span, not a button — the card is an <a>.
+    // and throttles under fan-out. A span, not a button, the card is an <a>.
     if (href) meta += `<span class="meta-tag wb" data-wayback="${esc(href)}"
       role="button" tabindex="0" title="Look up archive.org history">archive history</span>`;
     const inner = `
@@ -380,18 +380,24 @@
     const breaches = data.breaches || {}, hibp = data.hibp;
     let html = resultsHeader(`Email intelligence: ${esc(data.query.email)}`, "");
 
-    const exp = computeExposure("email", data);
+    const outcome = window.MyReconEmailOutcome(data);
+    const exp = outcome.partial ? null : computeExposure("email", data);
     lastExposure = exp;
-    html += exposureGauge(exp);
+    if (exp) html += exposureGauge(exp);
 
     const dw = data.darkweb || {};
-    const breached = s.breached, count = s.breach_count || 0;
-    html += `<div class="breach ${breached ? "" : "clean"}">
-      <h3>${breached ? "Breach exposure detected" : "No breaches found"}
-        <span class="sev" style="color:${breached ? "var(--danger)" : "var(--ok)"}">${breached
-          ? count.toLocaleString() + (count === 1 ? " breach" : " breaches")
-          : "clean"}</span>
+    const breached = outcome.found, count = s.breach_count || 0;
+    html += `<div class="breach ${outcome.state === "no_match" ? "clean" : !breached ? "incomplete" : ""}" role="status">
+      <h3>${esc(outcome.label)}
+        <span class="sev" style="color:${breached ? "var(--danger)" : outcome.partial ? "var(--warn)" : "var(--ok)"}">${breached
+          ? count > 0 ? count.toLocaleString() + (count === 1 ? " breach" : " breaches") : "detected"
+          : outcome.state === "no_match" ? "no match" : outcome.state}</span>
       </h3>
+      <p>${esc(outcome.coverage)}${outcome.partial ? " · coverage incomplete" : ""}.</p>
+      <p>${esc(outcome.detail)}</p>
+      ${outcome.partial ? `<p>Exposure score unavailable until all attempted sources respond.</p>` : ""}
+      <ul class="source-coverage">${outcome.sources.map((source) => `<li><strong>${esc(source.name)}</strong>: ${esc(source.status === "ok" && source.checked !== false ? "checked" : source.status.replace(/_/g, " "))}${source.error ? ", " + esc(source.error) : ""}</li>`).join("")}</ul>
+      ${outcome.partial ? `<button type="button" class="btn btn-ghost btn-sm" data-action="retry-email">Retry breach check</button>${s.retry_after ? `<p>Source suggests waiting ${esc(s.retry_after)} seconds before retrying.</p>` : ""}` : ""}
       ${breached ? `<div class="breach-metrics">
         ${dw.risk_label ? `<div class="bm"><span>Risk</span><strong>${esc(dw.risk_label)}</strong></div>` : ""}
         ${dw.records_exposed ? `<div class="bm"><span>Records in these dumps</span><strong>${fmtNum(dw.records_exposed)}</strong></div>` : ""}
@@ -402,9 +408,13 @@
         const danger = ["password", "hash", "ssn", "phone", "address", "dob", "ip"].includes(String(f).toLowerCase());
         return `<span class="pill ${danger ? "danger" : ""}">${esc(f)}</span>`;
       }).join("")}</div>` : ""}
-      ${hibp ? `<div class="hint" style="margin-top:10px">HIBP: ${hibp.breached ? esc(hibp.count) + " breaches" : "no breaches"}</div>` : ""}
       ${dw.error ? `<div class="hint" style="margin-top:10px">${esc(dw.error)}</div>` : ""}
     </div>`;
+
+    // Straight under the verdict: it is what someone who just learned they
+    // were breached needs next, and the evidence below can run to 30 cards.
+    html += emailNextSteps(outcome, data);
+    html += breachAlertCta(outcome);
 
     if (dw.exposed_data && dw.exposed_data.length) {
       const top = dw.exposed_data.slice(0, 10), max = top[0].count || 1;
@@ -433,7 +443,7 @@
       html += `<div class="section-label">Breaches naming this address
         <span class="hint">${dw.breaches.length} of ${count} shown, largest first</span></div>`;
       html += `<div class="breach-list">${dw.breaches.map((b) => `
-        <details class="breach-card">
+        <details class="breach-card" data-bname="${esc(b.name)}" data-byear="${esc(String(b.date || "").slice(0, 4))}">
           <summary>
             <span class="bc-name">${esc(b.name)}</span>
             ${b.verified ? `<span class="pill ok">verified</span>` : ""}
@@ -454,11 +464,11 @@
     html += `<div class="section-label">Address analysis</div>`;
     html += datalist([
       ["Provider", `${esc(a.provider)} (${esc(a.provider_type)})`],
-      ["Deliverable", a.deliverable ? "Yes — mail server present" : "No MX record found"],
+      ["Deliverable", a.deliverable ? "Yes, mail server present" : "No MX record found"],
       ["Disposable", a.disposable ? "Yes (flagged)" : "No"],
       ["Plus addressing", a.plus_addressing ? "Yes" : "No"],
       ["Format", esc(a.format)],
-      ["MX hosts", (a.mx_hosts || []).map(esc).join("<br>") || "—"],
+      ["MX hosts", (a.mx_hosts || []).map(esc).join("<br>") || "-"],
     ]);
 
     const emailDomain = baseDomain(data.query.email.split("@")[1] || "");
@@ -488,6 +498,112 @@
     }
     resultsEl().innerHTML = html;
     animateCountUps();
+    linkBreachWriteups();
+  }
+
+  // What to do about an email result. Templated from the outcome, never
+  // generated, and only for the two definite states, an incomplete check
+  // already offers a retry, and advice would imply an answer it doesn't have.
+  function emailNextSteps(outcome, data) {
+    const pw = `<button type="button" class="linklike" data-action="open-password">check a password privately</button>`;
+    if (outcome.found) {
+      // Breach names are not listed here: many are combo lists and stealer-log
+      // dumps (Collection-1, ExploitIN), which are not services with a password.
+      const dw = data.darkweb || {};
+      const exposed = [].concat((data.breaches || {}).fields || [], ...(dw.breaches || []).map((b) => b.exposed || []))
+        .join(" ").toLowerCase();
+      const steps = [
+        `Change your password on each breached service you still use, and on any other account where you used the same password, reuse is what turns one breach into many.`,
+        `Turn on two-factor authentication, ideally an authenticator app or a passkey rather than SMS. <a href="/guides/two-factor-authentication.html">Which kind to choose →</a>`,
+        `Find out whether a password you still use is already in breach data: ${pw}, it is hashed in your browser and never sent.`,
+        `Expect phishing that quotes these breaches back at you to sound credible. <a href="/guides/how-to-spot-phishing.html">How to spot it →</a>`,
+      ];
+      if (/phone/.test(exposed)) {
+        // The field says the dump held phone numbers, not that it held this
+        // person's, so the advice is conditional, not an accusation.
+        steps.push(`At least one of these breaches included phone numbers. If yours may be among them, ask your carrier for a port-out or SIM PIN so the number cannot be moved to someone else's SIM. <a href="/guides/sim-swap-attacks.html">How SIM swaps work →</a>`);
+      }
+      steps.push(`If an account already looks taken over, <a href="/guides/account-hacked-what-to-do.html">follow the recovery steps in order →</a>`);
+      return `<div class="section-label">What to do now</div><ul class="tips">${steps.map((s) => `<li>${s}</li>`).join("")}</ul>`;
+    }
+    if (outcome.state === "no_match") {
+      return `<div class="section-label">What this does and doesn't mean</div><ul class="tips">
+        <li>No match means this address isn't in the breach data these sources have published, not that it has never leaked. Breaches that were never disclosed, or not yet released, cannot appear here.</li>
+        <li>A password can leak on its own, without this address beside it: ${pw}.</li>
+        <li><a href="/guides/check-email-data-breach.html">How breach checks work, and where they are blind →</a></li>
+      </ul>`;
+    }
+    return "";
+  }
+
+  // The one thing a one-off check cannot do is tell you about the next
+  // breach. Offered after a definite answer only, an incomplete check gets a
+  // retry, not a sales line. The app has two alerts and the copy keeps them
+  // apart: the new-breach alert compares on the phone and sends nothing;
+  // watching an address sends it to LeakCheck.
+  // The link opens the Play custom listing that leads with alerts (Play shows
+  // the main listing until it exists); the UTM tags are for Play Console.
+  const PLAY_ALERTS_URL = "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts"
+    + "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Demail_result%26utm_campaign%3Dbreach_alerts";
+  function breachAlertCta(outcome) {
+    if (!outcome.found && outcome.state !== "no_match") return "";
+    return `<div class="app-cta">
+      <div class="app-cta-text">
+        <strong>Get told when the next breach is published</strong>
+        <p>MyRecon for Android checks for new breaches once a day, on your phone, and sends nothing to do it. It can also watch this address and tell you if it turns up in a new one, a separate switch, because that check has to send the address. Free, no account.</p>
+      </div>
+      <a class="btn btn-sm" href="${esc(PLAY_ALERTS_URL)}" target="_blank" rel="noopener">Get breach alerts</a>
+    </div>`;
+  }
+
+  // Link a breach in an email result to our own write-up of it: a Breach
+  // Files page, or a Case File. Matched on the exact normalised name, and for
+  // case files the year too, because a wrong link is worse than none.
+  let writeupIndex = null;
+  const normName = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const sitePath = (u) => { try { return new URL(u).pathname; } catch { return ""; } };
+
+  function loadWriteupIndex() {
+    if (writeupIndex) return writeupIndex;
+    const get = (u) => fetch(u).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+    writeupIndex = Promise.all([get("/assets/data/breaches.json"), get("/assets/data/case-files.json")])
+      .then(([archive, cases]) => {
+        const byName = new Map(), byNameYear = new Map();
+        (archive.breaches || []).forEach((b) => {
+          const path = sitePath(b.url), year = String(b.breach_date || "").slice(0, 4);
+          if (path) [b.name, b.title].forEach((n) => n && byName.set(normName(n), { path, kind: "Breach file", year }));
+        });
+        (cases.cases || []).forEach((c) => {
+          // "yahoo-2013-2014" → yahoo, [2013, 2014]; "marriott-starwood-2018"
+          // is also reachable as "marriott", since the year pins it down.
+          const m = String(c.slug || "").match(/^(.*?)-((?:\d{4}-?)+)$/);
+          const path = sitePath(c.url);
+          if (!m || !path) return;
+          const years = m[2].split("-").filter(Boolean);
+          const keys = new Set([normName(m[1]), normName(m[1].split("-")[0])]);
+          keys.forEach((k) => years.forEach((y) => k && byNameYear.set(`${k}|${y}`, { path, kind: "Case file" })));
+        });
+        return { byName, byNameYear };
+      });
+    return writeupIndex;
+  }
+
+  async function linkBreachWriteups() {
+    const cards = $$(".breach-card[data-bname]");
+    if (!cards.length) return;
+    const { byName, byNameYear } = await loadWriteupIndex();
+    cards.forEach((card) => {
+      const key = normName(card.dataset.bname), year = card.dataset.byear;
+      const named = byName.get(key);
+      // Disclosure often trails the breach, so the archive allows a year's drift.
+      const sameBreach = named && (!named.year || !year || Math.abs(Number(named.year) - Number(year)) <= 1);
+      const hit = byNameYear.get(`${key}|${year}`) || (sameBreach ? named : null);
+      if (!hit || card.querySelector(".bc-writeup")) return;
+      card.querySelector("summary .bc-name")?.insertAdjacentHTML("afterend",
+        `<span class="pill bc-writeup">${esc(hit.kind.toLowerCase())}</span>`);
+      card.querySelector(".bc-body")?.insertAdjacentHTML("beforeend",
+        `<p style="margin-top:10px"><a href="${esc(hit.path)}">Read our ${esc(hit.kind.toLowerCase())} on ${esc(card.dataset.bname)} →</a></p>`);
+    });
   }
 
   // -- Domain results
@@ -498,18 +614,19 @@
     html += `<div class="section-label">Registration (WHOIS / RDAP)</div>`;
     if (w.found) {
       html += datalist([
-        ["Registrar", esc(w.registrar) || "—"],
-        ["Created", esc(w.created) || "—"],
-        ["Updated", esc(w.updated) || "—"],
-        ["Expires", esc(w.expires) || "—"],
-        ["DNSSEC", w.dnssec == null ? "—" : (w.dnssec ? "Enabled" : "Disabled")],
-        ["Status", (w.statuses || []).map(esc).join("<br>") || "—"],
-        ["Nameservers", (w.nameservers || []).map(esc).join("<br>") || "—"],
+        ["Registrar", esc(w.registrar) || "-"],
+        ["Created", esc(w.created) || "-"],
+        ["Updated", esc(w.updated) || "-"],
+        ["Expires", esc(w.expires) || "-"],
+        ["DNSSEC", w.dnssec == null ? "-" : (w.dnssec ? "Enabled" : "Disabled")],
+        ["Status", (w.statuses || []).map(esc).join("<br>") || "-"],
+        ["Nameservers", (w.nameservers || []).map(esc).join("<br>") || "-"],
       ]);
     } else {
       html += `<div class="hint">${esc(w.message || w.error || "No registration record found.")}</div>`;
     }
 
+    html += mailSecurityBlock(dns.mail_security);
     html += renderDnsBlock(dns);
 
     if (ip && ip.found) {
@@ -544,8 +661,45 @@
     return html;
   }
 
+  // -- Email spoofing verdict (domain + DNS tools). Graded server-side from
+  // SPF and DMARC; missing from results cached before the check existed, in
+  // which case nothing renders rather than a false "exposed".
+  const MAILSEC = {
+    protected: { label: "Protected against spoofing", cls: "clean", color: "var(--ok)",
+      text: "DMARC tells receiving mail servers to quarantine or reject mail that fails authentication, so forged mail claiming to be from this domain should not reach an inbox." },
+    partial: { label: "Partly protected", cls: "incomplete", color: "var(--warn)",
+      text: "Some records are published, but nothing makes receivers act on every forged message, mail pretending to come from this domain can still be delivered." },
+    exposed: { label: "Open to spoofing", cls: "", color: "var(--danger)",
+      text: "There is no working SPF or DMARC, so receivers have nothing to check forged mail against. Anyone can send email that claims to come from this domain." },
+  };
+  const SPF_ALL = { "-all": "fail (-all)", "~all": "soft fail (~all)", "?all": "neutral (?all)", "+all": "pass, anyone may send (+all)" };
+
+  function mailSecurityBlock(ms) {
+    if (!ms || !MAILSEC[ms.verdict]) return "";
+    const v = MAILSEC[ms.verdict], spf = ms.spf || {}, dm = ms.dmarc || {};
+    const spfText = !spf.present ? "Not published"
+      : !spf.valid ? "Broken, more than one SPF record"
+      : `Published · unlisted senders: ${SPF_ALL[spf.all] || (spf.redirect ? "set by the redirected record" : "not marked as failing")}`;
+    const dmText = !dm.present ? `Not published (checked ${dm.checked})`
+      : !dm.valid ? "Broken, more than one DMARC record"
+      : `Policy p=${dm.policy || "not set"}${dm.pct < 100 ? `, applied to ${dm.pct}% of mail` : ""}`
+        + `${dm.reports ? " · failure reports collected" : ""}${dm.inherited ? ` · inherited from ${dm.checked.replace(/^_dmarc\./, "")}` : ""}`;
+    const rows = [["SPF", esc(spfText)], ["DMARC", esc(dmText)]];
+    if (dm.record) rows.push(["DMARC record", esc(dm.record)]);
+    rows.push(["DKIM", "Not checkable from outside, its key sits under a selector name only the sender knows"]);
+    return `<div class="section-label">Email spoofing protection</div>
+      <div class="breach ${v.cls}" role="status">
+        <h3>${esc(v.label)}<span class="sev" style="color:${v.color}">${esc(ms.verdict)}</span></h3>
+        <p>${esc(v.text)}</p>
+        ${(ms.issues || []).length ? `<ul class="tips" style="margin-top:12px">${ms.issues.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : ""}
+      </div>
+      ${datalist(rows)}
+      <p class="hint" style="margin-top:10px"><a href="/guides/spf-dkim-dmarc-explained.html">How SPF, DKIM and DMARC work, and how to fix each gap →</a></p>`;
+  }
+
   function renderDns(data) {
     let html = resultsHeader(`DNS records: ${esc(data.query.domain)}`, "");
+    html += mailSecurityBlock(data.mail_security);
     html += renderDnsBlock(data);
     html += dnsPivotRow(data.records || {});
     resultsEl().innerHTML = html;
@@ -555,13 +709,13 @@
   function ipDetails(data) {
     const g = data.geo || {}, n = data.network || {}, f = data.flags || {};
     return datalist([
-      ["Reverse DNS", esc(data.reverse_dns) || "—"],
-      ["Location", [g.city, g.region, g.country].filter(Boolean).map(esc).join(", ") || "—"],
-      ["Coordinates", g.latitude != null ? `${g.latitude}, ${g.longitude}` : "—"],
-      ["Timezone", esc(g.timezone) || "—"],
-      ["ISP", esc(n.isp) || "—"],
-      ["Organization", esc(n.organization) || "—"],
-      ["ASN", esc(n.asn) || "—"],
+      ["Reverse DNS", esc(data.reverse_dns) || "-"],
+      ["Location", [g.city, g.region, g.country].filter(Boolean).map(esc).join(", ") || "-"],
+      ["Coordinates", g.latitude != null ? `${g.latitude}, ${g.longitude}` : "-"],
+      ["Timezone", esc(g.timezone) || "-"],
+      ["ISP", esc(n.isp) || "-"],
+      ["Organization", esc(n.organization) || "-"],
+      ["ASN", esc(n.asn) || "-"],
       ["Flags", [f.hosting && "Hosting", f.proxy && "Proxy/VPN", f.mobile && "Mobile"].filter(Boolean).join(", ") || "None"],
     ]);
   }
@@ -594,7 +748,7 @@
       const h = data.history || {};
       el.removeAttribute("data-wayback");
       if (h.rate_limited) {
-        el.textContent = "archive.org is throttling — try again shortly";
+        el.textContent = "archive.org is throttling, try again shortly";
         el.classList.add("wb-warn");
       } else if (h.snapshots) {
         // A range is the useful part: "first seen" dates the account, and a
@@ -608,7 +762,7 @@
         el.classList.add("wb-miss");
       }
     } catch (err) {
-      el.textContent = `archive lookup failed — ${err.message}`;
+      el.textContent = `archive lookup failed, ${err.message}`;
       el.classList.add("wb-warn");
     } finally {
       delete el.dataset.busy;
@@ -661,7 +815,7 @@
     return `<div class="pivot-row"><span class="pivot-label">${esc(label)}</span>${filled.join("")}</div>`;
   }
   function doPivot(tool, query) {
-    // Secret tools are never a valid pivot target — a pivot carries a value
+    // Secret tools are never a valid pivot target, a pivot carries a value
     // from a rendered result into the input, which must never be a password.
     if (!TOOLS[tool] || TOOLS[tool].secret || !query) return;
     switchTool(tool);
@@ -708,7 +862,7 @@
         { label: "Documents", value: docs },
       ];
     } else {
-      const breached = s.breached, bc = s.breach_count || 0;
+      const breached = window.MyReconEmailOutcome(data).found, bc = s.breach_count || 0;
       const linked = (s.linked_accounts || []).length;
       const grav = data.gravatar && data.gravatar.exists ? 1 : 0;
       score = Math.round((breached ? 35 : 0) + Math.min(bc, 45) + linked * 6 + grav * 8);
@@ -722,7 +876,7 @@
     let label, color, message;
     if (score <= 30) {
       label = "Low exposure"; color = "var(--ok)";
-      message = "A small public footprint. Not much is easy to find — nice work.";
+      message = "A small public footprint. Not much is easy to find, nice work.";
     } else if (score <= 60) {
       label = "Moderate exposure"; color = "var(--warn)";
       message = "A noticeable footprint. Worth reviewing what's public and locking down old accounts.";
@@ -794,7 +948,7 @@
       const [suf, cnt] = line.trim().split(":");
       if (suf === suffix) return parseInt(cnt, 10) || 0;
     }
-    return 0; // not in the corpus — padding rows always carry a count of 0
+    return 0; // not in the corpus, padding rows always carry a count of 0
   }
 
   // Entropy from the character pool actually used. This measures resistance to
@@ -804,7 +958,7 @@
     const pool = (/[a-z]/.test(pw) ? 26 : 0) + (/[A-Z]/.test(pw) ? 26 : 0)
                + (/[0-9]/.test(pw) ? 10 : 0) + (/[^A-Za-z0-9]/.test(pw) ? 33 : 0);
     const bits = pw.length * Math.log2(pool || 1);
-    // ~100 billion guesses/sec — a mid-range GPU rig against a fast hash.
+    // ~100 billion guesses/sec, a mid-range GPU rig against a fast hash.
     const seconds = Math.pow(2, bits - 1) / 1e11;
     let label = "Very weak";
     if (bits >= 100) label = "Excellent";
@@ -834,7 +988,7 @@
     const color = breached ? "var(--danger)" : "var(--ok)";
     const advice = breached
       ? "Stop using this password everywhere it appears. Attackers load exactly these lists into credential-stuffing tools, so its strength on paper no longer matters."
-      : "This password isn't in the corpus. That means it hasn't turned up in a known dump — it doesn't by itself mean the password is strong.";
+      : "This password isn't in the corpus. That means it hasn't turned up in a known dump, it doesn't by itself mean the password is strong.";
 
     resultsEl().innerHTML = `
       <div class="results-bar"><h2>Password exposure</h2>
@@ -850,19 +1004,19 @@
 
       <div class="section-label">Brute-force resistance</div>
       ${datalist([
-        ["Strength", `${esc(s.label)} — ${s.bits} bits of entropy`],
+        ["Strength", `${esc(s.label)}, ${s.bits} bits of entropy`],
         ["Character pool", `${s.pool} possible characters per position`],
         ["Length", `${pw.length} characters`],
         ["Offline crack time", esc(s.crack)],
       ])}
       <p class="hint" style="margin-top:12px">
-        Estimated against roughly 100 billion guesses per second — a mid-range GPU rig
+        Estimated against roughly 100 billion guesses per second, a mid-range GPU rig
         attacking a fast hash. A site using a slow hash such as bcrypt would take far longer.
       </p>
 
       <div class="section-label">What to do</div>
       <ul class="tips">
-        <li>Use a unique password for every account — reuse is what turns one breach into many.</li>
+        <li>Use a unique password for every account, reuse is what turns one breach into many.</li>
         <li>Let a password manager generate and store them; length beats complexity.</li>
         <li>Turn on two-factor authentication so a leaked password isn't enough on its own.</li>
         <li><a href="/guides/strong-passwords-guide.html">Read the full guide to strong passwords →</a></li>
@@ -875,7 +1029,7 @@
   async function run() {
     const tool = TOOLS[activeTool];
     const input = $("#queryInput");
-    // Never trim a secret — leading and trailing spaces are part of a password.
+    // Never trim a secret, leading and trailing spaces are part of a password.
     const value = tool.secret ? input.value : input.value.trim();
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
 
@@ -1021,6 +1175,19 @@
       else if (a === "copy") copySummary();
       else if (a === "print") printReport();
       else if (a === "subdomains") discoverSubdomains(btn);
+      // Opens the password tool empty. Nothing from the email result is
+      // carried across, the only value that tool may ever hold is typed.
+      else if (a === "open-password") {
+        switchTool("password");
+        window.scrollTo({ top: $("#tool").offsetTop - 70, behavior: "smooth" });
+        $("#queryInput").focus({ preventScroll: true });
+      }
+      else if (a === "retry-email" && lastResult?.tool === "email") {
+        const query = lastResult.query;
+        switchTool("email");
+        $("#queryInput").value = query;
+        run();
+      }
     }));
   }
 
@@ -1054,9 +1221,10 @@
     // lastExposure is only computed for username/email and is not cleared by the
     // other renderers, so gate on the tool or a stale score leaks into the text.
     const scored = lastResult.tool === "username" || lastResult.tool === "email";
-    const scoreBit = scored && lastExposure ? ` — exposure score ${lastExposure.score}/100 (${lastExposure.label})` : "";
+    const scoreBit = scored && lastExposure ? `, exposure score ${lastExposure.score}/100 (${lastExposure.label})`
+      : lastResult.tool === "email" ? `, ${window.MyReconEmailOutcome(lastResult.data).label}` : "";
     const payload = {
-      title: "MyRecon — OSINT report",
+      title: "MyRecon, OSINT report",
       text: `${TOOLS[lastResult.tool].label} report for ${lastResult.query}${scoreBit}`,
       url: shareUrl(),
     };
@@ -1064,7 +1232,7 @@
       try { await navigator.share(payload); return; }
       catch (e) { if (e && e.name === "AbortError") return; }
     }
-    copyText(`${payload.text}\n${payload.url}`, "Copied — paste it anywhere to share.");
+    copyText(`${payload.text}\n${payload.url}`, "Copied, paste it anywhere to share.");
   }
 
   function copySummary() {
@@ -1077,39 +1245,48 @@
     const meta = $("#printMeta");
     if (meta) meta.textContent = `${TOOLS[lastResult.tool].label} report · Target: ${lastResult.query} · ${new Date().toLocaleString()}`;
     const prev = document.title;
-    document.title = `MyRecon ${TOOLS[lastResult.tool].label} report — ${lastResult.query}`;
+    document.title = `MyRecon ${TOOLS[lastResult.tool].label} report: ${lastResult.query}`;
     window.print();
     setTimeout(() => { document.title = prev; }, 800);
   }
 
   function buildTextSummary(res) {
     const d = res.data;
-    const L = [`MyRecon — ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
-    if ((res.tool === "username" || res.tool === "email") && lastExposure) {
-      L.push(`Digital exposure score: ${lastExposure.score}/100 (${lastExposure.label})`, "");
+    const L = [`MyRecon, ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
+    const exposure = res.tool === "username" || (res.tool === "email" && !window.MyReconEmailOutcome(d).partial)
+      ? computeExposure(res.tool, d) : null;
+    if (exposure) {
+      L.push(`Digital exposure score: ${exposure.score}/100 (${exposure.label})`, "");
     }
     if (res.tool === "username") {
       const all = [].concat(d.results?.profiles || [], d.results?.documents || [], d.results?.mentions || []);
       L.push(`${all.length} results found:`);
-      all.forEach((r) => L.push(`- ${r.platform || hostOf(r.url)} — ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`));
+      all.forEach((r) => L.push(`- ${r.platform || hostOf(r.url)}, ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`));
     } else if (res.tool === "email") {
       const a = d.analysis || {}, s = d.summary || {};
-      L.push(`Provider: ${a.provider || "—"} (${a.provider_type || "—"})`);
+      L.push(`Provider: ${a.provider || "-"} (${a.provider_type || "-"})`);
       L.push(`Deliverable: ${a.deliverable ? "yes" : "no"} · Disposable: ${a.disposable ? "yes" : "no"}`);
-      L.push(`Breaches: ${s.breached ? (s.breach_count || 0) : "none"}`);
+      const outcome = window.MyReconEmailOutcome(d);
+      L.push(`Breaches: ${outcome.label}${outcome.found && s.breach_count > 0 ? ` (${s.breach_count})` : ""}`);
+      L.push(`Coverage: ${outcome.coverage}${outcome.partial ? " (incomplete)" : ""}`, outcome.detail);
+      outcome.sources.forEach((source) => L.push(`- ${source.name}: ${source.status}${source.error ? ", " + source.error : ""}`));
+      if (outcome.partial) L.push("Exposure score: unavailable because coverage is incomplete.");
       if ((s.linked_accounts || []).length) L.push(`Linked accounts: ${s.linked_accounts.join(", ")}`);
     } else if (res.tool === "domain") {
       const w = d.whois || {};
-      L.push(`Registrar: ${w.registrar || "—"}`);
-      L.push(`Created: ${w.created || "—"} · Expires: ${w.expires || "—"}`);
-      L.push(`Nameservers: ${(w.nameservers || []).join(", ") || "—"}`);
-      L.push(`Resolved IP: ${(d.resolved_ips || [])[0] || "—"}`);
+      L.push(`Registrar: ${w.registrar || "-"}`);
+      L.push(`Created: ${w.created || "-"} · Expires: ${w.expires || "-"}`);
+      L.push(`Nameservers: ${(w.nameservers || []).join(", ") || "-"}`);
+      L.push(`Resolved IP: ${(d.resolved_ips || [])[0] || "-"}`);
+      const ms = (d.dns || {}).mail_security;
+      if (ms && MAILSEC[ms.verdict]) L.push(`Email spoofing protection: ${MAILSEC[ms.verdict].label}`);
     } else if (res.tool === "ip") {
       const g = d.geo || {}, n = d.network || {};
-      L.push(`Location: ${[g.city, g.region, g.country].filter(Boolean).join(", ") || "—"}`);
-      L.push(`ISP: ${n.isp || "—"} · ASN: ${n.asn || "—"}`);
-      L.push(`Reverse DNS: ${d.reverse_dns || "—"}`);
+      L.push(`Location: ${[g.city, g.region, g.country].filter(Boolean).join(", ") || "-"}`);
+      L.push(`ISP: ${n.isp || "-"} · ASN: ${n.asn || "-"}`);
+      L.push(`Reverse DNS: ${d.reverse_dns || "-"}`);
     } else if (res.tool === "dns") {
+      if (d.mail_security && MAILSEC[d.mail_security.verdict]) L.push(`Email spoofing protection: ${MAILSEC[d.mail_security.verdict].label}`, "");
       Object.entries(d.records || {}).forEach(([t, recs]) => L.push(`${t}: ${recs.map((r) => r.value).join(", ")}`));
     }
     return L.join("\n") + `\n\nvia https://www.myrecon.xyz`;
@@ -1148,7 +1325,10 @@
   function quickStat(res) {
     const d = res.data;
     if (res.tool === "username") return `${(d.summary || {}).profiles || 0} profiles`;
-    if (res.tool === "email") return (d.summary || {}).breached ? `${d.summary.breach_count} breaches` : "no breaches";
+    if (res.tool === "email") {
+      const outcome = window.MyReconEmailOutcome(d);
+      return `${outcome.label}${outcome.partial && outcome.found ? " · incomplete coverage" : ""}`;
+    }
     if (res.tool === "domain") return (d.whois || {}).registrar || "domain";
     if (res.tool === "ip") return [(d.geo || {}).city, (d.geo || {}).country].filter(Boolean).join(", ") || "IP";
     if (res.tool === "dns") return `${(d.summary || {}).total_records || 0} records`;
@@ -1158,12 +1338,15 @@
     const wrap = $("#saved");
     if (!wrap) return;
     const s = getSaved();
-    if (!s.length) { wrap.innerHTML = `<p class="hint">Save an investigation to pin it here (stored only in this browser).</p>`; return; }
+    // Hidden until there is something in it: a first visit would otherwise
+    // open on two empty sections between the tool and everything else.
+    $("#saved-section")?.toggleAttribute("hidden", !s.length);
+    if (!s.length) { wrap.innerHTML = ""; return; }
     wrap.innerHTML = `<div class="history-list">` + s.map((x) => `
       <div class="history-item" data-tool="${esc(x.tool)}" data-query="${esc(x.query)}">
         <div class="ico">${icon(TOOLS[x.tool] ? TOOLS[x.tool].icon : "search", 17)}</div>
         <div class="meta"><div class="q">${esc(x.query)}</div>
-          <div class="t">${TOOLS[x.tool] ? esc(TOOLS[x.tool].label) : ""}${x.note ? " · " + esc(x.note) : ""}</div></div>
+          <div class="t">${TOOLS[x.tool] ? esc(TOOLS[x.tool].label) : ""}${x.note ? " · " + esc(x.tool === "email" && x.note === "no breaches" ? "Older result · rerun to verify coverage" : x.note) : ""}</div></div>
         <button type="button" class="icon-btn btn-sm" data-del="${esc(x.tool)}|${esc(x.query)}" aria-label="Remove ${esc(x.query)} from saved" title="Remove ${esc(x.query)} from saved">&times;</button>
       </div>`).join("") + `</div>`;
     $$(".history-item", wrap).forEach((el) => el.addEventListener("click", (e) => {
@@ -1190,11 +1373,23 @@
     if (!lastResult) return;
     const base = `myrecon-${lastResult.tool}-${Date.now()}`;
     if (kind === "json") {
-      download(base + ".json", JSON.stringify(lastResult.data, null, 2), "application/json");
+      download(base + ".json", JSON.stringify(exportData(lastResult), null, 2), "application/json");
     } else {
       download(base + ".csv", toCSV(lastResult), "text/csv");
     }
     toast(`Exported ${kind.toUpperCase()}.`);
+  }
+
+  function exportData(res) {
+    if (res.tool !== "email") return res.data;
+    const outcome = window.MyReconEmailOutcome(res.data);
+    return { ...res.data, summary: { ...res.data.summary,
+      breached: outcome.found,
+      breach_outcome: outcome.state,
+      coverage_incomplete: outcome.partial,
+      breach_coverage: { completed: outcome.completed, attempted: outcome.attempted, sources: outcome.sources },
+      interpretation: outcome.detail,
+    } };
   }
 
   function toCSV(res) {
@@ -1208,7 +1403,7 @@
         rows.push([prefix, String(obj ?? "")]);
       }
     };
-    walk(res.data);
+    walk(exportData(res));
     return rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
   }
 
@@ -1226,7 +1421,8 @@
     const wrap = $("#history");
     if (!wrap) return;
     const h = getHistory();
-    if (!h.length) { wrap.innerHTML = `<p class="hint">Your recent lookups appear here (stored only in this browser).</p>`; return; }
+    $("#history-section")?.toggleAttribute("hidden", !h.length);
+    if (!h.length) { wrap.innerHTML = ""; return; }
     wrap.innerHTML = `<div class="history-list">` + h.map((x) => `
       <div class="history-item" data-tool="${esc(x.tool)}" data-query="${esc(x.query)}">
         <div class="ico">${icon(TOOLS[x.tool] ? TOOLS[x.tool].icon : "search", 17)}</div>
@@ -1285,14 +1481,59 @@
         : "";
     }
     resultsEl().innerHTML = defaultEmpty();
+    updateDetectHint();
   }
 
+  // Most people arrive with a question, not a tool name. Each start opens the
+  // tool empty and focuses it; the active tool is left out as already chosen.
+  const QUICK_STARTS = [
+    ["email", "Has my email been in a breach?", "Check an address against published breach data."],
+    ["username", "Where is my username in use?", "Sweep public platforms for a handle."],
+    ["password", "Has my password leaked?", "Hashed in your browser, the password is never sent."],
+    ["domain", "Can someone spoof my domain's email?", "Registration, DNS, and an SPF / DMARC check."],
+  ];
+
   function defaultEmpty() {
+    const starts = QUICK_STARTS.filter(([t]) => t !== activeTool && TOOLS[t]);
     return `<div class="empty">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-      <p class="empty-title">Ready when you are</p><p>Pick a tool, enter a target, and MyRecon will gather open-source intelligence from reliable public sources.</p>
+      <p class="empty-title">Ready when you are</p>
+      <p>Enter a target above, or start from a question:</p>
+      <div class="quick-starts">${starts.map(([t, q, d]) => `
+        <button type="button" class="quick-start" data-quick="${t}">${icon(TOOLS[t].icon, 18)}
+          <span><strong>${esc(q)}</strong><small>${esc(d)}</small></span></button>`).join("")}
+      </div>
     </div>`;
+  }
+
+  // ---------------------------------------------------------------- input detection
+  // An email typed into the username box, or an IP into the domain box, gets a
+  // one-click move to the tool that fits it. Only unambiguous shapes count,
+  // "john.doe" could be a handle or a domain, so the username tool never
+  // suggests Domain. The password tool is never read from or suggested: a
+  // value typed there must not move anywhere.
+  const IPV4 = /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
+  function detectKind(v) {
+    v = String(v || "").trim();
+    if (!v || /\s/.test(v)) return null;
+    if (/^[^@\s/]+@[^@\s/]+\.[a-z]{2,}$/i.test(v)) return "email";
+    if (IPV4.test(v) || (/^[0-9a-f:]+$/i.test(v) && (v.match(/:/g) || []).length >= 2)) return "ip";
+    if (/^(https?:\/\/)?([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}\/?$/i.test(v)) return "domain";
+    return null;
+  }
+  const SUGGEST = { username: ["email", "ip"], email: ["ip", "domain"], domain: ["email", "ip"], dns: ["email", "ip"], ip: ["email", "domain"] };
+  const KIND_LABEL = { email: "an email address", ip: "an IP address", domain: "a domain" };
+
+  function updateDetectHint() {
+    const hint = $("#detectHint");
+    if (!hint) return;
+    const tool = TOOLS[activeTool];
+    const kind = tool && !tool.secret ? detectKind($("#queryInput").value) : null;
+    const target = kind && (SUGGEST[activeTool] || []).includes(kind) && TOOLS[kind] && !TOOLS[kind].secret ? kind : null;
+    hint.hidden = !target;
+    hint.innerHTML = target
+      ? `${icon(TOOLS[target].icon, 15)}<span>That looks like ${KIND_LABEL[target]}.</span>
+         <button type="button" class="linklike" data-switch="${target}">Search it with the ${esc(TOOLS[target].label)} tool instead</button>`
+      : "";
   }
 
   // ---------------------------------------------------------------- init
@@ -1345,6 +1586,16 @@
       renderSaved();
       $("#runBtn")?.addEventListener("click", run);
       $("#queryInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+      $("#queryInput")?.addEventListener("input", updateDetectHint);
+      $("#detectHint")?.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-switch]");
+        const target = btn && btn.dataset.switch;
+        if (!TOOLS[target] || TOOLS[target].secret || TOOLS[activeTool].secret) return;
+        const value = $("#queryInput").value.trim();
+        switchTool(target);
+        $("#queryInput").value = target === "domain" ? cleanHost(value) : value;
+        run();
+      });
       $("#examples")?.addEventListener("click", (e) => {
         const el = e.target.closest("[data-ex]");
         if (!el) return;
@@ -1356,6 +1607,12 @@
         if (e.key === "/" && !/^(input|textarea)$/i.test(document.activeElement.tagName)) {
           e.preventDefault(); $("#queryInput")?.focus();
         }
+      });
+      resultsEl().addEventListener("click", (e) => {
+        const el = e.target.closest("[data-quick]");
+        if (!el || !TOOLS[el.dataset.quick]) return;
+        switchTool(el.dataset.quick);
+        $("#queryInput").focus();
       });
       // Cross-tool pivoting: delegated so it survives result re-renders.
       resultsEl().addEventListener("click", (e) => {
@@ -1378,7 +1635,7 @@
         $("#queryInput").focus();
       });
       // Deep-link support: #tool=email&q=... Secret tools are refused outright
-      // so a crafted link can never pre-fill — or auto-submit — a password.
+      // so a crafted link can never pre-fill, or auto-submit, a password.
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
       const linked = params.get("tool");
       if (linked && TOOLS[linked] && !TOOLS[linked].secret) {

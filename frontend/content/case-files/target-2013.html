@@ -20,12 +20,12 @@
   "related": ["heartland-2008", "tjx-2007", "change-healthcare-2024"],
   "faq": [
     { "q": "How did hackers get into Target?", "a": "Through Fazio Mechanical Services, a refrigeration and air-conditioning contractor. Malware delivered by a phishing email stole the contractor's credentials for a Target vendor portal, and from there the attackers found a route into the internal network and eventually onto the point-of-sale terminals." },
-    { "q": "How many people were affected by the Target breach?", "a": "Around 40 million payment cards were captured from the tills between 27 November and 15 December 2013, and a separate 70 million customer records — names, addresses, phone numbers and email addresses — were also taken. The two sets overlap, so the total number of individuals is somewhere between the two figures." },
-    { "q": "Did Target ignore warnings?", "a": "Its monitoring did generate alerts. Target had deployed FireEye, and the system flagged the malware as it was installed; the alerts went to a security operations team and were not acted on before the data started leaving. That detail — detection working and response failing — is why the case is taught as an operations failure rather than a technology one." },
+    { "q": "How many people were affected by the Target breach?", "a": "Around 40 million payment cards were captured from the tills between 27 November and 15 December 2013, and a separate 70 million customer records, names, addresses, phone numbers and email addresses, were also taken. The two sets overlap, so the total number of individuals is somewhere between the two figures." },
+    { "q": "Did Target ignore warnings?", "a": "Its monitoring did generate alerts. Target had deployed FireEye, and the system flagged the malware as it was installed; the alerts went to a security operations team and were not acted on before the data started leaving. That detail, detection working and response failing, is why the case is taught as an operations failure rather than a technology one." },
     { "q": "What did the Target breach cost?", "a": "Target reported gross breach-related expenses of around $202 million, partly offset by insurance. Settlements included $18.5 million with 47 US states in 2017, roughly $10 million to consumers, and payments to card issuers through Visa and MasterCard. The chief information officer resigned in March 2014 and the chief executive in May." }
   ],
   "sources": [
-    { "label": "US Senate Committee on Commerce, Science and Transportation — \"A Kill Chain Analysis of the 2013 Target Data Breach\", March 2014" },
+    { "label": "US Senate Committee on Commerce, Science and Transportation, \"A Kill Chain Analysis of the 2013 Target Data Breach\", March 2014" },
     { "label": "Target Corporation SEC filings and quarterly results, 2014–2015" },
     { "label": "Multistate attorneys general settlement announcement, May 2017" },
     { "label": "Contemporaneous reporting by Brian Krebs, who broke the story on 18 December 2013" }
@@ -36,7 +36,7 @@
 
 <h2>What happened</h2>
 
-<p>Fazio Mechanical Services supplied and maintained heating, ventilation and refrigeration systems for Target stores. Like many suppliers, it had a login to a Target-run web portal for billing, contracts and project management. In autumn 2013, someone sent Fazio a phishing email carrying a variant of Citadel — commodity password-stealing malware, sold openly on criminal forums. It worked, and the contractor's Target credentials went with it.</p>
+<p>Fazio Mechanical Services supplied and maintained heating, ventilation and refrigeration systems for Target stores. Like many suppliers, it had a login to a Target-run web portal for billing, contracts and project management. In autumn 2013, someone sent Fazio a phishing email carrying a variant of Citadel, commodity password-stealing malware, sold openly on criminal forums. It worked, and the contractor's Target credentials went with it.</p>
 
 <p>That portal was never meant to be a route into the store network. But the segmentation between the vendor-facing systems and the internal corporate network was not strong enough to keep an attacker out once they were inside with valid credentials, and from the corporate network the attackers found their way to the point-of-sale estate.</p>
 
@@ -46,7 +46,7 @@
 
 <p>Card data on a magnetic stripe is encrypted in transit and at rest. But at the moment the stripe is read, the terminal holds the track data in memory in the clear for a fraction of a second so it can process the transaction. That gap is what BlackPOS-family malware exists to exploit: it sits on the terminal, watches its own process memory for the pattern of a card track, and copies it out.</p>
 
-<p>The stolen tracks were written to a file on an internal server, then moved out of the network in batches over the following two weeks — timed, according to the Senate committee's later analysis, to blend into normal business hours.</p>
+<p>The stolen tracks were written to a file on an internal server, then moved out of the network in batches over the following two weeks, timed, according to the Senate committee's later analysis, to blend into normal business hours.</p>
 
 <div class="callout">
   <p><strong>The alerts fired.</strong> Target had installed FireEye malware detection earlier that year, and it flagged the malicious software as it was deployed. Symantec's endpoint product flagged related activity too. The alerts reached a security operations team, and no one escalated them before the exfiltration began. This is the part worth remembering: the failure was not that Target had no detection. It was that detection without a response process is a log file nobody reads.</p>
@@ -55,39 +55,39 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>Autumn 2013</b> — Phishing malware steals Fazio Mechanical's Target portal credentials.</li>
-  <li><b>15 November</b> — Attackers are inside Target's network, testing their access.</li>
-  <li><b>27 November</b> — Card-scraping malware is live across the point-of-sale estate; capture begins.</li>
-  <li><b>30 November</b> — FireEye alerts fire and are not escalated.</li>
-  <li><b>2–15 December</b> — Stolen track data is exfiltrated in batches.</li>
-  <li><b>12 December</b> — The US Department of Justice notifies Target that card data traced to its stores is appearing on carding markets.</li>
-  <li><b>15 December</b> — Target removes the malware.</li>
-  <li><b>18 December</b> — Brian Krebs publishes the story. Target confirms the following day.</li>
-  <li><b>10 January 2014</b> — Target discloses the additional 70 million customer records.</li>
-  <li><b>March 2014</b> — CIO Beth Jacob resigns. <b>May 2014</b> — Chief executive Gregg Steinhafel resigns.</li>
-  <li><b>May 2017</b> — $18.5 million settlement with 47 states and the District of Columbia.</li>
+  <li><b>Autumn 2013</b>: Phishing malware steals Fazio Mechanical's Target portal credentials.</li>
+  <li><b>15 November</b>: Attackers are inside Target's network, testing their access.</li>
+  <li><b>27 November</b>: Card-scraping malware is live across the point-of-sale estate; capture begins.</li>
+  <li><b>30 November</b>: FireEye alerts fire and are not escalated.</li>
+  <li><b>2–15 December</b>: Stolen track data is exfiltrated in batches.</li>
+  <li><b>12 December</b>: The US Department of Justice notifies Target that card data traced to its stores is appearing on carding markets.</li>
+  <li><b>15 December</b>: Target removes the malware.</li>
+  <li><b>18 December</b>: Brian Krebs publishes the story. Target confirms the following day.</li>
+  <li><b>10 January 2014</b>: Target discloses the additional 70 million customer records.</li>
+  <li><b>March 2014</b>: CIO Beth Jacob resigns. <b>May 2014</b>: Chief executive Gregg Steinhafel resigns.</li>
+  <li><b>May 2017</b>: $18.5 million settlement with 47 states and the District of Columbia.</li>
 </ol>
 
 <h2>What it cost, and who paid</h2>
 
-<p>Target reported roughly $202 million in gross breach-related expenses across the following years, materially offset by insurance. Card issuers bore the cost of reissuing tens of millions of cards and recovered part of it through settlements with Visa and MasterCard. Consumers, in the main, were made whole on fraudulent transactions — card networks' liability rules are designed for exactly that — but spent the season cancelling cards and waiting for replacements.</p>
+<p>Target reported roughly $202 million in gross breach-related expenses across the following years, materially offset by insurance. Card issuers bore the cost of reissuing tens of millions of cards and recovered part of it through settlements with Visa and MasterCard. Consumers, in the main, were made whole on fraudulent transactions, card networks' liability rules are designed for exactly that, but spent the season cancelling cards and waiting for replacements.</p>
 
 <p>The people who paid the highest personal price were the executives. A chief executive of a Fortune 50 retailer losing his job over an intrusion was new in 2014, and it is the reason the subject stopped being delegated downwards.</p>
 
 <h2>What it changed</h2>
 
-<p><strong>Chip cards arrived in America.</strong> The United States had been an outlier: the rest of the developed world had moved to EMV chip cards years earlier, leaving the US magnetic stripe as the softest target on the planet. Target accelerated a rollout that was already planned, and the card networks brought forward the October 2015 liability shift that made whichever party had not adopted chip technology responsible for fraudulent transactions. Card-present fraud in the US fell sharply afterwards — and moved online, where it remains.</p>
+<p><strong>Chip cards arrived in America.</strong> The United States had been an outlier: the rest of the developed world had moved to EMV chip cards years earlier, leaving the US magnetic stripe as the softest target on the planet. Target accelerated a rollout that was already planned, and the card networks brought forward the October 2015 liability shift that made whichever party had not adopted chip technology responsible for fraudulent transactions. Card-present fraud in the US fell sharply afterwards, and moved online, where it remains.</p>
 
 <p><strong>Vendor access became a controlled thing.</strong> Before Target, third-party portal accounts were plumbing. After it, they became an audited asset class: scoped credentials, network segmentation between vendor systems and everything else, and contractual security obligations that a refrigeration contractor is now expected to meet.</p>
 
-<p><strong>"We had alerts" stopped being a defence.</strong> The Senate committee's report walked through the intrusion as a kill chain and showed that Target had opportunities to break it at nearly every stage. That framing — where did detection exist, and why did it not produce a response — is now the standard shape of a post-incident review.</p>
+<p><strong>"We had alerts" stopped being a defence.</strong> The Senate committee's report walked through the intrusion as a kill chain and showed that Target had opportunities to break it at nearly every stage. That framing, where did detection exist, and why did it not produce a response, is now the standard shape of a post-incident review.</p>
 
 <h2>If you shopped there</h2>
 
-<p>The cards involved were reissued more than a decade ago, so the direct risk is long gone. The 70 million customer records — names, addresses, phone numbers, email addresses — are a different matter, because that information does not expire and has been folded into marketing and fraud datasets ever since.</p>
+<p>The cards involved were reissued more than a decade ago, so the direct risk is long gone. The 70 million customer records, names, addresses, phone numbers, email addresses, are a different matter, because that information does not expire and has been folded into marketing and fraud datasets ever since.</p>
 
 <ol class="bx-actions">
   <li><strong>Treat unsolicited contact as unverified, always.</strong> The lasting value of a retail customer record is that it makes a scam call or message specific: the caller knows where you shop, where you live, and what you bought.</li>
   <li><strong>Check your card statements line by line, monthly.</strong> Card fraud is usually detected by the cardholder, not the bank, and small test charges come before large ones.</li>
-  <li><strong>Prefer a payment method with a buffer</strong> — a credit card or a payment service — over anything drawn directly on your current account, so a disputed transaction is not money already gone.</li>
+  <li><strong>Prefer a payment method with a buffer</strong>: a credit card or a payment service, over anything drawn directly on your current account, so a disputed transaction is not money already gone.</li>
 </ol>

@@ -1,0 +1,20 @@
+<p>The detail that matters is six words long: MD5 hashes with a constant value
+in the salt field. A salt that never changes is not a salt. Its entire function
+is to be different for every record, so that two people who chose the same
+password do not produce the same hash and one precomputed table cannot be run
+against the whole file. Fix the value and you have plain MD5 with extra
+steps.</p>
+
+<p>What makes this instructive rather than merely bad is that it passes
+inspection. The column exists. The field is populated. The word "salt" appears
+in the schema, in the code, and presumably in whatever security questionnaire
+the company answered. Everything is present except the property that made any
+of it worth doing, which is a far more common shape of failure than having no
+protection at all.</p>
+
+<p>The last line of the record is the one with consequences for readers:
+multiple attempts to disclose the breach went unanswered. No reset emails were
+sent, no notice was published, and 3.7 million people were never told by the
+company that lost their credentials. If a password from a gaming account of
+yours is still in use somewhere else, this is the only notification you are
+going to get.</p>

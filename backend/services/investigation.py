@@ -1,5 +1,5 @@
 """
-Investigation orchestrator — a handle in, a correlated graph out.
+Investigation orchestrator, a handle in, a correlated graph out.
 
     handle ─▶ username sweep (100+ platforms)
                   │
@@ -13,7 +13,7 @@ Search by *name* was built and then removed. Deriving handles from a personal
 name ("A. Likhiya" → `alikhiya`, `ashmi.likhiya`) produced accounts belonging to
 whoever actually registered those handles, which is usually not the person
 searched. The inference "this naming convention implies this person" is not
-supported by anything, so the findings were false positives by construction —
+supported by anything, so the findings were false positives by construction,
 not a scoring problem that better weights could fix. A handle, by contrast, is
 an identifier: searching `torvalds` finds accounts named `torvalds`, which is a
 fact rather than a guess.
@@ -24,7 +24,7 @@ Two things this still deliberately does not do:
     and the assessment says so. A cluster is a hypothesis with a confidence
     band attached.
   • Invent narrative. The assessment is generated from the graph's own counts
-    and confidence values — no language model — so the prose cannot claim
+    and confidence values, no language model, so the prose cannot claim
     anything the evidence does not support.
 
 Synchronous and stateless, matching the rest of the backend.
@@ -164,7 +164,7 @@ def investigate(handle: str, *, deep: bool = False,
     Run an investigation on a single handle.
 
     Args:
-        handle: the username to check. Must be an actual handle — names are not
+        handle: the username to check. Must be an actual handle, names are not
             accepted, see the module docstring.
         deep: passed through to the platform sweep.
         emit: optional progress callback, matching the event shape the username

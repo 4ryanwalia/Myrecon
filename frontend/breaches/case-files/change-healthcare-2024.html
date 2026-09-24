@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Change Healthcare Hack 2024: 190 Million Records">
   <meta name="twitter:description" content="A remote access portal without multi-factor authentication let ransomware into the company that processes a third of American medical claims.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Change Healthcare, 2024: one login, and American healthcare stopped billing","description":"A remote access portal without multi-factor authentication let ransomware into the company that processes a third of American medical claims. 190 million people were in the data.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/change-healthcare-2024.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Change Healthcare ransomware attack"},"wordCount":901}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Change Healthcare ransomware attack","item":"https://www.myrecon.xyz/breaches/case-files/change-healthcare-2024.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How did the Change Healthcare attack happen?","acceptedAnswer":{"@type":"Answer","text":"Attackers used stolen credentials on a Citrix remote access portal that was not protected by multi-factor authentication. The company's parent, UnitedHealth Group, confirmed this in congressional testimony. Once inside, the group moved through the network for more than a week before deploying ransomware."}},{"@type":"Question","name":"Why did it disrupt so much of US healthcare?","acceptedAnswer":{"@type":"Answer","text":"Change Healthcare sits in the middle of the American medical payment system, handling a very large share of claims, eligibility checks and pharmacy transactions. When it went offline, pharmacies could not verify coverage or process claims, and providers could not bill. Independent practices ran out of cash within weeks; UnitedHealth advanced billions of dollars in emergency funding."}},{"@type":"Question","name":"Did they pay the ransom?","acceptedAnswer":{"@type":"Answer","text":"Yes — about $22 million in bitcoin, traced publicly on the blockchain. It did not resolve matters: the affiliate who carried out the intrusion accused ALPHV of taking the payment and disappearing, and a second group, RansomHub, later attempted to extort the company again using what appeared to be the same data."}},{"@type":"Question","name":"How many people were affected?","acceptedAnswer":{"@type":"Answer","text":"The estimate was 100 million in October 2024 and was revised to roughly 190 million in January 2025, making it the largest breach of protected health information ever reported in the United States — more than half the country's population."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How did the Change Healthcare attack happen?","acceptedAnswer":{"@type":"Answer","text":"Attackers used stolen credentials on a Citrix remote access portal that was not protected by multi-factor authentication. The company's parent, UnitedHealth Group, confirmed this in congressional testimony. Once inside, the group moved through the network for more than a week before deploying ransomware."}},{"@type":"Question","name":"Why did it disrupt so much of US healthcare?","acceptedAnswer":{"@type":"Answer","text":"Change Healthcare sits in the middle of the American medical payment system, handling a very large share of claims, eligibility checks and pharmacy transactions. When it went offline, pharmacies could not verify coverage or process claims, and providers could not bill. Independent practices ran out of cash within weeks; UnitedHealth advanced billions of dollars in emergency funding."}},{"@type":"Question","name":"Did they pay the ransom?","acceptedAnswer":{"@type":"Answer","text":"Yes, about $22 million in bitcoin, traced publicly on the blockchain. It did not resolve matters: the affiliate who carried out the intrusion accused ALPHV of taking the payment and disappearing, and a second group, RansomHub, later attempted to extort the company again using what appeared to be the same data."}},{"@type":"Question","name":"How many people were affected?","acceptedAnswer":{"@type":"Answer","text":"The estimate was 100 million in October 2024 and was revised to roughly 190 million in January 2025, making it the largest breach of protected health information ever reported in the United States, more than half the country's population."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -81,7 +82,7 @@
 
 <p>Change Healthcare, part of UnitedHealth Group's Optum division, is infrastructure. It sits between providers, pharmacies and insurers, handling eligibility checks, claims and payments at enormous volume. Most patients have never heard of it, which is exactly the profile of the systems whose failure is most disruptive.</p>
 
-<p>Attackers associated with the ALPHV/BlackCat ransomware operation obtained credentials for a Citrix remote access portal. That portal did not enforce multi-factor authentication, so the password was sufficient. They were inside for more than a week — moving laterally, staging data — before deploying ransomware on 21 February.</p>
+<p>Attackers associated with the ALPHV/BlackCat ransomware operation obtained credentials for a Citrix remote access portal. That portal did not enforce multi-factor authentication, so the password was sufficient. They were inside for more than a week, moving laterally, staging data, before deploying ransomware on 21 February.</p>
 
 <p>The company disconnected systems to contain it. That containment decision was correct and it was also what produced the national disruption: pulling the plug on the clearing house meant pulling the plug on the payment flow for a third of the country's medical transactions.</p>
 
@@ -100,36 +101,36 @@
   <li><b>The backlog outlasted the outage.</b> Restoring systems is not the same as clearing months of unprocessed claims, and the financial effects ran through the rest of 2024.</li>
 </ol>
 
-<p>This is what "critical infrastructure" means in practice. Not power stations and water treatment alone — the payment rails that make ordinary services function.</p>
+<p>This is what "critical infrastructure" means in practice. Not power stations and water treatment alone, the payment rails that make ordinary services function.</p>
 
 <h2>The ransom, and why paying failed twice</h2>
 
 <p>Roughly $22 million in bitcoin moved to an address associated with ALPHV. The transaction was visible on the blockchain and widely analysed.</p>
 
-<p>What followed is the clearest public illustration of why payment is an unreliable transaction. The affiliate who had actually carried out the intrusion complained publicly that ALPHV had taken the money and vanished, and ALPHV's infrastructure went offline shortly afterwards in what appeared to be an exit scam. Then, months later, a different group — RansomHub — attempted to extort the company again, claiming to hold the same data.</p>
+<p>What followed is the clearest public illustration of why payment is an unreliable transaction. The affiliate who had actually carried out the intrusion complained publicly that ALPHV had taken the money and vanished, and ALPHV's infrastructure went offline shortly afterwards in what appeared to be an exit scam. Then, months later, a different group, RansomHub, attempted to extort the company again, claiming to hold the same data.</p>
 
 <p>The victim paid, and the data was still in circulation and still being used as leverage. When people argue that paying buys nothing enforceable, this is the case they mean.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>Early February 2024</b> — Stolen credentials are used on a Citrix portal without MFA; attackers establish access.</li>
-  <li><b>21 February 2024</b> — Ransomware is deployed; Change Healthcare disconnects systems.</li>
-  <li><b>Late February – March</b> — Pharmacy and claims disruption spreads nationally; emergency funding and workarounds are arranged.</li>
-  <li><b>March 2024</b> — A $22 million payment to ALPHV is identified on the blockchain; the group's infrastructure goes offline.</li>
-  <li><b>April 2024</b> — RansomHub attempts a second extortion using apparently the same data.</li>
-  <li><b>May 2024</b> — UnitedHealth's chief executive testifies that the portal lacked multi-factor authentication.</li>
-  <li><b>October 2024</b> — The affected population is reported as approximately 100 million.</li>
-  <li><b>January 2025</b> — The figure is revised to approximately 190 million.</li>
+  <li><b>Early February 2024</b>: Stolen credentials are used on a Citrix portal without MFA; attackers establish access.</li>
+  <li><b>21 February 2024</b>: Ransomware is deployed; Change Healthcare disconnects systems.</li>
+  <li><b>Late February – March</b>: Pharmacy and claims disruption spreads nationally; emergency funding and workarounds are arranged.</li>
+  <li><b>March 2024</b>: A $22 million payment to ALPHV is identified on the blockchain; the group's infrastructure goes offline.</li>
+  <li><b>April 2024</b>: RansomHub attempts a second extortion using apparently the same data.</li>
+  <li><b>May 2024</b>: UnitedHealth's chief executive testifies that the portal lacked multi-factor authentication.</li>
+  <li><b>October 2024</b>: The affected population is reported as approximately 100 million.</li>
+  <li><b>January 2025</b>: The figure is revised to approximately 190 million.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p><strong>Healthcare consolidation became a security argument.</strong> The disruption was severe precisely because so much of the payment system runs through one company. Regulators and legislators who had treated healthcare consolidation purely as a competition question started treating it as a concentration risk — single points of failure created by acquisition.</p>
+<p><strong>Healthcare consolidation became a security argument.</strong> The disruption was severe precisely because so much of the payment system runs through one company. Regulators and legislators who had treated healthcare consolidation purely as a competition question started treating it as a concentration risk, single points of failure created by acquisition.</p>
 
 <p><strong>MFA on remote access stopped being negotiable.</strong> It was already standard advice. After a $3 billion incident traced to its absence on one portal, it became the first question in every healthcare security assessment and a condition in cyber insurance underwriting.</p>
 
-<p><strong>Third-party dependency mapping got funding.</strong> Thousands of organisations discovered they depended on Change Healthcare only when it stopped. The exercise of knowing which suppliers your operations cannot survive losing — and for how long — moved from a compliance artefact to a real programme.</p>
+<p><strong>Third-party dependency mapping got funding.</strong> Thousands of organisations discovered they depended on Change Healthcare only when it stopped. The exercise of knowing which suppliers your operations cannot survive losing, and for how long, moved from a compliance artefact to a real programme.</p>
 
 <h2>If you are one of the 190 million</h2>
 
@@ -138,7 +139,7 @@
 <ol class="bx-actions">
   <li><strong>Freeze your credit files.</strong> Social Security numbers were in the data; this is the control that blocks new-account fraud.</li>
   <li><strong>Read every explanation of benefits.</strong> Medical identity fraud surfaces there first, if it surfaces at all.</li>
-  <li><strong>Treat health-related calls and letters as unverified.</strong> Claims data makes an approach specific enough to be convincing — <a href="/guides/how-to-spot-phishing.html">the checks that still work</a>.</li>
+  <li><strong>Treat health-related calls and letters as unverified.</strong> Claims data makes an approach specific enough to be convincing, <a href="/guides/how-to-spot-phishing.html">the checks that still work</a>.</li>
   <li><strong>Take the free monitoring if it was offered to you</strong>, but do not mistake it for protection. Monitoring reports fraud after it happens; a freeze prevents a category of it.</li>
 </ol>
 
@@ -152,7 +153,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -164,17 +165,29 @@
         <p>Change Healthcare sits in the middle of the American medical payment system, handling a very large share of claims, eligibility checks and pharmacy transactions. When it went offline, pharmacies could not verify coverage or process claims, and providers could not bill. Independent practices ran out of cash within weeks; UnitedHealth advanced billions of dollars in emergency funding.</p>
 
         <h3>Did they pay the ransom?</h3>
-        <p>Yes — about $22 million in bitcoin, traced publicly on the blockchain. It did not resolve matters: the affiliate who carried out the intrusion accused ALPHV of taking the payment and disappearing, and a second group, RansomHub, later attempted to extort the company again using what appeared to be the same data.</p>
+        <p>Yes, about $22 million in bitcoin, traced publicly on the blockchain. It did not resolve matters: the affiliate who carried out the intrusion accused ALPHV of taking the payment and disappearing, and a second group, RansomHub, later attempted to extort the company again using what appeared to be the same data.</p>
 
         <h3>How many people were affected?</h3>
-        <p>The estimate was 100 million in October 2024 and was revised to roughly 190 million in January 2025, making it the largest breach of protected health information ever reported in the United States — more than half the country's population.</p>
+        <p>The estimate was 100 million in October 2024 and was revised to roughly 190 million in January 2025, making it the largest breach of protected health information ever reported in the United States, more than half the country's population.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><b>Testimony of UnitedHealth Group CEO Andrew Witty before US Senate and House committees, May 2024</b></li>
-        <li><b>US Department of Health and Human Services — Office for Civil Rights breach portal notice</b></li>
+        <li><b>US Department of Health and Human Services, Office for Civil Rights breach portal notice</b></li>
         <li><b>UnitedHealth Group quarterly results and incident updates, 2024–2025</b></li>
-        <li><b>US Department of State, Rewards for Justice — ALPHV/BlackCat reward announcement, 2024</b></li>
+        <li><b>US Department of State, Rewards for Justice, ALPHV/BlackCat reward announcement, 2024</b></li>
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
@@ -183,7 +196,7 @@
         <li><a href="/breaches/case-files/anthem-2015.html">Anthem, 2015: 78.8 million health records and one query that looked wrong</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -199,5 +212,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

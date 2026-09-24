@@ -4,7 +4,7 @@
   "seoTitle": "Yahoo Data Breach: 3 Billion Accounts Explained",
   "subject": "Yahoo data breaches",
   "kicker": "2013–2014 · Web portal",
-  "description": "Yahoo lost every account it had — three billion of them — in two separate intrusions, then disclosed them three years later in the middle of selling the company.",
+  "description": "Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the company.",
   "cardBlurb": "Two intrusions, every account Yahoo had ever issued, and a disclosure that arrived three years late and mid-acquisition. Still the largest breach on record.",
   "records": "3 billion accounts",
   "peopleCount": 3000000000,
@@ -19,62 +19,62 @@
   "updated": "2026-09-14",
   "related": ["linkedin-2012", "myspace-2016", "marriott-starwood-2018"],
   "faq": [
-    { "q": "How many accounts were in the Yahoo breach?", "a": "Three billion — every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion." },
-    { "q": "Were Yahoo passwords cracked?", "a": "Many of them, yes. The 2013 set used MD5, a hashing algorithm that was already considered unfit for passwords at the time and can be attacked at enormous speed on consumer graphics hardware. Worse, security questions and answers were taken too, and in some cases stored without encryption — and almost nobody changes their mother's maiden name after a breach." },
-    { "q": "What were the forged cookies?", "a": "The attackers obtained Yahoo's internal account management tooling and used it to mint authentication cookies — browser tokens that told Yahoo's servers a user had already logged in. A forged cookie bypasses the password entirely, so changing the password did not evict the intruder. Yahoo invalidated the forged cookies in 2016." },
+    { "q": "How many accounts were in the Yahoo breach?", "a": "Three billion, every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion." },
+    { "q": "Were Yahoo passwords cracked?", "a": "Many of them, yes. The 2013 set used MD5, a hashing algorithm that was already considered unfit for passwords at the time and can be attacked at enormous speed on consumer graphics hardware. Worse, security questions and answers were taken too, and in some cases stored without encryption, and almost nobody changes their mother's maiden name after a breach." },
+    { "q": "What were the forged cookies?", "a": "The attackers obtained Yahoo's internal account management tooling and used it to mint authentication cookies, browser tokens that told Yahoo's servers a user had already logged in. A forged cookie bypasses the password entirely, so changing the password did not evict the intruder. Yahoo invalidated the forged cookies in 2016." },
     { "q": "Did the breach affect the Verizon sale?", "a": "It cost $350 million. Verizon had agreed to buy Yahoo's operating business for $4.83 billion in July 2016; after the disclosures the price was renegotiated to roughly $4.48 billion, with the two companies splitting certain liabilities. The SEC later fined the remaining entity, Altaba, $35 million for failing to disclose the 2014 breach to investors for two years." }
   ],
   "sources": [
     { "label": "US Securities and Exchange Commission order against Altaba (formerly Yahoo), April 2018", "url": "https://www.sec.gov/news/press-release/2018-71" },
     { "label": "US Department of Justice indictment of FSB officers and co-conspirators, March 2017" },
     { "label": "Yahoo Inc. SEC filings and investor statements, 2016–2017" },
-    { "label": "In re Yahoo! Inc. Customer Data Security Breach Litigation — $117.5 million settlement, 2019" }
+    { "label": "In re Yahoo! Inc. Customer Data Security Breach Litigation, $117.5 million settlement, 2019" }
   ]
 }
 -->
-<p class="lead">Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence — what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p>
+<p class="lead">Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p>
 
 <h2>What happened</h2>
 
 <p>There were two intrusions, and for a long time the public only knew about one.</p>
 
-<p>In late 2014, attackers stole account data belonging to at least 500 million users. Yahoo's security team knew of that intrusion at the time; a small number of accounts were flagged, and senior management was informed. It was not disclosed publicly until 22 September 2016 — two months after Verizon had agreed to buy Yahoo's operating business for $4.83 billion.</p>
+<p>In late 2014, attackers stole account data belonging to at least 500 million users. Yahoo's security team knew of that intrusion at the time; a small number of accounts were flagged, and senior management was informed. It was not disclosed publicly until 22 September 2016, two months after Verizon had agreed to buy Yahoo's operating business for $4.83 billion.</p>
 
-<p>Three months later, in December 2016, Yahoo announced a second and separate breach, from August 2013, involving a billion accounts. That figure held until October 2017, when Yahoo — by then absorbed into Verizon — confirmed that the 2013 intrusion had in fact touched every account in existence: three billion, including Flickr, Tumblr and Fantasy Sports users who had never thought of themselves as Yahoo customers at all.</p>
+<p>Three months later, in December 2016, Yahoo announced a second and separate breach, from August 2013, involving a billion accounts. That figure held until October 2017, when Yahoo, by then absorbed into Verizon, confirmed that the 2013 intrusion had in fact touched every account in existence: three billion, including Flickr, Tumblr and Fantasy Sports users who had never thought of themselves as Yahoo customers at all.</p>
 
 <h2>How they got in</h2>
 
 <p>The 2014 intrusion began the way most do: a spear-phishing email that worked on one employee. From that foothold, the attackers reached two things that mattered far more than any individual mailbox.</p>
 
-<p>The first was the User Database — the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers. The second was the Account Management Tool, Yahoo's internal administrative console.</p>
+<p>The first was the User Database, the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers. The second was the Account Management Tool, Yahoo's internal administrative console.</p>
 
 <div class="callout">
-  <p><strong>Why the cookies matter more than the passwords.</strong> With access to the account management tooling, the attackers could mint their own authentication cookies — the tokens a browser holds that tell a server "this person has already logged in". A forged cookie bypasses the password entirely. It also survives a password change, which is the single piece of advice every breach notice gives. For the accounts targeted this way, the standard remediation did nothing at all; Yahoo had to invalidate the forged cookies centrally, which it did in 2016, years after they were created.</p>
+  <p><strong>Why the cookies matter more than the passwords.</strong> With access to the account management tooling, the attackers could mint their own authentication cookies, the tokens a browser holds that tell a server "this person has already logged in". A forged cookie bypasses the password entirely. It also survives a password change, which is the single piece of advice every breach notice gives. For the accounts targeted this way, the standard remediation did nothing at all; Yahoo had to invalidate the forged cookies centrally, which it did in 2016, years after they were created.</p>
 </div>
 
-<p>In March 2017 the US Department of Justice indicted four people: two officers of Russia's Federal Security Service, Dmitry Dokuchaev and Igor Sushchin, and two hackers they directed, Alexsey Belan and Karim Baratov. The indictment described a state intelligence service using criminal contractors — the officers wanted access to specific accounts belonging to journalists, officials and company executives, and the contractors monetised the rest of the database on the side. Baratov, arrested in Canada, pleaded guilty and was sentenced to five years in 2018. Belan, already on the FBI's most wanted list, remains at large.</p>
+<p>In March 2017 the US Department of Justice indicted four people: two officers of Russia's Federal Security Service, Dmitry Dokuchaev and Igor Sushchin, and two hackers they directed, Alexsey Belan and Karim Baratov. The indictment described a state intelligence service using criminal contractors, the officers wanted access to specific accounts belonging to journalists, officials and company executives, and the contractors monetised the rest of the database on the side. Baratov, arrested in Canada, pleaded guilty and was sentenced to five years in 2018. Belan, already on the FBI's most wanted list, remains at large.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>August 2013</b> — The intrusion that ultimately touched all three billion accounts.</li>
-  <li><b>Late 2014</b> — A second, separate intrusion; at least 500 million accounts taken. Yahoo's security staff identify it at the time.</li>
-  <li><b>July 2016</b> — Verizon agrees to buy Yahoo's operating business for $4.83 billion.</li>
-  <li><b>August 2016</b> — A hacker known as Peace advertises 200 million Yahoo accounts for sale, prompting an internal investigation.</li>
-  <li><b>22 September 2016</b> — Yahoo discloses the 2014 breach: 500 million accounts, attributed to a "state-sponsored actor".</li>
-  <li><b>14 December 2016</b> — Yahoo discloses the separate 2013 breach: one billion accounts.</li>
-  <li><b>March 2017</b> — The DOJ indicts two FSB officers and two contracted hackers.</li>
-  <li><b>June 2017</b> — The Verizon acquisition closes at roughly $4.48 billion, $350 million below the original price.</li>
-  <li><b>3 October 2017</b> — The 2013 figure is revised: all three billion accounts.</li>
-  <li><b>April 2018</b> — The SEC fines Altaba $35 million for two years of non-disclosure to investors.</li>
-  <li><b>2019</b> — A $117.5 million class-action settlement is approved.</li>
+  <li><b>August 2013</b>: The intrusion that ultimately touched all three billion accounts.</li>
+  <li><b>Late 2014</b>: A second, separate intrusion; at least 500 million accounts taken. Yahoo's security staff identify it at the time.</li>
+  <li><b>July 2016</b>: Verizon agrees to buy Yahoo's operating business for $4.83 billion.</li>
+  <li><b>August 2016</b>: A hacker known as Peace advertises 200 million Yahoo accounts for sale, prompting an internal investigation.</li>
+  <li><b>22 September 2016</b>: Yahoo discloses the 2014 breach: 500 million accounts, attributed to a "state-sponsored actor".</li>
+  <li><b>14 December 2016</b>: Yahoo discloses the separate 2013 breach: one billion accounts.</li>
+  <li><b>March 2017</b>: The DOJ indicts two FSB officers and two contracted hackers.</li>
+  <li><b>June 2017</b>: The Verizon acquisition closes at roughly $4.48 billion, $350 million below the original price.</li>
+  <li><b>3 October 2017</b>: The 2013 figure is revised: all three billion accounts.</li>
+  <li><b>April 2018</b>: The SEC fines Altaba $35 million for two years of non-disclosure to investors.</li>
+  <li><b>2019</b>: A $117.5 million class-action settlement is approved.</li>
 </ol>
 
 <h2>What was taken</h2>
 
-<p>Names, email addresses, telephone numbers, dates of birth, hashed passwords, and security questions and answers — some of the latter stored without encryption.</p>
+<p>Names, email addresses, telephone numbers, dates of birth, hashed passwords, and security questions and answers, some of the latter stored without encryption.</p>
 
-<p>The password hashing is worth dwelling on. The 2013 set used MD5, an algorithm that was already understood to be unsuitable for password storage years before 2013; modern hardware can test billions of MD5 candidates per second, so any password that appears in a wordlist falls immediately. But the security answers are the more durable problem. A password can be changed in thirty seconds. The city where you were born cannot, and neither can your mother's maiden name — and both were, for years, accepted by banks and telecoms as proof that you were you.</p>
+<p>The password hashing is worth dwelling on. The 2013 set used MD5, an algorithm that was already understood to be unsuitable for password storage years before 2013; modern hardware can test billions of MD5 candidates per second, so any password that appears in a wordlist falls immediately. But the security answers are the more durable problem. A password can be changed in thirty seconds. The city where you were born cannot, and neither can your mother's maiden name, and both were, for years, accepted by banks and telecoms as proof that you were you.</p>
 
 <h2>What happened next</h2>
 
@@ -84,7 +84,7 @@
 
 <h2>What it changed</h2>
 
-<p>Yahoo is the case that turned breach disclosure into a securities question. Before it, a late disclosure was a public-relations problem and perhaps a regulatory one. After it, the SEC had demonstrated that describing a known incident as a hypothetical risk in an investor filing is a misstatement in its own right — a line of reasoning that runs directly into the SEC's 2023 rules requiring disclosure of material cybersecurity incidents within four business days.</p>
+<p>Yahoo is the case that turned breach disclosure into a securities question. Before it, a late disclosure was a public-relations problem and perhaps a regulatory one. After it, the SEC had demonstrated that describing a known incident as a hypothetical risk in an investor filing is a misstatement in its own right, a line of reasoning that runs directly into the SEC's 2023 rules requiring disclosure of material cybersecurity incidents within four business days.</p>
 
 <p>It also settled an argument inside the industry about session tokens. Invalidate sessions on password change; treat cookie-minting tooling as the crown jewel it is; make the internal admin console the hardest system in the building rather than the most convenient. All of that is now standard advice, and Yahoo is the worked example everyone points at.</p>
 
@@ -93,6 +93,6 @@
 <ol class="bx-actions">
   <li><strong>Assume the account is compromised, even if you abandoned it.</strong> Old Yahoo addresses are still listed as the recovery address on other people's live accounts. An abandoned mailbox with a reused password is a route into everything it can reset.</li>
   <li><strong>Change every security answer you have reused.</strong> Not just at Yahoo. If you ever answered "first school" the same way at a bank, that answer is in circulation. Where a site insists on security questions, treat the answer as a second password and store it in a password manager rather than telling the truth.</li>
-  <li><strong>Kill reused passwords first.</strong> The Yahoo dump has been folded into every credential collection since, which means it is tried automatically against other services — see <a href="/breaches/case-files/collection-1-2019.html">how those aggregated lists are used</a>.</li>
+  <li><strong>Kill reused passwords first.</strong> The Yahoo dump has been folded into every credential collection since, which means it is tried automatically against other services, see <a href="/breaches/case-files/collection-1-2019.html">how those aggregated lists are used</a>.</li>
   <li><strong>Move recovery to something you still control.</strong> Point the recovery address and phone number of your important accounts at a mailbox you actively read, and turn on <a href="/guides/two-factor-authentication.html">two-factor authentication</a> where it is offered.</li>
 </ol>

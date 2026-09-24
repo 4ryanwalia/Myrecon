@@ -19,9 +19,9 @@
   "related": ["twilio-0ktapus-2022", "lastpass-2022", "uber-2016"],
   "faq": [
     { "q": "How did attackers get into MGM without hacking anything?", "a": "They identified an employee through public professional profiles, gathered enough detail to sound like that person, and called the internal IT help desk asking for account recovery. The help desk performed the reset. From there the attackers had a working corporate identity and went after the identity provider that sits behind every other system. The technical skill in this attack was almost entirely conversational." },
-    { "q": "Why did slot machines stop working?", "a": "They did not fail individually. MGM shut down large parts of its own network deliberately to stop the attackers moving further, and modern casino and hotel operations depend on that network for nearly everything — reservations, digital room keys, points of sale, gaming floor systems. The visible chaos was the containment decision, not the attack itself, and that trade-off is one every victim has to make quickly and with poor information." },
+    { "q": "Why did slot machines stop working?", "a": "They did not fail individually. MGM shut down large parts of its own network deliberately to stop the attackers moving further, and modern casino and hotel operations depend on that network for nearly everything, reservations, digital room keys, points of sale, gaming floor systems. The visible chaos was the containment decision, not the attack itself, and that trade-off is one every victim has to make quickly and with poor information." },
     { "q": "Did MGM pay a ransom?", "a": "MGM has said publicly that it did not pay. Caesars Entertainment, targeted by the same crew shortly before, was widely reported to have paid approximately $15 million. The contrast is instructive: Caesars avoided the operational collapse, MGM avoided funding the group, and both ended up in regulatory filings and class actions regardless." },
-    { "q": "Who is Scattered Spider?", "a": "A loosely organised, largely English-speaking group — many members reportedly young, some teenagers — tracked under names including UNC3944 and Octo Tempest. Their signature is social engineering rather than exploitation: help desk impersonation, SIM swapping, and phishing that targets the account recovery process rather than the password. Several arrests have been made in the US and UK since 2024." }
+    { "q": "Who is Scattered Spider?", "a": "A loosely organised, largely English-speaking group, many members reportedly young, some teenagers, tracked under names including UNC3944 and Octo Tempest. Their signature is social engineering rather than exploitation: help desk impersonation, SIM swapping, and phishing that targets the account recovery process rather than the password. Several arrests have been made in the US and UK since 2024." }
   ],
   "sources": [
     { "label": "MGM Resorts International Form 8-K filings, September and October 2023", "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=MGM&type=8-K", "note": "the source of the ~$100m impact figure" },
@@ -35,16 +35,16 @@
 
 <h2>What happened</h2>
 
-<p>The attackers identified an MGM employee from public professional information — the kind of profile everyone in a corporate role maintains — and assembled enough personal and organisational detail to impersonate them convincingly. They then called MGM's internal IT support and asked for help getting back into their account.</p>
+<p>The attackers identified an MGM employee from public professional information, the kind of profile everyone in a corporate role maintains, and assembled enough personal and organisational detail to impersonate them convincingly. They then called MGM's internal IT support and asked for help getting back into their account.</p>
 
 <p>The help desk did what help desks exist to do. It verified the caller against the information it was trained to ask for, all of which the caller had, and reset the credentials. That included the multi-factor authentication enrolment, which is the step that matters: a password reset alone is manageable, but a reset that also re-enrols the second factor hands over the whole identity.</p>
 
-<p>With a valid employee identity the attackers went after the identity provider — the single system that issues access to everything else. Having a foothold there converts one employee's account into an ability to issue access at will, and it is why identity infrastructure has become the primary objective in intrusions of this kind rather than an obstacle on the way to one.</p>
+<p>With a valid employee identity the attackers went after the identity provider, the single system that issues access to everything else. Having a foothold there converts one employee's account into an ability to issue access at will, and it is why identity infrastructure has become the primary objective in intrusions of this kind rather than an obstacle on the way to one.</p>
 
 <p>ALPHV, the ransomware operation working with them, then deployed ransomware against part of the estate. MGM responded by shutting systems down.</p>
 
 <div class="callout">
-  <p><strong>The help desk is not a weak link by accident.</strong> It is measured on speed and on user satisfaction, staffed by people rewarded for unblocking colleagues, and its entire function is to restore access to people who have lost it. Every incentive in the role points towards saying yes. Meanwhile the information used to verify a caller — employee number, manager's name, date of birth, office location — is exactly the information that leaks, gets scraped from professional networks, or can be obtained from a previous breach. The verification step is asking for secrets that are not secret.</p>
+  <p><strong>The help desk is not a weak link by accident.</strong> It is measured on speed and on user satisfaction, staffed by people rewarded for unblocking colleagues, and its entire function is to restore access to people who have lost it. Every incentive in the role points towards saying yes. Meanwhile the information used to verify a caller, employee number, manager's name, date of birth, office location, is exactly the information that leaks, gets scraped from professional networks, or can be obtained from a previous breach. The verification step is asking for secrets that are not secret.</p>
 </div>
 
 <h2>Ten days of paper</h2>
@@ -58,13 +58,13 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>Late August 2023</b> — Caesars Entertainment is compromised via a social engineering attack on an outsourced IT support vendor.</li>
-  <li><b>~8 September 2023</b> — The help desk call to MGM takes place; the attackers obtain a credential reset.</li>
-  <li><b>10 – 11 September 2023</b> — MGM detects the intrusion, shuts down major systems, and files an 8-K disclosure.</li>
-  <li><b>14 September 2023</b> — ALPHV publishes a statement about the attack, disputing parts of the public account.</li>
-  <li><b>20 September 2023</b> — MGM reports that its systems are largely restored.</li>
-  <li><b>October 2023</b> — MGM notifies customers that personal data, including driver's licence numbers and a smaller set of Social Security and passport numbers, was taken for customers who transacted before March 2019.</li>
-  <li><b>2024 onwards</b> — Arrests connected to Scattered Spider are announced in the US and UK; class actions consolidate.</li>
+  <li><b>Late August 2023</b>: Caesars Entertainment is compromised via a social engineering attack on an outsourced IT support vendor.</li>
+  <li><b>~8 September 2023</b>: The help desk call to MGM takes place; the attackers obtain a credential reset.</li>
+  <li><b>10 – 11 September 2023</b>: MGM detects the intrusion, shuts down major systems, and files an 8-K disclosure.</li>
+  <li><b>14 September 2023</b>: ALPHV publishes a statement about the attack, disputing parts of the public account.</li>
+  <li><b>20 September 2023</b>: MGM reports that its systems are largely restored.</li>
+  <li><b>October 2023</b>: MGM notifies customers that personal data, including driver's licence numbers and a smaller set of Social Security and passport numbers, was taken for customers who transacted before March 2019.</li>
+  <li><b>2024 onwards</b>: Arrests connected to Scattered Spider are announced in the US and UK; class actions consolidate.</li>
 </ol>
 
 <h2>What it changed</h2>

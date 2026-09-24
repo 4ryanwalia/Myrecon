@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First American Data Leak 2019: 885 Million Files | MyRecon</title>
+  <meta name="description" content="Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of…">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/first-american-2019.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="First American Data Leak 2019: 885 Million Files">
+  <meta property="og:description" content="Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of…">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/first-american-2019.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="First American Data Leak 2019: 885 Million Files">
+  <meta name="twitter:description" content="Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of…">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"First American, 2019: 885 million documents behind a number you could count up","description":"Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of any kind.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/first-american-2019.html","articleSection":"Case Files","about":{"@type":"Thing","name":"First American Financial document exposure"},"wordCount":1099}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"First American Financial document exposure","item":"https://www.myrecon.xyz/breaches/case-files/first-american-2019.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an insecure direct object reference?","acceptedAnswer":{"@type":"Answer","text":"It is what happens when an application identifies a record by a number in the address and never checks whether the person asking is entitled to that record. If document 75000000 is yours, document 74999999 belongs to somebody else, and if the only thing standing between a visitor and that file is the fact that they have not tried, there is no access control at all. The flaw needs no tooling and no skill to exploit. It needs arithmetic."}},{"@type":"Question","name":"Was the data actually stolen?","acceptedAnswer":{"@type":"Answer","text":"There is no evidence of mass harvesting, and the company's review identified a limited number of documents accessed by outside parties. That sounds more reassuring than it is. The exposure spanned sixteen years of records reachable without logging in, which means the population of people who could have retrieved them quietly leaves no trace by definition. Absence of evidence over a window that long is weak evidence of absence."}},{"@type":"Question","name":"Why did a title insurer hold my bank statements?","acceptedAnswer":{"@type":"Answer","text":"Because US property closings run through title and escrow companies. To insure title and move the money they collect the paperwork of the whole transaction: identification, mortgage documents, tax records, bank statements, wire instructions and signed receipts. Most buyers never think of the title company as a data holder, and it ends up with a more complete financial picture of a household than the bank does."}},{"@type":"Question","name":"Had anyone noticed the flaw before it became public?","acceptedAnswer":{"@type":"Answer","text":"Yes. Regulators found that First American's own internal penetration testing had identified the vulnerability months earlier, in December 2018. It was recorded, assigned a low severity, and remediation was not completed. The finding existed inside the company for roughly half a year before a member of the public reported the same problem from outside."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2019 · Title insurance</span>
+          <h1>First American, 2019: 885 million documents behind a number you could count up</h1>
+          <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>About 885 million documents, the oldest dating to 2003</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>Documents were reachable from at least 2003 until May 2019</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>24 May 2019</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Insecure direct object reference, changing a document number in the URL returned another customer's file, with no authentication required</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>No known attacker; the flaw was spotted by a real estate developer and published by a security journalist</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>A US$1 million penalty from the New York Department of Financial Services in 2023, the first settlement under its cybersecurity regulation, followed by a separate SEC settlement over disclosure controls</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Bank account numbers · Bank statements · Mortgage and tax records · Social Security numbers · Wire transfer receipts · Driver's licence images</p>
+
+<p class="lead">There was no intrusion, no malware, no stolen password and no attacker. The documents were served to anyone who asked for them, and asking meant editing a number at the end of a web address. Behind that number sat roughly 885 million files: the paperwork of American house purchases going back to 2003.</p>
+
+<h2>What happened</h2>
+
+<p>First American Financial is one of the largest title insurance companies in the United States. In a US property transaction, the title company is the entity that verifies ownership, insures against defects in the chain of title, and holds and disburses the money at closing. To do that it accumulates the complete documentary record of the sale, and it keeps it.</p>
+
+<p>The company ran a system for sharing those documents with the parties to a transaction, buyers, sellers, agents, lenders. A link was emailed out, and clicking it opened the relevant file. The links were built around a sequential document identifier. Change the digits and you got a different document. There was no login, no token, no expiry and no check of any kind that the person following the link had any connection to the paperwork that came back.</p>
+
+<p>In May 2019 a real estate developer who had noticed this passed it to the security journalist Brian Krebs, who confirmed it and published. Spot checks of the retrievable documents found bank account numbers and statements, mortgage and tax records, wire transfer receipts, driver's licence images and Social Security numbers. The oldest records reached back to 2003. First American took the system offline the same day.</p>
+
+<div class="callout">
+  <p><strong>Two controls, one of them missing everywhere.</strong> Authentication asks who you are. Authorisation asks whether this particular record is yours. Applications routinely get the first right and skip the second, because the second has to be enforced per object, on every request, forever, and because during development the only records anyone tests with are their own. That is the flaw class here, and it is the same one that produced the Optus breach three years later: not a broken lock, but a door that was never fitted with one.</p>
+</div>
+
+<h2>The finding that was already in the building</h2>
+
+<p>The part of this case that outlives the technical detail is what regulators established afterwards. First American's own penetration testing had identified this vulnerability in December 2018, roughly six months before it became public. The issue was documented internally. It was classified as low severity. The remediation was not completed.</p>
+
+<p>Nobody hid anything. The security function did its job and found the problem; the finding then moved through a triage process that assigned it a rating, and the rating determined the urgency, and the urgency determined that other work came first. That is how almost every long-lived vulnerability survives: not through negligence anyone would recognise as negligence at the time, but through a severity rating that was defensible on the form and wrong about the world.</p>
+
+<p>What made the rating wrong was context the rating did not capture. The exploit was trivial, no skill, no tooling, no credential. The exposure was unbounded, every document in the system, not a sample. And the data was of the most durable kind: a Social Security number disclosed in 2019 is still a Social Security number today. Severity scoring that weighs technical complexity heavily and data sensitivity lightly will systematically underrate exactly this shape of problem.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>2003 onwards</b>: Documents accumulate in the sharing system, reachable by sequential identifier.</li>
+  <li><b>December 2018</b>: First American's own penetration test identifies the vulnerability. It is rated low severity and not remediated.</li>
+  <li><b>May 2019</b>: A real estate developer notices the behaviour and reports it; the story is published on 24 May 2019.</li>
+  <li><b>24 May 2019</b>: The system is taken offline; the company begins an external review.</li>
+  <li><b>July 2020</b>: The New York Department of Financial Services files the first ever charges under its cybersecurity regulation, Part 500.</li>
+  <li><b>November 2023</b>: The matter settles for a US$1 million penalty and a set of remediation commitments.</li>
+  <li><b>2024</b>: A separate SEC proceeding concludes over the adequacy of the company's disclosure controls at the time of the incident.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>The regulatory significance outran the technical one. New York's Part 500 cybersecurity regulation had been in force since 2017 but had never been enforced; this was the case the department chose to bring first. That choice sent a clearer message than the eventual penalty did, a US$1 million settlement is not material to a company of this size, but establishing that a state financial regulator will bring charges over an unfixed web vulnerability changed how boards in the sector treated the regulation.</p>
+
+<p>The SEC's separate action pushed on a different and increasingly consequential point: not whether the company was breached, but whether what it told investors about the incident was supported by what it knew internally. When a company's own testing has already flagged the flaw, statements implying surprise become a securities question as well as a security one. That linkage, internal findings as evidence against later public statements, is now a standard feature of US breach enforcement, and this case is one of the places it was established.</p>
+
+<h2>If you bought a home in the US before 2019</h2>
+
+<p>There is no notification to wait for and no list to check. The exposure was defined by document numbers, not by a customer list, and a large share of the people whose paperwork sat in that system never had an account or a direct relationship with the company at all, they were simply the other side of a transaction it handled.</p>
+
+<p>The practical exposure is the same one the case files on Equifax and the OPM describe, for the same reason: the data that leaked does not expire. A Social Security number, a date of birth and a bank account number are as useful to a fraudster now as they were in 2019. A credit freeze at each of the three bureaus is the countermeasure that matches that permanence, it is free, it is reversible, and unlike monitoring it prevents rather than reports.</p>
+
+<p>One exposure here is more specific and worth naming. Wire transfer receipts and closing documents are the raw material of real estate wire fraud, in which a buyer receives convincing instructions to send their deposit to the wrong account, referencing a genuine transaction with correct names, amounts and dates. If you are closing on a property, confirm wire instructions by calling a number you sourced yourself, never one contained in the email carrying the instructions.</p>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>What is an insecure direct object reference?</h3>
+        <p>It is what happens when an application identifies a record by a number in the address and never checks whether the person asking is entitled to that record. If document 75000000 is yours, document 74999999 belongs to somebody else, and if the only thing standing between a visitor and that file is the fact that they have not tried, there is no access control at all. The flaw needs no tooling and no skill to exploit. It needs arithmetic.</p>
+
+        <h3>Was the data actually stolen?</h3>
+        <p>There is no evidence of mass harvesting, and the company's review identified a limited number of documents accessed by outside parties. That sounds more reassuring than it is. The exposure spanned sixteen years of records reachable without logging in, which means the population of people who could have retrieved them quietly leaves no trace by definition. Absence of evidence over a window that long is weak evidence of absence.</p>
+
+        <h3>Why did a title insurer hold my bank statements?</h3>
+        <p>Because US property closings run through title and escrow companies. To insure title and move the money they collect the paperwork of the whole transaction: identification, mortgage documents, tax records, bank statements, wire instructions and signed receipts. Most buyers never think of the title company as a data holder, and it ends up with a more complete financial picture of a household than the bank does.</p>
+
+        <h3>Had anyone noticed the flaw before it became public?</h3>
+        <p>Yes. Regulators found that First American's own internal penetration testing had identified the vulnerability months earlier, in December 2018. It was recorded, assigned a low severity, and remediation was not completed. The finding existed inside the company for roughly half a year before a member of the public reported the same problem from outside.</p>
+      </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>New York Department of Financial Services, consent order with First American Title Insurance Company, November 2023</b></li>
+        <li><b>New York Department of Financial Services, statement of charges under 23 NYCRR Part 500, July 2020</b></li>
+        <li><b>US Securities and Exchange Commission, administrative proceeding regarding disclosure controls, 2024</b></li>
+        <li><b>Contemporaneous reporting, KrebsOnSecurity, May 2019</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/optus-2022.html">Optus, 2022: an API with no lock on it, and 9.8 million Australians</a></li>
+        <li><a href="/breaches/case-files/equifax-2017.html">Equifax, 2017: 147 million people, one unpatched web form</a></li>
+        <li><a href="/breaches/case-files/capital-one-2019.html">Capital One, 2019: a firewall misconfiguration and 106 million applicants</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
   "seoTitle": "Dropbox Breach 2012: One Reused Employee Password",
   "subject": "Dropbox data breach",
   "kicker": "2012 · Cloud storage",
-  "description": "A Dropbox employee used their LinkedIn password on a corporate account. When LinkedIn was breached, so was Dropbox — 68 million credentials, revealed four years later.",
+  "description": "A Dropbox employee used their LinkedIn password on a corporate account. When LinkedIn was breached, so was Dropbox, 68 million credentials, revealed four years later.",
   "cardBlurb": "The textbook demonstration that one company's breach becomes another company's breach, carried across by a single reused password.",
   "records": "68.6 million accounts",
   "peopleCount": 68600000,
@@ -12,7 +12,7 @@
   "disclosed": "Confirmed at the time as an email exposure; full scale revealed August 2016",
   "vector": "An employee's password, stolen in the LinkedIn breach, reused on a corporate account",
   "actor": "Yevgeniy Nikulin, convicted in the United States in 2020",
-  "exposed": ["Email addresses", "Password hashes — about half bcrypt, about half salted SHA-1"],
+  "exposed": ["Email addresses", "Password hashes, about half bcrypt, about half salted SHA-1"],
   "sortDate": "2016-08-31",
   "published": "2026-09-14",
   "updated": "2026-09-14",
@@ -21,22 +21,22 @@
     { "q": "How were Dropbox and LinkedIn connected?", "a": "A Dropbox employee used the same password on LinkedIn and on a Dropbox corporate account. The LinkedIn breach put that password into circulation, someone tried it against Dropbox, and it worked. Dropbox itself was not vulnerable to anything except its employee's password habits." },
     { "q": "Were the Dropbox passwords cracked?", "a": "Largely not. About half the hashes used bcrypt, which is designed for password storage and resists large-scale cracking; the rest used SHA-1 with a salt, which is weaker but far better than the unsalted hashes of the era. This is a case where good storage choices materially limited the damage." },
     { "q": "Why did it take four years to learn the real scale?", "a": "In 2012 Dropbox disclosed that a stolen employee credential had exposed a document containing user email addresses, and users saw a wave of spam. The full credential file did not surface publicly until August 2016, when it appeared in the same wave of old datasets as LinkedIn and MySpace. Dropbox then forced a password reset for accounts that had not changed since 2012." },
-    { "q": "What is the actual lesson?", "a": "That employee password reuse is a corporate risk, not a personal one. Enforcing a password manager, phishing-resistant multi-factor authentication and single sign-on for staff is the control — and it is cheaper than being the second victim of somebody else's breach." }
+    { "q": "What is the actual lesson?", "a": "That employee password reuse is a corporate risk, not a personal one. Enforcing a password manager, phishing-resistant multi-factor authentication and single sign-on for staff is the control, and it is cheaper than being the second victim of somebody else's breach." }
   ],
   "sources": [
     { "label": "Dropbox security notices, 2012 and August 2016" },
-    { "label": "US Department of Justice — conviction of Yevgeniy Nikulin, 2020" },
-    { "label": "Have I Been Pwned — Dropbox breach record", "url": "https://haveibeenpwned.com/PwnedWebsites#Dropbox" }
+    { "label": "US Department of Justice, conviction of Yevgeniy Nikulin, 2020" },
+    { "label": "Have I Been Pwned, Dropbox breach record", "url": "https://haveibeenpwned.com/PwnedWebsites#Dropbox" }
   ]
 }
 -->
-<p class="lead">Dropbox's 2012 breach is the shortest causal chain in this archive. An employee used their LinkedIn password on a Dropbox corporate account. LinkedIn was breached. Somebody tried the password. Sixty-eight million user credentials went out of the door — and nobody outside the company knew the real size of it for another four years.</p>
+<p class="lead">Dropbox's 2012 breach is the shortest causal chain in this archive. An employee used their LinkedIn password on a Dropbox corporate account. LinkedIn was breached. Somebody tried the password. Sixty-eight million user credentials went out of the door, and nobody outside the company knew the real size of it for another four years.</p>
 
 <h2>What happened</h2>
 
 <p>In mid-2012, Dropbox disclosed that a stolen employee credential had been used to access a document containing user email addresses, which explained a wave of spam that users had been reporting. At the time, that was the story: a limited exposure, addresses only.</p>
 
-<p>In August 2016 a file containing 68.6 million Dropbox account records — email addresses and password hashes — surfaced publicly, in the same wave of aged datasets that brought <a href="/breaches/case-files/linkedin-2012.html">LinkedIn</a> and <a href="/breaches/case-files/myspace-2016.html">MySpace</a> to market. Dropbox confirmed it was from the same 2012 incident and forced a password reset for every account that had not changed its password since.</p>
+<p>In August 2016 a file containing 68.6 million Dropbox account records, email addresses and password hashes, surfaced publicly, in the same wave of aged datasets that brought <a href="/breaches/case-files/linkedin-2012.html">LinkedIn</a> and <a href="/breaches/case-files/myspace-2016.html">MySpace</a> to market. Dropbox confirmed it was from the same 2012 incident and forced a password reset for every account that had not changed its password since.</p>
 
 <p>The intrusions were later tied to Yevgeniy Nikulin, who was convicted in the United States in 2020 for the LinkedIn, Dropbox and Formspring breaches.</p>
 
@@ -45,7 +45,7 @@
 <p>It is worth being fair here, because this archive is mostly a record of poor decisions and this was not one.</p>
 
 <div class="callout">
-  <p><strong>The hashing was good for 2012.</strong> Roughly half the passwords were hashed with bcrypt — a slow, salted, purpose-built password algorithm — and the remainder with SHA-1 plus a salt. Compare that with LinkedIn's unsalted SHA-1 the same year, or Adobe's reversible encryption the year after. The practical consequence is that the Dropbox file has never produced the mass password recovery that those breaches did. The credentials leaked; most of the passwords did not.</p>
+  <p><strong>The hashing was good for 2012.</strong> Roughly half the passwords were hashed with bcrypt, a slow, salted, purpose-built password algorithm, and the remainder with SHA-1 plus a salt. Compare that with LinkedIn's unsalted SHA-1 the same year, or Adobe's reversible encryption the year after. The practical consequence is that the Dropbox file has never produced the mass password recovery that those breaches did. The credentials leaked; most of the passwords did not.</p>
 </div>
 
 <p>This is the strongest available argument for spending engineering time on password storage. It is invisible work that pays out only once, on the worst day, and on that day it is the difference between a notification and a catastrophe.</p>
@@ -71,13 +71,13 @@
 
 <p><strong>Breach scope acquired a permanent asterisk.</strong> Dropbox described what it knew in 2012 and was not being evasive; it simply did not know the rest until the file appeared. Anyone reading a fresh breach notice should assume the same is true of it.</p>
 
-<p><strong>Forced resets on stale passwords became normal.</strong> Dropbox's 2016 response — reset every password unchanged since the incident — is now the expected remediation when an old credential file resurfaces.</p>
+<p><strong>Forced resets on stale passwords became normal.</strong> Dropbox's 2016 response, reset every password unchanged since the incident, is now the expected remediation when an old credential file resurfaces.</p>
 
 <h2>If you had a Dropbox account before 2013</h2>
 
 <ol class="bx-actions">
   <li><strong>The password was probably not cracked, but assume it was anyway.</strong> Good hashing reduces risk; it does not eliminate it, particularly for weak passwords.</li>
   <li><strong>Check for reuse of that password elsewhere</strong>, especially on accounts you have held for a long time.</li>
-  <li><strong>Turn on two-factor authentication on cloud storage specifically.</strong> Storage accounts hold the documents that let someone impersonate you everywhere else — <a href="/guides/two-factor-authentication.html">the options compared</a>.</li>
-  <li><strong>Review what is still in there.</strong> Old cloud storage accumulates scans of passports, tax returns and contracts that nobody would upload today — <a href="/guides/reduce-your-digital-footprint.html">an audit worth an afternoon</a>.</li>
+  <li><strong>Turn on two-factor authentication on cloud storage specifically.</strong> Storage accounts hold the documents that let someone impersonate you everywhere else, <a href="/guides/two-factor-authentication.html">the options compared</a>.</li>
+  <li><strong>Review what is still in there.</strong> Old cloud storage accumulates scans of passports, tax returns and contracts that nobody would upload today, <a href="/guides/reduce-your-digital-footprint.html">an audit worth an afternoon</a>.</li>
 </ol>

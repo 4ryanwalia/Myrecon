@@ -19,14 +19,14 @@
   "updated": "2026-09-14",
   "related": ["ebay-2014", "capital-one-2019", "equifax-2017"],
   "faq": [
-    { "q": "Was any money stolen from JPMorgan customers?", "a": "No. The bank stated that account numbers, passwords, dates of birth and Social Security numbers were not taken and that it saw no unusual fraud against customer accounts. What was taken was contact information for 83 million households and businesses — which was, for these particular attackers, the more valuable asset." },
-    { "q": "Why would criminals want contact details from a bank?", "a": "Because prosecutors said they were running pump-and-dump stock fraud. A list of people known to hold accounts at a major bank, complete with names and addresses, is a pre-qualified target list for investment spam — vastly more effective than a random mailing list. The breach was an input to a securities fraud operation rather than an end in itself." },
+    { "q": "Was any money stolen from JPMorgan customers?", "a": "No. The bank stated that account numbers, passwords, dates of birth and Social Security numbers were not taken and that it saw no unusual fraud against customer accounts. What was taken was contact information for 83 million households and businesses, which was, for these particular attackers, the more valuable asset." },
+    { "q": "Why would criminals want contact details from a bank?", "a": "Because prosecutors said they were running pump-and-dump stock fraud. A list of people known to hold accounts at a major bank, complete with names and addresses, is a pre-qualified target list for investment spam, vastly more effective than a random mailing list. The breach was an input to a securities fraud operation rather than an end in itself." },
     { "q": "How did one missed server cause this?", "a": "JPMorgan had been rolling out two-factor authentication across its remote access infrastructure. One server was overlooked. When attackers obtained an employee's credentials, that server accepted the password alone, and from that foothold they moved through the internal network over roughly two months. Security controls are only as good as their coverage, and coverage gaps are the normal state of any large estate." },
     { "q": "Did JPMorgan face a fine?", "a": "No significant regulatory penalty followed in the US, where there was then no general federal breach standard covering this kind of contact data. The consequence was reputational and political: the bank's chief executive had publicly described its security spending, which made the single missed server an uncomfortable illustration that budget is not the constraint." }
   ],
   "sources": [
     { "label": "JPMorgan Chase & Co. Form 8-K, 2 October 2014", "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=JPM&type=8-K" },
-    { "label": "US Department of Justice — indictment of Gery Shalon, Joshua Samuel Aaron and Ziv Orenstein, November 2015", "url": "https://www.justice.gov/usao-sdny" },
+    { "label": "US Department of Justice, indictment of Gery Shalon, Joshua Samuel Aaron and Ziv Orenstein, November 2015", "url": "https://www.justice.gov/usao-sdny" },
     { "label": "Securities and Exchange Commission complaint in the related securities fraud matter, 2015" },
     { "label": "Guilty pleas entered in the Southern District of New York, 2020" }
   ]
@@ -36,7 +36,7 @@
 
 <h2>What happened</h2>
 
-<p>The bank had been extending two-factor authentication across its remote access infrastructure — a programme every large financial institution was running at the time and precisely the right control for the threat. The programme was essentially complete.</p>
+<p>The bank had been extending two-factor authentication across its remote access infrastructure, a programme every large financial institution was running at the time and precisely the right control for the threat. The programme was essentially complete.</p>
 
 <p>One server had not been upgraded. It still accepted a username and password alone.</p>
 
@@ -59,20 +59,20 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>June 2014</b> — Attackers use stolen employee credentials against a server lacking two-factor authentication.</li>
-  <li><b>June – August 2014</b> — Movement through the internal network; contact data for 83 million households and businesses is taken.</li>
-  <li><b>July – August 2014</b> — JPMorgan detects the intrusion and begins remediation.</li>
-  <li><b>2 October 2014</b> — The bank files an 8-K disclosing the scale.</li>
-  <li><b>November 2015</b> — Three men are indicted; prosecutors describe the wider fraud enterprise.</li>
-  <li><b>2016 – 2018</b> — Extradition and proceedings run in the US and Israel.</li>
-  <li><b>2020</b> — Guilty pleas are entered in the Southern District of New York.</li>
+  <li><b>June 2014</b>: Attackers use stolen employee credentials against a server lacking two-factor authentication.</li>
+  <li><b>June – August 2014</b>: Movement through the internal network; contact data for 83 million households and businesses is taken.</li>
+  <li><b>July – August 2014</b>: JPMorgan detects the intrusion and begins remediation.</li>
+  <li><b>2 October 2014</b>: The bank files an 8-K disclosing the scale.</li>
+  <li><b>November 2015</b>: Three men are indicted; prosecutors describe the wider fraud enterprise.</li>
+  <li><b>2016 – 2018</b>: Extradition and proceedings run in the US and Israel.</li>
+  <li><b>2020</b>: Guilty pleas are entered in the Southern District of New York.</li>
 </ol>
 
 <h2>What it changed</h2>
 
 <p><strong>Financial regulators stopped treating security as an IT matter.</strong> New York's Department of Financial Services introduced its cybersecurity regulation in 2017, requiring named accountability, multi-factor authentication, and annual certification by a senior officer. JPMorgan is not the only reason, but a breach of this size at this institution made the political case unanswerable.</p>
 
-<p><strong>Asset inventory became a regulated control rather than good housekeeping.</strong> "How do you know the control is deployed everywhere" turned into a question examiners ask, with evidence expected. Continuous configuration monitoring — checking that every server still has the agent, the patch and the authentication requirement — grew directly out of failures of this shape.</p>
+<p><strong>Asset inventory became a regulated control rather than good housekeeping.</strong> "How do you know the control is deployed everywhere" turned into a question examiners ask, with evidence expected. Continuous configuration monitoring, checking that every server still has the agent, the patch and the authentication requirement, grew directly out of failures of this shape.</p>
 
 <p><strong>It complicated the story about spending.</strong> The bank's security budget had been cited publicly as evidence of seriousness. After 2014 that argument was much harder to make anywhere, and attention moved towards demonstrating coverage and effectiveness instead of investment.</p>
 

@@ -19,29 +19,30 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Reverse Image Search: How to Trace a Photo's Origin">
   <meta name="twitter:description" content="How reverse image search works and a workflow for verifying photos and spotting fakes.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"Reverse Image Search: How to Trace a Photo's Origin","description":"How reverse image search works and a workflow for verifying photos and spotting fakes.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/reverse-image-search.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"Reverse Image Search: How to Trace a Photo's Origin","description":"How reverse image search works and a workflow for verifying photos and spotting fakes.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-14","mainEntityOfPage":"https://www.myrecon.xyz/guides/reverse-image-search.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Reverse Image Search: Trace a Photo's Origin","item":"https://www.myrecon.xyz/guides/reverse-image-search.html"}],"@context":"https://schema.org"}</script>
 </head>
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -58,52 +59,86 @@
 
   <main id="main" class="container">
     <article class="article">
-      <span class="kicker">Image intelligence</span>
+<span class="kicker">Image intelligence</span>
       <h1>Reverse Image Search: How to Trace a Photo's Origin</h1>
-      <p class="meta">Updated 12 July 2026 · 6 min read</p>
+      <p class="meta">Updated 14 September 2026 · 6 min read</p>
 
-      <p class="lead">A single photograph can answer a lot of questions. Reverse image search lets you take an image and find out where else it appears online — which is how investigators confirm identities, expose fake profiles, and debunk misleading pictures.</p>
+      <p class="lead">A photograph is a claim: this is me, this happened, this was here. Reverse image search is how you test that claim, by finding where else the picture has been, and when. It is also the technique people most often run once, get nothing, and abandon just before it would have worked.</p>
 
-      <h2>What reverse image search does</h2>
-      <p>Ordinary search starts with words. Reverse image search starts with a picture: you provide an image, and the engine finds visually similar or identical images across the web, along with the pages that host them. Rather than matching pixels exactly, modern engines build a mathematical "fingerprint" of the image's content, so they can find the same picture even if it has been resized, lightly cropped, or re-saved.</p>
+      <h2>How it works, and why that shapes the method</h2>
+      <p>Two different technologies sit behind the phrase, and knowing which you are using explains the results you get.</p>
+      <p><strong>Perceptual hashing</strong> reduces an image to a short fingerprint that survives resizing and re-compression. Two copies of the same file produce the same or nearly the same hash, so matching is exact and fast. It answers "where else does this <em>file</em> appear" and it fails as soon as the image is cropped, flipped or recoloured, because the fingerprint changes.</p>
+      <p><strong>Embedding search</strong> converts the image into a vector describing what is in it, then finds neighbours in that space. It tolerates crops, rotations, filters and edits, and will happily find a different photograph of the same building. It answers "what is this, and what looks like it", which is a different and sometimes more useful question.</p>
+      <p>Most engines now blend both. The practical consequence is that a crop can defeat one engine and not another, which is the core reason the workflow below insists on running more than one.</p>
 
-      <h2>The main tools</h2>
+      <h2>The engines, and what each is actually good at</h2>
       <ul>
-        <li><strong>Google Images</strong> — broad coverage and strong at finding the same picture across mainstream sites.</li>
-        <li><strong>Bing Visual Search</strong> — good at object and landmark recognition.</li>
-        <li><strong>Yandex</strong> — widely regarded as the strongest for faces and for finding near-duplicates.</li>
-        <li><strong>TinEye</strong> — specialises in exact-match tracking and shows the oldest known appearance of an image, which is invaluable for finding an original source.</li>
+        <li><strong>Google Lens</strong>: strongest on objects, products, plants, artwork and landmarks. It will often tell you what a thing is when it cannot tell you where the photo came from.</li>
+        <li><strong>Bing Visual Search</strong>: good at products and page matches, and it offers a crop tool that lets you search one region of an image without leaving the interface.</li>
+        <li><strong>Yandex</strong>: widely regarded among OSINT practitioners as the strongest for faces and for places in Eastern Europe and Central Asia. It regularly returns matches the others do not, and it is the single most common reason a search that "found nothing" actually found something.</li>
+        <li><strong>TinEye</strong>: the oldest, and the one that answers a question none of the others do well: sort by oldest, and it shows you where an image appeared <em>first</em>. That is the tool for establishing that a photo predates the story attached to it.</li>
+        <li><strong>Baidu</strong>: worth trying when the subject matter is Chinese.</li>
       </ul>
-      <p>Because each engine indexes different parts of the web, the professional habit is to run the same image through several of them rather than trusting one.</p>
+      <p>Coverage differs by region and by index, not by quality, and they disagree constantly. Treating them as interchangeable is the usual mistake.</p>
 
-      <h2>A practical verification workflow</h2>
+      <div class="callout">
+        <p><strong>"No results" is a result, and it needs interpreting.</strong> It can mean the image is genuinely original, a real photo taken by the person who posted it. It can mean the image is synthetic, because a generated face has no earlier existence to find. Or it can mean the copy you searched has been cropped or re-encoded enough to break the match. The three are distinguished by the follow-up searches below, not by the empty first result.</p>
+      </div>
+
+      <h2>A workflow that actually finds things</h2>
+      <p>Verifying a profile photo, step by step:</p>
       <ol>
-        <li><strong>Get the best version of the image.</strong> Higher resolution produces better matches. Save the original rather than a screenshot where possible.</li>
-        <li><strong>Search across multiple engines.</strong> Run it through at least Google, Yandex, and TinEye.</li>
-        <li><strong>Sort by date where you can.</strong> Finding the earliest appearance often reveals the true origin — and whether a "recent" photo is actually years old.</li>
-        <li><strong>Crop and re-search.</strong> If the whole image returns nothing, crop to a distinctive detail (a logo, a face, a sign) and search again.</li>
-        <li><strong>Read the context, not just the match.</strong> The pages hosting the image tell you who has used it and how.</li>
+        <li><strong>Get the largest copy available.</strong> Open the image in its own tab rather than screenshotting a thumbnail. Platforms serve several sizes and the largest carries the most signal.</li>
+        <li><strong>Run it whole, in at least three engines.</strong> Google, Yandex and TinEye is the standard opening because they fail in different directions.</li>
+        <li><strong>Crop to the face and search again.</strong> Removing the background removes noise and often changes the result completely.</li>
+        <li><strong>Crop to the background and search that separately.</strong> This is the step people skip and it is frequently the productive one. A building, a shopfront sign, a menu, a vehicle livery, a mountain ridge, each is independently searchable, and the background is what the poster was not thinking about.</li>
+        <li><strong>Try a horizontally flipped copy.</strong> Mirroring is a trivial and common evasion, and it defeats hash-based matching outright.</li>
+        <li><strong>Search the text you can read.</strong> Signage, number plates, jersey numbers, shop names, typed into an ordinary search engine, sometimes with a place name, these solve cases that image search alone cannot.</li>
+        <li><strong>Sort by date where the engine allows it.</strong> An image that existed before the event it supposedly documents has answered the question.</li>
       </ol>
 
+      <h2>What a match proves, and what it does not</h2>
+      <p>Finding the same photo elsewhere establishes that the image is not unique to the profile you are examining. It does not by itself establish who took it, who is in it, or who the account belongs to.</p>
+      <p>Read the matches for these patterns instead:</p>
+      <ul>
+        <li><strong>The photo is stock.</strong> It appears across commercial libraries and unrelated business websites. Conclusive for a fake profile.</li>
+        <li><strong>The photo belongs to someone else with a consistent, long-running presence</strong> under a different name. That is an impersonated identity, and the person whose photos were taken is a victim too.</li>
+        <li><strong>The photo predates the claim.</strong> A supposedly current event appearing in an article three years old.</li>
+        <li><strong>The photo appears once, on the account itself.</strong> Consistent with a genuine original, and not proof of one.</li>
+      </ul>
+
+      <h2>Check the metadata before you assume there is none</h2>
+      <p>Photographs carry EXIF data: camera model, timestamps, settings and sometimes GPS coordinates. Most social platforms strip it on upload, which is why people assume it is never there. Files sent as email attachments, through messaging apps that preserve originals, downloaded from cloud storage, or hosted on a personal site frequently retain it in full.</p>
+      <p>It costs nothing to look, and when it is present it is more precise than anything reverse search will give you. Treat it with care in both directions: absent metadata means nothing, and present metadata can be edited, so a timestamp is a claim to corroborate rather than a fact.</p>
+
+      <h2>Synthetic images changed the problem</h2>
+      <p>A generated portrait has no origin. Reverse search returns nothing because there is nothing earlier to find, and the visual tells people learned to look for, malformed hands, garbled text, mismatched earrings, eyes in identical positions across images, have been largely engineered away. Detection heuristics published a couple of years ago are not reliable now, and stating a confident verdict from them is how people get this wrong in public.</p>
+      <p>Two things do still work. <strong>Provenance metadata</strong>: the C2PA Content Credentials standard, now attached by a growing number of cameras and editing tools, travels with a file and records how it was made and altered; its presence is informative, though its absence proves nothing. And <strong>corroboration</strong>: a real person has a history that is not a single image. Accounts with other photos, mutual connections, mentions by others, and a presence extending backwards in time are hard to fabricate consistently, and a single perfect portrait attached to an account created last month is the actual signal.</p>
+
       <div class="callout">
-        <p><strong>Use case: fake profiles.</strong> Dating scams and impersonation accounts almost always use stolen photos. Reverse-searching a profile picture and finding it on a stock-photo site, a stranger's real account, or dozens of unrelated profiles is one of the fastest ways to expose a fake.</p>
+        <p><strong>A note on what this site does.</strong> MyRecon does not run reverse image search. Doing it properly requires the commercial image-search APIs, and this project is built on free, documented, keyless sources, so rather than ship a version that quietly returns worse answers, we explain the method and point you at the engines that do it well. The <a href="/about.html">about page</a> sets out the rest of that reasoning.</p>
       </div>
 
-      <h2>What photos can quietly reveal</h2>
-      <p>Beyond where an image appears, the image file itself can carry <strong>metadata (EXIF)</strong>: the camera or phone model, the date and time it was taken, and sometimes GPS coordinates. Many social platforms strip this on upload, but images shared directly or hosted elsewhere often retain it. The visible content matters too — street signs, licence plates, reflections, architecture, and language on shopfronts can all help place where and when a photo was taken.</p>
+      <h2>Where the line is</h2>
+      <p>The technique is neutral; the use is not. Verifying whether the person messaging you is real is reasonable and often necessary. Assembling the identity, employer and home area of a stranger because their photo interested you is not, and in many jurisdictions the harassment that follows is an offence regardless of how the information was obtained.</p>
+      <p>Two rules keep this on the right side. Be able to state what question you are answering and why it is yours to ask. And remember that a match associates <em>images</em>, not people: our guide to <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a> covers the standard a conclusion has to meet before anyone acts on it, and image matches fail that standard more often than any other kind of evidence.</p>
 
-      <div class="callout">
-        <p><strong>Privacy note.</strong> This cuts both ways. Before you post a photo, remember it may carry location metadata and background details. If a picture reveals your home or routine, consider stripping its metadata and cropping sensitive detail first — see our guide on <a href="/guides/reduce-your-digital-footprint.html">reducing your digital footprint</a>.</p>
-      </div>
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dreverse_image_search" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
 
-      <h2>Verify, don't assume</h2>
-      <p>A visual match is a strong lead, but not automatic proof — similar images exist, and pictures are reused out of context. Confirm what you find against other evidence before drawing conclusions, and use these techniques only for lawful, ethical purposes such as verification and protecting yourself. Pair image analysis with the rest of the <a href="/guides/">MyRecon guides</a> for a fuller picture.</p>
-
-            <h2>Related guides</h2>
+      <h2>Related guides</h2>
       <ul class="related-guides">
-        <li><a href="/guides/verify-an-osint-finding.html">how to verify an OSINT finding before you act on it</a></li>
-        <li><a href="/guides/username-osint-search.html">finding accounts across platforms from a single username</a></li>
-        <li><a href="/guides/social-media-privacy.html">locking down the social media settings that leak the most</a></li>
+        <li><a href="/guides/verify-an-osint-finding.html">how to verify a finding before acting on it</a></li>
+        <li><a href="/guides/username-osint-search.html">finding accounts across platforms by username</a></li>
+        <li><a href="/guides/social-media-privacy.html">what your own photos are giving away</a></li>
+        <li><a href="/guides/what-is-osint.html">what open-source intelligence is, and is not</a></li>
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
@@ -120,5 +155,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

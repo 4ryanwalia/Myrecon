@@ -20,7 +20,7 @@
   "related": ["att-2024", "collection-1-2019", "capital-one-2019"],
   "faq": [
     { "q": "Was Snowflake itself hacked?", "a": "No. Investigations by Snowflake and by Mandiant found no vulnerability in the platform and no compromise of Snowflake's own systems. The attacker logged into individual customer accounts using valid usernames and passwords, on accounts that did not require a second factor." },
-    { "q": "Where did the credentials come from?", "a": "Infostealer malware on the computers of employees and contractors — in some cases years earlier. Infostealers harvest everything a browser has saved and sell the output as \"logs\". A credential stolen in 2020 still worked in 2024 because nobody had rotated it and nothing else was required to use it." },
+    { "q": "Where did the credentials come from?", "a": "Infostealer malware on the computers of employees and contractors, in some cases years earlier. Infostealers harvest everything a browser has saved and sell the output as \"logs\". A credential stolen in 2020 still worked in 2024 because nobody had rotated it and nothing else was required to use it." },
     { "q": "Whose data was taken?", "a": "The list includes Ticketmaster, where the attacker claimed 560 million records; AT&T, where call and text metadata for nearly all of its mobile customers was taken; Santander; Advance Auto Parts; Neiman Marcus; and around 160 other Snowflake customer tenants. Each victim owned its own data and its own configuration." },
     { "q": "Whose fault was it?", "a": "The uncomfortable answer is that responsibility was shared and the model made that easy to miss. Customers chose not to enforce MFA and did not rotate credentials; the platform allowed single-factor access to bulk data by default. Snowflake subsequently moved to enforce MFA for new accounts, which is an admission that the default mattered." }
   ],
@@ -32,13 +32,13 @@
   ]
 }
 -->
-<p class="lead">In the space of two months in 2024, roughly 165 companies lost data out of their own cloud data warehouses — Ticketmaster, AT&T, Santander and a long list of others. There was no vulnerability. The attacker signed in with a correct username and password on accounts that asked for nothing else, using credentials that had been stolen from employees' computers, in some cases four years earlier.</p>
+<p class="lead">In the space of two months in 2024, roughly 165 companies lost data out of their own cloud data warehouses, Ticketmaster, AT&T, Santander and a long list of others. There was no vulnerability. The attacker signed in with a correct username and password on accounts that asked for nothing else, using credentials that had been stolen from employees' computers, in some cases four years earlier.</p>
 
 <h2>What happened</h2>
 
 <p>Snowflake is a cloud data warehouse: organisations put their analytical data in it, at enormous scale, and query it. Access is by account, and each customer configures its own authentication.</p>
 
-<p>Between April and June 2024, an actor tracked by Mandiant as UNC5537 systematically logged into customer tenants. The credentials came from infostealer malware — the commodity software that sits on a consumer PC and exfiltrates everything the browser has saved. Those harvests are packaged as "logs" and sold in bulk on criminal markets, often for a few dollars.</p>
+<p>Between April and June 2024, an actor tracked by Mandiant as UNC5537 systematically logged into customer tenants. The credentials came from infostealer malware, the commodity software that sits on a consumer PC and exfiltrates everything the browser has saved. Those harvests are packaged as "logs" and sold in bulk on criminal markets, often for a few dollars.</p>
 
 <p>Three conditions had to hold for each victim, and where they did, the attacker simply walked in:</p>
 
@@ -56,7 +56,7 @@
 
 <p><strong>Ticketmaster.</strong> The attacker advertised 560 million customer records: names, contact details, order history and partial payment data. Live Nation confirmed unauthorised activity in a third-party cloud database.</p>
 
-<p><strong>AT&T.</strong> Call and text metadata for nearly all of its mobile customers over a six-month period in 2022 — who contacted whom, how often, and for how long. Not the content, but the pattern, which for many purposes is more revealing. This one has <a href="/breaches/case-files/att-2024.html">its own case file</a>.</p>
+<p><strong>AT&T.</strong> Call and text metadata for nearly all of its mobile customers over a six-month period in 2022, who contacted whom, how often, and for how long. Not the content, but the pattern, which for many purposes is more revealing. This one has <a href="/breaches/case-files/att-2024.html">its own case file</a>.</p>
 
 <p><strong>Santander.</strong> Customer and employee data across several countries.</p>
 
@@ -73,17 +73,17 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>2020 onwards</b> — Infostealer malware harvests credentials from employee and contractor machines.</li>
-  <li><b>April 2024</b> — Systematic logins into Snowflake customer tenants begin.</li>
-  <li><b>Late May 2024</b> — Ticketmaster data is advertised for sale; Snowflake and its incident responders begin notifying affected customers.</li>
-  <li><b>June 2024</b> — Mandiant publishes its analysis of UNC5537; roughly 165 affected tenants are identified.</li>
-  <li><b>July 2024</b> — AT&T discloses the theft of call and text metadata.</li>
-  <li><b>Late 2024</b> — Two men are arrested and charged in connection with the campaign; Snowflake announces MFA enforcement for new accounts.</li>
+  <li><b>2020 onwards</b>: Infostealer malware harvests credentials from employee and contractor machines.</li>
+  <li><b>April 2024</b>: Systematic logins into Snowflake customer tenants begin.</li>
+  <li><b>Late May 2024</b>: Ticketmaster data is advertised for sale; Snowflake and its incident responders begin notifying affected customers.</li>
+  <li><b>June 2024</b>: Mandiant publishes its analysis of UNC5537; roughly 165 affected tenants are identified.</li>
+  <li><b>July 2024</b>: AT&T discloses the theft of call and text metadata.</li>
+  <li><b>Late 2024</b>: Two men are arrested and charged in connection with the campaign; Snowflake announces MFA enforcement for new accounts.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p><strong>Infostealer logs became a recognised enterprise threat.</strong> They had been treated as a consumer problem — stolen gaming accounts, drained crypto wallets. This campaign demonstrated that the same logs contain corporate credentials, and threat intelligence teams started buying and monitoring them for their own domains.</p>
+<p><strong>Infostealer logs became a recognised enterprise threat.</strong> They had been treated as a consumer problem, stolen gaming accounts, drained crypto wallets. This campaign demonstrated that the same logs contain corporate credentials, and threat intelligence teams started buying and monitoring them for their own domains.</p>
 
 <p><strong>Credential rotation stopped being a formality.</strong> A password that has never changed since 2020 is not a password; it is a permanent key of unknown distribution. Detection for "credential last rotated" moved into cloud posture tooling.</p>
 
@@ -95,5 +95,5 @@
   <li><strong>Your exposure depends on the specific company</strong>, and each published its own notice. Read the one that applies rather than the aggregate headline.</li>
   <li><strong>Assume contact details are circulating.</strong> Ticketing and retail data drives convincing "there is a problem with your order" scams.</li>
   <li><strong>If you administer cloud data platforms, audit for single-factor accounts today.</strong> Service accounts and long-lived analyst logins are where this lives.</li>
-  <li><strong>Check whether your own machine has ever been infected.</strong> Infostealer exposure is personal, follows you across employers, and does not show up in company logs — <a href="/breaches/">the archive tracks stealer-log collections as they are confirmed</a>.</li>
+  <li><strong>Check whether your own machine has ever been infected.</strong> Infostealer exposure is personal, follows you across employers, and does not show up in company logs, <a href="/breaches/">the archive tracks stealer-log collections as they are confirmed</a>.</li>
 </ol>

@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="0ktapus Phishing 2022: Twilio, Signal and the MFA Lesson">
   <meta name="twitter:description" content="A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"0ktapus, 2022: one text message, one hundred and thirty companies","description":"A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies. Cloudflare was targeted with the same messages and lost nothing.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"0ktapus phishing campaign"},"wordCount":933}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"0ktapus phishing campaign","item":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"If they had one-time codes, is two-factor authentication useless?","acceptedAnswer":{"@type":"Answer","text":"No — the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one."}},{"@type":"Question","name":"What actually happened to Twilio customers?","acceptedAnswer":{"@type":"Answer","text":"Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them."}},{"@type":"Question","name":"Why is it called 0ktapus?","acceptedAnswer":{"@type":"Answer","text":"Group-IB, which analysed the campaign, named it after the phishing pages themselves — most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises."}},{"@type":"Question","name":"How did attackers know which employees to text?","acceptedAnswer":{"@type":"Answer","text":"Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"If they had one-time codes, is two-factor authentication useless?","acceptedAnswer":{"@type":"Answer","text":"No, the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one."}},{"@type":"Question","name":"What actually happened to Twilio customers?","acceptedAnswer":{"@type":"Answer","text":"Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them."}},{"@type":"Question","name":"Why is it called 0ktapus?","acceptedAnswer":{"@type":"Answer","text":"Group-IB, which analysed the campaign, named it after the phishing pages themselves, most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises."}},{"@type":"Question","name":"How did attackers know which employees to text?","acceptedAnswer":{"@type":"Answer","text":"Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -83,7 +84,7 @@
 
 <p>The important mechanism was what happened next. The phishing page did not simply store the credentials for later. It relayed them to the real login page immediately, in real time, and when the real service asked for a one-time code, the phishing page asked the victim for it and relayed that too. The victim experienced a login that appeared to work. The attacker got a live session.</p>
 
-<p>Group-IB's later analysis found roughly 9,900 sets of credentials and about 5,400 one-time codes captured, across more than 130 organisations. The targeting concentrated on technology, telecoms and cryptocurrency companies — which is to say, on companies whose systems provide access to other companies' customers.</p>
+<p>Group-IB's later analysis found roughly 9,900 sets of credentials and about 5,400 one-time codes captured, across more than 130 organisations. The targeting concentrated on technology, telecoms and cryptocurrency companies, which is to say, on companies whose systems provide access to other companies' customers.</p>
 
 <div class="callout">
   <p><strong>Why a one-time code is not phishing-resistant.</strong> A code from an app or a text message is a shared secret that the human copies from one place to another. Anything that can convince the human to copy it into the wrong box defeats it, and the attacker has thirty seconds to use it, which is plenty when the relay is automated. A security key or passkey is different in kind, not degree: the browser performs a cryptographic challenge that is bound to the real domain name. Present it a lookalike domain and it will not produce a signature at all. There is nothing for the user to get wrong.</p>
@@ -93,17 +94,17 @@
 
 <p>Cloudflare was targeted in the same campaign, with the same message format, within the same minutes. Its employees received 76 messages. Some of them clicked. Some of them entered their credentials on the fake page.</p>
 
-<p>The attack failed at the next step. Cloudflare required hardware security keys for all employees, and the keys would not authenticate to a domain that was not Cloudflare's. The attackers had valid passwords and no way to use them. Cloudflare published a detailed account of the attempt, including the fact that its own people had been fooled by the message — which is the part worth dwelling on. The control that saved them did not depend on anyone spotting anything.</p>
+<p>The attack failed at the next step. Cloudflare required hardware security keys for all employees, and the keys would not authenticate to a domain that was not Cloudflare's. The attackers had valid passwords and no way to use them. Cloudflare published a detailed account of the attempt, including the fact that its own people had been fooled by the message, which is the part worth dwelling on. The control that saved them did not depend on anyone spotting anything.</p>
 
 <h2>What the access was used for</h2>
 
 <p>Compromised employee accounts were not the objective. Customer support and administrative tooling was.</p>
 
 <ol class="cf-timeline">
-  <li><b>Twilio</b> — Attackers reached internal customer support systems. Twilio reported 209 customer accounts and 93 Authy users affected.</li>
-  <li><b>Signal</b> — Twilio provides Signal's phone number verification. About 1,900 users' phone numbers were exposed and a small number of accounts were re-registered to attacker devices. Message history was not exposed; Signal cannot read it.</li>
-  <li><b>DoorDash</b> — Disclosed a breach traced to a compromised third-party vendor in the same campaign, exposing customer and delivery worker data.</li>
-  <li><b>Mailchimp</b> — A compromise of internal tooling led to access to customer accounts, which in turn led to the compromise of mailing lists belonging to its customers, including cryptocurrency firms.</li>
+  <li><b>Twilio</b>: Attackers reached internal customer support systems. Twilio reported 209 customer accounts and 93 Authy users affected.</li>
+  <li><b>Signal</b>: Twilio provides Signal's phone number verification. About 1,900 users' phone numbers were exposed and a small number of accounts were re-registered to attacker devices. Message history was not exposed; Signal cannot read it.</li>
+  <li><b>DoorDash</b>: Disclosed a breach traced to a compromised third-party vendor in the same campaign, exposing customer and delivery worker data.</li>
+  <li><b>Mailchimp</b>: A compromise of internal tooling led to access to customer accounts, which in turn led to the compromise of mailing lists belonging to its customers, including cryptocurrency firms.</li>
 </ol>
 
 <p>Each of these is one step further from the original phishing text, and each step multiplies the affected population. A campaign against employees ended up affecting people who had never heard of Twilio.</p>
@@ -116,13 +117,13 @@
 
 <p><strong>Customer support tooling got treated as production infrastructure.</strong> Support consoles that can look up any customer, reset any account or read any number had often been secured as internal tools. After 2022 a great many of them acquired stronger authentication, tighter scoping and actual audit logging.</p>
 
-<p><strong>The campaign's people became the next few years of intrusions.</strong> The social engineering tradecraft visible in 0ktapus — targeting recovery flows, impersonating IT, exploiting the phone — recurs directly in the attacks on Las Vegas casinos in 2023 and in a long run of help desk compromises since.</p>
+<p><strong>The campaign's people became the next few years of intrusions.</strong> The social engineering tradecraft visible in 0ktapus, targeting recovery flows, impersonating IT, exploiting the phone, recurs directly in the attacks on Las Vegas casinos in 2023 and in a long run of help desk compromises since.</p>
 
 <h2>What to take from it</h2>
 
 <ol class="bx-actions">
   <li><strong>Move your most important accounts to passkeys or a security key.</strong> Email first, because email resets everything else. This is the single change that defeats the technique described here.</li>
-  <li><strong>Treat any login page you arrived at from a message as hostile.</strong> Not because you will spot the fake — the people in this case did not — but because navigating there yourself removes the attack entirely.</li>
+  <li><strong>Treat any login page you arrived at from a message as hostile.</strong> Not because you will spot the fake, the people in this case did not, but because navigating there yourself removes the attack entirely.</li>
   <li><strong>A code you were asked for is more dangerous than a password you volunteered.</strong> Legitimate services do not phone or text asking you to read a code back. That request is, on its own, sufficient evidence of an attack.</li>
   <li><strong>Assume your work phone number is known.</strong> It leaks from directories, breaches and conference lists, and it is the delivery channel for this entire class of attack.</li>
 </ol>
@@ -137,28 +138,40 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>If they had one-time codes, is two-factor authentication useless?</h3>
-        <p>No — the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one.</p>
+        <p>No, the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one.</p>
 
         <h3>What actually happened to Twilio customers?</h3>
         <p>Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them.</p>
 
         <h3>Why is it called 0ktapus?</h3>
-        <p>Group-IB, which analysed the campaign, named it after the phishing pages themselves — most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises.</p>
+        <p>Group-IB, which analysed the campaign, named it after the phishing pages themselves, most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises.</p>
 
         <h3>How did attackers know which employees to text?</h3>
         <p>Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://www.group-ib.com/blog/0ktapus/" target="_blank" rel="noopener nofollow">Group-IB — Roasting 0ktapus: the phishing campaign going after Okta identity credentials</a> — the analysis that mapped the campaign's scale</li>
+        <li><a href="https://www.group-ib.com/blog/0ktapus/" target="_blank" rel="noopener nofollow">Group-IB, Roasting 0ktapus: the phishing campaign going after Okta identity credentials</a>: the analysis that mapped the campaign's scale</li>
         <li><a href="https://www.twilio.com/en-us/blog/august-2022-social-engineering-attack" target="_blank" rel="noopener nofollow">Twilio incident report, August 2022</a></li>
-        <li><a href="https://blog.cloudflare.com/2022-07-sms-phishing-attacks/" target="_blank" rel="noopener nofollow">Cloudflare — The mechanics of a sophisticated phishing scam and how we stopped it</a></li>
+        <li><a href="https://blog.cloudflare.com/2022-07-sms-phishing-attacks/" target="_blank" rel="noopener nofollow">Cloudflare, The mechanics of a sophisticated phishing scam and how we stopped it</a></li>
         <li><b>Signal statement on the Twilio incident, August 2022</b></li>
       </ul>
       <h2>Read next</h2>
@@ -168,7 +181,7 @@
         <li><a href="/breaches/case-files/twitter-2022.html">Twitter, 2022: an API that confirmed which account owned which email</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -184,5 +197,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

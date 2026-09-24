@@ -234,9 +234,32 @@ def email_report(data: dict) -> None:
 
 # ── Network ──────────────────────────────────────────────────────
 
+_MAIL_VERDICT = {
+    "protected": ("protected against spoofing", "green"),
+    "partial": ("partly protected", "yellow"),
+    "exposed": ("open to spoofing", "red"),
+}
+
+
+def _mail_security(ms: dict) -> None:
+    """SPF + DMARC verdict, the same grading the website shows."""
+    if not ms or ms.get("verdict") not in _MAIL_VERDICT:
+        return
+    label, style = _MAIL_VERDICT[ms["verdict"]]
+    spf = ms.get("spf") or {}
+    dmarc = ms.get("dmarc") or {}
+    ui.section("Email spoofing")
+    ui.line(ui.paint(label, style), indent=4)
+    ui.kv("spf", (spf.get("all") or "published") if spf.get("present") else "not published", indent=4)
+    ui.kv("dmarc", ("p=" + str(dmarc.get("policy"))) if dmarc.get("present") else "not published", indent=4)
+    for issue in ms.get("issues") or []:
+        ui.bullet(issue, indent=4, style="grey")
+
+
 def dns_report(data: dict) -> None:
     query = data.get("query") or {}
     ui.heading("DNS records", str(query.get("domain", "")))
+    _mail_security(data.get("mail_security"))
     records = data.get("records") or {}
     if not records:
         ui.line("No records returned.", indent=2, style="grey")
@@ -333,6 +356,7 @@ def domain_report(data: dict) -> None:
         for rtype, entries in records.items():
             values = [e.get("value") if isinstance(e, dict) else e for e in entries]
             ui.kv(rtype, _truncate(", ".join(str(v) for v in values), 66), indent=4)
+    _mail_security(dns.get("mail_security"))
 
     primary = data.get("primary_ip") or {}
     if primary:

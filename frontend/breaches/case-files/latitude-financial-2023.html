@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latitude Financial Breach 2023: 14 Million Records | MyRecon</title>
+  <meta name="description" content="Around 7.9 million driver's licence numbers and 6.1 million older records, some dating to 2005, taken from a lender using credentials stolen from an employee.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/latitude-financial-2023.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Latitude Financial Breach 2023: 14 Million Records">
+  <meta property="og:description" content="Around 7.9 million driver's licence numbers and 6.1 million older records, some dating to 2005, taken from a lender using credentials stolen from an employee.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/latitude-financial-2023.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Latitude Financial Breach 2023: 14 Million Records">
+  <meta name="twitter:description" content="Around 7.9 million driver's licence numbers and 6.1 million older records, some dating to 2005, taken from a lender using credentials stolen from an employee.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Latitude Financial, 2023: a licence number from 2005, stolen in 2023","description":"Around 7.9 million driver's licence numbers and 6.1 million older records, some dating to 2005, taken from a lender using credentials stolen from an employee.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/latitude-financial-2023.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Latitude Financial data breach"},"wordCount":1069}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Latitude Financial data breach","item":"https://www.myrecon.xyz/breaches/case-files/latitude-financial-2023.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How did the attackers get in?","acceptedAnswer":{"@type":"Answer","text":"Through stolen employee login credentials, used to reach two service providers that held Latitude customer data. No exotic exploit was involved. It is the most common intrusion route there is, and it is the reason credentials that unlock access to customer databases need a phishing-resistant second factor rather than a password and a code."}},{"@type":"Question","name":"Why were records from 2005 still there?","acceptedAnswer":{"@type":"Answer","text":"That is the central question of this case and it was never satisfactorily answered. Consumer finance businesses collect identity documents to meet know-your-customer obligations, and those obligations come with retention periods. What they do not require is indefinite retention of identity document numbers for customers whose accounts closed many years ago. Data kept past its purpose is pure liability: it cannot generate revenue and it can be stolen."}},{"@type":"Question","name":"Did Latitude pay the ransom?","acceptedAnswer":{"@type":"Answer","text":"No. The company publicly announced it had received a ransom demand and would not pay, on the stated grounds that paying would not guarantee the return or deletion of data and would encourage further attacks. Both points are correct. Australian corporate practice had shifted sharply in that direction after the Optus and Medibank breaches the previous year."}},{"@type":"Question","name":"What can someone do if their driver's licence number was taken?","acceptedAnswer":{"@type":"Answer","text":"In Australia, state and territory authorities allow licences to be reissued with a new number where they have been compromised, and in some jurisdictions the cost is waived after a declared breach. That is worth doing, because unlike a password the number is used as a proof of identity by banks and telcos. Credit bans, free, and renewable, stop new accounts being opened in your name while you sort it out."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2023 · Consumer finance</span>
+          <h1>Latitude Financial, 2023: a licence number from 2005, stolen in 2023</h1>
+          <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>About 14 million customer records across Australia and New Zealand</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>Detected 16 March 2023</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>16 March 2023</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Employee login credentials stolen and used to access two service providers holding customer data</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Not publicly identified; a ransom was demanded and refused</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>A ransom refused, remediation and identity document replacement across two countries, and a regulatory investigation</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Driver's licence numbers · Passport numbers · Names · Physical addresses · Phone numbers · Dates of birth</p>
+
+<p class="lead">Most of the people in this breach had not thought about Latitude Financial in years. They had taken an interest-free store finance deal for a fridge, or a card that came with a retail promotion, handed over a driver's licence to prove who they were, and moved on. In March 2023 that licence number was stolen, sometimes eighteen years later.</p>
+
+<h2>What happened</h2>
+
+<p>Latitude Financial provides consumer credit across Australia and New Zealand, personal loans, credit cards, and the point-of-sale finance offered in retail stores. On 16 March 2023 it disclosed that it had detected unusual activity on its systems.</p>
+
+<p>The intrusion route was stolen employee login credentials, used to reach two service providers holding Latitude customer data. Over the following weeks the disclosed scale grew substantially, in the pattern that almost every large breach follows: an initial figure in the hundreds of thousands, then millions, and finally around 14 million customer records across both countries.</p>
+
+<p>The composition is what makes this case distinctive. Roughly 7.9 million driver's licence numbers were taken, of which a minority had been supplied in the previous decade, the rest were older. A further 6.1 million records, containing names, addresses, phone numbers and dates of birth, dated back to at least 2005. Around 53,000 passport numbers were also included.</p>
+
+<div class="callout">
+  <p><strong>Retained data is stored liability.</strong> A record that no longer serves a business purpose cannot earn anything, cannot be sold, and cannot improve a service. It can only be stolen. Every identity document number held past the end of its regulatory retention period is a small permanent risk carried for no return, and the aggregate of those small risks is the difference between a breach of recent customers and a breach of everyone who ever applied. Deletion is a security control, and it is the only one that reduces the size of the eventual incident.</p>
+</div>
+
+<h2>Why the age of the data is the story</h2>
+
+<p>Identity documents behave differently from other breached data, and time makes them worse rather than better. A password stolen in 2005 has almost certainly been changed. A card number has expired. A driver's licence number issued in 2005 is quite possibly still the number on the licence in the wallet today, because licences are renewed by reissuing the same number.</p>
+
+<p>That matters because of how identity verification actually works in Australia. Banks, telecommunications providers and government services confirm identity by checking a document number against a name and a date of birth. Someone holding all three can open accounts, port a phone number, or apply for credit. The document does not need to be forged, the number alone is often sufficient to satisfy an automated check.</p>
+
+<p>So a breach of eighteen-year-old records is not a breach of stale data. For the portion of it that consists of identity document numbers, it is nearly as dangerous as a breach of records collected last week, and the affected population is far larger: everyone who ever applied, whether or not they were approved, whether or not they ever borrowed a cent.</p>
+
+<h2>The refusal</h2>
+
+<p>Latitude received a ransom demand and announced publicly that it would not pay, giving reasons that were specific rather than rhetorical: payment would not guarantee the return or destruction of the data, and it would incentivise further attacks on Australian businesses.</p>
+
+<p>That position was not obvious a year earlier. It became the Australian norm after the Optus and Medibank incidents of 2022, where Medibank's refusal, followed by the publication of deeply sensitive health records, established both that refusal was survivable as a company and that it was genuinely costly for customers. The reasoning behind refusal is sound, and the honest version has to acknowledge what it means for the people in the file: the data goes out anyway, and the organisation that lost it absorbs the cost of the aftermath.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Before March 2023</b>: Employee login credentials are stolen and used to reach two service providers holding customer data.</li>
+  <li><b>16 March 2023</b>: Latitude detects unusual activity and discloses the incident.</li>
+  <li><b>20–27 March 2023</b>: The disclosed scale grows repeatedly as the investigation progresses.</li>
+  <li><b>27 March 2023</b>: The company confirms around 14 million records, including 7.9 million driver's licence numbers and 6.1 million older records dating back to at least 2005.</li>
+  <li><b>April 2023</b>: A ransom demand is received; Latitude announces publicly that it will not pay.</li>
+  <li><b>2023 onwards</b>: Identity document reissue programmes run in both countries; privacy regulators open inquiries.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>Coming after Optus and Medibank, this breach completed an argument Australian policymakers had been making about data minimisation. Three of the country's largest breaches in seven months had a common feature: a substantial share of the harm came from data that no longer needed to exist. That pushed retention from a compliance footnote into the centre of privacy reform discussions, and it gave regulators a concrete question to ask boards, not "was this data secured" but "why was this data still here".</p>
+
+<p>It also forced the practical machinery of document reissue into the open. Replacing a compromised driver's licence number is a state-level process, and the volume of people needing it across three breaches exposed how poorly that process scales and how much of the cost lands on individuals. Fee waivers and streamlined reissue after a declared breach are now a standard expectation rather than a concession.</p>
+
+<h2>If you were a Latitude customer: or applied once</h2>
+
+<p>Start by recognising that you might be in this and not remember the relationship at all. The exposure runs through store-branded finance and cards issued under retail partnerships, so the name on the paperwork you signed may not have been Latitude.</p>
+
+<p>If your driver's licence number was taken, have the licence reissued with a new number. That single action removes most of the ongoing risk, because the number is what identity checks rely on, and it is the one exposed element you can actually change. Where a breach has been declared, reissue fees are commonly waived, ask.</p>
+
+<p>Then place a credit ban with each Australian credit reporting body, or the equivalent in New Zealand. It is free, it lasts a defined period, it is renewable, and it blocks new credit being opened in your name rather than telling you afterwards that it was. Monitoring reports; a ban prevents. For data this durable, prevention is the only control that keeps working.</p>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>How did the attackers get in?</h3>
+        <p>Through stolen employee login credentials, used to reach two service providers that held Latitude customer data. No exotic exploit was involved. It is the most common intrusion route there is, and it is the reason credentials that unlock access to customer databases need a phishing-resistant second factor rather than a password and a code.</p>
+
+        <h3>Why were records from 2005 still there?</h3>
+        <p>That is the central question of this case and it was never satisfactorily answered. Consumer finance businesses collect identity documents to meet know-your-customer obligations, and those obligations come with retention periods. What they do not require is indefinite retention of identity document numbers for customers whose accounts closed many years ago. Data kept past its purpose is pure liability: it cannot generate revenue and it can be stolen.</p>
+
+        <h3>Did Latitude pay the ransom?</h3>
+        <p>No. The company publicly announced it had received a ransom demand and would not pay, on the stated grounds that paying would not guarantee the return or deletion of data and would encourage further attacks. Both points are correct. Australian corporate practice had shifted sharply in that direction after the Optus and Medibank breaches the previous year.</p>
+
+        <h3>What can someone do if their driver's licence number was taken?</h3>
+        <p>In Australia, state and territory authorities allow licences to be reissued with a new number where they have been compromised, and in some jurisdictions the cost is waived after a declared breach. That is worth doing, because unlike a password the number is used as a proof of identity by banks and telcos. Credit bans, free, and renewable, stop new accounts being opened in your name while you sort it out.</p>
+      </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Latitude Group Holdings, ASX announcements and customer notifications, March–April 2023</b></li>
+        <li><b>Office of the Australian Information Commissioner, statements regarding the Latitude Financial breach</b></li>
+        <li><b>Australian Cyber Security Centre guidance on compromised identity documents</b></li>
+        <li><b>New Zealand Office of the Privacy Commissioner, public statements, 2023</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/optus-2022.html">Optus, 2022: an API with no lock on it, and 9.8 million Australians</a></li>
+        <li><a href="/breaches/case-files/medibank-2022.html">Medibank, 2022: the company said no, and the data went up anyway</a></li>
+        <li><a href="/breaches/case-files/equifax-2017.html">Equifax, 2017: 147 million people, one unpatched web form</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

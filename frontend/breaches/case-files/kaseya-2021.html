@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaseya VSA Ransomware Attack, July 2021 | MyRecon</title>
+  <meta name="description" content="REvil exploited zero-days in Kaseya's remote management server to push ransomware down the trusted update channel into roughly 1,500 downstream businesses.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/kaseya-2021.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Kaseya VSA Ransomware Attack, July 2021">
+  <meta property="og:description" content="REvil exploited zero-days in Kaseya's remote management server to push ransomware down the trusted update channel into roughly 1,500 downstream businesses.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/kaseya-2021.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kaseya VSA Ransomware Attack, July 2021">
+  <meta name="twitter:description" content="REvil exploited zero-days in Kaseya's remote management server to push ransomware down the trusted update channel into roughly 1,500 downstream businesses.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Kaseya, 2021: the update arrived on schedule and encrypted 1,500 companies","description":"REvil exploited zero-days in Kaseya's remote management server to push ransomware down the trusted update channel into roughly 1,500 downstream businesses.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/kaseya-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Kaseya VSA supply chain ransomware attack"},"wordCount":1116}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Kaseya VSA supply chain ransomware attack","item":"https://www.myrecon.xyz/breaches/case-files/kaseya-2021.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was Kaseya's software compromised the way SolarWinds was?","acceptedAnswer":{"@type":"Answer","text":"No, and the distinction matters. In the SolarWinds case the attackers got inside the build process and shipped their code inside a genuinely signed release, so every customer who installed the update was compromised. Kaseya's build pipeline was not touched. The attackers exploited vulnerabilities in internet-facing VSA servers run by managed service providers, then used the legitimate software's own update mechanism to push a payload to the machines each server managed. The trust that was abused was the agent's trust in its server, not a customer's trust in a signed build."}},{"@type":"Question","name":"How did around 50 providers turn into around 1,500 victims?","acceptedAnswer":{"@type":"Answer","text":"That is the arithmetic of managed IT. A service provider runs one VSA server to administer the computers of dozens or hundreds of client companies, dentists, accountants, small manufacturers. Compromising one server therefore reaches every client behind it, and those clients had no relationship with Kaseya, no knowledge that the product existed, and no ability to do anything about it."}},{"@type":"Question","name":"Did anyone pay the ransom?","acceptedAnswer":{"@type":"Answer","text":"REvil demanded US$70 million for a universal decryptor covering every victim. Kaseya has consistently said it did not pay, and in late July 2021 it obtained a working universal decryptor from a third party and distributed it free to victims. Reporting afterwards indicated the FBI had held a decryption key for around three weeks while it prepared an operation against REvil, during which victims remained encrypted."}},{"@type":"Question","name":"Had the vulnerabilities been reported before the attack?","acceptedAnswer":{"@type":"Answer","text":"Yes. Researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of flaws in VSA to Kaseya under coordinated disclosure, and Kaseya was working through fixes when REvil struck the remaining unpatched issues. This is the uncomfortable part of the case: the process worked, the vendor was engaged and responsive, and it still was not fast enough."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2021 · IT management software</span>
+          <h1>Kaseya, 2021: the update arrived on schedule and encrypted 1,500 companies</h1>
+          <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>Roughly 1,500 downstream businesses, reached through 50–60 managed service providers</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>2 July 2021</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>2 July 2021</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Authentication bypass and code injection in internet-facing Kaseya VSA servers, used to distribute a malicious agent update</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>REvil (Sodinokibi), a ransomware-as-a-service operation</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>A US$70 million demand for a universal decryptor; hundreds of businesses halted, including around 800 Coop supermarkets in Sweden</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Encrypted business systems · Managed service provider tooling · Operational downtime across unrelated industries</p>
+
+<p class="lead">On the Friday afternoon before the US Independence Day weekend, thousands of computers belonging to companies that had never heard of Kaseya began encrypting themselves. The instruction to do so arrived through the software their IT provider used to keep them patched, from a server that was supposed to be the thing protecting them.</p>
+
+<h2>What happened</h2>
+
+<p>Kaseya VSA is remote monitoring and management software. It is the tool a managed service provider uses to administer client computers at scale: deploy software, apply patches, run scripts, check health. An agent runs on each managed machine and does what the VSA server tells it to, without asking the user, because that is the entire point of the product.</p>
+
+<p>On 2 July 2021, the REvil ransomware operation exploited a chain of vulnerabilities in internet-facing VSA servers, an authentication bypass that got them in without credentials, and a route to running code of their choosing once inside. They then used the product as designed. A malicious update was staged and pushed to the agents, which accepted it exactly as they accept every other instruction from their server, and which in many cases had been configured to exclude the management directories from antivirus scanning, as vendor guidance had long recommended.</p>
+
+<p>Kaseya's response was unusually decisive and is worth recording: within hours it told every VSA customer to shut their servers down immediately, and it took its own cloud-hosted service offline pre-emptively. That instruction cost the company its product's availability for over a week. It also capped the damage, because a VSA server that is switched off cannot be used to push anything.</p>
+
+<h2>Why this is not SolarWinds</h2>
+
+<p>The two incidents are filed together as supply chain attacks, and the filing obscures a difference that matters to anyone deciding what to do about either. SolarWinds was a compromise of the build process: attackers got inside the machinery that produces a release, and their code left the factory inside a genuine, correctly signed product. Nothing a customer could have inspected would have revealed it.</p>
+
+<p>Kaseya's code was never touched. What the attackers compromised was individual customers' own internet-facing servers, instances of the product, running in service providers' data centres and, in many cases, reachable from the open internet with a management interface exposed. Having taken control of one, they abused the legitimate authority that server already held over thousands of machines.</p>
+
+<div class="callout">
+  <p><strong>The trust that actually failed.</strong> Every management agent in existence has the same design: it does what its server says, without confirmation, because an administrator cannot approve fifty thousand actions by hand. That trust is not a flaw, it is the product. The consequence is that the security of every managed machine collapses into the security of one server, and any tool with that property has to be treated as the most sensitive asset in the estate. Management consoles do not belong on the public internet, and how many VSA servers were is the real finding here.</p>
+</div>
+
+<h2>The race that was already running</h2>
+
+<p>Before the attack, researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of VSA vulnerabilities to Kaseya under coordinated disclosure. Kaseya had accepted the reports and was shipping fixes for them. The attack exploited what was still outstanding.</p>
+
+<p>There is no villain in that sequence, which is why it is instructive. The researchers did the right thing and did not publish. The vendor did the right thing and was actively patching. Both were running coordinated disclosure properly, and an attacker who had independently found the same bugs was under no obligation to observe anyone's timeline. The window between a flaw being known to somebody and being fixed everywhere is not a process failure that can be engineered away; it is a structural property of software, and every defence that assumes it can be closed is assuming something untrue.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Early 2021</b>: Researchers report a set of Kaseya VSA vulnerabilities under coordinated disclosure; fixes begin shipping.</li>
+  <li><b>2 July 2021, afternoon</b>: REvil exploits the remaining flaws against internet-facing VSA servers and pushes ransomware through the agent channel.</li>
+  <li><b>2 July 2021, evening</b>: Kaseya tells all customers to shut down VSA servers immediately and takes its hosted service offline.</li>
+  <li><b>3–4 July</b>: Around 800 Coop supermarkets in Sweden close because their tills are managed by an affected provider. REvil demands US$70 million for a universal decryptor.</li>
+  <li><b>11–12 July</b>: Kaseya releases patched VSA versions and begins a staged restoration of its hosted service.</li>
+  <li><b>13 July</b>: REvil's infrastructure and leak site go offline without explanation.</li>
+  <li><b>22 July</b>: Kaseya obtains a universal decryptor from a third party and distributes it to victims at no cost.</li>
+  <li><b>November 2021</b>: The US Department of Justice announces charges against a REvil affiliate over the Kaseya attack, alongside international arrests and seizures.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>The Coop closures did more to change the conversation than the ransom demand did. A supermarket chain shutting its doors because a software company three steps removed from it had a vulnerability made the dependency concrete for people who do not read incident reports. Concentration risk stopped being an abstract phrase about cloud providers and became a thing that happened to the shopping.</p>
+
+<p>Practically, the attack accelerated a shift already underway in how management tooling is deployed: consoles moved off the public internet and behind VPNs or identity-aware proxies, multi-factor authentication on administrative access stopped being optional in serious environments, and blanket antivirus exclusions for management directories were revisited by a lot of providers who had applied them without thinking. It also strengthened the argument that a managed service provider is a critical dependency of every client it serves, which turns provider due diligence from a procurement formality into a security control.</p>
+
+<h2>If your IT is managed by somebody else</h2>
+
+<p>Almost every victim here was a small business with no security team, no visibility into the tooling running on its machines, and no realistic way to have prevented any of this. That is not a reason to conclude nothing can be done, it is a reason to be specific about the few things that can.</p>
+
+<p>Ask your provider two questions: whether the management console they use to reach your machines is exposed to the internet, and whether administrative access to it requires a second factor. Then ask a third, which is the one that actually determines your outcome: where your backups live, whether the provider's management tooling can reach and delete them, and when a restore was last tested end to end. In this incident the businesses that recovered quickly were not the ones with better prevention. They were the ones whose backups were somewhere the compromised server could not touch.</p>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>Was Kaseya's software compromised the way SolarWinds was?</h3>
+        <p>No, and the distinction matters. In the SolarWinds case the attackers got inside the build process and shipped their code inside a genuinely signed release, so every customer who installed the update was compromised. Kaseya's build pipeline was not touched. The attackers exploited vulnerabilities in internet-facing VSA servers run by managed service providers, then used the legitimate software's own update mechanism to push a payload to the machines each server managed. The trust that was abused was the agent's trust in its server, not a customer's trust in a signed build.</p>
+
+        <h3>How did around 50 providers turn into around 1,500 victims?</h3>
+        <p>That is the arithmetic of managed IT. A service provider runs one VSA server to administer the computers of dozens or hundreds of client companies, dentists, accountants, small manufacturers. Compromising one server therefore reaches every client behind it, and those clients had no relationship with Kaseya, no knowledge that the product existed, and no ability to do anything about it.</p>
+
+        <h3>Did anyone pay the ransom?</h3>
+        <p>REvil demanded US$70 million for a universal decryptor covering every victim. Kaseya has consistently said it did not pay, and in late July 2021 it obtained a working universal decryptor from a third party and distributed it free to victims. Reporting afterwards indicated the FBI had held a decryption key for around three weeks while it prepared an operation against REvil, during which victims remained encrypted.</p>
+
+        <h3>Had the vulnerabilities been reported before the attack?</h3>
+        <p>Yes. Researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of flaws in VSA to Kaseya under coordinated disclosure, and Kaseya was working through fixes when REvil struck the remaining unpatched issues. This is the uncomfortable part of the case: the process worked, the vendor was engaged and responsive, and it still was not fast enough.</p>
+      </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>CISA–FBI guidance on the Kaseya VSA supply-chain ransomware attack, July 2021</b></li>
+        <li><b>Dutch Institute for Vulnerability Disclosure, disclosure timeline for the Kaseya VSA vulnerabilities</b></li>
+        <li><b>US Department of Justice, indictment and sanctions actions against REvil affiliates, November 2021</b></li>
+        <li><b>Kaseya incident updates and public statements, July–August 2021</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/solarwinds-2020.html">SolarWinds, 2020: 18,000 organisations installed the backdoor themselves</a></li>
+        <li><a href="/breaches/case-files/moveit-2023.html">MOVEit, 2023: one file transfer product, 2,700 organisations</a></li>
+        <li><a href="/breaches/case-files/colonial-pipeline-2021.html">Colonial Pipeline, 2021: one leaked password, and the fuel stopped</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

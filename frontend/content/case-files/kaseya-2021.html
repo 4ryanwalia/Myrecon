@@ -1,0 +1,83 @@
+<!--
+{
+  "headline": "Kaseya, 2021: the update arrived on schedule and encrypted 1,500 companies",
+  "seoTitle": "Kaseya VSA Ransomware Attack, July 2021",
+  "subject": "Kaseya VSA supply chain ransomware attack",
+  "kicker": "2021 · IT management software",
+  "description": "REvil exploited zero-days in Kaseya's remote management server to push ransomware down the trusted update channel into roughly 1,500 downstream businesses.",
+  "cardBlurb": "The fix was already being written when the attack landed. Responsible disclosure and exploitation were running the same race, and exploitation won by days.",
+  "records": "Roughly 1,500 downstream businesses, reached through 50–60 managed service providers",
+  "occurred": "2 July 2021",
+  "disclosed": "2 July 2021",
+  "vector": "Authentication bypass and code injection in internet-facing Kaseya VSA servers, used to distribute a malicious agent update",
+  "actor": "REvil (Sodinokibi), a ransomware-as-a-service operation",
+  "cost": "A US$70 million demand for a universal decryptor; hundreds of businesses halted, including around 800 Coop supermarkets in Sweden",
+  "exposed": ["Encrypted business systems", "Managed service provider tooling", "Operational downtime across unrelated industries"],
+  "sortDate": "2021-07-02",
+  "published": "2026-09-15",
+  "updated": "2026-09-15",
+  "related": ["solarwinds-2020", "moveit-2023", "colonial-pipeline-2021"],
+  "faq": [
+    { "q": "Was Kaseya's software compromised the way SolarWinds was?", "a": "No, and the distinction matters. In the SolarWinds case the attackers got inside the build process and shipped their code inside a genuinely signed release, so every customer who installed the update was compromised. Kaseya's build pipeline was not touched. The attackers exploited vulnerabilities in internet-facing VSA servers run by managed service providers, then used the legitimate software's own update mechanism to push a payload to the machines each server managed. The trust that was abused was the agent's trust in its server, not a customer's trust in a signed build." },
+    { "q": "How did around 50 providers turn into around 1,500 victims?", "a": "That is the arithmetic of managed IT. A service provider runs one VSA server to administer the computers of dozens or hundreds of client companies, dentists, accountants, small manufacturers. Compromising one server therefore reaches every client behind it, and those clients had no relationship with Kaseya, no knowledge that the product existed, and no ability to do anything about it." },
+    { "q": "Did anyone pay the ransom?", "a": "REvil demanded US$70 million for a universal decryptor covering every victim. Kaseya has consistently said it did not pay, and in late July 2021 it obtained a working universal decryptor from a third party and distributed it free to victims. Reporting afterwards indicated the FBI had held a decryption key for around three weeks while it prepared an operation against REvil, during which victims remained encrypted." },
+    { "q": "Had the vulnerabilities been reported before the attack?", "a": "Yes. Researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of flaws in VSA to Kaseya under coordinated disclosure, and Kaseya was working through fixes when REvil struck the remaining unpatched issues. This is the uncomfortable part of the case: the process worked, the vendor was engaged and responsive, and it still was not fast enough." }
+  ],
+  "sources": [
+    { "label": "CISA–FBI guidance on the Kaseya VSA supply-chain ransomware attack, July 2021" },
+    { "label": "Dutch Institute for Vulnerability Disclosure, disclosure timeline for the Kaseya VSA vulnerabilities" },
+    { "label": "US Department of Justice, indictment and sanctions actions against REvil affiliates, November 2021" },
+    { "label": "Kaseya incident updates and public statements, July–August 2021" }
+  ]
+}
+-->
+<p class="lead">On the Friday afternoon before the US Independence Day weekend, thousands of computers belonging to companies that had never heard of Kaseya began encrypting themselves. The instruction to do so arrived through the software their IT provider used to keep them patched, from a server that was supposed to be the thing protecting them.</p>
+
+<h2>What happened</h2>
+
+<p>Kaseya VSA is remote monitoring and management software. It is the tool a managed service provider uses to administer client computers at scale: deploy software, apply patches, run scripts, check health. An agent runs on each managed machine and does what the VSA server tells it to, without asking the user, because that is the entire point of the product.</p>
+
+<p>On 2 July 2021, the REvil ransomware operation exploited a chain of vulnerabilities in internet-facing VSA servers, an authentication bypass that got them in without credentials, and a route to running code of their choosing once inside. They then used the product as designed. A malicious update was staged and pushed to the agents, which accepted it exactly as they accept every other instruction from their server, and which in many cases had been configured to exclude the management directories from antivirus scanning, as vendor guidance had long recommended.</p>
+
+<p>Kaseya's response was unusually decisive and is worth recording: within hours it told every VSA customer to shut their servers down immediately, and it took its own cloud-hosted service offline pre-emptively. That instruction cost the company its product's availability for over a week. It also capped the damage, because a VSA server that is switched off cannot be used to push anything.</p>
+
+<h2>Why this is not SolarWinds</h2>
+
+<p>The two incidents are filed together as supply chain attacks, and the filing obscures a difference that matters to anyone deciding what to do about either. SolarWinds was a compromise of the build process: attackers got inside the machinery that produces a release, and their code left the factory inside a genuine, correctly signed product. Nothing a customer could have inspected would have revealed it.</p>
+
+<p>Kaseya's code was never touched. What the attackers compromised was individual customers' own internet-facing servers, instances of the product, running in service providers' data centres and, in many cases, reachable from the open internet with a management interface exposed. Having taken control of one, they abused the legitimate authority that server already held over thousands of machines.</p>
+
+<div class="callout">
+  <p><strong>The trust that actually failed.</strong> Every management agent in existence has the same design: it does what its server says, without confirmation, because an administrator cannot approve fifty thousand actions by hand. That trust is not a flaw, it is the product. The consequence is that the security of every managed machine collapses into the security of one server, and any tool with that property has to be treated as the most sensitive asset in the estate. Management consoles do not belong on the public internet, and how many VSA servers were is the real finding here.</p>
+</div>
+
+<h2>The race that was already running</h2>
+
+<p>Before the attack, researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of VSA vulnerabilities to Kaseya under coordinated disclosure. Kaseya had accepted the reports and was shipping fixes for them. The attack exploited what was still outstanding.</p>
+
+<p>There is no villain in that sequence, which is why it is instructive. The researchers did the right thing and did not publish. The vendor did the right thing and was actively patching. Both were running coordinated disclosure properly, and an attacker who had independently found the same bugs was under no obligation to observe anyone's timeline. The window between a flaw being known to somebody and being fixed everywhere is not a process failure that can be engineered away; it is a structural property of software, and every defence that assumes it can be closed is assuming something untrue.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Early 2021</b>: Researchers report a set of Kaseya VSA vulnerabilities under coordinated disclosure; fixes begin shipping.</li>
+  <li><b>2 July 2021, afternoon</b>: REvil exploits the remaining flaws against internet-facing VSA servers and pushes ransomware through the agent channel.</li>
+  <li><b>2 July 2021, evening</b>: Kaseya tells all customers to shut down VSA servers immediately and takes its hosted service offline.</li>
+  <li><b>3–4 July</b>: Around 800 Coop supermarkets in Sweden close because their tills are managed by an affected provider. REvil demands US$70 million for a universal decryptor.</li>
+  <li><b>11–12 July</b>: Kaseya releases patched VSA versions and begins a staged restoration of its hosted service.</li>
+  <li><b>13 July</b>: REvil's infrastructure and leak site go offline without explanation.</li>
+  <li><b>22 July</b>: Kaseya obtains a universal decryptor from a third party and distributes it to victims at no cost.</li>
+  <li><b>November 2021</b>: The US Department of Justice announces charges against a REvil affiliate over the Kaseya attack, alongside international arrests and seizures.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>The Coop closures did more to change the conversation than the ransom demand did. A supermarket chain shutting its doors because a software company three steps removed from it had a vulnerability made the dependency concrete for people who do not read incident reports. Concentration risk stopped being an abstract phrase about cloud providers and became a thing that happened to the shopping.</p>
+
+<p>Practically, the attack accelerated a shift already underway in how management tooling is deployed: consoles moved off the public internet and behind VPNs or identity-aware proxies, multi-factor authentication on administrative access stopped being optional in serious environments, and blanket antivirus exclusions for management directories were revisited by a lot of providers who had applied them without thinking. It also strengthened the argument that a managed service provider is a critical dependency of every client it serves, which turns provider due diligence from a procurement formality into a security control.</p>
+
+<h2>If your IT is managed by somebody else</h2>
+
+<p>Almost every victim here was a small business with no security team, no visibility into the tooling running on its machines, and no realistic way to have prevented any of this. That is not a reason to conclude nothing can be done, it is a reason to be specific about the few things that can.</p>
+
+<p>Ask your provider two questions: whether the management console they use to reach your machines is exposed to the internet, and whether administrative access to it requires a second factor. Then ask a third, which is the one that actually determines your outcome: where your backups live, whether the provider's management tooling can reach and delete them, and when a restore was last tested end to end. In this incident the businesses that recovered quickly were not the ones with better prevention. They were the ones whose backups were somewhere the compromised server could not touch.</p>

@@ -19,25 +19,26 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Username OSINT: How to Find Accounts Across Platforms">
   <meta name="twitter:description" content="How username enumeration works, why 'found' isn't proof, and how to verify a match.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -62,14 +63,14 @@
       <h1>Username OSINT: How to Find Accounts Across Platforms</h1>
       <p class="meta">Updated 12 July 2026 · 6 min read</p>
 
-      <p class="lead">People tend to reuse the same handle everywhere. That habit makes username search one of the most productive starting points in open-source intelligence — and one of the easiest to get wrong.</p>
+      <p class="lead">People tend to reuse the same handle everywhere. That habit makes username search one of the most productive starting points in open-source intelligence, and one of the easiest to get wrong.</p>
 
       <h2>Why usernames are so revealing</h2>
-      <p>Choosing a username is a personal decision, and most people make it once and stick with it. The gamer tag from your teens, the handle you registered on a forum, the name on your professional developer profile — they are often identical or only slightly varied. Because handles are effectively a chosen identifier that follows a person across unrelated services, finding the same one in several places is a strong hint that they belong to the same individual.</p>
+      <p>Choosing a username is a personal decision, and most people make it once and stick with it. The gamer tag from your teens, the handle you registered on a forum, the name on your professional developer profile, they are often identical or only slightly varied. Because handles are effectively a chosen identifier that follows a person across unrelated services, finding the same one in several places is a strong hint that they belong to the same individual.</p>
 
       <h2>How username enumeration works</h2>
-      <p>The basic technique is simple: take a username and check whether a profile exists at the predictable URL for each platform — <span style="font-family:var(--mono)">github.com/&lt;name&gt;</span>, <span style="font-family:var(--mono)">reddit.com/user/&lt;name&gt;</span>, and so on. A tool like MyRecon does this across many sites in parallel and reports where a profile appears to exist.</p>
-      <p>The catch is that "the page loaded" is not the same as "the account exists." Many modern sites return a normal <span style="font-family:var(--mono)">200 OK</span> response for <em>any</em> handle — showing a login wall, a single-page app shell, or a soft error page that never sends a proper "not found" status. Naive tools mark all of these as hits, which is why so many username checkers are full of false positives.</p>
+      <p>The basic technique is simple: take a username and check whether a profile exists at the predictable URL for each platform, <span style="font-family:var(--mono)">github.com/&lt;name&gt;</span>, <span style="font-family:var(--mono)">reddit.com/user/&lt;name&gt;</span>, and so on. A tool like MyRecon does this across many sites in parallel and reports where a profile appears to exist.</p>
+      <p>The catch is that "the page loaded" is not the same as "the account exists." Many modern sites return a normal <span style="font-family:var(--mono)">200 OK</span> response for <em>any</em> handle, showing a login wall, a single-page app shell, or a soft error page that never sends a proper "not found" status. Naive tools mark all of these as hits, which is why so many username checkers are full of false positives.</p>
 
       <h2>Why "found" isn't proof</h2>
       <p>There are two separate questions, and it is easy to conflate them:</p>
@@ -82,30 +83,30 @@
       <h2>Verifying a match with confidence signals</h2>
       <p>To move from "a page loaded" to "this is a real, relevant profile," look for corroborating evidence:</p>
       <ul>
-        <li><strong>The handle echoed in the page</strong> — in the title, the canonical URL, or profile metadata — rather than just in the address you requested.</li>
+        <li><strong>The handle echoed in the page</strong>: in the title, the canonical URL, or profile metadata, rather than just in the address you requested.</li>
         <li><strong>A real avatar and bio</strong> that aren't the site's generic placeholder.</li>
-        <li><strong>Consistent details across platforms</strong> — the same display name, profile photo, location, or linked website appearing on multiple accounts.</li>
+        <li><strong>Consistent details across platforms</strong>: the same display name, profile photo, location, or linked website appearing on multiple accounts.</li>
         <li><strong>Cross-links the person made themselves</strong>, such as a Linktree or a bio that lists their other handles.</li>
       </ul>
       <p>MyRecon builds this into its <a href="/#tool">username tool</a>: instead of reporting every 200 response, it scores each result and labels matches as <em>Confirmed</em> or <em>Possible</em>, and it correlates profiles that share a handle into a single identity with a confidence percentage. That keeps the false-positive rate low and tells you which results are worth your attention.</p>
 
       <div class="callout">
-        <p><strong>Investigate ethically.</strong> Username research surfaces information people made public, but that does not make every use acceptable. Use it to audit your own footprint, for authorized research, or for legitimate verification — never to harass, stalk, or dox anyone.</p>
+        <p><strong>Investigate ethically.</strong> Username research surfaces information people made public, but that does not make every use acceptable. Use it to audit your own footprint, for authorized research, or for legitimate verification, never to harass, stalk, or dox anyone.</p>
       </div>
 
       <h2>Testing whether a tool is honest</h2>
-      <p>Before trusting any username search, run one experiment. Search for a handle that cannot exist &mdash; a string of nonsense nobody would register. Compare it against a handle you know is real.</p>
+      <p>Before trusting any username search, run one experiment. Search for a handle that cannot exist, a string of nonsense nobody would register. Compare it against a handle you know is real.</p>
       <p>If the tool reports accounts for the nonsense string, it is not detecting accounts. It is detecting that pages loaded, and every result it gives you needs checking by hand.</p>
-      <p>This is not a hypothetical failure. Measured across well-known platforms, several return responses for a real handle and an invented one that are identical down to the byte &mdash; the same page, the same length, no difference to detect. Any tool reporting a match on those platforms is reporting that the site is online. The full measurements are in <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that don't exist</a>.</p>
+      <p>This is not a hypothetical failure. Measured across well-known platforms, several return responses for a real handle and an invented one that are identical down to the byte, the same page, the same length, no difference to detect. Any tool reporting a match on those platforms is reporting that the site is online. The full measurements are in <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that don't exist</a>.</p>
 
       <h2>Handle variations worth trying</h2>
       <p>People rarely use one handle everywhere, and the variants follow predictable patterns. If the exact handle comes up short, try:</p>
       <ul>
-        <li><strong>Separator swaps</strong> &mdash; <code>john.smith</code>, <code>john_smith</code>, <code>john-smith</code>, <code>johnsmith</code>. Platforms disagree about which characters they permit, so the same person ends up with different spellings on different sites. A dot is the most common casualty; several platforms reject it outright, which means a handle containing one simply cannot exist there.</li>
-        <li><strong>Numeric suffixes</strong> &mdash; a birth year, a favourite number, or the digit added when the plain handle was taken.</li>
-        <li><strong>Leetspeak substitutions</strong> &mdash; <code>4</code> for <code>a</code>, <code>3</code> for <code>e</code>, <code>0</code> for <code>o</code>. Common in handles chosen when the owner was younger.</li>
-        <li><strong>Truncations</strong> &mdash; platforms with short character limits force abbreviations that then get reused elsewhere.</li>
-        <li><strong>Old handles</strong> &mdash; people rename accounts but often keep the original on platforms they no longer visit, which is exactly where forgotten accounts live.</li>
+        <li><strong>Separator swaps</strong>-<code>john.smith</code>, <code>john_smith</code>, <code>john-smith</code>, <code>johnsmith</code>. Platforms disagree about which characters they permit, so the same person ends up with different spellings on different sites. A dot is the most common casualty; several platforms reject it outright, which means a handle containing one simply cannot exist there.</li>
+        <li><strong>Numeric suffixes</strong>: a birth year, a favourite number, or the digit added when the plain handle was taken.</li>
+        <li><strong>Leetspeak substitutions</strong>-<code>4</code> for <code>a</code>, <code>3</code> for <code>e</code>, <code>0</code> for <code>o</code>. Common in handles chosen when the owner was younger.</li>
+        <li><strong>Truncations</strong>: platforms with short character limits force abbreviations that then get reused elsewhere.</li>
+        <li><strong>Old handles</strong>: people rename accounts but often keep the original on platforms they no longer visit, which is exactly where forgotten accounts live.</li>
       </ul>
       <p>Each variant is a separate hypothesis needing its own verification. A different spelling is weaker evidence than an exact match, not equal evidence.</p>
 
@@ -114,23 +115,33 @@
       <ul>
         <li><strong>You were blocked.</strong> A 403 or 429 response means the platform refused to answer you, usually because of the network you asked from. It says nothing about the account.</li>
         <li><strong>The URL pattern is wrong.</strong> If a platform changed its profile URL structure, every check returns 404 regardless. Always confirm the pattern works by testing a handle you know exists.</li>
-        <li><strong>The handle is impossible there.</strong> A handle containing characters the platform forbids will never resolve. That is a definite negative, but for a boring reason &mdash; not because the person avoided the platform.</li>
+        <li><strong>The handle is impossible there.</strong> A handle containing characters the platform forbids will never resolve. That is a definite negative, but for a boring reason, not because the person avoided the platform.</li>
       </ul>
       <p>A tool that distinguishes "checked, nothing there" from "could not check" is giving you materially more than one that shows both as silence.</p>
 
       <h2>Using this on yourself</h2>
-      <p>The most valuable use of username enumeration is auditing your own footprint, and it is easier because you already know the truth &mdash; you are measuring what a stranger could assemble.</p>
+      <p>The most valuable use of username enumeration is auditing your own footprint, and it is easier because you already know the truth, you are measuring what a stranger could assemble.</p>
       <p>Search every handle you have used, including ones you abandoned years ago, then sort the results: accounts you want public, accounts you forgot existed, and accounts that are not yours. The middle group is the one that matters. Dormant accounts hold old photos, old email addresses and old passwords, and they are the standard route into an account-takeover attempt precisely because nobody is watching them.</p>
 
       <h2>Turning a username into a fuller picture</h2>
-      <p>A confirmed profile often exposes the next lead: a personal website, a public email, or another handle. That is where pivoting matters — a discovered domain becomes a WHOIS and DNS lookup, an email becomes a breach and provider check. Chaining these small, verified steps is what separates a genuine investigation from a list of guesses.</p>
+      <p>A confirmed profile often exposes the next lead: a personal website, a public email, or another handle. That is where pivoting matters, a discovered domain becomes a WHOIS and DNS lookup, an email becomes a breach and provider check. Chaining these small, verified steps is what separates a genuine investigation from a list of guesses.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dusername_osint_search" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
 
             <h2>Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that never existed</a></li>
         <li><a href="/guides/verify-an-osint-finding.html">how to verify an OSINT finding before you act on it</a></li>
         <li><a href="/guides/what-http-responses-reveal.html">what a site's HTTP response really tells you</a></li>
-        <li><a href="/deep-search.html">run a username across 100+ platforms in Deep Search</a></li>
+        <li><a href="/deep-search.html">run a username across 123 platforms in Deep Search</a></li>
         <li><a href="/guides/reverse-image-search.html">how to trace a photograph back to where it came from</a></li>
       </ul>
 
@@ -148,5 +159,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

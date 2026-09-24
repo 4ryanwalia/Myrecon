@@ -10,7 +10,7 @@ same minute, the deployed backend returned a full profile for `nasa` while a
 development laptop got 401 for every handle including Instagram's own.
 
 So this endpoint lets a client that has been refused borrow an address that has
-not. It is deliberately one platform and one handle — not a second sweep —
+not. It is deliberately one platform and one handle, not a second sweep,
 because the caller already knows what it wants and a full scan would be a
 minute of work to answer a question about one avatar.
 """
@@ -35,7 +35,7 @@ def enrich_profile(platform: str, username: str) -> dict:
     Enrich one profile and return only the presentable fields.
 
     A platform with no enricher, or one that fails, comes back with whatever is
-    known and no error — the caller asked for extra detail, not for existence,
+    known and no error, the caller asked for extra detail, not for existence,
     and an empty answer is a valid one.
     """
     template = _TEMPLATES.get(platform)

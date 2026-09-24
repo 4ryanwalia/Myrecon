@@ -47,6 +47,7 @@ implementation and cannot drift apart.
 - [Tests](#tests)
 - [Security notes](#security-notes)
 - [Legacy cleanup](#legacy-cleanup)
+- [License](#license)
 
 ---
 
@@ -456,3 +457,16 @@ MyRecon reports what public sources already publish. Accounts that share a
 handle are frequently unrelated people, and the platform labels them that way
 rather than asserting an identity. Findings are a starting point for
 verification, not a conclusion — see the guide on verifying an OSINT finding.
+
+---
+
+## License
+
+MyRecon is released under the [MIT License](LICENSE) — use it, modify it, ship
+it, commercially or not, as long as the copyright notice and the licence text
+travel with it. The software comes with no warranty.
+
+The licence covers the code in this repository. It does not cover the MyRecon
+name and logo, and it says nothing about the third-party sources the platform
+queries — data from HIBP and other providers stays under whatever terms those
+providers set.

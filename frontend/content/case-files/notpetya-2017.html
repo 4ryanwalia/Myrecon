@@ -5,26 +5,26 @@
   "subject": "NotPetya cyberattack",
   "kicker": "2017 · Destructive attack",
   "description": "A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours. Damage is estimated at $10 billion.",
-  "cardBlurb": "It looked like ransomware and was not. There was no way to pay and no way to recover — the decryption key it offered had never existed.",
-  "records": "No data stolen — an estimated $10 billion in destroyed systems",
+  "cardBlurb": "It looked like ransomware and was not. There was no way to pay and no way to recover, the decryption key it offered had never existed.",
+  "records": "No data stolen, an estimated $10 billion in destroyed systems",
   "occurred": "27 June 2017",
   "disclosed": "27 June 2017",
   "vector": "Compromised update server for M.E.Doc, Ukrainian tax accounting software, then automatic spread using EternalBlue and stolen credentials",
   "actor": "Russia's GRU (Sandworm), attributed by the UK, US and allies in February 2018; six officers indicted by the US in October 2020",
   "cost": "~$10 billion globally. Maersk ~$300m, Merck ~$870m, FedEx's TNT ~$400m, Mondelez ~$188m",
-  "_note": "No `exposed` list on purpose. Nothing was taken — the damage was destruction, and the fact table says so under 'People affected'. An exposed list of one item saying 'nothing' renders as a data chip on the app, which reads as a finding rather than an absence.",
+  "_note": "No `exposed` list on purpose. Nothing was taken, the damage was destruction, and the fact table says so under 'People affected'. An exposed list of one item saying 'nothing' renders as a data chip on the app, which reads as a finding rather than an absence.",
   "sortDate": "2017-06-27",
   "published": "2026-09-14",
   "updated": "2026-09-14",
   "related": ["colonial-pipeline-2021", "solarwinds-2020", "sony-pictures-2014"],
   "faq": [
     { "q": "Was NotPetya ransomware?", "a": "It was designed to look like ransomware and was not one. Real ransomware needs a working payment and decryption path, because a crew that never returns files stops being paid. NotPetya overwrote the key material it claimed to be holding and used a single hardcoded contact address that the email provider shut down within hours. Recovery was never on offer. The ransom screen was camouflage for a destructive weapon." },
-    { "q": "Was any data stolen in NotPetya?", "a": "No. This is the unusual thing about it. Nothing was exfiltrated and nobody was blackmailed with leaked files. The entire cost came from destroyed machines, lost production and the months of rebuilding — which is why it remains the most expensive cyber incident on record despite exposing no personal data at all." },
+    { "q": "Was any data stolen in NotPetya?", "a": "No. This is the unusual thing about it. Nothing was exfiltrated and nobody was blackmailed with leaked files. The entire cost came from destroyed machines, lost production and the months of rebuilding, which is why it remains the most expensive cyber incident on record despite exposing no personal data at all." },
     { "q": "How did NotPetya spread so fast?", "a": "It used three methods at once: EternalBlue, the leaked NSA exploit for a Windows file-sharing flaw; EternalRomance, a related exploit; and credential theft from the memory of each machine it reached, which let it log into other machines legitimately using Windows' own administration tools. That third method is why patched machines still fell. A fully updated computer will still accept a valid administrator password." },
     { "q": "Did insurance cover NotPetya losses?", "a": "Not without a fight. Insurers initially refused several of the largest claims by invoking war exclusions, arguing a state attack was an act of war. Mondelez settled with Zurich in 2022 and Merck settled in January 2024, after a New Jersey appellate court ruled that the exclusion did not apply to a cyberattack on this wording. Policies have been rewritten since with explicit state-actor clauses." }
   ],
   "sources": [
-    { "label": "UK National Cyber Security Centre — attribution statement, 15 February 2018", "url": "https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack" },
+    { "label": "UK National Cyber Security Centre, attribution statement, 15 February 2018", "url": "https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack" },
     { "label": "US Department of Justice indictment of six GRU officers, October 2020", "url": "https://www.justice.gov/opa/pr/six-russian-gru-officers-charged-connection-worldwide-deployment-destructive-malware-and" },
     { "label": "A.P. Moller-Maersk 2017 interim and annual reports", "note": "the source of the ~$250–300m loss figure" },
     { "label": "Merck & Co. securities filings and the New Jersey insurance litigation record" }
@@ -37,19 +37,19 @@
 
 <p>M.E.Doc is accounting software used by most Ukrainian companies to file tax returns. For a business operating in Ukraine it is effectively mandatory, which makes its update server one of the most efficient distribution points into the country's economy that exists.</p>
 
-<p>Attackers compromised that update server and pushed a malicious update. On execution the payload did three things in quick succession: it harvested credentials from the memory of the machine it was on, it scanned the local network, and it spread — using the EternalBlue exploit against unpatched systems, and using the credentials it had just stolen to log into patched ones through Windows' own remote administration tools.</p>
+<p>Attackers compromised that update server and pushed a malicious update. On execution the payload did three things in quick succession: it harvested credentials from the memory of the machine it was on, it scanned the local network, and it spread, using the EternalBlue exploit against unpatched systems, and using the credentials it had just stolen to log into patched ones through Windows' own remote administration tools.</p>
 
 <p>That last mechanism is what made NotPetya different from WannaCry six weeks earlier. WannaCry stopped at patched machines. NotPetya did not need an exploit if it had a password, and on a typical corporate network a domain administrator's credentials sitting in memory on one machine are a key to thousands. Organisations that had patched properly were still taken down in minutes.</p>
 
 <p>Then it overwrote the master boot record and displayed a ransom demand.</p>
 
 <div class="callout">
-  <p><strong>The ransom note was a lie, and the lie was detectable.</strong> Researchers pulled it apart within a day. The installation key displayed on screen was random data rather than anything derived from the encryption, so the attackers could not have decrypted a victim's disk even if they had wanted to. Payment ran through a single hardcoded email address, which the provider suspended almost immediately — a detail no functioning criminal operation would design in. This was a wiper wearing a ransomware costume, and the costume bought it several days of being reported as an ordinary crime wave.</p>
+  <p><strong>The ransom note was a lie, and the lie was detectable.</strong> Researchers pulled it apart within a day. The installation key displayed on screen was random data rather than anything derived from the encryption, so the attackers could not have decrypted a victim's disk even if they had wanted to. Payment ran through a single hardcoded email address, which the provider suspended almost immediately, a detail no functioning criminal operation would design in. This was a wiper wearing a ransomware costume, and the costume bought it several days of being reported as an ordinary crime wave.</p>
 </div>
 
 <h2>The companies that were not the target</h2>
 
-<p>NotPetya was aimed at Ukraine. It reached everyone else because multinational companies run flat global networks, and any of them with a Ukrainian subsidiary — a sales office, a small logistics arm, one finance team filing local taxes — had a machine running M.E.Doc connected to the rest of the business.</p>
+<p>NotPetya was aimed at Ukraine. It reached everyone else because multinational companies run flat global networks, and any of them with a Ukrainian subsidiary, a sales office, a small logistics arm, one finance team filing local taxes, had a machine running M.E.Doc connected to the rest of the business.</p>
 
 <ol class="cf-timeline">
   <li><b>Maersk</b>, the world's largest container shipping line, lost around 45,000 PCs and 4,000 servers. Terminals stopped operating. The loss was put at roughly $250–300 million.</li>
@@ -63,7 +63,7 @@
 
 <h2>The domain controller in Ghana</h2>
 
-<p>The most-repeated detail of the Maersk recovery is also the most instructive. The company's Active Directory — the database that holds every account and permission — was destroyed on every domain controller it had, worldwide, near-simultaneously. Without it, restoring anything else was pointless: there would have been no way to authenticate to the restored systems.</p>
+<p>The most-repeated detail of the Maersk recovery is also the most instructive. The company's Active Directory, the database that holds every account and permission, was destroyed on every domain controller it had, worldwide, near-simultaneously. Without it, restoring anything else was pointless: there would have been no way to authenticate to the restored systems.</p>
 
 <p>A single surviving copy was found in Ghana, where a power cut had taken the office offline before the malware arrived. Maersk's chairman described the recovery publicly the following year. The backup that saved a global shipping line was an accident of the local electricity supply.</p>
 
@@ -72,13 +72,13 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>April – June 2017</b> — Attackers hold access to the M.E.Doc update infrastructure and stage the payload.</li>
-  <li><b>27 June 2017</b> — The malicious update ships. Global spread takes hours.</li>
-  <li><b>28 June 2017</b> — Researchers establish that decryption is impossible and the ransom is a fiction.</li>
-  <li><b>July – December 2017</b> — Affected multinationals rebuild; the first loss figures appear in quarterly filings.</li>
-  <li><b>February 2018</b> — The UK, US, Australia, Canada, New Zealand and Denmark jointly attribute the attack to the Russian military.</li>
-  <li><b>October 2020</b> — The US indicts six GRU officers over NotPetya and related operations.</li>
-  <li><b>2022 – 2024</b> — The insurance disputes settle, Mondelez in 2022 and Merck in January 2024.</li>
+  <li><b>April – June 2017</b>: Attackers hold access to the M.E.Doc update infrastructure and stage the payload.</li>
+  <li><b>27 June 2017</b>: The malicious update ships. Global spread takes hours.</li>
+  <li><b>28 June 2017</b>: Researchers establish that decryption is impossible and the ransom is a fiction.</li>
+  <li><b>July – December 2017</b>: Affected multinationals rebuild; the first loss figures appear in quarterly filings.</li>
+  <li><b>February 2018</b>: The UK, US, Australia, Canada, New Zealand and Denmark jointly attribute the attack to the Russian military.</li>
+  <li><b>October 2020</b>: The US indicts six GRU officers over NotPetya and related operations.</li>
+  <li><b>2022 – 2024</b>: The insurance disputes settle, Mondelez in 2022 and Merck in January 2024.</li>
 </ol>
 
 <h2>What it changed</h2>
@@ -94,7 +94,7 @@
 <h2>What to take from it</h2>
 
 <ol class="bx-actions">
-  <li><strong>Keep at least one backup the network cannot reach.</strong> Offline, immutable, or held by a third party — the test is whether an attacker with full administrator rights could destroy it.</li>
+  <li><strong>Keep at least one backup the network cannot reach.</strong> Offline, immutable, or held by a third party, the test is whether an attacker with full administrator rights could destroy it.</li>
   <li><strong>Patching is necessary and not sufficient.</strong> NotPetya spread to fully patched machines using valid credentials. Limiting where administrator accounts can log in matters as much as keeping software current.</li>
   <li><strong>Know what would happen if your directory service vanished.</strong> Most organisations have never tested restoring it, and most recovery plans quietly assume it survives.</li>
   <li><strong>For individuals: a ransom screen is not proof there is a key.</strong> Paying never guarantees recovery, and in this case it could not have delivered it. A current offline backup is the only reliable answer.</li>

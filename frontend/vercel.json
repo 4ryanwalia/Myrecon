@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node scripts/gen-env.js && node scripts/build-breaches.js && node scripts/build-case-files.js && node scripts/build-sitemap.js",
+  "buildCommand": "node scripts/gen-env.js && node scripts/build-breaches.js && node scripts/build-case-files.js && node scripts/build-data-api.js && node scripts/build-sitemap.js",
   "outputDirectory": ".",
   "redirects": [
     {
@@ -15,6 +15,31 @@
     }
   ],
   "headers": [
+    {
+      "source": "/data/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [

@@ -19,25 +19,26 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="How to Check If Your Email Was in a Data Breach">
   <meta name="twitter:description" content="What a breach is, how to check your exposure safely, and what to do if your email turns up in one.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -62,11 +63,11 @@
       <h1>How to Check If Your Email Was in a Data Breach</h1>
       <p class="meta">Updated 12 July 2026 · 7 min read</p>
 
-      <p class="lead">If you have used the same email address for more than a year or two, the odds are high that it appears in at least one data breach. That is not a reason to panic — but it is a reason to check, and to know what to do next.</p>
+      <p class="lead">If you have used the same email address for more than a year or two, the odds are high that it appears in at least one data breach. That is not a reason to panic, but it is a reason to check, and to know what to do next.</p>
 
       <h2>What a data breach actually is</h2>
-      <p>A data breach happens when information a company stored about its users is exposed to people who were not supposed to see it. This can be the result of hacking, a misconfigured database left open on the internet, a malicious insider, or a third-party supplier being compromised. When it happens, the stolen data — often millions of records — is frequently traded or dumped publicly.</p>
-      <p>The records usually contain an email address as the primary identifier, alongside whatever else the service held: a password (sometimes as plain text, sometimes hashed), a username, a phone number, an IP address, a date of birth, or a physical address. Once a dataset like this is circulating, it does not disappear — copies persist indefinitely.</p>
+      <p>A data breach happens when information a company stored about its users is exposed to people who were not supposed to see it. This can be the result of hacking, a misconfigured database left open on the internet, a malicious insider, or a third-party supplier being compromised. When it happens, the stolen data, often millions of records, is frequently traded or dumped publicly.</p>
+      <p>The records usually contain an email address as the primary identifier, alongside whatever else the service held: a password (sometimes as plain text, sometimes hashed), a username, a phone number, an IP address, a date of birth, or a physical address. Once a dataset like this is circulating, it does not disappear, copies persist indefinitely.</p>
 
       <h2>Why it matters even if "it's just an old account"</h2>
       <p>The single biggest risk from breaches is <strong>password reuse</strong>. If your email and password leaked from a forum you forgot about in 2016, and you used that same password on your email or bank, attackers can try those exact credentials everywhere else. This automated technique is called <strong>credential stuffing</strong>, and it works because most people reuse passwords.</p>
@@ -75,13 +76,13 @@
       <h2>How to check your exposure</h2>
       <p>You can check whether your email appears in known breaches using free, reputable breach-notification services. MyRecon's <a href="/#tool">email tool</a> queries public breach databases and shows you how many breaches your address appears in, along with the categories of data that were exposed (passwords, phone numbers, and so on).</p>
       <div class="callout">
-        <p><strong>Do this safely.</strong> Only ever check <em>your own</em> email addresses, and only use services that look up an address against known breaches — never a site that asks you to enter your current password to "test" it. A legitimate checker never needs your password.</p>
+        <p><strong>Do this safely.</strong> Only ever check <em>your own</em> email addresses, and only use services that look up an address against known breaches, never a site that asks you to enter your current password to "test" it. A legitimate checker never needs your password.</p>
       </div>
       <p>When you run a check, focus on two things: how recent the breaches are, and whether any of them exposed passwords. A recent breach that leaked passwords is far more urgent than a decade-old one that only exposed email addresses.</p>
 
       <h2>What to do if your email was breached</h2>
       <ol>
-        <li><strong>Change the password on the breached service</strong> — and on any other account where you used the same or a similar password. This is the most important step.</li>
+        <li><strong>Change the password on the breached service</strong>: and on any other account where you used the same or a similar password. This is the most important step.</li>
         <li><strong>Use a password manager</strong> so every account gets a long, unique password you never have to remember. This single change eliminates the credential-stuffing risk entirely.</li>
         <li><strong>Turn on two-factor authentication (2FA)</strong> everywhere it is offered, especially on your email, banking, and primary social accounts. Prefer an authenticator app or a hardware key over SMS.</li>
         <li><strong>Watch for phishing</strong> in the weeks after a breach. Be sceptical of unexpected messages that reference real details about you or create urgency.</li>
@@ -92,7 +93,7 @@
       <p>A breach checker returns a list of names and dates, and most people stop at the count. The count is the least useful part. What matters is <em>which fields</em> were exposed, because that determines what an attacker can actually do.</p>
       <p>Sorted by how much trouble each one causes:</p>
       <ul>
-        <li><strong>Plaintext passwords or weak hashes.</strong> The worst case. Anything hashed with MD5 or unsalted SHA-1 should be treated as plaintext — those are cracked in bulk. If a password appears here, every account where you reused it is compromised, not just the breached one.</li>
+        <li><strong>Plaintext passwords or weak hashes.</strong> The worst case. Anything hashed with MD5 or unsalted SHA-1 should be treated as plaintext, those are cracked in bulk. If a password appears here, every account where you reused it is compromised, not just the breached one.</li>
         <li><strong>Security questions and answers.</strong> Underrated and often ignored. Your mother's maiden name does not change after a breach, and the same answers are used across many services. Where you cannot remove them, put random text in the answer field and store it in your password manager.</li>
         <li><strong>Phone numbers.</strong> The route to SIM-swap attacks, which defeat SMS-based two-factor authentication. A breach exposing your number alongside your email is a reason to move off SMS codes for anything financial.</li>
         <li><strong>Physical address, date of birth, government identifiers.</strong> Cannot be rotated. These feed identity fraud and, combined across several breaches, are enough to pass many "verify your identity" phone checks.</li>
@@ -102,18 +103,18 @@
 
       <h2>Checking a password without handing it over</h2>
       <p>There is an obvious objection to password-checking services: to find out whether your password leaked, you appear to have to give it to a website. You do not, and the method that avoids it is worth understanding because it tells you which services to trust.</p>
-      <p>The technique is called <strong>k-anonymity</strong>. Your browser hashes the password with SHA-1 locally, then sends only the <em>first five characters</em> of that hash. The server replies with every leaked hash beginning with those five characters — typically a few hundred — and your browser checks the rest of the match locally.</p>
+      <p>The technique is called <strong>k-anonymity</strong>. Your browser hashes the password with SHA-1 locally, then sends only the <em>first five characters</em> of that hash. The server replies with every leaked hash beginning with those five characters, typically a few hundred, and your browser checks the rest of the match locally.</p>
       <p>The server therefore learns five hexadecimal characters, which correspond to hundreds of thousands of possible passwords. It never sees your password, never sees the full hash, and cannot determine which of the returned candidates was yours. If a password checker does not work this way, do not use it.</p>
 
       <h2>What "not found" does and does not mean</h2>
       <p>A clean result is good news, with three caveats worth holding onto.</p>
-      <p>First, it means your address is not in the breaches that particular service has indexed. No service has all of them. Many breaches are never published, traded privately, or published years after the fact — the average gap between a breach happening and becoming public is measured in months, sometimes years.</p>
+      <p>First, it means your address is not in the breaches that particular service has indexed. No service has all of them. Many breaches are never published, traded privately, or published years after the fact, the average gap between a breach happening and becoming public is measured in months, sometimes years.</p>
       <p>Second, checking one address checks one address. Most people have several: an old school or university address, a throwaway used for signups, a work address. Forgotten addresses are the highest-risk ones precisely because you are not watching them, and they are often the recovery address on accounts you still use.</p>
-      <p>Third, a failed check is not a clean check. If a service is rate-limited or unreachable and reports nothing, that is the absence of evidence and not evidence of absence — a distinction that matters more than it sounds, because a silent failure looks exactly like good news.</p>
+      <p>Third, a failed check is not a clean check. If a service is rate-limited or unreachable and reports nothing, that is the absence of evidence and not evidence of absence, a distinction that matters more than it sounds, because a silent failure looks exactly like good news.</p>
 
       <h2>Monitoring without giving your address away</h2>
       <p>Checking once tells you about today. The useful version is being told when something new appears, and there are two ways to do that with very different privacy costs.</p>
-      <p><strong>The catalogue approach.</strong> The list of known breaches — names, dates, how many accounts, which fields — is public. A tool can download that list and compare it against what it showed you last time, entirely on your own device. Nothing about you is transmitted, no account is required, and you learn immediately when a breach is published so you can check whether you used the service.</p>
+      <p><strong>The catalogue approach.</strong> The list of known breaches, names, dates, how many accounts, which fields, is public. A tool can download that list and compare it against what it showed you last time, entirely on your own device. Nothing about you is transmitted, no account is required, and you learn immediately when a breach is published so you can check whether you used the service.</p>
       <p><strong>The per-address approach.</strong> Genuinely answering "was I in it" requires sending your address to a service that holds breach records. That is a real disclosure, and any service offering it should say so plainly rather than burying it. It gives you a definite answer where the catalogue approach only gives you a prompt to go and check.</p>
       <p>Neither is wrong; they are different trades. What matters is that a service tells you which one it is doing. Anything advertising "we never send your data anywhere" while also telling you which specific breaches you appear in is describing something impossible.</p>
 
@@ -125,6 +126,16 @@
       </div>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">Browse The Breach Files →</a></p>
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dcheck_email_data_breach" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
             <h2>Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/strong-passwords-guide.html">creating passwords worth having, and managing them</a></li>
@@ -148,5 +159,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

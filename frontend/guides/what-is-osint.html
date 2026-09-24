@@ -19,25 +19,26 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="What Is OSINT? A Beginner's Guide to Open-Source Intelligence">
   <meta name="twitter:description" content="What OSINT is, how it works, who uses it, and how to do it ethically.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -60,22 +61,22 @@
     <article class="article">
       <span class="kicker">Fundamentals</span>
       <h1>What Is OSINT? A Beginner's Guide to Open-Source Intelligence</h1>
-      <p class="meta">Updated 12 July 2026 · 8 min read</p>
+      <p class="meta">Updated 12 July 2026 · 6 min read</p>
 
-      <p class="lead">Open-source intelligence, or OSINT, is the practice of collecting and analysing information that is freely and legally available to the public, then turning it into useful insight. No hacking, no special access — just publicly available data, gathered methodically.</p>
+      <p class="lead">Open-source intelligence, or OSINT, is the practice of collecting and analysing information that is freely and legally available to the public, then turning it into useful insight. No hacking, no special access, just publicly available data, gathered methodically.</p>
 
       <h2>A simple definition</h2>
-      <p>The word "source" here refers to where the information comes from, and "open" means it is publicly accessible: websites, social media profiles, public records, news articles, domain registrations, maps, images, and more. OSINT is the discipline of finding the right pieces of that public data, verifying them, and connecting them into an answer to a specific question — for example, "does this person have a public LinkedIn?", "when was this website registered?", or "where is this server hosted?"</p>
-      <p>The concept is old — governments and journalists have practised it for decades using newspapers and public broadcasts — but the internet turned it into something almost anyone can do. The challenge today is rarely a lack of information; it is filtering, verifying, and making sense of an overwhelming amount of it.</p>
+      <p>The word "source" here refers to where the information comes from, and "open" means it is publicly accessible: websites, social media profiles, public records, news articles, domain registrations, maps, images, and more. OSINT is the discipline of finding the right pieces of that public data, verifying them, and connecting them into an answer to a specific question, for example, "does this person have a public LinkedIn?", "when was this website registered?", or "where is this server hosted?"</p>
+      <p>The concept is old, governments and journalists have practised it for decades using newspapers and public broadcasts, but the internet turned it into something almost anyone can do. The challenge today is rarely a lack of information; it is filtering, verifying, and making sense of an overwhelming amount of it.</p>
 
       <h2>What counts as an "open source"?</h2>
       <ul>
-        <li><strong>The public web</strong> — websites, blogs, forums, and search engines.</li>
-        <li><strong>Social media</strong> — public profiles, posts, photos, and the connections between accounts.</li>
-        <li><strong>Technical records</strong> — domain WHOIS/RDAP data, DNS records, IP allocations, and TLS certificate logs.</li>
-        <li><strong>Public and government records</strong> — company registries, court filings, and property records where they are public.</li>
-        <li><strong>Media</strong> — images and videos, including the metadata and visual clues inside them.</li>
-        <li><strong>Data breaches</strong> — where checking public breach databases is legally permitted, to understand exposure.</li>
+        <li><strong>The public web</strong>: websites, blogs, forums, and search engines.</li>
+        <li><strong>Social media</strong>: public profiles, posts, photos, and the connections between accounts.</li>
+        <li><strong>Technical records</strong>: domain WHOIS/RDAP data, DNS records, IP allocations, and TLS certificate logs.</li>
+        <li><strong>Public and government records</strong>: company registries, court filings, and property records where they are public.</li>
+        <li><strong>Media</strong>: images and videos, including the metadata and visual clues inside them.</li>
+        <li><strong>Data breaches</strong>: where checking public breach databases is legally permitted, to understand exposure.</li>
       </ul>
 
       <h2>The OSINT process</h2>
@@ -84,7 +85,7 @@
         <li><strong>Define the question.</strong> Vague goals produce vague results. Start with a specific, answerable question.</li>
         <li><strong>Collect.</strong> Gather relevant data from open sources, starting with what you already know (a username, an email, a domain).</li>
         <li><strong>Verify.</strong> Cross-check each finding against a second source. A single unconfirmed hit is a lead, not a fact.</li>
-        <li><strong>Correlate.</strong> Connect the pieces — the same handle on several sites, a website linked from a bio — to build a coherent picture.</li>
+        <li><strong>Correlate.</strong> Connect the pieces, the same handle on several sites, a website linked from a bio, to build a coherent picture.</li>
         <li><strong>Report.</strong> Record your findings with their sources so the conclusion is defensible and repeatable.</li>
       </ol>
 
@@ -98,10 +99,10 @@
       <h2>Common OSINT techniques</h2>
       <p>Most practical OSINT falls into a few repeatable categories, each of which MyRecon supports:</p>
       <ul>
-        <li><strong>Username enumeration</strong> — finding where a handle exists across platforms. Read our guide on <a href="/guides/username-osint-search.html">username OSINT</a>.</li>
-        <li><strong>Email intelligence</strong> — provider analysis, linked accounts, and <a href="/guides/check-email-data-breach.html">breach exposure</a>.</li>
-        <li><strong>Domain and infrastructure analysis</strong> — <a href="/guides/whois-rdap-explained.html">WHOIS/RDAP</a>, <a href="/guides/dns-records-explained.html">DNS records</a>, and <a href="/guides/ip-geolocation-reverse-dns.html">IP geolocation</a>.</li>
-        <li><strong>Image analysis</strong> — reverse image search to trace where a photo appears.</li>
+        <li><strong>Username enumeration</strong>: finding where a handle exists across platforms. Read our guide on <a href="/guides/username-osint-search.html">username OSINT</a>.</li>
+        <li><strong>Email intelligence</strong>: provider analysis, linked accounts, and <a href="/guides/check-email-data-breach.html">breach exposure</a>.</li>
+        <li><strong>Domain and infrastructure analysis</strong>-<a href="/guides/whois-rdap-explained.html">WHOIS/RDAP</a>, <a href="/guides/dns-records-explained.html">DNS records</a>, and <a href="/guides/ip-geolocation-reverse-dns.html">IP geolocation</a>.</li>
+        <li><strong>Image analysis</strong>: reverse image search to trace where a photo appears.</li>
       </ul>
 
       <h2>The step most people skip: verification</h2>
@@ -109,7 +110,7 @@
       <p>The failure is simple to describe. You find a profile with the right username, it looks plausible, and you record it as belonging to your subject. But usernames are not identity. Popular handles are registered many times by unrelated people, distinctive ones get squatted across platforms by people reserving names, and impersonation accounts copy display names and photos deliberately.</p>
       <p>The discipline is to ask what would have to be true for this to be wrong, before concluding it is right. Practically, that means grading your evidence:</p>
       <ul>
-        <li><strong>Strong:</strong> a cryptographic proof, a verified domain, or the person publicly linking the accounts themselves &mdash; ideally reciprocally, since anyone can link to a profile they do not own.</li>
+        <li><strong>Strong:</strong> a cryptographic proof, a verified domain, or the person publicly linking the accounts themselves, ideally reciprocally, since anyone can link to a profile they do not own.</li>
         <li><strong>Moderate:</strong> the same published email across both, a personal site listing both, consistent and specific biographical detail.</li>
         <li><strong>Weak:</strong> matching display names, the same photo, similar interests, accounts created around the same time. Suggestive in combination, conclusive never.</li>
       </ul>
@@ -117,8 +118,8 @@
 
       <h2>Why tools disagree with each other</h2>
       <p>Run the same username through two OSINT tools and you will often get different answers. Both may be behaving honestly, and understanding why saves a lot of confusion.</p>
-      <p>Websites do not always tell you clearly whether an account exists. A great many return HTTP 200 &mdash; "here is a page" &mdash; for every possible username, because the page is built by JavaScript in your browser, or because it is a login wall, or because someone chose a branded "not found" screen over a proper 404. A tool reading only the status code will report an account for every handle it tries.</p>
-      <p>Platforms also respond differently depending on who is asking. Requests from datacentre address ranges are blocked far more aggressively than those from home or mobile connections, because that is where automated abuse comes from. The same check that a cloud-hosted scanner is refused for is frequently answered for a phone &mdash; so a tool running on your device and a tool running on a server will genuinely see different things.</p>
+      <p>Websites do not always tell you clearly whether an account exists. A great many return HTTP 200, "here is a page", for every possible username, because the page is built by JavaScript in your browser, or because it is a login wall, or because someone chose a branded "not found" screen over a proper 404. A tool reading only the status code will report an account for every handle it tries.</p>
+      <p>Platforms also respond differently depending on who is asking. Requests from datacentre address ranges are blocked far more aggressively than those from home or mobile connections, because that is where automated abuse comes from. The same check that a cloud-hosted scanner is refused for is frequently answered for a phone, so a tool running on your device and a tool running on a server will genuinely see different things.</p>
       <p>The practical consequence: treat "found" as a lead, not a fact, and be suspicious of any tool that never says "I don't know". <a href="/guides/what-http-responses-reveal.html">What a website's response actually tells you</a> goes through this in detail with real measurements.</p>
 
       <h2>Building a repeatable method</h2>
@@ -133,10 +134,20 @@
       </ol>
 
       <h2>The ethics and the law</h2>
-      <p>Because OSINT uses public information, it is generally legal — but "legal" and "ethical" are not the same, and neither is unlimited. Collecting public data to review your own exposure or conduct authorized research is fine. Using the same data to stalk, harass, or dox someone is harmful and often illegal, and it can breach platform terms of service. Responsible OSINT means having a legitimate purpose, respecting privacy, and never weaponising what you find.</p>
+      <p>Because OSINT uses public information, it is generally legal, but "legal" and "ethical" are not the same, and neither is unlimited. Collecting public data to review your own exposure or conduct authorized research is fine. Using the same data to stalk, harass, or dox someone is harmful and often illegal, and it can breach platform terms of service. Responsible OSINT means having a legitimate purpose, respecting privacy, and never weaponising what you find.</p>
 
       <h2>Getting started</h2>
-      <p>The best way to learn OSINT is to practise on yourself. Search your own username, check your own email for breaches, and look up a domain you own. You will quickly see how much is public — and how the pieces connect. Try it with the <a href="/#tool">MyRecon tools</a>, then work through the rest of our <a href="/guides/">guides</a>, or take a single handle further with <a href="/deep-search.html">Deep Search</a>.</p>
+      <p>The best way to learn OSINT is to practise on yourself. Search your own username, check your own email for breaches, and look up a domain you own. You will quickly see how much is public, and how the pieces connect. Try it with the <a href="/#tool">MyRecon tools</a>, then work through the rest of our <a href="/guides/">guides</a>, or take a single handle further with <a href="/deep-search.html">Deep Search</a>.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dwhat_is_osint" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
 
             <h2>Related guides</h2>
       <ul class="related-guides">
@@ -160,5 +171,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

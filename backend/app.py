@@ -1,5 +1,5 @@
 """
-MyRecon API — Flask backend (deploy target: Render).
+MyRecon API, Flask backend (deploy target: Render).
 
 A stateless JSON API. All heavy OSINT work lives in `services/` and
 `modules/`; this file is only routing, validation, CORS, rate limiting,
@@ -19,7 +19,7 @@ from flask import Flask, request, g, Response, stream_with_context
 import config
 from core.cache import TTLCache
 from core.ratelimit import RateLimiter
-from core import responses, validation
+from core import clientip, responses, validation
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("myrecon")
@@ -32,6 +32,12 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config["JSON_SORT_KEYS"] = False
     app.url_map.strict_slashes = False
+    # Every endpoint takes one short string. Without a cap, `get_json(force=True)`
+    # will happily allocate whatever is posted, so a single large body is a
+    # memory-exhaustion lever on a 512 MB instance. Werkzeug rejects anything
+    # over this with a 413 before the body is read.
+    app.config["MAX_CONTENT_LENGTH"] = config.MAX_BODY_BYTES
+    app.secret_key = config.SECRET_KEY
 
     _register_cors(app)
     _register_hooks(app)
@@ -42,32 +48,80 @@ def create_app() -> Flask:
 
 # ── CORS ─────────────────────────────────────────────────────────
 
+# This API serves JSON and nothing else, no HTML, no scripts, no frames, so
+# the policy can be the strictest one there is. It matters despite the absence
+# of markup: it is what stops a browser from executing anything should a
+# response ever be coaxed into being rendered as a document.
+_API_CSP = (
+    "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+)
+
+# No feature of the browser is needed to read a JSON response.
+_API_PERMISSIONS_POLICY = (
+    "geolocation=(), microphone=(), camera=(), payment=(), usb=(), "
+    "magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()"
+)
+
+
 def _register_cors(app: Flask) -> None:
     allowed = set(config.ALLOWED_ORIGINS)
 
     @app.after_request
     def apply_cors(resp):
         origin = request.headers.get("Origin", "")
-        if origin and (origin in allowed or "*" in allowed):
+        if config.CORS_ALLOW_ANY:
+            # Literal "*", never a reflection of what was sent. The literal form
+            # can't be combined with credentials, which is exactly what makes it
+            # safe; reflecting the caller's Origin would hand any site the same
+            # access the real frontend has. Production strips "*" in config.py,
+            # so this branch is development only.
+            resp.headers["Access-Control-Allow-Origin"] = "*"
+        elif origin and origin in allowed:
             resp.headers["Access-Control-Allow-Origin"] = origin
             resp.headers["Vary"] = "Origin"
+
+        if resp.headers.get("Access-Control-Allow-Origin"):
             resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
             resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
             resp.headers["Access-Control-Max-Age"] = "86400"
-        # Security headers applied to every response.
+
+        # Security headers applied to every response, CORS or not.
+        resp.headers["Content-Security-Policy"] = _API_CSP
         resp.headers["X-Content-Type-Options"] = "nosniff"
         resp.headers["X-Frame-Options"] = "DENY"
         resp.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        resp.headers["Permissions-Policy"] = _API_PERMISSIONS_POLICY
+        # The API is HTTPS-only and always has been, so pinning it costs
+        # nothing and removes the first plaintext request from the picture.
+        # No preload directive: this host is a subdomain of a domain whose
+        # apex preload list entry is managed by the frontend, and claiming
+        # preload from here would be claiming it for a domain we don't serve.
+        resp.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        # Search engines should not be indexing JSON endpoints.
+        resp.headers["X-Robots-Tag"] = "noindex, nofollow"
+        # Stop another origin from pulling API responses into its own process
+        # via <img>/<script> side channels (Spectre-style cross-origin reads).
+        resp.headers["Cross-Origin-Resource-Policy"] = "same-site"
         return resp
 
 
 # ── Request hooks: rate limiting ─────────────────────────────────
 
 def _client_ip() -> str:
-    fwd = request.headers.get("X-Forwarded-For", "")
-    if fwd:
-        return fwd.split(",")[0].strip()
-    return request.remote_addr or "unknown"
+    """
+    The key the rate limiter buckets on.
+
+    Taking `X-Forwarded-For.split(",")[0]`, the previous implementation, read
+    the one field in the request the caller writes, so rotating that header made
+    the limit vanish. Measured against production before the fix: 34 requests
+    with a rotating value, 34x 200. The same 34 without it, 30x 200 then 429.
+    core/clientip.py explains the ordering that replaces it.
+    """
+    return clientip.resolve(
+        request.headers,
+        request.remote_addr or "",
+        trusted_proxy_depth=config.TRUSTED_PROXY_DEPTH,
+    )
 
 
 def _register_hooks(app: Flask) -> None:
@@ -110,14 +164,70 @@ def cached(name: str):
                 return hit
             value = fn(*args)
             # Never cache soft errors.
-            if isinstance(value, dict) and value.get("status") != "error":
+            if (isinstance(value, dict) and value.get("status") != "error"
+                    and (name != "email" or value.get("summary", {}).get("breach_status") == "ok")):
                 _cache.set(key, value)
             return value
         return wrapper
     return decorator
 
 
+class PayloadTooLarge(Exception):
+    """Body exceeded MAX_BODY_BYTES."""
+
+
+# The three content types a browser can send cross-origin from a plain <form>
+# without asking permission first. Refusing them is what forces a preflight,
+# and a preflight is the only thing CORS can actually block.
+_SIMPLE_REQUEST_TYPES = (
+    "application/x-www-form-urlencoded",
+    "multipart/form-data",
+    "text/plain",
+)
+
+
+class UnsupportedMediaType(Exception):
+    """POST arrived without a JSON content type."""
+
+
+def _require_json_content_type() -> None:
+    """
+    Insist on `Content-Type: application/json` for writes.
+
+    `get_json(force=True)` parses the body whatever the header says, which
+    quietly undoes CORS for requests: any page anywhere can submit a form with
+    `enctype="text/plain"` carrying a JSON body, and because that is a "simple
+    request" the browser sends it with no preflight and no permission asked.
+    The response is unreadable to the attacker, CORS still covers reading,
+    but the request lands, which is enough to spend this API's rate limit and
+    its outbound quota through someone else's browser.
+
+    Requiring a content type that is not on the simple list means the browser
+    must preflight, and the preflight goes through the allowlist in
+    `_register_cors`. There is no session or cookie here for a classic CSRF to
+    ride, so this closes the remaining half rather than a data-loss hole.
+    """
+    declared = (request.content_type or "").split(";")[0].strip().lower()
+    if declared in _SIMPLE_REQUEST_TYPES or not declared:
+        raise UnsupportedMediaType()
+
+
 def _json_body() -> dict:
+    """
+    Parse the request body, refusing anything oversized first.
+
+    `MAX_CONTENT_LENGTH` alone is not enough to rely on here. Werkzeug only
+    began enforcing it for non-form bodies in 2.3, and `silent=True` swallows
+    the 413 it raises when it does, so on an older stack an oversize body was
+    parsed in full and on a newer one it came back as an empty dict and a
+    confusing 422. Checking the declared length explicitly gives the same answer
+    on every version, and a chunked body with no declared length is still capped
+    by `MAX_CONTENT_LENGTH` underneath.
+    """
+    _require_json_content_type()
+    declared = request.content_length
+    if declared is not None and declared > config.MAX_BODY_BYTES:
+        raise PayloadTooLarge()
     return request.get_json(force=True, silent=True) or {}
 
 
@@ -145,7 +255,7 @@ def _register_routes(app: Flask) -> None:
     def _wayback(url: str) -> dict:
         found = wayback_history(url)
         # Being throttled is a temporary failure, not an answer. Tag it so the
-        # TTL cache refuses to pin it — otherwise one 429 would be served back
+        # TTL cache refuses to pin it, otherwise one 429 would be served back
         # as "never archived" for the whole cache window.
         return {"status": "error", **found} if found.get("rate_limited") else found
 
@@ -153,7 +263,18 @@ def _register_routes(app: Flask) -> None:
 
     @app.route("/api/health")
     def health():
-        return responses.ok({"service": config.public_config()})
+        return responses.ok({
+            "service": config.public_config(),
+            # How this caller is identified for rate limiting. It echoes only
+            # the caller's own address back to them, which they already know,
+            # and the hop count as a bare integer, enough to confirm after a
+            # deploy that buckets are per-client, without describing the
+            # network in front of the app.
+            "client": {
+                "resolved_ip": _client_ip(),
+                "forwarded_hops": clientip.forwarded_hop_count(request.headers),
+            },
+        })
 
     @app.route("/api/username", methods=["POST", "OPTIONS"])
     def api_username():
@@ -206,7 +327,7 @@ def _register_routes(app: Flask) -> None:
         a stalled request. Same event shape as /api/username/stream, so the
         frontend reuses one renderer.
 
-        Handles only. Search by personal name was removed — deriving handles
+        Handles only. Search by personal name was removed, deriving handles
         from a name returned accounts belonging to whoever registered them,
         which is usually not the person searched.
         """
@@ -224,7 +345,7 @@ def _register_routes(app: Flask) -> None:
             # investigate() reports progress through a callback, but a
             # generator cannot yield from inside one. Running it on a worker
             # thread and draining a queue is what makes the progress actually
-            # live — collecting events into a list and yielding afterwards
+            # live, collecting events into a list and yielding afterwards
             # would deliver the whole scan in one burst at the end, which is
             # indistinguishable from no streaming at all.
             import queue
@@ -322,7 +443,7 @@ def _register_routes(app: Flask) -> None:
 
         For clients that a platform refuses to answer. The Android sweep runs
         on-device by design, but Instagram blocks by address and a phone that
-        has been refused cannot recover on its own — so it asks the server,
+        has been refused cannot recover on its own, so it asks the server,
         which is usually not the address being refused. Cached, because the
         answer is identical for every caller asking about the same handle.
         """
@@ -341,7 +462,7 @@ def _register_routes(app: Flask) -> None:
         Deliberately not folded into the username scan: the CDX index takes
         ~10s for a cold key and rate-limits under fan-out, so twenty parallel
         lookups return 429s and nothing else. Caching matters more here than
-        anywhere — a repeat lookup costs the user nothing and costs
+        anywhere, a repeat lookup costs the user nothing and costs
         archive.org nothing.
         """
         if request.method == "OPTIONS":
@@ -366,6 +487,25 @@ def _register_errors(app: Flask) -> None:
     def on_405(_err):
         return responses.error("Method not allowed.", status=405, code="method_not_allowed")
 
+    @app.errorhandler(413)
+    def on_413(_err):
+        return responses.error(
+            "Request body is too large.", status=413, code="payload_too_large"
+        )
+
+    @app.errorhandler(PayloadTooLarge)
+    def on_payload_too_large(_err):
+        return responses.error(
+            "Request body is too large.", status=413, code="payload_too_large"
+        )
+
+    @app.errorhandler(UnsupportedMediaType)
+    def on_unsupported_media_type(_err):
+        return responses.error(
+            "Requests must be sent with Content-Type: application/json.",
+            status=415, code="unsupported_media_type",
+        )
+
     @app.errorhandler(Exception)
     def on_unexpected(err):
         log.exception("Unhandled error: %s", err)
@@ -379,4 +519,8 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=config.PORT, debug=config.DEBUG)
+    # config.DEBUG is already forced off when FLASK_ENV=production; binding to
+    # localhost in that case too means a stray `python app.py` on a server is
+    # not also an exposed port.
+    host = "0.0.0.0" if config.DEBUG else "127.0.0.1"
+    app.run(host=host, port=config.PORT, debug=config.DEBUG)

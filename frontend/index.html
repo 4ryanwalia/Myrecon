@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OSINT Tool for Username, Email & Breach Lookup | MyRecon</title>
-  <meta name="description" content="Search a username across 100+ platforms, check an email or password against breach data, and investigate domains, DNS and IP addresses. Free, no account.">
+  <meta name="description" content="Search a username across 123 platforms, check an email or password against breach data, and investigate domains, DNS and IP addresses. Free, no account.">
   <meta name="keywords" content="OSINT, username search, email intelligence, breach detection, password exposure check, pwned password, WHOIS lookup, DNS records, IP geolocation, reverse DNS, digital footprint">
   <meta name="author" content="MyRecon">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/">
   <!-- Search-engine verification slot.
-       Prefer the DNS domain property in Search Console — it covers www, apex,
+       Prefer the DNS domain property in Search Console, it covers www, apex,
        http and https in one, and this site redirects three of those four to
        the fourth. These meta tags are the URL-prefix fallback: paste the token
        between the quotes and delete the surrounding comment marker.
@@ -22,19 +22,19 @@
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
-  <meta property="og:title" content="MyRecon — OSINT Intelligence Platform">
-  <meta property="og:description" content="Search usernames across a wide range of platforms, check emails and passwords against breach data, and investigate domains, DNS, and IP addresses — accurate, fast, and private.">
+  <meta property="og:title" content="MyRecon: OSINT Intelligence Platform">
+  <meta property="og:description" content="Search usernames across a wide range of platforms, check emails and passwords against breach data, and investigate domains, DNS, and IP addresses, accurate, fast, and private.">
   <meta property="og:url" content="https://www.myrecon.xyz/">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MyRecon — OSINT Intelligence Platform">
-  <meta name="twitter:description" content="Search usernames across a wide range of platforms, check emails and passwords against breach data, and investigate domains, DNS, and IP addresses — accurate, fast, and private.">
+  <meta name="twitter:title" content="MyRecon: OSINT Intelligence Platform">
+  <meta name="twitter:description" content="Search usernames across a wide range of platforms, check emails and passwords against breach data, and investigate domains, DNS, and IP addresses, accurate, fast, and private.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
@@ -43,13 +43,14 @@
 
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=12">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -77,8 +78,10 @@
       { "@type": "Question", "name": "Do you store my searches?", "acceptedAnswer": { "@type": "Answer", "text": "No. MyRecon does not require an account and does not save your search queries or results to a database. Your history lives only in your browser's local storage, and results are held briefly in an in-memory cache that expires automatically." } },
       { "@type": "Question", "name": "How accurate are the results?", "acceptedAnswer": { "@type": "Answer", "text": "MyRecon favours reliable, documented sources such as RDAP, DNS-over-HTTPS, and official breach and profile APIs, and verifies username matches with confidence scoring. Matches are labelled by confidence and should be independently confirmed." } },
       { "@type": "Question", "name": "Is it safe to type a password into the password checker?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The password is hashed with SHA-1 inside your browser and only the first five characters of the hash are sent to the Pwned Passwords service, a technique called k-anonymity. That prefix is shared by thousands of different passwords, so it identifies nothing, and the final matching happens locally. The password never reaches MyRecon's servers, is never written to browser storage, and is never placed in a URL." } },
-      { "@type": "Question", "name": "Does MyRecon search the dark web?", "acceptedAnswer": { "@type": "Answer", "text": "Not in the way the phrase is usually sold. Live crawling of dark web marketplaces is not something any free service can do. MyRecon checks your email and passwords against published breach corpora — the credential dumps that were traded on criminal forums and have since been released and catalogued. That is the same underlying data most consumer dark web monitoring products check." } },
-      { "@type": "Question", "name": "Is MyRecon free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All core lookups — username, email, password exposure, domain, DNS, and IP — are free with no account. The service is supported by non-intrusive advertising and is rate-limited to stay fast and available." } }
+      { "@type": "Question", "name": "Does MyRecon search the dark web?", "acceptedAnswer": { "@type": "Answer", "text": "Not in the way the phrase is usually sold. Live crawling of dark web marketplaces is not something any free service can do. MyRecon checks your email and passwords against published breach corpora, the credential dumps that were traded on criminal forums and have since been released and catalogued. That is the same underlying data most consumer dark web monitoring products check." } },
+      { "@type": "Question", "name": "Is MyRecon free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All core lookups, username, email, password exposure, domain, DNS, and IP, are free with no account. The service is supported by non-intrusive advertising and is rate-limited to stay fast and available." } },
+      { "@type": "Question", "name": "Is MyRecon legit?", "acceptedAnswer": { "@type": "Answer", "text": "It is free, needs no account, takes no card details, and its source is published under the MIT licence. Rather than asking you to trust that, we publish six tests you can run yourself, starting with searching for a username that cannot exist and seeing whether the tool reports accounts for it. Those tests work on any tool in this category." } },
+      { "@type": "Question", "name": "What is the difference between the username sweep and Deep Search?", "acceptedAnswer": { "@type": "Answer", "text": "The sweep asks each platform directly whether an account with that handle exists, so it finds profiles nobody has ever linked to. Deep Search asks search engines what they have indexed about the handle, so it finds posts, documents and archived pages no catalogue would list. They fail in opposite directions, which is why both exist." } }
     ]
   }
   </script>
@@ -86,16 +89,16 @@
 </head>
 <body>
   <a class="skip-link" href="#tool">Skip to the tool</a>
-  <div class="print-only print-header"><strong>MyRecon</strong> — OSINT report · myrecon.xyz<div id="printMeta" class="print-meta"></div></div>
+  <div class="print-only print-header"><strong>MyRecon</strong>: OSINT report · myrecon.xyz<div id="printMeta" class="print-meta"></div></div>
 
   <!-- Nav -->
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home">
         <img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32">
         MyRecon <small>OSINT</small>
       </a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg>
       </button>
@@ -108,57 +111,106 @@
   <main>
     <!-- Hero -->
     <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="dot"></span> Live public-source intelligence</span>
+          <h1>Investigate any <span class="hero-word" id="heroWord">digital footprint</span><br><span class="fx-grad fx-glitch" data-text="with MyRecon">with MyRecon</span></h1>
+          <p class="lead">Check a username, email, password, domain, DNS record or IP address against public sources. Free, no account.</p>
+          <!-- The tool lives in the hero so it is the first thing a visitor sees.
+               IDs are unchanged; app.js finds everything by id. -->
+          <div class="tool hero-tool" id="tool" aria-label="OSINT tools">
+            <div class="tool-tabs" id="toolTabs" role="tablist" aria-label="Choose a lookup"></div>
+            <div class="panel" role="tabpanel" id="toolPanel" tabindex="0">
+              <div class="panel-title"><span class="pt-dot"></span>Run a lookup<span class="pt-status" aria-hidden="true"></span></div>
+              <div class="panel-sub" id="panelSub"></div>
+              <div class="field-row">
+                <div class="input-wrap">
+                  <span class="in-ico" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+                  </span>
+                  <input class="input" id="queryInput" type="text" autocomplete="off" spellcheck="false"
+                         autocapitalize="none" autocorrect="off" data-lpignore="true" data-1p-ignore
+                         aria-label="Search target" placeholder="Enter a target…">
+                  <button class="reveal-btn" id="revealBtn" type="button" hidden
+                          aria-label="Show password" title="Show password"></button>
+                </div>
+                <button class="btn" id="runBtn" type="button">Investigate</button>
+              </div>
+              <div class="detect-hint" id="detectHint" role="status" hidden></div>
+              <div class="opt-row" id="deepWrap">
+                <label class="switch"><input type="checkbox" id="deepToggle"> Deep search <span class="hint">(slower, more platforms)</span></label>
+              </div>
+              <div class="examples" id="examples"></div>
+            </div>
+            <p class="tool-foot"><span class="kbd">Enter</span> to run · results appear below · nothing is stored on our servers · <a href="/vs/">how we compare</a></p>
+          </div>
+        </div>
+        <div class="orbit" id="fxOrbit" role="img" aria-label="Illustration: a radar sweeping social platforms such as Instagram, Snapchat, X, TikTok, YouTube, Reddit and GitHub for one username.">
+          <div class="orbit-glow"></div>
+          <div class="orbit-sweep"></div>
+          <div class="orbit-ring r1"><div class="orbit-rot">
+            <span class="spoke" style="--a:15deg;--c:#E4405F"></span><span class="node" style="--a:15deg;--c:#E4405F" data-name="Instagram"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#instagram"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:105deg;--c:#FFFC00"></span><span class="node" style="--a:105deg;--c:#FFFC00" data-name="Snapchat"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#snapchat"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:195deg;--c:var(--text)"></span><span class="node" style="--a:195deg;--c:var(--text)" data-name="X"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#x"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:285deg;--c:#25F4EE"></span><span class="node" style="--a:285deg;--c:#25F4EE" data-name="TikTok"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#tiktok"/></svg><b class="tag">FOUND</b></span></span>
+          </div></div>
+          <div class="orbit-ring r2"><div class="orbit-rot">
+            <span class="spoke" style="--a:40deg;--c:#0866FF"></span><span class="node" style="--a:40deg;--c:#0866FF" data-name="Facebook"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#facebook"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:100deg;--c:#FF0000"></span><span class="node" style="--a:100deg;--c:#FF0000" data-name="YouTube"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#youtube"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:160deg;--c:#FF4500"></span><span class="node" style="--a:160deg;--c:#FF4500" data-name="Reddit"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#reddit"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:220deg;--c:#5865F2"></span><span class="node" style="--a:220deg;--c:#5865F2" data-name="Discord"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#discord"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:280deg;--c:#26A5E4"></span><span class="node" style="--a:280deg;--c:#26A5E4" data-name="Telegram"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#telegram"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:340deg;--c:var(--text)"></span><span class="node" style="--a:340deg;--c:var(--text)" data-name="Threads"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#threads"/></svg><b class="tag">FOUND</b></span></span>
+          </div></div>
+          <div class="orbit-ring r3"><div class="orbit-rot">
+            <span class="spoke" style="--a:5deg;--c:var(--text)"></span><span class="node" style="--a:5deg;--c:var(--text)" data-name="GitHub"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#github"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:65deg;--c:#9146FF"></span><span class="node" style="--a:65deg;--c:#9146FF" data-name="Twitch"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#twitch"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:125deg;--c:#1DB954"></span><span class="node" style="--a:125deg;--c:#1DB954" data-name="Spotify"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#spotify"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:185deg;--c:#E60023"></span><span class="node" style="--a:185deg;--c:#E60023" data-name="Pinterest"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#pinterest"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:245deg;--c:#66C0F4"></span><span class="node" style="--a:245deg;--c:#66C0F4" data-name="Steam"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#steam"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:305deg;--c:var(--text)"></span><span class="node" style="--a:305deg;--c:var(--text)" data-name="Medium"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#medium"/></svg><b class="tag">FOUND</b></span></span>
+          </div></div>
+          <div class="orbit-core"><img src="/assets/img/logo.svg" alt="" width="40" height="40"><span class="core-handle">@yourhandle</span><span class="core-count"><b id="fxHits">0</b> found</span></div>
+        </div>
+      </div>
       <div class="container">
-        <span class="eyebrow"><span class="dot"></span> Reliable public-source intelligence</span>
-        <h1>Investigate any <span class="hero-word" id="heroWord">digital footprint</span><br><span class="gradient-text">with MyRecon</span></h1>
-        <p class="lead">Search usernames across a wide range of platforms, analyze emails and breach exposure, and investigate domains, DNS, and IP addresses — all from accurate, public data sources.</p>
-        <div class="trust-row">
-          <span class="chip">Broad platform coverage</span>
-          <span class="chip">Breach detection</span>
-          <span class="chip">Password exposure</span>
-          <span class="chip">WHOIS · DNS · IP</span>
-          <span class="chip">No server-side storage</span>
+        <div class="fx-marquee" aria-label="Data sources">
+          <div class="fx-marquee-track">
+            <span class="chip">RDAP</span><span class="chip">DNS-over-HTTPS</span><span class="chip">LeakCheck</span><span class="chip">XposedOrNot</span><span class="chip">Pwned Passwords</span><span class="chip">Wayback Machine</span><span class="chip">Gravatar</span><span class="chip">SPF · DMARC</span><span class="chip">Reverse DNS</span><span class="chip">ASN ownership</span><span class="chip">123 platforms</span><span class="chip">No server-side storage</span>
+            <span class="chip" aria-hidden="true">RDAP</span><span class="chip" aria-hidden="true">DNS-over-HTTPS</span><span class="chip" aria-hidden="true">LeakCheck</span><span class="chip" aria-hidden="true">XposedOrNot</span><span class="chip" aria-hidden="true">Pwned Passwords</span><span class="chip" aria-hidden="true">Wayback Machine</span><span class="chip" aria-hidden="true">Gravatar</span><span class="chip" aria-hidden="true">SPF · DMARC</span><span class="chip" aria-hidden="true">Reverse DNS</span><span class="chip" aria-hidden="true">ASN ownership</span><span class="chip" aria-hidden="true">123 platforms</span><span class="chip" aria-hidden="true">No server-side storage</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Tool -->
-    <section class="tool container" id="tool" aria-label="OSINT tools">
-      <div class="tool-tabs" id="toolTabs" role="tablist" aria-label="Choose a lookup"></div>
-      <div class="panel" role="tabpanel" id="toolPanel" tabindex="0">
-        <div class="panel-title">Run a lookup</div>
-        <div class="panel-sub" id="panelSub"></div>
-        <div class="field-row">
-          <div class="input-wrap">
-            <span class="in-ico" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-            </span>
-            <input class="input" id="queryInput" type="text" autocomplete="off" spellcheck="false"
-                   autocapitalize="none" autocorrect="off" data-lpignore="true" data-1p-ignore
-                   aria-label="Search target" placeholder="Enter a target…">
-            <button class="reveal-btn" id="revealBtn" type="button" hidden
-                    aria-label="Show password" title="Show password"></button>
-          </div>
-          <button class="btn" id="runBtn" type="button">Investigate</button>
-        </div>
-        <div class="opt-row" id="deepWrap">
-          <label class="switch"><input type="checkbox" id="deepToggle"> Deep search <span class="hint">(slower, more platforms)</span></label>
-        </div>
-        <div class="examples" id="examples"></div>
-      </div>
 
+    <!-- Results render here; the inputs are in the hero above. -->
+    <section class="container results-section" aria-label="Results">
       <div class="results" id="results" aria-live="polite"></div>
     </section>
 
+    <!-- Numbers. Each one is countable on the site itself, none is a
+         marketing estimate. -->
+    <section class="section" id="numbers" style="padding-top:34px">
+      <div class="container">
+        <div class="fx-stats">
+          <div class="fx-stat fx-card"><div class="n" data-count="123">123</div><div class="l">platforms checked per web username search</div><div class="bar"><span style="--fill:.22"></span></div></div>
+          <div class="fx-stat fx-card"><div class="n" data-count="560">560</div><div class="l">platforms swept from your phone by the Android app</div><div class="bar"><span></span></div></div>
+          <div class="fx-stat fx-card"><div class="n" data-count="900" data-suffix="M+">900M+</div><div class="l">breached passwords, checked without the password leaving your browser</div><div class="bar"><span style="--fill:.9"></span></div></div>
+          <div class="fx-stat fx-card"><div class="n" data-count="0">0</div><div class="l">accounts, cards or stored searches needed</div><div class="bar"><span style="--fill:.02"></span></div></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Saved investigations -->
-    <section class="section container" id="saved-section">
+    <section class="section container" id="saved-section" hidden>
       <h2 style="text-align:left;font-size:1.3rem">Saved investigations</h2>
       <p class="sub" style="text-align:left;margin:8px 0 18px">Pin the searches you want to keep. Stored privately in your browser.</p>
       <div id="saved"></div>
     </section>
 
     <!-- History -->
-    <section class="section container" id="history-section" style="padding-top:0">
+    <section class="section container" id="history-section" style="padding-top:0" hidden>
       <h2 style="text-align:left;font-size:1.3rem">Search history</h2>
       <p class="sub" style="text-align:left;margin:8px 0 18px">Recent lookups, stored privately in your browser.</p>
       <div id="history"></div>
@@ -168,15 +220,15 @@
     <section class="section" id="features">
       <div class="container">
         <h2>Built for accurate investigations</h2>
-        <p class="sub">Every tool draws from documented, reliable sources — no scraping guesswork, no fabricated results.</p>
+        <p class="sub">Every tool draws from documented, reliable sources, no scraping guesswork, no fabricated results.</p>
         <div class="feature-grid">
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4.2-6 7.5-6s6.5 2 7.5 6"/></svg></div><h3>Username search</h3><p>Check a handle across social, developer, and community platforms with per-platform validation to cut false positives, then enrich matches with avatars and bios.</p></div>
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div><h3>Email intelligence</h3><p>Provider and deliverability analysis, disposable detection, Gravatar and linked accounts, plus breach exposure from public breach databases.</p></div>
-          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg></div><h3>Domain &amp; WHOIS</h3><p>Registration lifecycle, registrar, DNSSEC, and nameservers via RDAP — the standardized successor to WHOIS.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg></div><h3>Domain &amp; WHOIS</h3><p>Registration lifecycle, registrar, DNSSEC, and nameservers via RDAP, the standardized successor to WHOIS, plus whether the domain's SPF and DMARC actually stop someone forging email from it.</p></div>
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></div><h3>DNS records</h3><p>A, AAAA, MX, NS, TXT, CNAME, SOA, and CAA resolved over DNS-over-HTTPS for accuracy and privacy.</p></div>
           <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>IP &amp; geolocation</h3><p>Geolocation, ISP/ASN ownership, hosting and proxy flags, and reverse DNS resolution.</p></div>
-          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Password exposure</h3><p>Check a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser and only the first five characters of the hash are ever sent — the password itself never leaves your device.</p></div>
-          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg></div><h3>Export &amp; history</h3><p>Export any result as JSON or CSV and revisit recent investigations — kept privately in your browser.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Password exposure</h3><p>Check a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser and only the first five characters of the hash are ever sent, the password itself never leaves your device.</p></div>
+          <div class="feature"><div class="fico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg></div><h3>Export &amp; history</h3><p>Export any result as JSON or CSV and revisit recent investigations, kept privately in your browser.</p></div>
         </div>
       </div>
     </section>
@@ -185,7 +237,7 @@
     <section class="section alt" id="android">
       <div class="container">
         <h2>Now on Android</h2>
-        <p class="sub">The same investigation, run from your own phone &mdash; where platforms answer far more readily than they answer a server.</p>
+        <p class="sub">The same investigation, run from your own phone, where platforms answer far more readily than they answer a server.</p>
 
         <div class="android-split">
           <div class="android-copy">
@@ -197,7 +249,7 @@
             </p>
             <ul class="android-points">
               <li><strong>No account, no signup.</strong> Nothing to create, nothing to remember.</li>
-              <li><strong>Every result is verified.</strong> A site answering &ldquo;200 OK&rdquo; is not treated as proof an account exists &mdash; and anything unconfirmed says so instead of padding the total.</li>
+              <li><strong>Every result is verified.</strong> A site answering &ldquo;200 OK&rdquo; is not treated as proof an account exists, and anything unconfirmed says so instead of padding the total.</li>
               <li><strong>Photos and passwords never leave the phone.</strong> Metadata is read on-device; a password is hashed before anything is sent.</li>
             </ul>
             <p>
@@ -239,10 +291,10 @@
     <section class="section" id="how">
       <div class="container prose">
         <h2>How MyRecon works</h2>
-        <p class="sub">MyRecon turns a single starting point — a username, email, domain, or IP address — into a structured picture of a public online footprint. It queries documented, reliable sources and verifies each result before showing it, so you spend time on real leads instead of noise.</p>
+        <p class="sub">MyRecon turns a single starting point, a username, email, domain, or IP address, into a structured picture of a public online footprint. It queries documented, reliable sources and verifies each result before showing it, so you spend time on real leads instead of noise.</p>
         <div class="steps">
           <div class="step"><span class="step-n">1</span><div><h3>Enter a target</h3><p>Pick a tool and enter what you already know: a handle, an email address, a domain name, or an IP. No account, no sign-up, and nothing about your search is stored on our servers.</p></div></div>
-          <div class="step"><span class="step-n">2</span><div><h3>We gather and verify</h3><p>MyRecon checks the target against public sources — platform profile pages, breach databases, RDAP/WHOIS registries, DNS-over-HTTPS resolvers, and IP geolocation providers — and scores each finding for confidence so false positives are filtered out.</p></div></div>
+          <div class="step"><span class="step-n">2</span><div><h3>We gather and verify</h3><p>MyRecon checks the target against public sources, platform profile pages, breach databases, RDAP/WHOIS registries, DNS-over-HTTPS resolvers, and IP geolocation providers, and scores each finding for confidence so false positives are filtered out.</p></div></div>
           <div class="step"><span class="step-n">3</span><div><h3>Investigate and pivot</h3><p>Results arrive as clean cards you can open, export as JSON or CSV, and pivot from: a discovered domain, email, or handle becomes a one-click next lookup, so an investigation flows naturally from one lead to the next.</p></div></div>
         </div>
       </div>
@@ -258,7 +310,7 @@
         <div class="feature-grid">
           <div class="feature">
             <h3><a href="/breaches/case-files/" style="color:inherit">Case Files</a></h3>
-            <p>Long-form accounts of the landmark breaches — Equifax's unpatched web form, the contractor's password that stopped a pipeline, the API that had no lock on it. What happened, how, what it cost, and what it changed. Sourced from regulatory findings, court records and company disclosures.</p>
+            <p>Long-form accounts of the landmark breaches, Equifax's unpatched web form, the contractor's password that stopped a pipeline, the API that had no lock on it. What happened, how, what it cost, and what it changed. Sourced from regulatory findings, court records and company disclosures.</p>
             <p><a href="/breaches/case-files/">Browse the case files →</a></p>
           </div>
           <div class="feature">
@@ -268,7 +320,7 @@
           </div>
           <div class="feature">
             <h3><a href="/guides/" style="color:inherit">Guides</a></h3>
-            <p>How the underlying systems work and what to do about them — checking an address against known breaches, reading DNS and WHOIS records, spotting phishing, shrinking a public footprint, and verifying an OSINT finding before acting on it.</p>
+            <p>How the underlying systems work and what to do about them, checking an address against known breaches, reading DNS and WHOIS records, spotting phishing, shrinking a public footprint, and verifying an OSINT finding before acting on it.</p>
             <p><a href="/guides/">Read the guides →</a></p>
           </div>
         </div>
@@ -284,10 +336,25 @@
           <div class="feature"><h3>Protect your own footprint</h3><p>Search your own username and email to see which platforms and breaches expose your data, then lock down or remove what you no longer use. A quick self-audit is the fastest way to understand your exposure.</p></div>
           <div class="feature"><h3>Security researchers</h3><p>Enumerate a target's public profiles, map a domain's DNS and hosting, and correlate identities across platforms during authorized assessments and responsible-disclosure work.</p></div>
           <div class="feature"><h3>Recruiters &amp; verification</h3><p>Confirm that a candidate's professional profiles and portfolio links are consistent, and check that a company domain's registration and mail setup look legitimate.</p></div>
-          <div class="feature"><h3>Fraud &amp; trust teams</h3><p>Check whether an email is disposable, whether a domain was registered recently, and whether an IP belongs to a hosting provider or proxy — useful signals when assessing risk.</p></div>
-          <div class="feature"><h3>Journalists &amp; OSINT</h3><p>Build a verifiable picture from public records: who registered a domain, where a server is hosted, and which accounts share a handle — all with sources you can cite.</p></div>
+          <div class="feature"><h3>Fraud &amp; trust teams</h3><p>Check whether an email is disposable, whether a domain was registered recently, and whether an IP belongs to a hosting provider or proxy, useful signals when assessing risk.</p></div>
+          <div class="feature"><h3>Journalists &amp; OSINT</h3><p>Build a verifiable picture from public records: who registered a domain, where a server is hosted, and which accounts share a handle, all with sources you can cite.</p></div>
           <div class="feature"><h3>Developers &amp; sysadmins</h3><p>Inspect DNS records, mail configuration, nameservers, and reverse DNS quickly during setup and debugging, without stitching together half a dozen command-line tools.</p></div>
         </div>
+      </div>
+    </section>
+
+    <!-- Head to head -->
+    <section class="section" id="versus">
+      <div class="container prose">
+        <h2>MyRecon vs the tools you already know</h2>
+        <p class="sub">Sherlock, Maigret, WhatsMyName and Have I Been Pwned are good at what they do, and we say where each one beats us. Here is what actually differs, feature by feature.</p>
+        <div class="vs-grid">
+          <a class="vs-card" href="/vs/sherlock.html"><span class="kind">CLI scanner</span><h3>MyRecon vs Sherlock</h3><p>400+ sites from a terminal against a confidence-scored search in the browser.</p><span class="go">Compare</span></a>
+          <a class="vs-card" href="/vs/maigret.html"><span class="kind">CLI scanner</span><h3>MyRecon vs Maigret</h3><p>The biggest site list in open source, and what a bigger list does and does not buy you.</p><span class="go">Compare</span></a>
+          <a class="vs-card" href="/vs/whatsmyname.html"><span class="kind">Web + dataset</span><h3>MyRecon vs WhatsMyName</h3><p>The community dataset built to kill false positives, next to ours.</p><span class="go">Compare</span></a>
+          <a class="vs-card" href="/vs/have-i-been-pwned.html"><span class="kind">Breach search</span><h3>MyRecon vs Have I Been Pwned</h3><p>The breach authority, which we build on, and what we add around it.</p><span class="go">Compare</span></a>
+        </div>
+        <p><a href="/vs/">All comparisons →</a></p>
       </div>
     </section>
 
@@ -296,14 +363,16 @@
       <div class="container prose">
         <h2>Frequently asked questions</h2>
         <div class="faq">
-          <details><summary>Is MyRecon legal to use?</summary><p>MyRecon only aggregates information that is already publicly available, which is legal in most jurisdictions. What matters is how you use it. MyRecon is intended for lawful purposes such as reviewing your own footprint, authorized security research, verification, and journalism. Using it to harass, stalk, or harm someone, or to violate a platform's terms of service, is prohibited — see our <a href="/terms.html">Terms of Use</a>.</p></details>
+          <details><summary>Is MyRecon legal to use?</summary><p>MyRecon only aggregates information that is already publicly available, which is legal in most jurisdictions. What matters is how you use it. MyRecon is intended for lawful purposes such as reviewing your own footprint, authorized security research, verification, and journalism. Using it to harass, stalk, or harm someone, or to violate a platform's terms of service, is prohibited, see our <a href="/terms.html">Terms of Use</a>.</p></details>
           <details><summary>Do you store my searches?</summary><p>No. MyRecon does not require an account and does not save your search queries or results to a database. Your recent-lookup history lives only in your browser's local storage and never leaves your device. Results may be held briefly in an in-memory cache to speed up repeated lookups, then expire automatically.</p></details>
-          <details><summary>How accurate are the results?</summary><p>MyRecon deliberately favours reliable, documented sources — RDAP for registration data, DNS-over-HTTPS for records, official APIs for breach and profile data — and verifies username matches with confidence scoring rather than assuming a profile exists just because a page loads. No tool that relies on public data can be perfect, so matches are labelled by confidence and you should always confirm anything important.</p></details>
-          <details><summary>What is the difference between the WHOIS and DNS tools?</summary><p>WHOIS/RDAP tells you about a domain's <em>registration</em> — who registered it, when, the registrar, and its expiry. DNS tells you how the domain currently <em>resolves</em> — its A, MX, TXT, NS, and other records. The Domain tool combines both plus the resolved server's geolocation; the DNS tool focuses purely on records. Our <a href="/guides/">guides</a><a href="/deep-search.html">Deep Search</a> explain each in depth.</p></details>
-          <details><summary>Is it safe to type a password into the password checker?</summary><p>Yes, and you don't have to take our word for it. Your password is hashed with SHA-1 <em>inside your browser</em>, and only the first five characters of that hash are sent to the Pwned Passwords service — a technique called k-anonymity. That prefix is shared by many thousands of different passwords, so it identifies nothing. The matching is done locally on the list that comes back. Your password never reaches MyRecon's servers, is never written to your browser storage, and is never placed in a URL. We also ask the service to pad its response so its size gives nothing away.</p></details>
-          <details><summary>Does MyRecon search the dark web?</summary><p>Honestly: not in the way that phrase is usually sold. Nobody can crawl dark web marketplaces live for free, and services that genuinely infiltrate criminal forums charge thousands per month. What MyRecon does is check your email and passwords against the <em>breach corpora</em> — the credential dumps that were traded on those forums and have since been published and catalogued. That is the same underlying data most consumer "dark web monitoring" products actually check, and every source we use is documented and free.</p></details>
-          <details><summary>Is MyRecon free?</summary><p>Yes. All of the core lookups — username, email, password exposure, domain, DNS, and IP — are free to use with no account. The service is supported by non-intrusive advertising and is rate-limited to keep it fast and available for everyone.</p></details>
-          <details><summary>Can I remove my information from MyRecon?</summary><p>MyRecon doesn't host a database of people — it queries public sources live at the moment you search. To reduce what appears, you need to reduce your public footprint at the source: delete unused accounts, tighten privacy settings, and change passwords exposed in breaches. Our guide on <a href="/guides/reduce-your-digital-footprint.html">reducing your digital footprint</a> walks through exactly how.</p></details>
+          <details><summary>How accurate are the results?</summary><p>MyRecon deliberately favours reliable, documented sources, RDAP for registration data, DNS-over-HTTPS for records, official APIs for breach and profile data, and verifies username matches with confidence scoring rather than assuming a profile exists just because a page loads. No tool that relies on public data can be perfect, so matches are labelled by confidence and you should always confirm anything important.</p></details>
+          <details><summary>What is the difference between the WHOIS and DNS tools?</summary><p>WHOIS/RDAP tells you about a domain's <em>registration</em>: who registered it, when, the registrar, and its expiry. DNS tells you how the domain currently <em>resolves</em>: its A, MX, TXT, NS, and other records. The Domain tool combines both plus the resolved server's geolocation; the DNS tool focuses purely on records. Our <a href="/guides/">guides</a> and <a href="/deep-search.html">Deep Search</a> explain each in depth.</p></details>
+          <details><summary>Is it safe to type a password into the password checker?</summary><p>Yes, and you don't have to take our word for it. Your password is hashed with SHA-1 <em>inside your browser</em>, and only the first five characters of that hash are sent to the Pwned Passwords service, a technique called k-anonymity. That prefix is shared by many thousands of different passwords, so it identifies nothing. The matching is done locally on the list that comes back. Your password never reaches MyRecon's servers, is never written to your browser storage, and is never placed in a URL. We also ask the service to pad its response so its size gives nothing away.</p></details>
+          <details><summary>Does MyRecon search the dark web?</summary><p>Honestly: not in the way that phrase is usually sold. Nobody can crawl dark web marketplaces live for free, and services that genuinely infiltrate criminal forums charge thousands per month. What MyRecon does is check your email and passwords against the <em>breach corpora</em>: the credential dumps that were traded on those forums and have since been published and catalogued. That is the same underlying data most consumer "dark web monitoring" products actually check, and every source we use is documented and free.</p></details>
+          <details><summary>Is MyRecon free?</summary><p>Yes. All of the core lookups, username, email, password exposure, domain, DNS, and IP, are free to use with no account. The service is supported by non-intrusive advertising and is rate-limited to keep it fast and available for everyone.</p></details>
+          <details><summary>Is MyRecon legit?</summary><p>It is free, needs no account, takes no card details, and its source is published under the MIT licence, but you should not take that on trust from the people selling it. We wrote up <a href="/is-myrecon-legit.html">six tests you can run yourself</a>, starting with the one that matters most: search for a username that cannot exist and see whether the tool reports accounts for it. Those tests work on any tool in this category, not just ours.</p></details>
+          <details><summary>What is the difference between the username sweep and Deep Search?</summary><p>The sweep asks each platform directly whether an account with that handle exists, so it finds profiles nobody has ever linked to. Deep Search asks search engines what they have indexed about the handle, so it finds posts, documents and archived pages no catalogue would list. They fail in opposite directions, which is why both exist, <a href="/username-sweep-vs-deep-search.html">the full comparison is here</a>.</p></details>
+          <details><summary>Can I remove my information from MyRecon?</summary><p>MyRecon doesn't host a database of people, it queries public sources live at the moment you search. To reduce what appears, you need to reduce your public footprint at the source: delete unused accounts, tighten privacy settings, and change passwords exposed in breaches. Our guide on <a href="/guides/reduce-your-digital-footprint.html">reducing your digital footprint</a> walks through exactly how.</p></details>
         </div>
       </div>
     </section>
@@ -319,7 +388,7 @@
         <div class="footer-cols">
           <div class="footer-col"><p class="footer-col-title">Platform</p><a href="#tool">Tools</a><a href="#features">Features</a><a href="#faq">FAQ</a></div>
           <div class="footer-col"><p class="footer-col-title">Guides</p><a href="/guides/">All guides</a><a href="/guides/check-email-data-breach.html">Email breach check</a><a href="/guides/reduce-your-digital-footprint.html">Digital footprint</a><a href="/guides/passkeys-explained.html">Passkeys</a><a href="/guides/account-hacked-what-to-do.html">Account hacked?</a></div>
-          <div class="footer-col"><p class="footer-col-title">Company</p><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div>
+          <div class="footer-col"><p class="footer-col-title">Explainers</p><a href="/is-myrecon-legit.html">Is MyRecon legit?</a><a href="/how-myrecon-compares.html">How we compare</a><a href="/username-sweep-vs-deep-search.html">Sweep vs Deep Search</a><a href="/vs/">MyRecon vs others</a></div><div class="footer-col"><p class="footer-col-title">Company</p><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div>
         </div>
       </div>
       <div class="footer-bottom">
@@ -331,7 +400,9 @@
 
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/email-outcome.js?v=1"></script>
+  <script src="/assets/js/app.js?v=14"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

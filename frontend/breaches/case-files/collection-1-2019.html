@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Collection #1 Explained: 773 Million Email Addresses">
   <meta name="twitter:description" content="Collection #1 was not a hack. It was 87GB of everyone else's hacks, merged and deduplicated into a single file built for one purpose: automated login…">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Collection #1, 2019: 773 million addresses, and nobody was breached","description":"Collection #1 was not a hack. It was 87GB of everyone else's hacks, merged and deduplicated into a single file built for one purpose: automated login attempts.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/collection-1-2019.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Collection #1 credential aggregate"},"wordCount":852}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Collection #1 credential aggregate","item":"https://www.myrecon.xyz/breaches/case-files/collection-1-2019.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which company was breached in Collection #1?","acceptedAnswer":{"@type":"Answer","text":"None. That is the point. Collection #1 is an aggregate — thousands of separate breaches, many of them years old, merged and deduplicated into one file. Finding your address in it tells you that you appeared in at least one of those sources, not that any particular service was compromised in 2019."}},{"@type":"Question","name":"What is credential stuffing?","acceptedAnswer":{"@type":"Answer","text":"Feeding a list of real email-and-password pairs into automated software that tries them against other services. It works because password reuse is common: a small success rate against tens of millions of pairs still yields a large number of working accounts, and each one looks like a normal login rather than an attack."}},{"@type":"Question","name":"How big were Collections #2 to #5?","acceptedAnswer":{"@type":"Answer","text":"Far bigger — roughly 845GB in total against Collection #1's 87GB, across tens of billions of rows, though with heavy duplication between them. Size is a poor measure of danger here: what matters is how many unique, still-valid credential pairs a file contains, and that number is always much smaller than the headline."}},{"@type":"Question","name":"Was my password in Collection #1?","acceptedAnswer":{"@type":"Answer","text":"Around 21 million unique plaintext passwords were in it. Services such as Have I Been Pwned's Pwned Passwords let you check a password without sending it anywhere, using a technique called k-anonymity that only transmits the first five characters of its hash. If a password of yours appears, replace it everywhere it has ever been used."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which company was breached in Collection #1?","acceptedAnswer":{"@type":"Answer","text":"None. That is the point. Collection #1 is an aggregate, thousands of separate breaches, many of them years old, merged and deduplicated into one file. Finding your address in it tells you that you appeared in at least one of those sources, not that any particular service was compromised in 2019."}},{"@type":"Question","name":"What is credential stuffing?","acceptedAnswer":{"@type":"Answer","text":"Feeding a list of real email-and-password pairs into automated software that tries them against other services. It works because password reuse is common: a small success rate against tens of millions of pairs still yields a large number of working accounts, and each one looks like a normal login rather than an attack."}},{"@type":"Question","name":"How big were Collections #2 to #5?","acceptedAnswer":{"@type":"Answer","text":"Far bigger, roughly 845GB in total against Collection #1's 87GB, across tens of billions of rows, though with heavy duplication between them. Size is a poor measure of danger here: what matters is how many unique, still-valid credential pairs a file contains, and that number is always much smaller than the headline."}},{"@type":"Question","name":"Was my password in Collection #1?","acceptedAnswer":{"@type":"Answer","text":"Around 21 million unique plaintext passwords were in it. Services such as Have I Been Pwned's Pwned Passwords let you check a password without sending it anywhere, using a technique called k-anonymity that only transmits the first five characters of its hash. If a password of yours appears, replace it everywhere it has ever been used."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -78,12 +79,12 @@
 
 <h2>What it actually was</h2>
 
-<p>Collection #1 was a <em>combination list</em> — a merged, deduplicated set of email-and-password pairs assembled from thousands of separate, older breaches. Some of the source material was a decade old. Much of it had been cracked from hashes long after the original theft. The compiler's contribution was not intrusion; it was data cleaning.</p>
+<p>Collection #1 was a <em>combination list</em>: a merged, deduplicated set of email-and-password pairs assembled from thousands of separate, older breaches. Some of the source material was a decade old. Much of it had been cracked from hashes long after the original theft. The compiler's contribution was not intrusion; it was data cleaning.</p>
 
 <p>And data cleaning is the valuable part. A hundred separate breach dumps, in a hundred formats, full of duplicates and dead addresses, is an awkward thing to attack with. One normalised file of unique pairs is a weapon you can point at a login page and leave running.</p>
 
 <div class="callout">
-  <p><strong>Why this reframes what "a breach" means.</strong> Most people think of breach exposure as a set of events: a site you used got hacked, you got an email, you changed the password. Collection #1 shows the other half — the long secondary market in which those events are merged, cracked, cleaned and re-traded for years afterwards. Your exposure is not a list of incidents. It is a moving aggregate that keeps growing without anyone new being attacked.</p>
+  <p><strong>Why this reframes what "a breach" means.</strong> Most people think of breach exposure as a set of events: a site you used got hacked, you got an email, you changed the password. Collection #1 shows the other half, the long secondary market in which those events are merged, cracked, cleaned and re-traded for years afterwards. Your exposure is not a list of incidents. It is a moving aggregate that keeps growing without anyone new being attacked.</p>
 </div>
 
 <h2>How the file gets used</h2>
@@ -91,20 +92,20 @@
 <p>Credential stuffing is the whole purpose. The mechanics are unglamorous:</p>
 
 <ol class="cf-timeline">
-  <li><b>Load the list</b> into stuffing software — the well-known tools are sold openly and have graphical interfaces.</li>
+  <li><b>Load the list</b> into stuffing software, the well-known tools are sold openly and have graphical interfaces.</li>
   <li><b>Point it at a target's login endpoint</b>, often the mobile API rather than the web form, because mobile endpoints historically had weaker rate limiting.</li>
   <li><b>Route the attempts through proxies</b> so they appear to come from thousands of residential addresses rather than one server.</li>
   <li><b>Harvest the hits.</b> A success rate of a fraction of a percent, against tens of millions of pairs, still produces a very large number of working accounts.</li>
-  <li><b>Sell them by category.</b> Streaming accounts, food delivery credit, loyalty points, gaming inventories, and — the valuable ones — email accounts, which can reset everything else.</li>
+  <li><b>Sell them by category.</b> Streaming accounts, food delivery credit, loyalty points, gaming inventories, and, the valuable ones, email accounts, which can reset everything else.</li>
 </ol>
 
 <p>Nothing here requires a vulnerability in the service being attacked. Every request is a correctly formatted login attempt with a correct password. That is precisely what makes it so hard to block, and why defenders moved from "keep attackers out" to "detect anomalous login patterns" over this period.</p>
 
 <h2>The Collections that followed</h2>
 
-<p>Collection #1 turned out to be one part of a set. Collections #2 through #5 followed within weeks, totalling roughly 845GB — an order of magnitude larger. Researchers at the Hasso Plattner Institute worked through the full set and found, unsurprisingly, enormous duplication.</p>
+<p>Collection #1 turned out to be one part of a set. Collections #2 through #5 followed within weeks, totalling roughly 845GB, an order of magnitude larger. Researchers at the Hasso Plattner Institute worked through the full set and found, unsurprisingly, enormous duplication.</p>
 
-<p>This is the trap in reading any aggregate announcement. A claim of "26 billion records" or "10 billion passwords" is a file size statement, not an exposure statement. What matters is the number of unique, current, valid pairs, and that figure is always dramatically smaller — often by two orders of magnitude — than the headline. Since 2019, every few months has produced a new compilation announced in terms designed to be alarming. The honest response is to ask how many unique credentials are actually new.</p>
+<p>This is the trap in reading any aggregate announcement. A claim of "26 billion records" or "10 billion passwords" is a file size statement, not an exposure statement. What matters is the number of unique, current, valid pairs, and that figure is always dramatically smaller, often by two orders of magnitude, than the headline. Since 2019, every few months has produced a new compilation announced in terms designed to be alarming. The honest response is to ask how many unique credentials are actually new.</p>
 
 <h2>Why the 2019 file still matters</h2>
 
@@ -117,10 +118,10 @@
 <p>Finding your address in an aggregate is not an emergency, but it is a signal that your reuse habit has already been tested.</p>
 
 <ol class="bx-actions">
-  <li><strong>Fix reuse in priority order.</strong> Email first — it can reset everything else — then banking and payment, then anything holding personal documents. Unique passwords everywhere, stored in a manager.</li>
+  <li><strong>Fix reuse in priority order.</strong> Email first, it can reset everything else, then banking and payment, then anything holding personal documents. Unique passwords everywhere, stored in a manager.</li>
   <li><strong>Check the passwords themselves, not just the addresses.</strong> A breached-password service will tell you whether a specific password is already in circulation without ever seeing the password.</li>
-  <li><strong>Turn on two-factor authentication.</strong> It is the control that makes stuffing fail even when the password is correct — <a href="/guides/two-factor-authentication.html">the options ranked by how well they hold up</a>.</li>
-  <li><strong>Ignore the size of the headline.</strong> When the next "largest leak ever" is announced, ask how many unique credentials in it are new. The answer is usually "almost none" — <a href="/breaches/">the archive of individually confirmed breaches</a> is the more useful thing to watch.</li>
+  <li><strong>Turn on two-factor authentication.</strong> It is the control that makes stuffing fail even when the password is correct, <a href="/guides/two-factor-authentication.html">the options ranked by how well they hold up</a>.</li>
+  <li><strong>Ignore the size of the headline.</strong> When the next "largest leak ever" is announced, ask how many unique credentials in it are new. The answer is usually "almost none", <a href="/breaches/">the archive of individually confirmed breaches</a> is the more useful thing to watch.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -133,27 +134,39 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>Which company was breached in Collection #1?</h3>
-        <p>None. That is the point. Collection #1 is an aggregate — thousands of separate breaches, many of them years old, merged and deduplicated into one file. Finding your address in it tells you that you appeared in at least one of those sources, not that any particular service was compromised in 2019.</p>
+        <p>None. That is the point. Collection #1 is an aggregate, thousands of separate breaches, many of them years old, merged and deduplicated into one file. Finding your address in it tells you that you appeared in at least one of those sources, not that any particular service was compromised in 2019.</p>
 
         <h3>What is credential stuffing?</h3>
         <p>Feeding a list of real email-and-password pairs into automated software that tries them against other services. It works because password reuse is common: a small success rate against tens of millions of pairs still yields a large number of working accounts, and each one looks like a normal login rather than an attack.</p>
 
         <h3>How big were Collections #2 to #5?</h3>
-        <p>Far bigger — roughly 845GB in total against Collection #1's 87GB, across tens of billions of rows, though with heavy duplication between them. Size is a poor measure of danger here: what matters is how many unique, still-valid credential pairs a file contains, and that number is always much smaller than the headline.</p>
+        <p>Far bigger, roughly 845GB in total against Collection #1's 87GB, across tens of billions of rows, though with heavy duplication between them. Size is a poor measure of danger here: what matters is how many unique, still-valid credential pairs a file contains, and that number is always much smaller than the headline.</p>
 
         <h3>Was my password in Collection #1?</h3>
         <p>Around 21 million unique plaintext passwords were in it. Services such as Have I Been Pwned's Pwned Passwords let you check a password without sending it anywhere, using a technique called k-anonymity that only transmits the first five characters of its hash. If a password of yours appears, replace it everywhere it has ever been used.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><a href="https://www.troyhunt.com/the-773-million-record-collection-1-data-reach/" target="_blank" rel="noopener nofollow">Troy Hunt, &quot;The 773 Million Record Collection #1 Data Breach&quot;, 17 January 2019</a></li>
-        <li><a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener nofollow">Have I Been Pwned — Pwned Passwords</a></li>
+        <li><a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener nofollow">Have I Been Pwned, Pwned Passwords</a></li>
         <li><b>Hasso Plattner Institute analysis of the subsequent Collections, 2019</b></li>
       </ul>
       <h2>Read next</h2>
@@ -163,7 +176,7 @@
         <li><a href="/breaches/case-files/snowflake-2024.html">Snowflake, 2024: 165 companies breached without anyone touching Snowflake</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -179,5 +192,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

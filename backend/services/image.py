@@ -1,6 +1,6 @@
 """
 ╔══════════════════════════════════════════════════════════════╗
-║  Image Service — Reverse Image Search API Layer              ║
+║  Image Service, Reverse Image Search API Layer              ║
 ║  Synchronous, serverless-safe (no threads, no global state)  ║
 ╚══════════════════════════════════════════════════════════════╝
 """

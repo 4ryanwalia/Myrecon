@@ -1,4 +1,4 @@
-/* sitemap.xml — generated from what is actually on disk.
+/* sitemap.xml, generated from what is actually on disk.
  *
  * WHY THIS EXISTS
  * The sitemap used to be hand-maintained, with build-breaches.js rewriting a
@@ -14,7 +14,7 @@
  * WHERE <lastmod> COMES FROM, in order of preference:
  *   1. JSON-LD dateModified / datePublished on the page itself. The breach
  *      articles carry HIBP's ModifiedDate here, which is the real date the
- *      underlying record changed — better than anything the filesystem knows,
+ *      underlying record changed, better than anything the filesystem knows,
  *      since these files are regenerated on every build and their mtime is
  *      always "now".
  *   2. The last commit that touched the file. For hand-written pages this is
@@ -26,7 +26,7 @@
  * crawler learns to disregard.
  *
  * WHAT IS LEFT OUT
- * Anything carrying a noindex robots meta, the 404 page, and /content/ —
+ * Anything carrying a noindex robots meta, the 404 page, and /content/,
  * which holds editorial fragments that get inlined into generated articles,
  * not pages meant to stand on their own.
  *
@@ -57,6 +57,16 @@ const SECTIONS = [
   { test: (u) => u === "/guides/", changefreq: "weekly", priority: "0.9" },
   { test: (u) => u.startsWith("/guides/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/services.html" || u === "/app.html" || u === "/deep-search.html", changefreq: "monthly", priority: "0.9" },
+  // The three explainer pages. High-intent search targets ("is X legit",
+  // "X vs Y"), so they sit above About and below the tool pages. Without an
+  // entry here they would fall through to the 0.3 catch-all, which is where
+  // legal boilerplate lives.
+  { test: (u) => u === "/is-myrecon-legit.html"
+      || u === "/how-myrecon-compares.html"
+      || u === "/username-sweep-vs-deep-search.html",
+    changefreq: "monthly", priority: "0.8" },
+  // Named head-to-head comparisons. Same intent class as the explainers.
+  { test: (u) => u.startsWith("/vs/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/founder.html", changefreq: "monthly", priority: "0.7" },
   { test: (u) => u === "/about.html", changefreq: "monthly", priority: "0.6" },
   { test: (u) => u === "/contact.html", changefreq: "yearly", priority: "0.5" },
@@ -73,7 +83,7 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-/** /guides/index.html is served at /guides/ — index the directory, not the file. */
+/** /guides/index.html is served at /guides/, index the directory, not the file. */
 function toUrlPath(file) {
   const rel = path.relative(ROOT, file).split(path.sep).join("/");
   return "/" + (rel.endsWith("index.html") ? rel.slice(0, -"index.html".length) : rel);
@@ -113,7 +123,7 @@ function main() {
     }
     // A page with no <title> is a fragment, not a document.
     if (!/<title>/i.test(html)) {
-      skipped.push(`${url} (no <title> — fragment)`);
+      skipped.push(`${url} (no <title>, fragment)`);
       continue;
     }
 
@@ -121,7 +131,7 @@ function main() {
     entries.push({ url, lastmod: lastmod(file, html), ...section });
   }
 
-  // Homepage first, then alphabetically — deterministic output, so a rebuild
+  // Homepage first, then alphabetically, deterministic output, so a rebuild
   // that changed nothing produces no diff.
   entries.sort((a, b) => (a.url === "/" ? -1 : b.url === "/" ? 1 : a.url.localeCompare(b.url)));
 
@@ -147,7 +157,7 @@ function main() {
   // 50,000 is the per-file ceiling in the protocol. Nowhere near it, but a
   // silent breach of it would be a silently broken sitemap.
   if (entries.length > 50000) {
-    console.error("[sitemap] over 50,000 URLs — this must be split into a sitemap index");
+    console.error("[sitemap] over 50,000 URLs, this must be split into a sitemap index");
     process.exit(1);
   }
 }

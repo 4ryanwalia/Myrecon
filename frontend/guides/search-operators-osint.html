@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Operators for OSINT and Self-Audit | MyRecon</title>
+  <meta name="description" content="The operators that still work, the ones quietly retired, and how to use them to audit what the web already publishes about you.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/search-operators-osint.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Search Operators: The OSINT Skill Hiding in the Search Box">
+  <meta property="og:description" content="The operators that still work, the ones quietly retired, and how to use them to audit what the web already publishes about you.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/search-operators-osint.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Search Operators: The OSINT Skill Hiding in the Search Box">
+  <meta name="twitter:description" content="The operators that still work, the ones quietly retired, and how to use them to audit what the web already publishes about you.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"Search Operators: The OSINT Skill Hiding in the Search Box","description":"The operators that still work, the ones quietly retired, and how to use them to audit what the web already publishes about you.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1203,"mainEntityOfPage":"https://www.myrecon.xyz/guides/search-operators-osint.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Search Operators: The OSINT Skill Hiding in the Search Box","item":"https://www.myrecon.xyz/guides/search-operators-osint.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do search operators still work?","acceptedAnswer":{"@type":"Answer","text":"The core set does: quoted phrases, site:, filetype:, intitle:, inurl:, the minus sign for exclusion, and OR. Several older ones were quietly retired, link:, info:, the plus sign and the tilde among them, and a few that still parse now return approximations rather than exact matching."}},{"@type":"Question","name":"Why do I get different results from someone else running the same search?","acceptedAnswer":{"@type":"Answer","text":"Search results are personalised by location, language, device, search history and whether you are signed in. For investigative work this is a problem, because it means results are not reproducible. Use a signed-out private window and note the date, and treat any result as a snapshot rather than a fact about the index."}},{"@type":"Question","name":"Is it legal to use search operators to find things?","acceptedAnswer":{"@type":"Answer","text":"Reading what a public search engine has indexed is not unauthorised access. Using what you find to reach systems or data you have no permission to access is a separate act and is unlawful in most jurisdictions regardless of how easily the address was found."}},{"@type":"Question","name":"What is the single most useful operator?","acceptedAnswer":{"@type":"Answer","text":"Quotation marks. Exact-phrase matching eliminates most of the noise in a name search, and combining a quoted name with a quoted employer or city is usually enough to find what is public about a person without any other syntax."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">OSINT technique</span>
+      <h1>Search Operators: The OSINT Skill Hiding in the Search Box</h1>
+      <p class="meta">Published 14 September 2026 · 6 min read</p>
+
+<p class="lead">The most productive tool in open-source intelligence is not a specialist platform. It is an ordinary search box used precisely, and the difference between typing a name and constructing a query is the difference between four million irrelevant results and the three pages that actually mention the person.</p>
+
+      <h2>The operators that still work</h2>
+      <p>Search syntax has been quietly pruned over the years. These are the ones that remain reliable across the major engines.</p>
+      <ul>
+        <li><strong>Quotation marks</strong>: exact phrase. <span style="font-family:var(--mono)">"jordan alvarez"</span> finds the name as written, rather than every page containing either word. This is the highest-value operator by a distance.</li>
+        <li><strong><span style="font-family:var(--mono)">site:</span></strong>: restrict to one domain or subdomain. <span style="font-family:var(--mono)">site:example.com</span> searches only that site, which is often better than the site's own search function.</li>
+        <li><strong>The minus sign</strong>: exclude. <span style="font-family:var(--mono)">"jordan alvarez" -football</span> removes an entire category of noise in one character, and repeated exclusions are how you narrow a common name.</li>
+        <li><strong><span style="font-family:var(--mono)">OR</span></strong>: in capitals, matching either term. Parentheses group them.</li>
+        <li><strong><span style="font-family:var(--mono)">filetype:</span></strong>: restrict by document type. <span style="font-family:var(--mono)">filetype:pdf</span>, and equally <span style="font-family:var(--mono)">docx</span>, <span style="font-family:var(--mono)">xlsx</span>, <span style="font-family:var(--mono)">pptx</span>, <span style="font-family:var(--mono)">csv</span>.</li>
+        <li><strong><span style="font-family:var(--mono)">intitle:</span> and <span style="font-family:var(--mono)">inurl:</span></strong>: the term must appear in the page title or the address. <span style="font-family:var(--mono)">allintitle:</span> and <span style="font-family:var(--mono)">allinurl:</span> require all the terms.</li>
+        <li><strong><span style="font-family:var(--mono)">before:</span> and <span style="font-family:var(--mono)">after:</span></strong>: date bounds, as <span style="font-family:var(--mono)">after:2023-01-01</span>. Useful, and approximate: the engine's idea of a page's date is often wrong.</li>
+        <li><strong>The asterisk</strong>: a wildcard standing for one or more words inside a quoted phrase.</li>
+      </ul>
+      <p>Retired or degraded, so do not build a method on them: <span style="font-family:var(--mono)">link:</span>, <span style="font-family:var(--mono)">info:</span>, <span style="font-family:var(--mono)">related:</span> in its old form, the leading plus sign, and the tilde for synonyms. Most either return nothing or silently do something else.</p>
+
+      <h2>Different engines, different indexes</h2>
+      <p>Running the same query in more than one engine is not redundancy. The indexes genuinely differ, and so does the syntax.</p>
+      <ul>
+        <li><strong>Bing</strong> keeps operators the others dropped, including <span style="font-family:var(--mono)">contains:</span> for pages linking to a file type and <span style="font-family:var(--mono)">ip:</span> for pages on a given address, the latter being a rare public way to see other sites on the same host.</li>
+        <li><strong>DuckDuckGo</strong> supports the common syntax and adds "bang" shortcuts that redirect a query straight into another site's own search.</li>
+        <li><strong>Yandex</strong> indexes Eastern European and Central Asian content far more thoroughly than the others, which matters for both text and images.</li>
+        <li><strong>Independent crawlers</strong> such as Mojeek and Marginalia surface small, old and non-commercial pages that the large engines have deprioritised, occasionally the only place an old forum post survives.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>Your results are not the results.</strong> Search output is personalised by location, language, device, history and whether you are signed in, so two people running an identical query get different pages, and you cannot reproduce your own search a month later. For anything you intend to rely on, work signed out in a private window, record the query and the date, and save the page rather than the link. A finding you cannot reproduce is not evidence.</p>
+      </div>
+
+      <h2>Auditing your own footprint</h2>
+      <p>The most useful thing most people can do with this syntax is point it at themselves. Work through these and record what comes back.</p>
+      <ol>
+        <li><strong><span style="font-family:var(--mono)">"your full name"</span></strong>: then with your city, employer, and university in turn. Each addition surfaces a different cluster.</li>
+        <li><strong>Your email address in quotes,</strong> including old ones. Addresses turn up in leaked mailing lists, committee minutes, forum signatures and conference programmes.</li>
+        <li><strong>Your phone number in quotes,</strong> in two or three formats, with and without the country code, with and without spaces.</li>
+        <li><strong>Every username you have used,</strong> current and retired. Handles connect accounts across a decade; the <a href="/guides/username-osint-search.html">username guide</a> covers what that enumeration finds.</li>
+        <li><strong>Your home address in quotes,</strong> which finds property listings, planning applications and public registers.</li>
+        <li><strong><span style="font-family:var(--mono)">"your name" filetype:pdf</span></strong>: the single most productive query in a self-audit. Committee papers, membership lists, event attendee rosters, school newsletters and old CVs are published as PDFs and are rarely thought of as public.</li>
+        <li><strong><span style="font-family:var(--mono)">site:</span> against the platforms you use,</strong> to see what of yours the engine has indexed from each.</li>
+      </ol>
+      <p>Then act on it: the <a href="/guides/reduce-your-digital-footprint.html">digital footprint guide</a> covers removal at source, and <a href="/guides/how-data-brokers-work.html">the data broker guide</a> covers the listings that regenerate.</p>
+
+      <h2>Checking an organisation or a domain</h2>
+      <p>The same syntax, pointed at a company, answers questions the company's own website will not.</p>
+      <ul>
+        <li><strong><span style="font-family:var(--mono)">site:example.com</span></strong> alone gives a rough sense of how much of the site is indexed, a handful of pages for a business claiming years of trading is a contradiction.</li>
+        <li><strong><span style="font-family:var(--mono)">site:example.com filetype:pdf</span></strong> finds the reports, price lists and policy documents that describe how an organisation actually operates.</li>
+        <li><strong><span style="font-family:var(--mono)">"Example Ltd" -site:example.com</span></strong> finds what everyone else says about them, with their own marketing removed.</li>
+        <li><strong><span style="font-family:var(--mono)">"Example Ltd" (complaint OR refund OR "chargeback")</span></strong> surfaces the pattern of disputes, if there is one.</li>
+        <li><strong>Quoted snippets of their website text</strong>: a distinctive sentence from an "about us" page, searched in quotes, exposes template reuse across dozens of sites when the business is a front. This is one of the most reliable tells there is.</li>
+      </ul>
+      <p>Pair it with the infrastructure checks in <a href="/guides/investigate-a-domain.html">how to investigate a suspicious domain</a>; search tells you what a domain says about itself, and the registration record tells you when it started saying it.</p>
+
+      <h2>Where the line is</h2>
+      <p>Searching a public index is not intrusion. What you do afterwards can be.</p>
+      <p>Pointing search syntax at other people's systems to enumerate exposed files, unprotected devices and administrative interfaces is a well-known practice, and this guide does not publish recipes for it, not because the syntax is secret, but because the useful half of that activity happens under an authorised testing agreement and the rest is someone trespassing on infrastructure they do not own. Finding an address easily has never been a defence to accessing what is behind it.</p>
+      <p>The same restraint applies to people. Establishing whether an account contacting you is genuine is reasonable. Assembling a stranger's home address, employer and daily routine because you can is the behaviour the OSINT community spends most of its time distancing itself from, and in many jurisdictions the harassment that follows is an offence regardless of how public each individual fragment was.</p>
+
+      <div class="callout">
+        <p><strong>A search result is a claim, not a fact.</strong> Snippets go stale, pages get edited, names collide, and the engine's summary is frequently not what the page says. Open the source, read it, note the date, and corroborate before it becomes a conclusion, the standard is set out in <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a>.</p>
+      </div>
+
+      <h2>What search will not do</h2>
+      <p>The index is not the web. Content behind logins, in apps, in private groups and in messaging platforms is absent, and a great deal of what exists is simply not crawled. Search engines also actively suppress some categories, and delisting under privacy law removes results without removing pages.</p>
+      <p>So the absence of a result means very little. It is evidence that a search engine did not return something today, from your location, signed out, which is a much narrower statement than "it is not on the internet", and confusing the two is how a search-based investigation reaches a confident wrong answer.</p>
+
+      <div class="callout">
+        <p>Once the search box has told you which handles and addresses of yours are public, check what they are exposed in with the <a href="/#tool">MyRecon tools</a>.</p>
+      </div>
+
+      <h2>Questions people ask</h2>
+      <h3>Do search operators still work?</h3>
+      <p>The core set does: quoted phrases, site:, filetype:, intitle:, inurl:, the minus sign for exclusion, and OR. Several older ones were quietly retired, link:, info:, the plus sign and the tilde among them, and a few that still parse now return approximations rather than exact matching.</p>
+
+      <h3>Why do I get different results from someone else running the same search?</h3>
+      <p>Search results are personalised by location, language, device, search history and whether you are signed in. For investigative work this is a problem, because it means results are not reproducible. Use a signed-out private window and note the date, and treat any result as a snapshot rather than a fact about the index.</p>
+
+      <h3>Is it legal to use search operators to find things?</h3>
+      <p>Reading what a public search engine has indexed is not unauthorised access. Using what you find to reach systems or data you have no permission to access is a separate act and is unlawful in most jurisdictions regardless of how easily the address was found.</p>
+
+      <h3>What is the single most useful operator?</h3>
+      <p>Quotation marks. Exact-phrase matching eliminates most of the noise in a name search, and combining a quoted name with a quoted employer or city is usually enough to find what is public about a person without any other syntax.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dsearch_operators_osint" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/what-is-osint.html">what open-source intelligence is, and is not</a></li>
+        <li><a href="/guides/reduce-your-digital-footprint.html">acting on what the search box finds</a></li>
+        <li><a href="/guides/verify-an-osint-finding.html">how to verify a finding before acting on it</a></li>
+        <li><a href="/guides/username-osint-search.html">finding accounts across platforms by username</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

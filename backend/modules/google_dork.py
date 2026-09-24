@@ -1,7 +1,7 @@
 """
 ╔══════════════════════════════════════════════════════════════╗
-║  Google Dorking Module — Google Custom Search API            ║
-║  Free: 100 queries/day — No paid key required               ║
+║  Google Dorking Module, Google Custom Search API            ║
+║  Free: 100 queries/day, No paid key required               ║
 ╚══════════════════════════════════════════════════════════════╝
 
 HOW TO GET YOUR FREE API KEY:
@@ -46,7 +46,7 @@ class GoogleDorkEngine:
     """Executes Google dork queries through Google Custom Search API."""
 
     def __init__(self, api_key: str = "", cx_id: str = "", delay: float = 1.0):
-        # Keys come only from the caller or the environment — never hardcoded.
+        # Keys come only from the caller or the environment, never hardcoded.
         self.api_key = api_key or os.environ.get("GOOGLE_API_KEY", "")
         self.cx_id = cx_id or os.environ.get("GOOGLE_CX_ID", "")
         self.delay = delay
@@ -89,7 +89,7 @@ class GoogleDorkEngine:
             hits.append({
                 "url": self._simulate_url(query),
                 "title": f"[Simulated] {query}",
-                "snippet": "API key not set — showing expected target URL.",
+                "snippet": "API key not set, showing expected target URL.",
                 "query": query, "source": "google_dork", "simulated": True,
             })
         return hits

@@ -20,13 +20,13 @@
   "related": ["ashley-madison-2015", "talktalk-2015", "23andme-2023"],
   "faq": [
     { "q": "Why is children's data treated as a special category?", "a": "Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service." },
-    { "q": "What actually made this breach so bad technically?", "a": "Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection — such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit." },
-    { "q": "What did the attacker do with the data?", "a": "Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful — an arrest followed in the UK — but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested." },
+    { "q": "What actually made this breach so bad technically?", "a": "Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection, such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit." },
+    { "q": "What did the attacker do with the data?", "a": "Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful, an arrest followed in the UK, but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested." },
     { "q": "Did VTech face consequences?", "a": "The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites." }
   ],
   "sources": [
-    { "label": "Federal Trade Commission — Electronic toy maker VTech settles FTC allegations, January 2018", "url": "https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-us-law" },
-    { "label": "Troy Hunt — analysis of the VTech data, November 2015", "url": "https://www.troyhunt.com/when-children-are-breached-inside/", "note": "the independent technical assessment of what was exposed" },
+    { "label": "Federal Trade Commission, Electronic toy maker VTech settles FTC allegations, January 2018", "url": "https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-us-law" },
+    { "label": "Troy Hunt, analysis of the VTech data, November 2015", "url": "https://www.troyhunt.com/when-children-are-breached-inside/", "note": "the independent technical assessment of what was exposed" },
     { "label": "Motherboard reporting on the breach and interviews with the attacker, November 2015" },
     { "label": "VTech Holdings Limited public statements and FAQ, November–December 2015" }
   ]
@@ -36,18 +36,18 @@
 
 <h2>What happened</h2>
 
-<p>VTech makes electronic learning toys — tablets and devices aimed at young children. Around them it ran online services: Learning Lodge, an app store for downloading content to the devices, and Kid Connect, a messaging feature that let children exchange text, voice messages and photographs with their parents.</p>
+<p>VTech makes electronic learning toys, tablets and devices aimed at young children. Around them it ran online services: Learning Lodge, an app store for downloading content to the devices, and Kid Connect, a messaging feature that let children exchange text, voice messages and photographs with their parents.</p>
 
 <p>On 14 November 2015, an attacker used SQL injection against Learning Lodge to reach the database behind it. The compromise was disclosed on 27 November after the attacker contacted a journalist.</p>
 
-<p>The database held about 4.9 million parent accounts and 6.4 million child profiles. The parent records contained names, postal addresses, email addresses, download history, IP addresses, password hashes and — stored in plain text — the answers to their security questions. The child profiles contained names, dates of birth and genders, each linked to the parent account.</p>
+<p>The database held about 4.9 million parent accounts and 6.4 million child profiles. The parent records contained names, postal addresses, email addresses, download history, IP addresses, password hashes and, stored in plain text, the answers to their security questions. The child profiles contained names, dates of birth and genders, each linked to the parent account.</p>
 
 <p>Because the parent and child records were linked, the dataset resolved to something more specific than either: a named child, their age, and the home address they live at.</p>
 
 <p>For a subset of users, Kid Connect data was also exposed, including photographs children had taken and messages they had exchanged.</p>
 
 <div class="callout">
-  <p><strong>The technical findings were all in the category of long-settled.</strong> SQL injection had been comprehensively documented for seventeen years by 2015. Unsalted MD5 password hashing had been unacceptable for roughly a decade — such hashes fall in bulk on commodity hardware almost immediately. Storing security question answers in plain text defeats the purpose of having them, since the recovery mechanism becomes readable to anyone who reaches the table. None of these required a sophisticated attacker to find, and none required expertise to avoid.</p>
+  <p><strong>The technical findings were all in the category of long-settled.</strong> SQL injection had been comprehensively documented for seventeen years by 2015. Unsalted MD5 password hashing had been unacceptable for roughly a decade, such hashes fall in bulk on commodity hardware almost immediately. Storing security question answers in plain text defeats the purpose of having them, since the recovery mechanism becomes readable to anyone who reaches the table. None of these required a sophisticated attacker to find, and none required expertise to avoid.</p>
 </div>
 
 <h2>The attacker who did not sell it</h2>
@@ -67,12 +67,12 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>14 November 2015</b> — SQL injection against Learning Lodge gives access to the database.</li>
-  <li><b>23 November 2015</b> — The attacker contacts a journalist and provides the data.</li>
-  <li><b>27 November 2015</b> — VTech confirms the breach and suspends affected services.</li>
-  <li><b>30 November 2015</b> — Independent analysis establishes that child profiles, photographs and chat logs were included, and documents the password and security-answer failures.</li>
-  <li><b>December 2015</b> — An arrest is made in the UK; VTech amends its terms of service, drawing widespread criticism.</li>
-  <li><b>January 2018</b> — The FTC settles with VTech for $650,000 over children's privacy violations.</li>
+  <li><b>14 November 2015</b>: SQL injection against Learning Lodge gives access to the database.</li>
+  <li><b>23 November 2015</b>: The attacker contacts a journalist and provides the data.</li>
+  <li><b>27 November 2015</b>: VTech confirms the breach and suspends affected services.</li>
+  <li><b>30 November 2015</b>: Independent analysis establishes that child profiles, photographs and chat logs were included, and documents the password and security-answer failures.</li>
+  <li><b>December 2015</b>: An arrest is made in the UK; VTech amends its terms of service, drawing widespread criticism.</li>
+  <li><b>January 2018</b>: The FTC settles with VTech for $650,000 over children's privacy violations.</li>
 </ol>
 
 <h2>What it changed</h2>
@@ -83,7 +83,7 @@
 
 <p><strong>Parents learned that the account is the attack surface.</strong> The device is not usually the risk. The account created to set it up is, along with the vendor's cloud service behind it, and that is now the standard advice for every connected product bought for a child.</p>
 
-<p><strong>It has aged badly in the right way.</strong> Children exposed in 2015 are in their late teens and twenties now. Their names, dates of birth and childhood addresses were published — briefly and in a contained fashion, but published. Long-tail harm from children's data breaches is inherently hard to measure, and this case is the reason people started trying to.</p>
+<p><strong>It has aged badly in the right way.</strong> Children exposed in 2015 are in their late teens and twenties now. Their names, dates of birth and childhood addresses were published, briefly and in a contained fashion, but published. Long-tail harm from children's data breaches is inherently hard to measure, and this case is the reason people started trying to.</p>
 
 <h2>What parents can do</h2>
 

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deep Search: Username Correlation Console | MyRecon</title>
-  <meta name="description" content="Check a username across 100+ public platforms and see every match correlated into a confidence-scored graph, with the evidence behind each score shown.">
+  <title>Deep Search: Username Lookup Across 123 Platforms | MyRecon</title>
+  <meta name="description" content="Check a username across 123 public platforms. Each result says what was actually established, confirmed, probable or unconfirmed, with the evidence.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/deep-search.html">
@@ -12,46 +12,47 @@
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
-  <meta property="og:title" content="Deep Search — MyRecon">
-  <meta property="og:description" content="A name is not an identifier. See how MyRecon derives handles, checks them across public platforms, and scores the result.">
+  <meta property="og:title" content="Deep Search | MyRecon">
+  <meta property="og:description" content="Most username checkers call a 200 response a match. This one tells you which of three things it actually established, and says so when it could not tell.">
   <meta property="og:url" content="https://www.myrecon.xyz/deep-search.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Deep Search — MyRecon">
-  <meta name="twitter:description" content="A name is not an identifier. See how MyRecon derives handles, checks them across public platforms, and scores the result.">
+  <meta name="twitter:title" content="Deep Search | MyRecon">
+  <meta name="twitter:description" content="Most username checkers call a 200 response a match. This one tells you which of three things it actually established, and says so when it could not tell.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/deep-search.css?v=10">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Deep Search: Username Correlation Console","description":"Check a username across 100+ public platforms and see every match correlated into a confidence-scored graph, with the evidence behind each score shown.","url":"https://www.myrecon.xyz/deep-search.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Deep Search","item":"https://www.myrecon.xyz/deep-search.html"}]}}</script>
-  <script type="application/ld+json">{"@type":"WebApplication","name":"MyRecon Deep Search","applicationCategory":"SecurityApplication","operatingSystem":"Any","url":"https://www.myrecon.xyz/deep-search.html","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"description":"Checks a username across 100+ public platforms and correlates the matches into a confidence-scored graph.","@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Deep Search: Username Lookup Across 123 Platforms","description":"Check a username across 123 public platforms. Each result says what was actually established, confirmed, probable or unconfirmed, with the evidence.","url":"https://www.myrecon.xyz/deep-search.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Deep Search","item":"https://www.myrecon.xyz/deep-search.html"}]}}</script>
+  <script type="application/ld+json">{"@type":"WebApplication","name":"MyRecon Deep Search","applicationCategory":"SecurityApplication","operatingSystem":"Any","url":"https://www.myrecon.xyz/deep-search.html","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"description":"Checks a username across 123 public platforms and correlates the matches into a confidence-scored graph, reporting unverifiable responses as unconfirmed rather than counting them.","@context":"https://schema.org"}</script>
 </head>
 <body>
   <a class="skip-link" href="#ds">Skip to the tool</a>
 
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home">
         <img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32">
         MyRecon <small>OSINT</small>
       </a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg>
       </button>
@@ -66,11 +67,29 @@
       <h1>Deep Search</h1>
       <span class="ds-kicker">correlation console</span>
     </div>
+    <!-- The standfirst leads with the failure mode of every other tool rather
+         than with our feature list. It is the one thing a reader cannot check
+         for themselves and the one thing that makes the rest of this page
+         worth reading, it used to sit two thirds of the way down, below the
+         fold, where nobody deciding whether to trust the tool ever saw it.
+         The platform count is `TOTAL_PLATFORMS` in backend/modules/
+         username_checker.py; update both if the catalogue changes. -->
     <p class="ds-stand">
-      Check a username across 100+ public platforms and see the matches correlated into a
-      scored graph, with the evidence behind every score. Search by personal name is
-      deliberately not offered — handles guessed from a name return whoever registered
-      them, which is rarely the person you meant.
+      Most username checkers ask one question: does this profile URL return HTTP 200? A great
+      many sites answer 200 for every handle ever typed, which is how those tools produce
+      confident lists of accounts that were never there. Deep Search checks <strong>123 public
+      platforms</strong> and tells you which of three things it actually established about each
+      one, and says so plainly when the answer is that it could not tell.
+    </p>
+
+    <!-- Placed above the query box on purpose. Someone who has landed here
+         looking for the account-by-account check is in the wrong place, and
+         telling them so before they run a search costs one line and saves a
+         misread result. -->
+    <p style="margin:0 0 18px;font-size:.92rem;color:var(--text-mute)">
+      Looking for the account-by-account check instead?
+      <a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search</a>
+      explains which of the two answers your question.
     </p>
 
     <div class="panel ds-query">
@@ -82,8 +101,11 @@
         <button class="btn" id="dsRun" type="button">Investigate</button>
       </div>
       <div class="opt-row">
-        <label class="switch"><input type="checkbox" id="dsDeep"> Deep sweep <span class="hint">(slower, more platforms)</span></label>
-        <span class="hint" id="dsMode">Handles only — no spaces</span>
+        <!-- Real numbers, not "more". The default sweep is PLATFORMS[:50] and
+             deep is the full list, a reader deciding whether the extra wait
+             is worth it can only judge that against the actual figures. -->
+        <label class="switch"><input type="checkbox" id="dsDeep"> Deep sweep <span class="hint">(all 123 platforms instead of 50, slower)</span></label>
+        <span class="hint" id="dsMode">Handles only, no spaces</span>
       </div>
     </div>
 
@@ -102,7 +124,7 @@
     <p class="ds-foot">
       Values in <span class="mono">monospace</span> are machine-verified facts; prose is interpretation.
       Every finding cites its source and carries a confidence band. MyRecon reports correlations
-      between public accounts — it does not confirm identities.
+      between public accounts, it does not confirm identities.
     </p>
 
     <!-- Written explanation of the method. A tool screen with no prose is a
@@ -111,32 +133,73 @@
          the page is for. Both problems have the same fix. -->
     <section class="prose" style="max-width:760px;margin:48px auto 0;text-align:left">
       <h2 style="font-size:1.3rem;margin-bottom:10px">How Deep Search decides something is a match</h2>
-      <p style="color:var(--text-dim)">A username check is easy to run and easy to get wrong. Most tools report a "hit" whenever a profile URL returns HTTP 200, which is why they routinely claim accounts that do not exist. Deep Search is built around the opposite assumption: a response is evidence, not an answer, and every platform lies in its own particular way.</p>
+      <p style="color:var(--text-dim)">A username check is easy to run and easy to get wrong. Deep Search works from the opposite assumption to most tools: a response is evidence, not an answer, and every platform fails in its own particular way. A match has to rest on at least one signal that could only have come from a page rendered for <em>that specific account</em>: the handle in the page title, a follower count. Generic signals never qualify on their own, because a site-wide social image and a canonical URL that echoes back whatever path was requested score exactly the same for a handle nobody has ever registered.</p>
+
+      <p style="color:var(--text-dim)">That costs coverage, deliberately. A real profile on a platform that renders entirely in the browser scores nothing here, because its response is genuinely indistinguishable from a nonexistent one. Silence is the honest answer in that case, and it is the one we give.</p>
 
       <h3 style="margin:22px 0 8px;font-size:1.05rem">The three tiers of evidence</h3>
       <ul style="color:var(--text-dim);padding-left:20px;line-height:1.9">
-        <li><strong>Confirmed.</strong> The platform returns a profile containing the handle, and content unique to that profile — a display name, an avatar, a join date, a follower count. Something exists that could only come from a real account.</li>
+        <li><strong>Confirmed.</strong> The platform returns a profile containing the handle, and content unique to that profile, a display name, an avatar, a join date, a follower count. Something exists that could only come from a real account.</li>
         <li><strong>Probable.</strong> The response distinguishes a registered handle from an unregistered one, but returns nothing further. The account exists; nothing about who holds it is established.</li>
-        <li><strong>Unconfirmed.</strong> The platform answers identically for a real handle and an invented one — a soft 404, a catch-all landing page, a login wall, or a rate-limit response dressed up as a result. These are reported as unconfirmed rather than quietly counted, because counting them is how other tools reach impressive totals that fall apart on inspection.</li>
+        <li><strong>Unconfirmed.</strong> The platform answers identically for a real handle and an invented one, a soft 404, a catch-all landing page, a login wall, or a rate-limit response dressed up as a result. These are reported as unconfirmed rather than quietly counted, because counting them is how other tools reach impressive totals that fall apart on inspection.</li>
       </ul>
 
       <h3 style="margin:22px 0 8px;font-size:1.05rem">What the score actually measures</h3>
-      <p style="color:var(--text-dim)">The correlation score answers one narrow question: how strongly do these accounts look like they belong to the same person? It rises with evidence that is expensive to fake or coincidental to share — a matching avatar image, a bio linking to the same domain, a rare handle, cross-links between two profiles. It falls for handles that are common English words, for platforms that permit anyone to reserve a name, and for matches resting on a single weak signal.</p>
+      <p style="color:var(--text-dim)">The correlation score answers one narrow question: how strongly do these accounts look like they belong to the same person? It rises with evidence that is expensive to fake or coincidental to share, a matching avatar image, a bio linking to the same domain, a rare handle, cross-links between two profiles. It falls for handles that are common English words, for platforms that permit anyone to reserve a name, and for matches resting on a single weak signal.</p>
       <p style="color:var(--text-dim)">It is never a measure of identity. A high score says the accounts are related; establishing that a real person holds them is a separate exercise, and one this tool deliberately leaves to the investigator. Our guide on <a href="/guides/verify-an-osint-finding.html" style="color:var(--accent)">verifying an OSINT finding before you act on it</a> sets out how that is done properly.</p>
 
       <h3 style="margin:22px 0 8px;font-size:1.05rem">Why there is no search by personal name</h3>
-      <p style="color:var(--text-dim)">Because it does not work, and the failure is not obvious to the person reading the output. Guessing handles from a name — firstnamelastname, first initial plus surname, name plus birth year — returns whoever happened to register those strings, which on any large platform is almost never the person you had in mind. The results look authoritative, are wrong far more often than they are right, and the mistake lands on an uninvolved stranger. We would rather answer a narrower question accurately than a broader one badly.</p>
+      <p style="color:var(--text-dim)">Because it does not work, and the failure is not obvious to the person reading the output. Guessing handles from a name, firstnamelastname, first initial plus surname, name plus birth year, returns whoever happened to register those strings, which on any large platform is almost never the person you had in mind. The results look authoritative, are wrong far more often than they are right, and the mistake lands on an uninvolved stranger. We would rather answer a narrower question accurately than a broader one badly.</p>
 
       <h3 style="margin:22px 0 8px;font-size:1.05rem">The limits, stated plainly</h3>
       <ul style="color:var(--text-dim);padding-left:20px;line-height:1.9">
         <li>Platforms change their responses without notice; a check that was reliable last month can start producing soft 404s at any time.</li>
-        <li>Results vary by network. The same query from a data-centre IP and from a home connection can return different answers, because rate limiting and bot detection treat them differently — explained in <a href="/guides/what-http-responses-reveal.html" style="color:var(--accent)">what a website's response actually tells you</a>.</li>
+        <li>Results vary by network. The same query from a data-centre IP and from a home connection can return different answers, because rate limiting and bot detection treat them differently, explained in <a href="/guides/what-http-responses-reveal.html" style="color:var(--accent)">what a website's response actually tells you</a>. This page runs from our server, so it is on the wrong side of that: <a href="#on-your-phone" style="color:var(--accent)">the Android app runs the same checks from your handset</a> and gets answered more often.</li>
         <li>Absence of a match is not absence of an account. Private accounts, renamed handles and platforms we do not check all produce silence.</li>
         <li>Nothing here reaches non-public data. If a profile is not visible to a logged-out visitor, it is not visible to this tool.</li>
       </ul>
 
       <h3 style="margin:22px 0 8px;font-size:1.05rem">What it is for</h3>
-      <p style="color:var(--text-dim)">Auditing your own footprint — which is what most people arrive to do — and authorised research where you have a legitimate reason to establish whether a set of public accounts are connected. It is not for profiling private individuals, and using it to harass, stalk or dox anyone is prohibited by our <a href="/terms.html" style="color:var(--accent)">terms of use</a>. If you are here to reduce your own exposure, <a href="/guides/reduce-your-digital-footprint.html" style="color:var(--accent)">the footprint guide</a> is the more useful starting point.</p>
+      <p style="color:var(--text-dim)">Auditing your own footprint, which is what most people arrive to do, and authorised research where you have a legitimate reason to establish whether a set of public accounts are connected. It is not for profiling private individuals, and using it to harass, stalk or dox anyone is prohibited by our <a href="/terms.html" style="color:var(--accent)">terms of use</a>. If you are here to reduce your own exposure, <a href="/guides/reduce-your-digital-footprint.html" style="color:var(--accent)">the footprint guide</a> is the more useful starting point.</p>
+
+      <!-- The app pitch sits here, at the end, and not in the standfirst.
+           A reader who has got this far has just been told, at length, what
+           this tool refuses to claim, which is the only context in which
+           "there is a version that checks four times as many" reads as a
+           better tool rather than a bigger number. The argument itself is
+           already made by the network bullet in the limits above; this only
+           finishes it. Counts: `TOTAL_PLATFORMS` (web) and
+           `PlatformCatalogue.size` (app). -->
+      <div id="on-your-phone" style="margin-top:40px;padding:24px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);scroll-margin-top:80px">
+        <h2 style="margin:0 0 10px;font-size:1.2rem">The same method, from your own phone</h2>
+        <p style="color:var(--text-dim);margin-bottom:14px">
+          The principle is the same one described above, a response is evidence, not an answer,
+          and anything unverifiable is reported as unverifiable rather than counted. Two things
+          are different, and both follow from where the app runs rather than from a longer
+          feature list.
+        </p>
+        <p style="color:var(--text-dim);margin-bottom:14px">
+          <strong>Every platform is checked against a control.</strong> The app picks one
+          impossible handle at the start of a sweep and asks each platform twice, once for your
+          handle, once for the one nobody could own. Only what the platform does
+          <em>differently</em> between the two is counted, so a site that answers identically to
+          both cannot produce a match at all. This page cannot work that way: doubling the
+          requests from a single server address is precisely what gets a datacentre IP
+          rate-limited.
+        </p>
+        <p style="color:var(--text-dim);margin-bottom:14px">
+          <strong>It checks 559 platforms instead of 123</strong>, and gets a straight answer from
+          more of them. Rate limiting and bot detection treat datacentre address ranges far more
+          harshly than they treat phones, so a check this server is refused for is usually just
+          answered for a handset. More coverage, and less of it ending in a shrug.
+        </p>
+        <p style="color:var(--text-dim);margin-bottom:18px">
+          It also runs without us in the picture at all. The sweep goes from your device straight
+          to the platforms being checked, no account, and the handle you are looking up never
+          reaches a MyRecon server.
+        </p>
+        <a class="btn btn-primary" href="/app.html">See the Android app</a>
+      </div>
     </section>
   </main>
 
@@ -149,5 +212,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/deep-search.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

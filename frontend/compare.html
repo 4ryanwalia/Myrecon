@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare your digital footprint | MyRecon</title>
+  <meta name="description" content="Someone shared their MyRecon exposure score. Scan your own handle and compare, each person checks only themselves.">
+
+  <!--
+    noindex, deliberately.
+
+    Every visit to this page carries somebody's score in the URL. Letting a
+    crawler index them would build exactly the searchable index of people the
+    rest of the site exists to argue against, and the pages are ephemeral
+    anyway, the card in the link is a snapshot, not a document.
+  -->
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/compare">
+
+  <!--
+    A generic preview image, not the card.
+
+    The score lives after the "#", which browsers never send to a server, so
+    nothing here can render a per-card preview without first giving up the one
+    property that makes the link private. A plain preview is the price of that
+    and it is worth paying.
+  -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Compare your digital footprint">
+  <meta property="og:description" content="Someone shared their exposure score. Scan your own handle to compare, nobody looks anybody up.">
+  <meta property="og:url" content="https://www.myrecon.xyz/compare">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Compare your digital footprint">
+  <meta name="twitter:description" content="Someone shared their exposure score. Scan your own handle to compare.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <style>
+    .card-wrap{display:flex;justify-content:center;margin:28px 0}
+    .score-card{width:min(320px,86vw);aspect-ratio:4/5;background:#0B0F14;
+      border:1px solid var(--border);border-radius:20px;padding:26px;
+      display:flex;flex-direction:column;color:#E7EDF3}
+    .sc-eyebrow{font-size:.68rem;letter-spacing:.09em;color:var(--text-mute,#7b8794);font-weight:600}
+    .sc-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .sc-band{font-size:1.06rem;font-weight:600;margin-top:12px}
+    .sc-stats{display:flex;gap:16px}
+    .sc-stat b{display:block;font-size:1.16rem;font-weight:600;font-variant-numeric:tabular-nums}
+    .sc-stat span{font-size:.62rem;letter-spacing:.07em;color:var(--text-mute,#7b8794)}
+    .sc-foot{display:flex;align-items:center;gap:7px;margin-top:16px;font-size:.76rem;color:var(--text-dim)}
+    .sc-dot{width:7px;height:7px;border-radius:2px;display:inline-block}
+    .caveat{color:var(--text-mute,#7b8794);font-size:.88rem;line-height:1.6;text-align:center;
+      max-width:44ch;margin:0 auto}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main class="container" id="main" style="max-width:640px;padding-top:44px;padding-bottom:56px">
+    <div id="shell" hidden>
+      <p class="sc-eyebrow" style="text-align:center" id="eyebrow">SOMEONE SHARED THEIR SCORE</p>
+      <div class="card-wrap"><div class="score-card" id="card"></div></div>
+      <p class="caveat" id="caveat"></p>
+
+      <div style="margin:30px 0 8px;text-align:center">
+        <a class="btn btn-primary" id="openApp" href="#">Open in the app</a>
+        <a class="btn btn-ghost" href="/#tool" style="margin-left:8px">Scan mine on the web</a>
+      </div>
+      <p class="caveat" style="margin-top:14px">
+        You check a handle you own. Nothing about the person who sent this is looked up,
+        and your handle is not sent to them.
+      </p>
+
+      <div style="margin-top:36px;padding:22px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)">
+        <h2 style="margin:0 0 8px;font-size:1.1rem">Don't have the app?</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px">
+          MyRecon checks a username across a large platform catalogue from your own phone,
+          watches for new breaches and checks link safety. No account, and the sweep runs
+          on the handset rather than on our server.
+        </p>
+        <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener">Get it on Google Play</a>
+      </div>
+    </div>
+
+    <div id="empty" hidden>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;letter-spacing:-0.02em">No card in this link</h1>
+      <p style="color:var(--text-dim);margin-top:14px;line-height:1.65">
+        The part of the link that carries the score is missing or was cut short, chat apps
+        sometimes break a long link across a line. Ask whoever sent it to share it again,
+        or just check your own footprint below.
+      </p>
+      <div style="margin:26px 0">
+        <a class="btn btn-primary" href="/#tool">Check my own handle</a>
+        <a class="btn btn-ghost" href="/app.html" style="margin-left:8px">About the app</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon · myrecon.xyz</span><span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span></div></div></footer>
+
+  <script>
+  /*
+   * Decode a card out of the URL fragment and draw it.
+   *
+   * This mirrors `ScoreCard.kt` in the Android app byte for byte. The two are
+   * separate implementations of one format, so a change to the layout has to
+   * be made in both, the VERSION byte is what stops an old reader from
+   * confidently misreading a new card.
+   */
+  (function () {
+    'use strict';
+
+    var SIZE = 11, VERSION = 1;
+
+    function b64urlToBytes(s) {
+      s = s.replace(/-/g, '+').replace(/_/g, '/');
+      while (s.length % 4) s += '=';
+      var bin;
+      try { bin = atob(s); } catch (e) { return null; }
+      var out = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+
+    function decode(token) {
+      if (!token) return null;
+      var b = b64urlToBytes(token);
+      if (!b || b.length !== SIZE) return null;
+      var sum = 0;
+      for (var i = 0; i < SIZE - 1; i++) sum += b[i];
+      if ((sum & 0xFF) !== b[SIZE - 1]) return null;   // truncated in transit
+      if (b[0] !== VERSION) return null;
+      if (b[1] > 1) return null;
+      return {
+        kind: b[1] === 0 ? 'handle' : 'device',
+        score: Math.max(0, Math.min(100, b[2])),
+        accounts: (b[3] << 8) | b[4],
+        categories: b[5],
+        bits: b[6],
+        day: (b[7] << 16) | (b[8] << 8) | b[9]
+      };
+    }
+
+    /* Same thresholds as exposureFor() in the app. A friendlier scale on the
+       web would mean the two surfaces disagree about the same number. */
+    function band(p) {
+      if (p.kind === 'device') {
+        return p.bits < 16 ? 'Blends into the crowd'
+             : p.bits < 24 ? 'Narrowed to a small group'
+             : 'Individually identifiable';
+      }
+      return p.score <= 30 ? 'Low exposure'
+           : p.score <= 60 ? 'Moderate exposure'
+           : 'High exposure';
+    }
+
+    function tintFor(score) {
+      return score >= 61 ? '#ef6461' : score >= 31 ? '#e0a84b' : '#4cc38a';
+    }
+
+    function compact(n) {
+      if (n >= 1e9) return Math.floor(n / 1e9) + 'B';
+      if (n >= 1e6) return Math.floor(n / 1e6) + 'M';
+      if (n >= 1e3) return Math.floor(n / 1e3) + 'K';
+      return String(n);
+    }
+
+    /* 270-degree dial from 135deg, matching the Canvas arc in ExposureGauge. */
+    function arcPath(cx, cy, r, fromDeg, sweepDeg) {
+      var rad = Math.PI / 180;
+      var x1 = cx + r * Math.cos(fromDeg * rad), y1 = cy + r * Math.sin(fromDeg * rad);
+      var to = fromDeg + sweepDeg;
+      var x2 = cx + r * Math.cos(to * rad), y2 = cy + r * Math.sin(to * rad);
+      return 'M' + x1.toFixed(2) + ' ' + y1.toFixed(2) +
+             ' A' + r + ' ' + r + ' 0 ' + (sweepDeg > 180 ? 1 : 0) + ' 1 ' +
+             x2.toFixed(2) + ' ' + y2.toFixed(2);
+    }
+
+    function gauge(score) {
+      var tint = tintFor(score), r = 74, cx = 90, cy = 90;
+      return '<svg width="180" height="180" viewBox="0 0 180 180" role="img" aria-label="Score ' +
+        score + ' out of 100">' +
+        '<path d="' + arcPath(cx, cy, r, 135, 270) + '" fill="none" stroke="#1b2430" ' +
+          'stroke-width="15" stroke-linecap="round"/>' +
+        (score > 0 ? '<path d="' + arcPath(cx, cy, r, 135, 270 * (score / 100)) + '" fill="none" ' +
+          'stroke="' + tint + '" stroke-width="15" stroke-linecap="round"/>' : '') +
+        '<text x="90" y="92" text-anchor="middle" fill="' + tint + '" ' +
+          'font-size="46" font-weight="600" font-family="Inter,sans-serif">' + score + '</text>' +
+        '<text x="90" y="112" text-anchor="middle" fill="#7b8794" font-size="12" ' +
+          'font-family="Inter,sans-serif">/ 100</text>' +
+        '</svg>';
+    }
+
+    function statsFor(p) {
+      if (p.kind === 'device') {
+        var raw = Math.pow(2, p.bits);
+        var oneIn = raw >= 5e9 ? 5e9 : Math.max(1, Math.floor(raw));
+        return [['1 in ' + compact(oneIn), 'PHONES LIKE MINE'], [p.bits + ' bits', 'UNIQUENESS']];
+      }
+      return [[String(p.accounts), 'ACCOUNTS CONFIRMED'], [String(p.categories), 'CATEGORIES']];
+    }
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function render(p) {
+      var tint = tintFor(p.score);
+      var stats = statsFor(p).map(function (s) {
+        return '<div class="sc-stat"><b>' + esc(s[0]) + '</b><span>' + esc(s[1]) + '</span></div>';
+      }).join('');
+
+      document.getElementById('card').innerHTML =
+        '<p class="sc-eyebrow">' + (p.kind === 'device' ? 'DEVICE FINGERPRINT' : 'DIGITAL EXPOSURE') + '</p>' +
+        '<div class="sc-mid">' + gauge(p.score) +
+          '<p class="sc-band" style="color:' + tint + '">' + esc(band(p)) + '</p></div>' +
+        '<div class="sc-stats">' + stats + '</div>' +
+        '<div class="sc-foot"><span class="sc-dot" style="background:' + tint + '"></span>' +
+          'myrecon.xyz<span style="margin-left:auto;font-size:.68rem;color:#7b8794">' +
+          'scanned my own footprint</span></div>';
+
+      var age = Math.max(0, Math.floor(Date.now() / 86400000) - p.day);
+      var when = age === 0 ? 'Scanned today.'
+               : age === 1 ? 'Scanned yesterday.'
+               : age < 30 ? 'Scanned ' + age + ' days ago.'
+               : 'Scanned ' + age + ' days ago, old enough that it has probably moved since.';
+
+      document.getElementById('caveat').textContent = when +
+        ' This is the number they shared; there is no way to check it, because anyone can ' +
+        'edit a link. Treat it as what they told you, not as a reading.';
+
+      /* The private scheme, not the https link: it needs no assetlinks file
+         and so works the day the app ships. It silently does nothing when the
+         app is not installed, which is why the Play button sits below. */
+      document.getElementById('openApp').href =
+        'myrecon://compare#' + encodeURIComponent(location.hash.slice(1));
+
+      document.getElementById('shell').hidden = false;
+    }
+
+    function show() {
+      var card = decode(location.hash.slice(1).trim());
+      document.getElementById('shell').hidden = true;
+      document.getElementById('empty').hidden = true;
+      if (card) render(card);
+      else document.getElementById('empty').hidden = false;
+    }
+
+    show();
+
+    /* A second card opened from the same chat changes only the fragment, and
+       a fragment change does not reload the page, so without this the reader
+       would be looking at the previous person's score under the new link. */
+    window.addEventListener('hashchange', show);
+  })();
+  </script>
+
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

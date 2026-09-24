@@ -1,4 +1,4 @@
-"""Email intelligence service layer — thin, JSON-safe wrapper."""
+"""Email intelligence service layer, thin, JSON-safe wrapper."""
 
 from modules.email_lookup import EmailLookup
 

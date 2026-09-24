@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyRecon for Android: On-Device OSINT & Breach Watch</title>
-  <meta name="description" content="The MyRecon Android app checks a username across many platforms from your own phone, watches for new data breaches and reads image metadata. No account.">
+  <meta name="description" content="The MyRecon Android app checks a username across many platforms from your own phone, watches for new breaches and checks passwords for leaks. No account.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/app.html">
@@ -12,43 +12,44 @@
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
-  <meta property="og:title" content="MyRecon for Android — On-device OSINT">
-  <meta property="og:description" content="Broad platform coverage, checked from your own phone. Breach alerts, QR link safety, image forensics. No account.">
+  <meta property="og:title" content="MyRecon for Android: On-device OSINT">
+  <meta property="og:description" content="Broad platform coverage, checked from your own phone. Breach alerts, QR link safety, password leak checks. No account.">
   <meta property="og:url" content="https://www.myrecon.xyz/app.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MyRecon for Android — On-device OSINT">
-  <meta name="twitter:description" content="Broad platform coverage, checked from your own phone. Breach alerts, QR link safety, image forensics. No account.">
+  <meta name="twitter:title" content="MyRecon for Android: On-device OSINT">
+  <meta name="twitter:description" content="Broad platform coverage, checked from your own phone. Breach alerts, QR link safety, password leak checks. No account.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"MyRecon for Android: On-Device OSINT & Breach Watch","description":"The MyRecon Android app checks a username across many platforms from your own phone, watches for new data breaches and reads image metadata. No account.","url":"https://www.myrecon.xyz/app.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Android app","item":"https://www.myrecon.xyz/app.html"}]}}</script>
-  <script type="application/ld+json">{"@type":"MobileApplication","name":"MyRecon for Android","operatingSystem":"Android","applicationCategory":"SecurityApplication","url":"https://www.myrecon.xyz/app.html","installUrl":"https://play.google.com/store/apps/details?id=com.Myrecon.osint","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"description":"Checks a username across many platforms from the device itself, watches for new data breaches and reads image metadata.","@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"MyRecon for Android: On-Device OSINT & Breach Watch","description":"The MyRecon Android app checks a username across many platforms from your own phone, watches for new breaches and checks passwords for leaks. No account.","url":"https://www.myrecon.xyz/app.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Android app","item":"https://www.myrecon.xyz/app.html"}]}}</script>
+  <script type="application/ld+json">{"@type":"MobileApplication","name":"MyRecon for Android","operatingSystem":"Android","applicationCategory":"SecurityApplication","url":"https://www.myrecon.xyz/app.html","installUrl":"https://play.google.com/store/apps/details?id=com.Myrecon.osint","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"description":"Checks a username across many platforms from the device itself, watches for new data breaches and checks passwords against known leaks.","@context":"https://schema.org"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -90,22 +91,30 @@
     <h3 style="margin:20px 0 6px;font-size:1.05rem">Breach alerts, without handing over your address</h3>
     <p style="color:var(--text-dim)">
       The app downloads the public breach catalogue and compares it on your device. There is no
-      account and no address is sent anywhere — which is the opposite of every hosted breach-alert
+      account and no address is sent anywhere, which is the opposite of every hosted breach-alert
       service, all of which require your email up front. If you want the stronger per-address check,
       that is a separate switch with its own disclosure, so the default promise stays true.
     </p>
 
     <h3 style="margin:20px 0 6px;font-size:1.05rem">QR link safety</h3>
     <p style="color:var(--text-dim)">
-      Scan a QR code and see where it actually goes before you open it — the full redirect chain,
+      Scan a QR code and see where it actually goes before you open it, the full redirect chain,
       the final destination, and whether anything about it looks like a lookalike domain.
     </p>
 
-    <h3 style="margin:20px 0 6px;font-size:1.05rem">Image forensics</h3>
+    <h3 style="margin:20px 0 6px;font-size:1.05rem">Password leak check</h3>
     <p style="color:var(--text-dim)">
-      Read the EXIF metadata still attached to a photo: camera, timestamps, editing software, and
-      GPS coordinates when the sender forgot to strip them. Done entirely on-device — the image is
-      never uploaded.
+      Check whether a password already appears in known breach corpora, without sending it anywhere.
+      The app hashes it on the handset and sends only the first five characters of that hash, so the
+      service answering cannot work out which password was asked about, and never receives the
+      password itself.
+    </p>
+
+    <h3 style="margin:20px 0 6px;font-size:1.05rem">Domain, DNS and IP lookups</h3>
+    <p style="color:var(--text-dim)">
+      Registration details over RDAP, mail authentication read from the domain's own published
+      SPF, DKIM and DMARC records, subdomains recovered from Certificate Transparency logs, and
+      geolocation for an address. Every source is public and keyless.
     </p>
 
     <h3 style="margin:20px 0 6px;font-size:1.05rem">Identity correlation</h3>
@@ -137,5 +146,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

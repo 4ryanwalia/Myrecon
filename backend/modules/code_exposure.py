@@ -1,5 +1,5 @@
 """
-Commit-email exposure — the address a developer publishes without meaning to.
+Commit-email exposure, the address a developer publishes without meaning to.
 
 `git config user.email` ends up inside every commit object, and GitHub serves
 those commits through a public, unauthenticated API. Most developers have no
@@ -9,8 +9,8 @@ which is why it belongs in a self-exposure report rather than buried in a
 profile card.
 
 It also pays for itself downstream: an address discovered here feeds straight
-into the existing email pipeline — breach lookup, Gravatar, and the account
-correlation that hangs off both — so one finding turns into several.
+into the existing email pipeline, breach lookup, Gravatar, and the account
+correlation that hangs off both, so one finding turns into several.
 
 Not via the events feed, which is where this technique is usually documented:
 GitHub has since stripped commit details out of it, and a PushEvent payload
@@ -20,7 +20,7 @@ repos → commits, filtered by `author=` so we collect the target's own
 addresses and not those of everyone who ever contributed to their projects.
 
 Limits, surfaced rather than hidden:
-  * Forks are skipped — their history is somebody else's commits.
+  * Forks are skipped, their history is somebody else's commits.
   * Costs 1 + `max_repos` API calls. Unauthenticated is 60/hour per IP;
     `GITHUB_TOKEN` raises it to 5000 and needs no scope.
 """
@@ -65,7 +65,7 @@ def github_commit_emails(username: str, max_repos: int = _MAX_REPOS,
 
     Returns ``{"emails": [...], "repos_checked": n, "commits_seen": n,
     "protected": bool}``. An empty ``emails`` list with ``protected`` set means
-    every commit used GitHub's noreply address — worth reporting as a *good*
+    every commit used GitHub's noreply address, worth reporting as a *good*
     result rather than as silence. ``{"error": ...}`` covers rate limiting and
     missing users, so the caller can tell "nothing found" from "we could not
     look".

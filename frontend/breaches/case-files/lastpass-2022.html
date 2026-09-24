@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="LastPass Breach 2022: Stolen Vaults and What Followed">
   <meta name="twitter:description" content="An engineer's home media server was the way into a password manager's cloud backups. Customer vaults were copied, and attackers have been cracking them ever…">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LastPass, 2022: the vaults were stolen, and then attacked offline","description":"An engineer's home media server was the way into a password manager's cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"LastPass data breach"},"wordCount":918}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"LastPass data breach","item":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were LastPass passwords decrypted?","acceptedAnswer":{"@type":"Answer","text":"Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall."}},{"@type":"Question","name":"What was not encrypted?","acceptedAnswer":{"@type":"Answer","text":"Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with — including which cryptocurrency exchanges."}},{"@type":"Question","name":"How did they get in through someone's home computer?","acceptedAnswer":{"@type":"Answer","text":"The attackers used information from the earlier August incident to identify a senior DevOps engineer, then exploited a vulnerability in a third-party media software package running on that engineer's personal home computer. That gave them a keylogger, which captured the engineer's master password after multi-factor authentication, which opened a corporate vault holding the keys to cloud backups."}},{"@type":"Question","name":"Should I still use a password manager?","acceptedAnswer":{"@type":"Answer","text":"Yes. The alternative — reused passwords, or a notebook — fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were LastPass passwords decrypted?","acceptedAnswer":{"@type":"Answer","text":"Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall."}},{"@type":"Question","name":"What was not encrypted?","acceptedAnswer":{"@type":"Answer","text":"Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with, including which cryptocurrency exchanges."}},{"@type":"Question","name":"How did they get in through someone's home computer?","acceptedAnswer":{"@type":"Answer","text":"The attackers used information from the earlier August incident to identify a senior DevOps engineer, then exploited a vulnerability in a third-party media software package running on that engineer's personal home computer. That gave them a keylogger, which captured the engineer's master password after multi-factor authentication, which opened a corporate vault holding the keys to cloud backups."}},{"@type":"Question","name":"Should I still use a password manager?","acceptedAnswer":{"@type":"Answer","text":"Yes. The alternative, reused passwords, or a notebook, fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,18 +76,18 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Encrypted password vaults · Website URLs stored in vaults (unencrypted) · Names · Billing addresses · Email addresses · Phone numbers · IP addresses</p>
 
-<p class="lead">A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building — and why the encryption holding is not the same as being safe.</p>
+<p class="lead">A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building, and why the encryption holding is not the same as being safe.</p>
 
 <h2>Two incidents, one chain</h2>
 
 <p><strong>August 2022.</strong> An attacker compromised a developer's account and took source code and technical documentation from a development environment. LastPass said at the time that customer data and vaults were not affected, which was true of that incident.</p>
 
-<p><strong>November 2022.</strong> Using what they had learned in August, the attackers identified a senior DevOps engineer — one of a small number of people with access to the decryption keys for cloud storage backups. They then exploited a vulnerability in a third-party media software package running on that engineer's <em>personal home computer</em>, installed a keylogger, and captured the engineer's master password as it was typed, after multi-factor authentication had already been satisfied.</p>
+<p><strong>November 2022.</strong> Using what they had learned in August, the attackers identified a senior DevOps engineer, one of a small number of people with access to the decryption keys for cloud storage backups. They then exploited a vulnerability in a third-party media software package running on that engineer's <em>personal home computer</em>, installed a keylogger, and captured the engineer's master password as it was typed, after multi-factor authentication had already been satisfied.</p>
 
 <p>That gave them the engineer's corporate vault. In it were the keys to the cloud storage holding customer vault backups, which they copied.</p>
 
 <div class="callout">
-  <p><strong>The perimeter question this raises.</strong> The intrusion that mattered did not happen on a corporate network, a company laptop, or any system LastPass monitored. It happened on a home media server belonging to an employee. For a small number of people in any organisation — the ones who hold keys rather than data — the blast radius of their personal computing is the entire company, and almost no security programme is scoped that way.</p>
+  <p><strong>The perimeter question this raises.</strong> The intrusion that mattered did not happen on a corporate network, a company laptop, or any system LastPass monitored. It happened on a home media server belonging to an employee. For a small number of people in any organisation, the ones who hold keys rather than data, the blast radius of their personal computing is the entire company, and almost no security programme is scoped that way.</p>
 </div>
 
 <h2>Why a stolen vault is worse than it sounds</h2>
@@ -97,7 +98,7 @@
 
 <ol class="cf-timeline">
   <li><b>The master password's strength.</b> A long, random passphrase is out of reach. A reused or dictionary-derived password is not.</li>
-  <li><b>The key-derivation iteration count.</b> Higher counts make each guess more expensive. Accounts created years earlier were running far lower counts than the then-current default, and some legacy accounts were dramatically lower — those vaults are far cheaper to attack.</li>
+  <li><b>The key-derivation iteration count.</b> Higher counts make each guess more expensive. Accounts created years earlier were running far lower counts than the then-current default, and some legacy accounts were dramatically lower, those vaults are far cheaper to attack.</li>
   <li><b>Time.</b> Which is entirely on the attacker's side, because the file does not expire.</li>
 </ol>
 
@@ -111,7 +112,7 @@
 
 <h2>The disclosure problem</h2>
 
-<p>LastPass's communications drew as much criticism as the breach. The August notice said customer data was not affected. A November update said an incident had occurred using information from August. The December update — published just before the holidays — revealed that customer vault backups had been copied. The detail about the engineer's home computer came later still.</p>
+<p>LastPass's communications drew as much criticism as the breach. The August notice said customer data was not affected. A November update said an incident had occurred using information from August. The December update, published just before the holidays, revealed that customer vault backups had been copied. The detail about the engineer's home computer came later still.</p>
 
 <p>Each statement was defensible at the moment it was written. The cumulative effect was that customers learned the severity in stages over four months, which is precisely the pattern that destroys trust: not one lie, but a sequence of technically accurate statements that each turned out to be the floor rather than the ceiling.</p>
 
@@ -119,7 +120,7 @@
 
 <p><strong>Iteration counts became a visible setting.</strong> Password managers raised defaults sharply and began prompting users to upgrade old accounts. A parameter that had been an implementation detail became something users were told to check.</p>
 
-<p><strong>Privileged personal devices entered threat models.</strong> Organisations with a handful of key holders started treating those individuals differently — hardware tokens, dedicated managed devices for privileged work, and separation between administrative access and personal computing.</p>
+<p><strong>Privileged personal devices entered threat models.</strong> Organisations with a handful of key holders started treating those individuals differently, hardware tokens, dedicated managed devices for privileged work, and separation between administrative access and personal computing.</p>
 
 <p><strong>"Encrypted" stopped being an acceptable one-word answer.</strong> The right questions are now: encrypted with what, derived how, how many iterations, and what metadata sits outside the encryption.</p>
 
@@ -127,9 +128,9 @@
 
 <ol class="bx-actions">
   <li><strong>Assume your vault as of late 2022 is in someone's possession.</strong> That is the only safe assumption, and it does not change with time.</li>
-  <li><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked — move the funds rather than changing a password.</li>
+  <li><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.</li>
   <li><strong>Then rotate by value: email, banking, anything holding payment details.</strong> Yes, it is a long weekend of work. It is also the only real remediation.</li>
-  <li><strong>Keep using a manager — with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you — <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</li>
+  <li><strong>Keep using a manager, with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -142,7 +143,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -151,14 +152,26 @@
         <p>Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall.</p>
 
         <h3>What was not encrypted?</h3>
-        <p>Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with — including which cryptocurrency exchanges.</p>
+        <p>Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with, including which cryptocurrency exchanges.</p>
 
         <h3>How did they get in through someone's home computer?</h3>
         <p>The attackers used information from the earlier August incident to identify a senior DevOps engineer, then exploited a vulnerability in a third-party media software package running on that engineer's personal home computer. That gave them a keylogger, which captured the engineer's master password after multi-factor authentication, which opened a corporate vault holding the keys to cloud backups.</p>
 
         <h3>Should I still use a password manager?</h3>
-        <p>Yes. The alternative — reused passwords, or a notebook — fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached.</p>
+        <p>Yes. The alternative, reused passwords, or a notebook, fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><b>LastPass security incident notices and updates, August 2022 – March 2023</b></li>
@@ -172,7 +185,7 @@
         <li><a href="/breaches/case-files/collection-1-2019.html">Collection #1, 2019: 773 million addresses, and nobody was breached</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -188,5 +201,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

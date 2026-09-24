@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SPF, DKIM and DMARC Explained for Email Security | MyRecon</title>
-  <meta name="description" content="A plain-English guide to SPF, DKIM and DMARC — the DNS records that stop spammers spoofing your domain, how they work together, and how to read them.">
+  <meta name="description" content="A plain-English guide to SPF, DKIM and DMARC, the DNS records that stop spammers spoofing your domain, how they work together, and how to read them.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/guides/spf-dkim-dmarc-explained.html">
@@ -19,29 +19,30 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Email Authentication Explained: SPF, DKIM and DMARC">
   <meta name="twitter:description" content="How SPF, DKIM, and DMARC stop spammers spoofing your domain, and how to read them.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"Email Authentication Explained: SPF, DKIM and DMARC","description":"How SPF, DKIM, and DMARC stop spammers spoofing your domain, and how to read them.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/spf-dkim-dmarc-explained.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"Email Authentication Explained: SPF, DKIM and DMARC","description":"How SPF, DKIM, and DMARC stop spammers spoofing your domain, and how to read them.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-14","mainEntityOfPage":"https://www.myrecon.xyz/guides/spf-dkim-dmarc-explained.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"SPF, DKIM and DMARC Explained for Email Security","item":"https://www.myrecon.xyz/guides/spf-dkim-dmarc-explained.html"}],"@context":"https://schema.org"}</script>
 </head>
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -58,46 +59,93 @@
 
   <main id="main" class="container">
     <article class="article">
-      <span class="kicker">Domain intelligence</span>
+<span class="kicker">Domain intelligence</span>
       <h1>Email Authentication Explained: SPF, DKIM and DMARC</h1>
-      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+      <p class="meta">Updated 14 September 2026 · 6 min read</p>
 
-      <p class="lead">Email was designed in a more trusting era, when anyone could put any name in the "From" field. SPF, DKIM, and DMARC are the three DNS records that fixed that — they let the world verify that an email really came from the domain it claims. Understanding them helps you protect your own domain and judge whether someone else's is trustworthy.</p>
+      <p class="lead">Email was designed without any way to check who sent a message. The From line is free text, and anything can write anything in it. SPF, DKIM and DMARC are three layers bolted on afterwards to fix that, and understanding what each one actually checks explains why a domain can pass two of them and still be forged.</p>
 
-      <h2>The problem: anyone can forge "From"</h2>
-      <p>By default, nothing stops a spammer from sending an email that says it came from <span style="font-family:var(--mono)">billing@yourbank.com</span>. This is called spoofing, and it is the engine behind most phishing. The three email-authentication standards work together to make spoofing detectable, so receiving mail servers can reject or quarantine fakes.</p>
+      <h2>The hole all three are patching</h2>
+      <p>SMTP, the protocol that moves mail, has two separate notions of who sent a message and neither is verified by default.</p>
+      <p>There is the <strong>envelope sender</strong>: the address given during the SMTP conversation, which is where bounces go and which you never see. And there is the <strong>From: header</strong>: the name and address your mail client displays. They do not have to match. Nothing checks either of them. That single design decision is the reason phishing works at all.</p>
 
-      <h2>SPF — who is allowed to send</h2>
-      <p><strong>SPF (Sender Policy Framework)</strong> is a DNS TXT record that lists the mail servers permitted to send email for a domain. When a message arrives, the receiving server checks whether the sending server's IP is on that list. A typical SPF record looks like <span style="font-family:var(--mono)">v=spf1 include:_spf.google.com ~all</span>, which says "Google's servers may send for us; treat anything else as suspicious." SPF answers one question: is this server authorised?</p>
-
-      <h2>DKIM — proof the message wasn't tampered with</h2>
-      <p><strong>DKIM (DomainKeys Identified Mail)</strong> adds a cryptographic signature to each outgoing message. The domain publishes a public key in DNS, and the sending server signs messages with the matching private key. The receiver uses the public key to verify the signature, proving two things: the message genuinely came from the domain, and its key contents were not altered in transit. DKIM answers: is this message authentic and intact?</p>
-
-      <h2>DMARC — the policy that ties it together</h2>
-      <p><strong>DMARC (Domain-based Message Authentication, Reporting and Conformance)</strong> is the record that tells receivers what to do when SPF or DKIM fail, and asks them to send reports. A DMARC record such as <span style="font-family:var(--mono)">v=DMARC1; p=reject; rua=mailto:reports@domain.com</span> means "if a message claiming to be from us fails authentication, reject it, and send me reports." The policy can be <span style="font-family:var(--mono)">none</span> (monitor only), <span style="font-family:var(--mono)">quarantine</span> (send to spam), or <span style="font-family:var(--mono)">reject</span> (block outright).</p>
+      <h2>SPF: which servers may send</h2>
+      <p>An <strong>SPF</strong> record is a TXT record on the domain listing the servers allowed to send mail for it. A receiving server takes the envelope sender's domain, fetches its SPF record, and checks whether the connecting address is on the list.</p>
+      <p>The record is a sequence of mechanisms ending in a catch-all:</p>
+      <ul>
+        <li><span style="font-family:var(--mono)">ip4:</span> and <span style="font-family:var(--mono)">ip6:</span>, specific addresses or ranges.</li>
+        <li><span style="font-family:var(--mono)">a</span> and <span style="font-family:var(--mono)">mx</span>, whatever the domain's own A or MX records point at.</li>
+        <li><span style="font-family:var(--mono)">include:</span>, delegate to another domain's SPF record. This is how a company authorises its mail provider, its marketing platform and its ticketing system, and each include is a supplier named in public.</li>
+        <li><span style="font-family:var(--mono)">-all</span>, everything else fails. <span style="font-family:var(--mono)">~all</span>, soft fail, treat as suspicious. <span style="font-family:var(--mono)">?all</span>, neutral, which is the same as having no opinion. <span style="font-family:var(--mono)">+all</span>, authorise the entire internet, which is always a mistake and occasionally a deliberate one.</li>
+      </ul>
+      <p>Two failure modes are worth knowing because they are extremely common. SPF allows a maximum of ten DNS lookups while evaluating a record; exceed it and the result is a permanent error, which most receivers treat as no SPF at all. And a domain may publish only one SPF record, two TXT records both starting <span style="font-family:var(--mono)">v=spf1</span> invalidate each other, a mistake usually made when a second team adds their own.</p>
 
       <div class="callout">
-        <p><strong>How they combine:</strong> SPF checks the sending server, DKIM checks the message signature, and DMARC decides what happens if either fails — and alignment rules ensure the checks actually match the visible "From" domain. All three are needed for strong protection.</p>
+        <p><strong>SPF checks the envelope, not the From line you can see.</strong> An attacker can send from a domain they control, pass SPF for that domain perfectly, and still put your bank's address in the visible From: header. SPF is satisfied and the display is a forgery. This is not an implementation flaw; it is what SPF was scoped to do. Closing that gap is DMARC's job, and it is why SPF alone has never stopped spoofing.</p>
       </div>
 
-      <h2>How to read a domain's email security</h2>
-      <p>Because these are all public DNS records, you can inspect any domain's email posture. Look at its TXT records for an SPF entry, its DMARC record at <span style="font-family:var(--mono)">_dmarc.&lt;domain&gt;</span>, and DKIM selectors where known. MyRecon's <a href="/#tool">DNS tool</a> surfaces the TXT records where SPF and DMARC live — our guide to <a href="/guides/dns-records-explained.html">DNS records</a> explains the surrounding record types. A domain with no SPF and no DMARC is trivially spoofable; a domain with <span style="font-family:var(--mono)">p=reject</span> is well protected.</p>
+      <h2>DKIM: a signature that travels with the message</h2>
+      <p><strong>DKIM</strong> takes a different approach. The sending server signs the message, a chosen set of headers plus the body, with a private key, and attaches the signature as a header. The matching public key is published in DNS at a name built from a selector: <span style="font-family:var(--mono)">selector._domainkey.example.com</span>. The receiver fetches the key and verifies the signature.</p>
+      <p>Two fields in the signature matter when you are reading one. <span style="font-family:var(--mono)">d=</span> names the signing domain, which is the identity DKIM actually asserts, and <span style="font-family:var(--mono)">s=</span> names the selector, which lets an organisation run several keys at once, one per provider, rotated independently.</p>
+      <p>Because the signature is carried inside the message, it survives being forwarded, which SPF does not. It breaks if the content is modified in transit, mailing lists that append footers are the classic case, and the reason ARC exists to let intermediaries vouch for a message they altered.</p>
 
-      <h2>Why it matters for investigation and trust</h2>
-      <p>For a defender, weak or missing authentication on your own domain is an open door for attackers to impersonate you to your customers. For an investigator assessing whether a message is legitimate, the sending domain's authentication posture is a useful signal — although remember that attackers frequently register their <em>own</em> look-alike domains and configure valid SPF/DKIM on them, so good authentication proves the domain sent the mail, not that the domain is honest.</p>
-
-      <h2>Quick checklist for your own domain</h2>
+      <h2>DMARC: the part that ties the display to the proof</h2>
+      <p><strong>DMARC</strong> adds the missing idea: <strong>alignment</strong>. It requires that the domain in the visible From: header matches the domain that SPF or DKIM actually authenticated. One of the two must pass <em>and</em> be aligned. That is what finally makes the header you read mean something.</p>
+      <p>The record is a TXT record at <span style="font-family:var(--mono)">_dmarc.example.com</span>, and the fields to read are:</p>
       <ul>
-        <li>Publish an <strong>SPF</strong> record listing every service that sends mail for you.</li>
-        <li>Enable <strong>DKIM</strong> signing in your mail provider and publish the key.</li>
-        <li>Start <strong>DMARC</strong> at <span style="font-family:var(--mono)">p=none</span> with reporting, review the reports, then move to <span style="font-family:var(--mono)">quarantine</span> and finally <span style="font-family:var(--mono)">reject</span>.</li>
+        <li><span style="font-family:var(--mono)">p=</span>, the policy for failures. <span style="font-family:var(--mono)">none</span> means monitor and deliver anyway. <span style="font-family:var(--mono)">quarantine</span> means treat as spam. <span style="font-family:var(--mono)">reject</span> means refuse outright.</li>
+        <li><span style="font-family:var(--mono)">sp=</span>, a separate policy for subdomains, frequently forgotten and frequently the way in.</li>
+        <li><span style="font-family:var(--mono)">pct=</span>, apply the policy to a percentage of mail, used while rolling out.</li>
+        <li><span style="font-family:var(--mono)">rua=</span> and <span style="font-family:var(--mono)">ruf=</span>, where aggregate and forensic reports are sent. Publishing an <span style="font-family:var(--mono)">rua</span> address is the only way to find out who is sending mail as you.</li>
+        <li><span style="font-family:var(--mono)">aspf=</span> and <span style="font-family:var(--mono)">adkim=</span>, whether alignment is relaxed, allowing subdomains to count, or strict.</li>
       </ul>
 
-            <h2>Related guides</h2>
+      <div class="callout">
+        <p><strong><span style="font-family:var(--mono)">p=none</span> is not protection, and most domains never move past it.</strong> It is the monitoring stage: failures are reported and delivered anyway. A domain sitting on <span style="font-family:var(--mono)">p=none</span> years after publishing it has the appearance of email authentication and none of the effect, anyone can send mail as that domain and it will land in inboxes. When you are assessing an organisation, the policy value is the finding, not the presence of a record.</p>
+      </div>
+
+      <h2>How to read a domain's mail posture in thirty seconds</h2>
+      <p>Look up three records and you have a fair picture of how seriously a domain takes being impersonated.</p>
+      <ol>
+        <li><strong>SPF.</strong> Present? Does it end in <span style="font-family:var(--mono)">-all</span> or <span style="font-family:var(--mono)">~all</span>? How many includes, and who are they, that list is the supplier chain.</li>
+        <li><strong>DMARC at <span style="font-family:var(--mono)">_dmarc</span>.</strong> The policy value is the answer. Is there an <span style="font-family:var(--mono)">sp=</span>, and does it cover subdomains at the same strength?</li>
+        <li><strong>DKIM.</strong> Harder to check blind, because you need the selector, which is not discoverable from the zone. Common defaults exist, and a real message from the domain names it in the signature header.</li>
+      </ol>
+      <p>A payment company on <span style="font-family:var(--mono)">p=reject</span> with a tight SPF record has an email security team. A company presenting itself as a bank with no DMARC record at all is telling you something, and it is worth writing down before you go looking for anything subtler.</p>
+
+      <h2>What none of it stops</h2>
+      <p>This is the part that gets lost, and it is the reason a perfect DMARC record does not end phishing.</p>
+      <ul>
+        <li><strong>Lookalike domains.</strong> DMARC protects <em>your</em> domain. It has nothing to say about a message from a domain that merely resembles yours, which will pass its own authentication perfectly because the attacker owns it and configured it properly.</li>
+        <li><strong>Display-name spoofing.</strong> The friendly name shown in most clients is free text. A message from an unrelated address with the display name set to your finance director passes every check there is, because nothing about it is forged at the protocol level.</li>
+        <li><strong>Compromised real accounts.</strong> Mail sent from inside a legitimate, authenticated mailbox is authentic. Thread hijacking, a reply arriving inside a conversation you were already having, is the most convincing phishing there is, and it is fully authenticated mail.</li>
+        <li><strong>Everything outside email.</strong> Messaging apps, SMS, QR codes and phone calls are unaffected.</li>
+      </ul>
+      <p>Which is why these three records are a floor rather than a defence. They stop your domain being used directly, and they make the remaining attacks take a shape a careful reader can notice. Our guide to <a href="/guides/how-to-spot-phishing.html">spotting phishing</a> covers that shape.</p>
+
+      <h2>If you are setting it up</h2>
+      <p>The order that avoids blocking your own mail: publish SPF listing every service that sends on your behalf, and end it in <span style="font-family:var(--mono)">~all</span> to start. Enable DKIM signing at every one of those providers. Publish DMARC at <span style="font-family:var(--mono)">p=none</span> with an <span style="font-family:var(--mono)">rua</span> address, and actually read the reports for a few weeks, they will show senders you had forgotten about, which is the entire point of this stage. Fix what they reveal, then move to <span style="font-family:var(--mono)">quarantine</span>, then to <span style="font-family:var(--mono)">reject</span>. Set <span style="font-family:var(--mono)">sp=reject</span> and publish a null SPF and a reject policy on every domain you own that sends no mail at all, including the ones you bought defensively, unused domains are the ones attackers reach for precisely because nobody protects them.</p>
+
+      <div class="callout">
+        <p>Check any domain's live SPF, DMARC and other TXT records with the <a href="/#tool">MyRecon domain tool</a>.</p>
+      </div>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dspf_dkim_dmarc_explained" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/dns-records-explained.html">what each DNS record type actually does</a></li>
-        <li><a href="/guides/how-to-spot-phishing.html">how to spot a phishing email or a fake website</a></li>
+        <li><a href="/guides/how-to-spot-phishing.html">spotting the phishing these records do not stop</a></li>
         <li><a href="/guides/investigate-a-domain.html">a repeatable way to investigate a domain you don't trust</a></li>
+        <li><a href="/guides/whois-rdap-explained.html">reading a domain's registration record</a></li>
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
@@ -114,5 +162,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

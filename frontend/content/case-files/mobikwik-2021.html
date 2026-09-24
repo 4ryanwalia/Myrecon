@@ -6,7 +6,7 @@
   "kicker": "2021 · India · Disputed",
   "description": "Data said to cover 99 million MobiKwik users was offered for sale with a portal where anyone could look themselves up. The company called the reports baseless. The RBI ordered an audit.",
   "cardBlurb": "Users found their own identity documents in a searchable portal while the company was publicly denying that anything had been taken. It has never confirmed a breach.",
-  "records": "Alleged 99 million users and 8.2 TB of data — never confirmed by the company",
+  "records": "Alleged 99 million users and 8.2 TB of data, never confirmed by the company",
   "occurred": "Reported from January 2021; the sale portal appeared in March 2021",
   "disclosed": "Never formally disclosed by the company",
   "vector": "Not established publicly",
@@ -18,16 +18,16 @@
   "updated": "2026-09-14",
   "related": ["aadhaar-exposures-2018", "air-india-2021", "optus-2022"],
   "faq": [
-    { "q": "Was MobiKwik actually breached?", "a": "This has never been publicly resolved, and this page does not resolve it either. What is documented: a large dataset was offered for sale, a searchable portal briefly allowed people to look themselves up, multiple users and journalists reported finding their own accurate records including identity documents, and the company consistently denied that its systems had been compromised. The Reserve Bank of India ordered a forensic audit; its findings were not published. Both possibilities — a breach that was denied, and a dataset assembled from other sources — remain consistent with the public record, though the reported presence of accurate KYC images is difficult to explain under the second." },
+    { "q": "Was MobiKwik actually breached?", "a": "This has never been publicly resolved, and this page does not resolve it either. What is documented: a large dataset was offered for sale, a searchable portal briefly allowed people to look themselves up, multiple users and journalists reported finding their own accurate records including identity documents, and the company consistently denied that its systems had been compromised. The Reserve Bank of India ordered a forensic audit; its findings were not published. Both possibilities, a breach that was denied, and a dataset assembled from other sources, remain consistent with the public record, though the reported presence of accurate KYC images is difficult to explain under the second." },
     { "q": "What is KYC data and why is it worse than a password leak?", "a": "Know Your Customer records are the identity documents a regulated financial service must collect: in India typically Aadhaar and PAN card images, plus address proof. A password can be changed in seconds. A scanned government identity document cannot be reissued in any practical sense, and it is precisely what is needed to open accounts, obtain credit or pass verification in someone else's name." },
     { "q": "What did the company say?", "a": "MobiKwik described the reports as false and baseless, said that a thorough investigation had found no security breach, and characterised the researcher raising the alarm in dismissive terms. It later said it would appoint a third-party forensic auditor. The tone of that initial response drew significant criticism from the Indian security community, and it is the part of this case that has had the most lasting effect on how such disclosures are handled." },
     { "q": "What should Indian users take from this?", "a": "That the practical protection available to an individual is limited and worth using anyway: lock your Aadhaar biometrics through the UIDAI portal, use a Virtual ID rather than the Aadhaar number where a service accepts one, and check your credit report periodically for accounts you did not open. None of this undoes an exposure. It makes the exposure harder to convert into a loan in your name." }
   ],
   "sources": [
-    { "label": "Reserve Bank of India — direction to MobiKwik to conduct a third-party forensic audit, reported March 2021" },
+    { "label": "Reserve Bank of India, direction to MobiKwik to conduct a third-party forensic audit, reported March 2021" },
     { "label": "MobiKwik public statements, February and March 2021", "note": "denying a security breach" },
     { "label": "Contemporaneous reporting by Indian technology and financial press, March 2021", "note": "including journalists locating their own records in the sale portal" },
-    { "label": "Indian Computer Emergency Response Team (CERT-In) — incident reporting framework" }
+    { "label": "Indian Computer Emergency Response Team (CERT-In), incident reporting framework" }
   ]
 }
 -->
@@ -37,38 +37,38 @@
 
 <p>This case file is written differently from the others on this site, because the usual materials do not exist. There is no regulatory penalty notice, no court judgment, no company disclosure setting out a timeline. What follows separates what the public record establishes from what was claimed.</p>
 
-<p><strong>Established:</strong> a dataset advertised as containing MobiKwik user data was offered for sale in early 2021. A searchable interface was made available by the seller in late March, and multiple identifiable people — including working journalists who wrote about it under their own names — reported retrieving accurate personal records about themselves from it, including identity document images. MobiKwik publicly and repeatedly denied that its systems had been breached. The Reserve Bank of India directed the company to commission a third-party forensic audit. The sale portal was withdrawn by the seller at the end of March 2021.</p>
+<p><strong>Established:</strong> a dataset advertised as containing MobiKwik user data was offered for sale in early 2021. A searchable interface was made available by the seller in late March, and multiple identifiable people, including working journalists who wrote about it under their own names, reported retrieving accurate personal records about themselves from it, including identity document images. MobiKwik publicly and repeatedly denied that its systems had been breached. The Reserve Bank of India directed the company to commission a third-party forensic audit. The sale portal was withdrawn by the seller at the end of March 2021.</p>
 
 <p><strong>Claimed but not independently established:</strong> the figures of 8.2 terabytes and 99 million users, which came from the seller and from researchers examining the advertisement rather than from any verified count. The method of compromise, which was never described by anyone in a position to know. Any attribution of the seller.</p>
 
 <p><strong>Never published:</strong> the findings of the forensic audit.</p>
 
 <div class="callout">
-  <p><strong>Why a denial is a strategic decision, not just a factual claim.</strong> For a regulated financial company preparing for a public listing, confirming a breach of identity documents triggers obligations, invites regulatory action and lands in the offer document. Denying costs nothing immediately. The asymmetry is the problem: in a jurisdiction without a mandatory breach notification regime carrying real penalties — which India substantially lacked in 2021 — the incentive structure points one way, and the people whose Aadhaar images are in circulation carry the consequence either way. India's Digital Personal Data Protection Act, passed in 2023, changes that calculation, which is precisely why it was needed.</p>
+  <p><strong>Why a denial is a strategic decision, not just a factual claim.</strong> For a regulated financial company preparing for a public listing, confirming a breach of identity documents triggers obligations, invites regulatory action and lands in the offer document. Denying costs nothing immediately. The asymmetry is the problem: in a jurisdiction without a mandatory breach notification regime carrying real penalties, which India substantially lacked in 2021, the incentive structure points one way, and the people whose Aadhaar images are in circulation carry the consequence either way. India's Digital Personal Data Protection Act, passed in 2023, changes that calculation, which is precisely why it was needed.</p>
 </div>
 
 <h2>The researcher problem</h2>
 
 <p>The alarm was raised by an independent security researcher, Rajshekhar Rajaharia, who had been publicising the dataset since January. The company's response characterised him in dismissive terms rather than engaging with the technical claim.</p>
 
-<p>This is a pattern with real consequences. Independent researchers are, in practice, a substantial part of how breaches involving Indian companies come to light, because there is no obligation on a company to find or report one. If the reliable outcome of reporting a finding is public hostility and legal exposure, researchers stop reporting — or report anonymously to journalists instead of privately to the company, which is worse for everybody including the company.</p>
+<p>This is a pattern with real consequences. Independent researchers are, in practice, a substantial part of how breaches involving Indian companies come to light, because there is no obligation on a company to find or report one. If the reliable outcome of reporting a finding is public hostility and legal exposure, researchers stop reporting, or report anonymously to journalists instead of privately to the company, which is worse for everybody including the company.</p>
 
 <p>The countries that have handled this better did so by establishing safe harbour: a documented vulnerability disclosure policy, a contact address that reaches security rather than legal, and a commitment not to pursue good-faith researchers. It costs very little and it changes which way information flows.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>January 2021</b> — A researcher publicly flags a dataset advertised as MobiKwik user data.</li>
-  <li><b>February 2021</b> — MobiKwik states that an investigation found no evidence of a breach and describes the reports as false.</li>
-  <li><b>Late March 2021</b> — A searchable portal appears; users and journalists report finding their own records, including KYC document images.</li>
-  <li><b>End of March 2021</b> — The Reserve Bank of India directs MobiKwik to commission a third-party forensic audit; the company says it will do so.</li>
-  <li><b>31 March 2021</b> — The seller withdraws the portal.</li>
-  <li><b>Afterwards</b> — No audit findings are published, no regulatory penalty is announced, and no confirmation or retraction follows.</li>
+  <li><b>January 2021</b>: A researcher publicly flags a dataset advertised as MobiKwik user data.</li>
+  <li><b>February 2021</b>: MobiKwik states that an investigation found no evidence of a breach and describes the reports as false.</li>
+  <li><b>Late March 2021</b>: A searchable portal appears; users and journalists report finding their own records, including KYC document images.</li>
+  <li><b>End of March 2021</b>: The Reserve Bank of India directs MobiKwik to commission a third-party forensic audit; the company says it will do so.</li>
+  <li><b>31 March 2021</b>: The seller withdraws the portal.</li>
+  <li><b>Afterwards</b>: No audit findings are published, no regulatory penalty is announced, and no confirmation or retraction follows.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p><strong>It became a reference point in the argument for India's data protection law.</strong> The Digital Personal Data Protection Act 2023 introduced breach notification duties and a regulator with penalty powers. The gap this case exposed — a large alleged exposure of identity documents with no obligation to confirm, notify or explain — is exactly the gap that legislation was written to close.</p>
+<p><strong>It became a reference point in the argument for India's data protection law.</strong> The Digital Personal Data Protection Act 2023 introduced breach notification duties and a regulator with penalty powers. The gap this case exposed, a large alleged exposure of identity documents with no obligation to confirm, notify or explain, is exactly the gap that legislation was written to close.</p>
 
 <p><strong>It sharpened scrutiny of KYC data retention in Indian fintech.</strong> The underlying question the case raised is why full identity document images were retained in a form that could be exfiltrated in bulk at all, years after onboarding. Tokenised verification and reference-only storage have gained ground since.</p>
 
@@ -82,5 +82,5 @@
   <li><strong>Lock your Aadhaar biometrics.</strong> UIDAI provides biometric locking through its portal and the mAadhaar app. It blocks authentication attempts using your biometrics while locked, and it takes a couple of minutes.</li>
   <li><strong>Use a Virtual ID instead of your Aadhaar number.</strong> A VID is a revocable 16-digit substitute that services can verify without receiving the underlying number.</li>
   <li><strong>Check your credit report for accounts you did not open.</strong> Credit bureaus in India provide a free report annually. Identity documents leaked in 2021 are still being used to obtain credit today.</li>
-  <li><strong>Change any password you reused, and assume the phone number is on every list.</strong> The persistent cost of these exposures is not the account — it is the targeted call that already knows who you bank with.</li>
+  <li><strong>Change any password you reused, and assume the phone number is on every list.</strong> The persistent cost of these exposures is not the account, it is the targeted call that already knows who you bank with.</li>
 </ol>

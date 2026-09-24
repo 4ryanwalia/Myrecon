@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Marriott Starwood Breach: 339 Million Guest Records">
   <meta name="twitter:description" content="Marriott bought Starwood in 2016. The reservation database it acquired had already been compromised for two years, and nobody found out until 2018.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Marriott and Starwood, 2018: a breach that came with the acquisition","description":"Marriott bought Starwood in 2016. The reservation database it acquired had already been compromised for two years, and nobody found out until 2018.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/marriott-starwood-2018.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Marriott Starwood guest reservation database breach"},"wordCount":818}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Marriott Starwood guest reservation database breach","item":"https://www.myrecon.xyz/breaches/case-files/marriott-starwood-2018.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many people were affected by the Marriott breach?","acceptedAnswer":{"@type":"Answer","text":"Marriott's first statement said up to 500 million guest records. A revised estimate in January 2019 put it at around 339 million, of which roughly 5.25 million contained unencrypted passport numbers and about 20.3 million contained encrypted ones. Records are not people: frequent travellers appear many times."}},{"@type":"Question","name":"Why does a travel record matter more than it sounds?","acceptedAnswer":{"@type":"Answer","text":"Because it is a movement history. Names, passport numbers, arrival and departure dates and hotel locations, held over four years, reconstruct who was where and when — and, by correlation, who was there at the same time. For most travellers that is a privacy loss. For diplomats, executives and intelligence officers it is an operational one, which is why this breach was read as espionage rather than fraud."}},{"@type":"Question","name":"Did the breach start before Marriott owned Starwood?","acceptedAnswer":{"@type":"Answer","text":"Yes. The compromise of the Starwood reservation system dates to 2014; Marriott completed its acquisition of Starwood in 2016 and continued operating the inherited system until 2018. That sequence is why this case is cited in every discussion of cybersecurity due diligence in mergers and acquisitions."}},{"@type":"Question","name":"What was the fine?","acceptedAnswer":{"@type":"Answer","text":"The UK Information Commissioner's Office issued a notice of intent to fine Marriott £99 million in 2019 and settled on £18.4 million in October 2020, reducing it for remediation and for the economic impact of the pandemic. It remains one of the larger GDPR penalties issued by the UK regulator."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many people were affected by the Marriott breach?","acceptedAnswer":{"@type":"Answer","text":"Marriott's first statement said up to 500 million guest records. A revised estimate in January 2019 put it at around 339 million, of which roughly 5.25 million contained unencrypted passport numbers and about 20.3 million contained encrypted ones. Records are not people: frequent travellers appear many times."}},{"@type":"Question","name":"Why does a travel record matter more than it sounds?","acceptedAnswer":{"@type":"Answer","text":"Because it is a movement history. Names, passport numbers, arrival and departure dates and hotel locations, held over four years, reconstruct who was where and when, and, by correlation, who was there at the same time. For most travellers that is a privacy loss. For diplomats, executives and intelligence officers it is an operational one, which is why this breach was read as espionage rather than fraud."}},{"@type":"Question","name":"Did the breach start before Marriott owned Starwood?","acceptedAnswer":{"@type":"Answer","text":"Yes. The compromise of the Starwood reservation system dates to 2014; Marriott completed its acquisition of Starwood in 2016 and continued operating the inherited system until 2018. That sequence is why this case is cited in every discussion of cybersecurity due diligence in mergers and acquisitions."}},{"@type":"Question","name":"What was the fine?","acceptedAnswer":{"@type":"Answer","text":"The UK Information Commissioner's Office issued a notice of intent to fine Marriott £99 million in 2019 and settled on £18.4 million in October 2020, reducing it for remediation and for the economic impact of the pandemic. It remains one of the larger GDPR penalties issued by the UK regulator."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,7 +76,7 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Addresses · Phone numbers · Email addresses · Passport numbers (5.25 million unencrypted) · Arrival and departure dates · Reservation details · Some encrypted payment cards</p>
 
-<p class="lead">Marriott announced in November 2018 that its Starwood guest reservation database had been compromised. The striking detail was not the number of records. It was the start date: 2014 — two years before Marriott bought Starwood, and four years before anyone noticed.</p>
+<p class="lead">Marriott announced in November 2018 that its Starwood guest reservation database had been compromised. The striking detail was not the number of records. It was the start date: 2014, two years before Marriott bought Starwood, and four years before anyone noticed.</p>
 
 <h2>What happened</h2>
 
@@ -91,7 +92,7 @@
 
 <h2>Why this reads as espionage rather than crime</h2>
 
-<p>Criminal groups monetise breaches: cards get sold, credentials get stuffed, identity kits get traded. Four years of hotel reservation data attached to passport numbers has an obvious market value — and none of it showed up on carding forums.</p>
+<p>Criminal groups monetise breaches: cards get sold, credentials get stuffed, identity kits get traded. Four years of hotel reservation data attached to passport numbers has an obvious market value, and none of it showed up on carding forums.</p>
 
 <p>US officials publicly linked the intrusion to Chinese state actors, and the reasoning offered at the time turned on this absence. A dataset that records where specific named people slept, on which nights, in which cities, is a counterintelligence tool. Cross-referenced with the <a href="/breaches/case-files/opm-2015.html">OPM clearance files</a> and the <a href="/breaches/case-files/anthem-2015.html">Anthem membership records</a>, both attributed to the same country, it starts to look less like three unrelated thefts and more like an assembly job: who people are, what could pressure them, and where they have been.</p>
 
@@ -100,15 +101,15 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>2014</b> — Attackers compromise the Starwood guest reservation system.</li>
-  <li><b>November 2015</b> — Starwood discloses a separate malware incident affecting payment systems at some properties.</li>
-  <li><b>September 2016</b> — Marriott completes its acquisition of Starwood.</li>
-  <li><b>2016–2018</b> — The inherited Starwood platform continues in service; the compromise continues undetected.</li>
-  <li><b>8 September 2018</b> — An internal tool alerts on an access attempt against the Starwood database.</li>
-  <li><b>30 November 2018</b> — Marriott discloses: up to 500 million records.</li>
-  <li><b>4 January 2019</b> — The estimate is revised to around 339 million, with passport and card detail broken out.</li>
-  <li><b>July 2019</b> — The UK ICO issues a notice of intent to fine £99 million.</li>
-  <li><b>October 2020</b> — The final penalty is set at £18.4 million.</li>
+  <li><b>2014</b>: Attackers compromise the Starwood guest reservation system.</li>
+  <li><b>November 2015</b>: Starwood discloses a separate malware incident affecting payment systems at some properties.</li>
+  <li><b>September 2016</b>: Marriott completes its acquisition of Starwood.</li>
+  <li><b>2016–2018</b>: The inherited Starwood platform continues in service; the compromise continues undetected.</li>
+  <li><b>8 September 2018</b>: An internal tool alerts on an access attempt against the Starwood database.</li>
+  <li><b>30 November 2018</b>: Marriott discloses: up to 500 million records.</li>
+  <li><b>4 January 2019</b>: The estimate is revised to around 339 million, with passport and card detail broken out.</li>
+  <li><b>July 2019</b>: The UK ICO issues a notice of intent to fine £99 million.</li>
+  <li><b>October 2020</b>: The final penalty is set at £18.4 million.</li>
 </ol>
 
 <h2>What it changed</h2>
@@ -123,9 +124,9 @@
 
 <ol class="bx-actions">
   <li><strong>Check whether your passport number was in the unencrypted set</strong> if you were notified. Some governments and Marriott itself offered to cover replacement costs where fraud could be shown.</li>
-  <li><strong>Assume your travel dates are known.</strong> There is no remediation for that, but it changes how you should read a message that references a trip you actually took — familiarity is not authentication.</li>
+  <li><strong>Assume your travel dates are known.</strong> There is no remediation for that, but it changes how you should read a message that references a trip you actually took, familiarity is not authentication.</li>
   <li><strong>Watch for travel-themed phishing.</strong> Loyalty account takeovers and "problem with your booking" messages are the direct downstream use of this data.</li>
-  <li><strong>Review what your loyalty accounts still hold.</strong> Old profiles accumulate passport details, addresses and card tokens long after the trip — <a href="/guides/reduce-your-digital-footprint.html">clearing out what you no longer need</a> is the only control you hold yourself.</li>
+  <li><strong>Review what your loyalty accounts still hold.</strong> Old profiles accumulate passport details, addresses and card tokens long after the trip, <a href="/guides/reduce-your-digital-footprint.html">clearing out what you no longer need</a> is the only control you hold yourself.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -138,7 +139,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -147,7 +148,7 @@
         <p>Marriott's first statement said up to 500 million guest records. A revised estimate in January 2019 put it at around 339 million, of which roughly 5.25 million contained unencrypted passport numbers and about 20.3 million contained encrypted ones. Records are not people: frequent travellers appear many times.</p>
 
         <h3>Why does a travel record matter more than it sounds?</h3>
-        <p>Because it is a movement history. Names, passport numbers, arrival and departure dates and hotel locations, held over four years, reconstruct who was where and when — and, by correlation, who was there at the same time. For most travellers that is a privacy loss. For diplomats, executives and intelligence officers it is an operational one, which is why this breach was read as espionage rather than fraud.</p>
+        <p>Because it is a movement history. Names, passport numbers, arrival and departure dates and hotel locations, held over four years, reconstruct who was where and when, and, by correlation, who was there at the same time. For most travellers that is a privacy loss. For diplomats, executives and intelligence officers it is an operational one, which is why this breach was read as espionage rather than fraud.</p>
 
         <h3>Did the breach start before Marriott owned Starwood?</h3>
         <p>Yes. The compromise of the Starwood reservation system dates to 2014; Marriott completed its acquisition of Starwood in 2016 and continued operating the inherited system until 2018. That sequence is why this case is cited in every discussion of cybersecurity due diligence in mergers and acquisitions.</p>
@@ -155,9 +156,21 @@
         <h3>What was the fine?</h3>
         <p>The UK Information Commissioner's Office issued a notice of intent to fine Marriott £99 million in 2019 and settled on £18.4 million in October 2020, reducing it for remediation and for the economic impact of the pandemic. It remains one of the larger GDPR penalties issued by the UK regulator.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://ico.org.uk/action-weve-taken/enforcement/marriott-international-inc/" target="_blank" rel="noopener nofollow">UK Information Commissioner's Office — Marriott International penalty notice, October 2020</a></li>
+        <li><a href="https://ico.org.uk/action-weve-taken/enforcement/marriott-international-inc/" target="_blank" rel="noopener nofollow">UK Information Commissioner's Office, Marriott International penalty notice, October 2020</a></li>
         <li><b>Marriott International guest reservation database security incident statements, November 2018 and January 2019</b></li>
         <li><b>US Senate and congressional testimony on the incident, 2019</b></li>
       </ul>
@@ -168,7 +181,7 @@
         <li><a href="/breaches/case-files/optus-2022.html">Optus, 2022: an API with no lock on it, and 9.8 million Australians</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -184,5 +197,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

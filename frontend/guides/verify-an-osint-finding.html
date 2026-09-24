@@ -19,25 +19,26 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="How to Verify an OSINT Finding Before You Act on It">
   <meta name="twitter:description" content="A matching username is not proof of identity. Here is what actually counts as evidence.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -60,19 +61,19 @@
     <article class="article">
       <span class="kicker">Method</span>
       <h1>How to Verify an OSINT Finding Before You Act on It</h1>
-      <p class="meta">Updated 6 September 2026 · 9 min read</p>
+      <p class="meta">Updated 6 September 2026 · 5 min read</p>
 
       <p class="lead">A username search gives you a list of accounts sharing a handle. That is a starting point, not a conclusion. The gap between "this account uses the same name" and "this account belongs to this person" is where almost every mistaken identification lives.</p>
 
       <h2>Why the same handle is weak evidence</h2>
       <p>Popular handles are registered many times over by unrelated people. Short handles are registered thousands of times. Even distinctive ones collide, and are deliberately squatted on across platforms by people reserving names.</p>
-      <p>We saw a clean illustration while testing. Searching for <code>torvalds</code> — obviously suggesting Linus Torvalds — returned a match on a professional network, which resolved to an account titled "Patricia Torvalds". A real account, a real person, the handle matching exactly, and a different human being.</p>
+      <p>We saw a clean illustration while testing. Searching for <code>torvalds</code>: obviously suggesting Linus Torvalds, returned a match on a professional network, which resolved to an account titled "Patricia Torvalds". A real account, a real person, the handle matching exactly, and a different human being.</p>
       <p>An automated tool cannot resolve that. Only evidence can.</p>
 
       <h2>Three tiers of evidence</h2>
       <p>Not all corroboration is equal. Sorting it into tiers keeps you honest about what you actually have.</p>
 
-      <h3>Tier 1 — cryptographic or platform-attested</h3>
+      <h3>Tier 1: cryptographic or platform-attested</h3>
       <p>The strongest evidence, and the rarest. The account proves control of something else:</p>
       <ul>
         <li><strong>Keybase-style signed proofs.</strong> A signed statement linking accounts, which you can verify mathematically rather than trust.</li>
@@ -81,7 +82,7 @@
       </ul>
       <p>If you have this, you are close to certain. Note that it proves <em>common control</em> of two accounts, which is subtly different from proving who the human is.</p>
 
-      <h3>Tier 2 — self-declared cross-links</h3>
+      <h3>Tier 2: self-declared cross-links</h3>
       <p>The person has publicly connected the accounts themselves:</p>
       <ul>
         <li>A link in one bio pointing to the other profile</li>
@@ -89,11 +90,11 @@
         <li>The same public email address on both</li>
         <li>A link-in-bio page collecting them</li>
       </ul>
-      <p>Strong, and usually enough for practical purposes. Check that the link is reciprocal where possible — anyone can link to a profile they do not own.</p>
+      <p>Strong, and usually enough for practical purposes. Check that the link is reciprocal where possible, anyone can link to a profile they do not own.</p>
 
-      <h3>Tier 3 — circumstantial patterns</h3>
+      <h3>Tier 3: circumstantial patterns</h3>
       <p>Everything else: identical display names, the same profile photo, matching bios, consistent locations, overlapping interests, accounts created around the same time.</p>
-      <p>Any one of these is weak. Several together are suggestive, never conclusive. Photos in particular are unreliable — profile pictures get copied, and impersonation accounts copy them deliberately.</p>
+      <p>Any one of these is weak. Several together are suggestive, never conclusive. Photos in particular are unreliable, profile pictures get copied, and impersonation accounts copy them deliberately.</p>
 
       <h2>The verification method</h2>
 
@@ -114,27 +115,27 @@
       <p>An account created in 2012 that has posted steadily is harder to fake than one created last month. Compare timelines: if a person's other accounts have a decade of history and this one appeared recently with copied photos, consider impersonation.</p>
 
       <h3>6. Write down your confidence, and why</h3>
-      <p>Force yourself to state it: "probable, based on a reciprocal bio link and matching display name". If you cannot name the evidence, you do not have a finding — you have a hunch.</p>
+      <p>Force yourself to state it: "probable, based on a reciprocal bio link and matching display name". If you cannot name the evidence, you do not have a finding, you have a hunch.</p>
 
       <h2>Traps that catch experienced people</h2>
 
       <h3>The archive trap</h3>
-      <p>A profile that 404s today may have existed for years. Archive.org often holds snapshots, which can confirm that an account existed and what it said — genuinely useful. The trap is treating an old snapshot as current. A bio from 2019 describes 2019.</p>
+      <p>A profile that 404s today may have existed for years. Archive.org often holds snapshots, which can confirm that an account existed and what it said, genuinely useful. The trap is treating an old snapshot as current. A bio from 2019 describes 2019.</p>
 
       <h3>The blocked-check trap</h3>
-      <p>If a platform rate-limits or blocks you, you have learned nothing — but a tool may present that as "not found", and you may remember it as "they are not on that platform". Absence of evidence is not evidence of absence, and this is the most common way that error enters an investigation.</p>
+      <p>If a platform rate-limits or blocks you, you have learned nothing, but a tool may present that as "not found", and you may remember it as "they are not on that platform". Absence of evidence is not evidence of absence, and this is the most common way that error enters an investigation.</p>
 
       <h3>The aggregation trap</h3>
-      <p>Each fact may be individually public and harmless. Assembled — employer, neighbourhood, gym schedule, partner's name, children's school — they become something none of them was alone. That is worth pausing on regardless of what you intend, and it is the reason to keep investigations to your own footprint or ones you are formally authorised to examine.</p>
+      <p>Each fact may be individually public and harmless. Assembled, employer, neighbourhood, gym schedule, partner's name, children's school, they become something none of them was alone. That is worth pausing on regardless of what you intend, and it is the reason to keep investigations to your own footprint or ones you are formally authorised to examine.</p>
 
       <h3>The confirmation trap</h3>
       <p>Once you believe an account belongs to someone, every detail starts looking like corroboration. The discipline that helps: before you conclude, spend two minutes actively looking for evidence you are wrong. A different city in an old post. A timeline that does not fit.</p>
 
       <h2>Applying this to your own footprint</h2>
-      <p>Most people reading this are checking themselves, which is easier — you already know the truth. What you are looking for is the shape of what a stranger could assemble.</p>
+      <p>Most people reading this are checking themselves, which is easier, you already know the truth. What you are looking for is the shape of what a stranger could assemble.</p>
       <p>Work through the results and sort them into three piles:</p>
       <ul>
-        <li><strong>Mine, and I want it public.</strong> Fine. Check the bio does not leak more than intended — a workplace, a home city, a partner's handle.</li>
+        <li><strong>Mine, and I want it public.</strong> Fine. Check the bio does not leak more than intended, a workplace, a home city, a partner's handle.</li>
         <li><strong>Mine, and I forgot it existed.</strong> The most common and most valuable category. Old accounts hold old photos, old email addresses and old passwords, and are the usual route into an account-takeover attempt.</li>
         <li><strong>Not mine.</strong> Someone else with the same handle, or an impersonation. Worth knowing which.</li>
       </ul>
@@ -142,8 +143,18 @@
 
       <h2>The standard worth holding</h2>
       <p>Report what you can support, at the confidence you can support it, and say plainly when you do not know. "I could not verify this" is a legitimate finding and often the most honest one available.</p>
-      <p>A tool that hands you twenty results where nine are imaginary is worse than one that hands you five that are real, because you cannot tell which nine — and you will act on all twenty.</p>
+      <p>A tool that hands you twenty results where nine are imaginary is worse than one that hands you five that are real, because you cannot tell which nine, and you will act on all twenty.</p>
       <p><a href="/#tool" style="color:var(--accent)">Check your own footprint →</a></p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dverify_an_osint_finding" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
 
             <h2>Related guides</h2>
       <ul class="related-guides">
@@ -163,5 +174,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

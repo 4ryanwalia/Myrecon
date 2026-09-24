@@ -1,7 +1,7 @@
 # Editorial takes
 
-Drop an HTML fragment in here named after the breach's HIBP `Name` — not its
-title — and the generator places it near the top of that article under a
+Drop an HTML fragment in here named after the breach's HIBP `Name`, not its
+title, and the generator places it near the top of that article under a
 "MyRecon's take" byline, above the generated analysis.
 
 ```
@@ -14,7 +14,7 @@ is built from (`underarmour.html` ← `UnderArmour`).
 
 ## What goes in the file
 
-A fragment, not a page. No `<html>`, no `<head>`, no wrapper `<div>` — just the
+A fragment, not a page. No `<html>`, no `<head>`, no wrapper `<div>`, just the
 content, and it inherits the site's styles:
 
 ```html
@@ -32,7 +32,7 @@ still render underneath, so a half-written take never leaves a broken page.
 
 ## Why it is separated
 
-Everything else on these pages is derived from the breach record — a number, a
+Everything else on these pages is derived from the breach record, a number, a
 date, a flag. That is what lets the method note at the bottom of every article
 promise the analysis cannot drift from the evidence. Hand-written opinion is a
 different kind of claim, so it gets a different visual treatment and its own

@@ -2,7 +2,7 @@
  *
  * Hands the address to the tool on the home page through the deep link it
  * already supports (#tool=email&q=...), which switches to the email tool and
- * runs it. Nothing is submitted from this page and nothing is stored here —
+ * runs it. Nothing is submitted from this page and nothing is stored here,
  * the form exists so that someone who arrived searching "was my email in the
  * X breach" can get the answer without first working out where the tool is.
  *

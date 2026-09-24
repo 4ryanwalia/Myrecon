@@ -1,9 +1,9 @@
-/* MyRecon — runtime configuration.
+/* MyRecon, runtime configuration.
  *
  * The backend base URL is never hardcoded in application logic. It resolves as:
  *   1. window.MYRECON_API_BASE           (explicit override, e.g. self-hosting)
  *   2. localhost during local development
- *   3. "" (same-origin) in production — Vercel rewrites /api/* to the Render API
+ *   3. "" (same-origin) in production, Vercel rewrites /api/* to the Render API
  *      (see frontend/vercel.json), so there are no cross-origin URLs to leak.
  */
 (function () {

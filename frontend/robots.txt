@@ -13,8 +13,14 @@ Disallow: /content/
 
 # NOTE: deliberately no "Disallow: /*?" here. The stylesheets and scripts are
 # cache-busted with ?v=N, so a blanket query-string rule would stop Googlebot
-# fetching the CSS and JS it needs to render the page — a far bigger problem
+# fetching the CSS and JS it needs to render the page, a far bigger problem
 # than the handful of query-string URLs it would tidy away. Stray query
 # variants are handled by the self-referencing canonical on every page.
 
 Sitemap: https://www.myrecon.xyz/sitemap.xml
+
+# A summary of the site for language models, in the llms.txt convention: what
+# each section is for, which pages carry original measurement, and, the part
+# no sitemap can express, what these tools deliberately do not do. Named here
+# because robots.txt is the one file every crawler already fetches.
+# https://www.myrecon.xyz/llms.txt

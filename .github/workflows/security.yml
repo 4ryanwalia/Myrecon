@@ -1,0 +1,96 @@
+# Two guards that run on every push and pull request.
+#
+# The secret scan exists because a live Google API key and a SerpAPI key once
+# sat in plaintext in the repo's working tree. They never reached git history —
+# `git log --all -S` confirms it — but nothing except that good luck was
+# stopping them, and a key committed once is public forever regardless of what
+# the next commit removes.
+#
+# The backend tests are here rather than in a separate workflow because the
+# ones worth blocking a merge on are the security regressions: the rate limiter
+# was bypassable with a single spoofed header, and that is exactly the kind of
+# fix that gets quietly undone by a later refactor.
+name: Security
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Read-only. This workflow inspects code and must never be able to change it.
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # gitleaks needs history to scan commits, not just the checked-out
+          # tree. 0 = full clone.
+          fetch-depth: 0
+
+      - name: Scan working tree and full history for credentials
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail on key-shaped literals gitleaks does not know
+        run: |
+          # A deliberately narrow backstop for the specific shapes this project
+          # has already had, and for anything assigning a long literal to a
+          # name containing "key"/"secret"/"token". Kept narrow on purpose: a
+          # noisy check is one people start skipping.
+          pattern='AIza[0-9A-Za-z_-]{30,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+          if grep -rInE "$pattern" \
+               --exclude-dir=.git --exclude-dir=node_modules \
+               --exclude-dir=build --exclude-dir=.gradle \
+               --exclude=security.yml . ; then
+            echo "::error::A credential-shaped literal is present in the tree."
+            exit 1
+          fi
+          echo "No credential-shaped literals found."
+
+      - name: Refuse committed key material
+        run: |
+          # .gitignore already covers these; this catches a `git add -f`.
+          if git ls-files | grep -iE '\.(pem|key|jks|keystore|p12|pfx)$|(^|/)\.env$'; then
+            echo "::error::Key material or a .env file is tracked by git."
+            exit 1
+          fi
+          echo "No key material tracked."
+
+  backend-tests:
+    name: Backend security tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # Pinned rather than read from runtime.txt: that file is Render's
+          # format, and a CI that cannot parse it fails in a way that looks
+          # like a test failure. Keep this in step with backend/runtime.txt.
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        # FLASK_ENV is set explicitly so the suite exercises the production
+        # code paths — debug forced off, wildcard CORS stripped.
+        env:
+          FLASK_ENV: production
+          SECRET_KEY: test-key-not-used-for-anything-real
+        run: python -m pytest tests/ -q

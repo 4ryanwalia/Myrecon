@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Deep Search — correlation console
+   Deep Search, correlation console
    Extends the MyRecon design system; defines no colours of its own beyond
    two aliases, so both themes follow the base tokens automatically.
    ========================================================================== */
@@ -11,7 +11,7 @@
    ones (--ok/--warn/--danger) at their dark-theme values. Those are tuned for a
    near-black ground: --warn #fbbf24 on white is roughly 1.8:1, which fails
    badly for the confidence scores, since here the colour *is* the reading.
-   Aliased and darkened for light mode. Scoped to this page deliberately — the
+   Aliased and darkened for light mode. Scoped to this page deliberately, the
    same gap affects the breach banner site-wide and that is a separate call. */
 :root { --ds-ok: var(--ok); --ds-warn: var(--warn); --ds-mute: var(--text-mute); }
 @media (prefers-color-scheme: light) {
@@ -139,7 +139,7 @@
 }
 
 /* Phone: the standfirst is prose people actually read, and .93rem lands at
-   14.9px. The footnote stays small — it is a caveat, not body copy. */
+   14.9px. The footnote stays small, it is a caveat, not body copy. */
 @media (max-width: 820px) {
   .ds-stand { font-size: 1rem; }
   label.switch { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }

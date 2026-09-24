@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DNS Records Explained: A, MX, TXT, NS and More | MyRecon</title>
-  <meta name="description" content="A plain-English guide to DNS record types — A, AAAA, MX, NS, TXT, CNAME, SOA, CAA — what each one does, and what it reveals during an investigation.">
+  <meta name="description" content="A plain-English guide to DNS record types, A, AAAA, MX, NS, TXT, CNAME, SOA, CAA, what each one does, and what it reveals during an investigation.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/guides/dns-records-explained.html">
@@ -19,29 +19,30 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="DNS Records Explained: A, MX, TXT, NS and More">
   <meta name="twitter:description" content="What each DNS record type does and what it reveals during an investigation.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"DNS Records Explained: A, MX, TXT, NS and More","description":"A plain-English guide to DNS record types and what they reveal.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/dns-records-explained.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"DNS Records Explained: A, MX, TXT, NS and More","description":"A plain-English guide to DNS record types and what they reveal.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-14","mainEntityOfPage":"https://www.myrecon.xyz/guides/dns-records-explained.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"DNS Records Explained: A, MX, TXT, NS and More","item":"https://www.myrecon.xyz/guides/dns-records-explained.html"}],"@context":"https://schema.org"}</script>
 </head>
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -58,51 +59,107 @@
 
   <main id="main" class="container">
     <article class="article">
-      <span class="kicker">DNS intelligence</span>
-      <h1>DNS Records Explained: A, MX, TXT, NS and More</h1>
-      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+<span class="kicker">Domain intelligence</span>
+      <h1>DNS Records Explained: A, MX, TXT, NS and the Rest</h1>
+      <p class="meta">Updated 14 September 2026 · 7 min read</p>
 
-      <p class="lead">DNS is the internet's address book. When you look up a domain's DNS records, you are reading the instructions that tell the world where its website lives, where its email goes, and which services it trusts.</p>
+      <p class="lead">A domain's DNS zone is a public list of every decision its owner has made about where things live. It names their host, their mail provider, and, through a set of records almost nobody thinks of as revealing, a good part of the software they run the company on.</p>
 
-      <h2>What DNS does</h2>
-      <p>Computers route traffic using IP addresses, but people use names. The Domain Name System (DNS) bridges the two: it translates a human-friendly name like <span style="font-family:var(--mono)">example.com</span> into the addresses and settings that machines need. A domain's DNS records are published by its authoritative nameservers, and anyone can query them — which makes DNS a rich, entirely public source of information about how a domain is set up.</p>
+      <h2>What DNS actually is</h2>
+      <p>DNS turns names into the answers a machine needs. Almost everyone describes it as "turning names into IP addresses", which is the most common job but not the only one, and the other jobs are where the interesting information is.</p>
+      <p>A zone is the set of records for a domain. Each record has a name, a type, a value and a time-to-live. Anyone can ask for them, because they have to be readable for the internet to work at all, which is what makes DNS the single most productive public source in an infrastructure investigation.</p>
 
-      <h2>The record types worth knowing</h2>
-      <h3>A and AAAA — where the website lives</h3>
-      <p>An <strong>A record</strong> maps a name to an IPv4 address; an <strong>AAAA record</strong> does the same for IPv6. These tell you the server the domain points to. From there you can look up the IP's geolocation and hosting provider to learn where the site is actually served from.</p>
+      <h2>The record types, and what each one tells you</h2>
 
-      <h3>MX — where the email goes</h3>
-      <p><strong>MX (Mail Exchanger)</strong> records specify the mail servers that handle email for the domain. They are a giveaway of which email provider a company uses — MX records pointing to Google or Microsoft's mail infrastructure tell you the organisation runs on Google Workspace or Microsoft 365, for example. If a domain has no MX records, it usually cannot receive email at all.</p>
+      <h3>A and AAAA: where the name points</h3>
+      <p>An <strong>A</strong> record maps a name to an IPv4 address; <strong>AAAA</strong> does the same for IPv6. This is the record people mean when they say a domain "points at" a server.</p>
+      <p>What it tells an investigator is less than you would hope, and this is worth internalising early: most sites now sit behind a CDN or a proxy, so the A record returns the CDN's address, not the origin's. Cloudflare, Fastly and their equivalents answer for millions of domains. Seeing one of their ranges tells you which CDN the site uses and nothing whatsoever about who runs the server behind it.</p>
 
-      <h3>NS — who is in charge of the domain's DNS</h3>
-      <p><strong>NS (Nameserver)</strong> records list the authoritative servers for the domain. They reveal the DNS provider (such as Cloudflare, AWS Route 53, or the registrar's own service) and are a useful fingerprint of a domain's infrastructure.</p>
-
-      <h3>TXT — verification and email security</h3>
-      <p><strong>TXT</strong> records hold free-form text, and they are where a lot of the interesting detail hides. They commonly include:</p>
-      <ul>
-        <li><strong>SPF</strong> (starting with <span style="font-family:var(--mono)">v=spf1</span>) — lists which servers are allowed to send mail for the domain.</li>
-        <li><strong>DKIM</strong> and <strong>DMARC</strong> policies that protect against email spoofing.</li>
-        <li><strong>Verification strings</strong> from services the domain has connected — Google, Microsoft, Atlassian, Facebook, and many others each drop a verification token here, which quietly reveals which third-party tools the organisation uses.</li>
-      </ul>
-
-      <h3>CNAME, SOA and CAA</h3>
-      <p>A <strong>CNAME</strong> is an alias that points one name at another. The <strong>SOA (Start of Authority)</strong> record holds administrative metadata about the zone, including refresh timers. A <strong>CAA</strong> record specifies which certificate authorities are allowed to issue TLS certificates for the domain — a small but meaningful security control.</p>
-
-      <h2>DNS-over-HTTPS: accurate and private lookups</h2>
-      <p>Traditional DNS queries travel in plain text and can be intercepted or tampered with along the way. <strong>DNS-over-HTTPS (DoH)</strong> sends the query inside an encrypted HTTPS connection to a trusted resolver, which improves both privacy and integrity. MyRecon's <a href="/#tool">DNS tool</a> resolves records over DoH, so the answers you see are consistent and not quietly rewritten by an intermediate network.</p>
+      <h3>CNAME: an alias to another name</h3>
+      <p>A <strong>CNAME</strong> says "for this name, go and look up that name instead". It is how <span style="font-family:var(--mono)">www</span> usually points at the bare domain, and how services hand customers a subdomain on their own infrastructure.</p>
+      <p>CNAMEs are the most informative record type for working out a company's vendor stack, because they point directly at the vendor. A support subdomain aliased to a helpdesk provider, a status page aliased to a status-page service, a shop aliased to a commerce platform, each one names a supplier, and suppliers are a route in. That is not a hypothetical concern: a large share of the case files on this site begin at a third party rather than at the company in the headline.</p>
+      <p>Two rules people trip on: a CNAME cannot coexist with other records on the same name, and it cannot legally sit at the zone apex, the bare domain, which is why providers invented non-standard ALIAS and ANAME records to work around it.</p>
 
       <div class="callout">
-        <p><strong>Reading the whole picture.</strong> On its own, one record is a fact. Together, a domain's records tell a story: where it is hosted, who provides its email, and which services it trusts. Pair them with the <a href="/guides/whois-rdap-explained.html">registration record</a> for a complete view.</p>
+        <p><strong>The dangling CNAME, and why it is a security finding rather than a curiosity.</strong> When a company stops using a service but leaves the CNAME in place, that subdomain still points at the provider, at a name nobody owns any more. Anyone who registers that name on the provider gets a working, HTTPS-valid page on the company's own subdomain. That is a subdomain takeover, it is one of the most reliably found issues in bug bounty work, and it exists because deleting a DNS record is a step that is very easy to skip.</p>
       </div>
 
-      <h2>What an investigator learns from DNS</h2>
-      <p>DNS answers practical questions quickly. Is this domain configured to send email, or is it parked? Which cloud does it run on? Has the owner set up anti-spoofing protection? Which SaaS tools has the company connected? None of this requires special access — it is all published for the internet to use, which is exactly what makes it such a dependable OSINT source.</p>
+      <h3>MX: where mail goes</h3>
+      <p><strong>MX</strong> records name the mail servers that accept mail for the domain, each with a priority number where lower wins. They are the fastest way to identify a company's mail provider: hostnames ending in Google's or Microsoft's mail infrastructure account for an enormous share of business domains, and a self-hosted mail server on the company's own range is now unusual enough to be worth noting.</p>
+      <p>A domain with no MX records cannot receive mail. On something claiming to be a business, that is a meaningful finding, it usually means the domain exists to be clicked, not corresponded with.</p>
 
-            <h2>Related guides</h2>
+      <h3>TXT: the accidental inventory</h3>
+      <p><strong>TXT</strong> records hold arbitrary text, and because they were the only flexible field available, the industry piled everything into them. Two things live there.</p>
+      <p>First, email authentication: SPF, DKIM and DMARC are all TXT records, and they are worth a guide of their own, <a href="/guides/spf-dkim-dmarc-explained.html">this one</a>.</p>
+      <p>Second, and much less appreciated, <strong>domain verification tokens</strong>. Every SaaS product that needs to prove you control a domain asks you to add a TXT record, and almost nobody removes them afterwards. The result is a public list of the vendors a company has signed up with, sometimes years of them. You will recognise them by their prefixes:</p>
+      <ul>
+        <li><span style="font-family:var(--mono)">google-site-verification=</span>, Google Search Console or Workspace.</li>
+        <li><span style="font-family:var(--mono)">MS=</span>, Microsoft 365 tenant verification.</li>
+        <li><span style="font-family:var(--mono)">atlassian-domain-verification=</span>, Jira or Confluence.</li>
+        <li><span style="font-family:var(--mono)">facebook-domain-verification=</span>, an advertising or commerce account.</li>
+        <li><span style="font-family:var(--mono)">docusign=</span>, <span style="font-family:var(--mono)">stripe-verification=</span>, <span style="font-family:var(--mono)">adobe-idp-site-verification=</span> and dozens more in the same shape.</li>
+      </ul>
+      <p>Read together, these describe an organisation: its identity provider, its payment processor, its ticketing system, its marketing platform. None of it is secret and all of it was published deliberately, which is exactly what makes it open-source intelligence rather than anything else.</p>
+
+      <h3>NS and SOA: who is in charge of the zone</h3>
+      <p><strong>NS</strong> records name the authoritative nameservers for the domain. They tell you which DNS provider the owner uses, and they are the strongest single link between separate domains: two unrelated-looking sites on the same unusual nameserver pair are very often the same operator.</p>
+      <p><strong>SOA</strong>: start of authority, carries the zone's administrative parameters, including a serial number that increments when the zone changes and an administrative email address in an old notation where the first dot stands in for the <span style="font-family:var(--mono)">@</span>. That address is frequently the last surviving human contact detail in a post-redaction world.</p>
+
+      <h3>PTR: the reverse direction</h3>
+      <p><strong>PTR</strong> maps an address back to a name, and it lives in a separate zone controlled by whoever holds the IP range rather than by the domain owner. That distinction is the whole reason it is useful, and it is covered properly in the <a href="/guides/ip-geolocation-reverse-dns.html">IP and reverse DNS guide</a>.</p>
+
+      <h3>CAA: which authorities may issue certificates</h3>
+      <p><strong>CAA</strong> records list the certificate authorities permitted to issue for a domain. A CA is required to check them before issuing. Few domains publish them, which makes their presence a decent proxy for a security team that has done the unglamorous work.</p>
+
+      <h3>SRV, DS and DNSKEY</h3>
+      <p><strong>SRV</strong> records advertise a service, a protocol, a port and a host, historically the fingerprint of on-premise directory and communications servers, and still visible on plenty of corporate domains. <strong>DS</strong> and <strong>DNSKEY</strong> are the DNSSEC chain: the signing keys and the fingerprint the parent zone holds for them. A domain with a DS record at the registry is signed; almost none are.</p>
+
+      <h2>TTL, and the propagation myth</h2>
+      <p>Every record carries a <strong>time-to-live</strong>: how many seconds a resolver may keep the answer before asking again. Nothing about DNS "propagates". Changes are published instantly at the authoritative server, and the delay everyone experiences is simply resolvers elsewhere serving cached answers until their TTL runs out.</p>
+      <p>TTLs are also a small operational tell. A zone where every record has a five-minute TTL belongs to someone who expects to move things, or who did move things recently and lowered the TTL beforehand. Day-long TTLs belong to a zone nobody has touched in a long time.</p>
+
+      <h2>What DNS will not tell you</h2>
+      <ul>
+        <li><strong>The origin server behind a CDN.</strong> The A record is the proxy. Finding the origin is a separate problem and often an unsolvable one.</li>
+        <li><strong>Every subdomain.</strong> There is no command that lists a zone, zone transfers were locked down decades ago, and a server that still allows one is a misconfiguration rather than a source. Subdomains are found through certificate transparency logs, passive DNS collections and wordlists, all of which are incomplete by nature.</li>
+        <li><strong>Who owns it.</strong> That is the registration record's job, and it mostly will not tell you either. See <a href="/guides/whois-rdap-explained.html">WHOIS and RDAP</a>.</li>
+        <li><strong>What the internal network looks like.</strong> Many organisations run split-horizon DNS, where the answers inside the building differ entirely from the public ones.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>Where the answer comes from matters.</strong> Public resolvers return different results in different countries, and some ISPs rewrite failed lookups to point at their own advertising pages. MyRecon queries DNS over HTTPS against a public resolver so the answer is not shaped by whatever your network decided to do with it, and shows you the records as returned.</p>
+      </div>
+
+      <h2>A reading order for an unfamiliar zone</h2>
+      <ol>
+        <li><strong>NS first.</strong> Who runs the zone, and have you seen those nameservers before?</li>
+        <li><strong>MX.</strong> Which mail provider, or none at all, which is its own answer.</li>
+        <li><strong>TXT.</strong> Read the verification tokens as a vendor list, then read SPF and DMARC as a security posture.</li>
+        <li><strong>A, AAAA and CNAME.</strong> Hosting, CDN and every aliased subdomain you can find.</li>
+        <li><strong>CAA and DS.</strong> Present or absent, they tell you how much deliberate work went into this zone.</li>
+        <li><strong>Then compare against the registration record.</strong> A zone built out with care on a domain registered last week is a contradiction worth explaining.</li>
+      </ol>
+
+      <div class="callout">
+        <p>Run a live DNS lookup on any domain with the <a href="/#tool">MyRecon domain tool</a>, or read <a href="/guides/investigate-a-domain.html">how to investigate a suspicious domain</a> for the full workflow these records fit into.</p>
+      </div>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Ddns_records_explained" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
       <ul class="related-guides">
-        <li><a href="/guides/whois-rdap-explained.html">reading a domain's WHOIS and RDAP registration record</a></li>
-        <li><a href="/guides/spf-dkim-dmarc-explained.html">how SPF, DKIM and DMARC stop someone spoofing a domain</a></li>
+        <li><a href="/guides/whois-rdap-explained.html">reading a domain's registration record</a></li>
+        <li><a href="/guides/spf-dkim-dmarc-explained.html">the TXT records that stop a domain being spoofed</a></li>
         <li><a href="/guides/investigate-a-domain.html">a repeatable way to investigate a domain you don't trust</a></li>
+        <li><a href="/guides/ip-geolocation-reverse-dns.html">what an IP address and its reverse DNS actually reveal</a></li>
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
@@ -119,5 +176,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

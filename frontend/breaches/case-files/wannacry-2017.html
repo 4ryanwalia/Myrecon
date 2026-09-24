@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WannaCry Ransomware 2017: The NHS Attack | MyRecon</title>
+  <meta name="description" content="A leaked intelligence-agency exploit turned ransomware into a worm that needed nobody to click anything. Microsoft had shipped the fix in March.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/wannacry-2017.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="WannaCry Ransomware 2017: The NHS Attack">
+  <meta property="og:description" content="A leaked intelligence-agency exploit turned ransomware into a worm that needed nobody to click anything. Microsoft had shipped the fix in March.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/wannacry-2017.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WannaCry Ransomware 2017: The NHS Attack">
+  <meta name="twitter:description" content="A leaked intelligence-agency exploit turned ransomware into a worm that needed nobody to click anything. Microsoft had shipped the fix in March.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"WannaCry, 2017: the patch had been available for two months","description":"A leaked intelligence-agency exploit turned ransomware into a worm that needed nobody to click anything. Microsoft had shipped the fix in March. The NHS lost 19,000 appointments in May.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/wannacry-2017.html","articleSection":"Case Files","about":{"@type":"Thing","name":"WannaCry ransomware outbreak"},"wordCount":1145}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"WannaCry ransomware outbreak","item":"https://www.myrecon.xyz/breaches/case-files/wannacry-2017.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How is a worm different from ordinary ransomware?","acceptedAnswer":{"@type":"Answer","text":"Ordinary ransomware needs a person to do something, open an attachment, run a file, follow a link. A worm does not. WannaCry carried an exploit for a network file-sharing protocol, so an infected machine could scan for and infect other reachable machines by itself. Nobody at the organisations hit had to make a mistake on the day. One vulnerable machine anywhere on a flat network was enough to take the network."}},{"@type":"Question","name":"If Microsoft had already patched it, why did it spread?","acceptedAnswer":{"@type":"Answer","text":"Because patching a large estate is not one action. MS17-010 shipped in March 2017 and the outbreak was in May, and in between sat change control windows, machines that only patch when someone is logged in, systems whose vendors had not certified the update, and equipment nobody could take offline. The patch existed. Applying it everywhere was a programme of work, not a decision."}},{"@type":"Question","name":"What was the kill switch?","acceptedAnswer":{"@type":"Answer","text":"The malware checked whether a particular unregistered domain resolved before encrypting, and stopped if it did, most likely a check for the kind of sandbox that answers every DNS query. A researcher analysing the sample registered the domain for a few dollars, which halted a large share of new infections worldwide within hours. It was a real and enormous intervention, and it was also luck, and it did nothing for machines already encrypted."}},{"@type":"Question","name":"Did the NHS pay any ransoms?","acceptedAnswer":{"@type":"Answer","text":"The National Audit Office found no NHS organisation paid the ransom. The ransom was in any case a poor deal: the payment and decryption mechanism was crude, tracking who had paid was unreliable, and the operators collected a relatively trivial sum overall. The cost was almost entirely in disruption, cancelled care and recovery, not in payments."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2017 · Worm</span>
+          <h1>WannaCry, 2017: the patch had been available for two months</h1>
+          <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>No data stolen; more than 200,000 computers encrypted across around 150 countries</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>12 May 2017</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>12 May 2017</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>The EternalBlue exploit against Microsoft's SMBv1 file-sharing protocol, leaked publicly the previous month and patched by Microsoft in March 2017</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Attributed by the UK and US governments to the Lazarus Group, associated with North Korea</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>Estimated £92 million to the NHS in England alone; 80 of 236 trusts disrupted and over 19,000 appointments cancelled</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Encrypted files across hospitals, manufacturers and logistics firms · Clinical service availability</p>
+
+<p class="lead">On the afternoon of 12 May 2017, screens across English hospitals turned red. Appointments were cancelled, ambulances diverted, and staff went back to paper, not because anyone at those hospitals clicked anything, but because a machine somewhere on the network was reachable on port 445 and had not been patched since March.</p>
+
+<h2>What happened</h2>
+
+<p>In April 2017 a group calling itself the Shadow Brokers published a cache of exploits attributed to a US intelligence agency. Among them was EternalBlue, an exploit for a flaw in SMBv1, the old Microsoft protocol for file and printer sharing. Microsoft had issued the fix, MS17-010, in March, before the leak, which strongly suggests it had been told what was coming.</p>
+
+<p>On 12 May, someone combined that exploit with ransomware. The result was a worm: on infecting a machine, WannaCry scanned for other reachable machines running unpatched SMBv1 and infected those too, without human involvement at any step. Within a day it had reached more than 200,000 computers in around 150 countries, Spanish telecoms, French car plants, German railway displays, Russian government systems, logistics companies, and the English NHS.</p>
+
+<p>The NHS impact was the one that defined the event publicly. Eighty of 236 trusts were disrupted, more than 19,000 appointments and operations were cancelled, and some emergency departments diverted patients. No NHS organisation paid the ransom. The Department of Health later estimated the cost to the NHS in England at around £92 million, almost all of it disruption and recovery rather than payments.</p>
+
+<h2>Why hospitals, and why not simply patch</h2>
+
+<p>The reflexive explanation, that the NHS was running Windows XP and had not bothered to patch, is partly true, mostly wrong, and unhelpful in a way that matters, because it stops the conversation at "they should have tried harder".</p>
+
+<p>The real obstacle is that a hospital is not an office. A CT scanner, an infusion pump or a laboratory analyser runs software certified as part of a regulated medical device. Applying an operating system update to it may formally invalidate that certification, and the manufacturer may not have tested it, some had gone out of business, and some devices were ten years into a fifteen-year service life. The clinician cannot take the scanner offline on a Tuesday because there are patients booked on it. None of that is negligence. It is a genuine conflict between two safety regimes, and the security one loses by default because its risk is hypothetical until the day it is not.</p>
+
+<div class="callout">
+  <p><strong>What actually determined who got hit.</strong> Not patch levels alone, network shape. WannaCry spread laterally, so the organisations that suffered most were those where one infected machine could reach thousands of others directly. Where networks were segmented, the worm hit a wall. Where medical devices sat on isolated VLANs with controlled routes, they survived being unpatchable. Segmentation is the control that makes an unpatchable device survivable, which is why it matters more in hospitals, factories and utilities than anywhere else.</p>
+</div>
+
+<h2>The domain that stopped it</h2>
+
+<p>Hours into the outbreak, a researcher analysing the malware noticed it queried a long, unregistered domain name and halted if the domain resolved, most likely an anti-analysis check, on the reasoning that a sandbox tends to answer every DNS lookup. He registered the domain. New infections worldwide collapsed almost immediately.</p>
+
+<p>It is a good story and it is routinely told with the wrong moral. It was not a defensive triumph; it was a flaw in the attacker's code, found by someone who happened to be looking at the right sample at the right moment, and it did nothing whatsoever for machines already encrypted. A defensive posture that depends on the adversary making a mistake is not a posture. The correct reading is that the world got a reprieve it had not earned, and had roughly six weeks to use it before NotPetya arrived in June using the same exploit with no kill switch and no intention of decrypting anything.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>14 March 2017</b>: Microsoft publishes MS17-010, fixing the SMBv1 flaw.</li>
+  <li><b>14 April 2017</b>: The Shadow Brokers publish the EternalBlue exploit publicly.</li>
+  <li><b>12 May 2017, morning</b>: WannaCry begins spreading; European organisations report encryption within hours.</li>
+  <li><b>12 May 2017, afternoon</b>: NHS trusts across England are disrupted; appointments and operations are cancelled.</li>
+  <li><b>12 May 2017, evening</b>: A researcher registers the kill-switch domain; new infections drop sharply.</li>
+  <li><b>13 May 2017</b>: Microsoft takes the unusual step of issuing patches for unsupported versions of Windows, including XP.</li>
+  <li><b>June 2017</b>: NotPetya uses the same exploit with no kill switch, causing an order of magnitude more financial damage.</li>
+  <li><b>October 2017</b>: The National Audit Office publishes its investigation; formal attribution to the Lazarus Group follows.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>WannaCry did more than any awareness campaign to establish that cyber incidents are a patient safety issue rather than an IT issue. In the UK it drove sustained investment in NHS infrastructure, a national programme to get off unsupported operating systems, and the creation of security operations capability that had not previously existed at that scale.</p>
+
+<p>Technically, it ended SMBv1's long afterlife. The protocol was disabled by default in later Windows releases and ripped out of countless networks where it had survived purely because something old still needed it. It also normalised emergency out-of-band patching for unsupported systems, Microsoft's decision to ship a fix for Windows XP the day after the outbreak was extraordinary at the time and set an expectation that has recurred since.</p>
+
+<p>The deepest change was to the argument about stockpiling vulnerabilities. EternalBlue was built on a flaw an intelligence agency had known about and kept, and the exploit's public release turned it into the engine of two global incidents within eight weeks. Whatever position one takes on the trade-off, this pair of incidents made the downside concrete: a retained exploit that leaks does not stay in the hands of professionals, and the bill is paid by hospitals.</p>
+
+<h2>What to take from it</h2>
+
+<p>For individuals, the ordinary advice covers this entirely: keep automatic updates on, and keep a backup that is not permanently connected to the machine it protects. The people who lost personal files to WannaCry were overwhelmingly those whose only copy was on the encrypted disk, or on a drive plugged into it.</p>
+
+<p>For anyone responsible for a network containing equipment that cannot be patched, a clinic, a workshop, a small factory, the practical lesson is that patching is not the only lever and often not the available one. Put the unpatchable things where the rest of the network cannot reach them, take away their internet access if they do not need it, and test whether you could restore from backup while the systems are down rather than assuming you could. WannaCry was survivable. What determined survival was almost never how modern the machines were.</p>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>How is a worm different from ordinary ransomware?</h3>
+        <p>Ordinary ransomware needs a person to do something, open an attachment, run a file, follow a link. A worm does not. WannaCry carried an exploit for a network file-sharing protocol, so an infected machine could scan for and infect other reachable machines by itself. Nobody at the organisations hit had to make a mistake on the day. One vulnerable machine anywhere on a flat network was enough to take the network.</p>
+
+        <h3>If Microsoft had already patched it, why did it spread?</h3>
+        <p>Because patching a large estate is not one action. MS17-010 shipped in March 2017 and the outbreak was in May, and in between sat change control windows, machines that only patch when someone is logged in, systems whose vendors had not certified the update, and equipment nobody could take offline. The patch existed. Applying it everywhere was a programme of work, not a decision.</p>
+
+        <h3>What was the kill switch?</h3>
+        <p>The malware checked whether a particular unregistered domain resolved before encrypting, and stopped if it did, most likely a check for the kind of sandbox that answers every DNS query. A researcher analysing the sample registered the domain for a few dollars, which halted a large share of new infections worldwide within hours. It was a real and enormous intervention, and it was also luck, and it did nothing for machines already encrypted.</p>
+
+        <h3>Did the NHS pay any ransoms?</h3>
+        <p>The National Audit Office found no NHS organisation paid the ransom. The ransom was in any case a poor deal: the payment and decryption mechanism was crude, tracking who had paid was unreliable, and the operators collected a relatively trivial sum overall. The cost was almost entirely in disruption, cancelled care and recovery, not in payments.</p>
+      </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>UK National Audit Office, &quot;Investigation: WannaCry cyber attack and the NHS&quot;, October 2017</b></li>
+        <li><b>Department of Health and Social Care, lessons learned review and cost estimate, 2018</b></li>
+        <li><b>Microsoft Security Bulletin MS17-010, March 2017</b></li>
+        <li><b>UK National Cyber Security Centre and US government attribution statements, late 2017</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/notpetya-2017.html">NotPetya, 2017: the update that cost ten billion dollars</a></li>
+        <li><a href="/breaches/case-files/colonial-pipeline-2021.html">Colonial Pipeline, 2021: one leaked password, and the fuel stopped</a></li>
+        <li><a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare, 2024: one login, and American healthcare stopped billing</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

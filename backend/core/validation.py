@@ -39,7 +39,7 @@ def _strip(value, field: str) -> str:
 
 def username(value: str) -> str:
     value = _strip(value, "username")
-    # Allow a pasted profile URL — extract the final path segment.
+    # Allow a pasted profile URL, extract the final path segment.
     if value.lower().startswith(("http://", "https://")):
         value = value.rstrip("/").split("/")[-1]
     value = value.lstrip("@")
@@ -107,7 +107,7 @@ def platform_name(value: str) -> str:
 
 
 def page_url(value: str) -> str:
-    """Any http(s) page URL — used by the archive-history lookup."""
+    """Any http(s) page URL, used by the archive-history lookup."""
     value = _strip(value, "URL")
     if not re.match(r"^https?://", value, re.IGNORECASE):
         raise ValidationError("URL must start with http:// or https://.")

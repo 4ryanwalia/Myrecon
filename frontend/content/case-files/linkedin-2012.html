@@ -20,15 +20,15 @@
   "related": ["dropbox-2012", "myspace-2016", "collection-1-2019"],
   "faq": [
     { "q": "How many LinkedIn accounts were breached?", "a": "Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale." },
-    { "q": "What is an unsalted SHA-1 hash, and why was it a problem?", "a": "SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords — modern hardware tests billions of candidates per second. \"Unsalted\" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless." },
-    { "q": "Was the 2021 \"700 million LinkedIn records\" leak the same thing?", "a": "No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event — no security control was bypassed, which is what makes scraping so hard to prevent." },
+    { "q": "What is an unsalted SHA-1 hash, and why was it a problem?", "a": "SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords, modern hardware tests billions of candidates per second. \"Unsalted\" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless." },
+    { "q": "Was the 2021 \"700 million LinkedIn records\" leak the same thing?", "a": "No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event, no security control was bypassed, which is what makes scraping so hard to prevent." },
     { "q": "Did the LinkedIn breach cause other breaches?", "a": "Directly. A Dropbox employee reused their LinkedIn password on a corporate account, which led to the theft of 68 million Dropbox credentials. Mark Zuckerberg's Twitter and Pinterest accounts were taken over in 2016 using a password from the LinkedIn set. Reuse is what turns one company's failure into everyone's." }
   ],
   "sources": [
     { "label": "LinkedIn security notices, June 2012 and May 2016" },
-    { "label": "US Department of Justice — conviction of Yevgeniy Nikulin, 2020" },
-    { "label": "In re LinkedIn User Privacy Litigation — $1.25 million settlement, 2015" },
-    { "label": "Have I Been Pwned — LinkedIn breach record", "url": "https://haveibeenpwned.com/PwnedWebsites#LinkedIn" }
+    { "label": "US Department of Justice, conviction of Yevgeniy Nikulin, 2020" },
+    { "label": "In re LinkedIn User Privacy Litigation, $1.25 million settlement, 2015" },
+    { "label": "Have I Been Pwned, LinkedIn breach record", "url": "https://haveibeenpwned.com/PwnedWebsites#LinkedIn" }
   ]
 }
 -->
@@ -36,7 +36,7 @@
 
 <h2>What happened</h2>
 
-<p>LinkedIn's response in 2012 was the standard one: invalidate the affected passwords, email the users, and — belatedly — start salting and hashing properly. The company said 6.5 million accounts, because 6.5 million was what had appeared in public. The assumption everyone made, including LinkedIn, was that the leaked file was the extent of the theft.</p>
+<p>LinkedIn's response in 2012 was the standard one: invalidate the affected passwords, email the users, and, belatedly, start salting and hashing properly. The company said 6.5 million accounts, because 6.5 million was what had appeared in public. The assumption everyone made, including LinkedIn, was that the leaked file was the extent of the theft.</p>
 
 <p>In May 2016 a seller using the name "Peace" listed 167 million LinkedIn accounts on a dark-web market for five bitcoin. The file contained roughly 117 million email-and-password pairs. It was the same 2012 intrusion; the rest of the haul had simply sat unsold for four years.</p>
 
@@ -44,12 +44,12 @@
 
 <h2>Why the hashes fell so fast</h2>
 
-<p>SHA-1 is a cryptographic hash function built for speed — it exists to verify that a file has not changed, and it is very good at that. Speed is precisely the wrong property for password storage. A consumer graphics card can compute billions of SHA-1 hashes per second, so an attacker holding a list of hashes can simply try every word in a dictionary, every leaked password from every previous breach, and every plausible mutation of both.</p>
+<p>SHA-1 is a cryptographic hash function built for speed, it exists to verify that a file has not changed, and it is very good at that. Speed is precisely the wrong property for password storage. A consumer graphics card can compute billions of SHA-1 hashes per second, so an attacker holding a list of hashes can simply try every word in a dictionary, every leaked password from every previous breach, and every plausible mutation of both.</p>
 
 <p>The missing salt made it worse. A salt is a unique random value stored with each user and mixed into the hash, so that two people who both choose <code>linkedin123</code> end up with completely different stored values. Without it, one cracking run answers for everybody at once: crack the hash for <code>linkedin123</code> once, and every account that used it falls simultaneously.</p>
 
 <div class="callout">
-  <p><strong>What proper storage looks like.</strong> A password-specific algorithm — bcrypt, scrypt or Argon2 — with a per-user salt and a cost factor tuned so that a single guess takes a measurable fraction of a second. That turns "billions of guesses per second" into "a few thousand", which is the difference between a file cracked over a weekend and a file that is not worth attacking. LinkedIn moved to salted hashing after 2012; the 2016 file was still the old format, because it was taken before the change.</p>
+  <p><strong>What proper storage looks like.</strong> A password-specific algorithm, bcrypt, scrypt or Argon2, with a per-user salt and a cost factor tuned so that a single guess takes a measurable fraction of a second. That turns "billions of guesses per second" into "a few thousand", which is the difference between a file cracked over a weekend and a file that is not worth attacking. LinkedIn moved to salted hashing after 2012; the 2016 file was still the old format, because it was taken before the change.</p>
 </div>
 
 <h2>The damage other companies took</h2>
@@ -65,20 +65,20 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>5 June 2012</b> — 6.5 million unsalted SHA-1 hashes are posted to a cracking forum.</li>
-  <li><b>6 June 2012</b> — LinkedIn confirms the breach and begins resetting passwords.</li>
-  <li><b>2012–2013</b> — LinkedIn moves to salted hashing and adds optional two-factor authentication.</li>
-  <li><b>17 May 2016</b> — 167 million accounts are listed for sale; the true scale becomes clear.</li>
-  <li><b>June 2016</b> — Secondary account takeovers begin, including high-profile social media accounts.</li>
-  <li><b>October 2016</b> — Yevgeniy Nikulin is arrested in Prague at the request of the United States.</li>
-  <li><b>2020</b> — Nikulin is convicted of the intrusions at LinkedIn, Dropbox and Formspring and sentenced to 88 months.</li>
+  <li><b>5 June 2012</b>: 6.5 million unsalted SHA-1 hashes are posted to a cracking forum.</li>
+  <li><b>6 June 2012</b>: LinkedIn confirms the breach and begins resetting passwords.</li>
+  <li><b>2012–2013</b>: LinkedIn moves to salted hashing and adds optional two-factor authentication.</li>
+  <li><b>17 May 2016</b>: 167 million accounts are listed for sale; the true scale becomes clear.</li>
+  <li><b>June 2016</b>: Secondary account takeovers begin, including high-profile social media accounts.</li>
+  <li><b>October 2016</b>: Yevgeniy Nikulin is arrested in Prague at the request of the United States.</li>
+  <li><b>2020</b>: Nikulin is convicted of the intrusions at LinkedIn, Dropbox and Formspring and sentenced to 88 months.</li>
 </ol>
 
 <h2>What it changed</h2>
 
 <p>Three things came out of this case that are now simply how the industry works.</p>
 
-<p><strong>Salting stopped being optional.</strong> LinkedIn in 2012 was not an outlier — unsalted fast hashes were common. It became the example used to end the argument, and by the mid-2010s a security review that found unsalted SHA-1 treated it as a finding rather than a preference.</p>
+<p><strong>Salting stopped being optional.</strong> LinkedIn in 2012 was not an outlier, unsalted fast hashes were common. It became the example used to end the argument, and by the mid-2010s a security review that found unsalted SHA-1 treated it as a finding rather than a preference.</p>
 
 <p><strong>Breach numbers are provisional.</strong> The gap between 6.5 million and 165 million taught researchers to treat the first public figure as a floor, not a total. Have I Been Pwned's practice of revising records years later exists because of cases like this one.</p>
 
@@ -88,7 +88,7 @@
 
 <ol class="bx-actions">
   <li><strong>The password is public.</strong> Assume it was cracked, because it almost certainly was. If any variation of it is still in use, replace it.</li>
-  <li><strong>Look for reuse, not just at LinkedIn.</strong> The value of this file to an attacker is what it opens elsewhere. Work through the accounts that matter — email first, then banking, then anything holding payment details.</li>
+  <li><strong>Look for reuse, not just at LinkedIn.</strong> The value of this file to an attacker is what it opens elsewhere. Work through the accounts that matter, email first, then banking, then anything holding payment details.</li>
   <li><strong>Turn on two-factor authentication.</strong> It is what makes a leaked password survivable. <a href="/guides/two-factor-authentication.html">The differences between SMS, app codes and security keys</a> matter here.</li>
   <li><strong>Remember the scraped data is separate.</strong> Your public profile has also been copied wholesale into datasets that are traded openly; nothing about a password change touches that. Decide deliberately what your profile shows.</li>
 </ol>

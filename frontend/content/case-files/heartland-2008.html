@@ -21,12 +21,12 @@
   "faq": [
     { "q": "How can a company be PCI compliant and still be breached?", "a": "Because compliance is a point-in-time assessment against a checklist, and security is a continuous property of a live system. Heartland had been assessed as compliant shortly before the breach. The assessment did not find the SQL injection flaw in a web application, and nothing in a passed audit stops an attacker who arrives the following week." },
     { "q": "What is a packet sniffer and why was it so effective here?", "a": "Software that captures network traffic as it passes. Card data was encrypted in transit to and from merchants but was processed in the clear inside Heartland's own network. A sniffer placed there could read card numbers and full magnetic stripe data from a stream carrying around 100 million transactions a month." },
-    { "q": "Did the breach kill the company?", "a": "No. Heartland disclosed publicly, absorbed roughly $145 million in costs, and its chief executive became an unusually vocal advocate for end-to-end encryption of card data — arguing publicly that the industry's approach was inadequate. The company was later acquired. Candour after a breach turned out to be survivable." },
-    { "q": "Why did disclosure happen on inauguration day?", "a": "Heartland announced on 20 January 2009, the day of the US presidential inauguration, and was widely criticised for choosing a day when the news agenda was full. It is one of the earliest and most-cited examples of disclosure timing being treated as a communications decision — which is exactly why the timing of any breach announcement is now scrutinised." }
+    { "q": "Did the breach kill the company?", "a": "No. Heartland disclosed publicly, absorbed roughly $145 million in costs, and its chief executive became an unusually vocal advocate for end-to-end encryption of card data, arguing publicly that the industry's approach was inadequate. The company was later acquired. Candour after a breach turned out to be survivable." },
+    { "q": "Why did disclosure happen on inauguration day?", "a": "Heartland announced on 20 January 2009, the day of the US presidential inauguration, and was widely criticised for choosing a day when the news agenda was full. It is one of the earliest and most-cited examples of disclosure timing being treated as a communications decision, which is exactly why the timing of any breach announcement is now scrutinised." }
   ],
   "sources": [
     { "label": "Heartland Payment Systems public statements and SEC filings, 2009" },
-    { "label": "US Department of Justice — indictment and prosecution of Albert Gonzalez, 2009–2010" },
+    { "label": "US Department of Justice, indictment and prosecution of Albert Gonzalez, 2009–2010" },
     { "label": "Payment Card Industry Security Standards Council guidance updates following the breach" }
   ]
 }
@@ -35,11 +35,11 @@
 
 <h2>What happened</h2>
 
-<p>The attackers — the same group behind <a href="/breaches/case-files/tjx-2007.html">TJX</a> — got in through SQL injection in a corporate web application in late 2007. SQL injection was the best-understood web vulnerability in existence by then, with a decade of documentation behind it.</p>
+<p>The attackers, the same group behind <a href="/breaches/case-files/tjx-2007.html">TJX</a>: got in through SQL injection in a corporate web application in late 2007. SQL injection was the best-understood web vulnerability in existence by then, with a decade of documentation behind it.</p>
 
 <p>That gave them a foothold on the corporate network, not the payment network. It took months of patient lateral movement to bridge the gap. Once across, they installed sniffer software that read card numbers and full magnetic stripe data out of the traffic as it was processed.</p>
 
-<p>Card data was encrypted in transit between merchants and Heartland, and encrypted at rest. Inside the processing environment, in memory and on the wire, it was in the clear — because that is where the processing happened. That gap is what the sniffer harvested.</p>
+<p>Card data was encrypted in transit between merchants and Heartland, and encrypted at rest. Inside the processing environment, in memory and on the wire, it was in the clear, because that is where the processing happened. That gap is what the sniffer harvested.</p>
 
 <div class="callout">
   <p><strong>The compliance lesson, stated bluntly.</strong> Heartland had passed its assessment. Nothing in the standard as applied caught an injectable web application or the absence of segmentation between corporate and payment networks. An annual audit tells you the state of a system on the day someone looked; an attacker gets to choose a different day. Both things can be true: the assessment was valid, and the company was not secure.</p>
@@ -47,19 +47,19 @@
 
 <h2>The disclosure and its timing</h2>
 
-<p>Heartland announced the breach on 20 January 2009 — US presidential inauguration day, when the news agenda had room for nothing else. The criticism was immediate and it stuck.</p>
+<p>Heartland announced the breach on 20 January 2009, US presidential inauguration day, when the news agenda had room for nothing else. The criticism was immediate and it stuck.</p>
 
 <p>What followed was more unusual. Chief executive Robert Carr went public in a way breached executives generally did not, arguing that the industry's model was structurally inadequate and that card data should be encrypted end to end so that processors like his own never held it in a readable form. Heartland invested in exactly that. It was a rare instance of a breached company making a technical argument in public and then funding it.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>December 2007</b> — SQL injection provides initial access to the corporate network.</li>
-  <li><b>Through 2008</b> — Lateral movement into the payment processing environment; sniffer software is installed.</li>
-  <li><b>Mid–late 2008</b> — Card data is captured and exfiltrated.</li>
-  <li><b>October 2008</b> — Card networks alert Heartland to suspicious activity traced to its processing.</li>
-  <li><b>January 2009</b> — The sniffer is found; public disclosure on 20 January.</li>
-  <li><b>2009–2010</b> — Settlements with card networks and issuers total roughly $145 million; Gonzalez is indicted and sentenced.</li>
+  <li><b>December 2007</b>: SQL injection provides initial access to the corporate network.</li>
+  <li><b>Through 2008</b>: Lateral movement into the payment processing environment; sniffer software is installed.</li>
+  <li><b>Mid–late 2008</b>: Card data is captured and exfiltrated.</li>
+  <li><b>October 2008</b>: Card networks alert Heartland to suspicious activity traced to its processing.</li>
+  <li><b>January 2009</b>: The sniffer is found; public disclosure on 20 January.</li>
+  <li><b>2009–2010</b>: Settlements with card networks and issuers total roughly $145 million; Gonzalez is indicted and sentenced.</li>
 </ol>
 
 <h2>What it changed</h2>

@@ -1,0 +1,80 @@
+<!--
+{
+  "headline": "First American, 2019: 885 million documents behind a number you could count up",
+  "seoTitle": "First American Data Leak 2019: 885 Million Files",
+  "subject": "First American Financial document exposure",
+  "kicker": "2019 · Title insurance",
+  "description": "Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of any kind.",
+  "cardBlurb": "The company's own penetration test had found the flaw months earlier. The finding was logged, rated low, and not fixed.",
+  "records": "About 885 million documents, the oldest dating to 2003",
+  "occurred": "Documents were reachable from at least 2003 until May 2019",
+  "disclosed": "24 May 2019",
+  "vector": "Insecure direct object reference, changing a document number in the URL returned another customer's file, with no authentication required",
+  "actor": "No known attacker; the flaw was spotted by a real estate developer and published by a security journalist",
+  "cost": "A US$1 million penalty from the New York Department of Financial Services in 2023, the first settlement under its cybersecurity regulation, followed by a separate SEC settlement over disclosure controls",
+  "exposed": ["Bank account numbers", "Bank statements", "Mortgage and tax records", "Social Security numbers", "Wire transfer receipts", "Driver's licence images"],
+  "sortDate": "2019-05-24",
+  "published": "2026-09-15",
+  "updated": "2026-09-15",
+  "related": ["optus-2022", "equifax-2017", "capital-one-2019"],
+  "faq": [
+    { "q": "What is an insecure direct object reference?", "a": "It is what happens when an application identifies a record by a number in the address and never checks whether the person asking is entitled to that record. If document 75000000 is yours, document 74999999 belongs to somebody else, and if the only thing standing between a visitor and that file is the fact that they have not tried, there is no access control at all. The flaw needs no tooling and no skill to exploit. It needs arithmetic." },
+    { "q": "Was the data actually stolen?", "a": "There is no evidence of mass harvesting, and the company's review identified a limited number of documents accessed by outside parties. That sounds more reassuring than it is. The exposure spanned sixteen years of records reachable without logging in, which means the population of people who could have retrieved them quietly leaves no trace by definition. Absence of evidence over a window that long is weak evidence of absence." },
+    { "q": "Why did a title insurer hold my bank statements?", "a": "Because US property closings run through title and escrow companies. To insure title and move the money they collect the paperwork of the whole transaction: identification, mortgage documents, tax records, bank statements, wire instructions and signed receipts. Most buyers never think of the title company as a data holder, and it ends up with a more complete financial picture of a household than the bank does." },
+    { "q": "Had anyone noticed the flaw before it became public?", "a": "Yes. Regulators found that First American's own internal penetration testing had identified the vulnerability months earlier, in December 2018. It was recorded, assigned a low severity, and remediation was not completed. The finding existed inside the company for roughly half a year before a member of the public reported the same problem from outside." }
+  ],
+  "sources": [
+    { "label": "New York Department of Financial Services, consent order with First American Title Insurance Company, November 2023" },
+    { "label": "New York Department of Financial Services, statement of charges under 23 NYCRR Part 500, July 2020" },
+    { "label": "US Securities and Exchange Commission, administrative proceeding regarding disclosure controls, 2024" },
+    { "label": "Contemporaneous reporting, KrebsOnSecurity, May 2019" }
+  ]
+}
+-->
+<p class="lead">There was no intrusion, no malware, no stolen password and no attacker. The documents were served to anyone who asked for them, and asking meant editing a number at the end of a web address. Behind that number sat roughly 885 million files: the paperwork of American house purchases going back to 2003.</p>
+
+<h2>What happened</h2>
+
+<p>First American Financial is one of the largest title insurance companies in the United States. In a US property transaction, the title company is the entity that verifies ownership, insures against defects in the chain of title, and holds and disburses the money at closing. To do that it accumulates the complete documentary record of the sale, and it keeps it.</p>
+
+<p>The company ran a system for sharing those documents with the parties to a transaction, buyers, sellers, agents, lenders. A link was emailed out, and clicking it opened the relevant file. The links were built around a sequential document identifier. Change the digits and you got a different document. There was no login, no token, no expiry and no check of any kind that the person following the link had any connection to the paperwork that came back.</p>
+
+<p>In May 2019 a real estate developer who had noticed this passed it to the security journalist Brian Krebs, who confirmed it and published. Spot checks of the retrievable documents found bank account numbers and statements, mortgage and tax records, wire transfer receipts, driver's licence images and Social Security numbers. The oldest records reached back to 2003. First American took the system offline the same day.</p>
+
+<div class="callout">
+  <p><strong>Two controls, one of them missing everywhere.</strong> Authentication asks who you are. Authorisation asks whether this particular record is yours. Applications routinely get the first right and skip the second, because the second has to be enforced per object, on every request, forever, and because during development the only records anyone tests with are their own. That is the flaw class here, and it is the same one that produced the Optus breach three years later: not a broken lock, but a door that was never fitted with one.</p>
+</div>
+
+<h2>The finding that was already in the building</h2>
+
+<p>The part of this case that outlives the technical detail is what regulators established afterwards. First American's own penetration testing had identified this vulnerability in December 2018, roughly six months before it became public. The issue was documented internally. It was classified as low severity. The remediation was not completed.</p>
+
+<p>Nobody hid anything. The security function did its job and found the problem; the finding then moved through a triage process that assigned it a rating, and the rating determined the urgency, and the urgency determined that other work came first. That is how almost every long-lived vulnerability survives: not through negligence anyone would recognise as negligence at the time, but through a severity rating that was defensible on the form and wrong about the world.</p>
+
+<p>What made the rating wrong was context the rating did not capture. The exploit was trivial, no skill, no tooling, no credential. The exposure was unbounded, every document in the system, not a sample. And the data was of the most durable kind: a Social Security number disclosed in 2019 is still a Social Security number today. Severity scoring that weighs technical complexity heavily and data sensitivity lightly will systematically underrate exactly this shape of problem.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>2003 onwards</b>: Documents accumulate in the sharing system, reachable by sequential identifier.</li>
+  <li><b>December 2018</b>: First American's own penetration test identifies the vulnerability. It is rated low severity and not remediated.</li>
+  <li><b>May 2019</b>: A real estate developer notices the behaviour and reports it; the story is published on 24 May 2019.</li>
+  <li><b>24 May 2019</b>: The system is taken offline; the company begins an external review.</li>
+  <li><b>July 2020</b>: The New York Department of Financial Services files the first ever charges under its cybersecurity regulation, Part 500.</li>
+  <li><b>November 2023</b>: The matter settles for a US$1 million penalty and a set of remediation commitments.</li>
+  <li><b>2024</b>: A separate SEC proceeding concludes over the adequacy of the company's disclosure controls at the time of the incident.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>The regulatory significance outran the technical one. New York's Part 500 cybersecurity regulation had been in force since 2017 but had never been enforced; this was the case the department chose to bring first. That choice sent a clearer message than the eventual penalty did, a US$1 million settlement is not material to a company of this size, but establishing that a state financial regulator will bring charges over an unfixed web vulnerability changed how boards in the sector treated the regulation.</p>
+
+<p>The SEC's separate action pushed on a different and increasingly consequential point: not whether the company was breached, but whether what it told investors about the incident was supported by what it knew internally. When a company's own testing has already flagged the flaw, statements implying surprise become a securities question as well as a security one. That linkage, internal findings as evidence against later public statements, is now a standard feature of US breach enforcement, and this case is one of the places it was established.</p>
+
+<h2>If you bought a home in the US before 2019</h2>
+
+<p>There is no notification to wait for and no list to check. The exposure was defined by document numbers, not by a customer list, and a large share of the people whose paperwork sat in that system never had an account or a direct relationship with the company at all, they were simply the other side of a transaction it handled.</p>
+
+<p>The practical exposure is the same one the case files on Equifax and the OPM describe, for the same reason: the data that leaked does not expire. A Social Security number, a date of birth and a bank account number are as useful to a fraudster now as they were in 2019. A credit freeze at each of the three bureaus is the countermeasure that matches that permanence, it is free, it is reversible, and unlike monitoring it prevents rather than reports.</p>
+
+<p>One exposure here is more specific and worth naming. Wire transfer receipts and closing documents are the raw material of real estate wire fraud, in which a buyer receives convincing instructions to send their deposit to the wrong account, referencing a genuine transaction with correct names, amounts and dates. If you are closing on a property, confirm wire instructions by calling a number you sourced yourself, never one contained in the email carrying the instructions.</p>

@@ -4,51 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yahoo Data Breach: 3 Billion Accounts Explained | MyRecon</title>
-  <meta name="description" content="Yahoo lost every account it had — three billion of them — in two separate intrusions, then disclosed them three years later in the middle of selling the…">
+  <meta name="description" content="Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the…">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Yahoo Data Breach: 3 Billion Accounts Explained">
-  <meta property="og:description" content="Yahoo lost every account it had — three billion of them — in two separate intrusions, then disclosed them three years later in the middle of selling the…">
+  <meta property="og:description" content="Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the…">
   <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Yahoo Data Breach: 3 Billion Accounts Explained">
-  <meta name="twitter:description" content="Yahoo lost every account it had — three billion of them — in two separate intrusions, then disclosed them three years later in the middle of selling the…">
+  <meta name="twitter:description" content="Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the…">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Yahoo, 2013–2014: three billion accounts, and three years of silence","description":"Yahoo lost every account it had — three billion of them — in two separate intrusions, then disclosed them three years later in the middle of selling the company.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Yahoo data breaches"},"wordCount":1202}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Yahoo, 2013–2014: three billion accounts, and three years of silence","description":"Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the company.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Yahoo data breaches"},"wordCount":1202}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Yahoo data breaches","item":"https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many accounts were in the Yahoo breach?","acceptedAnswer":{"@type":"Answer","text":"Three billion — every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion."}},{"@type":"Question","name":"Were Yahoo passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Many of them, yes. The 2013 set used MD5, a hashing algorithm that was already considered unfit for passwords at the time and can be attacked at enormous speed on consumer graphics hardware. Worse, security questions and answers were taken too, and in some cases stored without encryption — and almost nobody changes their mother's maiden name after a breach."}},{"@type":"Question","name":"What were the forged cookies?","acceptedAnswer":{"@type":"Answer","text":"The attackers obtained Yahoo's internal account management tooling and used it to mint authentication cookies — browser tokens that told Yahoo's servers a user had already logged in. A forged cookie bypasses the password entirely, so changing the password did not evict the intruder. Yahoo invalidated the forged cookies in 2016."}},{"@type":"Question","name":"Did the breach affect the Verizon sale?","acceptedAnswer":{"@type":"Answer","text":"It cost $350 million. Verizon had agreed to buy Yahoo's operating business for $4.83 billion in July 2016; after the disclosures the price was renegotiated to roughly $4.48 billion, with the two companies splitting certain liabilities. The SEC later fined the remaining entity, Altaba, $35 million for failing to disclose the 2014 breach to investors for two years."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many accounts were in the Yahoo breach?","acceptedAnswer":{"@type":"Answer","text":"Three billion, every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion."}},{"@type":"Question","name":"Were Yahoo passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Many of them, yes. The 2013 set used MD5, a hashing algorithm that was already considered unfit for passwords at the time and can be attacked at enormous speed on consumer graphics hardware. Worse, security questions and answers were taken too, and in some cases stored without encryption, and almost nobody changes their mother's maiden name after a breach."}},{"@type":"Question","name":"What were the forged cookies?","acceptedAnswer":{"@type":"Answer","text":"The attackers obtained Yahoo's internal account management tooling and used it to mint authentication cookies, browser tokens that told Yahoo's servers a user had already logged in. A forged cookie bypasses the password entirely, so changing the password did not evict the intruder. Yahoo invalidated the forged cookies in 2016."}},{"@type":"Question","name":"Did the breach affect the Verizon sale?","acceptedAnswer":{"@type":"Answer","text":"It cost $350 million. Verizon had agreed to buy Yahoo's operating business for $4.83 billion in July 2016; after the disclosures the price was renegotiated to roughly $4.48 billion, with the two companies splitting certain liabilities. The SEC later fined the remaining entity, Altaba, $35 million for failing to disclose the 2014 breach to investors for two years."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,49 +76,49 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Email addresses · Phone numbers · Dates of birth · Hashed passwords (MD5 in the 2013 set) · Security questions and answers, some unencrypted</p>
 
-<p class="lead">Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence — what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p>
+<p class="lead">Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p>
 
 <h2>What happened</h2>
 
 <p>There were two intrusions, and for a long time the public only knew about one.</p>
 
-<p>In late 2014, attackers stole account data belonging to at least 500 million users. Yahoo's security team knew of that intrusion at the time; a small number of accounts were flagged, and senior management was informed. It was not disclosed publicly until 22 September 2016 — two months after Verizon had agreed to buy Yahoo's operating business for $4.83 billion.</p>
+<p>In late 2014, attackers stole account data belonging to at least 500 million users. Yahoo's security team knew of that intrusion at the time; a small number of accounts were flagged, and senior management was informed. It was not disclosed publicly until 22 September 2016, two months after Verizon had agreed to buy Yahoo's operating business for $4.83 billion.</p>
 
-<p>Three months later, in December 2016, Yahoo announced a second and separate breach, from August 2013, involving a billion accounts. That figure held until October 2017, when Yahoo — by then absorbed into Verizon — confirmed that the 2013 intrusion had in fact touched every account in existence: three billion, including Flickr, Tumblr and Fantasy Sports users who had never thought of themselves as Yahoo customers at all.</p>
+<p>Three months later, in December 2016, Yahoo announced a second and separate breach, from August 2013, involving a billion accounts. That figure held until October 2017, when Yahoo, by then absorbed into Verizon, confirmed that the 2013 intrusion had in fact touched every account in existence: three billion, including Flickr, Tumblr and Fantasy Sports users who had never thought of themselves as Yahoo customers at all.</p>
 
 <h2>How they got in</h2>
 
 <p>The 2014 intrusion began the way most do: a spear-phishing email that worked on one employee. From that foothold, the attackers reached two things that mattered far more than any individual mailbox.</p>
 
-<p>The first was the User Database — the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers. The second was the Account Management Tool, Yahoo's internal administrative console.</p>
+<p>The first was the User Database, the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers. The second was the Account Management Tool, Yahoo's internal administrative console.</p>
 
 <div class="callout">
-  <p><strong>Why the cookies matter more than the passwords.</strong> With access to the account management tooling, the attackers could mint their own authentication cookies — the tokens a browser holds that tell a server "this person has already logged in". A forged cookie bypasses the password entirely. It also survives a password change, which is the single piece of advice every breach notice gives. For the accounts targeted this way, the standard remediation did nothing at all; Yahoo had to invalidate the forged cookies centrally, which it did in 2016, years after they were created.</p>
+  <p><strong>Why the cookies matter more than the passwords.</strong> With access to the account management tooling, the attackers could mint their own authentication cookies, the tokens a browser holds that tell a server "this person has already logged in". A forged cookie bypasses the password entirely. It also survives a password change, which is the single piece of advice every breach notice gives. For the accounts targeted this way, the standard remediation did nothing at all; Yahoo had to invalidate the forged cookies centrally, which it did in 2016, years after they were created.</p>
 </div>
 
-<p>In March 2017 the US Department of Justice indicted four people: two officers of Russia's Federal Security Service, Dmitry Dokuchaev and Igor Sushchin, and two hackers they directed, Alexsey Belan and Karim Baratov. The indictment described a state intelligence service using criminal contractors — the officers wanted access to specific accounts belonging to journalists, officials and company executives, and the contractors monetised the rest of the database on the side. Baratov, arrested in Canada, pleaded guilty and was sentenced to five years in 2018. Belan, already on the FBI's most wanted list, remains at large.</p>
+<p>In March 2017 the US Department of Justice indicted four people: two officers of Russia's Federal Security Service, Dmitry Dokuchaev and Igor Sushchin, and two hackers they directed, Alexsey Belan and Karim Baratov. The indictment described a state intelligence service using criminal contractors, the officers wanted access to specific accounts belonging to journalists, officials and company executives, and the contractors monetised the rest of the database on the side. Baratov, arrested in Canada, pleaded guilty and was sentenced to five years in 2018. Belan, already on the FBI's most wanted list, remains at large.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>August 2013</b> — The intrusion that ultimately touched all three billion accounts.</li>
-  <li><b>Late 2014</b> — A second, separate intrusion; at least 500 million accounts taken. Yahoo's security staff identify it at the time.</li>
-  <li><b>July 2016</b> — Verizon agrees to buy Yahoo's operating business for $4.83 billion.</li>
-  <li><b>August 2016</b> — A hacker known as Peace advertises 200 million Yahoo accounts for sale, prompting an internal investigation.</li>
-  <li><b>22 September 2016</b> — Yahoo discloses the 2014 breach: 500 million accounts, attributed to a "state-sponsored actor".</li>
-  <li><b>14 December 2016</b> — Yahoo discloses the separate 2013 breach: one billion accounts.</li>
-  <li><b>March 2017</b> — The DOJ indicts two FSB officers and two contracted hackers.</li>
-  <li><b>June 2017</b> — The Verizon acquisition closes at roughly $4.48 billion, $350 million below the original price.</li>
-  <li><b>3 October 2017</b> — The 2013 figure is revised: all three billion accounts.</li>
-  <li><b>April 2018</b> — The SEC fines Altaba $35 million for two years of non-disclosure to investors.</li>
-  <li><b>2019</b> — A $117.5 million class-action settlement is approved.</li>
+  <li><b>August 2013</b>: The intrusion that ultimately touched all three billion accounts.</li>
+  <li><b>Late 2014</b>: A second, separate intrusion; at least 500 million accounts taken. Yahoo's security staff identify it at the time.</li>
+  <li><b>July 2016</b>: Verizon agrees to buy Yahoo's operating business for $4.83 billion.</li>
+  <li><b>August 2016</b>: A hacker known as Peace advertises 200 million Yahoo accounts for sale, prompting an internal investigation.</li>
+  <li><b>22 September 2016</b>: Yahoo discloses the 2014 breach: 500 million accounts, attributed to a "state-sponsored actor".</li>
+  <li><b>14 December 2016</b>: Yahoo discloses the separate 2013 breach: one billion accounts.</li>
+  <li><b>March 2017</b>: The DOJ indicts two FSB officers and two contracted hackers.</li>
+  <li><b>June 2017</b>: The Verizon acquisition closes at roughly $4.48 billion, $350 million below the original price.</li>
+  <li><b>3 October 2017</b>: The 2013 figure is revised: all three billion accounts.</li>
+  <li><b>April 2018</b>: The SEC fines Altaba $35 million for two years of non-disclosure to investors.</li>
+  <li><b>2019</b>: A $117.5 million class-action settlement is approved.</li>
 </ol>
 
 <h2>What was taken</h2>
 
-<p>Names, email addresses, telephone numbers, dates of birth, hashed passwords, and security questions and answers — some of the latter stored without encryption.</p>
+<p>Names, email addresses, telephone numbers, dates of birth, hashed passwords, and security questions and answers, some of the latter stored without encryption.</p>
 
-<p>The password hashing is worth dwelling on. The 2013 set used MD5, an algorithm that was already understood to be unsuitable for password storage years before 2013; modern hardware can test billions of MD5 candidates per second, so any password that appears in a wordlist falls immediately. But the security answers are the more durable problem. A password can be changed in thirty seconds. The city where you were born cannot, and neither can your mother's maiden name — and both were, for years, accepted by banks and telecoms as proof that you were you.</p>
+<p>The password hashing is worth dwelling on. The 2013 set used MD5, an algorithm that was already understood to be unsuitable for password storage years before 2013; modern hardware can test billions of MD5 candidates per second, so any password that appears in a wordlist falls immediately. But the security answers are the more durable problem. A password can be changed in thirty seconds. The city where you were born cannot, and neither can your mother's maiden name, and both were, for years, accepted by banks and telecoms as proof that you were you.</p>
 
 <h2>What happened next</h2>
 
@@ -127,7 +128,7 @@
 
 <h2>What it changed</h2>
 
-<p>Yahoo is the case that turned breach disclosure into a securities question. Before it, a late disclosure was a public-relations problem and perhaps a regulatory one. After it, the SEC had demonstrated that describing a known incident as a hypothetical risk in an investor filing is a misstatement in its own right — a line of reasoning that runs directly into the SEC's 2023 rules requiring disclosure of material cybersecurity incidents within four business days.</p>
+<p>Yahoo is the case that turned breach disclosure into a securities question. Before it, a late disclosure was a public-relations problem and perhaps a regulatory one. After it, the SEC had demonstrated that describing a known incident as a hypothetical risk in an investor filing is a misstatement in its own right, a line of reasoning that runs directly into the SEC's 2023 rules requiring disclosure of material cybersecurity incidents within four business days.</p>
 
 <p>It also settled an argument inside the industry about session tokens. Invalidate sessions on password change; treat cookie-minting tooling as the crown jewel it is; make the internal admin console the hardest system in the building rather than the most convenient. All of that is now standard advice, and Yahoo is the worked example everyone points at.</p>
 
@@ -136,7 +137,7 @@
 <ol class="bx-actions">
   <li><strong>Assume the account is compromised, even if you abandoned it.</strong> Old Yahoo addresses are still listed as the recovery address on other people's live accounts. An abandoned mailbox with a reused password is a route into everything it can reset.</li>
   <li><strong>Change every security answer you have reused.</strong> Not just at Yahoo. If you ever answered "first school" the same way at a bank, that answer is in circulation. Where a site insists on security questions, treat the answer as a second password and store it in a password manager rather than telling the truth.</li>
-  <li><strong>Kill reused passwords first.</strong> The Yahoo dump has been folded into every credential collection since, which means it is tried automatically against other services — see <a href="/breaches/case-files/collection-1-2019.html">how those aggregated lists are used</a>.</li>
+  <li><strong>Kill reused passwords first.</strong> The Yahoo dump has been folded into every credential collection since, which means it is tried automatically against other services, see <a href="/breaches/case-files/collection-1-2019.html">how those aggregated lists are used</a>.</li>
   <li><strong>Move recovery to something you still control.</strong> Point the recovery address and phone number of your important accounts at a mailbox you actively read, and turn on <a href="/guides/two-factor-authentication.html">two-factor authentication</a> where it is offered.</li>
 </ol>
 
@@ -150,29 +151,41 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>How many accounts were in the Yahoo breach?</h3>
-        <p>Three billion — every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion.</p>
+        <p>Three billion, every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion.</p>
 
         <h3>Were Yahoo passwords cracked?</h3>
-        <p>Many of them, yes. The 2013 set used MD5, a hashing algorithm that was already considered unfit for passwords at the time and can be attacked at enormous speed on consumer graphics hardware. Worse, security questions and answers were taken too, and in some cases stored without encryption — and almost nobody changes their mother's maiden name after a breach.</p>
+        <p>Many of them, yes. The 2013 set used MD5, a hashing algorithm that was already considered unfit for passwords at the time and can be attacked at enormous speed on consumer graphics hardware. Worse, security questions and answers were taken too, and in some cases stored without encryption, and almost nobody changes their mother's maiden name after a breach.</p>
 
         <h3>What were the forged cookies?</h3>
-        <p>The attackers obtained Yahoo's internal account management tooling and used it to mint authentication cookies — browser tokens that told Yahoo's servers a user had already logged in. A forged cookie bypasses the password entirely, so changing the password did not evict the intruder. Yahoo invalidated the forged cookies in 2016.</p>
+        <p>The attackers obtained Yahoo's internal account management tooling and used it to mint authentication cookies, browser tokens that told Yahoo's servers a user had already logged in. A forged cookie bypasses the password entirely, so changing the password did not evict the intruder. Yahoo invalidated the forged cookies in 2016.</p>
 
         <h3>Did the breach affect the Verizon sale?</h3>
         <p>It cost $350 million. Verizon had agreed to buy Yahoo's operating business for $4.83 billion in July 2016; after the disclosures the price was renegotiated to roughly $4.48 billion, with the two companies splitting certain liabilities. The SEC later fined the remaining entity, Altaba, $35 million for failing to disclose the 2014 breach to investors for two years.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><a href="https://www.sec.gov/news/press-release/2018-71" target="_blank" rel="noopener nofollow">US Securities and Exchange Commission order against Altaba (formerly Yahoo), April 2018</a></li>
         <li><b>US Department of Justice indictment of FSB officers and co-conspirators, March 2017</b></li>
         <li><b>Yahoo Inc. SEC filings and investor statements, 2016–2017</b></li>
-        <li><b>In re Yahoo! Inc. Customer Data Security Breach Litigation — $117.5 million settlement, 2019</b></li>
+        <li><b>In re Yahoo! Inc. Customer Data Security Breach Litigation, $117.5 million settlement, 2019</b></li>
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
@@ -181,7 +194,7 @@
         <li><a href="/breaches/case-files/marriott-starwood-2018.html">Marriott and Starwood, 2018: a breach that came with the acquisition</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -197,5 +210,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

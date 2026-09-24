@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uber Breach 2022: MFA Fatigue and a Hardcoded Key | MyRecon</title>
+  <meta name="description" content="A contractor's password was bought, their phone was buried in approval prompts, and a helpful message finished the job.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/uber-2022.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Uber Breach 2022: MFA Fatigue and a Hardcoded Key">
+  <meta property="og:description" content="A contractor's password was bought, their phone was buried in approval prompts, and a helpful message finished the job.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/uber-2022.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Uber Breach 2022: MFA Fatigue and a Hardcoded Key">
+  <meta name="twitter:description" content="A contractor's password was bought, their phone was buried in approval prompts, and a helpful message finished the job.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Uber, 2022: multi-factor authentication held, and then somebody sent a WhatsApp message","description":"A contractor's password was bought, their phone was buried in approval prompts, and a helpful message finished the job. The real prize was an admin credential sitting in a script.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/uber-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Uber 2022 internal systems breach"},"wordCount":1072}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Uber 2022 internal systems breach","item":"https://www.myrecon.xyz/breaches/case-files/uber-2022.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is MFA fatigue?","acceptedAnswer":{"@type":"Answer","text":"Where the second factor is a push notification that the user approves with a tap, an attacker who already has the password can request approval over and over. The victim's phone fills with prompts, at any hour, with no way to make them stop. Eventually somebody taps approve, to end the noise, or because they assume a system is malfunctioning. The control is not bypassed technically. It is worn down."}},{"@type":"Question","name":"How did the attacker get the password in the first place?","acceptedAnswer":{"@type":"Answer","text":"Reporting indicates the contractor's corporate credentials were obtained from a dark web marketplace, having most likely been captured by information-stealing malware on a personal device. This is the ordinary supply chain for initial access now: the credential is a commodity bought for a small sum, and the work begins after login."}},{"@type":"Question","name":"What did the attacker actually reach?","acceptedAnswer":{"@type":"Answer","text":"After getting onto the internal network they found a PowerShell script on a shared drive containing hardcoded credentials for a privileged access management system, the vault holding administrative secrets. That unlocked access to a range of internal tools including cloud consoles, the identity provider, internal dashboards and Slack, where the attacker announced the breach. Uber stated it found no evidence of access to customer accounts or trip history."}},{"@type":"Question","name":"Why does a vulnerability disclosure programme matter here?","acceptedAnswer":{"@type":"Answer","text":"Because the attacker reached Uber's account on its bug bounty platform, which holds reports of vulnerabilities that have been submitted but not yet fixed. That is a list of ways into the company, written by researchers, held in one place. Any organisation running a disclosure programme should treat that account as a crown-jewel system rather than a security team convenience."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2022 · Ride-hailing</span>
+          <h1>Uber, 2022: multi-factor authentication held, and then somebody sent a WhatsApp message</h1>
+          <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>No evidence of access to customer accounts or trip data; internal tools, Slack, cloud consoles and vulnerability reports were reached</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>15 September 2022</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>15 September 2022</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>Stolen contractor credentials, multi-factor fatigue plus social engineering over WhatsApp, then hardcoded privileged credentials found in an internal PowerShell script</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>Attributed by Uber to Lapsus$; a UK teenager associated with the group was later convicted over a series of intrusions including this one</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>No customer data loss established; internal tooling compromised, including access to the company's vulnerability disclosure programme</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Internal collaboration and messaging systems · Cloud and identity administration consoles · Internal vulnerability reports</p>
+
+<p class="lead">Uber had multi-factor authentication. It was enabled, it was enforced, and on the night of 15 September 2022 it worked precisely as specified: a login attempt from an unrecognised source generated an approval request to the account holder's phone. Then it generated another, and another, and then the account holder received a WhatsApp message explaining that the prompts would stop if they accepted one.</p>
+
+<h2>What happened</h2>
+
+<p>The starting point was a contractor's corporate credentials, which reporting indicates were purchased on a dark web marketplace after most likely being harvested by information-stealing malware on a personal device. On its own the password was useless, because the second factor stood in the way.</p>
+
+<p>So the attacker attacked the second factor at the only point where it is soft: the human being approving it. Repeated login attempts generated a stream of push notifications. The contractor declined them. The prompts continued. The attacker then contacted the contractor over WhatsApp, presenting as Uber IT support, and said the notifications were the result of a problem that would be resolved once one was accepted. One was accepted.</p>
+
+<p>What came next is the part with the broader lesson. Being inside the network as a contractor is not, by itself, very valuable, the account was not privileged. Looking around the internal file shares, the attacker found a PowerShell script containing hardcoded administrative credentials for the company's privileged access management system: the vault where administrative secrets are kept. One script, one plaintext credential, and the vault opened. From there came access to cloud consoles, the identity provider, internal dashboards, Slack, where the attacker posted a message announcing the breach to the workforce, and the company's account on its vulnerability disclosure platform.</p>
+
+<div class="callout">
+  <p><strong>MFA is not a boolean.</strong> "Do you have MFA?" is the wrong question, and it is the one on every security questionnaire. Push-approval and SMS codes stop credential stuffing and undirected phishing, and they fold against an attacker willing to spend twenty minutes on one person. Phishing-resistant factors, hardware security keys and passkeys bound to the origin, do not fold, because there is nothing for the user to approve that a fake site can use and no code that can be read out or relayed. The gap between those two is the gap this breach went through.</p>
+</div>
+
+<h2>The secret in the script</h2>
+
+<p>The social engineering is what gets retold, and the hardcoded credential is what actually mattered. Everything beyond a single contractor's ordinary access followed from a secret written into a script and left on a share where any authenticated user could read it.</p>
+
+<p>That file exists in most organisations. It is written during an outage or a migration by somebody who intends to remove the credential afterwards, and the credential stays because the script keeps working and nothing ever forces a review. Privileged access management exists exactly to stop long-lived administrative secrets from lying around, and the credential to the system that holds all the other secrets was lying around.</p>
+
+<p>The defence is unglamorous: scan repositories and shared storage for secrets continuously rather than during audits, issue short-lived credentials so that a leaked one expires on its own, and treat any human-readable administrative password as an incident rather than a finding. The measure of success is not that no secret is ever written down. It is that a secret written down in March is dead by April.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>Before 15 September 2022</b>: A contractor's corporate credentials are obtained, most likely via information-stealing malware, and sold.</li>
+  <li><b>15 September 2022, evening</b>: Repeated login attempts flood the contractor's phone with approval prompts; a WhatsApp message posing as Uber IT asks them to accept one.</li>
+  <li><b>15 September 2022</b>: The attacker reaches the internal network and finds a script containing hardcoded privileged access management credentials.</li>
+  <li><b>15 September 2022, later</b>: Internal tools, cloud and identity consoles and the vulnerability disclosure account are accessed; a message is posted in the company Slack.</li>
+  <li><b>16 September 2022</b>: Uber confirms the incident publicly and takes internal tools offline while it investigates.</li>
+  <li><b>Late September 2022</b>: Uber attributes the intrusion to Lapsus$ and states it has found no evidence of access to customer accounts or trip data.</li>
+  <li><b>2023</b>: A UK teenager associated with Lapsus$ is convicted over a series of intrusions, this one among them.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>This breach, alongside the 0ktapus campaign against Twilio and others in the same year, moved phishing-resistant authentication from a recommendation to an expectation at large technology companies. Push-based approval was not abandoned everywhere, but the assumption that it constituted adequate protection for administrative access did not survive 2022.</p>
+
+<p>It also changed how MFA fatigue is treated operationally. Number matching, where the user must type a digit displayed on the login screen rather than simply tapping approve, was rolled out widely by identity providers, along with rate limiting on repeated prompts and alerting on the pattern itself. A flood of declined approvals is now, correctly, treated as an attack in progress rather than as a malfunction.</p>
+
+<p>The quieter shift was cultural, and it is the one most organisations still get wrong. The contractor who accepted the prompt had been worn down and then lied to by someone who sounded like their own IT department. Organisations that responded by blaming users got less reporting and slower detection; the ones that responded by making it safe and quick to say "I think I just approved something I should not have" got the opposite.</p>
+
+<h2>If you use Uber</h2>
+
+<p>Uber stated that it found no evidence of access to customer accounts, trip histories or payment details, and no customer data exposure was subsequently established. On the current public record there is nothing for riders or drivers to remediate from this incident, and this archive is not going to manufacture an action item where none exists.</p>
+
+<p>The applicable lesson is about your own accounts rather than about Uber. If your second factor is a push notification or an SMS code, it protects you against bulk attacks and not against someone who has decided to target you specifically. On the accounts that can reset everything else, your primary email above all, move to a passkey or a hardware security key. And treat any unexpected approval prompt as what it is: proof that somebody already has your password, and an instruction to change it rather than a decision about whether to tap approve.</p>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>What is MFA fatigue?</h3>
+        <p>Where the second factor is a push notification that the user approves with a tap, an attacker who already has the password can request approval over and over. The victim's phone fills with prompts, at any hour, with no way to make them stop. Eventually somebody taps approve, to end the noise, or because they assume a system is malfunctioning. The control is not bypassed technically. It is worn down.</p>
+
+        <h3>How did the attacker get the password in the first place?</h3>
+        <p>Reporting indicates the contractor's corporate credentials were obtained from a dark web marketplace, having most likely been captured by information-stealing malware on a personal device. This is the ordinary supply chain for initial access now: the credential is a commodity bought for a small sum, and the work begins after login.</p>
+
+        <h3>What did the attacker actually reach?</h3>
+        <p>After getting onto the internal network they found a PowerShell script on a shared drive containing hardcoded credentials for a privileged access management system, the vault holding administrative secrets. That unlocked access to a range of internal tools including cloud consoles, the identity provider, internal dashboards and Slack, where the attacker announced the breach. Uber stated it found no evidence of access to customer accounts or trip history.</p>
+
+        <h3>Why does a vulnerability disclosure programme matter here?</h3>
+        <p>Because the attacker reached Uber's account on its bug bounty platform, which holds reports of vulnerabilities that have been submitted but not yet fixed. That is a list of ways into the company, written by researchers, held in one place. Any organisation running a disclosure programme should treat that account as a crown-jewel system rather than a security team convenience.</p>
+      </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Uber, security update and incident statements, September 2022</b></li>
+        <li><b>Contemporaneous technical reporting and screenshots published by the attacker, September 2022</b></li>
+        <li><b>UK prosecution and 2023 verdict concerning Lapsus$-associated intrusions</b></li>
+        <li><b>CISA guidance on phishing-resistant multi-factor authentication</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/uber-2016.html">Uber, 2016: the breach that was paid to disappear</a></li>
+        <li><a href="/breaches/case-files/twilio-0ktapus-2022.html">0ktapus, 2022: one text message, one hundred and thirty companies</a></li>
+        <li><a href="/breaches/case-files/mgm-resorts-2023.html">MGM Resorts, 2023: a ten-minute phone call to the help desk</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

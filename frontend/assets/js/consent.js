@@ -5,7 +5,7 @@
  * The only cookies this site causes are Google's advertising cookies, and
  * Google's EU user consent policy requires a Google-certified CMP for ads
  * served to the EEA, the UK and Switzerland. A hand-rolled banner is not
- * certified, so writing one here would not make the site compliant — it
+ * certified, so writing one here would not make the site compliant, it
  * would add a second, non-binding prompt in front of the real one and
  * double-ask everyone. The certified message is enabled in the AdSense
  * console (Privacy & messaging → GDPR / "EU regulations"); see
@@ -16,8 +16,8 @@
  * Consent has to be as easy to withdraw as it was to give, which the CMP
  * alone does not give you: once dismissed, its message never reappears.
  * This wires a "Cookie settings" control to the CMP's own revocation flow so
- * a visitor can reopen it from any page, and — when no CMP is on the page,
- * as outside the EEA where no ad-consent prompt is shown — lets the control
+ * a visitor can reopen it from any page, and, when no CMP is on the page,
+ * as outside the EEA where no ad-consent prompt is shown, lets the control
  * behave as the plain link to the cookie policy that it is in the markup.
  *
  * The rule throughout: never swallow the click unless something actually
@@ -87,7 +87,7 @@
     });
 
     /* The label is honest about which of the two it will do. It starts as
-     * "Cookie policy" — the no-JS, no-CMP truth — and is promoted only once a
+     * "Cookie policy", the no-JS, no-CMP truth, and is promoted only once a
      * CMP has actually loaded. adsbygoogle.js is async, so poll briefly
      * rather than assuming it has arrived by DOMContentLoaded. It is the last
      * item in the footer, so a late relabel shifts nothing before it. */

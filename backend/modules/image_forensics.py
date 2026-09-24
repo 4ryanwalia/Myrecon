@@ -1,5 +1,5 @@
 """
-Image forensics — deterministic, local, provider-free.
+Image forensics, deterministic, local, provider-free.
 
 Everything in this module is computed from the image bytes themselves. There
 are no network calls and no API keys, so these findings are always available
@@ -7,7 +7,7 @@ and always reproducible: the same bytes yield the same report.
 
 That property matters for an investigation tool. Anything derived from a
 third-party model (OCR, landmark, logo, face attributes) is a *claim* with a
-confidence attached and lives behind the provider registry instead — see
+confidence attached and lives behind the provider registry instead, see
 modules/providers/. This module only reports what the file actually contains.
 
 Deliberately NOT here:
@@ -62,7 +62,7 @@ def cryptographic_hashes(raw: bytes) -> dict:
     """
     Exact-duplicate identifiers. Two files share these only if their bytes are
     identical, so they answer "is this the same file?" but say nothing about
-    visual similarity — a re-encode changes them completely.
+    visual similarity, a re-encode changes them completely.
     """
     return {
         "sha256": hashlib.sha256(raw).hexdigest(),
@@ -72,7 +72,7 @@ def cryptographic_hashes(raw: bytes) -> dict:
 
 
 def _to_luma_array(img: Image.Image, size: int) -> np.ndarray:
-    """Downscale to size×size greyscale as float — the common front half of
+    """Downscale to size×size greyscale as float, the common front half of
     every perceptual hash below."""
     small = img.convert("L").resize((size, size), Image.Resampling.LANCZOS)
     return np.asarray(small, dtype=np.float64)
@@ -87,14 +87,14 @@ def _bits_to_hex(bits: np.ndarray) -> str:
 
 
 def average_hash(img: Image.Image) -> str:
-    """aHash — each pixel brighter than the mean becomes a 1. Cheap, tolerant
+    """aHash, each pixel brighter than the mean becomes a 1. Cheap, tolerant
     of re-compression, but easily collided by flat images."""
     px = _to_luma_array(img, _AHASH_SIZE)
     return _bits_to_hex(px > px.mean())
 
 
 def difference_hash(img: Image.Image) -> str:
-    """dHash — encodes horizontal gradient direction. Robust to brightness and
+    """dHash, encodes horizontal gradient direction. Robust to brightness and
     scaling shifts, which makes it the best single choice for "same photo,
     different upload" matching."""
     # Resized directly rather than via _to_luma_array, which squares its input:
@@ -107,7 +107,7 @@ def difference_hash(img: Image.Image) -> str:
 
 def perceptual_hash(img: Image.Image) -> str:
     """
-    pHash — DCT-II on a 32×32 luma grid, keeping the top-left 8×8 block of low
+    pHash, DCT-II on a 32×32 luma grid, keeping the top-left 8×8 block of low
     frequencies (excluding the DC term from the median). Slowest of the three
     and the most resistant to crops, overlays and heavy re-encoding.
     """
@@ -153,7 +153,7 @@ def hamming_distance(hex_a: str, hex_b: str) -> Optional[int]:
 
 def similarity_from_distance(distance: Optional[int], bits: int = 64) -> Optional[float]:
     """Map a Hamming distance to a 0–100 similarity. Linear in bits, which is
-    honest about what the metric is — it is not a probability."""
+    honest about what the metric is, it is not a probability."""
     if distance is None:
         return None
     return round(max(0.0, 1.0 - distance / bits) * 100, 1)
@@ -196,8 +196,8 @@ def extract_gps(gps_ifd: dict) -> dict:
     """
     Decode the GPS IFD into decimal coordinates.
 
-    GPS presence is one of the highest-value findings in image forensics — it
-    places a device at a location and time — so the raw reference letters are
+    GPS presence is one of the highest-value findings in image forensics, it
+    places a device at a location and time, so the raw reference letters are
     reported alongside the decimals for auditability.
     """
     out: dict[str, Any] = {"present": False}
@@ -251,7 +251,7 @@ def extract_exif(img: Image.Image) -> dict:
     Pull the EXIF blocks that matter for provenance: camera identity, capture
     time, software, and GPS.
 
-    Absence is itself a signal and is reported explicitly — most social
+    Absence is itself a signal and is reported explicitly, most social
     platforms strip EXIF on upload, so a photo with no EXIF has very likely
     been through one.
     """
@@ -268,8 +268,8 @@ def extract_exif(img: Image.Image) -> dict:
 
     # EXIF is split across IFDs. getexif() returns only the 0th (image) IFD,
     # which holds Make/Model/Software/DateTime. The tags an investigator most
-    # wants — DateTimeOriginal, ISO, aperture, focal length, lens, body serial
-    # — live in the Exif sub-IFD behind the ExifOffset pointer, so both must be
+    # wants, DateTimeOriginal, ISO, aperture, focal length, lens, body serial,
+    # live in the Exif sub-IFD behind the ExifOffset pointer, so both must be
     # consulted or those fields silently read as None.
     try:
         sub = exif.get_ifd(_EXIF_TAGS.get("ExifOffset")) or {}
@@ -399,7 +399,7 @@ def analyse(raw: bytes, filename: str = "") -> dict:
 
     Args:
         raw: the image bytes as uploaded.
-        filename: original name, recorded for provenance only — never trusted
+        filename: original name, recorded for provenance only, never trusted
             for type detection, which comes from the decoded content.
 
     Returns a JSON-serialisable dict. Raises ImageForensicsError for input we

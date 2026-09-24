@@ -1,0 +1,78 @@
+<!--
+{
+  "headline": "The British Library, 2023: the ransom was refused and the catalogue stayed dark",
+  "seoTitle": "British Library Cyber Attack 2023: Rhysida",
+  "subject": "British Library ransomware attack",
+  "kicker": "2023 · Cultural institution",
+  "description": "Rhysida exfiltrated around 600GB and auctioned it. The lasting damage was not the data leaving, it was that thirty years of accumulated systems could not simply be switched back on.",
+  "cardBlurb": "The Library then published a frank account of how it had been breached and what it had known. Almost no organisation does that.",
+  "records": "Around 600GB exfiltrated, roughly 490,000 files, including employee personal data",
+  "occurred": "Detected 28 October 2023",
+  "disclosed": "31 October 2023",
+  "vector": "Most likely compromised credentials for third-party access on a Terminal Services server provisioned without multi-factor authentication",
+  "actor": "Rhysida, a ransomware-as-a-service operation",
+  "cost": "Recovery reported in the region of £6–7 million, met from the Library's own reserves; core services disrupted for the best part of a year",
+  "exposed": ["Employee personal data", "Internal financial and HR documents", "Some user account data"],
+  "sortDate": "2023-10-31",
+  "published": "2026-09-15",
+  "updated": "2026-09-15",
+  "related": ["colonial-pipeline-2021", "change-healthcare-2024", "moveit-2023"],
+  "faq": [
+    { "q": "Did the British Library pay the ransom?", "a": "No. Rhysida put the stolen data up for auction at 20 bitcoin and, when it did not sell, published the bulk of it. A publicly funded body paying a criminal group is not a straightforward option even setting aside the ethics, it raises sanctions exposure and the use of public money to fund organised crime. The Library refused, and then absorbed the consequence in full view." },
+    { "q": "Why did recovery take so long if there were backups?", "a": "Because restoring data is not the same as restoring a service. The Library's estate had accumulated over decades, and a significant part of it ran on legacy infrastructure that could not be safely reinstated onto modern, hardened platforms. Much of what looked like recovery was actually rebuilding: standing up replacement systems and migrating to them, rather than switching the old ones back on. Age was both the reason the attack succeeded and the reason recovery dragged." },
+    { "q": "What was in the stolen data?", "a": "Internal documents and employee personal data, including HR and financial material, along with some user account data. The Library advised users who had reused their Library password elsewhere to change it. Researchers' reading histories and the collection itself were not the target, the damage to scholarship came from services being unavailable, not from what the attackers took." },
+    { "q": "What makes this case unusual?", "a": "The report the Library published in March 2024. Rather than a short statement, it set out what happened, which weaknesses contributed, and what the institution had and had not addressed beforehand, including its own reliance on ageing systems and the absence of multi-factor authentication on the access route that was used. Very few organisations publish that. Its practical value to other institutions is larger than the incident itself." }
+  ],
+  "sources": [
+    { "label": "British Library, \"Learning Lessons from the Cyber-Attack\", March 2024" },
+    { "label": "British Library incident updates and service status notices, October 2023 – 2024" },
+    { "label": "Rhysida leak site postings and contemporaneous reporting, November 2023" },
+    { "label": "UK National Cyber Security Centre guidance on ransomware and legacy infrastructure" }
+  ]
+}
+-->
+<p class="lead">A national library is not an obvious target. It holds no card numbers worth speaking of, sells almost nothing, and its most valuable assets are objects that cannot be encrypted. Rhysida attacked it anyway, and the result was an unusually clear demonstration that the harm in a ransomware attack often has very little to do with the data.</p>
+
+<h2>What happened</h2>
+
+<p>The intrusion was detected on 28 October 2023 and made public days later. The attackers exfiltrated around 600GB, roughly half a million files, encrypted systems on the way out, and destroyed servers to hinder recovery. Rhysida then listed the data for auction at 20 bitcoin on its leak site. When no buyer emerged, most of it was published.</p>
+
+<p>The Library's own account identifies the likely entry route as compromised credentials used for third-party access, reaching a Terminal Services server that had been provisioned to let trusted partners connect and that did not require multi-factor authentication. Nothing about that is exotic. It is the single most common way ransomware operators get into an organisation: a remote access path created for a legitimate reason, protected by a password alone, still there long after the reason for it has faded from institutional memory.</p>
+
+<p>What followed was not a brief outage. The online catalogue, the mechanism by which researchers find out what the Library holds, was unavailable for months. Ordering, reading room services, digital collections and payment systems were disrupted. A limited, read-only version of the main catalogue returned in January 2024, and full restoration of services extended well beyond that.</p>
+
+<div class="callout">
+  <p><strong>Old systems fail twice.</strong> The Library's report makes a point that rarely appears in incident write-ups: its legacy estate contributed both to the breach and, more painfully, to the length of the recovery. Systems too old to be secured were also too old to be restored onto modern secure infrastructure, so getting back to service meant replacing them rather than reinstating them. A backup is only as useful as the platform you can run it on. Where the platform itself is the problem, "we have backups" describes a much longer project than it sounds like.</p>
+</div>
+
+<h2>The report that did not protect anyone</h2>
+
+<p>In March 2024 the Library published a paper setting out what had happened and what it had learned. It is the part of this case with the longest half-life.</p>
+
+<p>The normal output of an attack on a public institution is a holding statement and, eventually, a reassuring summary phrased so generally that no other organisation can act on it. Legal advice pushes in that direction, and so does the reasonable fear of publishing a map of your own weaknesses. The Library went the other way and described the contributing factors plainly: the reliance on ageing infrastructure, the historic under-investment behind it, the access route that lacked multi-factor authentication, and the complexity of an estate assembled over decades of separate projects.</p>
+
+<p>That candour has a specific value for the sector it sits in. Museums, libraries, universities and archives run comparable estates on comparable budgets, and they do not have the option of rebuilding from scratch. A peer institution reading this report learns more about its own risk than any vendor threat report would tell it, and can point to a named example when it asks for money to fix the same problems.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>28 October 2023</b>: The attack is detected; major technology outage begins.</li>
+  <li><b>31 October 2023</b>: The Library confirms a cyber incident publicly.</li>
+  <li><b>Mid-November 2023</b>: Rhysida claims responsibility and lists the stolen data for auction at 20 bitcoin.</li>
+  <li><b>Late November 2023</b>: With no buyer, the bulk of the data is published; the Library confirms employee data is included.</li>
+  <li><b>January 2024</b>: A read-only version of the main catalogue is restored, with ordering still unavailable.</li>
+  <li><b>March 2024</b>: The Library publishes "Learning Lessons from the Cyber-Attack".</li>
+  <li><b>Through 2024</b>: Services are progressively rebuilt rather than restored; recovery costs are met from reserves.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>The attack reframed how the UK cultural sector talks about cyber risk. Institutions whose boards had treated information security as an IT line item watched a peer lose its principal public service for the better part of a year, with no ransom paid and no insurer making the problem disappear. The lesson taken up most widely was not about ransomware at all: it was that deferred infrastructure investment is a risk that eventually gets called in, and that the bill arrives at the worst possible moment and all at once.</p>
+
+<p>It also served as a public demonstration of what refusing to pay actually costs. The argument for refusal is sound and the Library's position was defensible, but the honest version of that argument has to include this: refusal meant the data was published anyway, and the institution funded its own recovery out of reserves. Cases where refusal is presented as costless do the decision a disservice. This one shows the real shape of it.</p>
+
+<h2>If you used the Library</h2>
+
+<p>The population most affected is staff rather than readers. Employee personal data, including HR and financial records, was published, and there is no mechanism for withdrawing it once it is on a leak site. The remedies there are the ones that apply to any exposure of identity data: vigilance about approaches that cite real internal detail, and scepticism about anyone who establishes credibility by reciting information that is now freely available.</p>
+
+<p>For readers, the exposure was narrower. The Library advised anyone who had reused their Library account password elsewhere to change it, which is the correct advice and worth restating in general form: the harm from a leaked password at a low-value service is almost entirely determined by whether that password exists anywhere else. If it was unique, a breach of the service that held it is an inconvenience. If it was not, the breach is about your email account, and it always was.</p>

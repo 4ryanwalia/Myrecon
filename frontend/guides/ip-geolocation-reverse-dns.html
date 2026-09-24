@@ -19,29 +19,30 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="IP Geolocation and Reverse DNS: What an IP Address Reveals">
   <meta name="twitter:description" content="How IP location is estimated, what ASN means, and why reverse DNS is a useful clue.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"IP Geolocation and Reverse DNS: What an IP Address Reveals","description":"How IP geolocation works, what ASN and hosting flags mean, and how reverse DNS helps.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/ip-geolocation-reverse-dns.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"IP Geolocation and Reverse DNS: What an IP Address Reveals","description":"How IP geolocation works, what ASN and hosting flags mean, and how reverse DNS helps.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-14","mainEntityOfPage":"https://www.myrecon.xyz/guides/ip-geolocation-reverse-dns.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"IP Geolocation and Reverse DNS Explained","item":"https://www.myrecon.xyz/guides/ip-geolocation-reverse-dns.html"}],"@context":"https://schema.org"}</script>
 </head>
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -58,43 +59,104 @@
 
   <main id="main" class="container">
     <article class="article">
-      <span class="kicker">IP intelligence</span>
-      <h1>IP Geolocation and Reverse DNS: What an IP Address Reveals</h1>
-      <p class="meta">Updated 12 July 2026 · 6 min read</p>
+<span class="kicker">Network intelligence</span>
+      <h1>IP Geolocation and Reverse DNS: What an IP Really Reveals</h1>
+      <p class="meta">Updated 14 September 2026 · 7 min read</p>
 
-      <p class="lead">An IP address is how devices find each other on the internet. Look one up and you can learn roughly where it is, who operates the network it belongs to, and whether it is a home connection or a data-centre server — all without any special access.</p>
+      <p class="lead">An IP address looks like the most precise thing in an investigation and behaves like the least. It will tell you, reliably, which network an address belongs to and what kind of network that is. The map pin it comes with is an estimate, and treating it as a location has put innocent people through years of trouble.</p>
 
-      <h2>How IP geolocation actually works</h2>
-      <p>A common misconception is that an IP address contains GPS coordinates. It does not. Geolocation is an <em>estimate</em>, built by mapping blocks of IP addresses to locations using data such as regional registry allocations, network routing information, and the self-reported locations of internet providers. Commercial databases combine these signals to guess a city, region, and country.</p>
-      <p>The accuracy varies. Country-level results are usually reliable; city-level results are often approximate and can be off by a long way, especially for mobile networks that route many users through a single regional gateway. Treat the location as "somewhere in this area, probably," not a home address.</p>
+      <h2>How IP geolocation is actually produced</h2>
+      <p>There is no location field in an IP address. Nothing in the protocol encodes geography. Every "IP location" you have ever seen is an inference, assembled by commercial and open databases from a handful of imperfect inputs:</p>
+      <ul>
+        <li><strong>Registry records.</strong> The regional internet registries, ARIN, RIPE NCC, APNIC, LACNIC, AFRINIC, publish which organisation holds each block and the country it registered from. This is the strongest input and it is why country-level answers are usually right.</li>
+        <li><strong>Routing data.</strong> BGP announcements show which network advertises a block and where it interconnects, which constrains roughly where the traffic enters the world.</li>
+        <li><strong>Latency measurement.</strong> Probes time round trips from known locations and triangulate. Physics puts a floor under how far away a host can be; it does not tell you which side of a city it sits on.</li>
+        <li><strong>ISP-supplied assignment data</strong>, where a provider chooses to share which blocks serve which regions.</li>
+        <li><strong>Inference from applications</strong>: devices that reported a GPS position while using a given address, feeding back into the estimate.</li>
+      </ul>
+      <p>Vendors publish country-level accuracy figures in the high nineties. City-level accuracy is a different proposition entirely, and honest vendors publish a confidence radius alongside it, frequently tens of kilometres, sometimes far more.</p>
 
       <div class="callout">
-        <p><strong>Reality check.</strong> An IP does not identify a person. It identifies a network endpoint that may be shared by many people, sit behind a router, or belong to a VPN or cloud provider. Precise, individual identification from an IP alone is not possible from public data.</p>
+        <p><strong>The default-centroid problem.</strong> When a database knows the country but not the city, it has to return something, and for years the common practice was to return the geographic centre of the country. One rural property in Kansas sat at the centre of the United States and was consequently listed as the location of many hundreds of millions of addresses. The people who lived there spent a decade receiving police visits, threats and accusations over crimes committed by strangers. Nothing about that was a database error in the technical sense: the record said "somewhere in this country" and every tool downstream rendered it as a pin on a house. If a geolocation result lands exactly on a country's centroid, it is telling you it does not know.</p>
       </div>
 
-      <h2>ASN and network ownership</h2>
-      <p>Every IP address belongs to a network operated by an organisation, identified by an <strong>Autonomous System Number (ASN)</strong>. The ASN and its associated name tell you who runs the network — a residential ISP, a mobile carrier, a university, or a cloud host like Amazon, Google, or Microsoft. This is frequently more useful than the geographic estimate: knowing an address belongs to "Google Cloud" or "a Vietnamese residential ISP" tells you a great deal about what the endpoint is.</p>
-
-      <h2>Hosting, proxy and mobile flags</h2>
-      <p>Many IP databases classify addresses with useful flags:</p>
+      <h2>ASN: the part that is actually reliable</h2>
+      <p>Every routable block belongs to an <strong>autonomous system</strong>: a network with its own number, announcing its own routes. The ASN, and the organisation behind it, is registry data rather than inference, and it is the most dependable thing an address will give you.</p>
+      <p>More importantly, it tells you the <em>kind</em> of network, which usually matters more than the place:</p>
       <ul>
-        <li><strong>Hosting / data-centre</strong> — the IP belongs to a server provider rather than a home connection. Legitimate for websites; unusual for a "regular user."</li>
-        <li><strong>Proxy / VPN</strong> — traffic is being routed through an anonymising service, so the real origin is hidden.</li>
-        <li><strong>Mobile</strong> — the address belongs to a cellular carrier.</li>
+        <li><strong>Residential ISP.</strong> A consumer connection. Note that the address may be shared and may have moved since, see below.</li>
+        <li><strong>Mobile carrier.</strong> Phone traffic, almost always behind carrier-grade NAT, with the poorest location accuracy of any category. A mobile address can present as a city hours away from the handset.</li>
+        <li><strong>Hosting and cloud.</strong> A server, a VPN exit, a proxy or a scraper, not a person at a desk. When traffic that should be a customer arrives from a data centre range, that is worth asking about.</li>
+        <li><strong>Business and corporate.</strong> A block assigned to a named organisation, which is the one case where an address genuinely does identify an entity.</li>
+        <li><strong>Education, government, CDN</strong> and other special-purpose networks, each with their own reading.</li>
       </ul>
-      <p>These flags matter for risk and fraud analysis. A login that claims to be a home user but comes from a data-centre IP, or a sign-up from a known VPN range, is worth a second look.</p>
+      <p>The distinction between residential and hosting is the single most useful classification in fraud work, and it is derived from ownership records rather than guessed.</p>
 
-      <h2>Reverse DNS: turning an IP back into a name</h2>
-      <p>Forward DNS turns a name into an IP. <strong>Reverse DNS (rDNS)</strong> does the opposite: it looks up the <span style="font-family:var(--mono)">PTR</span> record to find the hostname associated with an IP. The result is often descriptive — an address might resolve to something like <span style="font-family:var(--mono)">mail.example.com</span> or a cloud provider's auto-generated hostname that encodes the region and instance. Not every IP has a PTR record, but when one exists it is a strong, free clue about the server's role and operator.</p>
+      <h2>Reverse DNS, and why it is controlled by someone else</h2>
+      <p>Forward DNS turns a name into an address. <strong>Reverse DNS</strong> turns an address back into a name, through PTR records published in a special zone derived from the address itself.</p>
+      <p>The crucial detail is who may publish there: not the website owner, but whoever holds the IP block, the hosting provider or the ISP. You cannot claim a reverse name for an address you do not control, and that is what makes PTR records evidence rather than assertion.</p>
+      <p>What they leak in practice:</p>
+      <ul>
+        <li><strong>Cloud provider and region.</strong> Default reverse names on major clouds encode the address and often the region, so the hostname itself says which provider and roughly which data centre.</li>
+        <li><strong>Connection type.</strong> ISP reverse names routinely contain words like <span style="font-family:var(--mono)">dynamic</span>, <span style="font-family:var(--mono)">dsl</span>, <span style="font-family:var(--mono)">cable</span>, <span style="font-family:var(--mono)">pool</span> or a city abbreviation. A hostname that announces itself as a dynamic residential pool is a stronger signal about the nature of the connection than any map pin.</li>
+        <li><strong>Deliberate naming.</strong> A reverse name set to a company's own mail hostname was configured on purpose, by someone who controls the range, which is a real link between the address and that organisation.</li>
+        <li><strong>Nothing at all.</strong> Plenty of addresses have no PTR, which is unremarkable for a web server and notable for a mail server, since many receivers treat a missing reverse name as a spam signal.</li>
+      </ul>
 
-      <h2>Putting it together</h2>
-      <p>On its own, an IP lookup is a snapshot. In an investigation it becomes a hinge: the IP behind a domain's A record reveals its host and region; a reverse-DNS hostname can be pivoted into a fresh domain lookup; and the ASN and flags help you judge whether infrastructure is legitimate. MyRecon's <a href="/#tool">IP tool</a> returns geolocation, ASN and network ownership, hosting and proxy flags, and reverse DNS together, so you can read all of these signals at once.</p>
+      <div class="callout">
+        <p><strong>Forward-confirmed reverse DNS is the check that makes it meaningful.</strong> Take the address, find its PTR name, then look that name up again and see whether it resolves back to the same address. If it does, the two halves are controlled consistently and the name is worth something. If it does not, you have a reverse name that nobody has backed up, and it should carry no weight. This one round trip separates a real identification from a decorative hostname, and it takes seconds.</p>
+      </div>
 
-            <h2>Related guides</h2>
+      <h2>Why an address is not a person</h2>
+      <p>This is the part that matters most, and it is the part that gets skipped.</p>
+      <ul>
+        <li><strong>Addresses are shared.</strong> Carrier-grade NAT puts hundreds or thousands of subscribers behind one public address at a time. On mobile networks this is the norm, not the exception.</li>
+        <li><strong>Addresses move.</strong> Residential allocations rotate. An address that served one household last month may serve another today, which is why any claim about an address needs a timestamp attached or it is meaningless.</li>
+        <li><strong>Addresses are borrowed.</strong> A VPN, a corporate proxy, a coffee shop, an open router, a compromised machine used as a relay, all of them put someone else's traffic behind an address.</li>
+        <li><strong>Databases lag.</strong> Reassignments between networks can take weeks to show up, and geolocation vendors update on their own schedules.</li>
+      </ul>
+      <p>The practical rule: an IP address identifies a <em>connection at a moment</em>. Turning that into a person requires records only the provider holds, obtained through a process built for the purpose. Everything short of that is an inference, and it should be written down as one.</p>
+
+      <h2>VPN and proxy detection, and its limits</h2>
+      <p>Services that flag an address as a VPN or proxy work mostly by enumeration: they subscribe to commercial VPN providers, record the exit addresses, and match against that list, supplemented by the hosting-versus-residential classification above.</p>
+      <p>This catches mainstream commercial VPNs reasonably well. It does not catch a private server someone rented and configured themselves, and it increasingly mislabels residential proxy networks, which route traffic through real consumer connections, sometimes with the consent of the person whose bandwidth is being used and sometimes without it. Both failure directions are common enough that a VPN flag belongs in the evidence pile, not at the end of it.</p>
+
+      <h2>IPv6 changes the arithmetic</h2>
+      <p>IPv6 allocations are enormous, a single household typically receives a block far larger than the entire IPv4 internet. That has two consequences worth knowing. Sharing is much rarer, so an IPv6 address is a more specific identifier than an IPv4 one. But privacy extensions rotate the address a device uses for outbound connections, often daily, so the specific address is less stable even as the surrounding block stays put. Reason about the prefix, not the full address.</p>
+
+      <h2>Where addresses come from in real work</h2>
+      <p>Two sources come up constantly, and both deserve a caveat. Email headers used to carry the sender's own address; major webmail providers have stripped that for years, so a header address now usually identifies the provider's outbound server, not the person. Server logs are the other, and there the address is genuine but subject to every caveat above, proxies, shared addresses, and the gap between an address and an account.</p>
+
+      <h2>A sane order of operations</h2>
+      <ol>
+        <li><strong>Identify the network.</strong> ASN and organisation first. This is the reliable part.</li>
+        <li><strong>Classify the connection.</strong> Residential, mobile, hosting, corporate. This determines how to read everything that follows.</li>
+        <li><strong>Check reverse DNS, then forward-confirm it.</strong> An unconfirmed PTR is decoration.</li>
+        <li><strong>Read the location as a region with a confidence radius</strong>, never as a pin, and discard it entirely if it lands on a country centroid.</li>
+        <li><strong>Attach a timestamp</strong> to every statement about the address, because without one the statement is not checkable.</li>
+        <li><strong>Corroborate before concluding.</strong> An address is one input. Our guide to <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a> covers what a second input has to look like to count.</li>
+      </ol>
+
+      <div class="callout">
+        <p>Look up any address with the <a href="/#tool">MyRecon IP tool</a>: network operator, ASN, connection type, reverse DNS and an estimated region, with the estimate labelled as an estimate.</p>
+      </div>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dip_geolocation_reverse_dns" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/dns-records-explained.html">what each DNS record type actually does</a></li>
-        <li><a href="/guides/investigate-a-domain.html">a repeatable way to investigate a domain you don't trust</a></li>
-        <li><a href="/guides/what-http-responses-reveal.html">what a site's HTTP response really tells you</a></li>
+        <li><a href="/guides/verify-an-osint-finding.html">how to verify a finding before acting on it</a></li>
+        <li><a href="/guides/whois-rdap-explained.html">reading a domain's registration record</a></li>
+        <li><a href="/guides/what-http-responses-reveal.html">what a website's response tells you</a></li>
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
@@ -111,5 +173,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

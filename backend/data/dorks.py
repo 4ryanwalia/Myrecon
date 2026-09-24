@@ -1,11 +1,11 @@
 """
-OSINT dork database — structured Google queries, ~750 for usernames and
+OSINT dork database, structured Google queries, ~750 for usernames and
 ~120 for email addresses, with {username} / {email} substituted at runtime.
 
 A note on ordering, because it matters more than the raw count: the queries
 are not all equally trustworthy. `site:reddit.com/user "bob"` can only match
 a URL under /user/, so a hit really is a profile page. `site:reddit.com "bob"`
-matches any comment thread that says "bob" — which is what produces results
+matches any comment thread that says "bob", which is what produces results
 that read as "account found" until you click through and find nobody there.
 get_username_dorks() therefore returns the path-scoped queries first so that
 the per-scan query budget is spent on the ones worth trusting, and
@@ -282,7 +282,7 @@ USERNAME_DORKS: list[str] = [
     #  URLs that live under a profile path, which is what keeps
     #  a hit from being some unrelated post that merely mentions
     #  the handle. get_username_dorks() runs these first for
-    #  exactly that reason — see the ordering note there.
+    #  exactly that reason, see the ordering note there.
     # ══════════════════════════════════════════════════════════
 
     # ── Social / General ────────────────────────────────────────
@@ -990,8 +990,8 @@ DOCUMENT_DORKS: list[str] = [
 
 
 # Path prefixes that are scoped but still can't name a person: groups, pages,
-# package listings and so on. They stay in the list — a handle showing up in a
-# Facebook group is a real finding — they just don't get a precision slot.
+# package listings and so on. They stay in the list, a handle showing up in a
+# Facebook group is a real finding, they just don't get a precision slot.
 _NON_PERSONAL_PATHS = (
     "/groups", "/pages", "/communities", "/packages", "/bounties",
     "/poems", "/view", "/stash", "/fightcenter",
@@ -1021,14 +1021,14 @@ def get_username_dorks(username: str) -> list[str]:
 
     Order is: path-scoped site: queries, then bare-domain site: queries, then
     the generic/inurl: ones, then document discovery. Every caller truncates
-    this list to a query budget, so the order is the feature — it decides which
+    this list to a query budget, so the order is the feature, it decides which
     queries actually run.
     """
     def rank(dork: str) -> int:
         if is_path_scoped(dork):
-            return 0                              # site:host/path — profile URLs only
+            return 0                              # site:host/path, profile URLs only
         if dork.startswith("site:"):
-            return 1                              # site:host — anywhere on the domain
+            return 1                              # site:host, anywhere on the domain
         return 2                                  # inurl:/intitle:/bare phrase
 
     ranked = sorted(USERNAME_DORKS, key=rank)      # stable: keeps in-tier order

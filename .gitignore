@@ -97,3 +97,12 @@ Aran
 *.pfx
 *.pem
 !deployment_cert.example.der
+
+# ── Marketing / social content (laptop-only, like play-store/) ───
+/marketing/
+
+# ── Catalogue harness output ─────────────────────────────────────
+# tools/maigret_harness.py stays tracked; what it produces does not.
+# A 2.3 MB upstream cache, the probe results and generated Kotlin are
+# all reproducible by re-running it.
+/tools/out/

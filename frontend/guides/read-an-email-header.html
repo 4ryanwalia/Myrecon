@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Read an Email Header and Trace a Message | MyRecon</title>
+  <meta name="description" content="The fields that tell you where a message really came from, which ones can be forged, and the one line that settles most questions in a second.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/read-an-email-header.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="How to Read an Email Header">
+  <meta property="og:description" content="The fields that tell you where a message really came from, which ones can be forged, and the one line that settles most questions in a second.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/read-an-email-header.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Read an Email Header">
+  <meta name="twitter:description" content="The fields that tell you where a message really came from, which ones can be forged, and the one line that settles most questions in a second.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"How to Read an Email Header","description":"The fields that tell you where a message really came from, which ones can be forged, and the one line that settles most questions in a second.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1201,"mainEntityOfPage":"https://www.myrecon.xyz/guides/read-an-email-header.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"How to Read an Email Header","item":"https://www.myrecon.xyz/guides/read-an-email-header.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I find the sender's real IP address in an email header?","acceptedAnswer":{"@type":"Answer","text":"Usually not. Major webmail providers have stripped the sender's own address from outgoing headers for years, so the earliest address you see is typically the provider's outbound server. Mail from a self-hosted server or an older client may still expose it."}},{"@type":"Question","name":"Which header fields can be forged?","acceptedAnswer":{"@type":"Answer","text":"All of the ones the sender writes: From, Reply-To, Date, Message-ID, and any Received lines added before the message reached a server you trust. The only trustworthy parts are the headers your own provider added, at the top."}},{"@type":"Question","name":"What does dmarc=pass actually mean?","acceptedAnswer":{"@type":"Answer","text":"That the domain shown in the From line matched a domain that genuinely authenticated, via SPF or DKIM. It confirms the message really came from that domain. It says nothing about whether the domain is honest, a lookalike domain passes its own DMARC perfectly."}},{"@type":"Question","name":"Where do I find the full headers?","acceptedAnswer":{"@type":"Answer","text":"It varies by client, but the wording is similar: show original, view source, or message details. Web clients usually put it in the menu beside the reply button; desktop clients under a view or properties menu."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Email intelligence</span>
+      <h1>How to Read an Email Header</h1>
+      <p class="meta">Published 14 September 2026 · 6 min read</p>
+
+<p class="lead">Every email carries a record of the servers it passed through and what each of them thought of it. Most of that record can be forged by the sender, but the part that cannot is added by your own provider, sits at the top, and answers the question people open headers to ask.</p>
+
+      <h2>Getting at the headers</h2>
+      <p>What you normally see is a summary. The full message source contains dozens of lines above it. Look in your client for <em>show original</em>, <em>view source</em>, <em>message details</em> or <em>properties</em>: in web clients it is usually in the menu next to reply, and in desktop clients under a view or file menu. What you get is plain text, and it is read from the bottom upwards.</p>
+
+      <h2>Why bottom-up</h2>
+      <p>Each server that handles a message adds a <span style="font-family:var(--mono)">Received:</span> line at the <em>top</em> of the existing headers. The result is a stack in reverse chronological order: the last line is the first hop, and the first line is your own provider.</p>
+      <p>This matters for a reason beyond ordering. A sender can fabricate as many <span style="font-family:var(--mono)">Received:</span> lines as they like before sending, inventing a plausible journey through respectable servers. What they cannot fabricate is the line your provider added when it accepted the message, that one was written after the forgery was out of the sender's hands.</p>
+      <p>So the rule is: <strong>trust downwards from the top until you reach a server you do not recognise, and treat everything below that point as unverified.</strong> The first genuinely informative line is the one where your provider records who actually connected to it.</p>
+
+      <h2>The fields worth reading</h2>
+      <ul>
+        <li><strong><span style="font-family:var(--mono)">Authentication-Results:</span></strong>: the summary of SPF, DKIM and DMARC checks, written by your receiving server. This is the most valuable line in the header, and it is covered on its own below.</li>
+        <li><strong><span style="font-family:var(--mono)">Received:</span></strong>: one per hop, each naming the connecting host, its address, the receiving server and a timestamp. Read from the bottom, trust from the top.</li>
+        <li><strong><span style="font-family:var(--mono)">Return-Path:</span></strong>: the envelope sender, where bounces go. This is what SPF actually checks, and it is frequently a different domain from the one in the From line. A mismatch is normal for mailing lists and marketing platforms, and notable on a message claiming to be personal.</li>
+        <li><strong><span style="font-family:var(--mono)">From:</span></strong>: the display name and address you see in the client. Free text. This is the field being forged when a message impersonates someone.</li>
+        <li><strong><span style="font-family:var(--mono)">Reply-To:</span></strong>: where your reply is actually addressed. Set to an attacker-controlled mailbox, it turns a spoofed message into a working conversation, and most clients never show it.</li>
+        <li><strong><span style="font-family:var(--mono)">Message-ID:</span></strong>: a unique identifier generated by the sending system, usually ending in the sending domain. A Message-ID whose domain has nothing to do with the claimed sender is a weak but real signal.</li>
+        <li><strong><span style="font-family:var(--mono)">Date:</span></strong>: set by the sender's machine, and therefore no better than the sender. Compare it against the timestamps in the Received chain, which were written by servers.</li>
+        <li><strong><span style="font-family:var(--mono)">DKIM-Signature:</span></strong>: the signature block. Read <span style="font-family:var(--mono)">d=</span> for the signing domain and <span style="font-family:var(--mono)">s=</span> for the selector; the signing domain is the identity DKIM actually vouches for.</li>
+        <li><strong><span style="font-family:var(--mono)">X-</span> headers</strong>: non-standard fields added by mail servers, filters and sending platforms. They frequently name the bulk-mail provider, the spam score assigned, and occasionally the campaign the message belongs to.</li>
+        <li><strong><span style="font-family:var(--mono)">List-Unsubscribe:</span></strong>: present on legitimate bulk mail, and its absence on something claiming to be a newsletter is worth noticing.</li>
+      </ul>
+
+      <h2>The one line that settles most questions</h2>
+      <p>If you only read one thing, read <span style="font-family:var(--mono)">Authentication-Results</span>. It records what your provider concluded:</p>
+      <ul>
+        <li><strong><span style="font-family:var(--mono)">spf=pass</span></strong>: the connecting server was authorised to send for the envelope domain. Note: the envelope domain, which may not be the domain you can see.</li>
+        <li><strong><span style="font-family:var(--mono)">dkim=pass</span></strong>: the signature verified, so the message was not altered and the signing domain vouched for it.</li>
+        <li><strong><span style="font-family:var(--mono)">dmarc=pass</span></strong>: the important one. It means SPF or DKIM passed <em>and</em> was aligned with the domain in the visible From line. This is the check that ties what you see to what was proven.</li>
+      </ul>
+      <p>A message claiming to be from a major bank with <span style="font-family:var(--mono)">dmarc=fail</span> has answered your question. The mechanics of why are in the <a href="/guides/spf-dkim-dmarc-explained.html">email authentication guide</a>.</p>
+
+      <div class="callout">
+        <p><strong><span style="font-family:var(--mono)">dmarc=pass</span> does not mean the message is safe.</strong> It means the message genuinely came from the domain printed in the From line. A lookalike domain, one character different, or the brand name in front of an unrelated word, passes its own DMARC perfectly, because the attacker owns that domain and configured it properly. Authentication proves the domain; whether the domain is the right one is still a human judgement, and it is the judgement phishing is built to defeat.</p>
+      </div>
+
+      <h2>About the IP addresses</h2>
+      <p>The routine hope is that a header reveals where the sender was sitting. It usually does not.</p>
+      <p>Major webmail providers have for years stripped the originating address from outgoing mail, so the earliest address in the chain is the provider's own outbound relay, a data centre, shared by millions of users. Mail from a self-hosted server, some corporate systems and older desktop clients may still carry the real originating address, which is why it is worth looking even though the answer is usually a relay.</p>
+      <p>When you do have an address, read it for what it can support: the network, the operator, whether it is hosting or residential, and the reverse DNS name. It identifies a connection at a moment, not a person, the reasoning is set out in <a href="/guides/ip-geolocation-reverse-dns.html">the IP guide</a>.</p>
+
+      <h2>A reading order</h2>
+      <ol>
+        <li><strong>Read <span style="font-family:var(--mono)">Authentication-Results</span> first.</strong> A DMARC failure on a message impersonating a known brand ends the analysis.</li>
+        <li><strong>Compare From, Return-Path and Reply-To.</strong> Three different domains on a supposedly personal message is the classic spoofing shape.</li>
+        <li><strong>Check the DKIM <span style="font-family:var(--mono)">d=</span> domain</strong> against the brand being claimed.</li>
+        <li><strong>Walk the Received chain from the top</strong> until you reach a server you do not recognise, and stop trusting there.</li>
+        <li><strong>Compare the Date header against the server timestamps.</strong> A large discrepancy means the sender's clock was wrong, deliberately or otherwise.</li>
+        <li><strong>Look at the earliest trustworthy address,</strong> and read it as a network rather than a location.</li>
+        <li><strong>Investigate the sending domain separately</strong>: registration age, DNS and mail posture, per <a href="/guides/investigate-a-domain.html">the domain investigation guide</a>.</li>
+      </ol>
+
+      <h2>What headers cannot tell you</h2>
+      <p>They cannot identify a person. At best they identify a domain that authenticated and a server that connected, both of which can be rented anonymously for the price of a coffee.</p>
+      <p>They also cannot detect the most dangerous category of all: a genuine message from a genuinely compromised mailbox. Thread hijacking, a reply arriving inside a conversation you were already having, from the real address, with the real history quoted, passes every check in the header because nothing about it is forged. Against that, headers are silent, and the only defence is the content and an out-of-band check on anything irreversible.</p>
+
+      <div class="callout">
+        <p><strong>Keep the original if it matters.</strong> Forward-as-attachment, or save the raw source to a file. Forwarding a message normally rewrites the headers, and a reported phishing message with its headers destroyed is far less useful to anyone investigating it.</p>
+      </div>
+
+      <div class="callout">
+        <p>Check the sending domain's live SPF, DMARC and DNS records with the <a href="/#tool">MyRecon domain tool</a>.</p>
+      </div>
+
+      <h2>Questions people ask</h2>
+      <h3>Can I find the sender's real IP address in an email header?</h3>
+      <p>Usually not. Major webmail providers have stripped the sender's own address from outgoing headers for years, so the earliest address you see is typically the provider's outbound server. Mail from a self-hosted server or an older client may still expose it.</p>
+
+      <h3>Which header fields can be forged?</h3>
+      <p>All of the ones the sender writes: From, Reply-To, Date, Message-ID, and any Received lines added before the message reached a server you trust. The only trustworthy parts are the headers your own provider added, at the top.</p>
+
+      <h3>What does dmarc=pass actually mean?</h3>
+      <p>That the domain shown in the From line matched a domain that genuinely authenticated, via SPF or DKIM. It confirms the message really came from that domain. It says nothing about whether the domain is honest, a lookalike domain passes its own DMARC perfectly.</p>
+
+      <h3>Where do I find the full headers?</h3>
+      <p>It varies by client, but the wording is similar: show original, view source, or message details. Web clients usually put it in the menu beside the reply button; desktop clients under a view or properties menu.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dread_an_email_header" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/spf-dkim-dmarc-explained.html">what SPF, DKIM and DMARC actually check</a></li>
+        <li><a href="/guides/how-to-spot-phishing.html">spotting a phishing message without opening the headers</a></li>
+        <li><a href="/guides/investigate-a-domain.html">investigating the domain a message came from</a></li>
+        <li><a href="/guides/ip-geolocation-reverse-dns.html">what the addresses in a header do and do not reveal</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

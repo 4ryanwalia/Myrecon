@@ -1,6 +1,6 @@
 """
 ╔══════════════════════════════════════════════════════════════╗
-║  Reverse Image Search — Google Custom Search API             ║
+║  Reverse Image Search, Google Custom Search API             ║
 ║  Uses searchType=image to find visually similar images       ║
 ║  and their source pages for OSINT correlation                ║
 ╚══════════════════════════════════════════════════════════════╝
@@ -31,7 +31,7 @@ class ReverseImageSearch:
 
     def __init__(self, api_key: str = "", cx_id: str = "", delay: float = 0.5):
         import os
-        # Keys come only from the caller or the environment — never hardcoded.
+        # Keys come only from the caller or the environment, never hardcoded.
         self.api_key = api_key or os.environ.get("GOOGLE_API_KEY", "")
         self.cx_id = cx_id or os.environ.get("GOOGLE_CX_ID", "")
         self.delay = delay
@@ -213,11 +213,11 @@ class ReverseImageSearch:
         is_url = image_input.startswith("http://") or image_input.startswith("https://")
 
         if not is_url:
-            # Local file — we can't directly reverse-search a local file via API
+            # Local file, we can't directly reverse-search a local file via API
             if callback:
                 callback(
                     module="Reverse Image",
-                    message="Local file detected — upload to an image host first for best results",
+                    message="Local file detected, upload to an image host first for best results",
                     progress=0, results=[],
                 )
             # Try keyword extraction from filename
@@ -272,7 +272,7 @@ class ReverseImageSearch:
                 if callback:
                     callback(
                         module="Reverse Image",
-                        message="Cannot extract keywords from filename — provide an image URL instead",
+                        message="Cannot extract keywords from filename, provide an image URL instead",
                         progress=100, results=[],
                     )
 
@@ -370,7 +370,7 @@ class ReverseImageSearch:
         if callback:
             callback(
                 module="Reverse Image",
-                message=f"Reverse image search complete — {len(unique)} unique results",
+                message=f"Reverse image search complete, {len(unique)} unique results",
                 progress=100, results=[],
             )
 

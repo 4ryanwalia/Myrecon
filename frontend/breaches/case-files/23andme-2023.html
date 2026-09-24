@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="23andMe Breach 2023: How 6.9 Million Were Exposed">
   <meta name="twitter:description" content="Attackers logged into 14,000 accounts with recycled passwords. A feature that connects relatives then exposed 6.9 million people who had done nothing wrong.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"23andMe, 2023: 14,000 accounts opened the door to 6.9 million people","description":"Attackers logged into 14,000 accounts with recycled passwords. A feature that connects relatives then exposed 6.9 million people who had done nothing wrong.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/23andme-2023.html","articleSection":"Case Files","about":{"@type":"Thing","name":"23andMe credential stuffing breach"},"wordCount":908}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"23andMe credential stuffing breach","item":"https://www.myrecon.xyz/breaches/case-files/23andme-2023.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was 23andMe hacked?","acceptedAnswer":{"@type":"Answer","text":"Not in the sense of a system being breached. Attackers logged into roughly 14,000 individual accounts using email and password pairs recycled from other companies' breaches — credential stuffing. The accounts worked because those customers had reused passwords and had not turned on two-factor authentication."}},{"@type":"Question","name":"How did 14,000 accounts become 6.9 million people?","acceptedAnswer":{"@type":"Answer","text":"Through DNA Relatives, an opt-in feature that shows you other users who share DNA with you, along with their display name, relationship estimate and profile details. Once inside one account, an attacker could see everyone matched to it. Multiply across thousands of accounts and the exposure compounds far beyond the accounts actually compromised."}},{"@type":"Question","name":"Was raw genetic data stolen?","acceptedAnswer":{"@type":"Answer","text":"Not raw sequence data. What was exposed was profile information and the derived results: ancestry composition, ethnicity estimates, birth years, locations, and how users were related to one another. That is still genetic information about a person, and it is not information they can change."}},{"@type":"Question","name":"Why was the ethnicity data particularly serious?","acceptedAnswer":{"@type":"Answer","text":"Because of how it was used. Subsets of the stolen data were advertised specifically as lists of people with Ashkenazi Jewish ancestry and of people with Chinese ancestry. A dataset organised by ethnicity, with names and locations attached, is a targeting list, and that is why this breach is discussed in terms of physical safety rather than fraud."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was 23andMe hacked?","acceptedAnswer":{"@type":"Answer","text":"Not in the sense of a system being breached. Attackers logged into roughly 14,000 individual accounts using email and password pairs recycled from other companies' breaches, credential stuffing. The accounts worked because those customers had reused passwords and had not turned on two-factor authentication."}},{"@type":"Question","name":"How did 14,000 accounts become 6.9 million people?","acceptedAnswer":{"@type":"Answer","text":"Through DNA Relatives, an opt-in feature that shows you other users who share DNA with you, along with their display name, relationship estimate and profile details. Once inside one account, an attacker could see everyone matched to it. Multiply across thousands of accounts and the exposure compounds far beyond the accounts actually compromised."}},{"@type":"Question","name":"Was raw genetic data stolen?","acceptedAnswer":{"@type":"Answer","text":"Not raw sequence data. What was exposed was profile information and the derived results: ancestry composition, ethnicity estimates, birth years, locations, and how users were related to one another. That is still genetic information about a person, and it is not information they can change."}},{"@type":"Question","name":"Why was the ethnicity data particularly serious?","acceptedAnswer":{"@type":"Answer","text":"Because of how it was used. Subsets of the stolen data were advertised specifically as lists of people with Ashkenazi Jewish ancestry and of people with Chinese ancestry. A dataset organised by ethnicity, with names and locations attached, is a targeting list, and that is why this breach is discussed in terms of physical safety rather than fraud."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,23 +76,23 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Profile photos · Birth years · Locations · Ancestry and ethnicity estimates · Relationship labels between matched relatives</p>
 
-<p class="lead">Nobody broke into 23andMe. Attackers logged in — to about 14,000 accounts, using email and password pairs recycled from other companies' breaches. Because of one feature designed to connect relatives, those 14,000 logins exposed the profile data of roughly 6.9 million people, almost none of whom had done anything wrong.</p>
+<p class="lead">Nobody broke into 23andMe. Attackers logged in, to about 14,000 accounts, using email and password pairs recycled from other companies' breaches. Because of one feature designed to connect relatives, those 14,000 logins exposed the profile data of roughly 6.9 million people, almost none of whom had done anything wrong.</p>
 
 <h2>What happened</h2>
 
 <p>From April 2023, attackers ran credential stuffing against 23andMe: automated login attempts using pairs harvested from unrelated breaches, on the reliable assumption that a percentage of people reuse passwords. Around 14,000 accounts accepted them.</p>
 
-<p>That alone would have been a minor incident. What made it a major one was DNA Relatives — an opt-in feature that shows a user other customers who share DNA with them, along with display names, relationship estimates, locations, birth years and ancestry results.</p>
+<p>That alone would have been a minor incident. What made it a major one was DNA Relatives, an opt-in feature that shows a user other customers who share DNA with them, along with display names, relationship estimates, locations, birth years and ancestry results.</p>
 
 <div class="callout">
-  <p><strong>The amplification, in one sentence.</strong> Compromising one account exposes everyone that account can see. With a feature designed to connect you to hundreds of genetic relatives, 14,000 compromised accounts became 6.9 million exposed profiles — a multiplier of roughly 500. The people in that 6.9 million had strong passwords, two-factor authentication and good habits, and none of it mattered, because their exposure depended on a stranger's choices.</p>
+  <p><strong>The amplification, in one sentence.</strong> Compromising one account exposes everyone that account can see. With a feature designed to connect you to hundreds of genetic relatives, 14,000 compromised accounts became 6.9 million exposed profiles, a multiplier of roughly 500. The people in that 6.9 million had strong passwords, two-factor authentication and good habits, and none of it mattered, because their exposure depended on a stranger's choices.</p>
 </div>
 
 <p>The company became aware of the problem in October 2023, after data from the breach was advertised on a hacking forum. It required password resets and later made two-factor authentication mandatory for all accounts.</p>
 
 <h2>The ethnicity lists</h2>
 
-<p>This is the part that separates 23andMe from an ordinary credential-stuffing incident. The data advertised for sale was not offered as a generic dump. Subsets were promoted specifically as lists of people with Ashkenazi Jewish ancestry — around a million records — and of people with Chinese ancestry.</p>
+<p>This is the part that separates 23andMe from an ordinary credential-stuffing incident. The data advertised for sale was not offered as a generic dump. Subsets were promoted specifically as lists of people with Ashkenazi Jewish ancestry, around a million records, and of people with Chinese ancestry.</p>
 
 <p>A list of named people, with locations, organised by ethnic origin, is not a fraud resource. It is a targeting resource, and its appearance amid rising antisemitic violence was understood as such immediately. The harm model here is not financial loss; it is the possibility of someone being found.</p>
 
@@ -121,13 +122,13 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>April 2023</b> — Credential stuffing begins.</li>
-  <li><b>August–September 2023</b> — Bulk scraping through DNA Relatives continues largely undetected.</li>
-  <li><b>October 2023</b> — Data is advertised on a hacking forum, including ethnicity-specific subsets; 23andMe confirms the incident and forces password resets.</li>
-  <li><b>November 2023</b> — Two-factor authentication is made mandatory for all accounts.</li>
-  <li><b>December 2023</b> — The company confirms approximately 6.9 million profiles were affected.</li>
-  <li><b>2024</b> — A $30 million class settlement is agreed.</li>
-  <li><b>2025</b> — UK and Canadian regulators publish joint findings; the company enters bankruptcy proceedings.</li>
+  <li><b>April 2023</b>: Credential stuffing begins.</li>
+  <li><b>August–September 2023</b>: Bulk scraping through DNA Relatives continues largely undetected.</li>
+  <li><b>October 2023</b>: Data is advertised on a hacking forum, including ethnicity-specific subsets; 23andMe confirms the incident and forces password resets.</li>
+  <li><b>November 2023</b>: Two-factor authentication is made mandatory for all accounts.</li>
+  <li><b>December 2023</b>: The company confirms approximately 6.9 million profiles were affected.</li>
+  <li><b>2024</b>: A $30 million class settlement is agreed.</li>
+  <li><b>2025</b>: UK and Canadian regulators publish joint findings; the company enters bankruptcy proceedings.</li>
 </ol>
 
 <h2>What it changed</h2>
@@ -136,7 +137,7 @@
 
 <p><strong>Social features got reassessed for aggregation risk.</strong> Any feature that shows one user information about many others is now a recognised amplification vector, in genealogy, dating, fitness and social apps alike.</p>
 
-<p><strong>The question of data in insolvency became live.</strong> Regulators and legislators started asking what happens to sensitive datasets when the company holding them fails — a question the privacy framework of most countries answers badly.</p>
+<p><strong>The question of data in insolvency became live.</strong> Regulators and legislators started asking what happens to sensitive datasets when the company holding them fails, a question the privacy framework of most countries answers badly.</p>
 
 <h2>If you used a genetic testing service</h2>
 
@@ -157,13 +158,13 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>Was 23andMe hacked?</h3>
-        <p>Not in the sense of a system being breached. Attackers logged into roughly 14,000 individual accounts using email and password pairs recycled from other companies' breaches — credential stuffing. The accounts worked because those customers had reused passwords and had not turned on two-factor authentication.</p>
+        <p>Not in the sense of a system being breached. Attackers logged into roughly 14,000 individual accounts using email and password pairs recycled from other companies' breaches, credential stuffing. The accounts worked because those customers had reused passwords and had not turned on two-factor authentication.</p>
 
         <h3>How did 14,000 accounts become 6.9 million people?</h3>
         <p>Through DNA Relatives, an opt-in feature that shows you other users who share DNA with you, along with their display name, relationship estimate and profile details. Once inside one account, an attacker could see everyone matched to it. Multiply across thousands of accounts and the exposure compounds far beyond the accounts actually compromised.</p>
@@ -174,6 +175,18 @@
         <h3>Why was the ethnicity data particularly serious?</h3>
         <p>Because of how it was used. Subsets of the stolen data were advertised specifically as lists of people with Ashkenazi Jewish ancestry and of people with Chinese ancestry. A dataset organised by ethnicity, with names and locations attached, is a targeting list, and that is why this breach is discussed in terms of physical safety rather than fraud.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><b>Joint investigation findings of the UK Information Commissioner's Office and the Office of the Privacy Commissioner of Canada, 2025</b></li>
@@ -187,7 +200,7 @@
         <li><a href="/breaches/case-files/ashley-madison-2015.html">Ashley Madison, 2015: when the data itself was the weapon</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -203,5 +216,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

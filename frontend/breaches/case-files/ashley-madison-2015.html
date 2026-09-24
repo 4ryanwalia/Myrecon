@@ -4,51 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ashley Madison Hack 2015: What Was Leaked and Why | MyRecon</title>
-  <meta name="description" content="The Impact Team did not sell the Ashley Madison data. They published it — 32 million people, a paid deletion service that did not delete, and consequences…">
+  <meta name="description" content="The Impact Team did not sell the Ashley Madison data. They published it, 32 million people, a paid deletion service that did not delete, and consequences…">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Ashley Madison Hack 2015: What Was Leaked and Why">
-  <meta property="og:description" content="The Impact Team did not sell the Ashley Madison data. They published it — 32 million people, a paid deletion service that did not delete, and consequences…">
+  <meta property="og:description" content="The Impact Team did not sell the Ashley Madison data. They published it, 32 million people, a paid deletion service that did not delete, and consequences…">
   <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Ashley Madison Hack 2015: What Was Leaked and Why">
-  <meta name="twitter:description" content="The Impact Team did not sell the Ashley Madison data. They published it — 32 million people, a paid deletion service that did not delete, and consequences…">
+  <meta name="twitter:description" content="The Impact Team did not sell the Ashley Madison data. They published it, 32 million people, a paid deletion service that did not delete, and consequences…">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Ashley Madison, 2015: when the data itself was the weapon","description":"The Impact Team did not sell the Ashley Madison data. They published it — 32 million people, a paid deletion service that did not delete, and consequences measured in lives.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Ashley Madison data breach"},"wordCount":1089}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Ashley Madison, 2015: when the data itself was the weapon","description":"The Impact Team did not sell the Ashley Madison data. They published it, 32 million people, a paid deletion service that did not delete, and consequences measured in lives.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Ashley Madison data breach"},"wordCount":1089}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Ashley Madison data breach","item":"https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were Ashley Madison passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password — a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase."}},{"@type":"Question","name":"Did Ashley Madison really charge to delete data it kept?","acceptedAnswer":{"@type":"Answer","text":"It offered a paid \"full delete\" option, and regulators found that the deletion was not complete — payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case."}},{"@type":"Question","name":"Were all the accounts real people?","acceptedAnswer":{"@type":"Answer","text":"No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address — which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users."}},{"@type":"Question","name":"Was anyone caught?","acceptedAnswer":{"@type":"Answer","text":"No. The Impact Team was never identified, and no charges were ever brought. The company's chief executive resigned, the business was renamed Ruby Corp, and Ashley Madison continues to operate."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were Ashley Madison passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password, a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase."}},{"@type":"Question","name":"Did Ashley Madison really charge to delete data it kept?","acceptedAnswer":{"@type":"Answer","text":"It offered a paid \"full delete\" option, and regulators found that the deletion was not complete, payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case."}},{"@type":"Question","name":"Were all the accounts real people?","acceptedAnswer":{"@type":"Answer","text":"No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address, which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users."}},{"@type":"Question","name":"Was anyone caught?","acceptedAnswer":{"@type":"Answer","text":"No. The Impact Team was never identified, and no charges were ever brought. The company's chief executive resigned, the business was renamed Ruby Corp, and Ashley Madison continues to operate."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,17 +76,17 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Email addresses · Home addresses · Partial card data and transaction records · Sexual preferences stated on profiles · bcrypt password hashes, plus a weak legacy token</p>
 
-<p class="lead">Every other case file here is about data being stolen for money. Ashley Madison is the one where the data was taken in order to be published, by people who wanted the exposure itself to be the punishment — and it is the clearest demonstration that the harm from a breach is not always fraud. Sometimes it is simply that someone now knows.</p>
+<p class="lead">Every other case file here is about data being stolen for money. Ashley Madison is the one where the data was taken in order to be published, by people who wanted the exposure itself to be the punishment, and it is the clearest demonstration that the harm from a breach is not always fraud. Sometimes it is simply that someone now knows.</p>
 
 <h2>What happened</h2>
 
-<p>On 19 July 2015, visitors to Ashley Madison — a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media — were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently. This was not a ransom in the usual sense: there was no price. The demand was that the business cease to exist.</p>
+<p>On 19 July 2015, visitors to Ashley Madison, a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media, were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently. This was not a ransom in the usual sense: there was no price. The demand was that the business cease to exist.</p>
 
 <p>Avid Life Media did not comply. On 18 and 20 August, the attackers published, in two releases: roughly 32 million user records, internal company documents, source code, and the chief executive's email archive. It was posted openly and mirrored instantly. Within days, searchable web front-ends existed for anyone to check a name or an email address.</p>
 
 <h2>The password story</h2>
 
-<p>Ashley Madison did something most breached companies of that era did not: it stored passwords with bcrypt at a high cost factor. That is real, correct password hashing — slow by design, salted per user, resistant to large-scale cracking. For a few weeks after the dump, the passwords held.</p>
+<p>Ashley Madison did something most breached companies of that era did not: it stored passwords with bcrypt at a high cost factor. That is real, correct password hashing, slow by design, salted per user, resistant to large-scale cracking. For a few weeks after the dump, the passwords held.</p>
 
 <div class="callout">
   <p><strong>Then the second copy was found.</strong> Researchers working through the leaked source code found a legacy authentication token that had been generated from an MD5 hash of the username and password, lowercased. MD5 is fast and the token was effectively a weaker duplicate of the same secret. Around 11 million passwords fell almost immediately. The lesson is one that recurs in modern breaches: your password storage is only as strong as the weakest place that secret exists in your system, including the old code path nobody remembers.</p>
@@ -95,7 +96,7 @@
 
 <p>Two findings from the joint Canadian and Australian privacy investigation stand out, because neither is about hackers.</p>
 
-<p><strong>The paid deletion that did not delete.</strong> Ashley Madison sold a "full delete" option: pay a fee, and your profile and data are removed. Regulators found the deletion was incomplete — the company retained information, including payment records, after taking money to erase it. Selling a privacy promise you do not keep converts a security incident into a deception case.</p>
+<p><strong>The paid deletion that did not delete.</strong> Ashley Madison sold a "full delete" option: pay a fee, and your profile and data are removed. Regulators found the deletion was incomplete, the company retained information, including payment records, after taking money to erase it. Selling a privacy promise you do not keep converts a security incident into a deception case.</p>
 
 <p><strong>The fabricated trust mark.</strong> The site displayed a security award icon that no one had awarded it. Investigators found it had been created in-house. It is a small detail that tells you a great deal about how seriously the underlying controls were taken.</p>
 
@@ -103,7 +104,7 @@
 
 <h2>The human cost</h2>
 
-<p>This is the part that separates Ashley Madison from every other entry in this archive. Within days of publication, extortion emails began arriving at addresses in the file — pay, or your spouse, employer and contacts get told. Some of the recipients had never used the service. It did not matter, because the accusation was the weapon.</p>
+<p>This is the part that separates Ashley Madison from every other entry in this archive. Within days of publication, extortion emails began arriving at addresses in the file, pay, or your spouse, employer and contacts get told. Some of the recipients had never used the service. It did not matter, because the accusation was the weapon.</p>
 
 <p>In Canada, police investigating the case reported suicides connected to the leak. A police captain in San Antonio took his own life days after the data appeared. Divorces, resignations and family breakdowns followed through the rest of the year, and in countries where same-sex relationships or adultery are criminalised, the exposure carried legal danger rather than social embarrassment.</p>
 
@@ -112,19 +113,19 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>19 July 2015</b> — The Impact Team announces the breach and demands the site be shut down.</li>
-  <li><b>18 and 20 August</b> — Around 32 million user records, internal documents and the CEO's emails are published.</li>
-  <li><b>Late August</b> — Extortion emails begin; searchable lookup sites appear; the first reported suicides.</li>
-  <li><b>28 August</b> — Chief executive Noel Biderman leaves the company.</li>
-  <li><b>September 2015</b> — Researchers recover roughly 11 million passwords through the legacy MD5 token.</li>
-  <li><b>August 2016</b> — Canadian and Australian privacy commissioners publish joint findings: inadequate security framework, retained data after paid deletion, a fabricated security trust mark.</li>
-  <li><b>December 2016</b> — FTC and 13 states settle for $1.6 million against a suspended $17.5 million judgment.</li>
-  <li><b>2017</b> — An $11.2 million class-action settlement is approved in the United States.</li>
+  <li><b>19 July 2015</b>: The Impact Team announces the breach and demands the site be shut down.</li>
+  <li><b>18 and 20 August</b>: Around 32 million user records, internal documents and the CEO's emails are published.</li>
+  <li><b>Late August</b>: Extortion emails begin; searchable lookup sites appear; the first reported suicides.</li>
+  <li><b>28 August</b>: Chief executive Noel Biderman leaves the company.</li>
+  <li><b>September 2015</b>: Researchers recover roughly 11 million passwords through the legacy MD5 token.</li>
+  <li><b>August 2016</b>: Canadian and Australian privacy commissioners publish joint findings: inadequate security framework, retained data after paid deletion, a fabricated security trust mark.</li>
+  <li><b>December 2016</b>: FTC and 13 states settle for $1.6 million against a suspended $17.5 million judgment.</li>
+  <li><b>2017</b>: An $11.2 million class-action settlement is approved in the United States.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p><strong>Sensitivity entered the risk calculation properly.</strong> Before Ashley Madison, breach severity was largely measured in identity-theft terms: how many card numbers, how many national identifiers. This case forced a second axis — what does this data imply about a person, and what happens to them if it is published? That axis now drives how health data, sexual-orientation data and location history are classified, and it is why the <a href="/breaches/">breach archive</a> weights those fields the way it does.</p>
+<p><strong>Sensitivity entered the risk calculation properly.</strong> Before Ashley Madison, breach severity was largely measured in identity-theft terms: how many card numbers, how many national identifiers. This case forced a second axis, what does this data imply about a person, and what happens to them if it is published? That axis now drives how health data, sexual-orientation data and location history are classified, and it is why the <a href="/breaches/">breach archive</a> weights those fields the way it does.</p>
 
 <p><strong>Deletion became auditable.</strong> "Delete my account" stopped being a UI affordance and became a claim regulators will test. The right to erasure written into the GDPR two years later has a very similar shape to the finding against Avid Life Media.</p>
 
@@ -136,7 +137,7 @@
   <li><strong>Presence in the file is not proof of use.</strong> Addresses were never verified. Anyone reading the dump as a membership list is reading it wrong.</li>
   <li><strong>Do not pay extortion demands.</strong> The data has been public for a decade; payment buys nothing and marks you as responsive. Report the attempt to your national cybercrime reporting service.</li>
   <li><strong>Change any password used there, and anywhere it was reused.</strong> Eleven million were recovered from the weak token path.</li>
-  <li><strong>Think about what else you have signed up to under your real address.</strong> The general lesson of this case is that a service's discretion policy does not survive its database being published — see <a href="/guides/reduce-your-digital-footprint.html">how to find and shrink what is already out there</a>.</li>
+  <li><strong>Think about what else you have signed up to under your real address.</strong> The general lesson of this case is that a service's discretion policy does not survive its database being published, see <a href="/guides/reduce-your-digital-footprint.html">how to find and shrink what is already out there</a>.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -149,26 +150,38 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>Were Ashley Madison passwords cracked?</h3>
-        <p>Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password — a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase.</p>
+        <p>Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password, a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase.</p>
 
         <h3>Did Ashley Madison really charge to delete data it kept?</h3>
-        <p>It offered a paid "full delete" option, and regulators found that the deletion was not complete — payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case.</p>
+        <p>It offered a paid "full delete" option, and regulators found that the deletion was not complete, payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case.</p>
 
         <h3>Were all the accounts real people?</h3>
-        <p>No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address — which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users.</p>
+        <p>No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address, which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users.</p>
 
         <h3>Was anyone caught?</h3>
         <p>No. The Impact Team was never identified, and no charges were ever brought. The company's chief executive resigned, the business was renamed Ruby Corp, and Ashley Madison continues to operate.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://www.ftc.gov/news-events/news/press-releases/2016/12/operators-ashleymadisoncom-settle-ftc-state-charges-resulting-massive-data-breach" target="_blank" rel="noopener nofollow">Federal Trade Commission — Ashley Madison settlement, December 2016</a></li>
+        <li><a href="https://www.ftc.gov/news-events/news/press-releases/2016/12/operators-ashleymadisoncom-settle-ftc-state-charges-resulting-massive-data-breach" target="_blank" rel="noopener nofollow">Federal Trade Commission, Ashley Madison settlement, December 2016</a></li>
         <li><b>Joint report of the Privacy Commissioner of Canada and the Australian Privacy Commissioner, August 2016</b></li>
         <li><b>CynoSure Prime analysis of the legacy login token, September 2015</b></li>
       </ul>
@@ -179,7 +192,7 @@
         <li><a href="/breaches/case-files/sony-pictures-2014.html">Sony Pictures, 2014: the breach that destroyed the computers on the way out</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -195,5 +208,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   "subject": "Twitter API data exposure",
   "kicker": "2022 · Social network",
   "description": "A bug let anyone submit an email address or phone number and be told which Twitter account it belonged to. For pseudonymous users, that is the whole threat model.",
-  "cardBlurb": "The damage was not stolen passwords. It was the link between a real identity and an anonymous account — which cannot be undone.",
+  "cardBlurb": "The damage was not stolen passwords. It was the link between a real identity and an anonymous account, which cannot be undone.",
   "records": "5.4 million accounts confirmed; a larger compilation circulated later",
   "peopleCount": 5400000,
   "occurred": "June 2021 – January 2022",
@@ -26,7 +26,7 @@
   ],
   "sources": [
     { "label": "Twitter security incident statement, August 2022" },
-    { "label": "Irish Data Protection Commission — announcement of inquiry, December 2022" },
+    { "label": "Irish Data Protection Commission, announcement of inquiry, December 2022" },
     { "label": "HackerOne report and researcher disclosure, January 2022" }
   ]
 }
@@ -35,14 +35,14 @@
 
 <h2>What happened</h2>
 
-<p>A change introduced to a Twitter API in June 2021 meant that an email address or phone number submitted to a particular endpoint would return the account associated with it. Contact-matching features work this way by design — it is how "find your friends" works — but exposing it in this form, at scale and without adequate limits, turns it into a lookup service.</p>
+<p>A change introduced to a Twitter API in June 2021 meant that an email address or phone number submitted to a particular endpoint would return the account associated with it. Contact-matching features work this way by design, it is how "find your friends" works, but exposing it in this form, at scale and without adequate limits, turns it into a lookup service.</p>
 
 <p>A researcher reported the flaw through Twitter's bug bounty programme in January 2022 and was paid; the flaw was fixed. Before that, however, someone had used it to build a dataset.</p>
 
 <p>In July 2022 a file covering 5.4 million accounts was offered for sale. Twitter confirmed the vulnerability and the resulting exposure in August. The data was later published freely, and in early 2023 a much larger compilation circulated, which analyses suggested was substantially the same extraction combined with other scraped material rather than a fresh breach.</p>
 
 <div class="callout">
-  <p><strong>Enumeration is a category, not an accident.</strong> Any function that answers "does an account exist for this identifier?" can be turned into a directory by someone willing to ask enough times. The same failure produced the <a href="/breaches/case-files/facebook-scrape-2021.html">533 million Facebook records</a>. The fix is never to remove the feature; it is to make bulk use expensive — rate limits per identity rather than per address, anomaly detection on query patterns, and returning answers that do not confirm existence to unauthenticated callers.</p>
+  <p><strong>Enumeration is a category, not an accident.</strong> Any function that answers "does an account exist for this identifier?" can be turned into a directory by someone willing to ask enough times. The same failure produced the <a href="/breaches/case-files/facebook-scrape-2021.html">533 million Facebook records</a>. The fix is never to remove the feature; it is to make bulk use expensive, rate limits per identity rather than per address, anomaly detection on query patterns, and returning answers that do not confirm existence to unauthenticated callers.</p>
 </div>
 
 <h2>Why deanonymisation is a different kind of harm</h2>
@@ -63,7 +63,7 @@
 
 <h2>What it changed</h2>
 
-<p><strong>Enumeration protections became standard.</strong> Platforms reviewed every endpoint that confirms an identifier resolves to an account — registration forms, password reset flows, contact matching — and moved to responses that do not distinguish between existing and non-existing accounts.</p>
+<p><strong>Enumeration protections became standard.</strong> Platforms reviewed every endpoint that confirms an identifier resolves to an account, registration forms, password reset flows, contact matching, and moved to responses that do not distinguish between existing and non-existing accounts.</p>
 
 <p><strong>Pseudonymity got treated as a security property.</strong> It had often been framed as a nuisance in policy debates about real-name requirements. This case forced a clearer articulation of what pseudonymity protects and who relies on it, and it fed directly into European regulatory scrutiny of platform design.</p>
 
@@ -73,7 +73,7 @@
 
 <ol class="bx-actions">
   <li><strong>Register it with an address and number that are not linked to your name.</strong> A dedicated email address used for nothing else is the single most effective separation available.</li>
-  <li><strong>Do not attach a phone number you use elsewhere.</strong> Where two-factor authentication is required, use an authenticator app rather than SMS — <a href="/guides/two-factor-authentication.html">the practical differences</a>.</li>
+  <li><strong>Do not attach a phone number you use elsewhere.</strong> Where two-factor authentication is required, use an authenticator app rather than SMS, <a href="/guides/two-factor-authentication.html">the practical differences</a>.</li>
   <li><strong>Assume the link can be made and plan for it.</strong> If being identified would be dangerous, treat the account as potentially identifiable and post accordingly.</li>
-  <li><strong>Audit what your accounts already reveal about each other</strong> — reused handles, profile photos, writing style and posting times all link identities without any API assistance — <a href="/guides/username-osint-search.html">how that correlation actually works</a>.</li>
+  <li><strong>Audit what your accounts already reveal about each other</strong>: reused handles, profile photos, writing style and posting times all link identities without any API assistance, <a href="/guides/username-osint-search.html">how that correlation actually works</a>.</li>
 </ol>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build a Data Breach Monitor With a Free API | MyRecon</title>
+  <meta name="description" content="A working breach monitor in about forty lines of Python, using a free keyless JSON API. Polling, change detection, alerting, and the mistakes that make one useless.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/build-a-breach-monitor.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Build a Data Breach Monitor With a Free API">
+  <meta property="og:description" content="A working breach monitor in about forty lines of Python, using a free keyless JSON API. Polling, change detection, alerting, and the mistakes that make one useless.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/build-a-breach-monitor.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Build a Data Breach Monitor With a Free API">
+  <meta name="twitter:description" content="A working breach monitor in about forty lines of Python, using a free keyless JSON API.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"TechArticle","headline":"Build a Data Breach Monitor With a Free API","description":"A working breach monitor in about forty lines of Python, using a free keyless JSON API. Polling, change detection, alerting, and the mistakes that make one useless.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-21","dateModified":"2026-09-21","proficiencyLevel":"Beginner","dependencies":"Python 3.8+, standard library only","mainEntityOfPage":"https://www.myrecon.xyz/guides/build-a-breach-monitor.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Build a Data Breach Monitor With a Free API","item":"https://www.myrecon.xyz/guides/build-a-breach-monitor.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is there a free data breach API with no key?","acceptedAnswer":{"@type":"Answer","text":"Yes. MyRecon publishes its breach archive as versioned static JSON at /data/v1/ with no account, no API key and no rate limit beyond fair use, with CORS enabled so browser JavaScript can call it directly. The data originates from Have I Been Pwned under CC BY 4.0, so attribution to Have I Been Pwned is required if you publish it."}},{"@type":"Question","name":"How often should a breach monitor poll?","acceptedAnswer":{"@type":"Answer","text":"Once or twice a day is enough. The archive rebuilds daily, so polling every minute returns the identical payload hundreds of times and finds nothing a daily check would miss. Read the generated field in the response to see whether the data actually changed before doing any work."}},{"@type":"Question","name":"Can I monitor a specific email address for breaches with this API?","acceptedAnswer":{"@type":"Answer","text":"No. This API serves breach metadata, which incidents happened and what was exposed, and holds no personal records, so it cannot be queried by email address. For per-address checking use Have I Been Pwned's own API, which is built for it. A monitor built on metadata alerts you that an incident happened at a service you use, which you then act on yourself."}},{"@type":"Question","name":"What is the most common mistake when building a breach monitor?","acceptedAnswer":{"@type":"Answer","text":"Alerting on everything. A monitor that fires on every new record in the archive gets muted within a week, at which point it is worse than no monitor because it creates a false sense of coverage. Filter to what you actually care about, the domains you use, or a severity threshold, before you send anything."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Build</span>
+      <h1>Build a Data Breach Monitor With a Free API</h1>
+      <p class="meta">Published 21 September 2026 · 9 min read · Python 3.8+, standard library only</p>
+
+      <p class="lead">A breach monitor is a small program: fetch a list, compare it to the last one you saw, tell someone about the difference. The hard part is not the code, it is deciding what deserves an alert, because a monitor that cries wolf gets muted, and a muted monitor is worse than none at all. Here is a working one, and the reasoning behind each decision in it.</p>
+
+      <section class="key-finding">
+        <h2>What you need</h2>
+        <p><strong>No API key, no account, no signup.</strong> This uses <a href="/developers.html">MyRecon's public data API</a>: static JSON on a CDN, rebuilt daily, CORS enabled, free under CC BY 4.0.</p>
+        <p class="method">Python 3.8 or newer with the standard library. No packages to install. The whole monitor is about forty lines.</p>
+      </section>
+
+      <h2>Step 1: see what you are working with</h2>
+      <pre><code>curl -s https://www.myrecon.xyz/data/v1/latest.json</code></pre>
+      <p>The envelope is the same on every endpoint, <code>api_version</code>, <code>generated</code>, <code>licence</code>, <code>attribution</code>: and then the payload. A breach record carries a <code>slug</code> (your stable key), a <code>band</code> (<code>Severe</code>, <code>Serious</code>, <code>Moderate</code>), an <code>accounts</code> count, a <code>domain</code>, and <code>data_classes</code> listing what was exposed.</p>
+      <p>The full field reference is on the <a href="/developers.html">API page</a>. Three fields do most of the work in a monitor: <code>slug</code>, <code>added_date</code> and <code>band</code>.</p>
+
+      <h2>Step 2: the monitor</h2>
+      <p>Save this as <code>breach_monitor.py</code>. It keeps a small state file of slugs it has already reported, so it only tells you about genuinely new entries.</p>
+      <pre><code>#!/usr/bin/env python3
+"""Alert on new breaches at domains I care about."""
+
+import json
+import pathlib
+import urllib.request
+
+API   = "https://www.myrecon.xyz/data/v1/breaches.json"
+STATE = pathlib.Path("seen_breaches.json")
+
+# The domains you actually have accounts with. An empty set means
+# "tell me about everything", which you will regret by Thursday.
+WATCH = {"linkedin.com", "dropbox.com", "adobe.com"}
+
+# Alert on anything this severe regardless of the watch list.
+MIN_BAND = {"Severe"}
+
+
+def fetch():
+    req = urllib.request.Request(API, headers={"User-Agent": "breach-monitor/1.0"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.load(r)
+
+
+def load_seen():
+    if not STATE.exists():
+        return set()
+    return set(json.loads(STATE.read_text()))
+
+
+def save_seen(seen):
+    STATE.write_text(json.dumps(sorted(seen)))
+
+
+def interesting(b):
+    return b.get("domain") in WATCH or b.get("band") in MIN_BAND
+
+
+def main():
+    data = fetch()
+    seen = load_seen()
+
+    # First run: record everything and alert on nothing. Otherwise the
+    # first execution pages you about eight years of history.
+    first_run = not seen
+
+    new = [b for b in data["breaches"]
+           if b["slug"] not in seen and interesting(b)]
+
+    for b in data["breaches"]:
+        seen.add(b["slug"])
+    save_seen(seen)
+
+    if first_run:
+        print(f"Baseline recorded: {len(seen)} breaches known. No alerts sent.")
+        return
+
+    for b in sorted(new, key=lambda x: x.get("added_date", "")):
+        print(f"[{b['band']}] {b['title']} - {b.get('accounts', 0):,} accounts")
+        print(f"    exposed: {', '.join(b.get('data_classes', [])[:5])}")
+        print(f"    {b['url']}")
+
+    if not new:
+        print(f"Nothing new. Archive generated {data['generated']}.")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+
+      <p>Run it once to take a baseline, then on a schedule:</p>
+      <pre><code>python breach_monitor.py            # first run: records, alerts nothing
+crontab -e                          # then, daily at 09:00
+0 9 * * * /usr/bin/python3 /path/to/breach_monitor.py</code></pre>
+
+      <h2>Step 3: the decisions that matter</h2>
+
+      <h3>Alert on less than you think</h3>
+      <p>The instinct is to alert on every new record. Resist it. A monitor that fires constantly gets muted within a week, and a muted monitor is <em>worse</em> than no monitor, because you believe you have coverage you do not have.</p>
+      <p>The <code>WATCH</code> set and <code>MIN_BAND</code> above are the whole point. Alert on the services you actually use, plus anything severe enough to be worth knowing regardless. Everything else can wait for you to go and look.</p>
+
+      <h3>Handle the first run separately</h3>
+      <p>Without the <code>first_run</code> branch, the first execution treats eight years of archive as breaking news and sends you several hundred alerts. Every monitor ever written has made this mistake once. Take a silent baseline, then alert on the delta.</p>
+
+      <h3>Poll daily, not hourly</h3>
+      <p>The archive rebuilds once a day. Polling every minute fetches the identical bytes fourteen hundred times and finds nothing a daily check would miss. Read <code>generated</code> and skip the work entirely if it has not moved:</p>
+      <pre><code>if data["generated"] == last_generated:
+    return          # nothing rebuilt since we last looked</code></pre>
+
+      <h3>Fail loudly at yourself, quietly at your users</h3>
+      <p>If the fetch fails, the monitor should complain in its own logs, but if this runs on a page other people see, render nothing rather than an error. A visitor to your site should never learn that a third-party feed you chose is having a bad day.</p>
+
+      <h3>Cache on your side</h3>
+      <p>If you are serving a page, fetch on a schedule into your own store and render from that. Do not call an upstream API per page view: it is slower for your users, it breaks when the upstream does, and it is the behaviour that gets free services rate-limited for everyone.</p>
+
+      <div class="callout">
+        <p><strong>Keep <code>verified</code>.</strong> Some records are unverified, nobody has confirmed the corpus is genuine. If your monitor drops that field, an unconfirmed claim reaches your users looking exactly like a confirmed incident. If your alert has room for one flag, make it this one.</p>
+      </div>
+
+      <h2>Step 4: putting it on a page</h2>
+      <p>If what you want is a breach list on your site rather than an alert in your terminal, the widget does the rendering for you:</p>
+      <pre><code>&lt;div id="myrecon-breaches"&gt;&lt;/div&gt;
+&lt;script src="https://www.myrecon.xyz/assets/js/embed.js"
+        data-count="5" data-theme="auto" async&gt;&lt;/script&gt;</code></pre>
+      <p>It renders inside a shadow root, so your CSS cannot break it and it cannot leak into your page. It sets no cookies and stores nothing. And it draws the attribution itself, which matters, see below.</p>
+      <p>Or fetch it yourself in the browser, since CORS is open:</p>
+      <pre><code>const r = await fetch("https://www.myrecon.xyz/data/v1/latest.json");
+const { breaches } = await r.json();
+document.querySelector("#list").textContent =
+  breaches.map(b =&gt; `${b.title} (${b.band})`).join("\n");</code></pre>
+
+      <h2>What this cannot do</h2>
+      <p>This API serves breach <strong>metadata</strong>: which incidents happened, what was exposed, how severe. <strong>It holds no personal records and cannot be queried by email address.</strong> A monitor built on it tells you "a service you use was breached", which you then act on. It cannot tell you "your address appeared in this dump".</p>
+      <p>That is a deliberate boundary, not a gap. Per-address checking has entirely different privacy implications and belongs behind consent, not on an open endpoint. If you need it programmatically, <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener">HIBP's API</a> is built for exactly that.</p>
+
+      <h2>Attribution</h2>
+      <p>The data is Have I Been Pwned's, licensed <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. If your monitor is private, nothing is required. <strong>If you publish the data, a dashboard, a site, a bot others read, attribution is a condition of the licence</strong>, and it is owed to Have I Been Pwned, not to us. One line does it:</p>
+      <pre><code>Breach data from Have I Been Pwned (CC BY 4.0), via MyRecon.</code></pre>
+      <p>Every payload carries an <code>attribution</code> object saying the same thing, so it travels with the data whether or not anyone reads this page.</p>
+
+      <h2>Common questions</h2>
+
+      <h3>Is there a free breach API with no key?</h3>
+      <p>Yes, <a href="/developers.html">this one</a>. No account, no key, no rate limit beyond fair use, CORS enabled. The data comes from Have I Been Pwned under CC BY 4.0, so credit them if you publish it.</p>
+
+      <h3>How often should it poll?</h3>
+      <p>Once or twice a day. The archive rebuilds daily, so more frequent polling returns identical bytes. Check the <code>generated</code> field to skip work when nothing has changed.</p>
+
+      <h3>Can I monitor a specific email address?</h3>
+      <p>Not with this API, it holds metadata, not records. Use HIBP's own API for per-address checks. A metadata monitor tells you a service you use was breached, which is a different and still useful signal.</p>
+
+      <h3>What is the most common mistake?</h3>
+      <p>Alerting on everything. A monitor that fires constantly gets muted, and a muted monitor is worse than none because you think you are covered. Filter before you notify.</p>
+
+      <h2>Related</h2>
+      <ul class="related-guides">
+        <li><a href="/developers.html">the full API reference and field list</a></li>
+        <li><a href="/guides/read-a-breach-notification.html">reading a breach notice, for humans</a></li>
+        <li><a href="/guides/check-email-data-breach.html">checking a single address</a></li>
+        <li><a href="/guides/stealer-logs-explained.html">what the <code>stealer_log</code> flag means</a></li>
+        <li><a href="/breaches/">the archive these endpoints serve</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/developers.html">← API documentation</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/developers.html" style="color:var(--text-dim)">API</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

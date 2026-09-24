@@ -19,15 +19,15 @@
   "updated": "2026-09-14",
   "related": ["change-healthcare-2024", "snowflake-2024", "target-2013"],
   "faq": [
-    { "q": "What is MOVEit and why did so many organisations use it?", "a": "MOVEit Transfer is managed file transfer software: the tool an organisation uses to move large, sensitive files to partners with an audit trail — payroll to a bureau, claims to an insurer, records to a government agency. It is used precisely because the files are sensitive, which is what made compromising it so effective." },
+    { "q": "What is MOVEit and why did so many organisations use it?", "a": "MOVEit Transfer is managed file transfer software: the tool an organisation uses to move large, sensitive files to partners with an audit trail, payroll to a bureau, claims to an insurer, records to a government agency. It is used precisely because the files are sensitive, which is what made compromising it so effective." },
     { "q": "How did the attack work?", "a": "A previously unknown SQL injection flaw in the MOVEit web interface, tracked as CVE-2023-34362, allowed unauthenticated attackers to run database commands and deploy a web shell. From there they listed and downloaded whatever the instance held. Exploitation began over a holiday weekend, when fewer defenders were watching." },
     { "q": "Why were people affected who had never used MOVEit?", "a": "Because their employer, pension provider, insurer or government agency used it, or used a supplier that did. The British Broadcasting Corporation, British Airways and Boots employees were exposed through a payroll provider. Millions of US drivers were exposed through state motor vehicle agencies. You cannot opt out of software you were never told about." },
-    { "q": "Was this ransomware?", "a": "Not in the encrypting sense. Cl0p did not lock systems — it stole data and demanded payment to keep it unpublished, listing non-paying victims on its leak site. That shift from encryption to pure extortion has continued, because stealing is faster, quieter and harder to recover from with backups." }
+    { "q": "Was this ransomware?", "a": "Not in the encrypting sense. Cl0p did not lock systems, it stole data and demanded payment to keep it unpublished, listing non-paying victims on its leak site. That shift from encryption to pure extortion has continued, because stealing is faster, quieter and harder to recover from with backups." }
   ],
   "sources": [
     { "label": "Progress Software security advisories for MOVEit Transfer, May–June 2023" },
     { "label": "CISA and FBI joint advisory AA23-158A on Cl0p exploitation of MOVEit", "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-158a" },
-    { "label": "US Department of State, Rewards for Justice — Cl0p reward announcement, June 2023" },
+    { "label": "US Department of State, Rewards for Justice, Cl0p reward announcement, June 2023" },
     { "label": "Emsisoft, running tally of MOVEit victims and affected individuals, 2023–2024" }
   ]
 }
@@ -38,7 +38,7 @@
 
 <p>MOVEit Transfer, made by Progress Software, is managed file transfer software. Organisations use it to send large, sensitive files to partners with encryption and an audit trail: payroll data to a bureau, claims files to an insurer, citizen records between agencies. Its whole purpose is to be trusted with the things that matter.</p>
 
-<p>On 27 May 2023, attackers began exploiting a zero-day SQL injection vulnerability — later designated CVE-2023-34362 — in the product's web interface. No credentials were required. The flaw allowed database commands to be executed and a web shell to be planted, after which the attacker could inventory and download whatever files the instance held.</p>
+<p>On 27 May 2023, attackers began exploiting a zero-day SQL injection vulnerability, later designated CVE-2023-34362, in the product's web interface. No credentials were required. The flaw allowed database commands to be executed and a web shell to be planted, after which the attacker could inventory and download whatever files the instance held.</p>
 
 <p>Progress published an advisory and a patch on 31 May. By then Cl0p had been harvesting for days, and the pattern of the campaign made clear it had been prepared in advance: scripted, automated, and launched into a holiday weekend when incident response teams were thin.</p>
 
@@ -51,9 +51,9 @@
 <p>Trackers counted more than 2,700 affected organisations and over 90 million individuals. The composition is the point:</p>
 
 <ol class="cf-timeline">
-  <li><b>Through a payroll provider</b> — employees of the BBC, British Airways and Boots, none of whom had any relationship with MOVEit.</li>
-  <li><b>Through US state agencies</b> — millions of drivers' records from motor vehicle departments in Oregon and Louisiana.</li>
-  <li><b>Through government contractors</b> — Maximus, which administers health and human services programmes, reported around 11 million individuals.</li>
+  <li><b>Through a payroll provider</b>: employees of the BBC, British Airways and Boots, none of whom had any relationship with MOVEit.</li>
+  <li><b>Through US state agencies</b>: millions of drivers' records from motor vehicle departments in Oregon and Louisiana.</li>
+  <li><b>Through government contractors</b>: Maximus, which administers health and human services programmes, reported around 11 million individuals.</li>
   <li><b>Through insurers, universities, pension administrators and benefits processors</b>, in numbers that continued to be disclosed for more than a year afterwards.</li>
 </ol>
 
@@ -63,16 +63,16 @@
 
 <p>Cl0p did not encrypt systems. It took data and threatened publication, listing victims on its leak site with countdowns and releasing files for those who refused.</p>
 
-<p>This shift — from ransomware to pure data extortion — is now the dominant model, and the reasons are practical. Encryption is noisy, triggers alarms, and can be defeated by good backups. Exfiltration is quiet, and backups are no defence against publication. For the victim, the calculation changes completely: you can restore your systems perfectly and still be facing the same demand.</p>
+<p>This shift, from ransomware to pure data extortion, is now the dominant model, and the reasons are practical. Encryption is noisy, triggers alarms, and can be defeated by good backups. Exfiltration is quiet, and backups are no defence against publication. For the victim, the calculation changes completely: you can restore your systems perfectly and still be facing the same demand.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>27 May 2023</b> — Mass exploitation of the zero-day begins over the holiday weekend.</li>
-  <li><b>31 May 2023</b> — Progress publishes an advisory and patch; CVE-2023-34362 is assigned.</li>
-  <li><b>June 2023</b> — Cl0p claims responsibility and begins naming victims; CISA and the FBI publish a joint advisory; the US offers a reward of up to $10 million for information.</li>
-  <li><b>June–July 2023</b> — Further vulnerabilities are found and patched in the same product as researchers audit it.</li>
-  <li><b>2023–2024</b> — Victim disclosures continue in a long tail, as organisations work out whose data was in their instances.</li>
+  <li><b>27 May 2023</b>: Mass exploitation of the zero-day begins over the holiday weekend.</li>
+  <li><b>31 May 2023</b>: Progress publishes an advisory and patch; CVE-2023-34362 is assigned.</li>
+  <li><b>June 2023</b>: Cl0p claims responsibility and begins naming victims; CISA and the FBI publish a joint advisory; the US offers a reward of up to $10 million for information.</li>
+  <li><b>June–July 2023</b>: Further vulnerabilities are found and patched in the same product as researchers audit it.</li>
+  <li><b>2023–2024</b>: Victim disclosures continue in a long tail, as organisations work out whose data was in their instances.</li>
 </ol>
 
 <h2>What it changed</h2>

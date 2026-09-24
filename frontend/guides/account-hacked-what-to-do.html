@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Hacked? The First Hour, Step by Step | MyRecon</title>
+  <meta name="description" content="A runbook for the hour after an account is taken: regain access, revoke sessions, and find the quiet changes attackers leave behind that survive a password reset.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/account-hacked-what-to-do.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Your Account Was Hacked: What to Do in the First Hour">
+  <meta property="og:description" content="A runbook for the hour after an account is taken: regain access, revoke sessions, and find the quiet changes attackers leave behind that survive a password reset.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/account-hacked-what-to-do.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Your Account Was Hacked: What to Do in the First Hour">
+  <meta name="twitter:description" content="A runbook for the hour after an account is taken: regain access, revoke sessions, and find the quiet changes attackers leave behind that survive a password reset.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"Your Account Was Hacked: What to Do in the First Hour","description":"A runbook for the hour after an account is taken: regain access, revoke sessions, and find the quiet changes attackers leave behind that survive a password reset.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1242,"mainEntityOfPage":"https://www.myrecon.xyz/guides/account-hacked-what-to-do.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Your Account Was Hacked: What to Do in the First Hour","item":"https://www.myrecon.xyz/guides/account-hacked-what-to-do.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Should I change my password first?","acceptedAnswer":{"@type":"Answer","text":"Only if you are confident the device you are typing on is clean. If there is any chance malware is involved, change it from a different device, otherwise the new password is captured as you type it. And a password change alone does not evict an attacker who holds a valid session cookie; you must also sign out of all sessions."}},{"@type":"Question","name":"I changed my password but I keep getting logged out. Why?","acceptedAnswer":{"@type":"Answer","text":"Because the attacker still has an active session, or a persistence mechanism you have not found yet, often an app password, a connected application, or a changed recovery address. Revoke all sessions, then work through the persistence checklist on this page."}},{"@type":"Question","name":"Should I delete the compromised account?","acceptedAnswer":{"@type":"Answer","text":"Usually not, and not immediately. Deletion destroys the evidence you may need, removes your ability to warn contacts from the account itself, and can free the handle for someone else to register. Secure it first; decide about deletion later."}},{"@type":"Question","name":"How do I know whether it was my password or my device?","acceptedAnswer":{"@type":"Answer","text":"If the credential appears in a breach corpus and you reused it, the password is the likely route. If several unrelated accounts were taken at once, or the attacker was logged in without triggering your second factor, suspect the device and session theft instead."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Incident response</span>
+      <h1>Your Account Was Hacked: What to Do in the First Hour</h1>
+      <p class="meta">Published 14 September 2026 · 6 min read</p>
+
+<p class="lead">Someone else is in your account. The order in which you do the next few things decides whether you get it back cleanly or spend three weeks being locked out again every few days, because the step nearly everyone starts with is not the step that evicts an attacker.</p>
+
+      <h2>First, confirm it is real</h2>
+      <p>A significant share of "your account has been compromised" messages are themselves the attack, and panic is exactly the state they are engineered to produce. Before acting on a notification, verify it independently: open the service through your own bookmark or app, not through anything in the message, and look at the account's own security or activity page.</p>
+      <p>Real indicators are things you can see from inside the account: sign-ins from places you have not been, messages in the sent folder you did not write, a changed recovery address, a second factor you did not enrol, new connected applications, or contacts telling you they received something odd from you.</p>
+
+      <div class="callout">
+        <p><strong>Work from a device you trust.</strong> If there is any chance malware is involved, a file you ran, a command you pasted, several accounts falling at once, then the machine is the problem and every password you type on it is captured as you type it. Use a different computer or phone for everything below. This single decision is the difference between recovering once and recovering repeatedly.</p>
+      </div>
+
+      <h2>The order that actually works</h2>
+
+      <h3>1. Go to the email account first, whatever was taken</h3>
+      <p>Email is the master key. Nearly every other account can be reset through it, so if the mailbox is compromised, securing anything else is temporary. If the breached account <em>is</em> the mailbox, you are already in the right place.</p>
+
+      <h3>2. Regain access</h3>
+      <p>Change the password to something long, unique and generated. If you are locked out, use the service's account recovery flow, and expect it to be slow and to want evidence. Do not pay a third party promising to recover an account; recovery services for consumer platforms are overwhelmingly fraudulent, and the legitimate route is always the platform's own.</p>
+
+      <h3>3. Revoke every session: this is the step people skip</h3>
+      <p>Changing a password does not, on most services, log anyone else out. A session cookie already issued keeps working: no password prompt, no second factor, because the service considers that session already authenticated.</p>
+      <p>Find "sign out of all devices", "revoke active sessions" or similar in security settings and use it. If you change the password and stop, and the attacker holds a live session, you have changed nothing they need.</p>
+
+      <h3>4. Hunt the persistence</h3>
+      <p>A competent attacker assumes you will eventually change the password and leaves a way back in first. Work through every one of these, because finding six of seven is the same as finding none:</p>
+      <ul>
+        <li><strong>Mail forwarding rules.</strong> The classic. A silent rule copying everything to an outside address survives every password change you make, and is the standard setup for intercepting future reset links.</li>
+        <li><strong>Filters and blocks.</strong> Rules that delete or archive messages matching words like "security", "password" or a bank's name, so you never see the alerts.</li>
+        <li><strong>Recovery email and phone.</strong> Check both. A changed recovery address means the attacker can simply reset the account again later.</li>
+        <li><strong>Registered second factors.</strong> Remove any authenticator, phone number or key you do not recognise, then regenerate the backup codes, old ones may have been copied.</li>
+        <li><strong>App passwords and API tokens.</strong> These bypass two-factor by design. Revoke everything you do not currently use.</li>
+        <li><strong>Connected applications and OAuth grants.</strong> An authorised third-party app keeps its access after a password change. Revoke anything unfamiliar.</li>
+        <li><strong>Delegated access.</strong> Mailbox delegates, shared calendar permissions, account managers, and on business systems, added administrators.</li>
+        <li><strong>Auto-replies and signature blocks,</strong> which have been used to redirect payments quietly.</li>
+      </ul>
+
+      <h3>5. Re-secure properly</h3>
+      <p>Now enable or re-enable two-factor authentication, preferring a passkey or authenticator app over SMS, and store the fresh backup codes offline. See <a href="/guides/two-factor-authentication.html">the two-factor guide</a> for what to choose.</p>
+
+      <h3>6. Find out what they did</h3>
+      <p>Read the sent, deleted and archived folders. Check whether messages were sent in your name, whether financial documents were downloaded, and whether the account was used to reset anything else. On platforms with an activity or login history page, read it and screenshot it before it ages out, most retain only a limited window.</p>
+
+      <h3>7. Work outwards</h3>
+      <p>Anything that resets through the compromised account is also exposed. Change the password on any service where you reused that password, and check your banking and payment accounts for new payees, changed addresses and saved cards. If the account was used to contact people, tell them directly, the follow-on scam aimed at your contacts is usually where the real money is made.</p>
+
+      <h2>If it was the device, not the password</h2>
+      <p>Suspect this when several unrelated accounts fall at once, when the attacker was inside without your second factor ever firing, or when you recently ran an installer or pasted a command you did not fully understand.</p>
+      <p>In that case the order changes: clean or rebuild the device <em>first</em>, then change passwords from somewhere else, then revoke sessions everywhere. Cleaning is not reliable against modern infostealers, and a rebuild is the only outcome you can be confident in. The full picture is in <a href="/guides/stealer-logs-explained.html">why your password leaked when nobody was breached</a>.</p>
+
+      <h2>If it was your phone number</h2>
+      <p>Sudden loss of mobile service, immediately followed by password reset messages, is a SIM swap rather than an ordinary account compromise. The fix starts with the carrier, not the account, see <a href="/guides/sim-swap-attacks.html">SIM swap attacks</a>.</p>
+
+      <div class="callout">
+        <p><strong>If it is a work account or a work device, report it now.</strong> Not after you have tidied it up, and not once you are sure. Corporate credential theft is how a large proportion of serious intrusions begin, and the gap between the first hour and the first day is the difference between a password reset and an incident. No security team has ever been annoyed by an early report.</p>
+      </div>
+
+      <h2>Preserve the evidence before you clean up</h2>
+      <p>If there is any chance of a police report, an insurance claim or a dispute with the platform, capture what you can before it disappears: screenshots of the unfamiliar sessions and login history, the full headers of any phishing message that started it, transaction records with timestamps, and the dates and times of everything you changed. Logs age out on a schedule that suits the platform rather than you.</p>
+
+      <h2>Where to report</h2>
+      <ul>
+        <li><strong>The platform,</strong> through its compromised-account process, which is separate from ordinary support.</li>
+        <li><strong>Your bank,</strong> immediately, if money or card details were involved. Speed is the only variable that matters for recall.</li>
+        <li><strong>Your national fraud or cybercrime reporting body,</strong> which in most countries takes online reports and issues a reference number. That number is frequently required for claims.</li>
+        <li><strong>Your employer's security team,</strong> for anything touching work.</li>
+      </ul>
+
+      <h2>Afterwards: closing the route in</h2>
+      <p>Once the immediate work is done, identify how it happened, because otherwise it recurs. Check whether the credentials were in a known breach, retire every reuse of that password, move the important accounts to a manager and a phishing-resistant second factor, and review the recovery paths, which are where the next attempt will go.</p>
+
+      <div class="callout">
+        <p>Find out which breaches your address appears in, and which password of yours is already in circulation, with the <a href="/#tool">MyRecon tools</a>. The password check runs in your own browser and sends only a partial hash.</p>
+      </div>
+
+      <h2>Questions people ask</h2>
+      <h3>Should I change my password first?</h3>
+      <p>Only if you are confident the device you are typing on is clean. If there is any chance malware is involved, change it from a different device, otherwise the new password is captured as you type it. And a password change alone does not evict an attacker who holds a valid session cookie; you must also sign out of all sessions.</p>
+
+      <h3>I changed my password but I keep getting logged out. Why?</h3>
+      <p>Because the attacker still has an active session, or a persistence mechanism you have not found yet, often an app password, a connected application, or a changed recovery address. Revoke all sessions, then work through the persistence checklist on this page.</p>
+
+      <h3>Should I delete the compromised account?</h3>
+      <p>Usually not, and not immediately. Deletion destroys the evidence you may need, removes your ability to warn contacts from the account itself, and can free the handle for someone else to register. Secure it first; decide about deletion later.</p>
+
+      <h3>How do I know whether it was my password or my device?</h3>
+      <p>If the credential appears in a breach corpus and you reused it, the password is the likely route. If several unrelated accounts were taken at once, or the attacker was logged in without triggering your second factor, suspect the device and session theft instead.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Daccount_hacked_what_to_do" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/stealer-logs-explained.html">why changing the password first sometimes achieves nothing</a></li>
+        <li><a href="/guides/two-factor-authentication.html">closing the door once you are back in</a></li>
+        <li><a href="/guides/sim-swap-attacks.html">what to do when the phone number itself was taken</a></li>
+        <li><a href="/guides/check-email-data-breach.html">finding out how the credentials got out</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

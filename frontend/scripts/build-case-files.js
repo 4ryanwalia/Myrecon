@@ -1,4 +1,4 @@
-/* Case Files — the written archive.
+/* Case Files, the written archive.
  *
  * WHY THIS EXISTS SEPARATELY FROM build-breaches.js
  * /breaches/ is machine-built: it tracks Have I Been Pwned, and every
@@ -10,8 +10,8 @@
  * company gave was not the last one.
  *
  * That is what a case file is for: the account of how a breach actually
- * happened, assembled from the public record — regulatory findings, court
- * filings, company statements and contemporaneous reporting — and written out
+ * happened, assembled from the public record, regulatory findings, court
+ * filings, company statements and contemporaneous reporting, and written out
  * properly. It is the reporting the record cannot hold.
  *
  * SOURCE FORMAT
@@ -26,7 +26,7 @@
  *   <h2>...</h2>
  *
  * The body inherits the site's styles; no wrapper, no <head>. Everything
- * around it — head, breadcrumbs, fact table, schema, related links — is
+ * around it, head, breadcrumbs, fact table, schema, related links, is
  * assembled here, so thirty articles cannot drift apart from one another.
  *
  * Run: node scripts/build-case-files.js
@@ -41,6 +41,14 @@ const OUT_DIR = path.join(ROOT, "breaches", "case-files");
 const DATA_DIR = path.join(ROOT, "assets", "data");
 const SITE = "https://www.myrecon.xyz";
 const BASE = "/breaches/case-files";
+
+// The same Play custom listing the breach pages use (it leads with breach
+// alerts), tagged so Play Console can tell case-file installs apart. Play
+// shows the main listing until that custom one exists, and the app reads only
+// `invite_code` from the referrer, so the UTM tags can never count as an invite.
+const PLAY_ALERTS =
+  "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts" +
+  "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts";
 
 const esc = (s) =>
   String(s == null ? "" : s)
@@ -62,7 +70,7 @@ function fitDescription(text) {
   const clean = String(text || "").replace(/\s+/g, " ").trim();
   if (clean.length <= 158) return clean;
   const cut = clean.slice(0, 158);
-  const stop = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf(" — "));
+  const stop = cut.lastIndexOf(". ");
   if (stop > 90) return cut.slice(0, stop + 1).trim();
   return cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:.\s]+$/, "") + "…";
 }
@@ -80,7 +88,7 @@ const wordsIn = (html) => html.replace(/<[^>]*>/g, " ").split(/\s+/).filter(Bool
  * Reading time at 220 words a minute.
  *
  * Printed because these run long and a reader deserves to know that before
- * they start — not because it is a ranking signal. It is not one.
+ * they start, not because it is a ranking signal. It is not one.
  */
 const readingTime = (html) => Math.max(1, Math.round(wordsIn(html) / 220));
 
@@ -100,7 +108,7 @@ function readCases() {
       try {
         meta = JSON.parse(m[1]);
       } catch (err) {
-        throw new Error(`${f}: metadata is not valid JSON — ${err.message}`);
+        throw new Error(`${f}: metadata is not valid JSON, ${err.message}`);
       }
       const body = raw.slice(m[0].length).trim();
       if (!body) throw new Error(`${f}: metadata but no article body`);
@@ -133,35 +141,36 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(opts.ogTitle || opts.title)}">
   <meta name="twitter:description" content="${esc(opts.description)}">
   <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}${opts.faqLd ? `  <script type="application/ld+json">${opts.faqLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="${SITE}/breaches/feed.xml">
+${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}${opts.faqLd ? `  <script type="application/ld+json">${opts.faqLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="${SITE}/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -180,6 +189,7 @@ const FOOT = `
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>
 `;
@@ -309,20 +319,32 @@ ${c.body}
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
 ${(c.faq || []).length ? `      <h2>Questions people ask</h2>
       <div class="bx-faq">
 ${c.faq.map((f) => `        <h3>${esc(f.q)}</h3>\n        <p>${f.a}</p>`).join("\n\n")}
-      </div>\n` : ""}${(c.sources || []).length ? `      <h2>Sources</h2>
+      </div>\n` : ""}
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
+${(c.sources || []).length ? `      <h2>Sources</h2>
       <ul class="cf-sources">
-${c.sources.map((s) => `        <li>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener nofollow">${esc(s.label)}</a>` : `<b>${esc(s.label)}</b>`}${s.note ? ` — ${esc(s.note)}` : ""}</li>`).join("\n")}
+${c.sources.map((s) => `        <li>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener nofollow">${esc(s.label)}</a>` : `<b>${esc(s.label)}</b>`}${s.note ? `, ${esc(s.note)}` : ""}</li>`).join("\n")}
       </ul>\n` : ""}${related.length ? `      <h2>Read next</h2>
       <ul class="bx-related">
 ${related.map((r) => `        <li><a href="${BASE}/${r.slug}.html">${esc(r.headline)}</a></li>`).join("\n")}
       </ul>\n` : ""}
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="${BASE}/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -340,7 +362,7 @@ const ERAS = [
     to: 2100,
     name: "2024 onwards",
     blurb:
-      "The third-party era. The intrusion is rarely at the company whose name ends up in the headline — it is at a supplier, a cloud tenant, or on an employee's home computer.",
+      "The third-party era. The intrusion is rarely at the company whose name ends up in the headline, it is at a supplier, a cloud tenant, or on an employee's home computer.",
   },
   {
     from: 2019,
@@ -380,7 +402,7 @@ function index(all) {
 
   // Deliberately NOT a sum of the affected populations. Adding them produces a
   // number larger than the world, because the same people appear in breach
-  // after breach — and these pages spend their time telling readers to
+  // after breach, and these pages spend their time telling readers to
   // distrust exactly that kind of headline figure.
   const sourceCount = all.reduce((s, c) => s + (c.sources || []).length, 0);
   const earliest = Math.min(...all.map((c) => Number(String(c.sortDate).slice(0, 4))));
@@ -426,7 +448,7 @@ ${c.records ? `            <span class="cf-card-count">${esc(c.records)}</span>\
       <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
       <span class="kicker">Case Files</span>
       <h1 class="bx-title">How the breaches that mattered actually happened</h1>
-      <p class="sub">The archive tells you what was taken. These tell you how — the unpatched server, the contractor's password, the API nobody put a login on — and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures, and sourced at the foot of every page.</p>
+      <p class="sub">The archive tells you what was taken. These tell you how, the unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures, and sourced at the foot of every page.</p>
 
       <div class="bx-summary">
         <div class="bx-stat"><b>${all.length}</b><span>Case files</span></div>
@@ -446,7 +468,7 @@ ${b.items.map(card).join("\n")}
   )
   .join("\n\n")}
 
-      <p class="bx-method">Every case file is sourced. Where a headline figure was later revised — and it usually is — these pages use the number the organisation or its regulator finally settled on, and say what it was first reported as. Claims that remain disputed are labelled as disputed.</p>
+      <p class="bx-method">Every case file is sourced. Where a headline figure was later revised, and it usually is, these pages use the number the organisation or its regulator finally settled on, and say what it was first reported as. Claims that remain disputed are labelled as disputed.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">The live breach archive →</a> <a class="btn btn-ghost" href="/guides/">Guides →</a></p>
     </div>
@@ -458,12 +480,12 @@ ${b.items.map(card).join("\n")}
 // ── App feed ─────────────────────────────────────────────────────
 
 /**
- * assets/data/case-files.json — what the Android app reads.
+ * assets/data/case-files.json, what the Android app reads.
  *
  * Deliberately the metadata and not the body. The article bodies run to
  * forty-odd thousand words and rendering long-form HTML inside a Compose
  * screen would be a worse read than the page it came from, so the app shows
- * the facts — who, when, how they got in, what it cost, what was exposed —
+ * the facts, who, when, how they got in, what it cost, what was exposed,
  * and opens the site for the reporting itself. That is the same bargain
  * /assets/data/breaches.json already strikes for the archive: enough to be
  * genuinely useful offline of the browser, with the full piece one tap away.
@@ -517,7 +539,7 @@ function feed(all) {
 function main() {
   const all = readCases();
   if (!all.length) {
-    console.log("[case-files] nothing in content/case-files — skipping");
+    console.log("[case-files] nothing in content/case-files, skipping");
     return;
   }
 

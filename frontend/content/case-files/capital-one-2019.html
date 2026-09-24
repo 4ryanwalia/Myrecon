@@ -19,16 +19,16 @@
   "updated": "2026-09-14",
   "related": ["snowflake-2024", "equifax-2017", "uber-2016"],
   "faq": [
-    { "q": "What is SSRF, in plain terms?", "a": "Server-side request forgery. You persuade a server to make a web request on your behalf — to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials." },
+    { "q": "What is SSRF, in plain terms?", "a": "Server-side request forgery. You persuade a server to make a web request on your behalf, to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials." },
     { "q": "Why did the cloud hand over credentials?", "a": "Cloud instances fetch temporary credentials from a link-local metadata address so applications do not need hard-coded keys. It is a good design with one weakness: any code that can make an HTTP request from the instance can ask for those credentials. If the request can be triggered from outside through SSRF, so can the credential theft. Amazon's IMDSv2, released months after this breach, requires a session token first, which closes that path." },
     { "q": "Was Capital One hacked because it used the cloud?", "a": "No. The misconfiguration was Capital One's, in a firewall it operated, and the same mistake is possible in a data centre. What the cloud changed is the blast radius: an over-permissive role attached to one instance could list and copy entire storage buckets in minutes." },
     { "q": "What happened to the attacker?", "a": "Paige Thompson, a former Amazon Web Services engineer, was arrested in July 2019 after discussing the data online and publishing evidence of it to a public code-sharing site. She was convicted of wire fraud and computer fraud in June 2022 and sentenced to time served with five years of probation." }
   ],
   "sources": [
-    { "label": "Office of the Comptroller of the Currency — $80 million civil money penalty against Capital One, August 2020", "url": "https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html" },
-    { "label": "US Department of Justice — indictment and conviction of Paige Thompson, 2019–2022" },
+    { "label": "Office of the Comptroller of the Currency, $80 million civil money penalty against Capital One, August 2020", "url": "https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html" },
+    { "label": "US Department of Justice, indictment and conviction of Paige Thompson, 2019–2022" },
     { "label": "Capital One incident disclosures and SEC filings, 2019" },
-    { "label": "Amazon Web Services — announcement of Instance Metadata Service v2, November 2019" }
+    { "label": "Amazon Web Services, announcement of Instance Metadata Service v2, November 2019" }
   ]
 }
 -->
@@ -38,7 +38,7 @@
 
 <p>In March 2019, an attacker exploited a misconfiguration in a web application firewall that Capital One ran on a cloud instance. The flaw allowed server-side request forgery: the ability to make the server issue an HTTP request to an address of the attacker's choosing.</p>
 
-<p>From outside, a browser cannot reach the cloud's internal metadata address. From the instance itself, it can — and that address returns temporary credentials for the role attached to the machine. The attacker retrieved those credentials, found that the role could list and read storage buckets, and copied out the contents.</p>
+<p>From outside, a browser cannot reach the cloud's internal metadata address. From the instance itself, it can, and that address returns temporary credentials for the role attached to the machine. The attacker retrieved those credentials, found that the role could list and read storage buckets, and copied out the contents.</p>
 
 <p>What was in them: credit card applications submitted between 2005 and early 2019, covering roughly 100 million people in the United States and 6 million in Canada. Names, addresses, dates of birth, self-reported income, credit scores and balances. Around 140,000 Social Security numbers, 80,000 linked bank account numbers and a million Canadian Social Insurance numbers.</p>
 
@@ -48,22 +48,22 @@
 
 <h2>How it was discovered</h2>
 
-<p>Not by monitoring. On 17 July 2019, an outside researcher emailed Capital One's responsible disclosure address to report that data appearing to belong to the bank had been published on a public code-sharing site. The attacker had also discussed the material in online chat groups under a recognisable handle. Capital One confirmed the breach, notified the FBI, and an arrest followed on 29 July — the same day the breach was announced publicly.</p>
+<p>Not by monitoring. On 17 July 2019, an outside researcher emailed Capital One's responsible disclosure address to report that data appearing to belong to the bank had been published on a public code-sharing site. The attacker had also discussed the material in online chat groups under a recognisable handle. Capital One confirmed the breach, notified the FBI, and an arrest followed on 29 July, the same day the breach was announced publicly.</p>
 
 <p>Four months from intrusion to discovery, and the discovery came from someone who happened to notice a public post. It is worth sitting with that: the technical sophistication of the attack was modest, and the detection was accidental.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>March 2019</b> — The SSRF is exploited; credentials are retrieved and data copied from storage.</li>
-  <li><b>April–June 2019</b> — Evidence of the data is posted publicly and discussed in online groups.</li>
-  <li><b>17 July 2019</b> — An outside researcher emails Capital One's disclosure address.</li>
-  <li><b>19 July 2019</b> — Capital One confirms the breach and contacts the FBI.</li>
-  <li><b>29 July 2019</b> — Public disclosure; Paige Thompson is arrested.</li>
-  <li><b>November 2019</b> — Amazon releases Instance Metadata Service v2, which requires a session token and blocks the SSRF path used here.</li>
-  <li><b>August 2020</b> — The Office of the Comptroller of the Currency fines Capital One $80 million for failures in risk assessment and internal controls around its cloud migration.</li>
-  <li><b>December 2021</b> — A $190 million class-action settlement is agreed.</li>
-  <li><b>June and October 2022</b> — Thompson is convicted and sentenced.</li>
+  <li><b>March 2019</b>: The SSRF is exploited; credentials are retrieved and data copied from storage.</li>
+  <li><b>April–June 2019</b>: Evidence of the data is posted publicly and discussed in online groups.</li>
+  <li><b>17 July 2019</b>: An outside researcher emails Capital One's disclosure address.</li>
+  <li><b>19 July 2019</b>: Capital One confirms the breach and contacts the FBI.</li>
+  <li><b>29 July 2019</b>: Public disclosure; Paige Thompson is arrested.</li>
+  <li><b>November 2019</b>: Amazon releases Instance Metadata Service v2, which requires a session token and blocks the SSRF path used here.</li>
+  <li><b>August 2020</b>: The Office of the Comptroller of the Currency fines Capital One $80 million for failures in risk assessment and internal controls around its cloud migration.</li>
+  <li><b>December 2021</b>: A $190 million class-action settlement is agreed.</li>
+  <li><b>June and October 2022</b>: Thompson is convicted and sentenced.</li>
 </ol>
 
 <h2>What it changed</h2>
@@ -76,13 +76,13 @@
 
 <h2>What makes this case unusual</h2>
 
-<p>Most large breaches end with attribution to a group that will never be prosecuted. This one ended with an arrest within days, a trial, and a conviction — because the attacker discussed it publicly under a traceable handle. It is a reminder that the population of people attacking systems includes individuals acting alone with poor operational security, not only organised crews and state units.</p>
+<p>Most large breaches end with attribution to a group that will never be prosecuted. This one ended with an arrest within days, a trial, and a conviction, because the attacker discussed it publicly under a traceable handle. It is a reminder that the population of people attacking systems includes individuals acting alone with poor operational security, not only organised crews and state units.</p>
 
 <h2>If you applied for a Capital One card before 2019</h2>
 
 <ol class="bx-actions">
   <li><strong>An application you were rejected for still counts.</strong> The data covers applicants, not just customers, which is what makes the population so much larger than the cardholder base.</li>
   <li><strong>Freeze your credit files.</strong> For the 140,000 people whose Social Security numbers were taken, this is the specific control that blocks new accounts being opened.</li>
-  <li><strong>Watch for precision phishing.</strong> Self-reported income and credit balance data makes a fraudulent "your account needs verification" message far more persuasive — <a href="/guides/how-to-spot-phishing.html">the signals that still give those messages away</a>.</li>
+  <li><strong>Watch for precision phishing.</strong> Self-reported income and credit balance data makes a fraudulent "your account needs verification" message far more persuasive, <a href="/guides/how-to-spot-phishing.html">the signals that still give those messages away</a>.</li>
   <li><strong>Canadian applicants: your SIN is in the file.</strong> Contact the credit bureaus for a fraud alert, and treat unexpected contact about credit as suspect.</li>
 </ol>

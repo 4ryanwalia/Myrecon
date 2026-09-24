@@ -1,6 +1,6 @@
 """
 ╔══════════════════════════════════════════════════════════════╗
-║  Identity Correlator — Cross-Platform Clustering            ║
+║  Identity Correlator, Cross-Platform Clustering            ║
 ║  Groups same username across platforms + confidence score   ║
 ║  Quality-filtered: only high-confidence results shown       ║
 ╚══════════════════════════════════════════════════════════════╝
@@ -10,7 +10,7 @@
 class IdentityCorrelator:
     """Groups results by username to form identity clusters with quality filtering."""
 
-    # Minimum confidence threshold — identities below this are dropped
+    # Minimum confidence threshold, identities below this are dropped
     MIN_CONFIDENCE = 30
 
     def correlate(self, results: list[dict], target_username: str = "") -> list[dict]:

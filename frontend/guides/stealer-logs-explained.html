@@ -19,39 +19,40 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Stealer Logs: Why Your Password Leaked With No Breach">
   <meta name="twitter:description" content="The largest source of leaked credentials today is not company breaches. It is malware on ordinary people's own computers.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"Article","headline":"Stealer Logs: Why Your Password Leaked With No Breach","description":"What infostealer logs are, why they are different from a company data breach, how to tell which one you are in, and what to do about each.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","mainEntityOfPage":"https://www.myrecon.xyz/guides/stealer-logs-explained.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Stealer Logs Explained","item":"https://www.myrecon.xyz/guides/stealer-logs-explained.html"}],"@context":"https://schema.org"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a stealer log?","acceptedAnswer":{"@type":"Answer","text":"A stealer log is the output of infostealer malware running on someone's computer. It records credentials saved in or typed into the browser, along with the exact website each one belongs to, and often session cookies, cryptocurrency wallet files and a screenshot. It comes from an infected device, not from a company being hacked."}},{"@type":"Question","name":"How do I know if my password leaked from a breach or a stealer log?","acceptedAnswer":{"@type":"Answer","text":"Breach records name the company the data came from. Stealer log entries do not — they are grouped by the collection they were traded in, and they list many unrelated websites for the same person. If your address appears in an entry that names no company and covers several services at once, that is a stealer log, and the exposure is your device rather than any one service."}},{"@type":"Question","name":"Is changing my password enough after a stealer log?","acceptedAnswer":{"@type":"Answer","text":"No. If the device is still infected, the new password is captured as soon as you type it. Clean or rebuild the device first, then change passwords from a different, trusted device, and sign out all active sessions everywhere — stolen session cookies can let an attacker back in without ever needing the password."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a stealer log?","acceptedAnswer":{"@type":"Answer","text":"A stealer log is the output of infostealer malware running on someone's computer. It records credentials saved in or typed into the browser, along with the exact website each one belongs to, and often session cookies, cryptocurrency wallet files and a screenshot. It comes from an infected device, not from a company being hacked."}},{"@type":"Question","name":"How do I know if my password leaked from a breach or a stealer log?","acceptedAnswer":{"@type":"Answer","text":"Breach records name the company the data came from. Stealer log entries do not, they are grouped by the collection they were traded in, and they list many unrelated websites for the same person. If your address appears in an entry that names no company and covers several services at once, that is a stealer log, and the exposure is your device rather than any one service."}},{"@type":"Question","name":"Is changing my password enough after a stealer log?","acceptedAnswer":{"@type":"Answer","text":"No. If the device is still infected, the new password is captured as soon as you type it. Clean or rebuild the device first, then change passwords from a different, trusted device, and sign out all active sessions everywhere, stolen session cookies can let an attacker back in without ever needing the password."}}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -61,16 +62,16 @@
     <article class="article">
       <span class="kicker">Credential exposure</span>
       <h1>Stealer Logs: Why Your Password Leaked With No Breach</h1>
-      <p class="meta">Updated 14 September 2026 · 9 min read</p>
+      <p class="meta">Updated 14 September 2026 · 6 min read</p>
 
-      <p class="lead">You check your email address, and it comes back exposed — but the entry does not name a company. It names a collection you have never heard of, traded on a messaging app, listing a dozen unrelated websites you have accounts on. Nobody was hacked. A computer was, and it may well have been yours.</p>
+      <p class="lead">You check your email address, and it comes back exposed, but the entry does not name a company. It names a collection you have never heard of, traded on a messaging app, listing a dozen unrelated websites you have accounts on. Nobody was hacked. A computer was, and it may well have been yours.</p>
 
       <h2>What a stealer log actually is</h2>
       <p>Infostealer malware does one job. It runs on a person's computer, empties out everything that looks like a credential, packages it up, and sends it to whoever deployed it. Then, usually, it deletes itself.</p>
       <p>What it collects is more comprehensive than most people expect:</p>
       <ul>
         <li><strong>Every password saved in the browser</strong>, along with the exact website each one belongs to.</li>
-        <li><strong>Session cookies</strong> — the tokens that keep you logged in. These matter more than the passwords, and the next section explains why.</li>
+        <li><strong>Session cookies</strong>: the tokens that keep you logged in. These matter more than the passwords, and the next section explains why.</li>
         <li><strong>Autofill data</strong>: names, addresses, phone numbers, and in some cases card details.</li>
         <li><strong>Cryptocurrency wallet files</strong> and browser extension data.</li>
         <li><strong>A system profile</strong>: the machine's name, its location by IP address, its installed software, and often a screenshot of whatever was on screen at that moment.</li>
@@ -78,12 +79,12 @@
       <p>The resulting file is one person's digital life, sorted and labelled. Millions of them are compiled into collections and traded, and those collections are what turn up in breach searches under names that sound like nothing in particular.</p>
 
       <div class="callout">
-        <p><strong>Why this is worse than a normal credential leak.</strong> A leaked password list tells an attacker a password you once used somewhere. A stealer log tells them the password, the exact site it opens, and the email address that goes with it. Credential stuffing — trying a leaked password across hundreds of sites and seeing what works — becomes unnecessary, because the file already says where the key fits. There is no guessing step to defeat.</p>
+        <p><strong>Why this is worse than a normal credential leak.</strong> A leaked password list tells an attacker a password you once used somewhere. A stealer log tells them the password, the exact site it opens, and the email address that goes with it. Credential stuffing, trying a leaked password across hundreds of sites and seeing what works, becomes unnecessary, because the file already says where the key fits. There is no guessing step to defeat.</p>
       </div>
 
       <h2>The session cookie problem</h2>
       <p>This is the part that catches out people who otherwise do everything right.</p>
-      <p>When you log into a website and tick "remember me", the site gives your browser a session cookie. From then on, that cookie is what proves who you are. It is why you do not re-enter your password every morning — and it is why you do not re-enter your two-factor code either.</p>
+      <p>When you log into a website and tick "remember me", the site gives your browser a session cookie. From then on, that cookie is what proves who you are. It is why you do not re-enter your password every morning, and it is why you do not re-enter your two-factor code either.</p>
       <p>A stolen session cookie can be loaded into an attacker's browser and used directly. They never see your login page. They never need your password, and your two-factor authentication never triggers, because from the site's point of view this is a session that already completed authentication.</p>
       <p>That is why changing your password after a stealer log is necessary but not sufficient. You also have to invalidate the sessions. Most significant services offer this as "sign out of all devices" or "revoke active sessions" in security settings, and after this kind of exposure it is the more urgent of the two actions.</p>
 
@@ -91,7 +92,7 @@
       <p>Breach checkers list both kinds side by side, and the distinction changes what you should do. It is easy to read off once you know what to look for.</p>
       <ul>
         <li><strong>A company breach</strong> names the company. It has a date the incident happened, a count of affected accounts, and a list of fields that company held. The failure was theirs, and the fix is to change the password on that service and anywhere you reused it.</li>
-        <li><strong>A stealer log</strong> names a collection rather than a company — a channel, a dump, a corpus. The exposed fields are almost always just email addresses and passwords, and the same person appears alongside many unrelated websites. The failure was on a device, and the fix starts with the device.</li>
+        <li><strong>A stealer log</strong> names a collection rather than a company, a channel, a dump, a corpus. The exposed fields are almost always just email addresses and passwords, and the same person appears alongside many unrelated websites. The failure was on a device, and the fix starts with the device.</li>
       </ul>
       <p>MyRecon's <a href="/breaches/">breach archive</a> marks these explicitly: any article for a stealer log collection says on the page that the source was malware on victims' own machines rather than one company's servers, because reading it the other way sends people to change one password and stop.</p>
 
@@ -111,19 +112,19 @@
       <ol>
         <li><strong>Work out which device.</strong> The log usually indicates a machine and a rough time. If you cannot tell, assume every device where you saved passwords in a browser.</li>
         <li><strong>Clean or rebuild that device first.</strong> If you change passwords while the stealer is still running, the new ones are captured as you type them. A full reinstall is the only answer you can be confident in.</li>
-        <li><strong>Change passwords from a different, trusted device.</strong> Email first — it resets everything else — then financial accounts, then anything with a payment method stored.</li>
+        <li><strong>Change passwords from a different, trusted device.</strong> Email first, it resets everything else, then financial accounts, then anything with a payment method stored.</li>
         <li><strong>Sign out of all sessions everywhere.</strong> This is the step people skip and it is the one that closes the cookie route back in.</li>
         <li><strong>Re-enrol two-factor authentication</strong> on important accounts, in case a recovery code or authenticator backup was among the files taken.</li>
         <li><strong>Stop saving passwords in the browser.</strong> Use a password manager with a master password that is not stored on the machine. Browser password stores are the first thing these tools read, and they read them successfully.</li>
       </ol>
 
       <div class="callout">
-        <p><strong>If this was a work device, tell someone immediately.</strong> Corporate credentials in a stealer log are how a great many large intrusions start — a set of them was the entry point for the campaign that hit dozens of major companies through their cloud tenants in 2024. Reporting it quickly is the difference between a password reset and an incident, and no employer would rather find out later.</p>
+        <p><strong>If this was a work device, tell someone immediately.</strong> Corporate credentials in a stealer log are how a great many large intrusions start, a set of them was the entry point for the campaign that hit dozens of major companies through their cloud tenants in 2024. Reporting it quickly is the difference between a password reset and an incident, and no employer would rather find out later.</p>
       </div>
 
       <h2>Why this category keeps growing</h2>
       <p>Infostealers are sold as a service, rented by the month, with dashboards and customer support. The barrier to running a credential theft operation is now a subscription rather than a skill, and the output is monetised immediately: logs are sold in bulk, then resold individually to people who want access to one particular service.</p>
-      <p>Meanwhile the defences that made company breaches harder — better hashing, mandatory multi-factor authentication, faster patching — do nothing against this route, because the credentials are captured before any of those controls apply. The password is read as it is typed, and the session is stolen after authentication has already succeeded.</p>
+      <p>Meanwhile the defences that made company breaches harder, better hashing, mandatory multi-factor authentication, faster patching, do nothing against this route, because the credentials are captured before any of those controls apply. The password is read as it is typed, and the session is stolen after authentication has already succeeded.</p>
       <p>Which is why a growing share of what appears in breach searches now names no company at all. The organisations got better at protecting their databases. The data is being taken from the other end.</p>
 
       <div class="callout">
@@ -131,6 +132,16 @@
       </div>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">Browse The Breach Files →</a></p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dstealer_logs_explained" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
 
       <h2>Related guides</h2>
       <ul class="related-guides">
@@ -155,5 +166,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

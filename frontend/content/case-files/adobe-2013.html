@@ -4,7 +4,7 @@
   "seoTitle": "Adobe Breach 2013: Encrypted Passwords, Plaintext Hints",
   "subject": "Adobe data breach",
   "kicker": "2013 · Software",
-  "description": "Adobe encrypted its passwords instead of hashing them, then stored every password hint in plain text beside them — turning the dump into a puzzle anyone could solve.",
+  "description": "Adobe encrypted its passwords instead of hashing them, then stored every password hint in plain text beside them, turning the dump into a puzzle anyone could solve.",
   "cardBlurb": "A masterclass in how not to store passwords: one encryption key, no salt, and a plaintext hint column that gave the answers away.",
   "records": "153 million records",
   "peopleCount": 153000000,
@@ -19,7 +19,7 @@
   "updated": "2026-09-14",
   "related": ["linkedin-2012", "rockyou-2009", "myspace-2016"],
   "faq": [
-    { "q": "Why was Adobe's password storage so bad?", "a": "Adobe encrypted passwords with Triple DES in ECB mode using a single key, rather than hashing them. Encryption is reversible by design, and ECB mode produces the same ciphertext for the same input every time — so identical passwords looked identical in the dump. Proper password storage uses a slow, salted hash, which cannot be reversed even by the company that stored it." },
+    { "q": "Why was Adobe's password storage so bad?", "a": "Adobe encrypted passwords with Triple DES in ECB mode using a single key, rather than hashing them. Encryption is reversible by design, and ECB mode produces the same ciphertext for the same input every time, so identical passwords looked identical in the dump. Proper password storage uses a slow, salted hash, which cannot be reversed even by the company that stored it." },
     { "q": "What was the Adobe password crossword?", "a": "Because the password hints were stored in plain text next to the encrypted passwords, anyone with the file could group together every account sharing a password and read the hints as a set of clues to the same answer. One hint might be useless; two hundred hints for the same ciphertext were not. A widely shared xkcd comic laid it out as a crossword puzzle, and the name stuck." },
     { "q": "How many Adobe accounts were affected?", "a": "Adobe first said 2.9 million, then 38 million active users. The file that actually surfaced contained around 153 million records, including long-dormant and invalid accounts. The 153 million figure is the one the dump supports." },
     { "q": "Was source code stolen too?", "a": "Yes. Adobe confirmed that source code for several products, including ColdFusion and Acrobat, was taken. Stolen source code is a longer-term risk than a customer list: it lets an attacker hunt for vulnerabilities in software that is deployed inside thousands of other organisations." }
@@ -36,13 +36,13 @@
 
 <h2>What happened</h2>
 
-<p>In late September 2013, Adobe found that intruders had been inside its systems. On 3 October it announced that customer information had been taken and that source code for several products had been copied — a combination that is unusual and, for a software vendor, worse than either on its own.</p>
+<p>In late September 2013, Adobe found that intruders had been inside its systems. On 3 October it announced that customer information had been taken and that source code for several products had been copied, a combination that is unusual and, for a software vendor, worse than either on its own.</p>
 
 <p>The numbers moved. Adobe first said 2.9 million customers, then raised it to 38 million active users. The file that circulated publicly held around 153 million records, including accounts that were long dormant or invalid. Both statements can be true at once: 38 million was Adobe's count of active accounts it considered affected; 153 million was what was actually in the database.</p>
 
 <h2>The password decision</h2>
 
-<p>A system that checks passwords does not need to be able to read them. That is the whole point of a password hash: the site stores a one-way transformation, and at login it repeats the transformation and compares. Done properly — a slow algorithm, a unique random salt per user — a stolen file yields almost nothing, and two users with the same password produce entirely different stored values.</p>
+<p>A system that checks passwords does not need to be able to read them. That is the whole point of a password hash: the site stores a one-way transformation, and at login it repeats the transformation and compares. Done properly, a slow algorithm, a unique random salt per user, a stolen file yields almost nothing, and two users with the same password produce entirely different stored values.</p>
 
 <p>Adobe did not hash. It <em>encrypted</em>, using Triple DES in ECB mode, with one key for everybody.</p>
 
@@ -54,10 +54,10 @@
 </ol>
 
 <div class="callout">
-  <p><strong>And then the hints.</strong> Alongside each encrypted password sat the user's own password hint — in plain text. Individually a hint is often meaningless. Collectively, with every account sharing a password grouped together by its identical ciphertext, the hints became a set of clues pointing at one answer: "numbers", "1 to 6", "first six numbers", "count". The puzzle solves itself. An xkcd strip presented the whole thing as a crossword, which is how most people outside the industry came to understand the flaw, and the nickname has outlived the incident.</p>
+  <p><strong>And then the hints.</strong> Alongside each encrypted password sat the user's own password hint, in plain text. Individually a hint is often meaningless. Collectively, with every account sharing a password grouped together by its identical ciphertext, the hints became a set of clues pointing at one answer: "numbers", "1 to 6", "first six numbers", "count". The puzzle solves itself. An xkcd strip presented the whole thing as a crossword, which is how most people outside the industry came to understand the flaw, and the nickname has outlived the incident.</p>
 </div>
 
-<p>The result was that researchers reconstructed the most common passwords in the file without ever attacking the encryption. The top entries were <code>123456</code>, <code>123456789</code>, <code>password</code> and <code>adobe123</code> — a ranking that has barely changed in the decade since.</p>
+<p>The result was that researchers reconstructed the most common passwords in the file without ever attacking the encryption. The top entries were <code>123456</code>, <code>123456789</code>, <code>password</code> and <code>adobe123</code>: a ranking that has barely changed in the decade since.</p>
 
 <h2>The source code, which mattered more</h2>
 
@@ -68,16 +68,16 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>September 2013</b> — Adobe detects the intrusion.</li>
-  <li><b>3 October 2013</b> — Public disclosure: 2.9 million customers, plus stolen source code.</li>
-  <li><b>29 October 2013</b> — The figure is revised to 38 million active users.</li>
-  <li><b>November 2013</b> — A file of roughly 153 million records circulates; researchers begin reconstructing passwords from hints.</li>
-  <li><b>November 2016</b> — Adobe settles with 15 US states and the District of Columbia for over $1 million, alongside an undisclosed consumer settlement.</li>
+  <li><b>September 2013</b>: Adobe detects the intrusion.</li>
+  <li><b>3 October 2013</b>: Public disclosure: 2.9 million customers, plus stolen source code.</li>
+  <li><b>29 October 2013</b>: The figure is revised to 38 million active users.</li>
+  <li><b>November 2013</b>: A file of roughly 153 million records circulates; researchers begin reconstructing passwords from hints.</li>
+  <li><b>November 2016</b>: Adobe settles with 15 US states and the District of Columbia for over $1 million, alongside an undisclosed consumer settlement.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p>The Adobe file became a teaching artefact. Before it, "hash your passwords properly" was an argument security engineers had with product teams about theoretical risk. Afterwards there was a concrete, visual example of what the alternative looks like when the file gets out — and, crucially, one that a non-specialist could follow in ninety seconds.</p>
+<p>The Adobe file became a teaching artefact. Before it, "hash your passwords properly" was an argument security engineers had with product teams about theoretical risk. Afterwards there was a concrete, visual example of what the alternative looks like when the file gets out, and, crucially, one that a non-specialist could follow in ninety seconds.</p>
 
 <p>It also killed the password hint as a feature. Hints existed to reduce support calls; they survive almost nowhere now, because Adobe demonstrated that a hint is a piece of plaintext that describes a secret, stored next to the secret, and available to anyone who takes the database.</p>
 
@@ -86,8 +86,8 @@
 <h2>If you had an Adobe account in 2013</h2>
 
 <ol class="bx-actions">
-  <li><strong>Any password you used then should be considered public.</strong> Not weakened — public. If it, or a close variant with a number bumped, is still in use anywhere, change it today.</li>
+  <li><strong>Any password you used then should be considered public.</strong> Not weakened, public. If it, or a close variant with a number bumped, is still in use anywhere, change it today.</li>
   <li><strong>Check where else that address appears.</strong> The Adobe list has been recycled into credential-stuffing collections for over a decade; <a href="/guides/check-email-data-breach.html">checking an address against known breaches</a> shows how widely it has travelled.</li>
   <li><strong>Stop answering hint and security questions truthfully.</strong> Where a service forces them on you, generate a random answer and store it in your password manager.</li>
-  <li><strong>Use a manager and stop reusing.</strong> Nothing in this case file would have mattered to an individual user with a unique password per site — see <a href="/guides/strong-passwords-guide.html">the practical version of that advice</a>.</li>
+  <li><strong>Use a manager and stop reusing.</strong> Nothing in this case file would have mattered to an individual user with a unique password per site, see <a href="/guides/strong-passwords-guide.html">the practical version of that advice</a>.</li>
 </ol>

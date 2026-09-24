@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Twitter Breach 2022: The API That Deanonymised Accounts">
   <meta name="twitter:description" content="A bug let anyone submit an email address or phone number and be told which Twitter account it belonged to.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Twitter, 2022: an API that confirmed which account owned which email","description":"A bug let anyone submit an email address or phone number and be told which Twitter account it belonged to. For pseudonymous users, that is the whole threat model.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/twitter-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Twitter API data exposure"},"wordCount":696}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Twitter API data exposure","item":"https://www.myrecon.xyz/breaches/case-files/twitter-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What was the actual bug?","acceptedAnswer":{"@type":"Answer","text":"A change introduced in 2021 meant that submitting an email address or phone number to a particular endpoint would return the associated account, if one existed. That is a feature in a contact-matching context and a deanonymisation tool in a platform where many users deliberately keep their identity separate from their handle."}},{"@type":"Question","name":"Why is this worse than a password leak?","acceptedAnswer":{"@type":"Answer","text":"Because you can change a password. You cannot unlink a real identity from a pseudonymous account once someone has published the mapping. For activists, journalists' sources, people writing under a pseudonym about their health or sexuality, and anyone in a country where their speech is criminalised, that link is the thing the account existed to protect."}},{"@type":"Question","name":"Was it reported responsibly first?","acceptedAnswer":{"@type":"Answer","text":"Yes. A researcher reported the flaw through Twitter's bug bounty programme in January 2022 and was paid for it, and the flaw was fixed. The data had already been extracted before the fix, and it was offered for sale that July and published later."}},{"@type":"Question","name":"What about the \"200 million\" dataset?","acceptedAnswer":{"@type":"Answer","text":"A larger compilation circulated in early 2023. Analyses indicated it was substantially derived from the same underlying extraction, deduplicated and combined with other scraped data, rather than being a new and separate breach. As with all aggregate claims, the unique-record count is the number that matters."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -79,14 +80,14 @@
 
 <h2>What happened</h2>
 
-<p>A change introduced to a Twitter API in June 2021 meant that an email address or phone number submitted to a particular endpoint would return the account associated with it. Contact-matching features work this way by design — it is how "find your friends" works — but exposing it in this form, at scale and without adequate limits, turns it into a lookup service.</p>
+<p>A change introduced to a Twitter API in June 2021 meant that an email address or phone number submitted to a particular endpoint would return the account associated with it. Contact-matching features work this way by design, it is how "find your friends" works, but exposing it in this form, at scale and without adequate limits, turns it into a lookup service.</p>
 
 <p>A researcher reported the flaw through Twitter's bug bounty programme in January 2022 and was paid; the flaw was fixed. Before that, however, someone had used it to build a dataset.</p>
 
 <p>In July 2022 a file covering 5.4 million accounts was offered for sale. Twitter confirmed the vulnerability and the resulting exposure in August. The data was later published freely, and in early 2023 a much larger compilation circulated, which analyses suggested was substantially the same extraction combined with other scraped material rather than a fresh breach.</p>
 
 <div class="callout">
-  <p><strong>Enumeration is a category, not an accident.</strong> Any function that answers "does an account exist for this identifier?" can be turned into a directory by someone willing to ask enough times. The same failure produced the <a href="/breaches/case-files/facebook-scrape-2021.html">533 million Facebook records</a>. The fix is never to remove the feature; it is to make bulk use expensive — rate limits per identity rather than per address, anomaly detection on query patterns, and returning answers that do not confirm existence to unauthenticated callers.</p>
+  <p><strong>Enumeration is a category, not an accident.</strong> Any function that answers "does an account exist for this identifier?" can be turned into a directory by someone willing to ask enough times. The same failure produced the <a href="/breaches/case-files/facebook-scrape-2021.html">533 million Facebook records</a>. The fix is never to remove the feature; it is to make bulk use expensive, rate limits per identity rather than per address, anomaly detection on query patterns, and returning answers that do not confirm existence to unauthenticated callers.</p>
 </div>
 
 <h2>Why deanonymisation is a different kind of harm</h2>
@@ -107,7 +108,7 @@
 
 <h2>What it changed</h2>
 
-<p><strong>Enumeration protections became standard.</strong> Platforms reviewed every endpoint that confirms an identifier resolves to an account — registration forms, password reset flows, contact matching — and moved to responses that do not distinguish between existing and non-existing accounts.</p>
+<p><strong>Enumeration protections became standard.</strong> Platforms reviewed every endpoint that confirms an identifier resolves to an account, registration forms, password reset flows, contact matching, and moved to responses that do not distinguish between existing and non-existing accounts.</p>
 
 <p><strong>Pseudonymity got treated as a security property.</strong> It had often been framed as a nuisance in policy debates about real-name requirements. This case forced a clearer articulation of what pseudonymity protects and who relies on it, and it fed directly into European regulatory scrutiny of platform design.</p>
 
@@ -117,9 +118,9 @@
 
 <ol class="bx-actions">
   <li><strong>Register it with an address and number that are not linked to your name.</strong> A dedicated email address used for nothing else is the single most effective separation available.</li>
-  <li><strong>Do not attach a phone number you use elsewhere.</strong> Where two-factor authentication is required, use an authenticator app rather than SMS — <a href="/guides/two-factor-authentication.html">the practical differences</a>.</li>
+  <li><strong>Do not attach a phone number you use elsewhere.</strong> Where two-factor authentication is required, use an authenticator app rather than SMS, <a href="/guides/two-factor-authentication.html">the practical differences</a>.</li>
   <li><strong>Assume the link can be made and plan for it.</strong> If being identified would be dangerous, treat the account as potentially identifiable and post accordingly.</li>
-  <li><strong>Audit what your accounts already reveal about each other</strong> — reused handles, profile photos, writing style and posting times all link identities without any API assistance — <a href="/guides/username-osint-search.html">how that correlation actually works</a>.</li>
+  <li><strong>Audit what your accounts already reveal about each other</strong>: reused handles, profile photos, writing style and posting times all link identities without any API assistance, <a href="/guides/username-osint-search.html">how that correlation actually works</a>.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -132,7 +133,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -149,10 +150,22 @@
         <h3>What about the &quot;200 million&quot; dataset?</h3>
         <p>A larger compilation circulated in early 2023. Analyses indicated it was substantially derived from the same underlying extraction, deduplicated and combined with other scraped data, rather than being a new and separate breach. As with all aggregate claims, the unique-record count is the number that matters.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><b>Twitter security incident statement, August 2022</b></li>
-        <li><b>Irish Data Protection Commission — announcement of inquiry, December 2022</b></li>
+        <li><b>Irish Data Protection Commission, announcement of inquiry, December 2022</b></li>
         <li><b>HackerOne report and researcher disclosure, January 2022</b></li>
       </ul>
       <h2>Read next</h2>
@@ -162,7 +175,7 @@
         <li><a href="/breaches/case-files/linkedin-2012.html">LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -178,5 +191,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

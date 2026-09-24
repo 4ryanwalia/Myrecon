@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passkeys Explained: How Passwordless Login Works | MyRecon</title>
+  <meta name="description" content="What a passkey actually is, why a convincing fake site cannot use one, what happens when you lose the device, and the recovery path that quietly undoes the whole benefit.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/passkeys-explained.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Passkeys Explained: Logging In Without a Password">
+  <meta property="og:description" content="What a passkey actually is, why a convincing fake site cannot use one, what happens when you lose the device, and the recovery path that quietly undoes the whole benefit.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/passkeys-explained.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Passkeys Explained: Logging In Without a Password">
+  <meta name="twitter:description" content="What a passkey actually is, why a convincing fake site cannot use one, what happens when you lose the device, and the recovery path that quietly undoes the whole benefit.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"Passkeys Explained: Logging In Without a Password","description":"What a passkey actually is, why a convincing fake site cannot use one, what happens when you lose the device, and the recovery path that quietly undoes the whole benefit.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1203,"mainEntityOfPage":"https://www.myrecon.xyz/guides/passkeys-explained.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Passkeys Explained: Logging In Without a Password","item":"https://www.myrecon.xyz/guides/passkeys-explained.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my fingerprint sent to the website?","acceptedAnswer":{"@type":"Answer","text":"No. The biometric check happens entirely on your device and is only there to unlock the private key already stored on it. Your fingerprint or face data never leaves the hardware, is never transmitted, and the website never receives anything but a signature."}},{"@type":"Question","name":"What happens if I lose my phone?","acceptedAnswer":{"@type":"Answer","text":"It depends on which kind of passkey you have. A synced passkey is restored when you sign into your platform account or password manager on a new device. A device-bound passkey on a lost phone is gone, and you recover through whatever backup method the service offers, which is why you should enrol a second device or keep backup codes."}},{"@type":"Question","name":"Are passkeys safer than an authenticator app?","acceptedAnswer":{"@type":"Answer","text":"Yes, in the way that matters most. An authenticator code can be typed into a fake site and relayed to the real one within its thirty-second life. A passkey is bound to the real site's domain, so a fake site cannot use it at all, the browser will not offer it."}},{"@type":"Question","name":"Can a passkey be stolen in a data breach?","acceptedAnswer":{"@type":"Answer","text":"Not in a usable form. The service stores only your public key, which cannot log anyone in. That is a structural difference from passwords: breaching the server yields nothing an attacker can replay."}},{"@type":"Question","name":"Do I still need a password?","acceptedAnswer":{"@type":"Answer","text":"On most services, yes, the password usually remains as a fallback, which means the account is still only as strong as that fallback. The full benefit arrives when a service lets you remove the password entirely, and a growing number now do."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Security</span>
+      <h1>Passkeys Explained: Logging In Without a Password</h1>
+      <p class="meta">Published 14 September 2026 · 7 min read</p>
+
+<p class="lead">A passkey is not a password you do not have to remember. It is a different mechanism entirely: there is no shared secret, nothing for a breached company to lose, and nothing a convincing fake site can persuade you to hand over. Understanding why requires about two minutes of cryptography, and it is worth them.</p>
+
+      <h2>What a passkey actually is</h2>
+      <p>When you create a passkey, your device generates a pair of mathematically linked keys. The <strong>private key</strong> stays on the device and never leaves it. The <strong>public key</strong> goes to the website, which stores it against your account.</p>
+      <p>Logging in works by challenge and response. The site sends a random challenge. Your device asks you to unlock it, a fingerprint, a face, a PIN, and then signs the challenge with the private key. The site verifies the signature against the public key it already holds. If it matches, you are in.</p>
+      <p>Three consequences follow immediately, and they are the whole argument for passkeys:</p>
+      <ul>
+        <li><strong>Nothing secret is transmitted.</strong> The signature proves you hold the key without revealing it, and it is different every time, so intercepting it achieves nothing.</li>
+        <li><strong>A breach of the service leaks nothing usable.</strong> The stored public key logs nobody in. Compare this with the password databases behind almost every case file on this site.</li>
+        <li><strong>There is no secret you can be tricked into giving away.</strong> You cannot read a passkey out over the phone or type it into a lookalike page, because it is not a thing you know.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>The biometric never leaves your device, and this is the most common misunderstanding.</strong> Your fingerprint or face is not sent to the website, not stored by it, and not involved in the cryptography. It is a local gate that unlocks the private key already sitting in your phone's secure hardware. The site receives a signature and nothing else, it does not learn how you unlocked the device, or that you used a biometric at all.</p>
+      </div>
+
+      <h2>Why a fake site cannot use your passkey</h2>
+      <p>This is the property that makes passkeys categorically different from every other second factor, and it has a name: <strong>origin binding</strong>.</p>
+      <p>When a passkey is created, it is permanently associated with the site's domain. The browser enforces that association. A pixel-perfect replica of your bank at a lookalike domain can ask for a passkey all it likes; the browser will not offer one, because the origin does not match the credential.</p>
+      <p>Note what that removes: the requirement that you notice. Every other defence against phishing depends on a human spotting something, a misspelt domain, an unexpected urgency, a wrong sender. Origin binding does not care whether the fake is convincing, because the check is done by software comparing strings, and the fake fails it by definition.</p>
+      <p>The same property defeats real-time phishing proxies, which are what currently defeat authenticator apps. A proxy that relays your six-digit code to the real site within its thirty-second window has your code. There is no equivalent move against a passkey: the signature it could relay was computed over the wrong origin and the real site rejects it.</p>
+
+      <h2>Synced and device-bound passkeys</h2>
+      <p>Two flavours exist, and the choice is a genuine trade-off rather than a matter of which is better.</p>
+      <p>A <strong>synced passkey</strong> is backed up through your platform account or password manager and appears on every device you sign into. It is what most people will use, because it survives a dropped phone. The private key is protected in transit and at rest by the provider, which does mean the security of your passkeys now partly rests on the security of that account, so that account needs the strongest protection you can give it.</p>
+      <p>A <strong>device-bound passkey</strong> never leaves the hardware it was created on. A physical security key is the clearest example. Nothing syncs, nothing can be pulled from a cloud account, and the trade is absolute: lose it with no backup enrolled and that credential is gone.</p>
+      <p>There is also a cross-device flow for signing in on a machine that has no passkey of its own: the computer shows a QR code, your phone scans it, and the two communicate over Bluetooth to confirm the signature. The Bluetooth step is not incidental, it proves the phone is physically near the computer, which stops an attacker from displaying a QR code on their own screen and asking you to scan it remotely.</p>
+
+      <h2>The weak point nobody advertises</h2>
+      <p>A passkey protects the front door. Most services still leave a side door open, and an attacker will always use the side door.</p>
+      <p>If an account has a passkey <em>and</em> keeps a password, and that password can be reset by an emailed link or an SMS code, then the account's real security is the weaker of those paths. The passkey has not made the account phishing-resistant; it has made the phishing-resistant option available while the phishable one is still accepted.</p>
+      <p>So the meaningful step, wherever a service allows it, is to remove the fallbacks after enrolling the passkey, delete the password, or at minimum remove SMS as a recovery route. Until that is done, the improvement is convenience rather than security, which is fine as long as nobody mistakes one for the other.</p>
+
+      <div class="callout">
+        <p><strong>Enrol on two things before you rely on one.</strong> A phone and a laptop, a password manager and a hardware key, or two hardware keys with one kept elsewhere. Then keep the service's backup codes somewhere offline. The failure that actually happens to people is not an attacker defeating a passkey, it is a lost, broken or wiped device and no second way in.</p>
+      </div>
+
+      <h2>What to do with them today</h2>
+      <ol>
+        <li><strong>Start with your email account.</strong> It is the reset path for everything else, so it is the account where removing phishable fallbacks pays the most.</li>
+        <li><strong>Then your password manager,</strong> which holds the rest.</li>
+        <li><strong>Then anything financial,</strong> and any account tied to a payment method.</li>
+        <li><strong>Enrol a second device</strong> on each before moving on, and save the backup codes offline.</li>
+        <li><strong>Remove the phishable fallbacks</strong> wherever the service lets you, the password, and SMS recovery in particular.</li>
+        <li><strong>Keep the password manager anyway.</strong> Passkey support is uneven, and most of your accounts will need passwords for years yet.</li>
+      </ol>
+
+      <h2>Honest limitations</h2>
+      <ul>
+        <li><strong>Coverage is patchy.</strong> Plenty of services offer none, and some implementations are partial in ways that are hard to see from the outside.</li>
+        <li><strong>Recovery is the unsolved part.</strong> The industry has replaced a well-understood weak point with a less-understood one, and support-desk recovery remains the route attackers prefer against any authentication system.</li>
+        <li><strong>Shared devices are awkward.</strong> A passkey assumes a device belongs to one person.</li>
+        <li><strong>It does not stop session theft.</strong> Malware that steals your session cookie after you log in bypasses authentication entirely, passkey or not, see <a href="/guides/stealer-logs-explained.html">stealer logs</a>.</li>
+        <li><strong>The word is used loosely.</strong> Some products describe any biometric unlock as a passkey. The test is whether there is a key pair bound to the site's domain, not whether a fingerprint is involved.</li>
+      </ul>
+
+      <div class="callout">
+        <p>Check which of your accounts are already exposed in a breach, and therefore which to move to a passkey first, with the <a href="/#tool">MyRecon email check</a>.</p>
+      </div>
+
+      <h2>Questions people ask</h2>
+      <h3>Is my fingerprint sent to the website?</h3>
+      <p>No. The biometric check happens entirely on your device and is only there to unlock the private key already stored on it. Your fingerprint or face data never leaves the hardware, is never transmitted, and the website never receives anything but a signature.</p>
+
+      <h3>What happens if I lose my phone?</h3>
+      <p>It depends on which kind of passkey you have. A synced passkey is restored when you sign into your platform account or password manager on a new device. A device-bound passkey on a lost phone is gone, and you recover through whatever backup method the service offers, which is why you should enrol a second device or keep backup codes.</p>
+
+      <h3>Are passkeys safer than an authenticator app?</h3>
+      <p>Yes, in the way that matters most. An authenticator code can be typed into a fake site and relayed to the real one within its thirty-second life. A passkey is bound to the real site's domain, so a fake site cannot use it at all, the browser will not offer it.</p>
+
+      <h3>Can a passkey be stolen in a data breach?</h3>
+      <p>Not in a usable form. The service stores only your public key, which cannot log anyone in. That is a structural difference from passwords: breaching the server yields nothing an attacker can replay.</p>
+
+      <h3>Do I still need a password?</h3>
+      <p>On most services, yes, the password usually remains as a fallback, which means the account is still only as strong as that fallback. The full benefit arrives when a service lets you remove the password entirely, and a growing number now do.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dpasskeys_explained" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/two-factor-authentication.html">how the other second factors compare</a></li>
+        <li><a href="/guides/strong-passwords-guide.html">managing the passwords passkeys have not replaced yet</a></li>
+        <li><a href="/guides/how-to-spot-phishing.html">the attack passkeys are designed to defeat</a></li>
+        <li><a href="/guides/account-hacked-what-to-do.html">what to do if an account is taken anyway</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

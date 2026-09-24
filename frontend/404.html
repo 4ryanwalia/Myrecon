@@ -3,36 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page not found — MyRecon</title>
+  <title>Page not found | MyRecon</title>
   <meta name="description" content="That page does not exist. Head back to the MyRecon tools, the breach archive, or the guides.">
+  <!-- noindex so a soft 404 never enters the index; follow so the links out of
+       here still pass crawlers back to the pages that do exist. -->
   <meta name="robots" content="noindex, follow">
-  <meta name="theme-color" content="#070b12">
+  <meta name="theme-color" content="#0a0f1a">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <style>
+    /* Page-scoped theme for the 404. Every colour is a design-system token, so
+       the light theme and the contrast work already done in styles.css carry
+       over untouched, this file only arranges them. Prefixed .e404- so none
+       of it leaks into the shared stylesheet.
+       Deliberately no ad slot on this page: AdSense counts ads on an error
+       page as ads without content. */
+    .e404 { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .e404-hero { position: relative; isolation: isolate; width: 100%; padding: 56px 0 8px; }
+
+    /* A faint surveyor's grid behind the numerals, masked to a soft oval so it
+       fades out instead of ending on a hard line. Decorative only. */
+    .e404-hero::before {
+      /* The -20px side bleed exactly matches .container's 20px gutter, so the
+         grid reaches the viewport edge without pushing the page 4px wider. */
+      content: ""; position: absolute; inset: -30px -20px 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(58% 70% at 50% 2%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 72%),
+        repeating-linear-gradient(0deg, color-mix(in srgb, var(--border-strong) 60%, transparent) 0 1px, transparent 1px 44px),
+        repeating-linear-gradient(90deg, color-mix(in srgb, var(--border-strong) 60%, transparent) 0 1px, transparent 1px 44px);
+      -webkit-mask-image: radial-gradient(64% 58% at 50% 34%, #000 28%, transparent 76%);
+      mask-image: radial-gradient(64% 58% at 50% 34%, #000 28%, transparent 76%);
+    }
+
+    .e404-status {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--surface);
+      font-family: var(--mono); font-size: 0.73rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .e404-status .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--warn);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--warn) 22%, transparent);
+    }
+
+    .e404-num {
+      font-size: clamp(5rem, 17vw, 9.5rem); font-weight: 800; line-height: 0.92;
+      letter-spacing: -0.05em; color: var(--accent); margin: 18px 0 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .e404 h1 { font-size: clamp(1.45rem, 3.6vw, 2rem); font-weight: 800; letter-spacing: -0.025em; }
+    .e404-lead { color: var(--text-dim); max-width: 46ch; margin: 12px auto 0; line-height: 1.6; }
+
+    .e404-path {
+      display: inline-block; max-width: 100%; margin-top: 20px; padding: 9px 16px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-soft);
+      font-family: var(--mono); font-size: 0.84rem; color: var(--text-dim);
+      word-break: break-all; text-align: left;
+    }
+    /* A class-level `display` outranks the UA's [hidden]{display:none}, so
+       without this the empty "Requested:" row shows on a bare /404 hit. */
+    .e404-path[hidden] { display: none; }
+    .e404-path b { color: var(--text-mute); font-weight: 500; }
+    .e404-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+
+    .e404-rule {
+      width: 100%; max-width: 760px; height: 1px; margin: 48px 0 28px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+    .e404-label {
+      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-mute); margin-bottom: 16px;
+    }
+
+    /* Fixed 2x2 rather than auto-fit: with four items, auto-fit lands on three
+       across and leaves the fourth orphaned on its own row. */
+    .e404-links {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 12px; width: 100%; max-width: 680px; text-align: left;
+    }
+    .e404-link {
+      display: block; padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); transition: border-color 0.16s ease, transform 0.16s ease;
+    }
+    .e404-link:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+    .e404-link strong { display: block; font-size: 0.98rem; font-weight: 700; color: var(--text); }
+    .e404-link strong::after { content: " \2192"; color: var(--accent); }
+    .e404-link span { display: block; margin-top: 5px; font-size: 0.86rem; color: var(--text-dim); line-height: 1.5; }
+    .e404-foot { color: var(--text-mute); font-size: 0.88rem; margin-top: 26px; }
+
+    @media (max-width: 560px) {
+      .e404-hero { padding-top: 36px; }
+      .e404-rule { margin: 36px 0 24px; }
+      .e404-links { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .e404-link { transition: none; }
+      .e404-link:hover { transform: none; }
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="nav"><div class="container nav-inner">
-    <a class="brand" href="/"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-  </div></header>
-  <main class="container" id="main" style="text-align:center;padding:90px 20px">
-    <div class="gradient-text" style="font-size:clamp(4rem,14vw,7rem);font-weight:800;line-height:1">404</div>
-    <h1 style="margin-top:10px;font-size:1.5rem">This page went dark</h1>
-    <p style="color:var(--text-dim);max-width:440px;margin:12px auto 26px">The page you were looking for doesn't exist or has moved. Head back and start a new investigation.</p>
-    <a class="btn" href="/">Back to MyRecon</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main class="container e404" id="main" style="padding-bottom:64px">
+    <div class="e404-hero">
+      <span class="e404-status"><span class="dot"></span> Error 404 &middot; Not found</span>
+      <div class="e404-num">404</div>
+      <h1>This page went dark</h1>
+      <p class="e404-lead">
+        The address you followed doesn't point anywhere on MyRecon. Nothing went wrong
+        with your search, the page is simply not here.
+      </p>
+      <!-- Filled in by the script at the foot of the page, and only ever as text.
+           Showing people the path they actually hit is what turns "the site is
+           broken" into "I typed it wrong", most 404s here are a mistyped slug. -->
+      <p class="e404-path" id="badPath" hidden><b>Requested:</b> <span id="badPathValue"></span></p>
+      <p class="e404-actions">
+        <a class="btn" href="/#tool">Run a search</a>
+        <a class="btn btn-ghost" href="/">Back home</a>
+      </p>
+    </div>
+
+    <div class="e404-rule" role="presentation"></div>
+    <p class="e404-label">Where to go instead</p>
+    <div class="e404-links">
+      <a class="e404-link" href="/#tool">
+        <strong>Investigation tool</strong>
+        <span>Check an email, username, domain or IP against public sources.</span>
+      </a>
+      <a class="e404-link" href="/breaches/">
+        <strong>Breach archive</strong>
+        <span>What was taken, from whom, and what it means for you.</span>
+      </a>
+      <a class="e404-link" href="/breaches/case-files/">
+        <strong>Case files</strong>
+        <span>How the major breaches actually happened, reconstructed.</span>
+      </a>
+      <a class="e404-link" href="/guides/">
+        <strong>Guides</strong>
+        <span>OSINT and online privacy explained without the jargon.</span>
+      </a>
+    </div>
+    <p class="e404-foot">
+      Followed a link on MyRecon itself to get here?
+      <a href="/contact.html" style="color:var(--accent)">Tell me where it was</a> and I'll fix it.
+    </p>
   </main>
-  <footer class="footer"><div class="container"><div class="footer-bottom">
-    <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-    <span><a href="/contact.html">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-  </div></div></footer>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon · myrecon.xyz</span><span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span></div></div></footer>
+  <script>
+    /* textContent, never innerHTML: the path is attacker-controlled, anyone can
+       send someone a link to any path on this domain, and the CSP would not
+       stop an injection that this page wrote into itself. Capped and stripped of
+       control characters so a pathological URL cannot wreck the layout either.
+       80 chars clears the site's longest real URL, which is 60. */
+    (function () {
+      var row = document.getElementById("badPath");
+      var val = document.getElementById("badPathValue");
+      if (!row || !val) return;
+      var raw = location.pathname + location.search;
+      var path = "";
+      for (var i = 0; i < raw.length; i++) {
+        var code = raw.charCodeAt(i);
+        if (code > 31 && code !== 127) path += raw.charAt(i);
+      }
+      if (!path || path === "/") return;
+      if (path.length > 80) path = path.slice(0, 80) + "…";
+      val.textContent = path;
+      row.hidden = false;
+    })();
+  </script>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

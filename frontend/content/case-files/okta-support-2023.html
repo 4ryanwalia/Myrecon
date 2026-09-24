@@ -1,0 +1,85 @@
+<!--
+{
+  "headline": "Okta, 2023: the breach arrived through the help desk, inside debugging files",
+  "seoTitle": "Okta Support System Breach 2023: HAR Files",
+  "subject": "Okta customer support system breach",
+  "kicker": "2023 · Identity provider",
+  "description": "Attackers reached Okta's support case system and read HAR files customers had uploaded for troubleshooting. Those files contained live session tokens.",
+  "cardBlurb": "A diagnostic artefact nobody classifies as a credential, uploaded voluntarily by customers, holding the keys to their own tenants.",
+  "records": "Initially reported as 134 customers; later disclosed as affecting the details of essentially all users of the support system, around 18,400",
+  "peopleCount": 18400,
+  "occurred": "September – October 2023",
+  "disclosed": "20 October 2023",
+  "vector": "A service account whose credentials had been saved into a personal Google profile on a managed device, used to access the customer support case management system and the HAR files stored in it",
+  "actor": "Not publicly attributed",
+  "cost": "Downstream intrusions at multiple security vendors; a revised disclosure a month later; sustained reputational damage to an identity provider",
+  "exposed": ["Session tokens and cookies in uploaded HAR files", "Customer support case contents", "Names and email addresses of support system users"],
+  "sortDate": "2023-10-20",
+  "published": "2026-09-15",
+  "updated": "2026-09-15",
+  "related": ["twilio-0ktapus-2022", "lastpass-2022", "uber-2022"],
+  "faq": [
+    { "q": "What is a HAR file and why is it dangerous?", "a": "A HAR file is an HTTP Archive: a recording of everything a browser sent and received during a session, which support teams ask for because it shows exactly what went wrong. It records request headers, and request headers carry session cookies and authorisation tokens. So a HAR file captured from a logged-in session is a container holding live credentials, produced by a user who believes they are sending a log file." },
+    { "q": "How did the attackers get into the support system?", "a": "Okta reported that a service account's credentials had been saved into an employee's personal Google profile while signed into Chrome on a company-managed laptop. Compromise of that personal account therefore exposed a corporate service credential. It is an unusually clean illustration of why browser profile sync across personal and work identities is a security boundary problem and not a convenience question." },
+    { "q": "How was the attack detected?", "a": "By a customer. BeyondTrust identified suspicious activity against its own Okta tenant, traced it to a session token from a HAR file it had uploaded days earlier, and reported it to Okta. Cloudflare and 1Password identified related activity. The detection came from downstream organisations watching their own logs, not from the provider, which is a genuine argument for customers monitoring their identity provider's activity independently." },
+    { "q": "Why did the number change from 134 customers to everyone?", "a": "Okta's initial disclosure described 134 customers whose uploaded files were accessed. A month later it disclosed that a report the attacker had run contained the names and email addresses of essentially all users of the customer support system, around 18,400. The first figure covered files retrieved; the second covered a report that had been overlooked in the initial analysis. Early breach numbers are almost always the floor." }
+  ],
+  "sources": [
+    { "label": "Okta security incident updates and root cause statements, October–November 2023" },
+    { "label": "BeyondTrust, public technical write-up of the October 2023 Okta support case incident" },
+    { "label": "Cloudflare, incident report concerning compromised Okta credentials, October 2023" },
+    { "label": "1Password, security incident report, October 2023" }
+  ]
+}
+-->
+<p class="lead">Okta sells identity. Its entire product is being the trusted place where a company's employees authenticate, which makes it one of the highest-value targets in enterprise software. In October 2023 it was breached, not through its authentication platform, but through the support portal where customers upload files to explain what is broken.</p>
+
+<h2>What happened</h2>
+
+<p>When something goes wrong in a browser, a support engineer will often ask for a HAR file. The browser produces it in a couple of clicks, and it is exactly what the engineer needs: a complete recording of every request and response in the session, showing precisely where things failed.</p>
+
+<p>It is also a complete recording of every request header, and request headers are where session cookies and bearer tokens live. A HAR file captured from a logged-in session contains working credentials for that session. Most people producing one have no idea of this, because it presents as a log, is requested as a log, and is named like a log.</p>
+
+<p>Attackers reached Okta's customer support case management system using credentials for a service account. Okta's root cause statement describes how those credentials were exposed: an employee had signed into a personal Google profile in Chrome on a company-managed laptop, and the service account credentials were saved into that personal profile. Once inside the support system, the attackers took HAR files that customers had uploaded, extracted the session tokens inside them, and used those tokens to access the customers' own Okta environments, no password required, and no second factor, because a valid session token means authentication has already happened.</p>
+
+<div class="callout">
+  <p><strong>Credentials do not always look like credentials.</strong> Organisations classify passwords, keys and certificates carefully, and then move enormous quantities of secret material around in formats nobody has categorised: HAR files, browser exports, memory dumps, screen recordings of a logged-in console, debug logs with authorisation headers intact. Every support interaction is a potential exfiltration channel that the people using it experience as helpfulness. Sanitise HAR files before uploading them, the tooling exists, and treat any support portal that stores them as holding live credentials, because it does.</p>
+</div>
+
+<h2>Detected by the customers</h2>
+
+<p>The sequence that surfaced this incident is the part worth studying. BeyondTrust noticed anomalous activity against its own Okta tenant, investigated, connected it to a HAR file it had uploaded to Okta support days earlier, and raised it with Okta. Cloudflare and 1Password identified related activity in their own environments. The detection, and much of the initial technical analysis, came from downstream organisations examining their own logs.</p>
+
+<p>Two things follow from that. The first is a reasonable criticism of the provider's own detection and its initial responsiveness, which was raised at the time by the customers involved. The second is more broadly useful: these particular customers are security companies with mature detection capability, watching their identity provider's activity closely enough to spot an unexpected session. A typical enterprise would not have noticed at all. If your identity provider is the root of trust for everything else, its audit log is not the provider's business, it is yours, and something at your end should be reading it.</p>
+
+<h2>The number that grew</h2>
+
+<p>Okta's first public account described 134 customers whose uploaded files had been accessed. In November, a month later, it disclosed that a report the attacker had run within the support system contained the names and email addresses of essentially every user of that system, around 18,400 people, covering almost the entire customer base.</p>
+
+<p>The revision is worth noting precisely because it is so ordinary. Early breach figures describe what investigators have confirmed at that moment, and confirmation lags reality. Every large incident in this archive followed the same curve: Yahoo went from 500 million to 3 billion, Latitude went from hundreds of thousands to 14 million, Uber's 2016 figure took a year and a criminal case to settle. A first number is a floor, and reporting that treats it as a measurement is reporting something that has not happened yet.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>September 2023</b>: Attackers access Okta's customer support case management system using compromised service account credentials.</li>
+  <li><b>Late September – October 2023</b>: HAR files uploaded by customers are retrieved and session tokens extracted.</li>
+  <li><b>2 October 2023</b>: BeyondTrust detects anomalous activity in its own tenant and reports it to Okta.</li>
+  <li><b>18–19 October 2023</b>: Cloudflare and 1Password identify related activity in their environments.</li>
+  <li><b>20 October 2023</b>: Okta publicly confirms the incident, initially describing 134 affected customers.</li>
+  <li><b>3 November 2023</b>: Okta publishes a root cause statement describing the service account credentials saved into a personal Google profile.</li>
+  <li><b>29 November 2023</b>: Okta discloses that a report run by the attacker exposed the names and email addresses of essentially all support system users.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>Support portals were reclassified. Organisations that had treated case management as a business system rather than a security-critical one revisited that, and HAR file sanitisation moved from a niche practice into standard guidance, several vendors now strip tokens automatically on upload, or refuse HAR files outright in favour of narrower diagnostics.</p>
+
+<p>Session token handling also tightened. The attack worked because a token stolen from a recording remained valid and usable from an unrelated location; the mitigations that followed, binding sessions to a device or network context, shortening administrative session lifetimes, and alerting on a session appearing from a new ASN, address the reuse rather than the theft. That distinction matters, because you cannot prevent every token from leaking, and you can make a leaked one worthless outside the context it was issued in.</p>
+
+<p>For the identity sector specifically, it reinforced a lesson from the 0ktapus campaign the previous year: an identity provider is a concentration of risk proportionate to its convenience. Single sign-on is a genuine security improvement over dozens of separate passwords, and it also means one compromise reaches everything. The correct response is not to abandon it but to defend the provider relationship as critical infrastructure, phishing-resistant factors for administrators, independent monitoring of the provider's audit log, and a rehearsed answer to the question of what you do on the day your identity provider tells you it has been breached.</p>
+
+<h2>If you use a support portal</h2>
+
+<p>The practical takeaway generalises well beyond Okta customers. Before uploading a HAR file, a browser export, or a debug log to any vendor, assume it contains live credentials, because in most cases it does. Use a sanitiser, or capture the recording from a session you are willing to invalidate and then log out to kill it.</p>
+
+<p>And if you administer an identity provider, the two controls that would have limited this are worth putting in place today: hardware-backed or passkey authentication for every administrative account, and an alert when an administrative session appears from an address or device that has not been seen before. The first stops credential theft from mattering. The second catches the case where a valid session shows up somewhere it should not be, which is exactly what happened here, and what the customers who caught it were watching for.</p>

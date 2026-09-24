@@ -1,6 +1,6 @@
 """
 ╔══════════════════════════════════════════════════════════════╗
-║  Result Parser — Categorisation, Deduplication, Export      ║
+║  Result Parser, Categorisation, Deduplication, Export      ║
 ╚══════════════════════════════════════════════════════════════╝
 """
 
@@ -27,8 +27,8 @@ def categorise_result(result: dict, target: str = "") -> str:
     Classify a result as 'profile', 'document', or 'mention'.
 
     'profile' is a claim that the URL is somebody's account page, so it is
-    only made when the URL is *shaped* like one — github.com/<handle>, not
-    any github.com page that mentions the handle — and, when `target` names
+    only made when the URL is *shaped* like one, github.com/<handle>, not
+    any github.com page that mentions the handle, and, when `target` names
     the handle we searched for, when the URL's own handle is that one.
     Everything else on those domains is a mention: still a finding, still
     shown, but not sold to the user as an account that exists.

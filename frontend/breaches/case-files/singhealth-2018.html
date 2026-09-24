@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SingHealth Breach 2018: A Targeted Attack | MyRecon</title>
+  <meta name="description" content="An advanced attacker spent months inside Singapore's largest health system, repeatedly and specifically seeking one patient's records.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/singhealth-2018.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="SingHealth Breach 2018: A Targeted Attack">
+  <meta property="og:description" content="An advanced attacker spent months inside Singapore's largest health system, repeatedly and specifically seeking one patient's records.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/singhealth-2018.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SingHealth Breach 2018: A Targeted Attack">
+  <meta name="twitter:description" content="An advanced attacker spent months inside Singapore's largest health system, repeatedly and specifically seeking one patient's records.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SingHealth, 2018: 1.5 million patients, taken on the way to one of them","description":"An advanced attacker spent months inside Singapore's largest health system, repeatedly and specifically seeking one patient's records. A million and a half others were taken en route.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/singhealth-2018.html","articleSection":"Case Files","about":{"@type":"Thing","name":"SingHealth cyberattack"},"wordCount":1178}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"SingHealth cyberattack","item":"https://www.myrecon.xyz/breaches/case-files/singhealth-2018.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What was actually taken?","acceptedAnswer":{"@type":"Answer","text":"Demographic records for about 1.5 million people who had visited SingHealth outpatient clinics over a seven-year period: name, national identity card number, address, gender, race and date of birth. For roughly 160,000 of those patients, records of dispensed outpatient medicines were also taken. Diagnoses, doctors' notes and test results were not, the attackers queried a specific database in a specific way, and what they took reflects that."}},{"@type":"Question","name":"Was the Prime Minister specifically targeted?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Committee of Inquiry found that the records of Prime Minister Lee Hsien Loong were repeatedly and specifically targeted, along with those of a number of other individuals. That finding is what separates this case from an ordinary healthcare breach: the bulk data was not the objective but the by-product of reaching one person's prescription history."}},{"@type":"Question","name":"How did the attackers get in?","acceptedAnswer":{"@type":"Answer","text":"Through a front-end workstation, most likely via a phishing email carrying malware. From that foothold they moved laterally through the network over a period of months, obtained credentials for privileged accounts, and eventually reached a server from which they could query the electronic medical records database directly. It is the standard shape of a targeted intrusion: the entry point is mundane, and the work happens afterwards."}},{"@type":"Question","name":"Why were the failings made public in such detail?","acceptedAnswer":{"@type":"Answer","text":"Singapore convened a Committee of Inquiry with public hearings, and its report names specific technical weaknesses and specific human decisions, including administrative accounts with weak passwords, unpatched software, and staff who saw anomalies and did not escalate them. Very few countries publish that level of detail about a government-linked breach. The report is more useful to defenders than almost any vendor incident write-up, precisely because it does not protect anyone."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <article class="article breach-article cf-article">
+      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+
+      <header class="bx-head">
+        <div>
+          <span class="kicker">2018 · Healthcare</span>
+          <h1>SingHealth, 2018: 1.5 million patients, taken on the way to one of them</h1>
+          <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
+        </div>
+      </header>
+
+      <dl class="cf-facts">
+        <div class="cf-fact"><dt>People affected</dt><dd>1.5 million patients' personal particulars; about 160,000 patients' outpatient dispensed-medicine records</dd></div>
+        <div class="cf-fact"><dt>When it happened</dt><dd>Initial compromise around August 2017; bulk exfiltration 27 June – 4 July 2018</dd></div>
+        <div class="cf-fact"><dt>Made public</dt><dd>20 July 2018</dd></div>
+        <div class="cf-fact"><dt>How they got in</dt><dd>A compromised front-end workstation, then lateral movement to a privileged account and queries against the electronic medical records database</dd></div>
+        <div class="cf-fact"><dt>Attributed to</dt><dd>A skilled and well-resourced advanced persistent threat group; the government did not publicly name a state</dd></div>
+        <div class="cf-fact"><dt>What it cost</dt><dd>S$750,000 fine for the health IT agency and S$250,000 for SingHealth; a public Committee of Inquiry and sixteen recommendations</dd></div>
+      </dl>
+      <p class="cf-exposed"><b>What was exposed:</b> Names · National registration identity card numbers · Addresses · Genders · Races · Dates of birth · Outpatient dispensed medicines</p>
+
+<p class="lead">On 20 July 2018 Singapore announced that the personal records of 1.5 million people, a quarter of the country's population, had been taken from its largest healthcare group. The inquiry that followed established something rarer than the number: the attackers had been looking for one patient in particular, and they found him.</p>
+
+<h2>What happened</h2>
+
+<p>SingHealth operates a large share of Singapore's public hospitals and outpatient clinics. Its records sit in a system called SCM, the electronic medical records platform administered not by the hospitals themselves but by IHiS, the central IT agency for the country's public healthcare sector.</p>
+
+<p>The intrusion began around August 2017 with the compromise of a front-end workstation, most likely through a phishing email. From there the attackers did what capable intruders do: they stayed quiet and moved sideways. Over the following months they harvested credentials, established footholds on additional machines, and worked towards accounts with enough privilege to query the medical records database directly. By mid-2018 they had reached a server that could do exactly that.</p>
+
+<p>Between 27 June and 4 July 2018 they ran the queries that took the data: demographic records for 1.5 million patients, and outpatient dispensed-medicine records for around 160,000 of them. Diagnoses and clinical notes were not taken. The pattern of queries showed why. The Committee of Inquiry found that the records of Prime Minister Lee Hsien Loong had been specifically and repeatedly targeted.</p>
+
+<h2>Who they were actually after</h2>
+
+<p>Almost every case file in this archive describes an opportunistic crime. Somebody found a way in, took whatever was reachable, and sold it. The value was in volume, and the victims were interchangeable.</p>
+
+<p>This is the other kind. The 1.5 million records were not the objective; they were what came out of the database alongside the records that were. A prescription history is a medical history by inference, what someone is treated for, how long they have been treated, whether the treatment changed. For a head of government that is intelligence, and the people who go looking for it are not motivated by resale value.</p>
+
+<p>The distinction matters for anyone reading this to decide what to do about their own systems. Defences calibrated against opportunists assume the attacker will move on when the effort exceeds the payoff. An actor pursuing one specific person will not move on, will spend months, and will accept a great deal of noise to get there. The same controls are involved, but the assumption that an attacker gives up is not available.</p>
+
+<div class="callout">
+  <p><strong>The weaknesses were ordinary.</strong> The inquiry did not find an exotic capability. It found administrative accounts with weak and reused passwords, software left unpatched, a network that permitted movement between segments it should not have, and, most consequentially, staff who noticed unusual database activity and did not escalate it, in some cases for weeks. A sophisticated attacker does not need sophisticated failures. It needs the ordinary ones to still be there, and they usually are.</p>
+</div>
+
+<h2>The findings nobody redacted</h2>
+
+<p>What makes this incident unusually valuable is the Committee of Inquiry report published in January 2019. Singapore held public hearings and published findings that name specific technical weaknesses and specific human decisions, including the periods during which anomalies were visible to staff and went unreported.</p>
+
+<p>That candour is almost unheard of. The normal output of a government-linked breach is a short statement, a regulatory finding written at a high level of abstraction, and a set of lessons phrased so generally that nobody can act on them. The SingHealth report instead sets out how the detection actually failed: not because no one saw anything, but because the people who saw things did not have a clear route to raise them, did not recognise the significance, or expected somebody else to have done it.</p>
+
+<p>The report's recommendations followed from that, and they are notable for how much of their weight falls on process rather than product. Enhanced security monitoring, yes, but also clearer incident reporting obligations, defined escalation paths with named responsibilities, and the expectation that an unexplained anomaly is reported as an anomaly rather than resolved privately by whoever noticed it.</p>
+
+<h2>The timeline</h2>
+
+<ol class="cf-timeline">
+  <li><b>August 2017</b>: A front-end workstation is compromised; the attackers begin moving laterally.</li>
+  <li><b>Late 2017 – mid 2018</b>: Credentials are harvested and privileged access is obtained; activity is intermittently visible but not escalated.</li>
+  <li><b>27 June – 4 July 2018</b>: Bulk queries extract 1.5 million patient records and around 160,000 medicine records.</li>
+  <li><b>4 July 2018</b>: Unusual activity is confirmed by IHiS administrators and the queries are stopped.</li>
+  <li><b>10 July 2018</b>: The incident is escalated to senior management and national agencies.</li>
+  <li><b>20 July 2018</b>: The breach is announced publicly, including that the Prime Minister was specifically targeted.</li>
+  <li><b>January 2019</b>: The Committee of Inquiry publishes its report with sixteen recommendations; the data protection regulator fines IHiS S$750,000 and SingHealth S$250,000.</li>
+</ol>
+
+<h2>What it changed</h2>
+
+<p>Singapore's response went further than most jurisdictions would consider proportionate. Public healthcare systems were placed under internet surfing separation, removing general web access from work computers that handle patient data, on the reasoning that the initial compromise came through ordinary browsing and email, and that severing that path is worth the inconvenience it causes.</p>
+
+<p>It is a genuinely contested trade-off, and worth understanding rather than admiring or dismissing. Isolating clinical workstations from the internet removes an enormous share of the attack surface, and it also makes clinicians' work slower and pushes some of it onto personal devices that nobody is monitoring. Singapore judged the trade worth making for a national health system after a state-grade intrusion. That judgement does not transfer automatically to a dental practice, and the report does not pretend it does.</p>
+
+<p>The fines mattered less than the allocation of them. The larger penalty went to IHiS, the IT agency, not to SingHealth, the healthcare provider, an explicit finding that responsibility for securing the data sat with the organisation actually operating the systems. Where care providers outsource their infrastructure to a central agency or a vendor, that allocation is the precedent worth knowing about.</p>
+
+<h2>If you were a SingHealth patient</h2>
+
+<p>The exposed set is demographic and durable: name, identity card number, address, race, gender and date of birth, plus dispensed medicines for a subset. None of it can be changed. An NRIC number in particular is a lifelong identifier, which is why the years after this breach saw sustained official effort to discourage organisations from treating it as proof of identity rather than merely as a reference number.</p>
+
+<p>The realistic risk is impersonation rather than fraud on an account. A caller who already knows your identity card number, your address and your date of birth passes the informal test most people apply to decide whether somebody is genuine, and for the smaller group whose medication records were taken, a caller who can also reference a real prescription is more convincing still. No clinic, insurer or government agency resolves anything by asking you to confirm a one-time code. Hang up and dial a number you already had.</p>
+
+      <!-- After the reporting, not before it. Somebody who has just read how a
+           breach unfolded is far likelier to want the check than someone who
+           landed here and was asked for an address in the first screen. -->
+      <form class="bx-check" data-breach-check>
+        <label for="cfEmail">Check whether your own address is in a known breach</label>
+        <div class="bx-check-row">
+          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="cfEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+      </form>
+
+      <h2>Questions people ask</h2>
+      <div class="bx-faq">
+        <h3>What was actually taken?</h3>
+        <p>Demographic records for about 1.5 million people who had visited SingHealth outpatient clinics over a seven-year period: name, national identity card number, address, gender, race and date of birth. For roughly 160,000 of those patients, records of dispensed outpatient medicines were also taken. Diagnoses, doctors' notes and test results were not, the attackers queried a specific database in a specific way, and what they took reflects that.</p>
+
+        <h3>Was the Prime Minister specifically targeted?</h3>
+        <p>Yes. The Committee of Inquiry found that the records of Prime Minister Lee Hsien Loong were repeatedly and specifically targeted, along with those of a number of other individuals. That finding is what separates this case from an ordinary healthcare breach: the bulk data was not the objective but the by-product of reaching one person's prescription history.</p>
+
+        <h3>How did the attackers get in?</h3>
+        <p>Through a front-end workstation, most likely via a phishing email carrying malware. From that foothold they moved laterally through the network over a period of months, obtained credentials for privileged accounts, and eventually reached a server from which they could query the electronic medical records database directly. It is the standard shape of a targeted intrusion: the entry point is mundane, and the work happens afterwards.</p>
+
+        <h3>Why were the failings made public in such detail?</h3>
+        <p>Singapore convened a Committee of Inquiry with public hearings, and its report names specific technical weaknesses and specific human decisions, including administrative accounts with weak passwords, unpatched software, and staff who saw anomalies and did not escalate them. Very few countries publish that level of detail about a government-linked breach. The report is more useful to defenders than almost any vendor incident write-up, precisely because it does not protect anyone.</p>
+      </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
+      <h2>Sources</h2>
+      <ul class="cf-sources">
+        <li><b>Public Report of the Committee of Inquiry into the cyber attack on SingHealth's patient database, January 2019</b></li>
+        <li><b>Personal Data Protection Commission of Singapore, decisions concerning SingHealth and Integrated Health Information Systems, January 2019</b></li>
+        <li><b>Ministry of Health and Ministry of Communications and Information statements, July 2018</b></li>
+        <li><b>Cyber Security Agency of Singapore, post-incident measures for the public healthcare sector</b></li>
+      </ul>
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/breaches/case-files/anthem-2015.html">Anthem, 2015: 78.8 million health records and one query that looked wrong</a></li>
+        <li><a href="/breaches/case-files/medibank-2022.html">Medibank, 2022: the company said no, and the data went up anyway</a></li>
+        <li><a href="/breaches/case-files/opm-2015.html">OPM, 2015: 21.5 million security clearance files, fingerprints included</a></li>
+      </ul>
+
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

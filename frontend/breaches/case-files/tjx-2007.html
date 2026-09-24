@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="TJX Breach 2007: WEP, 45 Million Cards, PCI DSS">
   <meta name="twitter:description" content="Attackers sat outside a Marshalls store, broke the shop's weak wireless encryption, and worked inwards until they reached the card processing systems.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"TJX, 2007: the wireless network in the car park","description":"Attackers sat outside a Marshalls store, broke the shop's weak wireless encryption, and worked inwards until they reached the card processing systems.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/tjx-2007.html","articleSection":"Case Files","about":{"@type":"Thing","name":"TJX Companies data breach"},"wordCount":768}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"TJX Companies data breach","item":"https://www.myrecon.xyz/breaches/case-files/tjx-2007.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What was WEP and why was it a problem?","acceptedAnswer":{"@type":"Answer","text":"Wired Equivalent Privacy was the original Wi-Fi encryption standard. Fatal flaws in it were published in 2001, and by 2005 tools existed that could recover a WEP key from captured traffic in minutes. It had been formally superseded by WPA, but plenty of retail deployments were still running it because replacing working equipment costs money and nobody had been forced to."}},{"@type":"Question","name":"How long were the attackers inside?","acceptedAnswer":{"@type":"Answer","text":"Roughly eighteen months, from mid-2005 to the end of 2006. They installed software that captured card data during processing and moved it out steadily. The length of that dwell time is the part that shocked people: the intrusion was not a moment, it was a tenancy."}},{"@type":"Question","name":"Why do the numbers vary between 45 million and 94 million?","acceptedAnswer":{"@type":"Answer","text":"TJX confirmed 45.7 million cards. Filings by banks in subsequent litigation argued the true figure was closer to 94 million. Both numbers are in circulation because the company and the plaintiffs were counting different things with different access to the evidence — a pattern that repeats in almost every large breach."}},{"@type":"Question","name":"What happened to the people responsible?","acceptedAnswer":{"@type":"Answer","text":"Albert Gonzalez, who had previously worked as a paid informant for the US Secret Service, was convicted for this and other intrusions and sentenced to 20 years in prison in 2010 — at the time the longest sentence handed down in the United States for computer crime."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What was WEP and why was it a problem?","acceptedAnswer":{"@type":"Answer","text":"Wired Equivalent Privacy was the original Wi-Fi encryption standard. Fatal flaws in it were published in 2001, and by 2005 tools existed that could recover a WEP key from captured traffic in minutes. It had been formally superseded by WPA, but plenty of retail deployments were still running it because replacing working equipment costs money and nobody had been forced to."}},{"@type":"Question","name":"How long were the attackers inside?","acceptedAnswer":{"@type":"Answer","text":"Roughly eighteen months, from mid-2005 to the end of 2006. They installed software that captured card data during processing and moved it out steadily. The length of that dwell time is the part that shocked people: the intrusion was not a moment, it was a tenancy."}},{"@type":"Question","name":"Why do the numbers vary between 45 million and 94 million?","acceptedAnswer":{"@type":"Answer","text":"TJX confirmed 45.7 million cards. Filings by banks in subsequent litigation argued the true figure was closer to 94 million. Both numbers are in circulation because the company and the plaintiffs were counting different things with different access to the evidence, a pattern that repeats in almost every large breach."}},{"@type":"Question","name":"What happened to the people responsible?","acceptedAnswer":{"@type":"Answer","text":"Albert Gonzalez, who had previously worked as a paid informant for the US Secret Service, was convicted for this and other intrusions and sentenced to 20 years in prison in 2010, at the time the longest sentence handed down in the United States for computer crime."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -79,14 +80,14 @@
 
 <h2>What happened</h2>
 
-<p>TJX Companies operates T.J. Maxx, Marshalls, HomeGoods and, in Europe, TK Maxx. In 2005 its stores used wireless networks — for price scanners and inventory devices — protected by WEP, an encryption standard whose fatal weaknesses had been published in academic papers four years earlier and packaged into point-and-click tools shortly after.</p>
+<p>TJX Companies operates T.J. Maxx, Marshalls, HomeGoods and, in Europe, TK Maxx. In 2005 its stores used wireless networks, for price scanners and inventory devices, protected by WEP, an encryption standard whose fatal weaknesses had been published in academic papers four years earlier and packaged into point-and-click tools shortly after.</p>
 
 <p>Attackers captured enough wireless traffic from outside a store to recover the key. That put them on the store network. From the store network they reached corporate systems, and from there the systems that handled payment card transactions, where they installed software to capture card data as it was processed.</p>
 
 <p>They remained for roughly eighteen months. TJX discovered the intrusion in December 2006 and disclosed it in January 2007.</p>
 
 <div class="callout">
-  <p><strong>The flat network is the real failure.</strong> Weak wireless encryption got them onto a shop network. Nothing stopped them going from a shop network to payment systems. The controls that would have contained this — segmentation between store operations and payment processing, monitoring of movement between segments — are now mandatory in card industry standards specifically because of this case.</p>
+  <p><strong>The flat network is the real failure.</strong> Weak wireless encryption got them onto a shop network. Nothing stopped them going from a shop network to payment systems. The controls that would have contained this, segmentation between store operations and payment processing, monitoring of movement between segments, are now mandatory in card industry standards specifically because of this case.</p>
 </div>
 
 <h2>Why the numbers disagree</h2>
@@ -97,13 +98,13 @@
 
 <h2>Albert Gonzalez</h2>
 
-<p>The same individual is behind TJX and <a href="/breaches/case-files/heartland-2008.html">Heartland Payment Systems</a>, along with intrusions at other retailers. Gonzalez had previously been arrested and then worked as a paid informant for the US Secret Service — while continuing to run the operations he was supposedly helping to investigate.</p>
+<p>The same individual is behind TJX and <a href="/breaches/case-files/heartland-2008.html">Heartland Payment Systems</a>, along with intrusions at other retailers. Gonzalez had previously been arrested and then worked as a paid informant for the US Secret Service, while continuing to run the operations he was supposedly helping to investigate.</p>
 
 <p>He was sentenced to 20 years in 2010, at the time the longest US sentence for computer crime. The technique used across his campaigns was consistent and, by modern standards, unsophisticated: find a weakly protected entry point, move inwards, install capture software on systems that handle card data in the clear, exfiltrate steadily.</p>
 
 <h2>What it changed</h2>
 
-<p><strong>PCI DSS became enforceable rather than aspirational.</strong> The Payment Card Industry Data Security Standard already existed. TJX made card networks and acquirers treat it as something to audit and penalise rather than certify and forget, and it directly produced the requirement to retire WEP — new deployments prohibited from 2009, all use banned from mid-2010.</p>
+<p><strong>PCI DSS became enforceable rather than aspirational.</strong> The Payment Card Industry Data Security Standard already existed. TJX made card networks and acquirers treat it as something to audit and penalise rather than certify and forget, and it directly produced the requirement to retire WEP, new deployments prohibited from 2009, all use banned from mid-2010.</p>
 
 <p><strong>Retention limits arrived.</strong> Part of what made the haul so large was that TJX had retained card data it did not need. "Do not store what you do not need, and delete what you no longer need" became an explicit requirement rather than a recommendation.</p>
 
@@ -113,7 +114,7 @@
 
 <p>Read the failure list without the dates and it could be any year: obsolete technology left running because replacing it was not funded, a flat network where a foothold anywhere reached everything, data retained beyond its purpose, and monitoring insufficient to notice eighteen months of theft.</p>
 
-<p>The specific technologies age out — nobody runs WEP now — and the patterns do not. <a href="/breaches/case-files/target-2013.html">Target</a> six years later is the same shape with a contractor's portal instead of a wireless antenna.</p>
+<p>The specific technologies age out, nobody runs WEP now, and the patterns do not. <a href="/breaches/case-files/target-2013.html">Target</a> six years later is the same shape with a contractor's portal instead of a wireless antenna.</p>
 
 <h2>What to take from it</h2>
 
@@ -134,7 +135,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -146,15 +147,27 @@
         <p>Roughly eighteen months, from mid-2005 to the end of 2006. They installed software that captured card data during processing and moved it out steadily. The length of that dwell time is the part that shocked people: the intrusion was not a moment, it was a tenancy.</p>
 
         <h3>Why do the numbers vary between 45 million and 94 million?</h3>
-        <p>TJX confirmed 45.7 million cards. Filings by banks in subsequent litigation argued the true figure was closer to 94 million. Both numbers are in circulation because the company and the plaintiffs were counting different things with different access to the evidence — a pattern that repeats in almost every large breach.</p>
+        <p>TJX confirmed 45.7 million cards. Filings by banks in subsequent litigation argued the true figure was closer to 94 million. Both numbers are in circulation because the company and the plaintiffs were counting different things with different access to the evidence, a pattern that repeats in almost every large breach.</p>
 
         <h3>What happened to the people responsible?</h3>
-        <p>Albert Gonzalez, who had previously worked as a paid informant for the US Secret Service, was convicted for this and other intrusions and sentenced to 20 years in prison in 2010 — at the time the longest sentence handed down in the United States for computer crime.</p>
+        <p>Albert Gonzalez, who had previously worked as a paid informant for the US Secret Service, was convicted for this and other intrusions and sentenced to 20 years in prison in 2010, at the time the longest sentence handed down in the United States for computer crime.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
         <li><b>TJX Companies SEC filings and shareholder disclosures, 2007</b></li>
-        <li><b>US Department of Justice — prosecution of Albert Gonzalez, 2008–2010</b></li>
+        <li><b>US Department of Justice, prosecution of Albert Gonzalez, 2008–2010</b></li>
         <li><b>Canadian Privacy Commissioner and Alberta Information and Privacy Commissioner joint report, September 2007</b></li>
       </ul>
       <h2>Read next</h2>
@@ -164,7 +177,7 @@
         <li><a href="/breaches/case-files/rockyou-2009.html">RockYou, 2009: the 32 million plaintext passwords that became a wordlist</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -180,5 +193,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

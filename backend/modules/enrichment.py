@@ -6,12 +6,15 @@
 ╚══════════════════════════════════════════════════════════════╝
 """
 
-import re
-import requests
-import time
-import hashlib
 import html
+import hashlib
+import re
+import time
 from typing import Optional
+
+import requests
+
+from core.netguard import safe_get
 
 HEADERS = {
     "User-Agent": (
@@ -41,7 +44,14 @@ TIMEOUT = 8
 # ──────────────────────────────────────────────────────────────
 
 def _download_image(url: str, timeout: int = 6) -> bytes:
-    """Download an image and return raw bytes."""
+    """
+    Download an image and return raw bytes.
+
+    The URL here comes out of a third party's API response, not from us, so it
+    goes through `safe_get`: an image link pointing at 169.254.169.254 or at
+    localhost is a request to read this instance's own metadata, and following
+    it blind is how that gets handed out. See core/netguard.py.
+    """
     if not url or not url.startswith("http"):
         return b""
     try:
@@ -49,8 +59,8 @@ def _download_image(url: str, timeout: int = 6) -> bytes:
         # The frontend will render the image directly using referrerpolicy="no-referrer".
         if "cdninstagram" in url or "scontent" in url:
             return b""
-            
-        resp = requests.get(url, headers=HEADERS, timeout=timeout, stream=True)
+
+        resp = safe_get(url, headers=HEADERS, timeout=timeout, stream=True)
         if resp.status_code == 200 and len(resp.content) < 5_000_000:
             return resp.content
     except Exception:
@@ -59,7 +69,7 @@ def _download_image(url: str, timeout: int = 6) -> bytes:
 
 
 # ──────────────────────────────────────────────────────────────
-#  Instagram Enrichment — with validation, logging & fallbacks
+#  Instagram Enrichment, with validation, logging & fallbacks
 # ──────────────────────────────────────────────────────────────
 
 import logging
@@ -129,7 +139,7 @@ def _extract_ig_data_from_meta(meta_map: dict, data: dict) -> None:
     pic = meta_map.get("og:image", "")
     if pic and "scontent" in pic:
         data["profile_pic_url"] = pic
-        # Skip server-side download — frontend renders via referrerpolicy="no-referrer"
+        # Skip server-side download, frontend renders via referrerpolicy="no-referrer"
         data["profile_pic_data"] = b""
 
     # Parse og:description → followers / following / posts / bio
@@ -238,7 +248,7 @@ def _enrich_instagram(username: str) -> dict:
             return data
         elif resp.status_code == 429:
             _ig_log.warning("Instagram rate-limited (429) when fetching %s", username)
-            data["error"] = "Rate limited — try again later"
+            data["error"] = "Rate limited, try again later"
         else:
             _ig_log.debug("Instagram returned HTTP %d for %s", resp.status_code, username)
 
@@ -401,7 +411,7 @@ def _enrich_reddit(username: str) -> dict:
 def _enrich_gravatar(username: str) -> dict:
     data = {"platform": "Gravatar", "username": username}
     try:
-        # Gravatar uses email hash — try username as-is first
+        # Gravatar uses email hash, try username as-is first
         profile_url = f"https://en.gravatar.com/{username}.json"
         resp = requests.get(profile_url, headers=HEADERS, timeout=TIMEOUT)
         if resp.status_code == 200:
@@ -431,7 +441,7 @@ def _enrich_from_og_tags(url: str) -> dict:
         if resp.status_code != 200:
             return data
 
-        html = resp.text  # scan full page — Pinterest puts OG tags 700KB+ deep
+        html = resp.text  # scan full page, Pinterest puts OG tags 700KB+ deep
 
         # Step 1: Find ALL <meta ...> tags
         meta_tags = re.findall(r'<meta\s+([^>]+?)/?>', html, re.IGNORECASE)
@@ -488,13 +498,13 @@ def _enrich_from_og_tags(url: str) -> dict:
 
 
 # ──────────────────────────────────────────────────────────────
-#  Twitter / X Enrichment (via syndication API — no auth needed)
+#  Twitter / X Enrichment (via syndication API, no auth needed)
 # ──────────────────────────────────────────────────────────────
 
 def _enrich_twitter(username: str) -> dict:
     data = {"platform": "Twitter / X", "username": username}
     try:
-        # Twitter syndication API — public, no auth
+        # Twitter syndication API, public, no auth
         url = f"https://syndication.twitter.com/srv/timeline-profile/screen-name/{username}"
         resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
         if resp.status_code == 200:
@@ -589,7 +599,7 @@ def _enrich_tiktok(username: str) -> dict:
 
 
 # ──────────────────────────────────────────────────────────────
-#  LinkedIn Enrichment (OG tag based — no API needed)
+#  LinkedIn Enrichment (OG tag based, no API needed)
 # ──────────────────────────────────────────────────────────────
 
 def _enrich_linkedin(username: str) -> dict:

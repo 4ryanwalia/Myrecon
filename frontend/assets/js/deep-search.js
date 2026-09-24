@@ -1,4 +1,4 @@
-/* MyRecon — Deep Search console.
+/* MyRecon, Deep Search console.
  *
  * Streams /api/investigate/stream as NDJSON and renders the investigation
  * graph. Confidence and provenance travel with every element on screen: a
@@ -28,9 +28,9 @@
    * esc() makes a string safe to sit *inside* markup, but it has nothing to say
    * about what the string means once it is there: "javascript:alert(1)" has no
    * &<>"' in it, so it passes through esc() untouched and then runs on click.
-   * The URLs on this page are not all ours — avatar and profile links arrive in
+   * The URLs on this page are not all ours, avatar and profile links arrive in
    * whatever a platform's API returned, and a Gravatar account link is filled
-   * in by whoever owns the Gravatar — so the scheme has to be checked rather
+   * in by whoever owns the Gravatar, so the scheme has to be checked rather
    * than assumed.
    *
    * Anything that is not http(s) becomes "", which renders as a dead link
@@ -121,7 +121,7 @@
   }
 
   // Radial layout: hub centred, members on a ring. Deterministic, so the same
-  // graph always draws the same way — a layout that jitters between runs makes
+  // graph always draws the same way, a layout that jitters between runs makes
   // findings look unstable.
   function graphSvg(cluster, nodesById) {
     const members = cluster.members.map((id) => nodesById[id]).filter(Boolean);
@@ -142,7 +142,7 @@
       const label = esc(((p.n.attrs || {}).platform || p.n.label || "").slice(0, 12));
       const ty = p.y < cy ? p.y - 15 : p.y + 20;
       return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="10" fill="${col}">
-                <title>${esc(p.n.label)} — ${(p.n.confidence || {}).score}/100</title></circle>
+                <title>${esc(p.n.label)}: ${(p.n.confidence || {}).score}/100</title></circle>
               <text x="${p.x.toFixed(1)}" y="${ty.toFixed(1)}">${label}</text>`;
     }).join("");
 
@@ -174,7 +174,7 @@
             </div>
             ${graphSvg(c, byId)}
           </div>`).join("")
-      : `<p class="hint">No cluster formed — findings are unconnected.</p>`;
+      : `<p class="hint">No cluster formed, findings are unconnected.</p>`;
 
     $("#dsOut").innerHTML = `
       <div class="ds-split">
@@ -193,7 +193,7 @@
       </div>
 
       <div class="ds-verdict" style="--vb:${stripeFor(band)}">
-        <h3>Assessment — ${esc(band)} confidence (${(a.confidence || {}).score || 0}/100)</h3>
+        <h3>Assessment: ${esc(band)} confidence (${(a.confidence || {}).score || 0}/100)</h3>
         <p>${esc(a.text || "")}</p>
         ${(a.notes || []).length
           ? `<ul class="ds-notes">${a.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>`
@@ -221,7 +221,7 @@
       if (!res.ok || !res.body) throw new Error(`Request failed (HTTP ${res.status}).`);
 
       // NDJSON: one JSON object per line, so hold a buffer across chunks and
-      // only parse on a newline — a chunk boundary can land mid-object.
+      // only parse on a newline, a chunk boundary can land mid-object.
       const reader = res.body.getReader();
       const dec = new TextDecoder();
       let buf = "";
@@ -256,7 +256,7 @@
     $("#dsBar").style.width = "100%";
     $("#dsCount").textContent = "100%";
     const n = ((data.graph || {}).summary || {}).entities || 0;
-    $("#dsStatus").textContent = `Complete — ${n} entit${n === 1 ? "y" : "ies"} for ${data.handle || ""}`;
+    $("#dsStatus").textContent = `Complete, ${n} entit${n === 1 ? "y" : "ies"} for ${data.handle || ""}`;
     render(data);
   }
 
@@ -265,11 +265,11 @@
     $("#dsRun")?.addEventListener("click", run);
     $("#dsInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
     // Warn on a pasted name before the request, rather than letting the server
-    // reject it — the user needs to know this takes handles, not people.
+    // reject it, the user needs to know this takes handles, not people.
     $("#dsInput")?.addEventListener("input", (e) => {
       $("#dsMode").textContent = e.target.value.trim().includes(" ")
-        ? "That looks like a name — enter a username instead"
-        : "Handles only — no spaces";
+        ? "That looks like a name, enter a username instead"
+        : "Handles only, no spaces";
     });
   });
 })();

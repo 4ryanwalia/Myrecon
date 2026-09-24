@@ -19,25 +19,26 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="How Data Breaches Actually Happen: The Seven Ways In">
   <meta name="twitter:description" content="Almost every large breach starts one of seven ways. The routes, the cases that prove them, and what stops each one.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -60,17 +61,17 @@
     <article class="article">
       <span class="kicker">Breach analysis</span>
       <h1>How Data Breaches Actually Happen: The Seven Ways In</h1>
-      <p class="meta">Updated 14 September 2026 · 11 min read</p>
+      <p class="meta">Updated 14 September 2026 · 7 min read</p>
 
-      <p class="lead">Read enough breach reports and the variety disappears. Different companies, different decades, different amounts of money — and almost always one of seven ways in. This is what each of them looks like, which well-documented case proves it, and what actually closes it.</p>
+      <p class="lead">Read enough breach reports and the variety disappears. Different companies, different decades, different amounts of money, and almost always one of seven ways in. This is what each of them looks like, which well-documented case proves it, and what actually closes it.</p>
 
       <p>The reason this is worth knowing is not curiosity. It is that news coverage almost never distinguishes between the route in and the damage done, so every breach reads as an unforeseeable catastrophe. They are not unforeseeable. They are repetitive, and the repetition is the useful part.</p>
 
       <h2>1. Stolen credentials</h2>
-      <p>The most common route by a wide margin. Somebody's username and password — an employee, a contractor, a service account — end up in an attacker's hands, and they log in. No exploit, no malware on the way in, nothing that looks like an attack in any log.</p>
+      <p>The most common route by a wide margin. Somebody's username and password, an employee, a contractor, a service account, end up in an attacker's hands, and they log in. No exploit, no malware on the way in, nothing that looks like an attack in any log.</p>
       <p>The credentials come from phishing, from malware on a personal device, or from an earlier breach where the person reused the password. Once inside, the attacker moves through the network using access the account legitimately has.</p>
       <p><strong>The cases:</strong> <a href="/breaches/case-files/ebay-2014.html">eBay in 2014</a> lost 145 million records to a handful of compromised employee accounts. <a href="/breaches/case-files/jpmorgan-2014.html">JPMorgan Chase</a> lost data on 83 million households the same year, because one server in a large estate had been missed when two-factor authentication was rolled out. <a href="/breaches/case-files/snowflake-2024.html">The Snowflake campaign of 2024</a> hit dozens of major companies at once using credentials stolen by malware, against cloud tenants where multi-factor authentication was not enforced.</p>
-      <p><strong>What closes it:</strong> phishing-resistant multi-factor authentication, on every account, with no exceptions — and the exceptions are where the breach happens. A password on its own should not open anything.</p>
+      <p><strong>What closes it:</strong> phishing-resistant multi-factor authentication, on every account, with no exceptions, and the exceptions are where the breach happens. A password on its own should not open anything.</p>
 
       <h2>2. The supplier</h2>
       <p>The attacker does not attack you. They attack a company you depend on, and arrive through a connection you set up deliberately and trust by design.</p>
@@ -82,34 +83,34 @@
       <p>Something reachable from the public internet has a known flaw, a fix exists, and it has not been applied. Attackers scan for these continuously and automatically, and the window between a patch being published and mass exploitation beginning is now measured in days.</p>
       <p>The uncomfortable detail in most of these cases is that the organisation knew. The patch was on a list. The system was on an inventory, or should have been.</p>
       <p><strong>The cases:</strong> <a href="/breaches/case-files/equifax-2017.html">Equifax</a>, where the fix had been available for two months and an expired certificate on the monitoring appliance meant nobody saw 76 days of data leaving. <a href="/breaches/case-files/talktalk-2015.html">TalkTalk in 2015</a>, through three webpages inherited in an acquisition six years earlier that nobody had looked at since. <a href="/breaches/case-files/accellion-2021.html">Accellion in 2021</a>, against a twenty-year-old product already scheduled for retirement.</p>
-      <p><strong>What closes it:</strong> knowing everything you have on the public internet — which is usually more than the official list — and patching internet-facing systems on a much shorter clock than everything else.</p>
+      <p><strong>What closes it:</strong> knowing everything you have on the public internet, which is usually more than the official list, and patching internet-facing systems on a much shorter clock than everything else.</p>
 
       <h2>4. Social engineering a person, not a system</h2>
       <p>Somebody phones the IT help desk, sounds like an employee, and asks for a password reset. Or emails an accounts payable clerk with a plausible invoice. The technical controls all function correctly; a human being was persuaded.</p>
       <p>This route has grown sharply because the others have got harder. It is also the cheapest: research on a professional network, a phone call, and a conversation.</p>
-      <p><strong>The cases:</strong> <a href="/breaches/case-files/mgm-resorts-2023.html">MGM Resorts in 2023</a> — a ten-minute call to the help desk took a $14 billion company's Las Vegas operations offline for ten days. <a href="/breaches/case-files/twilio-0ktapus-2022.html">The 0ktapus campaign in 2022</a> phished employees at more than 130 companies with one text message template. <a href="/breaches/case-files/uber-2016.html">Uber</a> has featured in more than one variation of this.</p>
-      <p><strong>What closes it:</strong> making the account recovery process itself resistant — video verification, out-of-band manager approval, a mandatory delay on re-enrolling a second factor. Awareness training helps at the margin; changing the process is what works.</p>
+      <p><strong>The cases:</strong> <a href="/breaches/case-files/mgm-resorts-2023.html">MGM Resorts in 2023</a>: a ten-minute call to the help desk took a $14 billion company's Las Vegas operations offline for ten days. <a href="/breaches/case-files/twilio-0ktapus-2022.html">The 0ktapus campaign in 2022</a> phished employees at more than 130 companies with one text message template. <a href="/breaches/case-files/uber-2016.html">Uber</a> has featured in more than one variation of this.</p>
+      <p><strong>What closes it:</strong> making the account recovery process itself resistant, video verification, out-of-band manager approval, a mandatory delay on re-enrolling a second factor. Awareness training helps at the margin; changing the process is what works.</p>
 
       <h2>5. The insider</h2>
       <p>Somebody with legitimate access uses it for a purpose it was not given for. There is no intrusion to detect and no control to defeat, because every action is one the person was authorised to take.</p>
-      <p>Insider cases divide into the malicious — a grievance, a payment, a plan — and the far more numerous accidental: a file emailed to the wrong address, a database copied to a personal drive for convenience.</p>
-      <p><strong>The cases:</strong> <a href="/breaches/case-files/morrisons-2014.html">Morrisons in 2014</a>, where a senior internal auditor published the payroll file of nearly 100,000 colleagues and the resulting litigation ran to the UK Supreme Court. <a href="/breaches/case-files/capital-one-2019.html">Capital One in 2019</a> sits close to this line — a former employee of the cloud provider, using knowledge from the inside.</p>
+      <p>Insider cases divide into the malicious, a grievance, a payment, a plan, and the far more numerous accidental: a file emailed to the wrong address, a database copied to a personal drive for convenience.</p>
+      <p><strong>The cases:</strong> <a href="/breaches/case-files/morrisons-2014.html">Morrisons in 2014</a>, where a senior internal auditor published the payroll file of nearly 100,000 colleagues and the resulting litigation ran to the UK Supreme Court. <a href="/breaches/case-files/capital-one-2019.html">Capital One in 2019</a> sits close to this line, a former employee of the cloud provider, using knowledge from the inside.</p>
       <p><strong>What closes it:</strong> monitoring bulk data access by the people most entitled to it. Insiders do not defeat controls; they use them, so detection has to look for unusual volume and timing by authorised users rather than for unauthorised ones.</p>
 
       <h2>6. Misconfiguration</h2>
-      <p>Nobody attacked anything. A database, a storage bucket or a server was placed on the internet without a password, and somebody found it — often a researcher, sometimes not, and there is rarely any way to know who looked first.</p>
+      <p>Nobody attacked anything. A database, a storage bucket or a server was placed on the internet without a password, and somebody found it, often a researcher, sometimes not, and there is rarely any way to know who looked first.</p>
       <p>This is the most preventable category and one of the most common, because cloud platforms make it a single setting and the default has not always been the safe one.</p>
       <p><strong>The cases:</strong> <a href="/breaches/case-files/aadhaar-exposures-2018.html">the Aadhaar-linked exposures</a>, where the underlying database was not breached but systems connected to it leaked repeatedly. The <a href="/breaches/case-files/national-public-data-2024.html">National Public Data</a> affair, whose sister site was separately found publishing a plaintext password file. The 622-million-record enrichment exposure in the archive, which was an unsecured search server belonging not even to the company whose data it held.</p>
       <p><strong>What closes it:</strong> scanning your own external footprint the way an attacker would, continuously, and treating "is anything of ours answering the internet without authentication" as a question with a monitored answer rather than an assumed one.</p>
 
       <h2>7. Scraping and aggregation</h2>
-      <p>Nothing private is taken. Information already visible to anyone is collected at scale, compiled, and sold — and the result is a capability that did not exist when the same data was spread across a million pages.</p>
+      <p>Nothing private is taken. Information already visible to anyone is collected at scale, compiled, and sold, and the result is a capability that did not exist when the same data was spread across a million pages.</p>
       <p>Whether this counts as a breach is genuinely contested. Platforms say no, because no control failed. The people in the resulting file generally disagree, and regulators have increasingly sided with them.</p>
       <p><strong>The cases:</strong> <a href="/breaches/case-files/facebook-scrape-2021.html">the 2021 Facebook scrape</a> of 533 million profiles. <a href="/breaches/case-files/clearview-ai-2020.html">Clearview AI</a>, which turned billions of public photographs into a face search engine and collected fines across four continents. <a href="/breaches/case-files/cambridge-analytica-2018.html">Cambridge Analytica</a>, where a documented platform feature working exactly as designed delivered data on 87 million people.</p>
       <p><strong>What closes it:</strong> from the platform side, rate limits and not building features that let one user hand over data about another. From your side: assuming anything public is permanently collected, and being deliberate about which of your details are public at all.</p>
 
       <div class="callout">
-        <p><strong>The route in is not the damage.</strong> These seven describe how attackers get a foothold. What happens next — how far they move, how long they stay, how much they take — depends on entirely different controls: segmentation, monitoring, least privilege and encryption. A company can be breached through any of these routes and lose almost nothing, and several have. The route determines whether you get in. The interior determines what it costs.</p>
+        <p><strong>The route in is not the damage.</strong> These seven describe how attackers get a foothold. What happens next, how far they move, how long they stay, how much they take, depends on entirely different controls: segmentation, monitoring, least privilege and encryption. A company can be breached through any of these routes and lose almost nothing, and several have. The route determines whether you get in. The interior determines what it costs.</p>
       </div>
 
       <h2>What this means if you are not defending a company</h2>
@@ -122,10 +123,20 @@
       </ul>
 
       <div class="callout">
-        <p>Check whether your own address appears in a known breach with the <a href="/#tool">MyRecon email tool</a>, or read the full write-ups in <a href="/breaches/case-files/">the case files</a> — every one is sourced from regulatory findings, court filings and company disclosures.</p>
+        <p>Check whether your own address appears in a known breach with the <a href="/#tool">MyRecon email tool</a>, or read the full write-ups in <a href="/breaches/case-files/">the case files</a>: every one is sourced from regulatory findings, court filings and company disclosures.</p>
       </div>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">Read the case files →</a> <a class="btn btn-ghost" href="/breaches/">The live breach archive →</a></p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dhow_breaches_actually_happen" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
 
       <h2>Related guides</h2>
       <ul class="related-guides">
@@ -150,5 +161,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

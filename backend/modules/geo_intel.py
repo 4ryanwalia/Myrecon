@@ -1,10 +1,10 @@
 """
-Geo intelligence — place identification from coordinates, using only free,
+Geo intelligence, place identification from coordinates, using only free,
 keyless services.
 
 This is the honest substitute for "landmark recognition". Visual landmark
 recognition needs a paid vision API; this module instead resolves the GPS
-coordinates that many photos already carry, which — when they are present — is
+coordinates that many photos already carry, which, when they are present, is
 *more* reliable than recognising a building from pixels. Big Ben resolves to
 "Big Ben, Bridge Street, Westminster" from coordinates alone, with the Wikidata
 id and the eight nearest notable places attached.
@@ -13,8 +13,8 @@ The trade is stated plainly in the output: `requires_gps` is always true. No GPS
 means no result, and the module says so rather than guessing from image content.
 
 Sources, all keyless and all with usage policies this module respects:
-  • Nominatim (OpenStreetMap)  — reverse geocoding
-  • Wikipedia REST + Action API — article summary and geosearch
+  • Nominatim (OpenStreetMap), reverse geocoding
+  • Wikipedia REST + Action API, article summary and geosearch
 
 Nominatim's policy requires a genuine identifying User-Agent and at most one
 request per second from a single source. Both are enforced below. Exceeding it
@@ -49,7 +49,7 @@ _last_call = 0.0
 
 def _throttled_get(url: str, params: dict) -> Optional[dict]:
     """GET with the shared Nominatim rate limit applied. Returns None on any
-    failure — geo enrichment is additive, so it must never break a scan."""
+    failure, geo enrichment is additive, so it must never break a scan."""
     global _last_call
     with _rate_lock:
         wait = _MIN_INTERVAL - (time.monotonic() - _last_call)
@@ -98,7 +98,7 @@ def reverse_geocode(lat: float, lon: float) -> dict:
     Resolve coordinates to a named place and administrative hierarchy.
 
     Nominatim's `zoom` is left at its default so it returns the most specific
-    named feature it has — which is what surfaces "Big Ben" rather than merely
+    named feature it has, which is what surfaces "Big Ben" rather than merely
     "Westminster".
     """
     out: dict[str, Any] = {"found": False, "source": "nominatim"}

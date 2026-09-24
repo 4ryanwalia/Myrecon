@@ -1,5 +1,5 @@
 """
-Profile-URL shapes — does a URL *name* an account, or merely mention one?
+Profile-URL shapes, does a URL *name* an account, or merely mention one?
 
 This is the answer to the "it said the account exists, but the link is dead"
 problem. A dork like `site:github.com "bob"` matches every page on the domain
@@ -10,8 +10,8 @@ claiming an account that was never there.
 So a URL is only a candidate profile when its *path shape* matches how the
 platform actually addresses accounts (github.com/<handle>, reddit.com/user/
 <handle>, medium.com/@<handle>), the segment in the handle position isn't a
-reserved word the platform uses for its own pages, and — when we know who we
-are looking for — that segment is the handle we searched.
+reserved word the platform uses for its own pages, and, when we know who we
+are looking for, that segment is the handle we searched.
 
 That is still only a candidate. It says the URL is shaped like a profile, not
 that the profile exists today; Google's index goes stale. services.search
@@ -441,7 +441,7 @@ def _match_template(template: str, segs: list) -> str:
 
 # Leading labels that are the same site, not a different product. Anything
 # else (blog.github.com, help.twitter.com) is deliberately *not* folded into
-# the parent — its paths are articles, not accounts.
+# the parent, its paths are articles, not accounts.
 _NEUTRAL_PREFIXES = frozenset({
     "m", "mobile", "touch", "amp", "old", "new", "np", "web", "www2",
     "en", "en-gb", "en-us", "de", "fr", "es", "it", "pt", "nl", "ja", "ru",

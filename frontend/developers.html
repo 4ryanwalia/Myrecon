@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Data Breach API: JSON Feed, No Key | MyRecon</title>
+  <meta name="description" content="A free, keyless JSON API of data breach metadata for your own site. No account, no rate limit, CORS enabled. Plus a drop-in embed widget. CC BY 4.0.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/developers.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Free Data Breach API: JSON, no key required">
+  <meta property="og:description" content="Breach metadata as versioned JSON for your own site. No account, no key, CORS enabled, rebuilt daily. Plus a drop-in embed widget.">
+  <meta property="og:url" content="https://www.myrecon.xyz/developers.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Data Breach API: JSON, no key required">
+  <meta name="twitter:description" content="Breach metadata as versioned JSON for your own site. No account, no key, CORS enabled, rebuilt daily.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebAPI","name":"MyRecon public data API","description":"Free, keyless JSON API of data breach metadata and an index of original breach case files. No account, no API key, CORS enabled, rebuilt daily.","documentation":"https://www.myrecon.xyz/developers.html","provider":{"@id":"https://www.myrecon.xyz/#organization"},"termsOfService":"https://www.myrecon.xyz/terms.html","license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"url":"https://www.myrecon.xyz/data/v1/index.json"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"MyRecon data breach archive","description":"Metadata for known data breaches: name, domain, breach date, account count, exposed data classes, verification status and a severity score. Sourced from Have I Been Pwned and redistributed under CC BY 4.0.","creator":{"@type":"Organization","name":"Have I Been Pwned","url":"https://haveibeenpwned.com/"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"encodingFormat":"application/json","keywords":["data breach","breach data","API","JSON","security","CC BY"],"distribution":[{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://www.myrecon.xyz/data/v1/breaches.json"},{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://www.myrecon.xyz/data/v1/latest.json"}],"url":"https://www.myrecon.xyz/developers.html"}</script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Developers","item":"https://www.myrecon.xyz/developers.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the MyRecon breach API really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no API key, no paid tier and no rate limit beyond ordinary fair use. The endpoints are static JSON files served from a CDN, so serving them costs effectively nothing and there is nothing to meter."}},{"@type":"Question","name":"Do I need an API key or to register?","acceptedAnswer":{"@type":"Answer","text":"No. Every endpoint is a plain GET with no authentication. CORS is open, so you can call it directly from browser JavaScript on any origin."}},{"@type":"Question","name":"What attribution is required?","acceptedAnswer":{"@type":"Answer","text":"The breach data comes from Have I Been Pwned and is licensed CC BY 4.0, which makes attribution a condition of use rather than a courtesy. If you publish the data you must credit Have I Been Pwned. A link back to MyRecon is appreciated but is not required by the licence. The embed widget renders both credits automatically."}},{"@type":"Question","name":"How often is the data updated?","acceptedAnswer":{"@type":"Answer","text":"The archive is rebuilt from the upstream source daily, and each payload carries a generated date so you can tell how fresh the copy you have is. The CDN caches responses for an hour and will serve a stale copy for up to a day rather than fail."}},{"@type":"Question","name":"Can I check whether a specific email address was breached?","acceptedAnswer":{"@type":"Answer","text":"No, and deliberately. This API serves breach metadata, which incidents happened, what was exposed, how many accounts. It holds no personal records and cannot be queried by email address. Checking an address against breach data is a different operation with different privacy implications, and it is offered on the MyRecon site itself rather than as an unauthenticated API."}},{"@type":"Question","name":"What happens if the schema changes?","acceptedAnswer":{"@type":"Answer","text":"The path is versioned. Additive fields can appear in /data/v1/ at any time, so parse defensively and ignore unknown keys. Anything that would break an existing consumer ships at a new version path instead, and v1 stays where it is."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Developers</span>
+      <h1>Free Data Breach API</h1>
+      <p class="meta">Updated 21 September 2026 · No key · CORS enabled · CC BY 4.0</p>
+
+      <p class="lead">If you are building something that needs data breach information, a security dashboard, a blog sidebar, a student project, a status page, you can take ours. It is static JSON on a CDN. There is no account to create, no key to rotate, no quota to watch and no paid tier waiting for you at the bottom of the page.</p>
+
+      <section class="key-finding">
+        <h2>Start here</h2>
+        <p><strong>One request, no setup:</strong></p>
+        <pre><code>curl https://www.myrecon.xyz/data/v1/latest.json</code></pre>
+        <p class="method">Every endpoint is listed at <code>/data/v1/index.json</code>. Attribution to Have I Been Pwned is required by the licence, details below, and the embed widget handles it for you.</p>
+      </section>
+
+      <h2>Endpoints</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>All endpoints are <code>GET</code>, return <code>application/json</code>, and need no authentication.</caption>
+          <thead>
+            <tr><th scope="col">Path</th><th scope="col">Returns</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/data/v1/index.json</code></td><td>Discovery document, every endpoint, counts, licence</td></tr>
+            <tr><td><code>/data/v1/breaches.json</code></td><td>The full archive with total account figure</td></tr>
+            <tr><td><code>/data/v1/breaches/{slug}.json</code></td><td>A single breach, a few hundred bytes</td></tr>
+            <tr><td><code>/data/v1/latest.json</code></td><td>The ten most recently added, newest first</td></tr>
+            <tr><td><code>/data/v1/case-files.json</code></td><td>Index of our long-form incident write-ups</td></tr>
+            <tr><td><code>/data/v1/stats.json</code></td><td>Headline counters for a single-number display</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>A breach record</h2>
+      <p>Every payload shares an envelope, <code>api_version</code>, <code>generated</code>, <code>licence</code>, <code>attribution</code>: so you can write one parser for all of them. The records look like this:</p>
+      <pre><code>{
+  "slug": "mckesson",
+  "name": "McKesson",
+  "title": "McKesson",
+  "domain": "mckesson.com",
+  "breach_date": "2026-08-21",
+  "added_date": "2026-09-10T05:45:39Z",
+  "accounts": 6404340,
+  "severity": 73,
+  "band": "Severe",
+  "verified": true,
+  "sensitive": true,
+  "stealer_log": false,
+  "data_classes": ["Email addresses", "Names", "Phone numbers", "..."],
+  "summary": "In August 2026, healthcare and pharmaceutical company ...",
+  "logo": "https://logos.haveibeenpwned.com/McKesson.png",
+  "url": "https://www.myrecon.xyz/breaches/mckesson.html"
+}</code></pre>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Field reference. Anything not listed here may appear and should be ignored if you do not use it.</caption>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>slug</code></td><td>string</td><td>Stable identifier. Use it as your key.</td></tr>
+            <tr><td><code>breach_date</code></td><td>date</td><td>When the breach is believed to have occurred.</td></tr>
+            <tr><td><code>added_date</code></td><td>datetime</td><td>When it entered the archive. Sort by this for "latest".</td></tr>
+            <tr><td><code>accounts</code></td><td>number</td><td>Distinct accounts in the corpus, as reported upstream.</td></tr>
+            <tr><td><code>severity</code></td><td>0–100</td><td>Our score, weighted by which data classes were exposed.</td></tr>
+            <tr><td><code>band</code></td><td>string</td><td><code>Severe</code>, <code>Serious</code> or <code>Moderate</code>: the score bucketed.</td></tr>
+            <tr><td><code>verified</code></td><td>boolean</td><td>Upstream confirmed the corpus is genuine. Show this.</td></tr>
+            <tr><td><code>sensitive</code></td><td>boolean</td><td>Membership alone could harm the person. Handle with care.</td></tr>
+            <tr><td><code>stealer_log</code></td><td>boolean</td><td>From infostealer malware rather than a company breach.</td></tr>
+            <tr><td><code>data_classes</code></td><td>string[]</td><td>Categories of data exposed, upstream's vocabulary.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <p><strong><code>verified: false</code> is not a detail to drop.</strong> An unverified breach is one nobody has confirmed is genuine, and presenting it beside confirmed incidents with no distinction is how a rumour becomes a fact on somebody's dashboard. If your interface has room for one boolean, make it this one.</p>
+      </div>
+
+      <h2>Examples</h2>
+
+      <h3>Browser JavaScript</h3>
+      <pre><code>const res  = await fetch("https://www.myrecon.xyz/data/v1/latest.json");
+const data = await res.json();
+
+for (const b of data.breaches) {
+  console.log(b.title, b.accounts, b.band);
+}</code></pre>
+
+      <h3>Python</h3>
+      <pre><code>import urllib.request, json
+
+url = "https://www.myrecon.xyz/data/v1/breaches.json"
+with urllib.request.urlopen(url) as r:
+    data = json.load(r)
+
+severe = [b for b in data["breaches"] if b["band"] == "Severe"]
+print(len(severe), "severe of", data["count"])</code></pre>
+
+      <h3>One breach by slug</h3>
+      <pre><code>curl -s https://www.myrecon.xyz/data/v1/breaches/mckesson.json | jq .breach.data_classes</code></pre>
+
+      <h2>The embed widget</h2>
+      <p>If you want a live breach list on your page and would rather not write the rendering, drop in two lines. It builds itself inside a shadow root, so your CSS cannot break it and it cannot leak styles into your page.</p>
+      <pre><code>&lt;div id="myrecon-breaches"&gt;&lt;/div&gt;
+&lt;script src="https://www.myrecon.xyz/assets/js/embed.js"
+        data-count="5" data-theme="auto" async&gt;&lt;/script&gt;</code></pre>
+      <p class="pre-label">Options: <code>data-count</code> (1–10, default 5), <code>data-theme</code> (<code>auto</code>, <code>dark</code>, <code>light</code>), <code>data-title</code>.</p>
+      <p>It sets no cookies, stores nothing, and sends no identifier, it is one GET for a static file. If that request fails it renders nothing rather than showing your visitors an error. The attribution footer is drawn by the widget itself, which is what keeps you compliant with the licence without having to think about it.</p>
+
+      <h2>Attribution: the part that is not optional</h2>
+      <p>The breach data originates with <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Have I Been Pwned</a> and is licensed <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. We redistribute it under that licence, and so do you when you publish it.</p>
+      <p><strong>CC BY makes attribution a condition of use, not a courtesy.</strong> If you display this data publicly, credit Have I Been Pwned. That is the requirement, and it is owed upstream, we are the distributor, not the source. A link back to MyRecon is genuinely appreciated and is how this stays worth maintaining, but the licence does not demand it and neither do we.</p>
+      <p>A credit line that satisfies it:</p>
+      <pre><code>Breach data from Have I Been Pwned (CC BY 4.0), via MyRecon.</code></pre>
+      <p>Every JSON payload carries its own <code>attribution</code> object with the same information, so it travels with the data even if this page never gets read.</p>
+      <p>The case-file index is different: those write-ups are our own work. Use the index to link to them freely. Reproducing the article text needs a visible credit and a link to the article it came from.</p>
+
+      <h2>Fair use, and what we ask</h2>
+      <ul>
+        <li><strong>Cache it.</strong> The data changes at most once a day. Fetch it on a schedule and serve from your own store rather than hitting us per page view, it is faster for your users and it is what the <code>generated</code> field is for.</li>
+        <li><strong>Do not hotlink the logos.</strong> The <code>logo</code> URLs point at Have I Been Pwned's servers. Copy the images you need to your own hosting.</li>
+        <li><strong>Parse defensively.</strong> New fields can appear in <code>v1</code> without warning. Ignore keys you do not recognise.</li>
+        <li><strong>Read the <code>generated</code> date.</strong> If your copy is a month old, say so in your interface rather than implying it is live.</li>
+      </ul>
+
+      <h2>What this API is not</h2>
+      <p>It serves breach <em>metadata</em>: which incidents happened, what categories of data were exposed, how many accounts, how severe. <strong>It holds no personal records and cannot be queried by email address, name or password.</strong></p>
+      <p>That is a deliberate boundary rather than a missing feature. Checking whether a specific address appears in breach data is a different operation with entirely different privacy implications, and an unauthenticated public endpoint is the wrong shape for it. That check lives <a href="/#tool">on the tool</a>, where it can be explained and consented to. If you need it programmatically, go to <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener">HIBP's own API</a>, which is built for it.</p>
+
+      <h2>Versioning and stability</h2>
+      <p>The path carries the version. Additive changes, new fields, new endpoints, ship into <code>/data/v1/</code> at any time, which is why you should ignore unknown keys. Anything that would break an existing consumer ships at a new version path, and <code>v1</code> stays exactly where it is.</p>
+      <p>This is a free service maintained alongside a small product, offered in good faith and with no uptime guarantee. If you are building something where breach data being unavailable would be a real problem, cache it on your side.</p>
+
+      <h2>Common questions</h2>
+
+      <h3>Is it really free?</h3>
+      <p>Yes. No account, no key, no paid tier, no rate limit beyond fair use. The endpoints are static files on a CDN, so serving them costs almost nothing and there is nothing to meter.</p>
+
+      <h3>Do I need to register?</h3>
+      <p>No. Every endpoint is a plain <code>GET</code> with no authentication, and CORS is open, so browser JavaScript on any origin can call it directly.</p>
+
+      <h3>How often does the data update?</h3>
+      <p>The archive rebuilds from upstream daily, and each payload carries a <code>generated</code> date so you can see how fresh your copy is. The CDN caches for an hour and serves a stale copy for up to a day rather than failing.</p>
+
+      <h3>Can I check a specific email address?</h3>
+      <p>No, deliberately, see <a href="#main">What this API is not</a> above. Use <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener">HIBP's API</a> for that.</p>
+
+      <h3>Can I use this commercially?</h3>
+      <p>CC BY 4.0 permits commercial use with attribution. Credit Have I Been Pwned as described above and you are within the licence.</p>
+
+      <h2>Related</h2>
+      <ul class="related-guides">
+        <li><a href="/breaches/">the breach archive these endpoints describe</a></li>
+        <li><a href="/breaches/case-files/">the case files, written up in full</a></li>
+        <li><a href="/guides/check-email-data-breach.html">how to check an address, for people rather than programs</a></li>
+        <li><a href="/guides/how-breaches-actually-happen.html">how breaches actually happen</a></li>
+        <li><a href="/guides/stealer-logs-explained.html">what the <code>stealer_log</code> flag means</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← The breach archive</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/developers.html" style="color:var(--text-dim)">API</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

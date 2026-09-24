@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Do People-Search Apps Actually Find Anything? | MyRecon</title>
+  <meta name="description" content="What AI people-search apps really query, the two-minute test that shows whether one works, and the checks to run on a store listing before you pay for it.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/people-search-apps-what-they-find.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Do People-Search Apps Actually Find Anything?">
+  <meta property="og:description" content="What AI people-search apps really query, the two-minute test that shows whether one works, and the checks to run on a store listing before you pay for it.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/people-search-apps-what-they-find.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Do People-Search Apps Actually Find Anything?">
+  <meta name="twitter:description" content="What AI people-search apps really query, the two-minute test that shows whether one works, and the checks to run on a store listing before you pay for it.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"Do People-Search Apps Actually Find Anything?","description":"What AI people-search apps really query, the two-minute test that shows whether one works, and the checks to run on a store listing before you pay for it.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-21","dateModified":"2026-09-21","mainEntityOfPage":"https://www.myrecon.xyz/guides/people-search-apps-what-they-find.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Do People-Search Apps Actually Find Anything?","item":"https://www.myrecon.xyz/guides/people-search-apps-what-they-find.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do AI people-search apps actually find anything?","acceptedAnswer":{"@type":"Answer","text":"Most of them query the same public web a search engine does, then present the results in a dossier-style layout. They cannot see private profiles, direct messages, deleted posts, likes or location history, because none of that is published. An app that appears to know more than a careful web search is usually either reformatting public data or reselling a data-broker record, and in both cases the underlying information was already reachable without paying."}},{"@type":"Question","name":"How can I test a people-search app before paying?","acceptedAnswer":{"@type":"Answer","text":"Search for a string nobody could have registered, random letters and digits, such as zzqnope99123xqq. A tool that returns profiles or a confident dossier for an invented identity is not detecting people; it is producing output regardless of input. Then search for yourself and check whether anything it reports is something you could not have found with a few minutes of ordinary web searching."}},{"@type":"Question","name":"Why does the app show results but ask me to subscribe to see them?","acceptedAnswer":{"@type":"Answer","text":"A blurred or counted result shown before payment is a conversion device, not a finding. Producing a count costs nothing and can be generated without any lookup having taken place. Treat a blurred result as an advertisement until the app has shown you at least one verifiable item, a link you can open and check yourself."}},{"@type":"Question","name":"Is it legal to look someone else up?","acceptedAnswer":{"@type":"Answer","text":"Reading genuinely public information is generally lawful in most jurisdictions, but the purpose matters and the rules differ by country. Compiling a profile of a private individual to contact, monitor, pressure or embarrass them can breach anti-stalking, harassment and data-protection law regardless of whether each individual fact was public. Employment, tenancy and credit decisions are separately regulated in many countries and usually require a licensed, consented process."}},{"@type":"Question","name":"What can a username search honestly find?","acceptedAnswer":{"@type":"Answer","text":"Accounts that are publicly visible and reachable at a predictable URL for that handle, plus pages elsewhere on the web that mention or link to them. That is a real footprint and it is often larger than people expect. It is not a comment history, a follower list, a private account or anything requiring a logged-in session."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Evaluation</span>
+      <h1>Do People-Search Apps Actually Find Anything?</h1>
+      <p class="meta">Published 21 September 2026 · 8 min read</p>
+
+      <p class="lead">App stores carry hundreds of them: search anyone by name, photo or number, powered by AI, results in seconds. Several have tens of millions of installs. Before you pay for one, it is worth understanding what such an app can possibly know, because the ceiling is set by what is published on the open web, and no amount of AI raises it.</p>
+
+      <section class="key-finding">
+        <h2>The short answer</h2>
+        <p><strong>A people-search app can only show you what is already publicly readable.</strong> It cannot see private accounts, direct messages, deleted posts, likes, follower lists or location history, because none of that is published anywhere it could read. What it can do is gather public fragments faster than you would by hand, which is genuinely useful, and is a much smaller promise than most of these listings make.</p>
+        <p class="method">Everything below is checkable before you spend anything: two searches inside the app, and four things to read on its store listing.</p>
+      </section>
+
+      <h2>Where the data actually comes from</h2>
+      <p>Strip the interface away and almost every one of these products draws on the same three sources.</p>
+      <p><strong>Public web search.</strong> The app runs queries against a search index, often the same operators you could type yourself, and formats the hits as a profile. This is the bulk of what most of them do, and it is why results for a common name are so often about somebody else entirely.</p>
+      <p><strong>Platform pages that are public by design.</strong> A profile URL that loads for a logged-out visitor is readable by anything. That includes a great many social, developer and forum accounts. This is real data, and it is free.</p>
+      <p><strong>Data-broker records, where the app pays for them.</strong> Aggregated marketing and public-record data, assembled and resold. Coverage is heavily skewed by country, thin in most of the world, deeper in the United States, where certain public records are genuinely public. The records are also frequently stale or mismatched, because merging people by name is error-prone and nobody in the chain is penalised for getting it wrong.</p>
+      <p>None of those three has access to anything behind a login. That is the whole ceiling.</p>
+
+      <h2>The two-minute test</h2>
+      <p>You can check any of these tools before paying, and it takes two searches.</p>
+      <p><strong>First, search for something that cannot exist.</strong> Type a string nobody would ever have registered, random letters and digits. We use <code>zzqnope99123xqq</code>. If the app returns profiles, a match count, or a confident-looking dossier for an identity you invented ten seconds ago, it is not detecting people. It is generating output regardless of input, and every result it has ever shown you is suspect for the same reason.</p>
+      <p>This is not a hypothetical failure. We measured it on the underlying mechanism: <a href="/guides/why-username-checkers-report-fake-accounts.html">six of 24 platforms return a byte-for-byte identical response for a real handle and an invented one</a>, so any tool treating a page load as proof of an account will confidently report accounts that were never there.</p>
+      <p><strong>Second, search for yourself.</strong> You are the only subject whose correct answer you already know. Go through what it reports and ask of each item: is this true, and could I have found it in five minutes with a search engine? A tool earns its price on the things that survive both questions.</p>
+
+      <h2>Four things to read on the store listing</h2>
+      <p>All of this is published by the store itself, before you install anything.</p>
+      <p><strong>Top grossing, or top free?</strong> Category rankings are public. An app ranked high in <em>top grossing</em> is one people pay for heavily, which tells you the subscription is working, not that the search is. The two rankings measure different things and only one of them is about whether the product does anything.</p>
+      <p><strong>The Data Safety or App Privacy section.</strong> Developers must declare what they collect and share. Read it for three specifics: whether <em>financial info</em> is collected, whether data is shared with third parties, and whether the developer states that <strong>data is not encrypted in transit</strong>. That last one is a declaration the developer made about their own product, and for an app you are about to hand a name and a card to, it is worth more than any review.</p>
+      <p><strong>Reviews sorted by newest, not by helpfulness.</strong> The default sort favours older, settled reviews. Newest shows you the current build and the current billing behaviour. Read for the specific and repeated: people describing the same billing surprise, or the same empty result screen, in their own different words.</p>
+      <p><strong>The developer's other apps.</strong> One tap from any listing. A people-search tool published alongside a document scanner, a heart-rate monitor and a storage cleaner tells you the company's expertise is subscription mechanics, not investigation. That is not automatically disqualifying, but it sets a reasonable expectation of how much depth the search itself has.</p>
+
+      <h2>The free trial is the product</h2>
+      <p>A recurring design across this category: a trial that cannot be used without subscribing, and a subscription priced per week rather than per month. Weekly pricing is not a convenience. It makes a large annual figure read as a small one, and it shortens the window in which cancelling still feels urgent.</p>
+      <p>If a result is blurred, greyed or reduced to a count until you pay, treat that screen as an advertisement rather than a finding. Producing the number "14 results found" requires no lookup to have happened at all. The honest version of that screen shows you one complete, verifiable item, a link you can open and check, and asks for payment for the rest.</p>
+      <p>Set a calendar reminder for the day before any trial ends, at the moment you start it. The business model assumes you will not.</p>
+
+      <h2>What an honest tool in this space looks like</h2>
+      <p>There is real work to do here, and tools that do it exist. The distinguishing marks are consistent:</p>
+      <ul>
+        <li><strong>It tells you when it does not know.</strong> Three outcomes rather than two: found, not found, and could not determine. A tool that only has "found" and "not found" must file every blocked, rate-limited or ambiguous response as one or the other, and both choices are lies. <a href="/guides/what-http-responses-reveal.html">Not found and could not check are different answers.</a></li>
+        <li><strong>Every finding names its source.</strong> A link you can open and judge for yourself, not an assertion in a summary box.</li>
+        <li><strong>It states its limits without being asked</strong>: which platforms it cannot check, what a null result does and does not mean.</li>
+        <li><strong>It does not claim access to private data.</strong> Any product implying it can read private accounts, deleted content or messages is either wrong or describing something you should not be buying.</li>
+      </ul>
+      <p>MyRecon is built on those rules, which is why it <a href="/deep-search.html">does not offer search by personal name</a>: handles guessed from a name return whoever registered that string, which on a large platform is almost never the person meant. Refusing the feature was the only honest option available.</p>
+
+      <h2>Before you look anyone else up</h2>
+      <p>Reading public information is generally lawful, but the purpose matters and the rules vary by country. Assembling a profile of a private individual in order to contact, monitor, pressure or embarrass them can breach anti-stalking, harassment and data-protection law even where every individual fact was public. Decisions about employment, tenancy or credit are separately regulated in many places and usually require a licensed and consented process, a consumer app is not one.</p>
+      <p>The use that is almost always defensible, and the one most people actually arrive for, is auditing your own footprint: finding what is public about you so you can reduce it. <a href="/guides/reduce-your-digital-footprint.html">That guide is here</a>, and it needs no subscription.</p>
+
+      <h2>Common questions</h2>
+
+      <h3>Do AI people-search apps actually find anything?</h3>
+      <p>Most query the same public web a search engine does, then present the results in a dossier-style layout. They cannot see private profiles, direct messages, deleted posts, likes or location history, because none of that is published. An app that appears to know more than a careful web search is usually reformatting public data or reselling a broker record, and in both cases the information was reachable without paying.</p>
+
+      <h3>How can I test one before paying?</h3>
+      <p>Search for a string nobody could have registered, such as <code>zzqnope99123xqq</code>. A tool that returns profiles or a confident dossier for an invented identity is producing output regardless of input. Then search for yourself, and check whether anything it reports is something you could not have found in five minutes of ordinary searching.</p>
+
+      <h3>Why does it show results but ask me to subscribe to see them?</h3>
+      <p>A blurred or counted result shown before payment is a conversion device, not a finding, producing a count costs nothing and needs no lookup to have happened. Treat it as an advertisement until the app has shown you at least one item you can open and verify.</p>
+
+      <h3>Is it legal to look someone else up?</h3>
+      <p>Reading genuinely public information is generally lawful in most jurisdictions, but purpose matters and rules differ by country. Compiling a profile of a private individual to contact, monitor, pressure or embarrass them can breach anti-stalking, harassment and data-protection law regardless of whether each fact was public. Employment, tenancy and credit decisions are separately regulated and usually require a licensed, consented process.</p>
+
+      <h3>What can a username search honestly find?</h3>
+      <p>Accounts that are publicly visible and reachable at a predictable URL for that handle, plus pages elsewhere that mention or link to them. That is a real footprint and often a larger one than people expect. It is not a comment history, a follower list, a private account, or anything needing a logged-in session.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dpeople_search_apps_what_they_find" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/why-username-checkers-report-fake-accounts.html">the measurement behind the false-positive problem</a></li>
+        <li><a href="/guides/verify-an-osint-finding.html">how to verify a finding before you act on it</a></li>
+        <li><a href="/guides/what-http-responses-reveal.html">what a website's response actually tells you</a></li>
+        <li><a href="/guides/username-osint-search.html">how username search works, and where it fails</a></li>
+        <li><a href="/guides/reduce-your-digital-footprint.html">reducing your own footprint instead</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

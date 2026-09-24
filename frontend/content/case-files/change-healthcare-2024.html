@@ -21,14 +21,14 @@
   "faq": [
     { "q": "How did the Change Healthcare attack happen?", "a": "Attackers used stolen credentials on a Citrix remote access portal that was not protected by multi-factor authentication. The company's parent, UnitedHealth Group, confirmed this in congressional testimony. Once inside, the group moved through the network for more than a week before deploying ransomware." },
     { "q": "Why did it disrupt so much of US healthcare?", "a": "Change Healthcare sits in the middle of the American medical payment system, handling a very large share of claims, eligibility checks and pharmacy transactions. When it went offline, pharmacies could not verify coverage or process claims, and providers could not bill. Independent practices ran out of cash within weeks; UnitedHealth advanced billions of dollars in emergency funding." },
-    { "q": "Did they pay the ransom?", "a": "Yes — about $22 million in bitcoin, traced publicly on the blockchain. It did not resolve matters: the affiliate who carried out the intrusion accused ALPHV of taking the payment and disappearing, and a second group, RansomHub, later attempted to extort the company again using what appeared to be the same data." },
-    { "q": "How many people were affected?", "a": "The estimate was 100 million in October 2024 and was revised to roughly 190 million in January 2025, making it the largest breach of protected health information ever reported in the United States — more than half the country's population." }
+    { "q": "Did they pay the ransom?", "a": "Yes, about $22 million in bitcoin, traced publicly on the blockchain. It did not resolve matters: the affiliate who carried out the intrusion accused ALPHV of taking the payment and disappearing, and a second group, RansomHub, later attempted to extort the company again using what appeared to be the same data." },
+    { "q": "How many people were affected?", "a": "The estimate was 100 million in October 2024 and was revised to roughly 190 million in January 2025, making it the largest breach of protected health information ever reported in the United States, more than half the country's population." }
   ],
   "sources": [
     { "label": "Testimony of UnitedHealth Group CEO Andrew Witty before US Senate and House committees, May 2024" },
-    { "label": "US Department of Health and Human Services — Office for Civil Rights breach portal notice" },
+    { "label": "US Department of Health and Human Services, Office for Civil Rights breach portal notice" },
     { "label": "UnitedHealth Group quarterly results and incident updates, 2024–2025" },
-    { "label": "US Department of State, Rewards for Justice — ALPHV/BlackCat reward announcement, 2024" }
+    { "label": "US Department of State, Rewards for Justice, ALPHV/BlackCat reward announcement, 2024" }
   ]
 }
 -->
@@ -38,7 +38,7 @@
 
 <p>Change Healthcare, part of UnitedHealth Group's Optum division, is infrastructure. It sits between providers, pharmacies and insurers, handling eligibility checks, claims and payments at enormous volume. Most patients have never heard of it, which is exactly the profile of the systems whose failure is most disruptive.</p>
 
-<p>Attackers associated with the ALPHV/BlackCat ransomware operation obtained credentials for a Citrix remote access portal. That portal did not enforce multi-factor authentication, so the password was sufficient. They were inside for more than a week — moving laterally, staging data — before deploying ransomware on 21 February.</p>
+<p>Attackers associated with the ALPHV/BlackCat ransomware operation obtained credentials for a Citrix remote access portal. That portal did not enforce multi-factor authentication, so the password was sufficient. They were inside for more than a week, moving laterally, staging data, before deploying ransomware on 21 February.</p>
 
 <p>The company disconnected systems to contain it. That containment decision was correct and it was also what produced the national disruption: pulling the plug on the clearing house meant pulling the plug on the payment flow for a third of the country's medical transactions.</p>
 
@@ -57,36 +57,36 @@
   <li><b>The backlog outlasted the outage.</b> Restoring systems is not the same as clearing months of unprocessed claims, and the financial effects ran through the rest of 2024.</li>
 </ol>
 
-<p>This is what "critical infrastructure" means in practice. Not power stations and water treatment alone — the payment rails that make ordinary services function.</p>
+<p>This is what "critical infrastructure" means in practice. Not power stations and water treatment alone, the payment rails that make ordinary services function.</p>
 
 <h2>The ransom, and why paying failed twice</h2>
 
 <p>Roughly $22 million in bitcoin moved to an address associated with ALPHV. The transaction was visible on the blockchain and widely analysed.</p>
 
-<p>What followed is the clearest public illustration of why payment is an unreliable transaction. The affiliate who had actually carried out the intrusion complained publicly that ALPHV had taken the money and vanished, and ALPHV's infrastructure went offline shortly afterwards in what appeared to be an exit scam. Then, months later, a different group — RansomHub — attempted to extort the company again, claiming to hold the same data.</p>
+<p>What followed is the clearest public illustration of why payment is an unreliable transaction. The affiliate who had actually carried out the intrusion complained publicly that ALPHV had taken the money and vanished, and ALPHV's infrastructure went offline shortly afterwards in what appeared to be an exit scam. Then, months later, a different group, RansomHub, attempted to extort the company again, claiming to hold the same data.</p>
 
 <p>The victim paid, and the data was still in circulation and still being used as leverage. When people argue that paying buys nothing enforceable, this is the case they mean.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>Early February 2024</b> — Stolen credentials are used on a Citrix portal without MFA; attackers establish access.</li>
-  <li><b>21 February 2024</b> — Ransomware is deployed; Change Healthcare disconnects systems.</li>
-  <li><b>Late February – March</b> — Pharmacy and claims disruption spreads nationally; emergency funding and workarounds are arranged.</li>
-  <li><b>March 2024</b> — A $22 million payment to ALPHV is identified on the blockchain; the group's infrastructure goes offline.</li>
-  <li><b>April 2024</b> — RansomHub attempts a second extortion using apparently the same data.</li>
-  <li><b>May 2024</b> — UnitedHealth's chief executive testifies that the portal lacked multi-factor authentication.</li>
-  <li><b>October 2024</b> — The affected population is reported as approximately 100 million.</li>
-  <li><b>January 2025</b> — The figure is revised to approximately 190 million.</li>
+  <li><b>Early February 2024</b>: Stolen credentials are used on a Citrix portal without MFA; attackers establish access.</li>
+  <li><b>21 February 2024</b>: Ransomware is deployed; Change Healthcare disconnects systems.</li>
+  <li><b>Late February – March</b>: Pharmacy and claims disruption spreads nationally; emergency funding and workarounds are arranged.</li>
+  <li><b>March 2024</b>: A $22 million payment to ALPHV is identified on the blockchain; the group's infrastructure goes offline.</li>
+  <li><b>April 2024</b>: RansomHub attempts a second extortion using apparently the same data.</li>
+  <li><b>May 2024</b>: UnitedHealth's chief executive testifies that the portal lacked multi-factor authentication.</li>
+  <li><b>October 2024</b>: The affected population is reported as approximately 100 million.</li>
+  <li><b>January 2025</b>: The figure is revised to approximately 190 million.</li>
 </ol>
 
 <h2>What it changed</h2>
 
-<p><strong>Healthcare consolidation became a security argument.</strong> The disruption was severe precisely because so much of the payment system runs through one company. Regulators and legislators who had treated healthcare consolidation purely as a competition question started treating it as a concentration risk — single points of failure created by acquisition.</p>
+<p><strong>Healthcare consolidation became a security argument.</strong> The disruption was severe precisely because so much of the payment system runs through one company. Regulators and legislators who had treated healthcare consolidation purely as a competition question started treating it as a concentration risk, single points of failure created by acquisition.</p>
 
 <p><strong>MFA on remote access stopped being negotiable.</strong> It was already standard advice. After a $3 billion incident traced to its absence on one portal, it became the first question in every healthcare security assessment and a condition in cyber insurance underwriting.</p>
 
-<p><strong>Third-party dependency mapping got funding.</strong> Thousands of organisations discovered they depended on Change Healthcare only when it stopped. The exercise of knowing which suppliers your operations cannot survive losing — and for how long — moved from a compliance artefact to a real programme.</p>
+<p><strong>Third-party dependency mapping got funding.</strong> Thousands of organisations discovered they depended on Change Healthcare only when it stopped. The exercise of knowing which suppliers your operations cannot survive losing, and for how long, moved from a compliance artefact to a real programme.</p>
 
 <h2>If you are one of the 190 million</h2>
 
@@ -95,6 +95,6 @@
 <ol class="bx-actions">
   <li><strong>Freeze your credit files.</strong> Social Security numbers were in the data; this is the control that blocks new-account fraud.</li>
   <li><strong>Read every explanation of benefits.</strong> Medical identity fraud surfaces there first, if it surfaces at all.</li>
-  <li><strong>Treat health-related calls and letters as unverified.</strong> Claims data makes an approach specific enough to be convincing — <a href="/guides/how-to-spot-phishing.html">the checks that still work</a>.</li>
+  <li><strong>Treat health-related calls and letters as unverified.</strong> Claims data makes an approach specific enough to be convincing, <a href="/guides/how-to-spot-phishing.html">the checks that still work</a>.</li>
   <li><strong>Take the free monitoring if it was offered to you</strong>, but do not mistake it for protection. Monitoring reports fraud after it happens; a freeze prevents a category of it.</li>
 </ol>

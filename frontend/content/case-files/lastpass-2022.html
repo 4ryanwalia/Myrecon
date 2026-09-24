@@ -20,9 +20,9 @@
   "related": ["snowflake-2024", "uber-2016", "collection-1-2019"],
   "faq": [
     { "q": "Were LastPass passwords decrypted?", "a": "Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall." },
-    { "q": "What was not encrypted?", "a": "Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with — including which cryptocurrency exchanges." },
+    { "q": "What was not encrypted?", "a": "Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with, including which cryptocurrency exchanges." },
     { "q": "How did they get in through someone's home computer?", "a": "The attackers used information from the earlier August incident to identify a senior DevOps engineer, then exploited a vulnerability in a third-party media software package running on that engineer's personal home computer. That gave them a keylogger, which captured the engineer's master password after multi-factor authentication, which opened a corporate vault holding the keys to cloud backups." },
-    { "q": "Should I still use a password manager?", "a": "Yes. The alternative — reused passwords, or a notebook — fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached." }
+    { "q": "Should I still use a password manager?", "a": "Yes. The alternative, reused passwords, or a notebook, fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached." }
   ],
   "sources": [
     { "label": "LastPass security incident notices and updates, August 2022 – March 2023" },
@@ -31,18 +31,18 @@
   ]
 }
 -->
-<p class="lead">A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building — and why the encryption holding is not the same as being safe.</p>
+<p class="lead">A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building, and why the encryption holding is not the same as being safe.</p>
 
 <h2>Two incidents, one chain</h2>
 
 <p><strong>August 2022.</strong> An attacker compromised a developer's account and took source code and technical documentation from a development environment. LastPass said at the time that customer data and vaults were not affected, which was true of that incident.</p>
 
-<p><strong>November 2022.</strong> Using what they had learned in August, the attackers identified a senior DevOps engineer — one of a small number of people with access to the decryption keys for cloud storage backups. They then exploited a vulnerability in a third-party media software package running on that engineer's <em>personal home computer</em>, installed a keylogger, and captured the engineer's master password as it was typed, after multi-factor authentication had already been satisfied.</p>
+<p><strong>November 2022.</strong> Using what they had learned in August, the attackers identified a senior DevOps engineer, one of a small number of people with access to the decryption keys for cloud storage backups. They then exploited a vulnerability in a third-party media software package running on that engineer's <em>personal home computer</em>, installed a keylogger, and captured the engineer's master password as it was typed, after multi-factor authentication had already been satisfied.</p>
 
 <p>That gave them the engineer's corporate vault. In it were the keys to the cloud storage holding customer vault backups, which they copied.</p>
 
 <div class="callout">
-  <p><strong>The perimeter question this raises.</strong> The intrusion that mattered did not happen on a corporate network, a company laptop, or any system LastPass monitored. It happened on a home media server belonging to an employee. For a small number of people in any organisation — the ones who hold keys rather than data — the blast radius of their personal computing is the entire company, and almost no security programme is scoped that way.</p>
+  <p><strong>The perimeter question this raises.</strong> The intrusion that mattered did not happen on a corporate network, a company laptop, or any system LastPass monitored. It happened on a home media server belonging to an employee. For a small number of people in any organisation, the ones who hold keys rather than data, the blast radius of their personal computing is the entire company, and almost no security programme is scoped that way.</p>
 </div>
 
 <h2>Why a stolen vault is worse than it sounds</h2>
@@ -53,7 +53,7 @@
 
 <ol class="cf-timeline">
   <li><b>The master password's strength.</b> A long, random passphrase is out of reach. A reused or dictionary-derived password is not.</li>
-  <li><b>The key-derivation iteration count.</b> Higher counts make each guess more expensive. Accounts created years earlier were running far lower counts than the then-current default, and some legacy accounts were dramatically lower — those vaults are far cheaper to attack.</li>
+  <li><b>The key-derivation iteration count.</b> Higher counts make each guess more expensive. Accounts created years earlier were running far lower counts than the then-current default, and some legacy accounts were dramatically lower, those vaults are far cheaper to attack.</li>
   <li><b>Time.</b> Which is entirely on the attacker's side, because the file does not expire.</li>
 </ol>
 
@@ -67,7 +67,7 @@
 
 <h2>The disclosure problem</h2>
 
-<p>LastPass's communications drew as much criticism as the breach. The August notice said customer data was not affected. A November update said an incident had occurred using information from August. The December update — published just before the holidays — revealed that customer vault backups had been copied. The detail about the engineer's home computer came later still.</p>
+<p>LastPass's communications drew as much criticism as the breach. The August notice said customer data was not affected. A November update said an incident had occurred using information from August. The December update, published just before the holidays, revealed that customer vault backups had been copied. The detail about the engineer's home computer came later still.</p>
 
 <p>Each statement was defensible at the moment it was written. The cumulative effect was that customers learned the severity in stages over four months, which is precisely the pattern that destroys trust: not one lie, but a sequence of technically accurate statements that each turned out to be the floor rather than the ceiling.</p>
 
@@ -75,7 +75,7 @@
 
 <p><strong>Iteration counts became a visible setting.</strong> Password managers raised defaults sharply and began prompting users to upgrade old accounts. A parameter that had been an implementation detail became something users were told to check.</p>
 
-<p><strong>Privileged personal devices entered threat models.</strong> Organisations with a handful of key holders started treating those individuals differently — hardware tokens, dedicated managed devices for privileged work, and separation between administrative access and personal computing.</p>
+<p><strong>Privileged personal devices entered threat models.</strong> Organisations with a handful of key holders started treating those individuals differently, hardware tokens, dedicated managed devices for privileged work, and separation between administrative access and personal computing.</p>
 
 <p><strong>"Encrypted" stopped being an acceptable one-word answer.</strong> The right questions are now: encrypted with what, derived how, how many iterations, and what metadata sits outside the encryption.</p>
 
@@ -83,7 +83,7 @@
 
 <ol class="bx-actions">
   <li><strong>Assume your vault as of late 2022 is in someone's possession.</strong> That is the only safe assumption, and it does not change with time.</li>
-  <li><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked — move the funds rather than changing a password.</li>
+  <li><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.</li>
   <li><strong>Then rotate by value: email, banking, anything holding payment details.</strong> Yes, it is a long weekend of work. It is also the only real remediation.</li>
-  <li><strong>Keep using a manager — with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you — <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</li>
+  <li><strong>Keep using a manager, with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</li>
 </ol>

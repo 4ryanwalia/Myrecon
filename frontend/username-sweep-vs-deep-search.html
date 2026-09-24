@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Username Sweep vs Deep Search: Which One Answers Your Question</title>
+  <meta name="description" content="A username sweep asks each platform directly whether an account exists. Deep Search asks search engines what they have indexed about a handle. Different questions, different failure modes, and when to use each.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/username-sweep-vs-deep-search.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Username Sweep vs Deep Search: Which One Answers Your Question">
+  <meta property="og:description" content="One asks the platforms. The other asks the search engines. They fail in opposite directions, which is why both exist.">
+  <meta property="og:url" content="https://www.myrecon.xyz/username-sweep-vs-deep-search.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Username Sweep vs Deep Search: Which One Answers Your Question">
+  <meta name="twitter:description" content="One asks the platforms. The other asks the search engines. They fail in opposite directions.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <style>
+    /* Scoped: same wide-table treatment as the comparison page. */
+    .cmp-wrap{overflow-x:auto;margin:18px 0 8px;-webkit-overflow-scrolling:touch}
+    .cmp{border-collapse:collapse;width:100%;min-width:600px;font-size:.92rem}
+    .cmp th,.cmp td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}
+    .cmp th{background:var(--surface-2);font-weight:600;color:var(--text)}
+    .cmp td{color:var(--text-dim)}
+    .cmp tbody th{font-weight:600;color:var(--text)}
+  </style>
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","name":"Username Sweep vs Deep Search: Which One Answers Your Question","url":"https://www.myrecon.xyz/username-sweep-vs-deep-search.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Username Sweep vs Deep Search","item":"https://www.myrecon.xyz/username-sweep-vs-deep-search.html"}]},"mainEntity":[
+    {"@type":"Question","name":"What is the difference between a username sweep and a deep search?","acceptedAnswer":{"@type":"Answer","text":"A username sweep asks each platform directly whether an account with that handle exists, so it can find accounts nobody has ever linked to. A deep search asks search engines what they have indexed about the handle, so it can find mentions, documents and pages an account-by-account check would never look at. One answers does this account exist, the other answers what has been written down."}},
+    {"@type":"Question","name":"Which should I run first?","acceptedAnswer":{"@type":"Answer","text":"Run the username sweep first. It gives a definite per-platform answer and takes under a minute. Use deep search afterwards when you want context around what the sweep found, or when the handle is unusual enough that indexed mentions are likely to be about the right person."}},
+    {"@type":"Question","name":"Why does deep search find things the sweep misses?","acceptedAnswer":{"@type":"Answer","text":"The sweep only visits platforms in its catalogue. Deep search has no catalogue, it reads what search engines have indexed, so it can surface forum posts, pasted documents, archived pages and small sites that no catalogue would list."}},
+    {"@type":"Question","name":"Why does the sweep find things deep search misses?","acceptedAnswer":{"@type":"Answer","text":"Search engines only know about pages they have crawled and kept. A profile that is new, blocked by robots.txt, behind a login, or simply never linked to will not be indexed, but asking the platform directly still finds it."}}
+  ]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container" style="max-width:840px;padding-top:40px;padding-bottom:40px">
+    <nav aria-label="Breadcrumb" style="font-size:.85rem;color:var(--text-mute);margin-bottom:14px">
+      <a href="/" style="color:var(--text-mute)">Home</a> › <span>Username Sweep vs Deep Search</span>
+    </nav>
+
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-0.02em">Username Sweep vs Deep Search</h1>
+    <p class="sub" style="text-align:left;margin:14px 0 26px;color:var(--text-dim)">
+      These look like the same feature with different names. They are not. One asks the
+      platforms; the other asks the search engines. They fail in opposite directions, which
+      is exactly why both exist, and why running only one of them leaves a predictable
+      kind of gap.
+    </p>
+
+    <div class="panel" style="padding:18px 20px;margin:0 0 28px">
+      <p style="margin:0 0 8px;color:var(--text-dim)"><strong style="color:var(--text)">The one-line version</strong></p>
+      <p style="margin:0;color:var(--text-dim)">
+        <strong style="color:var(--text)">Username Sweep</strong> answers
+        “does an account with this handle exist, and where?”<br>
+        <strong style="color:var(--text)">Deep Search</strong> answers
+        “what has been written down about this handle, anywhere?”
+      </p>
+    </div>
+
+    <h2 style="margin:30px 0 10px">How the sweep works</h2>
+    <p>
+      The sweep holds a catalogue of platforms and a URL pattern for each. It builds the
+      profile address for your handle, requests it, and reads the answer, preferring a
+      platform's own public API where one exists, because an API that returns a user object
+      or a documented 404 is an unambiguous yes or no in a way that a web page never is.
+    </p>
+    <p>
+      The hard part is not making the requests. It is deciding what an answer means. A
+      great many sites return <strong>HTTP 200, “here is your page”</strong> for a handle
+      nobody owns: a generic template, a “no results” screen, a sign-in wall. A checker
+      that treats a 200 as an account will hand you a confident list of profiles that were
+      never there. So each platform lands on one of three verdicts, confirmed, not found,
+      or could-not-tell, and the third is reported rather than rounded into one of the
+      other two. The measurement behind that design is in
+      <a href="/guides/why-username-checkers-report-fake-accounts.html">why username
+      checkers report fake accounts</a>.
+    </p>
+
+    <h2 style="margin:30px 0 10px">How deep search works</h2>
+    <p>
+      Deep search has no catalogue. It queries search engines with carefully built
+      operator strings, the same technique as
+      <a href="/guides/search-operators-osint.html">advanced search operators</a>, applied
+      systematically, and reads what comes back. Because it is not restricted to a list of
+      known platforms, it can surface a forum post, a pasted document, an archived page or
+      a small site nobody would ever put in a catalogue.
+    </p>
+    <p>
+      Its weakness is the mirror image of that strength: it only knows what has been
+      <em>indexed</em>. A search engine has to have crawled the page and decided to keep it.
+      A brand-new profile, a site that blocks crawlers in robots.txt, anything behind a
+      login, and anything simply never linked to from elsewhere is all invisible to it,
+      while being perfectly findable by asking the platform directly.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Side by side</h2>
+    <div class="cmp-wrap">
+      <table class="cmp">
+        <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Username Sweep compared with Deep Search</caption>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Username Sweep</th>
+            <th scope="col">Deep Search</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Asks</th>
+            <td>Each platform, directly</td>
+            <td>Search engines, via operators</td>
+          </tr>
+          <tr>
+            <th scope="row">Answers</th>
+            <td>Does this account exist?</td>
+            <td>What is written about this handle?</td>
+          </tr>
+          <tr>
+            <th scope="row">Scope</th>
+            <td>A fixed catalogue of platforms</td>
+            <td>Anything indexed, anywhere</td>
+          </tr>
+          <tr>
+            <th scope="row">Finds that the other misses</th>
+            <td>Unlinked, new or uncrawled profiles</td>
+            <td>Posts, documents, archives, small sites</td>
+          </tr>
+          <tr>
+            <th scope="row">Main failure</th>
+            <td>Platform blocks or throttles the check</td>
+            <td>Nothing was indexed, or the results are a different person</td>
+          </tr>
+          <tr>
+            <th scope="row">Result is</th>
+            <td>Per-platform verdict with evidence</td>
+            <td>Ranked mentions needing your judgement</td>
+          </tr>
+          <tr>
+            <th scope="row">Typical time</th>
+            <td>Under a minute</td>
+            <td>Longer, engines rate-limit aggressively</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 style="margin:30px 0 10px">What a sweep result actually looks like</h2>
+    <p>
+      Each platform comes back as one of three things, and the difference between them is
+      the point of the whole tool.
+    </p>
+    <ul style="color:var(--text-dim);margin:0 0 16px 20px;line-height:1.75">
+      <li><strong style="color:var(--text)">Confirmed.</strong> Something specific was
+        established: the platform's own API returned a user object for that exact handle,
+        or the page carries profile markup naming it, or the response demonstrably differs
+        from what that same platform returns for a handle nobody owns. Each confirmed row
+        says which of those it was.</li>
+      <li><strong style="color:var(--text)">Not found.</strong> The platform gave a real
+        negative, a documented 404, or its own “no such user” page. This is an answer, so
+        it is acted on rather than shown: there is no value in a list of four hundred
+        places you do not have an account.</li>
+      <li><strong style="color:var(--text)">Couldn't verify.</strong> The platform answered,
+        but nothing in the answer settles it. It served a bot check, or a sign-in wall, or
+        it is one of the sites that shows the same page whoever you ask for. These are
+        listed with the reason attached and are never counted as accounts.</li>
+    </ul>
+    <p>
+      That third category is where most tools quietly cheat. Rounding “couldn't verify” up
+      to “found” produces a longer, more impressive list; rounding it down to “not found”
+      produces a reassuring one. Both are claims the evidence does not support, and the
+      result summary says how many platforms landed there so a thin result cannot be
+      mistaken for a clean one.
+    </p>
+
+    <h2 style="margin:30px 0 10px">What a deep search result looks like</h2>
+    <p>
+      A ranked list of places the handle appears, each with the context it appeared in.
+      There are no verdicts, because there is nothing to have a verdict about, a search
+      engine returning a page is not a claim that the page is about your person.
+    </p>
+    <p>
+      Judging that is your job, and the useful questions are always the same three: does
+      the surrounding context match what you already know, does the handle appear as an
+      identity or merely as a string, and does the same detail show up in more than one
+      independent place. A handle that appears once, in a comment, proves very little. The
+      same handle on a profile that links to another profile you have already confirmed is
+      considerably stronger.
+    </p>
+
+    <h2 style="margin:30px 0 10px">A worked example</h2>
+    <p>
+      Say you are cleaning up an old handle you used at sixteen and want it gone.
+    </p>
+    <p>
+      The <strong>sweep</strong> is the right first move, and it is nearly the whole job.
+      It returns the platforms where that handle currently resolves to an account, each as a
+      clickable address. That list is directly actionable: open each one, log in if you
+      still can, delete or lock it. Anything in the “couldn't verify” section is worth one
+      manual glance, because a sign-in wall is often exactly what an account you still own
+      looks like from the outside.
+    </p>
+    <p>
+      <strong>Deep search</strong> answers the different question you will have afterwards:
+      what did that handle leave behind that deleting the account will not remove. Forum
+      posts quoted elsewhere, a profile captured by an archive, a document with the handle
+      in its metadata. Deleting an account does not un-index a page that copied it, and
+      that is the gap the sweep structurally cannot see. Our guide on
+      <a href="/guides/reduce-your-digital-footprint.html">reducing your digital
+      footprint</a> covers what to do with what you find.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Three mistakes worth avoiding</h2>
+    <ul style="color:var(--text-dim);margin:0 0 16px 20px;line-height:1.75">
+      <li><strong style="color:var(--text)">Reading an empty deep search as “nothing
+        exists”.</strong> It means nothing was indexed and kept. Those are very different,
+        and the mistake runs in the comforting direction.</li>
+      <li><strong style="color:var(--text)">Assuming one handle is one person.</strong>
+        Common handles are shared by unrelated people constantly. A set of accounts with
+        the same name is a set of candidates, not an identity, and treating it as one is
+        how people get misidentified.</li>
+      <li><strong style="color:var(--text)">Trusting a long list over a labelled one.</strong>
+        A tool returning ninety hits where this one returns thirty has not found more; it
+        has usually counted every page that loaded.</li>
+    </ul>
+
+    <h2 style="margin:30px 0 10px">Which to run</h2>
+    <p>
+      <strong>Start with the sweep.</strong> It is faster, it gives a definite per-platform
+      answer, and for the most common job, “where does my old handle still have accounts”,
+      it is the whole answer. The output is a list you can act on: each row is a real
+      address you can open, close or clean up.
+    </p>
+    <p>
+      <strong>Then use deep search for context.</strong> It is the better tool when the
+      sweep has already told you a handle is in use and you want to know what is attached to
+      it, or when the handle is distinctive enough that indexed mentions are likely to be
+      the same person. It is the weaker tool for a common handle, because the results will
+      be a mixture of people who happen to share a string.
+    </p>
+    <p style="border-left:3px solid var(--accent);padding-left:14px;color:var(--text-dim)">
+      <strong style="color:var(--text)">The trap worth knowing.</strong> Deep search tells
+      you what search engines have indexed, not what exists. An empty deep search is not
+      evidence that a handle is unused; it is evidence that nothing about it was crawled and
+      kept. Reading one as the other is the most common mistake people make with this kind
+      of tool, and it runs in the reassuring direction.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Why they are separate tools</h2>
+    <p>
+      It would be possible to merge them into one button and present a single list. We have
+      not, because the two kinds of result mean different things and mixing them makes both
+      less useful. “An account exists at this address” and “this string appears on a page
+      somewhere” are not the same claim, and a combined list would quietly flatten the
+      difference, which is the failure mode this whole tool is built to avoid.
+    </p>
+    <p>
+      The same reasoning shapes how results are labelled throughout: a platform that was
+      rate-limited is shown as unchecked rather than clear, and a breach lookup that could
+      not reach its sources says <em>not checked</em> rather than <em>no breaches found</em>.
+      More on that in <a href="/is-myrecon-legit.html">the six tests</a>.
+    </p>
+
+    <div class="panel" style="padding:20px;margin:30px 0 0">
+      <h2 style="margin:0 0 10px;font-size:1.1rem">Try them</h2>
+      <ul style="color:var(--text-dim);margin:0 0 0 20px;line-height:1.9">
+        <li><a href="/deep-search.html">Run a username sweep</a>: 123 platforms, free, no account</li>
+        <li><a href="/app.html">Get the Android app</a>: the sweep runs on your own device</li>
+        <li><a href="/how-myrecon-compares.html">How MyRecon compares to other tools</a></li>
+        <li><a href="/guides/">All 31 guides</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom">
+    <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+    <span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+  </div></div></footer>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

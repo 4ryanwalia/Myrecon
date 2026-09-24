@@ -10,7 +10,7 @@
   "peopleCount": 429612,
   "occurred": "22 June – 5 September 2018",
   "disclosed": "6 September 2018",
-  "vector": "Malicious JavaScript injected into the payment page — a Magecart-style client-side skimmer",
+  "vector": "Malicious JavaScript injected into the payment page, a Magecart-style client-side skimmer",
   "actor": "Magecart, a loose set of card-skimming crews; no individual has been charged",
   "cost": "£20 million ICO fine, reduced from a £183.39 million notice of intent, plus a settled group claim",
   "exposed": ["Names", "Billing addresses", "Email addresses", "Payment card numbers", "Expiry dates", "CVV security codes"],
@@ -21,26 +21,26 @@
   "faq": [
     { "q": "How were CVV codes stolen when nobody stores them?", "a": "Because they were never stored. Card rules forbid keeping the CVV after a transaction, and BA did not keep it. The skimmer captured the code in the browser at the moment the customer typed it, before it reached the airline's systems at all. This is exactly why client-side attacks are so effective against payment pages: they read the data upstream of every rule about what may be retained." },
     { "q": "Why was the British Airways fine reduced from £183 million to £20 million?", "a": "The £183.39 million figure published in July 2019 was a notice of intent, not a fine. It fell after BA made representations about the ICO's findings, after the regulator revised parts of its case, and after it took account of the effect of the COVID-19 pandemic on the aviation industry. The final penalty notice was issued in October 2020." },
-    { "q": "Was I affected by the British Airways breach?", "a": "BA contacted affected customers directly. The window was 22 June to 5 September 2018, and it covered bookings made on the website and the mobile app. If you paid BA in that period and were never notified, you were most likely outside it — but a card used then should be treated as compromised regardless, and any card still in use from that era is long overdue for replacement." },
-    { "q": "What is Magecart?", "a": "Magecart is not one group. It is the umbrella name for many crews running the same technique: get a small piece of JavaScript onto a checkout page, read the payment fields as they are filled in, and send a copy to a server you control. They usually get in through a third-party script the site embeds — analytics, chat widgets, ad tags — rather than through the site's own code." }
+    { "q": "Was I affected by the British Airways breach?", "a": "BA contacted affected customers directly. The window was 22 June to 5 September 2018, and it covered bookings made on the website and the mobile app. If you paid BA in that period and were never notified, you were most likely outside it, but a card used then should be treated as compromised regardless, and any card still in use from that era is long overdue for replacement." },
+    { "q": "What is Magecart?", "a": "Magecart is not one group. It is the umbrella name for many crews running the same technique: get a small piece of JavaScript onto a checkout page, read the payment fields as they are filled in, and send a copy to a server you control. They usually get in through a third-party script the site embeds, analytics, chat widgets, ad tags, rather than through the site's own code." }
   ],
   "sources": [
-    { "label": "Information Commissioner's Office — penalty notice, British Airways, October 2020", "url": "https://ico.org.uk/action-weve-taken/enforcement/british-airways/", "note": "the detailed public account of the intrusion" },
-    { "label": "RiskIQ — Inside the Magecart Breach of British Airways", "note": "the original analysis identifying the modified script" },
+    { "label": "Information Commissioner's Office, penalty notice, British Airways, October 2020", "url": "https://ico.org.uk/action-weve-taken/enforcement/british-airways/", "note": "the detailed public account of the intrusion" },
+    { "label": "RiskIQ, Inside the Magecart Breach of British Airways", "note": "the original analysis identifying the modified script" },
     { "label": "British Airways statements to customers, September 2018" },
     { "label": "Group claim against British Airways, settled July 2021 on undisclosed terms" }
   ]
 }
 -->
-<p class="lead">The British Airways breach took 429,612 people's card details, including the three-digit security codes that no company is allowed to store. British Airways did not store them. The attackers did not need it to — they read the numbers out of the customer's own browser as they were typed, and the airline's systems received exactly what they always had.</p>
+<p class="lead">The British Airways breach took 429,612 people's card details, including the three-digit security codes that no company is allowed to store. British Airways did not store them. The attackers did not need it to, they read the numbers out of the customer's own browser as they were typed, and the airline's systems received exactly what they always had.</p>
 
 <h2>What happened</h2>
 
-<p>On 22 June 2018, a script served by ba.com was modified. The change was small, and it was appended to an existing, legitimate file — a widely used JavaScript library that had been on the site for years. Anyone reviewing the page would have seen a familiar library at a familiar path.</p>
+<p>On 22 June 2018, a script served by ba.com was modified. The change was small, and it was appended to an existing, legitimate file, a widely used JavaScript library that had been on the site for years. Anyone reviewing the page would have seen a familiar library at a familiar path.</p>
 
-<p>The added code did one thing. When a customer submitted the payment form, it took a copy of what they had entered — name, address, card number, expiry date, CVV — and sent it to a server the attackers controlled. The booking then proceeded normally. There was no error, no delay, no failed payment. Customers completed their purchases, received their confirmations, and flew.</p>
+<p>The added code did one thing. When a customer submitted the payment form, it took a copy of what they had entered, name, address, card number, expiry date, CVV, and sent it to a server the attackers controlled. The booking then proceeded normally. There was no error, no delay, no failed payment. Customers completed their purchases, received their confirmations, and flew.</p>
 
-<p>The exfiltration domain was registered as <code>baways.com</code>, with a certificate that made the traffic look unremarkable in any log that only records where connections go. It ran for fifteen days before anyone noticed, and it was a third party — not BA — who did.</p>
+<p>The exfiltration domain was registered as <code>baways.com</code>, with a certificate that made the traffic look unremarkable in any log that only records where connections go. It ran for fifteen days before anyone noticed, and it was a third party, not BA, who did.</p>
 
 <div class="callout">
   <p><strong>How the attackers got in, according to the regulator.</strong> The ICO's penalty notice found the initial access came through compromised credentials of an employee of a BA cargo handling supplier, used to log into a remote access gateway that did not require multi-factor authentication. From there the attackers moved laterally, found administrator credentials stored in plaintext on a server, and reached the environment serving the website. The clever part of this attack was the skimmer. The way in was an ordinary chain of missing controls.</p>
@@ -48,7 +48,7 @@
 
 <h2>Why client-side skimming is so hard to see</h2>
 
-<p>Every defence a payment system has is built around the server: the database is encrypted, the CVV is discarded, the card number is tokenised, access is logged. All of that is downstream of the browser. A skimmer sits upstream of it, in the one place where the data is unavoidably in plain text — the form the customer is filling in.</p>
+<p>Every defence a payment system has is built around the server: the database is encrypted, the CVV is discarded, the card number is tokenised, access is logged. All of that is downstream of the browser. A skimmer sits upstream of it, in the one place where the data is unavoidably in plain text, the form the customer is filling in.</p>
 
 <p>It also leaves almost no evidence on the victim's side. No database was queried unusually, no large export was taken, no volume anomaly appeared anywhere. The data left in thousands of small, individually unremarkable requests from customers' own computers, not from BA's network. Monitoring built to detect bulk extraction had nothing to detect.</p>
 
@@ -57,13 +57,13 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>22 June 2018</b> — The modified script goes live; card harvesting begins.</li>
-  <li><b>5 September 2018</b> — A third party alerts BA; the airline removes the script the same day.</li>
-  <li><b>6 September 2018</b> — BA discloses publicly and begins notifying customers, initially citing 380,000 transactions.</li>
-  <li><b>October 2018</b> — The affected period is revised to include a further set of reward bookings; the total rises.</li>
-  <li><b>July 2019</b> — The ICO announces a notice of intent to fine £183.39 million, then a record.</li>
-  <li><b>16 October 2020</b> — The final penalty is set at £20 million, citing BA's representations and the pandemic's impact on aviation.</li>
-  <li><b>July 2021</b> — A group claim brought on behalf of affected customers settles on confidential terms.</li>
+  <li><b>22 June 2018</b>: The modified script goes live; card harvesting begins.</li>
+  <li><b>5 September 2018</b>: A third party alerts BA; the airline removes the script the same day.</li>
+  <li><b>6 September 2018</b>: BA discloses publicly and begins notifying customers, initially citing 380,000 transactions.</li>
+  <li><b>October 2018</b>: The affected period is revised to include a further set of reward bookings; the total rises.</li>
+  <li><b>July 2019</b>: The ICO announces a notice of intent to fine £183.39 million, then a record.</li>
+  <li><b>16 October 2020</b>: The final penalty is set at £20 million, citing BA's representations and the pandemic's impact on aviation.</li>
+  <li><b>July 2021</b>: A group claim brought on behalf of affected customers settles on confidential terms.</li>
 </ol>
 
 <h2>What it changed</h2>

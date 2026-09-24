@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIM Swap Attacks: How Phone Numbers Get Stolen | MyRecon</title>
+  <meta name="description" content="How attackers move a number to their own SIM, why losing signal is the first symptom, the settings that prevent it, and what to do in the first ten minutes.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/sim-swap-attacks.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="SIM Swap Attacks: How a Phone Number Gets Stolen">
+  <meta property="og:description" content="How attackers move a number to their own SIM, why losing signal is the first symptom, the settings that prevent it, and what to do in the first ten minutes.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/sim-swap-attacks.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SIM Swap Attacks: How a Phone Number Gets Stolen">
+  <meta name="twitter:description" content="How attackers move a number to their own SIM, why losing signal is the first symptom, the settings that prevent it, and what to do in the first ten minutes.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"SIM Swap Attacks: How a Phone Number Gets Stolen","description":"How attackers move a number to their own SIM, why losing signal is the first symptom, the settings that prevent it, and what to do in the first ten minutes.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1172,"mainEntityOfPage":"https://www.myrecon.xyz/guides/sim-swap-attacks.html"}
+  </script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"SIM Swap Attacks: How a Phone Number Gets Stolen","item":"https://www.myrecon.xyz/guides/sim-swap-attacks.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the first sign of a SIM swap?","acceptedAnswer":{"@type":"Answer","text":"Your phone loses mobile service and will not recover, no calls, no texts, often an \"emergency calls only\" or \"no SIM\" indicator, while wifi still works. If that happens without explanation and is quickly followed by password reset emails, treat it as an attack in progress rather than a network fault."}},{"@type":"Question","name":"Can a SIM swap happen if I use an eSIM?","acceptedAnswer":{"@type":"Answer","text":"Yes. An eSIM removes the physical card but not the underlying process: the number is still an account with a carrier, and transferring the profile to a new device is a support operation an attacker can target in the same way."}},{"@type":"Question","name":"Does a port-out PIN actually stop it?","acceptedAnswer":{"@type":"Answer","text":"It stops the common version. Most successful swaps come from a support agent being socially engineered, and a PIN or port freeze gives that agent something to check that the attacker does not have. It does not stop an insider with system access, which is why it is worth removing SMS from your important accounts as well."}},{"@type":"Question","name":"Why do attackers want a phone number specifically?","acceptedAnswer":{"@type":"Answer","text":"Because so many services treat it as proof of identity. It receives one-time codes, it authorises password resets, it retrieves voicemail, and it is accepted as a verification factor by banks and platforms, so controlling it for even twenty minutes can be enough to take several accounts."}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <article class="article">
+      <span class="kicker">Security</span>
+      <h1>SIM Swap Attacks: How a Phone Number Gets Stolen</h1>
+      <p class="meta">Published 14 September 2026 · 6 min read</p>
+
+<p class="lead">Your phone number is not something you own. It is an entry in your carrier's database, and it can be moved to someone else's device by a member of staff in under a minute. Everything that treats that number as proof of who you are, and a great deal does, moves with it.</p>
+
+      <h2>What a SIM swap is</h2>
+      <p>The attacker persuades your mobile operator to reassign your number to a SIM or eSIM profile they control. From that moment, calls and texts to your number reach them, and your handset drops off the network.</p>
+      <p>What follows takes minutes, because the industry spent a decade building password recovery on top of SMS. Reset links and one-time codes arrive at the attacker's device. Email goes first, because email resets everything else; then banking, then exchanges, then whatever else is worth taking. Victims routinely describe watching notification after notification arrive on a phone that can no longer receive them.</p>
+
+      <h2>How it is actually done</h2>
+      <ul>
+        <li><strong>Social engineering of support staff.</strong> The most common route. The attacker calls or walks into a shop with your name, address, date of birth and often the last digits of a card, all of which can be bought from a people-search site, and reports a lost phone. The agent is measured on resolving calls quickly and does so.</li>
+        <li><strong>Insider access.</strong> Documented repeatedly in prosecutions: retail or call-centre staff paid per swap. This defeats every verification control, because the person performing the check is the attacker's accomplice.</li>
+        <li><strong>Port-out to another carrier.</strong> Rather than swapping the SIM at your operator, the number is ported to a new operator entirely, using account details the attacker has gathered.</li>
+        <li><strong>Taking over the carrier's own online account.</strong> If your carrier portal has a reused password and no second factor, the attacker can order a replacement SIM or move an eSIM profile without speaking to anyone.</li>
+        <li><strong>eSIM profile transfer.</strong> The newer variation. No physical card is posted, so the delay that used to give victims warning has gone.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>The information used to pass verification was not stolen from you.</strong> Address history, date of birth, previous phone numbers and relatives' names are sold openly by people-search companies and sit in breach corpora by the hundred million. A carrier asking for them is not authenticating you; it is testing whether the caller has done ten minutes of research. This is the same data problem described in <a href="/guides/how-data-brokers-work.html">how data brokers work</a>.</p>
+      </div>
+
+      <h2>The symptoms, in order</h2>
+      <ol>
+        <li><strong>Service stops.</strong> No signal, no calls, no texts. Wifi keeps working, which is what makes people assume it is a network fault.</li>
+        <li><strong>Unexpected carrier messages</strong> just before it, a confirmation of a SIM change, a porting request, or a security code you did not request.</li>
+        <li><strong>A wave of password reset emails</strong> for accounts you did not ask to reset.</li>
+        <li><strong>Being signed out</strong> of apps on your other devices.</li>
+        <li><strong>Contacts receiving messages</strong> from your number.</li>
+      </ol>
+      <p>The window between the first and third of these is often under ten minutes. Treating sudden unexplained loss of service as a possible attack rather than a fault is the single most useful habit here.</p>
+
+      <h2>The first ten minutes</h2>
+      <ol>
+        <li><strong>Get to another connection.</strong> Wifi on the same handset still works; a friend's phone or a laptop will do.</li>
+        <li><strong>Call your carrier from another line</strong> and say the words "SIM swap" or "unauthorised port". Ask them to reverse it and freeze the account. Carriers have a process for this and it is faster than a general support queue.</li>
+        <li><strong>Secure email next,</strong> not your bank. Change the password over wifi, switch the second factor away from SMS, and revoke every active session.</li>
+        <li><strong>Then financial accounts.</strong> Call the bank's fraud line directly rather than relying on the app, and tell them your number was hijacked so they stop trusting SMS verification on your account.</li>
+        <li><strong>Work through the persistence checklist</strong>: forwarding rules, recovery addresses, connected apps, exactly as in <a href="/guides/account-hacked-what-to-do.html">the account compromise runbook</a>. Anything the attacker reached in those minutes may have been altered.</li>
+        <li><strong>Report it.</strong> Your national fraud or cybercrime body, and get a reference number; you will likely need it for any dispute.</li>
+      </ol>
+
+      <h2>Preventing it</h2>
+      <p>Two categories: making the swap harder, and making it matter less. The second is more reliable, because the first depends on other people's staff.</p>
+      <p><strong>Harden the carrier account</strong></p>
+      <ul>
+        <li><strong>Set a port-out PIN, transfer PIN or number lock.</strong> Nearly every carrier offers one under a different name, almost nobody enables it, and it is the control that gives a support agent something to check. Regulators in several countries now require carriers to verify a customer before changing a SIM or porting a number, but the protection only engages if you have set the credential.</li>
+        <li><strong>Give the carrier portal a unique password and its own second factor.</strong> It is an account like any other, and it is usually forgotten.</li>
+        <li><strong>Ask for a note requiring in-person identification</strong> for SIM changes, where the carrier supports it.</li>
+      </ul>
+      <p><strong>Reduce what the number is worth</strong></p>
+      <ul>
+        <li><strong>Remove SMS as a second factor</strong> wherever an authenticator app or passkey is available, see <a href="/guides/two-factor-authentication.html">the two-factor guide</a> and <a href="/guides/passkeys-explained.html">passkeys</a>.</li>
+        <li><strong>Remove SMS as a recovery route,</strong> which matters more. A number that cannot reset your email is worth far less than one that can, and an attacker will always take the weakest path available.</li>
+        <li><strong>Do not publish your number.</strong> Keep it off social profiles, domain records and public documents, and check the discoverability setting that lets people find your accounts by phone number.</li>
+        <li><strong>Use a separate number for services that insist on one</strong>: a voice-over-IP line that is not tied to a carrier account cannot be SIM-swapped, though it has its own weaknesses.</li>
+        <li><strong>Consider whether your bank offers app-based approval</strong> rather than SMS codes, and switch if it does.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>If you hold cryptocurrency, treat this as the primary threat.</strong> SIM swapping exists at scale largely because irreversible transfers make it profitable, and the reported losses run to substantial sums per victim. Exchange accounts should never have SMS enabled in any capacity, and holdings of consequence belong in hardware wallets where a phone number is irrelevant to control of the funds.</p>
+      </div>
+
+      <h2>Why this keeps working</h2>
+      <p>The phone number was never designed to be an identity credential. It is a routing address, assigned by a commercial entity, transferable by customer service, and shared with every company that ever asked you for a contact detail. Using it as proof of identity was a convenience decision made when the alternative was worse, and it has outlived its justification.</p>
+      <p>It persists because it is easy: services get a cheap verification channel, and users get something familiar. But the security of a bank account should not rest on how a retail assistant handles a stranger with a plausible story, and until services stop accepting SMS, the practical defence is to remove it from your own accounts one at a time.</p>
+
+      <div class="callout">
+        <p>See where your details are already exposed, which is what attackers use to pass a carrier's verification questions, with the <a href="/#tool">MyRecon email check</a>.</p>
+      </div>
+
+      <h2>Questions people ask</h2>
+      <h3>What is the first sign of a SIM swap?</h3>
+      <p>Your phone loses mobile service and will not recover, no calls, no texts, often an "emergency calls only" or "no SIM" indicator, while wifi still works. If that happens without explanation and is quickly followed by password reset emails, treat it as an attack in progress rather than a network fault.</p>
+
+      <h3>Can a SIM swap happen if I use an eSIM?</h3>
+      <p>Yes. An eSIM removes the physical card but not the underlying process: the number is still an account with a carrier, and transferring the profile to a new device is a support operation an attacker can target in the same way.</p>
+
+      <h3>Does a port-out PIN actually stop it?</h3>
+      <p>It stops the common version. Most successful swaps come from a support agent being socially engineered, and a PIN or port freeze gives that agent something to check that the attacker does not have. It does not stop an insider with system access, which is why it is worth removing SMS from your important accounts as well.</p>
+
+      <h3>Why do attackers want a phone number specifically?</h3>
+      <p>Because so many services treat it as proof of identity. It receives one-time codes, it authorises password resets, it retrieves voicemail, and it is accepted as a verification factor by banks and platforms, so controlling it for even twenty minutes can be enough to take several accounts.</p>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dsim_swap_attacks" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/two-factor-authentication.html">why SMS is the weakest second factor</a></li>
+        <li><a href="/guides/account-hacked-what-to-do.html">the first hour after an account is taken</a></li>
+        <li><a href="/guides/how-to-spot-phishing.html">the social engineering that precedes it</a></li>
+        <li><a href="/guides/how-data-brokers-work.html">where attackers get the details to pass verification</a></li>
+      </ul>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    </div></div>
+  </footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

@@ -5,7 +5,7 @@
   "subject": "RockYou data breach",
   "kicker": "2009 · Social apps",
   "description": "A widget company stored 32 million passwords in plain text and lost them to a basic SQL injection. The file became the wordlist the whole security industry still uses.",
-  "cardBlurb": "Small breach, enormous legacy. The file that taught everyone what people actually choose as a password — and that still ships with every penetration testing distribution.",
+  "cardBlurb": "Small breach, enormous legacy. The file that taught everyone what people actually choose as a password, and that still ships with every penetration testing distribution.",
   "records": "32.6 million accounts",
   "peopleCount": 32600000,
   "occurred": "December 2009",
@@ -21,23 +21,23 @@
   "faq": [
     { "q": "What is rockyou.txt?", "a": "It is the list of unique passwords extracted from the 2009 RockYou breach, roughly 14 million entries after deduplication. Because the passwords were stored in plain text, the list is a record of what real people actually chose rather than a guess at it. It ships with Kali Linux and is still the default wordlist for password auditing and cracking tools." },
     { "q": "How did the RockYou breach happen?", "a": "A SQL injection flaw in a web application. SQL injection happens when user input is pasted into a database query instead of being passed as a parameter, letting an attacker rewrite the query and read tables directly. It was already a well-understood and easily prevented flaw in 2009." },
-    { "q": "Why were the passwords in plain text?", "a": "RockYou simply stored them as typed, with no hashing at all. That meant anyone who read the database read every password. It also meant the company could, in principle, read them — which is why \"we will never ask for your password\" is a weaker promise than \"we could not tell you your password if we wanted to\"." },
-    { "q": "Is the RockYou list still dangerous?", "a": "The individual passwords are sixteen years old, but the patterns are not. The same structures — a name plus a year, a keyboard run, a word with a digit on the end — still dominate, which is exactly why the list remains effective against modern password databases." }
+    { "q": "Why were the passwords in plain text?", "a": "RockYou simply stored them as typed, with no hashing at all. That meant anyone who read the database read every password. It also meant the company could, in principle, read them, which is why \"we will never ask for your password\" is a weaker promise than \"we could not tell you your password if we wanted to\"." },
+    { "q": "Is the RockYou list still dangerous?", "a": "The individual passwords are sixteen years old, but the patterns are not. The same structures, a name plus a year, a keyboard run, a word with a digit on the end, still dominate, which is exactly why the list remains effective against modern password databases." }
   ],
   "sources": [
-    { "label": "Federal Trade Commission — RockYou settlement, March 2012", "url": "https://www.ftc.gov/news-events/news/press-releases/2012/03/operator-online-game-site-charged-violating-childrens-privacy-law" },
+    { "label": "Federal Trade Commission, RockYou settlement, March 2012", "url": "https://www.ftc.gov/news-events/news/press-releases/2012/03/operator-online-game-site-charged-violating-childrens-privacy-law" },
     { "label": "Imperva, \"Consumer Password Worst Practices\", January 2010", "note": "the first statistical analysis of the file" },
     { "label": "Contemporaneous disclosure reporting, December 2009" }
   ]
 }
 -->
-<p class="lead">Thirty-two million accounts is a small breach by modern standards, and RockYou — a company that made quizzes and photo widgets for MySpace and Facebook — is not a name most people remember. It is nonetheless one of the most consequential breaches ever recorded, because of a single detail: the passwords were not hashed. They were stored exactly as typed. That file is still in daily use.</p>
+<p class="lead">Thirty-two million accounts is a small breach by modern standards, and RockYou, a company that made quizzes and photo widgets for MySpace and Facebook, is not a name most people remember. It is nonetheless one of the most consequential breaches ever recorded, because of a single detail: the passwords were not hashed. They were stored exactly as typed. That file is still in daily use.</p>
 
 <h2>What happened</h2>
 
 <p>In December 2009, a researcher published details of a SQL injection vulnerability in a RockYou web application. SQL injection is the oldest widely exploited web flaw there is: user input is concatenated into a database query rather than passed as a parameter, so an attacker can end the intended query and append their own. It was thoroughly documented, thoroughly understood and thoroughly preventable long before 2009.</p>
 
-<p>Someone used it to dump the user table — 32.6 million rows of email addresses and passwords, the passwords in plain text. The file went public within days.</p>
+<p>Someone used it to dump the user table, 32.6 million rows of email addresses and passwords, the passwords in plain text. The file went public within days.</p>
 
 <div class="callout">
   <p><strong>Why plaintext storage is different in kind, not degree.</strong> A hashed password file is a puzzle: an attacker can solve the weak entries quickly and the strong ones perhaps never. A plaintext file is an answer key. Every password falls at once, including the long random ones generated by careful users, and the company itself has been able to read them the entire time.</p>
@@ -45,27 +45,27 @@
 
 <h2>What the file revealed</h2>
 
-<p>Until RockYou, the industry's knowledge of real password choice was inferred from cracked hashes — which is a biased sample, because cracking finds the weak ones first. RockYou was the first large, unbiased census. Imperva's analysis the following month is still quoted:</p>
+<p>Until RockYou, the industry's knowledge of real password choice was inferred from cracked hashes, which is a biased sample, because cracking finds the weak ones first. RockYou was the first large, unbiased census. Imperva's analysis the following month is still quoted:</p>
 
 <ol class="cf-timeline">
   <li><b>The most common password was <code>123456</code></b>, chosen by roughly 290,000 accounts, followed by <code>12345</code>, <code>123456789</code>, <code>password</code> and <code>iloveyou</code>.</li>
   <li><b>Around 30% of passwords were six characters or fewer</b>, and about 60% used a limited character set.</li>
-  <li><b>Roughly one account in five</b> used a password from a set of just 5,000 common choices — meaning a trivially small dictionary would open a fifth of the site.</li>
+  <li><b>Roughly one account in five</b> used a password from a set of just 5,000 common choices, meaning a trivially small dictionary would open a fifth of the site.</li>
 </ol>
 
 <p>Those proportions have barely moved since. Every subsequent large breach that has been analysed produces a similar distribution, which is the uncomfortable finding at the centre of this case: password policies got stricter, complexity rules proliferated, and human behaviour stayed put.</p>
 
 <h2>How a breach became a tool</h2>
 
-<p>The deduplicated list of unique passwords from the dump — about 14 million entries — became <code>rockyou.txt</code>. It ships with Kali Linux. It is the default wordlist for Hashcat and John the Ripper tutorials, the first thing tried in almost every password-audit engagement, and the baseline against which new cracking techniques are measured.</p>
+<p>The deduplicated list of unique passwords from the dump, about 14 million entries, became <code>rockyou.txt</code>. It ships with Kali Linux. It is the default wordlist for Hashcat and John the Ripper tutorials, the first thing tried in almost every password-audit engagement, and the baseline against which new cracking techniques are measured.</p>
 
-<p>This is a genuinely strange legacy. A company's worst day became free infrastructure for the entire security profession, and the reason it works so well is not technical sophistication — it is that the file is a record of authentic human choice, taken from people who had no idea anyone would ever read it. Synthetic password lists are guesses about what people pick. RockYou is evidence.</p>
+<p>This is a genuinely strange legacy. A company's worst day became free infrastructure for the entire security profession, and the reason it works so well is not technical sophistication, it is that the file is a record of authentic human choice, taken from people who had no idea anyone would ever read it. Synthetic password lists are guesses about what people pick. RockYou is evidence.</p>
 
-<p>The name has since been borrowed by unrelated aggregate files — compilations circulated in 2021 and 2024 under names like "RockYou2021" — which are not RockYou data at all but enormous merged collections of every password ever leaked. The borrowing is a compliment to the original's reputation and a reliable source of confusion.</p>
+<p>The name has since been borrowed by unrelated aggregate files, compilations circulated in 2021 and 2024 under names like "RockYou2021", which are not RockYou data at all but enormous merged collections of every password ever leaked. The borrowing is a compliment to the original's reputation and a reliable source of confusion.</p>
 
 <h2>The regulatory tail</h2>
 
-<p>In March 2012 the US Federal Trade Commission settled with RockYou over two distinct failures. The first was the security one: the company had told users their information was protected while storing it in plain text behind an injectable application. The second was a children's privacy violation — RockYou had knowingly collected information from roughly 179,000 children in breach of COPPA, and paid a $250,000 civil penalty for it.</p>
+<p>In March 2012 the US Federal Trade Commission settled with RockYou over two distinct failures. The first was the security one: the company had told users their information was protected while storing it in plain text behind an injectable application. The second was a children's privacy violation, RockYou had knowingly collected information from roughly 179,000 children in breach of COPPA, and paid a $250,000 civil penalty for it.</p>
 
 <p>The settlement is an early example of a regulator treating a security promise as a marketing claim. RockYou was not punished simply for being breached; it was punished for the gap between what its privacy page said and what its database looked like.</p>
 
@@ -73,15 +73,15 @@
 
 <p><strong>Plaintext storage became indefensible.</strong> It was already bad practice in 2009. After RockYou, it was the kind of thing that appeared in regulatory findings and court filings, and there was a concrete, citable example of exactly what happens when the file escapes.</p>
 
-<p><strong>Password strength meters got a data source.</strong> Modern strength estimators — the ones that tell you a password is weak because it is common rather than because it lacks a capital letter — are built on frequency data, and RockYou was the first large real-world frequency table available. The shift from "does it have a symbol?" to "how many people have already chosen this?" starts here.</p>
+<p><strong>Password strength meters got a data source.</strong> Modern strength estimators, the ones that tell you a password is weak because it is common rather than because it lacks a capital letter, are built on frequency data, and RockYou was the first large real-world frequency table available. The shift from "does it have a symbol?" to "how many people have already chosen this?" starts here.</p>
 
 <p><strong>Breached-password checking became a product.</strong> The idea that a site should refuse a password that appears in a known breach list, rather than demanding another special character, follows directly from having lists like this one. It is now formal guidance in the US National Institute of Standards and Technology's digital identity standards.</p>
 
 <h2>What to take from it</h2>
 
 <ol class="bx-actions">
-  <li><strong>Assume anything you typed into a small web service in the 2000s is public.</strong> Not likely public — public. If a variant of it is still in use, it is on a list somebody is already testing.</li>
-  <li><strong>Length beats complexity.</strong> The RockYou distribution shows that human-chosen "complex" passwords cluster in predictable ways. A long passphrase or generated string sits outside the patterns entirely — see <a href="/guides/strong-passwords-guide.html">the practical guide to passwords that actually resist this</a>.</li>
+  <li><strong>Assume anything you typed into a small web service in the 2000s is public.</strong> Not likely public, public. If a variant of it is still in use, it is on a list somebody is already testing.</li>
+  <li><strong>Length beats complexity.</strong> The RockYou distribution shows that human-chosen "complex" passwords cluster in predictable ways. A long passphrase or generated string sits outside the patterns entirely, see <a href="/guides/strong-passwords-guide.html">the practical guide to passwords that actually resist this</a>.</li>
   <li><strong>Never reuse across sites.</strong> Every point in this case file is about one file opening many doors.</li>
-  <li><strong>Check your own addresses against known breaches.</strong> Sixteen years of dumps have accumulated behind most long-lived email addresses — <a href="/guides/check-email-data-breach.html">here is how to look</a>.</li>
+  <li><strong>Check your own addresses against known breaches.</strong> Sixteen years of dumps have accumulated behind most long-lived email addresses, <a href="/guides/check-email-data-breach.html">here is how to look</a>.</li>
 </ol>

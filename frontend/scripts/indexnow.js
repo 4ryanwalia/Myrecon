@@ -1,4 +1,4 @@
-/* IndexNow — tell the search engines the moment something publishes.
+/* IndexNow, tell the search engines the moment something publishes.
  *
  * Crawling is a queue. A new breach article normally waits days for a bot to
  * come round, which for a page whose whole value is being early is most of the
@@ -6,8 +6,8 @@
  * indexing in minutes.
  *
  * Bing, DuckDuckGo, Yandex and Seznam all consume the same endpoint, so a
- * single submission reaches all of them. Google does NOT participate — it has
- * declined to adopt IndexNow — so this complements Search Console rather than
+ * single submission reaches all of them. Google does NOT participate, it has
+ * declined to adopt IndexNow, so this complements Search Console rather than
  * replacing it.
  *
  * Ownership is proved by hosting a file named after the key, containing the
@@ -67,7 +67,7 @@ async function main() {
 
     // 200 accepted, 202 accepted but key still being validated. Both fine.
     if (res.status === 200 || res.status === 202) {
-      console.log(`[indexnow] submitted ${batch.length} URL(s) — HTTP ${res.status}`);
+      console.log(`[indexnow] submitted ${batch.length} URL(s), HTTP ${res.status}`);
     } else {
       // 403 means the key file did not verify, 422 means a URL did not belong
       // to the host. Both are worth seeing in the log rather than swallowing.

@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Capital One Breach 2019: The SSRF That Reached S3">
   <meta name="twitter:description" content="A misconfigured web application firewall let an attacker ask the cloud for its own credentials, then read 106 million credit card applications out of storage.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Capital One, 2019: a firewall misconfiguration and 106 million applicants","description":"A misconfigured web application firewall let an attacker ask the cloud for its own credentials, then read 106 million credit card applications out of storage.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/capital-one-2019.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Capital One data breach"},"wordCount":882}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Capital One data breach","item":"https://www.myrecon.xyz/breaches/case-files/capital-one-2019.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is SSRF, in plain terms?","acceptedAnswer":{"@type":"Answer","text":"Server-side request forgery. You persuade a server to make a web request on your behalf — to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials."}},{"@type":"Question","name":"Why did the cloud hand over credentials?","acceptedAnswer":{"@type":"Answer","text":"Cloud instances fetch temporary credentials from a link-local metadata address so applications do not need hard-coded keys. It is a good design with one weakness: any code that can make an HTTP request from the instance can ask for those credentials. If the request can be triggered from outside through SSRF, so can the credential theft. Amazon's IMDSv2, released months after this breach, requires a session token first, which closes that path."}},{"@type":"Question","name":"Was Capital One hacked because it used the cloud?","acceptedAnswer":{"@type":"Answer","text":"No. The misconfiguration was Capital One's, in a firewall it operated, and the same mistake is possible in a data centre. What the cloud changed is the blast radius: an over-permissive role attached to one instance could list and copy entire storage buckets in minutes."}},{"@type":"Question","name":"What happened to the attacker?","acceptedAnswer":{"@type":"Answer","text":"Paige Thompson, a former Amazon Web Services engineer, was arrested in July 2019 after discussing the data online and publishing evidence of it to a public code-sharing site. She was convicted of wire fraud and computer fraud in June 2022 and sentenced to time served with five years of probation."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is SSRF, in plain terms?","acceptedAnswer":{"@type":"Answer","text":"Server-side request forgery. You persuade a server to make a web request on your behalf, to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials."}},{"@type":"Question","name":"Why did the cloud hand over credentials?","acceptedAnswer":{"@type":"Answer","text":"Cloud instances fetch temporary credentials from a link-local metadata address so applications do not need hard-coded keys. It is a good design with one weakness: any code that can make an HTTP request from the instance can ask for those credentials. If the request can be triggered from outside through SSRF, so can the credential theft. Amazon's IMDSv2, released months after this breach, requires a session token first, which closes that path."}},{"@type":"Question","name":"Was Capital One hacked because it used the cloud?","acceptedAnswer":{"@type":"Answer","text":"No. The misconfiguration was Capital One's, in a firewall it operated, and the same mistake is possible in a data centre. What the cloud changed is the blast radius: an over-permissive role attached to one instance could list and copy entire storage buckets in minutes."}},{"@type":"Question","name":"What happened to the attacker?","acceptedAnswer":{"@type":"Answer","text":"Paige Thompson, a former Amazon Web Services engineer, was arrested in July 2019 after discussing the data online and publishing evidence of it to a public code-sharing site. She was convicted of wire fraud and computer fraud in June 2022 and sentenced to time served with five years of probation."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -81,7 +82,7 @@
 
 <p>In March 2019, an attacker exploited a misconfiguration in a web application firewall that Capital One ran on a cloud instance. The flaw allowed server-side request forgery: the ability to make the server issue an HTTP request to an address of the attacker's choosing.</p>
 
-<p>From outside, a browser cannot reach the cloud's internal metadata address. From the instance itself, it can — and that address returns temporary credentials for the role attached to the machine. The attacker retrieved those credentials, found that the role could list and read storage buckets, and copied out the contents.</p>
+<p>From outside, a browser cannot reach the cloud's internal metadata address. From the instance itself, it can, and that address returns temporary credentials for the role attached to the machine. The attacker retrieved those credentials, found that the role could list and read storage buckets, and copied out the contents.</p>
 
 <p>What was in them: credit card applications submitted between 2005 and early 2019, covering roughly 100 million people in the United States and 6 million in Canada. Names, addresses, dates of birth, self-reported income, credit scores and balances. Around 140,000 Social Security numbers, 80,000 linked bank account numbers and a million Canadian Social Insurance numbers.</p>
 
@@ -91,22 +92,22 @@
 
 <h2>How it was discovered</h2>
 
-<p>Not by monitoring. On 17 July 2019, an outside researcher emailed Capital One's responsible disclosure address to report that data appearing to belong to the bank had been published on a public code-sharing site. The attacker had also discussed the material in online chat groups under a recognisable handle. Capital One confirmed the breach, notified the FBI, and an arrest followed on 29 July — the same day the breach was announced publicly.</p>
+<p>Not by monitoring. On 17 July 2019, an outside researcher emailed Capital One's responsible disclosure address to report that data appearing to belong to the bank had been published on a public code-sharing site. The attacker had also discussed the material in online chat groups under a recognisable handle. Capital One confirmed the breach, notified the FBI, and an arrest followed on 29 July, the same day the breach was announced publicly.</p>
 
 <p>Four months from intrusion to discovery, and the discovery came from someone who happened to notice a public post. It is worth sitting with that: the technical sophistication of the attack was modest, and the detection was accidental.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>March 2019</b> — The SSRF is exploited; credentials are retrieved and data copied from storage.</li>
-  <li><b>April–June 2019</b> — Evidence of the data is posted publicly and discussed in online groups.</li>
-  <li><b>17 July 2019</b> — An outside researcher emails Capital One's disclosure address.</li>
-  <li><b>19 July 2019</b> — Capital One confirms the breach and contacts the FBI.</li>
-  <li><b>29 July 2019</b> — Public disclosure; Paige Thompson is arrested.</li>
-  <li><b>November 2019</b> — Amazon releases Instance Metadata Service v2, which requires a session token and blocks the SSRF path used here.</li>
-  <li><b>August 2020</b> — The Office of the Comptroller of the Currency fines Capital One $80 million for failures in risk assessment and internal controls around its cloud migration.</li>
-  <li><b>December 2021</b> — A $190 million class-action settlement is agreed.</li>
-  <li><b>June and October 2022</b> — Thompson is convicted and sentenced.</li>
+  <li><b>March 2019</b>: The SSRF is exploited; credentials are retrieved and data copied from storage.</li>
+  <li><b>April–June 2019</b>: Evidence of the data is posted publicly and discussed in online groups.</li>
+  <li><b>17 July 2019</b>: An outside researcher emails Capital One's disclosure address.</li>
+  <li><b>19 July 2019</b>: Capital One confirms the breach and contacts the FBI.</li>
+  <li><b>29 July 2019</b>: Public disclosure; Paige Thompson is arrested.</li>
+  <li><b>November 2019</b>: Amazon releases Instance Metadata Service v2, which requires a session token and blocks the SSRF path used here.</li>
+  <li><b>August 2020</b>: The Office of the Comptroller of the Currency fines Capital One $80 million for failures in risk assessment and internal controls around its cloud migration.</li>
+  <li><b>December 2021</b>: A $190 million class-action settlement is agreed.</li>
+  <li><b>June and October 2022</b>: Thompson is convicted and sentenced.</li>
 </ol>
 
 <h2>What it changed</h2>
@@ -119,14 +120,14 @@
 
 <h2>What makes this case unusual</h2>
 
-<p>Most large breaches end with attribution to a group that will never be prosecuted. This one ended with an arrest within days, a trial, and a conviction — because the attacker discussed it publicly under a traceable handle. It is a reminder that the population of people attacking systems includes individuals acting alone with poor operational security, not only organised crews and state units.</p>
+<p>Most large breaches end with attribution to a group that will never be prosecuted. This one ended with an arrest within days, a trial, and a conviction, because the attacker discussed it publicly under a traceable handle. It is a reminder that the population of people attacking systems includes individuals acting alone with poor operational security, not only organised crews and state units.</p>
 
 <h2>If you applied for a Capital One card before 2019</h2>
 
 <ol class="bx-actions">
   <li><strong>An application you were rejected for still counts.</strong> The data covers applicants, not just customers, which is what makes the population so much larger than the cardholder base.</li>
   <li><strong>Freeze your credit files.</strong> For the 140,000 people whose Social Security numbers were taken, this is the specific control that blocks new accounts being opened.</li>
-  <li><strong>Watch for precision phishing.</strong> Self-reported income and credit balance data makes a fraudulent "your account needs verification" message far more persuasive — <a href="/guides/how-to-spot-phishing.html">the signals that still give those messages away</a>.</li>
+  <li><strong>Watch for precision phishing.</strong> Self-reported income and credit balance data makes a fraudulent "your account needs verification" message far more persuasive, <a href="/guides/how-to-spot-phishing.html">the signals that still give those messages away</a>.</li>
   <li><strong>Canadian applicants: your SIN is in the file.</strong> Contact the credit bureaus for a fraud alert, and treat unexpected contact about credit as suspect.</li>
 </ol>
 
@@ -140,13 +141,13 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>What is SSRF, in plain terms?</h3>
-        <p>Server-side request forgery. You persuade a server to make a web request on your behalf — to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials.</p>
+        <p>Server-side request forgery. You persuade a server to make a web request on your behalf, to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials.</p>
 
         <h3>Why did the cloud hand over credentials?</h3>
         <p>Cloud instances fetch temporary credentials from a link-local metadata address so applications do not need hard-coded keys. It is a good design with one weakness: any code that can make an HTTP request from the instance can ask for those credentials. If the request can be triggered from outside through SSRF, so can the credential theft. Amazon's IMDSv2, released months after this breach, requires a session token first, which closes that path.</p>
@@ -157,12 +158,24 @@
         <h3>What happened to the attacker?</h3>
         <p>Paige Thompson, a former Amazon Web Services engineer, was arrested in July 2019 after discussing the data online and publishing evidence of it to a public code-sharing site. She was convicted of wire fraud and computer fraud in June 2022 and sentenced to time served with five years of probation.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html" target="_blank" rel="noopener nofollow">Office of the Comptroller of the Currency — $80 million civil money penalty against Capital One, August 2020</a></li>
-        <li><b>US Department of Justice — indictment and conviction of Paige Thompson, 2019–2022</b></li>
+        <li><a href="https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html" target="_blank" rel="noopener nofollow">Office of the Comptroller of the Currency, $80 million civil money penalty against Capital One, August 2020</a></li>
+        <li><b>US Department of Justice, indictment and conviction of Paige Thompson, 2019–2022</b></li>
         <li><b>Capital One incident disclosures and SEC filings, 2019</b></li>
-        <li><b>Amazon Web Services — announcement of Instance Metadata Service v2, November 2019</b></li>
+        <li><b>Amazon Web Services, announcement of Instance Metadata Service v2, November 2019</b></li>
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
@@ -171,7 +184,7 @@
         <li><a href="/breaches/case-files/uber-2016.html">Uber, 2016: the breach that was paid to disappear</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -187,5 +200,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

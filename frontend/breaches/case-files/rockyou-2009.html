@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="RockYou Breach 2009: The Origin of rockyou.txt">
   <meta name="twitter:description" content="A widget company stored 32 million passwords in plain text and lost them to a basic SQL injection.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"RockYou, 2009: the 32 million plaintext passwords that became a wordlist","description":"A widget company stored 32 million passwords in plain text and lost them to a basic SQL injection. The file became the wordlist the whole security industry still uses.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/rockyou-2009.html","articleSection":"Case Files","about":{"@type":"Thing","name":"RockYou data breach"},"wordCount":962}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"RockYou data breach","item":"https://www.myrecon.xyz/breaches/case-files/rockyou-2009.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is rockyou.txt?","acceptedAnswer":{"@type":"Answer","text":"It is the list of unique passwords extracted from the 2009 RockYou breach, roughly 14 million entries after deduplication. Because the passwords were stored in plain text, the list is a record of what real people actually chose rather than a guess at it. It ships with Kali Linux and is still the default wordlist for password auditing and cracking tools."}},{"@type":"Question","name":"How did the RockYou breach happen?","acceptedAnswer":{"@type":"Answer","text":"A SQL injection flaw in a web application. SQL injection happens when user input is pasted into a database query instead of being passed as a parameter, letting an attacker rewrite the query and read tables directly. It was already a well-understood and easily prevented flaw in 2009."}},{"@type":"Question","name":"Why were the passwords in plain text?","acceptedAnswer":{"@type":"Answer","text":"RockYou simply stored them as typed, with no hashing at all. That meant anyone who read the database read every password. It also meant the company could, in principle, read them — which is why \"we will never ask for your password\" is a weaker promise than \"we could not tell you your password if we wanted to\"."}},{"@type":"Question","name":"Is the RockYou list still dangerous?","acceptedAnswer":{"@type":"Answer","text":"The individual passwords are sixteen years old, but the patterns are not. The same structures — a name plus a year, a keyboard run, a word with a digit on the end — still dominate, which is exactly why the list remains effective against modern password databases."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is rockyou.txt?","acceptedAnswer":{"@type":"Answer","text":"It is the list of unique passwords extracted from the 2009 RockYou breach, roughly 14 million entries after deduplication. Because the passwords were stored in plain text, the list is a record of what real people actually chose rather than a guess at it. It ships with Kali Linux and is still the default wordlist for password auditing and cracking tools."}},{"@type":"Question","name":"How did the RockYou breach happen?","acceptedAnswer":{"@type":"Answer","text":"A SQL injection flaw in a web application. SQL injection happens when user input is pasted into a database query instead of being passed as a parameter, letting an attacker rewrite the query and read tables directly. It was already a well-understood and easily prevented flaw in 2009."}},{"@type":"Question","name":"Why were the passwords in plain text?","acceptedAnswer":{"@type":"Answer","text":"RockYou simply stored them as typed, with no hashing at all. That meant anyone who read the database read every password. It also meant the company could, in principle, read them, which is why \"we will never ask for your password\" is a weaker promise than \"we could not tell you your password if we wanted to\"."}},{"@type":"Question","name":"Is the RockYou list still dangerous?","acceptedAnswer":{"@type":"Answer","text":"The individual passwords are sixteen years old, but the patterns are not. The same structures, a name plus a year, a keyboard run, a word with a digit on the end, still dominate, which is exactly why the list remains effective against modern password databases."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,13 +76,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Email addresses · Passwords in plain text</p>
 
-<p class="lead">Thirty-two million accounts is a small breach by modern standards, and RockYou — a company that made quizzes and photo widgets for MySpace and Facebook — is not a name most people remember. It is nonetheless one of the most consequential breaches ever recorded, because of a single detail: the passwords were not hashed. They were stored exactly as typed. That file is still in daily use.</p>
+<p class="lead">Thirty-two million accounts is a small breach by modern standards, and RockYou, a company that made quizzes and photo widgets for MySpace and Facebook, is not a name most people remember. It is nonetheless one of the most consequential breaches ever recorded, because of a single detail: the passwords were not hashed. They were stored exactly as typed. That file is still in daily use.</p>
 
 <h2>What happened</h2>
 
 <p>In December 2009, a researcher published details of a SQL injection vulnerability in a RockYou web application. SQL injection is the oldest widely exploited web flaw there is: user input is concatenated into a database query rather than passed as a parameter, so an attacker can end the intended query and append their own. It was thoroughly documented, thoroughly understood and thoroughly preventable long before 2009.</p>
 
-<p>Someone used it to dump the user table — 32.6 million rows of email addresses and passwords, the passwords in plain text. The file went public within days.</p>
+<p>Someone used it to dump the user table, 32.6 million rows of email addresses and passwords, the passwords in plain text. The file went public within days.</p>
 
 <div class="callout">
   <p><strong>Why plaintext storage is different in kind, not degree.</strong> A hashed password file is a puzzle: an attacker can solve the weak entries quickly and the strong ones perhaps never. A plaintext file is an answer key. Every password falls at once, including the long random ones generated by careful users, and the company itself has been able to read them the entire time.</p>
@@ -89,27 +90,27 @@
 
 <h2>What the file revealed</h2>
 
-<p>Until RockYou, the industry's knowledge of real password choice was inferred from cracked hashes — which is a biased sample, because cracking finds the weak ones first. RockYou was the first large, unbiased census. Imperva's analysis the following month is still quoted:</p>
+<p>Until RockYou, the industry's knowledge of real password choice was inferred from cracked hashes, which is a biased sample, because cracking finds the weak ones first. RockYou was the first large, unbiased census. Imperva's analysis the following month is still quoted:</p>
 
 <ol class="cf-timeline">
   <li><b>The most common password was <code>123456</code></b>, chosen by roughly 290,000 accounts, followed by <code>12345</code>, <code>123456789</code>, <code>password</code> and <code>iloveyou</code>.</li>
   <li><b>Around 30% of passwords were six characters or fewer</b>, and about 60% used a limited character set.</li>
-  <li><b>Roughly one account in five</b> used a password from a set of just 5,000 common choices — meaning a trivially small dictionary would open a fifth of the site.</li>
+  <li><b>Roughly one account in five</b> used a password from a set of just 5,000 common choices, meaning a trivially small dictionary would open a fifth of the site.</li>
 </ol>
 
 <p>Those proportions have barely moved since. Every subsequent large breach that has been analysed produces a similar distribution, which is the uncomfortable finding at the centre of this case: password policies got stricter, complexity rules proliferated, and human behaviour stayed put.</p>
 
 <h2>How a breach became a tool</h2>
 
-<p>The deduplicated list of unique passwords from the dump — about 14 million entries — became <code>rockyou.txt</code>. It ships with Kali Linux. It is the default wordlist for Hashcat and John the Ripper tutorials, the first thing tried in almost every password-audit engagement, and the baseline against which new cracking techniques are measured.</p>
+<p>The deduplicated list of unique passwords from the dump, about 14 million entries, became <code>rockyou.txt</code>. It ships with Kali Linux. It is the default wordlist for Hashcat and John the Ripper tutorials, the first thing tried in almost every password-audit engagement, and the baseline against which new cracking techniques are measured.</p>
 
-<p>This is a genuinely strange legacy. A company's worst day became free infrastructure for the entire security profession, and the reason it works so well is not technical sophistication — it is that the file is a record of authentic human choice, taken from people who had no idea anyone would ever read it. Synthetic password lists are guesses about what people pick. RockYou is evidence.</p>
+<p>This is a genuinely strange legacy. A company's worst day became free infrastructure for the entire security profession, and the reason it works so well is not technical sophistication, it is that the file is a record of authentic human choice, taken from people who had no idea anyone would ever read it. Synthetic password lists are guesses about what people pick. RockYou is evidence.</p>
 
-<p>The name has since been borrowed by unrelated aggregate files — compilations circulated in 2021 and 2024 under names like "RockYou2021" — which are not RockYou data at all but enormous merged collections of every password ever leaked. The borrowing is a compliment to the original's reputation and a reliable source of confusion.</p>
+<p>The name has since been borrowed by unrelated aggregate files, compilations circulated in 2021 and 2024 under names like "RockYou2021", which are not RockYou data at all but enormous merged collections of every password ever leaked. The borrowing is a compliment to the original's reputation and a reliable source of confusion.</p>
 
 <h2>The regulatory tail</h2>
 
-<p>In March 2012 the US Federal Trade Commission settled with RockYou over two distinct failures. The first was the security one: the company had told users their information was protected while storing it in plain text behind an injectable application. The second was a children's privacy violation — RockYou had knowingly collected information from roughly 179,000 children in breach of COPPA, and paid a $250,000 civil penalty for it.</p>
+<p>In March 2012 the US Federal Trade Commission settled with RockYou over two distinct failures. The first was the security one: the company had told users their information was protected while storing it in plain text behind an injectable application. The second was a children's privacy violation, RockYou had knowingly collected information from roughly 179,000 children in breach of COPPA, and paid a $250,000 civil penalty for it.</p>
 
 <p>The settlement is an early example of a regulator treating a security promise as a marketing claim. RockYou was not punished simply for being breached; it was punished for the gap between what its privacy page said and what its database looked like.</p>
 
@@ -117,17 +118,17 @@
 
 <p><strong>Plaintext storage became indefensible.</strong> It was already bad practice in 2009. After RockYou, it was the kind of thing that appeared in regulatory findings and court filings, and there was a concrete, citable example of exactly what happens when the file escapes.</p>
 
-<p><strong>Password strength meters got a data source.</strong> Modern strength estimators — the ones that tell you a password is weak because it is common rather than because it lacks a capital letter — are built on frequency data, and RockYou was the first large real-world frequency table available. The shift from "does it have a symbol?" to "how many people have already chosen this?" starts here.</p>
+<p><strong>Password strength meters got a data source.</strong> Modern strength estimators, the ones that tell you a password is weak because it is common rather than because it lacks a capital letter, are built on frequency data, and RockYou was the first large real-world frequency table available. The shift from "does it have a symbol?" to "how many people have already chosen this?" starts here.</p>
 
 <p><strong>Breached-password checking became a product.</strong> The idea that a site should refuse a password that appears in a known breach list, rather than demanding another special character, follows directly from having lists like this one. It is now formal guidance in the US National Institute of Standards and Technology's digital identity standards.</p>
 
 <h2>What to take from it</h2>
 
 <ol class="bx-actions">
-  <li><strong>Assume anything you typed into a small web service in the 2000s is public.</strong> Not likely public — public. If a variant of it is still in use, it is on a list somebody is already testing.</li>
-  <li><strong>Length beats complexity.</strong> The RockYou distribution shows that human-chosen "complex" passwords cluster in predictable ways. A long passphrase or generated string sits outside the patterns entirely — see <a href="/guides/strong-passwords-guide.html">the practical guide to passwords that actually resist this</a>.</li>
+  <li><strong>Assume anything you typed into a small web service in the 2000s is public.</strong> Not likely public, public. If a variant of it is still in use, it is on a list somebody is already testing.</li>
+  <li><strong>Length beats complexity.</strong> The RockYou distribution shows that human-chosen "complex" passwords cluster in predictable ways. A long passphrase or generated string sits outside the patterns entirely, see <a href="/guides/strong-passwords-guide.html">the practical guide to passwords that actually resist this</a>.</li>
   <li><strong>Never reuse across sites.</strong> Every point in this case file is about one file opening many doors.</li>
-  <li><strong>Check your own addresses against known breaches.</strong> Sixteen years of dumps have accumulated behind most long-lived email addresses — <a href="/guides/check-email-data-breach.html">here is how to look</a>.</li>
+  <li><strong>Check your own addresses against known breaches.</strong> Sixteen years of dumps have accumulated behind most long-lived email addresses, <a href="/guides/check-email-data-breach.html">here is how to look</a>.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -140,7 +141,7 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
@@ -152,15 +153,27 @@
         <p>A SQL injection flaw in a web application. SQL injection happens when user input is pasted into a database query instead of being passed as a parameter, letting an attacker rewrite the query and read tables directly. It was already a well-understood and easily prevented flaw in 2009.</p>
 
         <h3>Why were the passwords in plain text?</h3>
-        <p>RockYou simply stored them as typed, with no hashing at all. That meant anyone who read the database read every password. It also meant the company could, in principle, read them — which is why "we will never ask for your password" is a weaker promise than "we could not tell you your password if we wanted to".</p>
+        <p>RockYou simply stored them as typed, with no hashing at all. That meant anyone who read the database read every password. It also meant the company could, in principle, read them, which is why "we will never ask for your password" is a weaker promise than "we could not tell you your password if we wanted to".</p>
 
         <h3>Is the RockYou list still dangerous?</h3>
-        <p>The individual passwords are sixteen years old, but the patterns are not. The same structures — a name plus a year, a keyboard run, a word with a digit on the end — still dominate, which is exactly why the list remains effective against modern password databases.</p>
+        <p>The individual passwords are sixteen years old, but the patterns are not. The same structures, a name plus a year, a keyboard run, a word with a digit on the end, still dominate, which is exactly why the list remains effective against modern password databases.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://www.ftc.gov/news-events/news/press-releases/2012/03/operator-online-game-site-charged-violating-childrens-privacy-law" target="_blank" rel="noopener nofollow">Federal Trade Commission — RockYou settlement, March 2012</a></li>
-        <li><b>Imperva, &quot;Consumer Password Worst Practices&quot;, January 2010</b> — the first statistical analysis of the file</li>
+        <li><a href="https://www.ftc.gov/news-events/news/press-releases/2012/03/operator-online-game-site-charged-violating-childrens-privacy-law" target="_blank" rel="noopener nofollow">Federal Trade Commission, RockYou settlement, March 2012</a></li>
+        <li><b>Imperva, &quot;Consumer Password Worst Practices&quot;, January 2010</b>: the first statistical analysis of the file</li>
         <li><b>Contemporaneous disclosure reporting, December 2009</b></li>
       </ul>
       <h2>Read next</h2>
@@ -170,7 +183,7 @@
         <li><a href="/breaches/case-files/collection-1-2019.html">Collection #1, 2019: 773 million addresses, and nobody was breached</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -186,5 +199,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 """
-Network intelligence — Domain WHOIS, DNS, IP geolocation, reverse DNS.
+Network intelligence, Domain WHOIS, DNS, IP geolocation, reverse DNS.
 
 Every lookup here uses a reliable, key-free public source:
   • WHOIS   → RDAP (rdap.org, the IANA-endorsed successor to WHOIS, JSON)
@@ -11,7 +11,9 @@ These sources are stable and standardized, which is why these features are
 accurate and low-maintenance compared with scraping.
 """
 
+import re
 import socket
+from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
 import requests
@@ -69,19 +71,136 @@ _DNS_TYPE_CODES = {
 
 
 def dns_records(domain: str) -> dict:
-    """Resolve the common record types for a domain."""
-    records: dict[str, list[dict]] = {}
-    for rtype in _DNS_RECORD_TYPES:
-        found = _doh_query(domain, rtype)
-        if found:
-            records[rtype] = found
+    """Resolve the common record types for a domain, plus its mail posture."""
+    # In parallel: one at a time, eight lookups with a 10s timeout and a
+    # fallback resolver each could hold a request for well over a minute.
+    with ThreadPoolExecutor(max_workers=len(_DNS_RECORD_TYPES) + 1) as pool:
+        futures = {rtype: pool.submit(_doh_query, domain, rtype) for rtype in _DNS_RECORD_TYPES}
+        dmarc_future = pool.submit(_dmarc_lookup, domain)
+        records: dict[str, list[dict]] = {}
+        for rtype, future in futures.items():
+            found = future.result()
+            if found:
+                records[rtype] = found
+        dmarc = dmarc_future.result()
 
     total = sum(len(v) for v in records.values())
     return {
         "query": {"domain": domain},
         "summary": {"record_types": len(records), "total_records": total},
         "records": records,
+        "mail_security": mail_security(records.get("TXT", []), dmarc),
     }
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Mail spoofing protection (SPF + DMARC)
+# ══════════════════════════════════════════════════════════════════
+#
+# Answers the question the raw records don't: can someone send mail that
+# claims to come from this domain and have it delivered? DKIM is left out on
+# purpose, its key lives at <selector>._domainkey.<domain>, and the selector
+# is only known to whoever sends the mail, so it cannot be checked from here.
+
+def _txt_value(raw: str) -> str:
+    """Join a TXT answer's quoted strings. Resolvers differ on quoting, and a
+    long SPF record arrives as several strings that must be concatenated."""
+    parts = re.findall(r'"((?:[^"\\]|\\.)*)"', raw or "")
+    return "".join(parts) if parts else (raw or "").strip()
+
+
+def _dmarc_lookup(domain: str) -> dict:
+    """Find the DMARC record for a domain, walking up to its parent domains.
+
+    A subdomain without its own record is covered by the organisational
+    domain's, under that record's sp= policy when it sets one.
+    """
+    labels = domain.split(".")
+    for i in range(0, max(1, len(labels) - 1)):
+        name = ".".join(labels[i:])
+        found = [_txt_value(r["value"]) for r in _doh_query(f"_dmarc.{name}", "TXT")]
+        found = [v for v in found if v.lower().startswith("v=dmarc1")]
+        if found:
+            return {"name": name, "records": found, "inherited": i > 0}
+        if i >= 3:
+            break
+    return {"name": domain, "records": [], "inherited": False}
+
+
+def _dmarc_tags(record: str) -> dict:
+    tags = {}
+    for part in record.split(";"):
+        if "=" in part:
+            key, _, value = part.partition("=")
+            tags[key.strip().lower()] = value.strip()
+    return tags
+
+
+def mail_security(txt_records: list, dmarc: dict) -> dict:
+    """Grade how well a domain's SPF and DMARC stop forged mail.
+
+    Verdicts, strongest first:
+      protected, DMARC tells receivers to quarantine or reject all forged mail
+      partial, records exist, but nothing makes a receiver act on every failure
+      exposed, no DMARC and no usable SPF, or SPF that authorises anyone
+
+    DMARC decides it. Forged mail can pass neither SPF nor DKIM for a domain it
+    does not control, so an enforcing policy stops it whatever SPF says, and
+    SPF alone checks the envelope sender, not the From address a person sees.
+    """
+    spf_values = [v for v in (_txt_value(r.get("value", "")) for r in txt_records)
+                  if v.lower().startswith("v=spf1")]
+    spf = {"present": bool(spf_values), "record": spf_values[0] if spf_values else "",
+           "all": None, "redirect": False, "valid": len(spf_values) == 1}
+    if spf_values:
+        m = re.search(r"(?:^|\s)([+~?-]?)all(?:\s|$)", spf_values[0], re.I)
+        if m:
+            spf["all"] = (m.group(1) or "+") + "all"
+        # redirect= hands evaluation to another record, which carries the all.
+        spf["redirect"] = bool(re.search(r"(?:^|\s)redirect=", spf_values[0], re.I))
+
+    dmarc_values = dmarc.get("records") or []
+    dm = {"present": bool(dmarc_values), "record": dmarc_values[0] if dmarc_values else "",
+          "policy": None, "pct": 100, "reports": False, "valid": len(dmarc_values) == 1,
+          "checked": f"_dmarc.{dmarc.get('name', '')}", "inherited": bool(dmarc.get("inherited"))}
+    if dmarc_values:
+        tags = _dmarc_tags(dmarc_values[0])
+        policy = tags.get("sp") if dm["inherited"] and tags.get("sp") else tags.get("p")
+        dm["policy"] = (policy or "").lower() or None
+        try:
+            dm["pct"] = max(0, min(100, int(tags.get("pct", "100"))))
+        except ValueError:
+            pass
+        dm["reports"] = bool(tags.get("rua"))
+
+    issues = []
+    if len(spf_values) > 1:
+        issues.append("More than one SPF record is published, which makes SPF fail for every message.")
+    if spf["all"] == "+all":
+        issues.append("SPF ends in +all, which authorises every server on the internet to send as this domain.")
+    if spf["present"] and spf["all"] is None and not spf["redirect"]:
+        issues.append("SPF has no closing all mechanism, so mail from unlisted servers is not marked as failing.")
+    if len(dmarc_values) > 1:
+        issues.append("More than one DMARC record is published, so receivers ignore DMARC entirely.")
+    if dm["present"] and dm["policy"] == "none":
+        issues.append("DMARC policy is p=none: failures are reported, but forged mail is still delivered.")
+    if dm["present"] and dm["policy"] in ("quarantine", "reject") and dm["pct"] < 100:
+        issues.append(f"DMARC applies its policy to only {dm['pct']}% of failing mail.")
+    if not spf["present"]:
+        issues.append("No SPF record, so receivers have no list of servers allowed to send for this domain.")
+    if not dm["present"]:
+        issues.append("No DMARC record, so nothing tells receivers what to do with mail that fails authentication.")
+
+    usable_spf = spf["present"] and spf["valid"] and spf["all"] != "+all"
+    enforcing = dm["valid"] and dm["policy"] in ("quarantine", "reject")
+    if enforcing and dm["pct"] == 100:
+        verdict = "protected"
+    elif (dm["present"] and dm["valid"]) or usable_spf:
+        verdict = "partial"
+    else:
+        verdict = "exposed"
+
+    return {"verdict": verdict, "spf": spf, "dmarc": dm, "issues": issues}
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -131,7 +250,7 @@ def whois_domain(domain: str) -> dict:
             allow_redirects=True,
         )
     except requests.RequestException:
-        result["error"] = "WHOIS lookup failed — the RDAP service was unreachable."
+        result["error"] = "WHOIS lookup failed, the RDAP service was unreachable."
         return result
 
     if resp.status_code == 404:
@@ -316,7 +435,7 @@ def subdomains(domain: str, limit: int = 100) -> dict:
     Discover subdomains from public Certificate Transparency logs.
 
     Every publicly-trusted TLS certificate is logged to CT, and the names on
-    those certificates reveal subdomains — a reliable, passive source that
+    those certificates reveal subdomains, a reliable, passive source that
     needs no scanning or API key. Queries crt.sh first and falls back to
     Certspotter, so a slow or unavailable source doesn't lose the result.
     """
@@ -348,8 +467,11 @@ def subdomains(domain: str, limit: int = 100) -> dict:
 
 def domain_intel(domain: str) -> dict:
     """Aggregate WHOIS + DNS + resolved-IP geolocation for a domain."""
-    whois = whois_domain(domain)
-    dns = dns_records(domain)
+    # Independent sources, so neither waits on the other.
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        whois_future = pool.submit(whois_domain, domain)
+        dns = dns_records(domain)
+        whois = whois_future.result()
 
     resolved_ips = [r["value"] for r in dns.get("records", {}).get("A", [])]
     ip_info = None

@@ -17,38 +17,39 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Anthem Breach 2015: 78.8 Million Health Records">
   <meta name="twitter:description" content="A database administrator noticed a query running under his own name that he had not run. Behind it were 78.8 million member records, taken over the course of…">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Anthem, 2015: 78.8 million health records and one query that looked wrong","description":"A database administrator noticed a query running under his own name that he had not run. Behind it were 78.8 million member records, taken over the course of a year.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/anthem-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Anthem data breach"},"wordCount":928}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Anthem data breach","item":"https://www.myrecon.xyz/breaches/case-files/anthem-2015.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was medical treatment data stolen from Anthem?","acceptedAnswer":{"@type":"Answer","text":"No. Anthem reported that clinical and claims information — diagnoses, treatments, test results — was not taken. What was taken was the membership file: names, dates of birth, Social Security numbers, member IDs, addresses and employment data. That is an identity-theft dataset rather than a medical one, which is bad in a different way."}},{"@type":"Question","name":"How was the Anthem breach discovered?","acceptedAnswer":{"@type":"Answer","text":"A database administrator noticed a query running under his own credentials that he had not run, and raised it. Everything that followed — the investigation, the disclosure, the eventual scope — came from one person questioning something that looked slightly wrong rather than from an automated control."}},{"@type":"Question","name":"Why is health insurance data so valuable?","acceptedAnswer":{"@type":"Answer","text":"Because it combines a permanent national identifier with enough personal detail to pass identity verification, and because medical identity fraud is slow to detect. A fraudulent credit card shows up on a statement within weeks; fraudulent care billed against your member ID may not surface for years, and unwinding it is far harder."}},{"@type":"Question","name":"What penalties followed?","acceptedAnswer":{"@type":"Answer","text":"A $115 million class-action settlement in 2017, a $16 million settlement with the US Department of Health and Human Services in 2018 — the largest HIPAA penalty on record at that point — and a $39.5 million settlement with state attorneys general in 2020."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was medical treatment data stolen from Anthem?","acceptedAnswer":{"@type":"Answer","text":"No. Anthem reported that clinical and claims information, diagnoses, treatments, test results, was not taken. What was taken was the membership file: names, dates of birth, Social Security numbers, member IDs, addresses and employment data. That is an identity-theft dataset rather than a medical one, which is bad in a different way."}},{"@type":"Question","name":"How was the Anthem breach discovered?","acceptedAnswer":{"@type":"Answer","text":"A database administrator noticed a query running under his own credentials that he had not run, and raised it. Everything that followed, the investigation, the disclosure, the eventual scope, came from one person questioning something that looked slightly wrong rather than from an automated control."}},{"@type":"Question","name":"Why is health insurance data so valuable?","acceptedAnswer":{"@type":"Answer","text":"Because it combines a permanent national identifier with enough personal detail to pass identity verification, and because medical identity fraud is slow to detect. A fraudulent credit card shows up on a statement within weeks; fraudulent care billed against your member ID may not surface for years, and unwinding it is far harder."}},{"@type":"Question","name":"What penalties followed?","acceptedAnswer":{"@type":"Answer","text":"A $115 million class-action settlement in 2017, a $16 million settlement with the US Department of Health and Human Services in 2018, the largest HIPAA penalty on record at that point, and a $39.5 million settlement with state attorneys general in 2020."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,7 +76,7 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Social Security numbers · Member ID numbers · Addresses · Email addresses · Employment and income data</p>
 
-<p class="lead">The Anthem breach was found because a database administrator looked at a query running under his own account, did not recognise it, and asked about it. Everything else — the largest health data breach in US history at the time, the largest HIPAA penalty ever levied, a federal indictment — followed from that one moment of professional suspicion.</p>
+<p class="lead">The Anthem breach was found because a database administrator looked at a query running under his own account, did not recognise it, and asked about it. Everything else, the largest health data breach in US history at the time, the largest HIPAA penalty ever levied, a federal indictment, followed from that one moment of professional suspicion.</p>
 
 <h2>What happened</h2>
 
@@ -98,28 +99,28 @@
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>February 2014</b> — A spear-phishing campaign against an Anthem subsidiary succeeds; access is established.</li>
-  <li><b>2014</b> — The attackers move laterally and obtain credentials reaching the enterprise data warehouse.</li>
-  <li><b>Late January 2015</b> — A database administrator queries an unrecognised query running under his own credentials.</li>
-  <li><b>4 February 2015</b> — Anthem discloses the breach: 78.8 million people.</li>
-  <li><b>January 2017</b> — A multi-state insurance regulator examination publishes findings on the security failures.</li>
-  <li><b>June 2017</b> — A $115 million class-action settlement, the largest data breach settlement in the US at the time.</li>
-  <li><b>October 2018</b> — A $16 million HIPAA settlement with the Department of Health and Human Services — nearly three times the previous record.</li>
-  <li><b>May 2019</b> — Two Chinese nationals are indicted.</li>
-  <li><b>September 2020</b> — A $39.5 million settlement with state attorneys general.</li>
+  <li><b>February 2014</b>: A spear-phishing campaign against an Anthem subsidiary succeeds; access is established.</li>
+  <li><b>2014</b>: The attackers move laterally and obtain credentials reaching the enterprise data warehouse.</li>
+  <li><b>Late January 2015</b>: A database administrator queries an unrecognised query running under his own credentials.</li>
+  <li><b>4 February 2015</b>: Anthem discloses the breach: 78.8 million people.</li>
+  <li><b>January 2017</b>: A multi-state insurance regulator examination publishes findings on the security failures.</li>
+  <li><b>June 2017</b>: A $115 million class-action settlement, the largest data breach settlement in the US at the time.</li>
+  <li><b>October 2018</b>: A $16 million HIPAA settlement with the Department of Health and Human Services, nearly three times the previous record.</li>
+  <li><b>May 2019</b>: Two Chinese nationals are indicted.</li>
+  <li><b>September 2020</b>: A $39.5 million settlement with state attorneys general.</li>
 </ol>
 
 <h2>Why health identity data is different</h2>
 
 <p>A stolen payment card has a short, well-managed life. The bank has fraud models, the network has liability rules, and the card can be cancelled. Health identity data has none of that infrastructure.</p>
 
-<p>The member ID plus a name, date of birth and Social Security number is enough to obtain care, prescriptions or equipment in someone else's name. That fraud does not appear on a monthly statement. It appears, if at all, when a bill arrives from a provider the victim has never visited, or when a benefit limit has been exhausted by someone else, or — in the cases that cause real harm — when incorrect information ends up in the victim's own medical record.</p>
+<p>The member ID plus a name, date of birth and Social Security number is enough to obtain care, prescriptions or equipment in someone else's name. That fraud does not appear on a monthly statement. It appears, if at all, when a bill arrives from a provider the victim has never visited, or when a benefit limit has been exhausted by someone else, or, in the cases that cause real harm, when incorrect information ends up in the victim's own medical record.</p>
 
 <p>Unwinding it is slow, because health records are held by many separate organisations with no central mechanism to correct them, and because privacy law that protects records also makes them harder to inspect and amend after fraud.</p>
 
 <h2>What it changed</h2>
 
-<p><strong>HIPAA enforcement got teeth.</strong> The $16 million settlement reset expectations for what a health data failure costs in the United States. Regulators also made clear in the resolution agreement that the failures were ordinary ones — insufficient risk analysis, inadequate review of system activity, weak access controls — not exotic ones.</p>
+<p><strong>HIPAA enforcement got teeth.</strong> The $16 million settlement reset expectations for what a health data failure costs in the United States. Regulators also made clear in the resolution agreement that the failures were ordinary ones, insufficient risk analysis, inadequate review of system activity, weak access controls, not exotic ones.</p>
 
 <p><strong>Health insurers adopted multi-factor authentication and segmentation at speed.</strong> Anthem's own remediation commitments, published as part of the multi-state examination, became a de facto checklist across the sector.</p>
 
@@ -131,7 +132,7 @@
   <li><strong>Read your explanation of benefits statements.</strong> They are the only routine mechanism by which medical identity fraud becomes visible. Any provider or service you do not recognise is worth a phone call.</li>
   <li><strong>Freeze your credit files.</strong> The Social Security numbers in this breach support ordinary financial fraud as readily as medical fraud.</li>
   <li><strong>Ask for a copy of your medical records if you suspect misuse</strong>, and correct them. Errors introduced by someone else's treatment under your identity can affect your own care.</li>
-  <li><strong>Treat calls about your coverage as unverified.</strong> Anyone who knows your member ID has not proved they are your insurer — <a href="/guides/how-to-spot-phishing.html">what to check before you answer anything</a>.</li>
+  <li><strong>Treat calls about your coverage as unverified.</strong> Anyone who knows your member ID has not proved they are your insurer, <a href="/guides/how-to-spot-phishing.html">what to check before you answer anything</a>.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -144,29 +145,41 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>Was medical treatment data stolen from Anthem?</h3>
-        <p>No. Anthem reported that clinical and claims information — diagnoses, treatments, test results — was not taken. What was taken was the membership file: names, dates of birth, Social Security numbers, member IDs, addresses and employment data. That is an identity-theft dataset rather than a medical one, which is bad in a different way.</p>
+        <p>No. Anthem reported that clinical and claims information, diagnoses, treatments, test results, was not taken. What was taken was the membership file: names, dates of birth, Social Security numbers, member IDs, addresses and employment data. That is an identity-theft dataset rather than a medical one, which is bad in a different way.</p>
 
         <h3>How was the Anthem breach discovered?</h3>
-        <p>A database administrator noticed a query running under his own credentials that he had not run, and raised it. Everything that followed — the investigation, the disclosure, the eventual scope — came from one person questioning something that looked slightly wrong rather than from an automated control.</p>
+        <p>A database administrator noticed a query running under his own credentials that he had not run, and raised it. Everything that followed, the investigation, the disclosure, the eventual scope, came from one person questioning something that looked slightly wrong rather than from an automated control.</p>
 
         <h3>Why is health insurance data so valuable?</h3>
         <p>Because it combines a permanent national identifier with enough personal detail to pass identity verification, and because medical identity fraud is slow to detect. A fraudulent credit card shows up on a statement within weeks; fraudulent care billed against your member ID may not surface for years, and unwinding it is far harder.</p>
 
         <h3>What penalties followed?</h3>
-        <p>A $115 million class-action settlement in 2017, a $16 million settlement with the US Department of Health and Human Services in 2018 — the largest HIPAA penalty on record at that point — and a $39.5 million settlement with state attorneys general in 2020.</p>
+        <p>A $115 million class-action settlement in 2017, a $16 million settlement with the US Department of Health and Human Services in 2018, the largest HIPAA penalty on record at that point, and a $39.5 million settlement with state attorneys general in 2020.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://www.hhs.gov/hipaa/for-professionals/compliance-enforcement/agreements/anthem/index.html" target="_blank" rel="noopener nofollow">US Department of Health and Human Services, Office for Civil Rights — Anthem resolution agreement, October 2018</a></li>
+        <li><a href="https://www.hhs.gov/hipaa/for-professionals/compliance-enforcement/agreements/anthem/index.html" target="_blank" rel="noopener nofollow">US Department of Health and Human Services, Office for Civil Rights, Anthem resolution agreement, October 2018</a></li>
         <li><b>US Department of Justice indictment, May 2019</b></li>
         <li><b>California Department of Insurance examination findings, January 2017</b></li>
-        <li><b>In re Anthem, Inc. Data Breach Litigation — $115 million settlement, 2017</b></li>
+        <li><b>In re Anthem, Inc. Data Breach Litigation, $115 million settlement, 2017</b></li>
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
@@ -175,7 +188,7 @@
         <li><a href="/breaches/case-files/medibank-2022.html">Medibank, 2022: the company said no, and the data went up anyway</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -191,5 +204,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

@@ -4,51 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>T-Mobile Breach 2021: How 76 Million Records Leaked</title>
-  <meta name="description" content="An internet-exposed router led to a data centre and then to records on tens of millions of people — most of whom had only ever applied for service.">
+  <meta name="description" content="An internet-exposed router led to a data centre and then to records on tens of millions of people, most of whom had only ever applied for service.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="T-Mobile Breach 2021: How 76 Million Records Leaked">
-  <meta property="og:description" content="An internet-exposed router led to a data centre and then to records on tens of millions of people — most of whom had only ever applied for service.">
+  <meta property="og:description" content="An internet-exposed router led to a data centre and then to records on tens of millions of people, most of whom had only ever applied for service.">
   <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="T-Mobile Breach 2021: How 76 Million Records Leaked">
-  <meta name="twitter:description" content="An internet-exposed router led to a data centre and then to records on tens of millions of people — most of whom had only ever applied for service.">
+  <meta name="twitter:description" content="An internet-exposed router led to a data centre and then to records on tens of millions of people, most of whom had only ever applied for service.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers","description":"An internet-exposed router led to a data centre and then to records on tens of millions of people — most of whom had only ever applied for service.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"T-Mobile data breach"},"wordCount":838}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers","description":"An internet-exposed router led to a data centre and then to records on tens of millions of people, most of whom had only ever applied for service.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"T-Mobile data breach"},"wordCount":838}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"T-Mobile data breach","item":"https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"I only applied to T-Mobile and never joined. Was I affected?","acceptedAnswer":{"@type":"Answer","text":"Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile — a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years."}},{"@type":"Question","name":"How did the attacker get in?","acceptedAnswer":{"@type":"Answer","text":"He described it publicly: an internet-exposed router with weak protection gave a foothold, from which he reached a data centre and, eventually, servers holding customer data. He characterised T-Mobile's security as poor, which the subsequent regulatory settlements did not seriously contest."}},{"@type":"Question","name":"Why does T-Mobile appear in breach lists so often?","acceptedAnswer":{"@type":"Answer","text":"Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond — a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure."}},{"@type":"Question","name":"What is an account PIN and why did it matter?","acceptedAnswer":{"@type":"Answer","text":"It is the code that authenticates you to the carrier when you call support — and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset."}}]}</script>
-  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"I only applied to T-Mobile and never joined. Was I affected?","acceptedAnswer":{"@type":"Answer","text":"Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile, a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years."}},{"@type":"Question","name":"How did the attacker get in?","acceptedAnswer":{"@type":"Answer","text":"He described it publicly: an internet-exposed router with weak protection gave a foothold, from which he reached a data centre and, eventually, servers holding customer data. He characterised T-Mobile's security as poor, which the subsequent regulatory settlements did not seriously contest."}},{"@type":"Question","name":"Why does T-Mobile appear in breach lists so often?","acceptedAnswer":{"@type":"Answer","text":"Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond, a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure."}},{"@type":"Question","name":"What is an account PIN and why did it matter?","acceptedAnswer":{"@type":"Answer","text":"It is the code that authenticates you to the carrier when you call support, and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset."}}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -75,7 +76,7 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Social Security numbers · Driver's licence and ID numbers · Phone numbers · Account PINs for some prepaid customers</p>
 
-<p class="lead">In August 2021 a 21-year-old told reporters how he had done it: an unprotected router exposed to the internet, then a route into a data centre, then more than a hundred servers holding customer data. What made the T-Mobile breach unusual was not the method. It was who was in the file — tens of millions of people who had applied for a phone contract and, in many cases, never got one.</p>
+<p class="lead">In August 2021 a 21-year-old told reporters how he had done it: an unprotected router exposed to the internet, then a route into a data centre, then more than a hundred servers holding customer data. What made the T-Mobile breach unusual was not the method. It was who was in the file, tens of millions of people who had applied for a phone contract and, in many cases, never got one.</p>
 
 <h2>What happened</h2>
 
@@ -83,7 +84,7 @@
 
 <ol class="cf-timeline">
   <li><b>Around 7.8 million current postpaid customers</b>, with names, dates of birth, Social Security numbers and driver's licence or identification numbers.</li>
-  <li><b>Around 40 million former and prospective customers</b> — people who had applied for credit with T-Mobile, whether or not they ever became customers — with the same categories of data.</li>
+  <li><b>Around 40 million former and prospective customers</b>: people who had applied for credit with T-Mobile, whether or not they ever became customers, with the same categories of data.</li>
   <li><b>Around 850,000 prepaid customers</b>, with names, phone numbers and account PINs.</li>
 </ol>
 
@@ -103,26 +104,26 @@
 
 <h2>The pattern, which is the real story</h2>
 
-<p>T-Mobile disclosed security incidents in 2018, 2019, 2020, 2021 and again in January 2023, when an API was abused to pull data on 37 million accounts. That repetition is why the US Federal Communications Commission's September 2024 settlement was structured the way it was: a $31.5 million resolution split evenly between a penalty and a commitment to spend on specific security improvements — zero-trust architecture, phishing-resistant multi-factor authentication, and better data inventory and segmentation.</p>
+<p>T-Mobile disclosed security incidents in 2018, 2019, 2020, 2021 and again in January 2023, when an API was abused to pull data on 37 million accounts. That repetition is why the US Federal Communications Commission's September 2024 settlement was structured the way it was: a $31.5 million resolution split evenly between a penalty and a commitment to spend on specific security improvements, zero-trust architecture, phishing-resistant multi-factor authentication, and better data inventory and segmentation.</p>
 
 <p>Regulators tend to treat a first breach as an incident and a fifth as a governance failure. The remedy shifts accordingly, from a fine towards a supervised programme of work with deadlines.</p>
 
 <h2>The timeline</h2>
 
 <ol class="cf-timeline">
-  <li><b>Early August 2021</b> — An internet-exposed router provides a foothold; lateral movement reaches servers holding customer records.</li>
-  <li><b>16 August 2021</b> — T-Mobile confirms unauthorised access.</li>
-  <li><b>Late August 2021</b> — The scope is revised upward repeatedly, past 76 million records; prepaid PINs are reset.</li>
-  <li><b>July 2022</b> — A $350 million class settlement is announced, alongside a commitment to spend $150 million on data security.</li>
-  <li><b>January 2023</b> — A separate incident: an API is abused to obtain data on 37 million accounts.</li>
-  <li><b>September 2024</b> — The FCC settles its investigations into the 2021 and later breaches for $31.5 million, half of it earmarked for security investment.</li>
+  <li><b>Early August 2021</b>: An internet-exposed router provides a foothold; lateral movement reaches servers holding customer records.</li>
+  <li><b>16 August 2021</b>: T-Mobile confirms unauthorised access.</li>
+  <li><b>Late August 2021</b>: The scope is revised upward repeatedly, past 76 million records; prepaid PINs are reset.</li>
+  <li><b>July 2022</b>: A $350 million class settlement is announced, alongside a commitment to spend $150 million on data security.</li>
+  <li><b>January 2023</b>: A separate incident: an API is abused to obtain data on 37 million accounts.</li>
+  <li><b>September 2024</b>: The FCC settles its investigations into the 2021 and later breaches for $31.5 million, half of it earmarked for security investment.</li>
 </ol>
 
 <h2>What it changed</h2>
 
 <p><strong>Applicant data entered the conversation.</strong> Breach notifications had historically been framed around customers. This case made "and everyone who ever applied" a standard question, and it put retention schedules for credit-check data under regulatory scrutiny.</p>
 
-<p><strong>Carrier security became an FCC enforcement priority.</strong> The 2024 settlement was one of several actions signalling that telecommunications data — which underpins phone-based authentication for everything else — would be regulated as critical rather than commercial.</p>
+<p><strong>Carrier security became an FCC enforcement priority.</strong> The 2024 settlement was one of several actions signalling that telecommunications data, which underpins phone-based authentication for everything else, would be regulated as critical rather than commercial.</p>
 
 <p><strong>SMS authentication lost more ground.</strong> Each carrier breach that exposes PINs or enables SIM swaps strengthens the case that a phone number is an identifier, not an authenticator. The move to passkeys and app-based factors is downstream of exactly this.</p>
 
@@ -131,8 +132,8 @@
 <ol class="bx-actions">
   <li><strong>Freeze your credit files.</strong> Social Security numbers and licence numbers in this breach map directly onto new-account fraud.</li>
   <li><strong>Set a port-out PIN and account lock with your current carrier</strong>, whoever that is. It is free and it is the single best defence against SIM swapping.</li>
-  <li><strong>Move critical accounts off SMS codes</strong> — <a href="/guides/two-factor-authentication.html">the practical hierarchy of second factors</a>.</li>
-  <li><strong>Check your exposure across the other carrier breaches too.</strong> Anyone who has changed provider a few times is likely to appear in more than one — <a href="/breaches/">the archive tracks them as they are confirmed</a>.</li>
+  <li><strong>Move critical accounts off SMS codes</strong>-<a href="/guides/two-factor-authentication.html">the practical hierarchy of second factors</a>.</li>
+  <li><strong>Check your exposure across the other carrier breaches too.</strong> Anyone who has changed provider a few times is likely to appear in more than one, <a href="/breaches/">the archive tracks them as they are confirmed</a>.</li>
 </ol>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -145,26 +146,38 @@
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
       <h2>Questions people ask</h2>
       <div class="bx-faq">
         <h3>I only applied to T-Mobile and never joined. Was I affected?</h3>
-        <p>Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile — a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years.</p>
+        <p>Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile, a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years.</p>
 
         <h3>How did the attacker get in?</h3>
         <p>He described it publicly: an internet-exposed router with weak protection gave a foothold, from which he reached a data centre and, eventually, servers holding customer data. He characterised T-Mobile's security as poor, which the subsequent regulatory settlements did not seriously contest.</p>
 
         <h3>Why does T-Mobile appear in breach lists so often?</h3>
-        <p>Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond — a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure.</p>
+        <p>Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond, a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure.</p>
 
         <h3>What is an account PIN and why did it matter?</h3>
-        <p>It is the code that authenticates you to the carrier when you call support — and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset.</p>
+        <p>It is the code that authenticates you to the carrier when you call support, and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset.</p>
       </div>
+
+      <!-- After the questions, before the sources. A case file explains a
+           breach that is over; the one thing it cannot do is tell the reader
+           about the next one. The note keeps the app's two alerts apart: only
+           the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
+
       <h2>Sources</h2>
       <ul class="cf-sources">
-        <li><a href="https://www.fcc.gov/document/fcc-settles-investigations-t-mobile-data-breaches" target="_blank" rel="noopener nofollow">Federal Communications Commission — T-Mobile data breach settlement, September 2024</a></li>
+        <li><a href="https://www.fcc.gov/document/fcc-settles-investigations-t-mobile-data-breaches" target="_blank" rel="noopener nofollow">Federal Communications Commission, T-Mobile data breach settlement, September 2024</a></li>
         <li><b>T-Mobile customer notifications and updates, August 2021</b></li>
         <li><b>Class settlement in In re T-Mobile Customer Data Security Breach Litigation, 2022</b></li>
       </ul>
@@ -175,7 +188,7 @@
         <li><a href="/breaches/case-files/snowflake-2024.html">Snowflake, 2024: 165 companies breached without anyone touching Snowflake</a></li>
       </ul>
 
-      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported — where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
+      <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
@@ -191,5 +204,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

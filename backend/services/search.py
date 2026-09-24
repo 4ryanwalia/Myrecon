@@ -6,7 +6,7 @@ Pipeline:
   2. Parallel profile enrichment (bio, followers, avatar) for the matches
   3. Optional Google dorking when a Custom Search key is configured, with
      every profile-shaped hit re-fetched and verified before it counts as a
-     profile — search indexes lag reality, and a result the user clicks into
+     profile, search indexes lag reality, and a result the user clicks into
      a "no such account" page is worse than no result at all
   4. Identity correlation into clusters
 
@@ -89,7 +89,7 @@ def _verify_dork_profiles(results: list[dict], target: str, emit=_noop) -> None:
 
     A Custom Search hit only proves Google indexed that URL at some point.
     Profiles get deleted, renamed and suspended, and the shape check upstream
-    cannot see any of that — so the survivors are fetched and scored with the
+    cannot see any of that, so the survivors are fetched and scored with the
     same signals the platform sweep uses. Whatever fails becomes a mention: it
     stays visible as a lead, it just stops claiming to be an account.
 
@@ -149,7 +149,7 @@ def _rejections(checker: UsernameChecker) -> list[dict]:
     Worth returning rather than discarding: "112 checked, none of them yours,
     here is what each one answered" is a stronger statement than silence, and
     it is the only way a user can tell a thorough scan from a lazy one. It is
-    also the check on our own scoring — if a platform the user knows they are
+    also the check on our own scoring, if a platform the user knows they are
     on shows up here, the reason says exactly which signal was missing.
     """
     out = []
@@ -170,7 +170,7 @@ def _code_exposure(profiles: list[dict], username: str, emit=_noop) -> list[dict
     """
     Findings about what the handle leaks, as opposed to where it exists.
 
-    Only runs when GitHub was actually confirmed — it costs six API calls
+    Only runs when GitHub was actually confirmed, it costs six API calls
     against a 60/hour unauthenticated budget, and spending those on a handle
     with no GitHub account would burn the allowance for six real scans.
     """
@@ -194,7 +194,7 @@ def _code_exposure(profiles: list[dict], username: str, emit=_noop) -> list[dict
     return [{"type": "commit_email", "source": "github", **found}]
 
 
-# Platforms surfaced first when they are found at all — the account a person
+# Platforms surfaced first when they are found at all, the account a person
 # actually came to look up, per category: Instagram and Pinterest for social,
 # YouTube for video. The web UI shows every profile, but the Android app shows
 # only the first account per category until the reward gate is unlocked, so the
@@ -209,8 +209,8 @@ def _profile_rank(result: dict) -> tuple:
     Sort key: pinned platforms first, then confirmed before probable, then by
     name so the order is stable between scans.
 
-    Without this, profiles came back in thread-completion order — whichever
-    platform happened to answer first — so the same search could rank its
+    Without this, profiles came back in thread-completion order, whichever
+    platform happened to answer first, so the same search could rank its
     results differently twice in a row.
     """
     platform = result.get("platform", "")
@@ -225,7 +225,7 @@ def _bucket(results: list[dict]) -> tuple:
     """
     Split results into (profiles, documents, mentions).
 
-    A profile must be confirmed — categorised as one *and* carrying `exists`.
+    A profile must be confirmed, categorised as one *and* carrying `exists`.
     Anything shaped like a profile that was never confirmed is reported as a
     mention rather than quietly discarded, so the finding survives without
     overstating what is known about it.

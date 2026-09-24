@@ -1,5 +1,5 @@
 """
-Investigation graph — entities, relationships, confidence and provenance.
+Investigation graph, entities, relationships, confidence and provenance.
 
 This is the correlation core. Feeds (username scan, email scan, domain scan,
 image forensics, …) each emit entities and edges through an adapter; the graph
@@ -13,7 +13,7 @@ worse than no tool:
   2. Confidence is computed from named factors, never asserted. The factor
      list travels with the score so a reader can audit it.
   3. Identity is never inferred from appearance. Faces are geometry; a face
-     does not produce a Person node. Merging requires a shared *identifier* —
+     does not produce a Person node. Merging requires a shared *identifier*,
      a username, an email, a domain, a key fingerprint.
 
 No third-party services and no API keys: this module is pure logic over data
@@ -30,8 +30,8 @@ from typing import Any, Iterable, Optional
 #  Vocabulary
 # ──────────────────────────────────────────────────────────────────────
 
-# Entity types. Kept open-ended deliberately — a new feed may introduce a type
-# without a schema migration — but these are the ones the UI styles.
+# Entity types. Kept open-ended deliberately, a new feed may introduce a type
+# without a schema migration, but these are the ones the UI styles.
 class EntityType:
     PERSON = "person"
     USERNAME = "username"
@@ -117,7 +117,7 @@ def normalise(entity_type: str, value: str) -> str:
 
     Two feeds that disagree on case or on a www. prefix must still land on one
     node, so normalisation is what makes merging work at all. It is applied to
-    the identity key only — the human-facing label keeps the original text.
+    the identity key only, the human-facing label keeps the original text.
     """
     v = _WS.sub(" ", str(value or "")).strip()
     if not v:
@@ -194,7 +194,7 @@ class InvestigationGraph:
         Add or merge an entity. Returns its id, or None if the value was empty.
 
         Repeated calls for the same entity accumulate sources, factors and
-        attributes rather than overwriting — that accumulation is precisely
+        attributes rather than overwriting, that accumulation is precisely
         what drives the confidence score up.
         """
         norm = normalise(entity_type, value)
@@ -303,7 +303,7 @@ class InvestigationGraph:
 
     def clusters(self) -> list[dict]:
         """
-        Connected components over the graph — each is a candidate identity.
+        Connected components over the graph, each is a candidate identity.
 
         A component is a *hypothesis*, not a person. It is labelled with its
         strongest-confidence member and reports its own aggregate confidence so
@@ -355,7 +355,7 @@ class InvestigationGraph:
         Dated events, oldest first.
 
         Only entities and edges that actually carry a date appear. Nothing is
-        interpolated or guessed — a sparse timeline is the honest output when
+        interpolated or guessed, a sparse timeline is the honest output when
         the sources are sparse.
         """
         events: list[dict] = []

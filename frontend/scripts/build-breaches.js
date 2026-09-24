@@ -1,11 +1,11 @@
-/* Breach Files — static article generator.
+/* Breach Files, static article generator.
  *
  * Builds /breaches/ from Have I Been Pwned's public breach catalogue: one
  * article per tracked breach, an index with the running totals and a
  * year-by-year view, and a JSON feed the Android app reads later.
  *
  * WHY IT IS BUILT RATHER THAN FETCHED
- * The obvious version calls HIBP from the browser — the API is keyless and
+ * The obvious version calls HIBP from the browser, the API is keyless and
  * sends Access-Control-Allow-Origin: *, so it would work. It would also ship
  * a megabyte to every visitor and leave the articles invisible to search
  * engines, which for a page whose whole purpose is to be found and read is
@@ -13,13 +13,13 @@
  *
  * WHAT IS OURS AND WHAT IS NOT
  * HIBP's breach data is licensed CC BY 4.0, so its description may be
- * republished with attribution — and every page does attribute it, in the
+ * republished with attribution, and every page does attribute it, in the
  * article body rather than buried in a footer. Everything around that
  * description is generated here from the structured fields: the severity
  * score, what each leaked data class means for a person, the scale
  * comparison, the timeline, and what to do now. Every sentence in that
  * generated section derives from a number or a flag in the record, so the
- * analysis cannot drift from the evidence — which is the whole reason it is
+ * analysis cannot drift from the evidence, which is the whole reason it is
  * computed rather than written.
  *
  * Where a hand-written take exists in content/breaches/<Name>.html it is
@@ -42,6 +42,15 @@ const SITE = "https://www.myrecon.xyz";
 const SOURCE = "https://haveibeenpwned.com/api/v3/breaches";
 const LICENCE = "https://creativecommons.org/licenses/by/4.0/";
 
+// The Play custom store listing that leads with breach alerts rather than
+// WHOIS. Until that listing exists Play ignores an unknown `listing` key and
+// shows the main one, so this link is safe to ship first. The referrer holds
+// UTM tags for Play Console's acquisition report; the app reads only
+// `invite_code` from it, so they can never count as an invite.
+const PLAY_ALERTS =
+  "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts" +
+  "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dbreach_page%26utm_campaign%3Dbreach_alerts";
+
 /** How far back the archive reaches. */
 const YEARS = 7;
 
@@ -49,7 +58,7 @@ const YEARS = 7;
  * The seed set that opens the archive.
  *
  * Split rather than simply "the biggest", because the biggest are almost
- * entirely credential dumps and stealer-log collections — enormous, genuinely
+ * entirely credential dumps and stealer-log collections, enormous, genuinely
  * important, and completely faceless. There is no company to name, no incident
  * to describe and no logo to show, so an archive of those is one nobody wants
  * to read. Weighting toward named companies gives the archive the thing it is
@@ -57,18 +66,25 @@ const YEARS = 7;
  * slots, because leaving out the biggest exposures on record to make the page
  * prettier would be its own kind of dishonesty.
  *
- * THREE PER YEAR, NOT MORE
- * The seed is deliberately bounded rather than "everything HIBP has". These
- * pages quote HIBP's description under CC BY and generate the rest from the
- * record, which makes them genuinely useful and also makes them thin if there
- * are enough of them — a site whose bulk is templated summaries of somebody
- * else's dataset reads as replicated content however good the analysis is.
+ * FIVE PER YEAR, AND EVERY ONE OF THEM WRITTEN ON
+ * The seed is bounded rather than "everything HIBP has", and the bound is not
+ * really a number, it is how many entries somebody has written a take for.
+ * These pages quote HIBP's description under CC BY and generate the rest from
+ * the record, which makes them genuinely useful and also makes them thin if
+ * there are enough of them: a site whose bulk is templated summaries of
+ * somebody else's dataset reads as replicated content however good the
+ * analysis is. What stops that is content/breaches/<Name>.html. Raising these
+ * numbers without writing those files is the one move that makes the archive
+ * worse while appearing to make it bigger, so the build prints the count of
+ * articles carrying a take next to the total, if those two numbers are not
+ * equal, the gap is the work that has not been done yet.
+ *
  * The long-form original reporting lives in /breaches/case-files/, and the
  * ratio between the two sections is a thing to keep an eye on: the archive
  * should stay the index, not the body of work.
  */
-const SEED_NAMED_TOTAL = 21;
-const SEED_AGGREGATE = 4;
+const SEED_NAMED_TOTAL = 35;
+const SEED_AGGREGATE = 6;
 
 /**
  * Everything HIBP publishes from this date onward gets an article.
@@ -85,13 +101,13 @@ const TRACK_ADDED_SINCE = "2026-09-07";
  * What each leaked field actually costs the person it belongs to.
  *
  * `weight` drives the severity score; `why` is printed verbatim. Both are
- * deliberately about consequences rather than categories — "passwords were
+ * deliberately about consequences rather than categories, "passwords were
  * exposed" tells a reader nothing they can act on, and "anyone who reused
  * that password elsewhere has those accounts exposed too" tells them exactly
  * what to go and do.
  */
 const DATA_CLASSES = {
-  "Passwords": { weight: 30, why: "Anyone reusing this password elsewhere has those accounts exposed too — credential stuffing is automated and tries them all within days." },
+  "Passwords": { weight: 30, why: "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days." },
   "Historical passwords": { weight: 26, why: "Old passwords reveal the pattern people build new ones from, which makes the current one guessable." },
   "Auth tokens": { weight: 28, why: "A stolen session token can be used without ever knowing the password, and password changes do not always invalidate it." },
   "Security questions and answers": { weight: 24, why: "These are reused across banks and email providers, and unlike a password almost nobody ever changes them." },
@@ -100,7 +116,7 @@ const DATA_CLASSES = {
   "Government issued IDs": { weight: 30, why: "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent." },
   "Credit cards": { weight: 28, why: "Directly spendable until the card is cancelled, and card numbers circulate for years after a breach." },
   "Partial credit card data": { weight: 14, why: "Not enough to spend, but enough to convince a victim that a caller is genuinely from their bank." },
-  "Payment histories": { weight: 14, why: "Shows what someone buys and from whom — the detail that makes a phishing message land." },
+  "Payment histories": { weight: 14, why: "Shows what someone buys and from whom, the detail that makes a phishing message land." },
   "Bank account numbers": { weight: 26, why: "Enables direct-debit fraud and gives a caller the detail needed to sound like the bank." },
   "Health insurance information": { weight: 24, why: "Medical identity fraud is slow to detect and hard to unwind, and the data itself is sensitive for life." },
   "Private messages": { weight: 26, why: "Content nobody wrote expecting an audience. The damage here is not fraud, it is exposure." },
@@ -109,7 +125,7 @@ const DATA_CLASSES = {
   "Phone numbers": { weight: 18, why: "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely." },
   "Dates of birth": { weight: 16, why: "One of the three things call centres ask to verify identity, and it never changes." },
   "Names": { weight: 10, why: "Turns an anonymous address into an identified person, which is what makes targeted phishing possible." },
-  "Email addresses": { weight: 8, why: "The address becomes a confirmed, active target — expect more phishing, better aimed." },
+  "Email addresses": { weight: 8, why: "The address becomes a confirmed, active target, expect more phishing, better aimed." },
   "Usernames": { weight: 8, why: "A handle links this account to every other place the same handle is used." },
   "IP addresses": { weight: 10, why: "Approximate location at the time of use, and a way to correlate accounts across services." },
   "Geographic locations": { weight: 12, why: "Where the account was used, which narrows a person down further than most people expect." },
@@ -120,7 +136,7 @@ const DATA_CLASSES = {
   "Browsing histories": { weight: 20, why: "A record of interests and habits that most people would consider private." },
   "Website activity": { weight: 12, why: "What was done on the site and when, which can be sensitive depending on the site." },
   "Device information": { weight: 8, why: "Fingerprints a device across services and helps an attacker imitate a trusted login." },
-  "Purchases": { weight: 10, why: "What was bought and when — detail that makes an impersonation convincing." },
+  "Purchases": { weight: 10, why: "What was bought and when, detail that makes an impersonation convincing." },
   "Physical attributes": { weight: 8, why: "Descriptive personal detail, sensitive in combination with a name and address." },
 };
 
@@ -202,7 +218,7 @@ function actions(b) {
   const out = [];
 
   if (has("Passwords") || has("Historical passwords")) {
-    out.push("Change this password anywhere you reused it, starting with your email account — that is the one that can reset all the others.");
+    out.push("Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.");
   }
   if (has("Auth tokens")) {
     out.push("Sign out of all sessions in the account's security settings. Changing a password does not always kill an existing session.");
@@ -220,7 +236,7 @@ function actions(b) {
     out.push("Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.");
   }
   if (has("Physical addresses")) {
-    out.push("Be sceptical of post and callers who already know your address — knowing it is no longer evidence of anything.");
+    out.push("Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.");
   }
   out.push("Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this.");
   return out;
@@ -285,7 +301,7 @@ function select(all) {
 
   // Spread the seed across the window rather than taking the ten biggest
   // outright. Ranked purely by size the archive collapses into the last two
-  // years — recent aggregates dwarf everything before them — and an archive
+  // years, recent aggregates dwarf everything before them, and an archive
   // that claims five years while showing two is not an archive. Two named
   // breaches per year covers the span and keeps every entry a company with a
   // story attached.
@@ -302,7 +318,7 @@ function select(all) {
   // the page tidier would misrepresent the scale of the problem.
   const aggregate = biggest(window.filter((b) => !isNamed(b))).slice(0, SEED_AGGREGATE);
 
-  // From the cutoff onward everything is covered, whichever kind it is —
+  // From the cutoff onward everything is covered, whichever kind it is,
   // curation applies to the back catalogue, not to the news.
   const fresh = window.filter((b) => (b.AddedDate || "").slice(0, 10) >= TRACK_ADDED_SINCE);
 
@@ -325,8 +341,8 @@ const slug = (s) =>
  * Titles and descriptions that survive the search results page.
  *
  * Google cuts a title around 60 characters and a description around 160. The
- * breach names come from HIBP and vary enormously — "Suno" and
- * "SynthientCredentialStuffingThreatData" go through this same template — so
+ * breach names come from HIBP and vary enormously, "Suno" and
+ * "SynthientCredentialStuffingThreatData" go through this same template, so
  * one format string cannot serve both. The old one produced a 95-character
  * title, cut mid-phrase in the results.
  *
@@ -337,7 +353,7 @@ const slug = (s) =>
  */
 /**
  * "<name> Data Breach", except that several HIBP titles already end in the
- * word Data — "Synthient Credential Stuffing Threat Data" — which produced
+ * word Data, "Synthient Credential Stuffing Threat Data", which produced
  * "Threat Data Data Breach" in the results page.
  */
 const breachPhrase = (title) =>
@@ -411,7 +427,7 @@ function sanitise(html) {
  * Collapse redirect hops in links that arrive inside HIBP's descriptions.
  *
  * twitter.com/... has 301'd to x.com/... since the rename, so every one of
- * these was costing a reader — and a crawler following the link — an extra
+ * these was costing a reader, and a crawler following the link, an extra
  * round trip to land in the same place. The text is HIBP's under CC BY and is
  * not touched; only the href target is pointed at where it already ends up.
  */
@@ -442,35 +458,36 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(opts.ogTitle || opts.title)}">
   <meta name="twitter:description" content="${esc(opts.description)}">
   <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon — The Breach Files" href="${SITE}/breaches/feed.xml">
+${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="${SITE}/breaches/feed.xml">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -489,6 +506,7 @@ const FOOT = `
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>
 `;
@@ -519,7 +537,7 @@ function article(b, editorial, siblings) {
     (classes.length
       ? `, including ${classes.slice(0, 3).map((c) => c.name.toLowerCase()).join(", ")}`
       : "") +
-    `. MyRecon rates it ${sev.score}/100 — ${sev.band.toLowerCase()}.`;
+    `. MyRecon rates it ${sev.score}/100, ${sev.band.toLowerCase()}.`;
 
   const phrase = breachPhrase(b.Title);
 
@@ -536,7 +554,7 @@ function article(b, editorial, siblings) {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
-    headline: `${b.Title} data breach — ${num(b.PwnCount)} accounts exposed`,
+    headline: `${b.Title} data breach, ${num(b.PwnCount)} accounts exposed`,
     description: lead,
     datePublished: (b.AddedDate || b.BreachDate || "").slice(0, 10),
     dateModified: (b.ModifiedDate || b.AddedDate || "").slice(0, 10),
@@ -548,7 +566,7 @@ function article(b, editorial, siblings) {
 
   // Rotate the window rather than always taking the first three siblings.
   // .slice(0, 3) pointed every article at the same three, which left the rest
-  // of the archive with a single inbound link each — from the index — and
+  // of the archive with a single inbound link each, from the index, and
   // concentrated all the internal signal on whichever three sorted first.
   // Starting at this article's own position and wrapping gives every article
   // three inbound links from its siblings instead of none.
@@ -557,7 +575,7 @@ function article(b, editorial, siblings) {
   const related = Array.from({ length: Math.min(3, pool.length) }, (_, i) => pool[(start + i) % pool.length])
     .map(
       (s) =>
-        `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a> — ${num(s.PwnCount)} accounts</li>`,
+        `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a>: ${num(s.PwnCount)} accounts</li>`,
     )
     .join("");
 
@@ -568,8 +586,8 @@ function article(b, editorial, siblings) {
         `${phrase}: ${num(b.PwnCount)} Accounts Exposed`,
         `${phrase}: ${num(b.PwnCount)} Accounts | MyRecon`,
         `${phrase}: ${num(b.PwnCount)} Accounts`,
-        `${phrase} — What Was Exposed | MyRecon`,
-        `${phrase} — What Was Exposed`,
+        `${phrase}, What Was Exposed | MyRecon`,
+        `${phrase}, What Was Exposed`,
         `${phrase} | MyRecon`,
         phrase,
       ]),
@@ -614,7 +632,7 @@ function article(b, editorial, siblings) {
                  placeholder="you@example.com" required aria-describedby="bxEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored &mdash; it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
       </form>
 
 ${editorial ? `      <section class="bx-editorial">
@@ -628,7 +646,7 @@ ${editorial}
       </div>
 ${b.DisclosureUrl ? `      <p><a class="btn btn-ghost btn-sm" href="${esc(b.DisclosureUrl)}" target="_blank" rel="noopener nofollow">Read the original disclosure ↗</a></p>\n` : ""}
       <h2>Who was behind it</h2>
-      <p>No party has been publicly confirmed as responsible, and this page will not name one. Most breaches are never formally attributed: data surfaces on a forum or inside a combined dump long after the intrusion, and the trail back to a specific actor is rarely made public. Where a group has claimed responsibility it is usually named in the account above — that claim is theirs, not a finding of ours.${
+      <p>No party has been publicly confirmed as responsible, and this page will not name one. Most breaches are never formally attributed: data surfaces on a forum or inside a combined dump long after the intrusion, and the trail back to a specific actor is rarely made public. Where a group has claimed responsibility it is usually named in the account above, that claim is theirs, not a finding of ours.${
         b.IsStealerLog
           ? " These records came from information-stealing malware on victims' own machines rather than from one company's servers, so the exposure follows the person, not the site."
           : b.IsSpamList
@@ -677,8 +695,19 @@ ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
           : "It is listed as unverified. The data exists and has been indexed, but it has not been confirmed against the named source, so treat the origin as unproven."}</p>
 
         <h3>How many people were affected?</h3>
-        <p>${num(b.PwnCount)} accounts.${scale ? " " + esc(scale) : ""} That is accounts rather than people — one person often has several.</p>
+        <p>${num(b.PwnCount)} accounts.${scale ? " " + esc(scale) : ""} That is accounts rather than people, one person often has several.</p>
       </div>
+
+      <!-- After the questions, once the reader is done with this breach. The
+           one thing a page about a past breach cannot do is tell them about
+           the next one. The note keeps the app's two alerts apart, as the app
+           does: only the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
 
 ${guideLinks(b).length ? `      <h2>Read next</h2>
       <ul class="bx-related">
@@ -688,7 +717,7 @@ ${guideLinks(b).map((g) => `        <li><a href="${g[1]}">${esc(g[2].charAt(0).t
 ${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${related}</ul>\n` : ""}      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
 
-      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself — every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
+      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself, every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
@@ -733,7 +762,7 @@ function index(items) {
     <div class="container bx-page">
       <span class="kicker">The Breach Files</span>
       <h1 class="bx-title">Every breach worth understanding</h1>
-      <p class="sub">Who was hit, what was taken, how many people it reached — and what it means for you. Built from public breach records and updated every day.</p>
+      <p class="sub">Who was hit, what was taken, how many people it reached, and what it means for you. Built from public breach records and updated every day.</p>
 
       <div class="bx-summary">
         <div class="bx-stat"><b>${num(total)}</b><span>Accounts exposed</span></div>
@@ -747,8 +776,19 @@ function index(items) {
            story of a breach will not find it in a record. -->
       <aside class="bx-offer">
         <h3>Case Files: how the breaches that mattered actually happened</h3>
-        <p>In-depth write-ups of the landmark incidents — Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
+        <p>In-depth write-ups of the landmark incidents, Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
         <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a></p>
+      </aside>
+
+      <!-- The archive is also a dataset, and saying so here is what turns it
+           into distribution. A developer who arrives looking for breach
+           information and leaves having embedded the feed links back from
+           their own site; a reader who only wanted to look something up
+           scrolls straight past an aside. -->
+      <aside class="bx-offer">
+        <h3>Building something? Take this data</h3>
+        <p>The whole archive is published as versioned JSON, no account, no API key, no rate limit, CORS enabled and rebuilt daily. There is a drop-in embed widget too, if you want a live breach list on your own page without writing the rendering. Free under CC BY 4.0, with credit to Have I Been Pwned.</p>
+        <p><a class="btn btn-sm" href="/developers.html">Read the API documentation →</a></p>
       </aside>
 
 ${years.length ? `      <h2 class="bx-h2">By year</h2>
@@ -811,7 +851,7 @@ function rssFeed(items) {
         `${num(b.PwnCount)} accounts exposed. Severity ${sev.score}/100 (${sev.band}). ` +
         `Data exposed: ${(b.DataClasses || []).join(", ") || "not published"}.`;
       return `    <item>
-      <title>${esc(b.Title)} data breach — ${num(b.PwnCount)} accounts exposed</title>
+      <title>${esc(b.Title)} data breach: ${num(b.PwnCount)} accounts exposed</title>
       <link>${link}</link>
       <guid isPermaLink="true">${link}</guid>
       <pubDate>${new Date(b.AddedDate || b.BreachDate || Date.now()).toUTCString()}</pubDate>
@@ -823,7 +863,7 @@ function rssFeed(items) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>MyRecon — The Breach Files</title>
+    <title>MyRecon: The Breach Files</title>
     <link>${SITE}/breaches/</link>
     <atom:link href="${SITE}/breaches/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Data breach coverage: who was hit, what was taken, how many people it reached and what to do about it.</description>
@@ -838,8 +878,8 @@ ${entries}
 /**
  * Trim to a word boundary.
  *
- * A hard slice ends sentences mid-word — the app rendered one that stopped at
- * "banki" — which reads as broken rather than abbreviated.
+ * A hard slice ends sentences mid-word, the app rendered one that stopped at
+ * "banki", which reads as broken rather than abbreviated.
  */
 function excerpt(text, max) {
   const clean = String(text || "").trim();
@@ -869,16 +909,18 @@ async function main() {
   const all = await res.json();
 
   const items = select(all);
-  if (!items.length) throw new Error("no breaches selected — refusing to publish an empty archive");
+  if (!items.length) throw new Error("no breaches selected, refusing to publish an empty archive");
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.mkdirSync(DATA_DIR, { recursive: true });
   fs.mkdirSync(EDITORIAL_DIR, { recursive: true });
 
   let edited = 0;
+  const unwritten = [];
   items.forEach((b) => {
     const editorial = readEditorial(b.Name);
     if (editorial) edited += 1;
+    else unwritten.push(b.Name);
     fs.writeFileSync(
       path.join(OUT_DIR, `${slug(b.Name)}.html`),
       article(b, editorial, items),
@@ -913,9 +955,19 @@ async function main() {
         logo: logoFor(b),
         severity: sev.score,
         band: sev.band,
-        // Who supplied the records to HIBP — a requested credit, not blame.
+        // Who supplied the records to HIBP, a requested credit, not blame.
         data_provider: b.Attribution || null,
         summary: excerpt(sanitise(b.Description).replace(/<[^>]*>/g, ""), 400),
+        // The article's analysis, so the app can show it without keeping its
+        // own copy of DATA_CLASSES and actions() that would drift from this
+        // one. Fields are ordered most damaging first, the order a reader on
+        // a phone needs them in, where the article keeps HIBP's order.
+        fields: (b.DataClasses || [])
+          .map((c) => ({ name: c, weight: (DATA_CLASSES[c] || DEFAULT_CLASS).weight, why: (DATA_CLASSES[c] || DEFAULT_CLASS).why }))
+          .sort((a, z) => z.weight - a.weight)
+          .map(({ name, why }) => ({ name, why })),
+        actions: actions(b),
+        scale_line: scaleLine(b.PwnCount),
       };
     }),
   };
@@ -930,11 +982,23 @@ async function main() {
     `[breaches] ${items.length} articles (${edited} with an editorial take), ` +
       `${num(feed.total_accounts)} accounts, feed written`,
   );
+
+  // An article with no take is a templated summary of somebody else's record,
+  // which is exactly the shape of page this section is not supposed to be. It
+  // still builds, a half-finished archive beats a broken one, but it says so
+  // by name, because "27 of 43" scrolls past and a list of filenames does not.
+  if (unwritten.length) {
+    console.warn(
+      `[breaches] no editorial take for ${unwritten.length}: ${unwritten.join(", ")}
+` +
+        `[breaches] write content/breaches/<Name>.html for each, then rebuild`,
+    );
+  }
 }
 
 main().catch((err) => {
   console.error(`[breaches] ${err.message}`);
-  // A failed fetch must not take the whole site build down — the previously
+  // A failed fetch must not take the whole site build down, the previously
   // generated pages are still on disk and still correct.
   process.exit(fs.existsSync(path.join(OUT_DIR, "index.html")) ? 0 : 1);
 });

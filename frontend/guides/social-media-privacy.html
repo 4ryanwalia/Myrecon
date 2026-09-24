@@ -19,29 +19,30 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="How to Lock Down Your Social Media Privacy">
   <meta name="twitter:description" content="A practical guide to reducing what strangers can see and find on your social media.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta name="twitter:image:alt" content="MyRecon — investigate any digital footprint">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
-     drops it when styles.css applies — a whole-page shift measured at
+     drops it when styles.css applies, a whole-page shift measured at
      0.1225 CLS, over Google's 0.1 threshold, on every page. */
   *{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"How to Lock Down Your Social Media Privacy","description":"A practical guide to reducing what strangers can see and find on your social media.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/social-media-privacy.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"How to Lock Down Your Social Media Privacy","description":"A practical guide to reducing what strangers can see and find on your social media.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-14","mainEntityOfPage":"https://www.myrecon.xyz/guides/social-media-privacy.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"How to Lock Down Your Social Media Privacy","item":"https://www.myrecon.xyz/guides/social-media-privacy.html"}],"@context":"https://schema.org"}</script>
 </head>
@@ -49,8 +50,8 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT — home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/about.html">About</a></nav>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -58,55 +59,104 @@
 
   <main id="main" class="container">
     <article class="article">
-      <span class="kicker">Privacy</span>
+<span class="kicker">Privacy</span>
       <h1>How to Lock Down Your Social Media Privacy</h1>
-      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+      <p class="meta">Updated 14 September 2026 · 6 min read</p>
 
-      <p class="lead">Social media is where most people leak the most about themselves — often without realising it. The default settings on most platforms favour visibility, not privacy. A short, deliberate review of each account dramatically cuts what a stranger can piece together about you.</p>
+      <p class="lead">Most privacy advice is a list of switches, and switches move. What does not move is the set of things a stranger can learn from an account, and several of the most revealing are not covered by the privacy settings at all, they are in the profile photo, the handle, and the follower list of an account you believed was private.</p>
 
-      <h2>Start with an outsider's view</h2>
-      <p>Before changing anything, see what the public sees. Log out (or use a private browser window) and look at your own profiles, or search your name and usernames. This is exactly what a recruiter, a scammer, or a curious stranger would do. Run your handle through the MyRecon <a href="/#tool">username tool</a> to see how many platforms carry it, then decide which accounts actually need to be public.</p>
+      <h2>Start by looking at yourself the way a stranger does</h2>
+      <p>No settings screen tells you what is actually visible. The only reliable test is to go and look.</p>
+      <ol>
+        <li>Open a private browsing window, signed out of everything.</li>
+        <li>Visit your own profile on each platform. Note what loads: the photo, the bio, the follower counts and lists, recent posts, tagged photos, the join date.</li>
+        <li>Search your name, your handle and your usual email address in a search engine. Then search them with your city added.</li>
+        <li>Do the same for old handles you have retired, which frequently still resolve.</li>
+      </ol>
+      <p>Twenty minutes of this tells you more than any checklist, because it shows your actual exposure rather than the exposure the settings imply. Repeat it after any change you make, settings routinely do not do what their labels suggest.</p>
 
-      <h2>Fix discoverability first</h2>
-      <p>The most overlooked settings control how easily strangers <em>find</em> you:</p>
-      <ul>
-        <li><strong>Turn off "find me by phone number or email."</strong> This feature lets anyone who has one detail about you locate your profile — a favourite tool of stalkers and scammers.</li>
-        <li><strong>Limit search-engine indexing</strong> of your profile where the platform allows it.</li>
-        <li><strong>Review who can send you requests or messages</strong>, and restrict it to friends-of-friends or people you know.</li>
-      </ul>
+      <h2>The four things that leak most, and are rarely covered by privacy settings</h2>
 
-      <h2>Set your audience deliberately</h2>
-      <p>Decide, per platform, whether your account is public or private, and make future posts default to the smallest audience that makes sense. For personal accounts, private is almost always the right choice. Then check the past: most platforms offer a "limit past posts" tool that retroactively restricts everything you have already shared to your current friends only — a fast way to clean up years of oversharing in one click.</p>
+      <h3>The profile photo</h3>
+      <p>Profile pictures are usually public even on locked accounts, and the same image reused across platforms is the simplest way to connect a professional identity to an anonymous one. It is reverse-searchable, and the background is searchable independently of the face, see <a href="/guides/reverse-image-search.html">the reverse image search guide</a> for how that is done.</p>
+      <p>If you maintain accounts you would rather were not linked, they need different photographs, not cropped versions of the same one, which is what perceptual matching is built to defeat.</p>
+
+      <h3>The username</h3>
+      <p>A distinctive handle reused across services is the single strongest link between accounts, and enumerating it across platforms takes seconds. This is the technique our <a href="/guides/username-osint-search.html">username OSINT guide</a> describes, and the defence is the obvious one: distinctive handles are for identities you are happy to have connected.</p>
+
+      <h3>The follower and following lists</h3>
+      <p>A private account whose follower list is public is not private in the way its owner believes. Social graphs identify people: your employer, your school, your family and your town are all inferable from who follows you, without a single post being visible. Where a platform allows the connection list to be hidden, hiding it is often a larger change than making posts private.</p>
+
+      <h3>Everything around a post rather than in it</h3>
+      <p>Posting times describe a schedule and a time zone. Location tags describe a routine, and it is the repetition that matters, one tagged café is nothing, the same café every weekday morning is a place you can be found. The contents of photographs give away more than the subject: a street sign, a school uniform, a delivery label, a view from a window, a vehicle number plate. Photographs of keys can be enough to have them cut.</p>
 
       <div class="callout">
-        <p><strong>Remember the metadata.</strong> Photos and check-ins can reveal your home, workplace, and daily routine. Turn off automatic location tagging, and think before posting anything that shows where you live or when you are away.</p>
+        <p><strong>The setting almost nobody changes, and the one that mattered most.</strong> Platforms let people find your account by uploading a phone number or an email address. In 2021 a dataset covering more than 500 million Facebook users appeared publicly, assembled not by breaching anything, but by abusing a contact-import feature at scale to match phone numbers to profiles. If a platform offers "who can look you up by phone number or email", setting it to the narrowest option is the highest-value privacy change on this page. <a href="/breaches/case-files/facebook-scrape-2021.html">The case file explains how it was done.</a></p>
       </div>
 
-      <h2>Prune what's already there</h2>
-      <p>Old content is a rich source for anyone profiling you. Work through:</p>
+      <h2>The settings worth finding, described by what they do</h2>
+      <p>Menu names change constantly; functions do not. Look for these:</p>
       <ul>
-        <li><strong>Profile fields</strong> — remove your birth year, phone number, home town, and employer if they do not need to be public.</li>
-        <li><strong>Tagged photos</strong> — turn on tag review so nothing is added to your profile without approval.</li>
-        <li><strong>Old posts</strong> — delete or restrict anything that reveals sensitive details or that you would not post today.</li>
-        <li><strong>Location history</strong> — clear it where the platform stores it, and disable ongoing collection.</li>
+        <li><strong>Discoverability by phone and email.</strong> As above. Narrow it everywhere.</li>
+        <li><strong>Search engine indexing.</strong> Most platforms offer a toggle controlling whether your profile appears in external search results. It does not remove what is already indexed, but it stops the accumulation.</li>
+        <li><strong>Retroactive audience change for old posts.</strong> Several platforms can restrict every past post in one action. This matters because your old posts were made under the defaults of the time, which were far more open, and because nobody edits a decade of history by hand.</li>
+        <li><strong>Connection list visibility.</strong> Followers, following, friends, and mutual connections.</li>
+        <li><strong>Tag review.</strong> Approval before a tag of you appears on your profile. This is control over what other people attach to your name.</li>
+        <li><strong>Location.</strong> Turn off precise location for social apps at the operating-system level rather than inside the app, disable any live-location or nearby feature, and remove location tags from past posts where the platform allows bulk editing.</li>
+        <li><strong>Connected applications.</strong> Every third-party app you ever signed into with a social account still holds an authorisation. Review the list and revoke everything you do not currently use, this is the route by which data leaves a well-configured account entirely legitimately.</li>
+        <li><strong>Off-platform activity.</strong> The record of your behaviour on other websites, collected through embedded buttons and advertising pixels and attached to your account. Clearing and disabling it is usually available and rarely found.</li>
+        <li><strong>Story and default audience.</strong> Whatever the default audience is for a new post, set it to the narrowest option you would accept, because the default is what you will use when you are in a hurry.</li>
       </ul>
 
-      <h2>Cut off third-party access</h2>
-      <p>Over the years you have probably logged into dozens of apps and quizzes using "Sign in with Facebook/Google." Each one may still have access to your data. Open the "connected apps" or "apps and websites" section of each account and revoke everything you no longer use. This also shrinks the blast radius if any of those third parties is breached.</p>
+      <h2>Security is half of privacy</h2>
+      <p>A meticulously configured private account that gets taken over exposes everything at once, including the private messages that were never public in the first place. The account-security half is not optional:</p>
+      <ul>
+        <li><strong>A unique password</strong>, because these accounts are prime credential-stuffing targets.</li>
+        <li><strong>Two-factor authentication</strong>, ideally not SMS, see <a href="/guides/two-factor-authentication.html">the two-factor guide</a>.</li>
+        <li><strong>A recovery email you still control</strong>, and that is itself secured. Abandoned recovery addresses are a standard route in.</li>
+        <li><strong>A periodic look at active sessions and logged-in devices,</strong> and sign out anything you do not recognise.</li>
+        <li><strong>Login alerts enabled</strong>, so a takeover is something you learn about rather than discover.</li>
+      </ul>
 
-      <h2>Separate your identities</h2>
-      <p>If you would rather not have all your accounts tied together, use different usernames and a different email for accounts you want kept separate — because a shared handle is exactly how these profiles get correlated. Our guide on <a href="/guides/username-osint-search.html">username OSINT</a> shows how easily a reused handle links accounts across the web.</p>
+      <h2>What the settings cannot fix</h2>
+      <p>Being honest about the limits is what makes the rest worth doing.</p>
+      <ul>
+        <li><strong>What other people post.</strong> Group photos, tagged locations, a colleague's public celebration of your new job. You can ask; you cannot configure it.</li>
+        <li><strong>What has already been collected.</strong> Anything public has been scraped and archived, repeatedly. Making a profile private from today does not retrieve it.</li>
+        <li><strong>The platform itself.</strong> Private means restricted from other users. The company holds it all, and so does anyone who breaches the company.</li>
+        <li><strong>Data brokers,</strong> which merge social data with public records and purchased datasets, covered in <a href="/guides/how-data-brokers-work.html">how data brokers work</a>.</li>
+      </ul>
 
-      <h2>Make it routine</h2>
-      <p>Platforms change their settings and defaults regularly, often resetting things toward more sharing. Put a reminder in your calendar to re-check your privacy settings a couple of times a year, and to review anything new the platform has added. Pair this with the broader steps in our <a href="/guides/reduce-your-digital-footprint.html">digital-footprint guide</a>, and you will stay well ahead of what most people ever expose.</p>
+      <h2>If you post about children</h2>
+      <p>A specific case that deserves its own line, because the accumulation is invisible. School uniforms identify an institution. A first-day-of-term photo dates it. A geotagged garden identifies a home. Repeated over years, an ordinary parent assembles a comprehensive public record about a person who never agreed to it and will inherit it at thirteen. Restricting the audience for those posts to people you actually know is the least effortful protective decision available to anyone.</p>
 
-            <h2>Related guides</h2>
+      <div class="callout">
+        <p><strong>A quarterly twenty minutes, not a one-off afternoon.</strong> Platforms add features, reset defaults during migrations, and occasionally change what a setting means. Put a recurring reminder in a calendar: view your profiles signed out, review connected apps, review active sessions, and search your own name. The exposure that hurts is the kind that accumulates while nobody is looking.</p>
+      </div>
+
+      <h2>Before you delete anything</h2>
+      <p>If you decide to leave a platform, download your data export first, it is the only copy you will get, and deletion is often irreversible after a grace period. Deactivation hides a profile while the company retains everything; deletion is the meaningful action, and it does not affect the copies already scraped, archived or sold.</p>
+
+      <div class="callout">
+        <p>See what is publicly attached to a handle you use, across platforms, with the <a href="/#tool">MyRecon username tool</a>, or work through <a href="/guides/reduce-your-digital-footprint.html">the full digital footprint routine</a>.</p>
+      </div>
+
+      <!-- After the guide, never inside it. Someone who has just read how to
+           do this by hand is the reader most likely to want it done for them. -->
+      <aside class="app-cta">
+        <div class="app-cta-text">
+          <strong>Run these checks on your phone</strong>
+          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
+        </div>
+        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dsocial_media_privacy" target="_blank" rel="noopener">Get it on Google Play</a>
+      </aside>
+
+      <h2>Related guides</h2>
       <ul class="related-guides">
-        <li><a href="/guides/reduce-your-digital-footprint.html">how to find and shrink your public digital footprint</a></li>
-        <li><a href="/guides/how-data-brokers-work.html">how data brokers collect and sell your personal data</a></li>
-        <li><a href="/guides/username-osint-search.html">finding accounts across platforms from a single username</a></li>
-        <li><a href="/services.html">what a guided footprint removal involves</a></li>
-        <li><a href="/guides/reverse-image-search.html">how to trace a photograph back to where it came from</a></li>
+        <li><a href="/guides/reduce-your-digital-footprint.html">the full routine for shrinking your public data</a></li>
+        <li><a href="/guides/how-data-brokers-work.html">how data brokers collect and sell your data</a></li>
+        <li><a href="/guides/username-osint-search.html">how a handle links your accounts together</a></li>
+        <li><a href="/guides/two-factor-authentication.html">securing the accounts you just configured</a></li>
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
@@ -123,5 +173,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
 </body>
 </html>

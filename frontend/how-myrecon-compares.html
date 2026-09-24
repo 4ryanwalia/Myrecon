@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How MyRecon Compares to Other Username and Breach Tools</title>
+  <meta name="description" content="Four kinds of tool solve this problem: subscription people-search apps, paid OSINT suites, open-source CLI scanners, and searching by hand. What each is good at, what each costs you, and where MyRecon loses.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="canonical" href="https://www.myrecon.xyz/how-myrecon-compares.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="How MyRecon Compares to Other Username and Breach Tools">
+  <meta property="og:description" content="Four kinds of tool solve this problem. What each is good at, what each costs you, and where MyRecon loses.">
+  <meta property="og:url" content="https://www.myrecon.xyz/how-myrecon-compares.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How MyRecon Compares to Other Username and Breach Tools">
+  <meta name="twitter:description" content="Four kinds of tool solve this problem. What each is good at, what each costs you, and where MyRecon loses.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <style>
+    /* Scoped to this page: the comparison table is the only one on the site
+       wide enough to need horizontal scroll on a phone, and it must not make
+       the whole page scroll sideways. */
+    .cmp-wrap{overflow-x:auto;margin:18px 0 8px;-webkit-overflow-scrolling:touch}
+    .cmp{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+    .cmp th,.cmp td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}
+    .cmp th{background:var(--surface-2);font-weight:600;color:var(--text)}
+    .cmp td{color:var(--text-dim)}
+    .cmp tbody th{font-weight:600;color:var(--text);white-space:nowrap}
+  </style>
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How MyRecon Compares to Other Username and Breach Tools","description":"Four kinds of tool solve this problem: subscription people-search apps, paid OSINT suites, open-source CLI scanners, and searching by hand. What each is good at, what each costs you, and where MyRecon loses.","url":"https://www.myrecon.xyz/how-myrecon-compares.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"mainEntityOfPage":"https://www.myrecon.xyz/how-myrecon-compares.html","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"How MyRecon compares","item":"https://www.myrecon.xyz/how-myrecon-compares.html"}]}}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container" style="max-width:860px;padding-top:40px;padding-bottom:40px">
+    <nav aria-label="Breadcrumb" style="font-size:.85rem;color:var(--text-mute);margin-bottom:14px">
+      <a href="/" style="color:var(--text-mute)">Home</a> › <span>How MyRecon compares</span>
+    </nav>
+
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-0.02em">How MyRecon compares</h1>
+    <p class="sub" style="text-align:left;margin:14px 0 22px;color:var(--text-dim)">
+      Four different kinds of thing solve this problem, and they are not really competing
+      with each other, they are aimed at different people with different budgets and
+      different tolerances for being wrong. This page describes the categories, what each
+      one genuinely does better, and the two categories where you should pick something
+      other than us.
+    </p>
+
+    <!-- Categories, not brand names. A comparison page that attacks three named
+         companies dates the moment any of them changes its pricing, invites a
+         legal complaint over a claim we cannot personally re-verify every month,
+         and is far less likely to be cited than one that teaches the distinction.
+         The reader's real question is "which KIND of tool do I want", and that
+         answer stays true. -->
+    <div class="panel" style="padding:18px 20px;margin:0 0 26px">
+      <p style="margin:0;color:var(--text-dim)">
+        <strong style="color:var(--text)">No brand names below, on purpose.</strong>
+        Pricing and behaviour in this market change monthly, and a page naming names goes
+        stale or unfair within a quarter. The categories do not move. If you want to judge
+        a specific product, <a href="/is-myrecon-legit.html">the six tests</a> on our
+        legitimacy page work on any tool, including ours.
+      </p>
+    </div>
+
+    <div class="cmp-wrap">
+      <table class="cmp">
+        <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Comparison of five approaches to username and breach investigation</caption>
+        <thead>
+          <tr>
+            <th scope="col">Approach</th>
+            <th scope="col">Typical cost</th>
+            <th scope="col">Best at</th>
+            <th scope="col">Costs you</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Subscription people-search apps</th>
+            <td>Free trial, then recurring</td>
+            <td>Polish, phone support, US public-records depth</td>
+            <td>Card details, hard-to-cancel billing, confident wrong matches</td>
+          </tr>
+          <tr>
+            <th scope="row">Paid OSINT / investigator suites</th>
+            <td>Hundreds to thousands a year</td>
+            <td>Breadth, licensed data, court-usable audit trails</td>
+            <td>Price, vetting, a learning curve measured in weeks</td>
+          </tr>
+          <tr>
+            <th scope="row">Open-source CLI scanners</th>
+            <td>Free</td>
+            <td>The widest site coverage available anywhere</td>
+            <td>A terminal, Python, and reading raw output yourself</td>
+          </tr>
+          <tr>
+            <th scope="row">Searching by hand</th>
+            <td>Free</td>
+            <td>Judgement, you see the page and decide</td>
+            <td>Hours, and you will miss things you did not think to check</td>
+          </tr>
+          <tr>
+            <th scope="row">MyRecon</th>
+            <td>Free, no account</td>
+            <td>Telling you how confident it is, and admitting when it cannot tell</td>
+            <td>Narrower coverage; rate limits; ads</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 style="margin:32px 0 10px">Subscription people-search apps</h2>
+    <p>
+      The largest category by revenue and the one most people meet first, because it
+      advertises hardest. The shape is consistent: a free search returns something
+      alarming-sounding, the detail sits behind a wall, and the wall opens for a cheap
+      trial that renews at a price set out in text you did not read.
+    </p>
+    <p>
+      They are not all fraudulent, and the good ones have genuine depth in US public
+      records, court filings, property, relatives, that nothing free can match. If that
+      is what you need, they are the right category.
+    </p>
+    <p>
+      The structural problem is what the business model rewards. Revenue comes from
+      alarm, and alarm comes from volume, so a long list of maybes converts better than a
+      short list of certainties. That pressure sits on the accuracy of the results
+      themselves. We wrote up the mechanics in
+      <a href="/guides/subscription-trap-apps.html">the subscription-trap guide</a> and
+      what the data actually contains in
+      <a href="/guides/people-search-apps-what-they-find.html">what people-search apps
+      find</a>.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Paid OSINT and investigator suites</h2>
+    <p>
+      Professional tooling for people doing this as a job: fraud teams, due-diligence
+      analysts, licensed investigators. They buy access to data nobody gives away, keep
+      audit trails that hold up in a dispute, and are supported by humans.
+    </p>
+    <p>
+      If your work needs a defensible record of what you searched and when, this is the
+      category and no free tool substitutes for it. The cost is real money, usually
+      vetting, and a tool you have to learn.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Open-source CLI scanners</h2>
+    <p>
+      The serious free option, and the category where <strong>we are genuinely
+      beaten on breadth</strong>. The well-known projects check thousands of sites; our
+      web tool checks 123 and our Android app checks several hundred. If your only
+      question is "cover as many sites as possible and let me judge the output", install
+      one of those instead. They are excellent and we are not going to pretend otherwise.
+    </p>
+    <p>
+      What you trade is interpretation. Raw output tends to be a list of URLs that
+      returned something, and deciding which of those is a real account is left to you,
+      which matters more than it sounds, because a great many sites answer "here is your
+      page" for a handle nobody owns. You also need a terminal and a working Python
+      install, which rules the category out for most people.
+    </p>
+    <p style="border-left:3px solid var(--accent);padding-left:14px;color:var(--text-dim)">
+      We tested this directly rather than assuming. Importing a large open-source
+      catalogue into our own app added several hundred extra platforms and, on a real
+      sweep, surfaced almost nothing the smaller hand-built list had missed, so the
+      import was reverted and one useful entry kept. Breadth and usefulness are not the
+      same axis.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Searching by hand</h2>
+    <p>
+      Always available, always free, and better than any tool at the thing tools are worst
+      at: looking at a page and deciding whether it is really that person. If you have one
+      specific question about one specific handle, opening the profile yourself is often
+      the fastest correct answer.
+    </p>
+    <p>
+      It does not scale, and the failure is silent, you check the eight platforms you
+      thought of and never learn about the ninth. Our
+      <a href="/guides/search-operators-osint.html">search operators guide</a> makes the manual
+      route considerably more effective if that is the route you want.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Where MyRecon fits</h2>
+    <p>
+      One narrow claim: <strong>the results tell you how much they are worth.</strong>
+      Every platform checked lands on one of three verdicts, confirmed, not found, or
+      could-not-tell, and the third is reported rather than rounded into one of the other
+      two. A platform that is rate-limiting us, serving a bot check, or showing the same
+      page for every handle is listed as unverified with the reason attached, not counted
+      as a find.
+    </p>
+    <p>
+      That sounds like a small thing and it is the whole product. A checker that counts
+      HTTP 200 as an account will show you a longer list than ours and a meaningful
+      fraction of it will be fiction. The measurement behind this is in
+      <a href="/guides/why-username-checkers-report-fake-accounts.html">why username
+      checkers report fake accounts</a>: of 24 platforms tested, six returned
+      byte-for-byte identical responses for a real handle and an invented one.
+    </p>
+    <p>
+      The same logic runs through the breach lookups. If the breach services cannot be
+      reached, the result says <em>not checked</em> rather than <em>no breaches found</em>,
+      because those are different statements and only one of them means you are fine.
+    </p>
+
+    <h2 style="margin:30px 0 10px">What “free” costs in each category</h2>
+    <p>
+      Nothing in this market is free in the sense of costing nothing. It is worth being
+      explicit about what each category takes instead of money, because the payment is
+      usually the part that is not advertised.
+    </p>
+    <ul style="color:var(--text-dim);margin:0 0 16px 20px;line-height:1.75">
+      <li><strong style="color:var(--text)">Subscription apps</strong> take your card
+        details and, frequently, the friction of cancelling. Several also take the search
+        itself, the address or name you looked up becomes a record they hold.</li>
+      <li><strong style="color:var(--text)">Paid suites</strong> take money openly, which
+        is the cleanest arrangement on this page. You know exactly what the deal is.</li>
+      <li><strong style="color:var(--text)">CLI scanners</strong> take your time and your
+        judgement. They are free of charge and free of interpretation, and the second part
+        is the expensive one.</li>
+      <li><strong style="color:var(--text)">MyRecon</strong> takes advertising impressions
+        and gives you a narrower result set. No card, no account, no stored search history
+        on the server.</li>
+    </ul>
+
+    <h2 style="margin:30px 0 10px">How to read any comparison page, including this one</h2>
+    <p>
+      A comparison written by one of the products being compared is, structurally, an
+      advertisement. That includes this page. Three habits make them readable anyway:
+    </p>
+    <ul style="color:var(--text-dim);margin:0 0 16px 20px;line-height:1.75">
+      <li><strong style="color:var(--text)">Look for where the author loses.</strong> A
+        comparison in which the author wins every row is not a comparison. If you cannot
+        find a category where they concede, the page is not telling you anything.</li>
+      <li><strong style="color:var(--text)">Check whether the criteria were chosen to
+        fit.</strong> It is easy to pick the four axes on which you happen to be strongest.
+        Ask what axis is missing, here, the obvious omissions are total site coverage and
+        access to licensed records, which is why both have their own row above.</li>
+      <li><strong style="color:var(--text)">Prefer testable claims to adjectives.</strong>
+        “More accurate” is unfalsifiable. “Reports three verdicts and names which one it
+        reached, and here is a handle you can test it with” is something you can prove
+        wrong in a minute.</li>
+    </ul>
+
+    <h2 style="margin:30px 0 10px">The axis that actually separates these tools</h2>
+    <p>
+      Strip away the branding and the pricing and one question is left: <em>what does the
+      tool do when it does not know?</em>
+    </p>
+    <p>
+      Every category on this page has the same underlying problem. The public web does not
+      reliably answer “does this account exist”. Sites return “here is your page” for
+      handles nobody owns, block automated requests, serve bot checks, and hide profiles
+      behind sign-in walls. No amount of money or coverage makes that uncertainty go away.
+      The only thing that varies is what a tool does about it.
+    </p>
+    <p>
+      A subscription app resolves uncertainty toward a finding, because findings sell. A
+      CLI scanner hands the raw response to you and takes no position. A paid suite
+      typically buys its way around the problem with licensed data, which genuinely works
+      and genuinely costs. MyRecon resolves it by saying so, which produces a shorter list
+      and is the only one of the four that will ever tell you it failed.
+    </p>
+    <p>
+      There is no universally right answer among those. There is a right answer for a given
+      job, and knowing which axis you are choosing on is most of the decision.
+    </p>
+
+    <h2 style="margin:30px 0 10px">Pick something else if…</h2>
+    <ul style="color:var(--text-dim);margin:0 0 16px 20px;line-height:1.75">
+      <li><strong style="color:var(--text)">You need maximum site coverage.</strong>
+        An open-source CLI scanner checks far more places than we do.</li>
+      <li><strong style="color:var(--text)">You need US public records.</strong>
+        Court filings, property records and relative graphs are a licensed-data product.
+        We have none of it.</li>
+      <li><strong style="color:var(--text)">You need reverse image or face search.</strong>
+        We do not offer it at all, it requires a paid API and everything here runs on
+        free, keyless sources. <a href="/guides/reverse-image-search.html">The guide</a>
+        points at the engines that do.</li>
+      <li><strong style="color:var(--text)">You need an audit trail.</strong>
+        Nothing here is built to be evidence.</li>
+    </ul>
+
+    <h2 style="margin:30px 0 10px">The honest summary</h2>
+    <p>
+      MyRecon is a free tool that tries hard not to tell you things it cannot support, at
+      the cost of showing you a shorter list than tools that are less careful. If the
+      shorter, better-labelled list is what you want, it is free and there is nothing to
+      sign up for. If breadth or licensed data is what you want, two of the categories
+      above beat us and this page has named which.
+    </p>
+
+    <div class="panel" style="padding:20px;margin:30px 0 0">
+      <h2 style="margin:0 0 10px;font-size:1.1rem">Keep reading</h2>
+      <ul style="color:var(--text-dim);margin:0 0 0 20px;line-height:1.9">
+        <li><a href="/is-myrecon-legit.html">Is MyRecon legit?</a>: six tests you can run on any tool</li>
+        <li><a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search</a>: which of ours to use</li>
+        <li><a href="/guides/">All 31 guides</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom">
+    <span>&copy; 2026 MyRecon · myrecon.xyz</span>
+    <span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+  </div></div></footer>
+  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=6" defer></script>
+</body>
+</html>

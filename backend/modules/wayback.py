@@ -1,16 +1,16 @@
 """
-Wayback Machine history — what was there before, and what is gone now.
+Wayback Machine history, what was there before, and what is gone now.
 
 The live checks answer one question: is this account there *today*. That
 throws away two things worth knowing. An account that 404s now may have been
 public for four years before somebody deleted it, which is a stronger finding
 than the live check can produce. And a profile on a site that renders entirely
 client-side scores nothing today, because the response carries no evidence
-either way — but archive.org captured the same page when it was still
+either way, but archive.org captured the same page when it was still
 server-rendered, and that snapshot does carry evidence.
 
 **This is deliberately a single-URL, on-demand lookup, not a scan phase.**
-The CDX endpoint takes ~10s for a cold key and rate-limits aggressively —
+The CDX endpoint takes ~10s for a cold key and rate-limits aggressively,
 fanning 20 profile URLs at it returns 429s and nothing else, while adding
 twenty seconds to every scan. So the scan stays fast and the user asks for
 archive history on the one result they care about. `rate_limited` comes back
@@ -41,7 +41,7 @@ _LIMIT = 300
 def _cdx_key(url: str) -> str:
     """
     CDX wants a bare host/path. Handing it a scheme-qualified URL turns a 10s
-    lookup into a guaranteed timeout — it stops matching the index key and
+    lookup into a guaranteed timeout, it stops matching the index key and
     falls back to a scan.
     """
     parts = urlsplit(url)
