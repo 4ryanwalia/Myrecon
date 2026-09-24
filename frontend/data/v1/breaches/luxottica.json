@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -36,6 +36,38 @@
     "severity": 77,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In March 2021, the world's largest eyewear company Luxoticca suffered a data breach via one of their partners that exposed the personal information of more than 70M people. The data was subsequently sold via a popular hacking forum in late 2022 and included email and physical addresses, names, genders, dates of birth and phone numbers. In a statement from Luxottica, they advised they were aware…"
+    "summary": "In March 2021, the world's largest eyewear company Luxoticca suffered a data breach via one of their partners that exposed the personal information of more than 70M people. The data was subsequently sold via a popular hacking forum in late 2022 and included email and physical addresses, names, genders, dates of birth and phone numbers. In a statement from Luxottica, they advised they were aware…",
+    "fields": [
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "Dates of birth",
+        "why": "One of the three things call centres ask to verify identity, and it never changes."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Genders",
+        "why": "Small on its own; useful to anyone assembling a fuller profile."
+      }
+    ],
+    "actions": [
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is roughly everyone in the United Kingdom."
   }
 }

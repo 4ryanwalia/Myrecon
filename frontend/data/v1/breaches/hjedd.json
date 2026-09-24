@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -34,6 +34,29 @@
     "severity": 77,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In July 2022, the Chinese adult website Hjedd was found to be leaking more than 13M customer records which subsequently appeared on a popular hacking forum. The exposed data included email and IP addresses, usernames and passwords stored as bcrypt hashes."
+    "summary": "In July 2022, the Chinese adult website Hjedd was found to be leaking more than 13M customer records which subsequently appeared on a popular hacking forum. The exposed data included email and IP addresses, usernames and passwords stored as bcrypt hashes.",
+    "fields": [
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "IP addresses",
+        "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Usernames",
+        "why": "A handle links this account to every other place the same handle is used."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 49% of the population of Australia."
   }
 }

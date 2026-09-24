@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -37,6 +37,43 @@
     "severity": 74,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In February 2023, data alleged to have been taken from the fraud protection service Eye4Fraud was listed for sale on a popular hacking forum. Spanning tens of millions of rows with 16M unique email addresses, the data was spread across 147 tables totalling 65GB and included both direct users of the service and what appears to be individuals who'd placed orders on other services that implemented…"
+    "summary": "In February 2023, data alleged to have been taken from the fraud protection service Eye4Fraud was listed for sale on a popular hacking forum. Spanning tens of millions of rows with 16M unique email addresses, the data was spread across 147 tables totalling 65GB and included both direct users of the service and what appears to be individuals who'd placed orders on other services that implemented…",
+    "fields": [
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "Partial credit card data",
+        "why": "Not enough to spend, but enough to convince a victim that a caller is genuinely from their bank."
+      },
+      {
+        "name": "IP addresses",
+        "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 59% of the population of Australia."
   }
 }

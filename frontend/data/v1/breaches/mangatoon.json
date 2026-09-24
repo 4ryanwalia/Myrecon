@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -38,6 +38,46 @@
     "severity": 75,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In May 2022, the Hong Kong based Manga service Mangatoon suffered a data breach that exposed 23M subscriber records. The breach exposed names, email addresses, genders, social media account identities, auth tokens from social logins and passwords stored as salted MD5 hashes. Mangatoon did not respond to multiple attempts to make contact regarding the breach."
+    "summary": "In May 2022, the Hong Kong based Manga service Mangatoon suffered a data breach that exposed 23M subscriber records. The breach exposed names, email addresses, genders, social media account identities, auth tokens from social logins and passwords stored as salted MD5 hashes. Mangatoon did not respond to multiple attempts to make contact regarding the breach.",
+    "fields": [
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "Auth tokens",
+        "why": "A stolen session token can be used without ever knowing the password, and password changes do not always invalidate it."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Usernames",
+        "why": "A handle links this account to every other place the same handle is used."
+      },
+      {
+        "name": "Avatars",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Social media profiles",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Genders",
+        "why": "Small on its own; useful to anyone assembling a fuller profile."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Sign out of all sessions in the account's security settings. Changing a password does not always kill an existing session.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 85% of the population of Australia."
   }
 }

@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -37,6 +37,41 @@
     "severity": 79,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data. The exposed data included an index indicating it was sourced from data enrichment company People Data Labs (PDL) and contained 622 million unique email addresses. The server was not owned by PDL and it's believed a customer failed to…"
+    "summary": "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data. The exposed data included an index indicating it was sourced from data enrichment company People Data Labs (PDL) and contained 622 million unique email addresses. The server was not owned by PDL and it's believed a customer failed to…",
+    "fields": [
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "Geographic locations",
+        "why": "Where the account was used, which narrows a person down further than most people expect."
+      },
+      {
+        "name": "Employers",
+        "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Job titles",
+        "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
+      },
+      {
+        "name": "Social media profiles",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      }
+    ],
+    "actions": [
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 1.8× the population of the United States."
   }
 }

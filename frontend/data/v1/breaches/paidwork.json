@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -44,6 +44,72 @@
     "severity": 75,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In March 2026, hackers claimed they had obtained data from the gig economy platform Paidwork which they then listed for sale. Almost 11GB of data allegedly obtained from the platform was subsequently posted publicly in July and contained over 23M unique email addresses. The breach also included a broad range of other data relating to the operation of the platform including user profile data…"
+    "summary": "In March 2026, hackers claimed they had obtained data from the gig economy platform Paidwork which they then listed for sale. Almost 11GB of data allegedly obtained from the platform was subsequently posted publicly in July and contained over 23M unique email addresses. The breach also included a broad range of other data relating to the operation of the platform including user profile data…",
+    "fields": [
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "Bank account numbers",
+        "why": "Enables direct-debit fraud and gives a caller the detail needed to sound like the bank."
+      },
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "Dates of birth",
+        "why": "One of the three things call centres ask to verify identity, and it never changes."
+      },
+      {
+        "name": "IP addresses",
+        "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Device information",
+        "why": "Fingerprints a device across services and helps an attacker imitate a trusted login."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Education levels",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Financial transactions",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Personal interests",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Profile photos",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Genders",
+        "why": "Small on its own; useful to anyone assembling a fuller profile."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Check statements for the months after the breach date and ask your bank for a replacement card if the number was full.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 86% of the population of Australia."
   }
 }

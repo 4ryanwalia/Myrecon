@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -37,6 +37,40 @@
     "severity": 64,
     "band": "Severe",
     "data_provider": null,
-    "summary": "During the first half of 2021, LinkedIn was targeted by attackers who scraped data from hundreds of millions of public profiles and later sold them online. Whilst the scraping did not constitute a data breach nor did it access any personal data not intended to be publicly accessible, the data was still monetised and later broadly circulated in hacking circles. The scraped data contains…"
+    "summary": "During the first half of 2021, LinkedIn was targeted by attackers who scraped data from hundreds of millions of public profiles and later sold them online. Whilst the scraping did not constitute a data breach nor did it access any personal data not intended to be publicly accessible, the data was still monetised and later broadly circulated in hacking circles. The scraped data contains…",
+    "fields": [
+      {
+        "name": "Geographic locations",
+        "why": "Where the account was used, which narrows a person down further than most people expect."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Job titles",
+        "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
+      },
+      {
+        "name": "Education levels",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Social media profiles",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Genders",
+        "why": "Small on its own; useful to anyone assembling a fuller profile."
+      }
+    ],
+    "actions": [
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is roughly everyone in Japan."
   }
 }

@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -35,6 +35,33 @@
     "severity": 80,
     "band": "Critical",
     "data_provider": null,
-    "summary": "In April 2020, Indonesia's largest online store Tokopedia suffered a data breach. The incident resulted in 15M rows of data being posted to a popular hacking forum. An additional 76M rows were later provided to HIBP in July 2020. In total, the data included over 71M unique email addresses alongside names, genders, birth dates and passwords stored as SHA2-384 hashes."
+    "summary": "In April 2020, Indonesia's largest online store Tokopedia suffered a data breach. The incident resulted in 15M rows of data being posted to a popular hacking forum. An additional 76M rows were later provided to HIBP in July 2020. In total, the data included over 71M unique email addresses alongside names, genders, birth dates and passwords stored as SHA2-384 hashes.",
+    "fields": [
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "Dates of birth",
+        "why": "One of the three things call centres ask to verify identity, and it never changes."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Genders",
+        "why": "Small on its own; useful to anyone assembling a fuller profile."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is roughly everyone in the United Kingdom."
   }
 }

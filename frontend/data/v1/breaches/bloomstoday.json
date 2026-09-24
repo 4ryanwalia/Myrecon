@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -35,6 +35,34 @@
     "severity": 64,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In April 2024, 15M records from the online florist Blooms Today were listed for sale on a popular hacking forum. The most recent data in the breach corpus was from November 2023 and appeared alongside 3.2M unique email addresses, names, phone numbers physical addresses and partial credit card data (card type, 4 digits of the number and expiry date). The breach did not expose sufficient card data…"
+    "summary": "In April 2024, 15M records from the online florist Blooms Today were listed for sale on a popular hacking forum. The most recent data in the breach corpus was from November 2023 and appeared alongside 3.2M unique email addresses, names, phone numbers physical addresses and partial credit card data (card type, 4 digits of the number and expiry date). The breach did not expose sufficient card data…",
+    "fields": [
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "Partial credit card data",
+        "why": "Not enough to spend, but enough to convince a victim that a caller is genuinely from their bank."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      }
+    ],
+    "actions": [
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 12% of the population of Australia."
   }
 }

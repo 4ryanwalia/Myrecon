@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -39,6 +39,51 @@
     "severity": 69,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In December 2023, hundreds of gigabytes of data allegedly taken from Indian ISP and digital TV provider Hathway appeared on a popular hacking website. The incident exposed extensive personal information including 4.7M unique email addresses along with names, physical and IP addresses, phone numbers, password hashes and support ticket logs."
+    "summary": "In December 2023, hundreds of gigabytes of data allegedly taken from Indian ISP and digital TV provider Hathway appeared on a popular hacking website. The incident exposed extensive personal information including 4.7M unique email addresses along with names, physical and IP addresses, phone numbers, password hashes and support ticket logs.",
+    "fields": [
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "IP addresses",
+        "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Device information",
+        "why": "Fingerprints a device across services and helps an attacker imitate a trusted login."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Salutations",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Support tickets",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 17% of the population of Australia."
   }
 }

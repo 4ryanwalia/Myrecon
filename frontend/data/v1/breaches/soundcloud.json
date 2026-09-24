@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -36,6 +36,36 @@
     "severity": 58,
     "band": "Serious",
     "data_provider": null,
-    "summary": "In December 2025, SoundCloud announced it had discovered unauthorised activity on its platform. The incident allowed an attacker to map publicly available SoundCloud profile data to email addresses for approximately 20% of its users. The impacted data included 30M unique email addresses, names, usernames, avatars, follower and following counts and, in some cases, the user’s country. The attackers…"
+    "summary": "In December 2025, SoundCloud announced it had discovered unauthorised activity on its platform. The incident allowed an attacker to map publicly available SoundCloud profile data to email addresses for approximately 20% of its users. The impacted data included 30M unique email addresses, names, usernames, avatars, follower and following counts and, in some cases, the user’s country. The attackers…",
+    "fields": [
+      {
+        "name": "Geographic locations",
+        "why": "Where the account was used, which narrows a person down further than most people expect."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Usernames",
+        "why": "A handle links this account to every other place the same handle is used."
+      },
+      {
+        "name": "Avatars",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Profile statistics",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      }
+    ],
+    "actions": [
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is roughly everyone in Australia."
   }
 }

@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -40,6 +40,54 @@
     "severity": 74,
     "band": "Severe",
     "data_provider": "Hiron",
-    "summary": "In September 2025, Prosper announced that it had detected unauthorised access to their systems, which resulted in the exposure of customer and applicant information. The data breach impacted 17.6M unique email addresses, along with other customer information, including US Social Security numbers. Prosper advised that they did not find any evidence of unauthorised access to customer accounts and…"
+    "summary": "In September 2025, Prosper announced that it had detected unauthorised access to their systems, which resulted in the exposure of customer and applicant information. The data breach impacted 17.6M unique email addresses, along with other customer information, including US Social Security numbers. Prosper advised that they did not find any evidence of unauthorised access to customer accounts and…",
+    "fields": [
+      {
+        "name": "Government issued IDs",
+        "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+      },
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Dates of birth",
+        "why": "One of the three things call centres ask to verify identity, and it never changes."
+      },
+      {
+        "name": "IP addresses",
+        "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Browser user agent details",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Credit status information",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Employment statuses",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Income levels",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      }
+    ],
+    "actions": [
+      "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 65% of the population of Australia."
   }
 }

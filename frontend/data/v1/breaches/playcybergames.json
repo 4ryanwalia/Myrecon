@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-09-20",
+  "generated": "2026-09-24",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -33,6 +33,25 @@
     "severity": 65,
     "band": "Severe",
     "data_provider": null,
-    "summary": "In August 2023, PlayCyberGames which \"allows users to play any games with LAN function or games using IP address\" suffered a data breach which exposed 3.7M customer records. The data included email addresses, usernames and MD5 password hashes with a constant value in the \"salt\" field. PlayCyberGames did not respond to multiple attempts to disclose the breach."
+    "summary": "In August 2023, PlayCyberGames which \"allows users to play any games with LAN function or games using IP address\" suffered a data breach which exposed 3.7M customer records. The data included email addresses, usernames and MD5 password hashes with a constant value in the \"salt\" field. PlayCyberGames did not respond to multiple attempts to disclose the breach.",
+    "fields": [
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Usernames",
+        "why": "A handle links this account to every other place the same handle is used."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is about 14% of the population of Australia."
   }
 }
