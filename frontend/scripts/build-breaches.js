@@ -42,6 +42,15 @@ const SITE = "https://www.myrecon.xyz";
 const SOURCE = "https://haveibeenpwned.com/api/v3/breaches";
 const LICENCE = "https://creativecommons.org/licenses/by/4.0/";
 
+// The Play custom store listing that leads with breach alerts rather than
+// WHOIS. Until that listing exists Play ignores an unknown `listing` key and
+// shows the main one, so this link is safe to ship first. The referrer holds
+// UTM tags for Play Console's acquisition report; the app reads only
+// `invite_code` from it, so they can never count as an invite.
+const PLAY_ALERTS =
+  "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts" +
+  "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dbreach_page%26utm_campaign%3Dbreach_alerts";
+
 /** How far back the archive reaches. */
 const YEARS = 7;
 
@@ -679,6 +688,17 @@ ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
         <h3>How many people were affected?</h3>
         <p>${num(b.PwnCount)} accounts.${scale ? " " + esc(scale) : ""} That is accounts rather than people — one person often has several.</p>
       </div>
+
+      <!-- After the questions, once the reader is done with this breach. The
+           one thing a page about a past breach cannot do is tell them about
+           the next one. The note keeps the app's two alerts apart, as the app
+           does: only the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+      </aside>
 
 ${guideLinks(b).length ? `      <h2>Read next</h2>
       <ul class="bx-related">
