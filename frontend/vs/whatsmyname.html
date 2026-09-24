@@ -30,7 +30,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=12">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=7">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "MyRecon vs WhatsMyName", "description": "WhatsMyName is a community dataset of 700+ sites built to reduce false positives. How its detection compares with MyRecon's scoring, and what each does beyond usernames.", "url": "https://www.myrecon.xyz/vs/whatsmyname.html", "dateModified": "2026-09-25", "datePublished": "2026-09-25", "isPartOf": {"@id": "https://www.myrecon.xyz/#website"}, "publisher": {"@id": "https://www.myrecon.xyz/#organization"}, "mainEntityOfPage": "https://www.myrecon.xyz/vs/whatsmyname.html", "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MyRecon", "item": "https://www.myrecon.xyz/"}, {"@type": "ListItem", "position": 2, "name": "Comparisons", "item": "https://www.myrecon.xyz/vs/"}, {"@type": "ListItem", "position": 3, "name": "MyRecon vs WhatsMyName", "item": "https://www.myrecon.xyz/vs/whatsmyname.html"}]}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does MyRecon use the WhatsMyName dataset?", "acceptedAnswer": {"@type": "Answer", "text": "No. MyRecon's platform list and scoring are maintained separately. WhatsMyName's data is licensed CC BY-SA 4.0, and any tool that does use it is required to credit it."}}, {"@type": "Question", "name": "Why do two username checkers give different results for the same handle?", "acceptedAnswer": {"@type": "Answer", "text": "They check different sites, decide existence with different rules, and send requests from different networks, some of which a platform may block. A result both tools agree on is much more likely to be real."}}, {"@type": "Question", "name": "Which is better for checking my own footprint?", "acceptedAnswer": {"@type": "Answer", "text": "Either works for usernames. MyRecon also checks your email against breach data and your passwords with k-anonymity, which covers the other half of a personal footprint review."}}]}]}</script>
@@ -69,7 +69,7 @@
       <thead><tr><th scope="col">Feature</th><th scope="col">MyRecon</th><th scope="col">WhatsMyName</th></tr></thead>
       <tbody>
         <tr><th scope="row">What it is</th><td>A multi-lookup OSINT tool</td><td>A community dataset, plus the whatsmyname.app front end</td></tr>
-        <tr><th scope="row">Sites</th><td>123 on the web, 560 in the Android app</td><td>700+, per its README</td></tr>
+        <tr><th scope="row">Sites</th><td>100+ on the web, 560 in the Android app</td><td>700+, per its README</td></tr>
         <tr><th scope="row">How a hit is decided</th><td>Scored evidence: status, content, metadata, redirects</td><td>Per-site rules: expected code and string for found, and for missing</td></tr>
         <tr><th scope="row">Confidence label per match</th><td class="vs-yes">Yes, high / medium / low</td><td class="vs-no">No, a rule matches or it does not</td></tr>
         <tr><th scope="row">Shows what it rejected, and why</th><td class="vs-yes">Yes</td><td class="vs-no">No</td></tr>
@@ -88,7 +88,7 @@
 
     <h2>Where WhatsMyName beats MyRecon</h2>
     <ul>
-      <li><strong>Coverage.</strong> 700+ sites to our 123 on the web.</li>
+      <li><strong>Coverage.</strong> 700+ sites to our 100+ on the web.</li>
       <li><strong>A shared, open dataset.</strong> It improves every tool that consumes it. Our platform list serves our own tools.</li>
       <li><strong>Transparent per-site rules.</strong> You can read exactly why a site reported a hit. That is excellent for training and for auditing a result in a report.</li>
       <li><strong>Category filtering.</strong> Useful when you only care about, say, gaming or developer platforms.</li>
@@ -131,6 +131,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=14"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=6" defer></script>
+  <script src="/assets/js/fx.js?v=7" defer></script>
 </body>
 </html>

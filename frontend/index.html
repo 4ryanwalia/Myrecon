@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OSINT Tool for Username, Email & Breach Lookup | MyRecon</title>
-  <meta name="description" content="Search a username across 123 platforms, check an email or password against breach data, and investigate domains, DNS and IP addresses. Free, no account.">
+  <meta name="description" content="Search a username across 100+ platforms, check an email or password against breach data, and investigate domains, DNS and IP addresses. Free, no account.">
   <meta name="keywords" content="OSINT, username search, email intelligence, breach detection, password exposure check, pwned password, WHOIS lookup, DNS records, IP geolocation, reverse DNS, digital footprint">
   <meta name="author" content="MyRecon">
   <meta name="robots" content="index, follow">
@@ -50,7 +50,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=12">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=6">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=7">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -114,14 +114,14 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <span class="eyebrow"><span class="dot"></span> Live public-source intelligence</span>
-          <h1>Investigate any <span class="hero-word" id="heroWord">digital footprint</span><br><span class="fx-grad fx-glitch" data-text="with MyRecon">with MyRecon</span></h1>
+          <h1>Investigate any <span class="hero-word" id="heroWord">digital footprint</span><br><span class="fx-grad">with MyRecon</span></h1>
           <p class="lead">Check a username, email, password, domain, DNS record or IP address against public sources. Free, no account.</p>
           <!-- The tool lives in the hero so it is the first thing a visitor sees.
                IDs are unchanged; app.js finds everything by id. -->
           <div class="tool hero-tool" id="tool" aria-label="OSINT tools">
             <div class="tool-tabs" id="toolTabs" role="tablist" aria-label="Choose a lookup"></div>
             <div class="panel" role="tabpanel" id="toolPanel" tabindex="0">
-              <div class="panel-title"><span class="pt-dot"></span>Run a lookup<span class="pt-status" aria-hidden="true"></span></div>
+              <div class="panel-title">Run a lookup<span class="pt-status" aria-hidden="true"></span></div>
               <div class="panel-sub" id="panelSub"></div>
               <div class="field-row">
                 <div class="input-wrap">
@@ -146,7 +146,6 @@
           </div>
         </div>
         <div class="orbit" id="fxOrbit" role="img" aria-label="Illustration: a radar sweeping social platforms such as Instagram, Snapchat, X, TikTok, YouTube, Reddit and GitHub for one username.">
-          <div class="orbit-glow"></div>
           <div class="orbit-sweep"></div>
           <div class="orbit-ring r1"><div class="orbit-rot">
             <span class="spoke" style="--a:15deg;--c:#E4405F"></span><span class="node" style="--a:15deg;--c:#E4405F" data-name="Instagram"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#instagram"/></svg><b class="tag">FOUND</b></span></span>
@@ -176,8 +175,8 @@
       <div class="container">
         <div class="fx-marquee" aria-label="Data sources">
           <div class="fx-marquee-track">
-            <span class="chip">RDAP</span><span class="chip">DNS-over-HTTPS</span><span class="chip">LeakCheck</span><span class="chip">XposedOrNot</span><span class="chip">Pwned Passwords</span><span class="chip">Wayback Machine</span><span class="chip">Gravatar</span><span class="chip">SPF · DMARC</span><span class="chip">Reverse DNS</span><span class="chip">ASN ownership</span><span class="chip">123 platforms</span><span class="chip">No server-side storage</span>
-            <span class="chip" aria-hidden="true">RDAP</span><span class="chip" aria-hidden="true">DNS-over-HTTPS</span><span class="chip" aria-hidden="true">LeakCheck</span><span class="chip" aria-hidden="true">XposedOrNot</span><span class="chip" aria-hidden="true">Pwned Passwords</span><span class="chip" aria-hidden="true">Wayback Machine</span><span class="chip" aria-hidden="true">Gravatar</span><span class="chip" aria-hidden="true">SPF · DMARC</span><span class="chip" aria-hidden="true">Reverse DNS</span><span class="chip" aria-hidden="true">ASN ownership</span><span class="chip" aria-hidden="true">123 platforms</span><span class="chip" aria-hidden="true">No server-side storage</span>
+            <span class="chip">RDAP</span><span class="chip">DNS-over-HTTPS</span><span class="chip">LeakCheck</span><span class="chip">XposedOrNot</span><span class="chip">Pwned Passwords</span><span class="chip">Wayback Machine</span><span class="chip">Gravatar</span><span class="chip">SPF · DMARC</span><span class="chip">Reverse DNS</span><span class="chip">ASN ownership</span><span class="chip">100+ platforms</span><span class="chip">No server-side storage</span>
+            <span class="chip" aria-hidden="true">RDAP</span><span class="chip" aria-hidden="true">DNS-over-HTTPS</span><span class="chip" aria-hidden="true">LeakCheck</span><span class="chip" aria-hidden="true">XposedOrNot</span><span class="chip" aria-hidden="true">Pwned Passwords</span><span class="chip" aria-hidden="true">Wayback Machine</span><span class="chip" aria-hidden="true">Gravatar</span><span class="chip" aria-hidden="true">SPF · DMARC</span><span class="chip" aria-hidden="true">Reverse DNS</span><span class="chip" aria-hidden="true">ASN ownership</span><span class="chip" aria-hidden="true">100+ platforms</span><span class="chip" aria-hidden="true">No server-side storage</span>
           </div>
         </div>
       </div>
@@ -194,7 +193,7 @@
     <section class="section" id="numbers" style="padding-top:34px">
       <div class="container">
         <div class="fx-stats">
-          <div class="fx-stat fx-card"><div class="n" data-count="123">123</div><div class="l">platforms checked per web username search</div><div class="bar"><span style="--fill:.22"></span></div></div>
+          <div class="fx-stat fx-card"><div class="n" data-count="100" data-suffix="+">100+</div><div class="l">platforms checked per web username search</div><div class="bar"><span style="--fill:.22"></span></div></div>
           <div class="fx-stat fx-card"><div class="n" data-count="560">560</div><div class="l">platforms swept from your phone by the Android app</div><div class="bar"><span></span></div></div>
           <div class="fx-stat fx-card"><div class="n" data-count="900" data-suffix="M+">900M+</div><div class="l">breached passwords, checked without the password leaving your browser</div><div class="bar"><span style="--fill:.9"></span></div></div>
           <div class="fx-stat fx-card"><div class="n" data-count="0">0</div><div class="l">accounts, cards or stored searches needed</div><div class="bar"><span style="--fill:.02"></span></div></div>
@@ -401,8 +400,8 @@
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/email-outcome.js?v=1"></script>
-  <script src="/assets/js/app.js?v=14"></script>
+  <script src="/assets/js/app.js?v=15"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=6" defer></script>
+  <script src="/assets/js/fx.js?v=7" defer></script>
 </body>
 </html>

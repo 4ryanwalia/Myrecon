@@ -335,7 +335,7 @@
     </div>`;
   }
 
-  function profileCard(r) {
+  function profileCard(r, live = false) {
     const platform = r.platform || r.source || hostOf(r.url) || "Result";
     const cat = r.category || "mention";
     const fallback = (platform[0] || "?").toUpperCase();
@@ -353,7 +353,9 @@
     const href = r.url && /^https?:\/\//.test(r.url) ? r.url : null;
     // On demand, never during the scan: archive.org needs ~10s per cold key
     // and throttles under fan-out. A span, not a button, the card is an <a>.
-    if (href) meta += `<span class="meta-tag wb" data-wayback="${esc(href)}"
+    // Left off live cards: its handler is bound only when the final result
+    // renders, so on a live card a click would just open the profile.
+    if (href && !live) meta += `<span class="meta-tag wb" data-wayback="${esc(href)}"
       role="button" tabindex="0" title="Look up archive.org history">archive history</span>`;
     const inner = `
       <div class="card-head">
@@ -1080,7 +1082,11 @@
   }
 
   // ---- Username: live streaming scan with progress -----------------
+  // Platforms already drawn as live cards during this sweep.
+  let liveSeen = new Set();
+
   function setScanning() {
+    liveSeen = new Set();
     resultsEl().innerHTML = `
       <div class="loading scan" role="status" aria-live="polite">
         <div class="scan-head">
@@ -1092,7 +1098,24 @@
           <div class="scan-pct" id="scanPct">0%</div>
         </div>
         <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
+      </div>
+      <div class="live-found" id="liveFound" hidden>
+        <div class="section-label">Found so far: <span id="liveCount">0</span></div>
+        <div class="card-grid" id="liveGrid"></div>
       </div>`;
+  }
+
+  // A hit from the stream, drawn the moment its platform answers. These are
+  // a preview: the "complete" event re-renders the whole result, enriched,
+  // and replaces them, so nothing here is saved, exported or shared.
+  function addLiveCard(r) {
+    if (!r || !r.platform || liveSeen.has(r.platform)) return;
+    liveSeen.add(r.platform);
+    const wrap = $("#liveFound"), grid = $("#liveGrid"), n = $("#liveCount");
+    if (!wrap || !grid) return;
+    wrap.hidden = false;
+    grid.insertAdjacentHTML("beforeend", profileCard(r, true));
+    if (n) n.textContent = String(liveSeen.size);
   }
 
   function updateScanUI(ev) {
@@ -1132,6 +1155,7 @@
       if (!line) return;
       let ev; try { ev = JSON.parse(line); } catch { return; }
       if (ev.type === "progress") updateScanUI(ev);
+      else if (ev.type === "found") addLiveCard(ev.result);
       else if (ev.type === "complete") finalData = ev.data;
       else if (ev.type === "error") throw new Error(ev.error || "Scan failed");
     };

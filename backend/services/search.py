@@ -247,6 +247,17 @@ def _bucket(results: list[dict]) -> tuple:
     return profiles, documents, mentions
 
 
+# Only what a live card shows. Status codes, match scores and anything
+# binary stay out of the stream.
+_LIVE_FIELDS = ("platform", "url", "confidence", "display_name", "bio", "profile_pic_url")
+
+
+def _live_view(result: dict, username: str) -> dict:
+    view = {k: result[k] for k in _LIVE_FIELDS if result.get(k)}
+    view["category"] = categorise_result(dict(result), username)
+    return view
+
+
 def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     """Core username pipeline. `emit(event)` receives progress events."""
     all_results: list[dict] = []
@@ -260,6 +271,12 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
             "type": "progress", "phase": "Checking platforms",
             "percent": max(2, int(progress * 0.68)), "detail": message,
         })
+        # Each hit goes out the moment its platform answers, so the page can
+        # draw the card during the sweep instead of after enrichment. The
+        # final "complete" event still carries the full, enriched result and
+        # replaces these; this is a preview, not a second source of truth.
+        for r in results or []:
+            emit({"type": "found", "result": _live_view(r, username)})
 
     rejected: list[dict] = []
     try:

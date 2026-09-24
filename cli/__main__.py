@@ -294,7 +294,7 @@ def _build_parser() -> argparse.ArgumentParser:
         return subs.add_parser(name, parents=[common], help=help_text,
                                description=help_text)
 
-    p = add("username", "Sweep 123 platforms for a handle, then enrich and correlate.")
+    p = add("username", "Sweep 100+ platforms for a handle, then enrich and correlate.")
     p.add_argument("username")
     p.add_argument("--deep", action="store_true", help="wider sweep, slower")
     p.add_argument("--all", action="store_true", help="show every row, including rejections")
