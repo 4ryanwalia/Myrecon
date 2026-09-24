@@ -17,9 +17,12 @@ render client-side give no evidence either way and silence there reads as
 import re
 import time
 import html as _html
-import requests
-from urllib.parse import urlparse, urlsplit, urlunsplit
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib.parse import urlparse, urlsplit, urlunsplit
+
+import requests
+
+from core.netguard import BlockedRequest, safe_get
 
 # ──────────────────────────────────────────────────────────────
 #  Platform database:  (name, url_template, expected_status)
@@ -484,8 +487,14 @@ def verify_profile_url(url: str, username: str, timeout: int = 8) -> dict:
         # shell, the mobile one carries the OG tags the score is built from.
         headers = {**_VERIFY_HEADERS, "User-Agent": MOBILE_UA}
     try:
-        resp = requests.get(_fetchable(url), headers=headers, timeout=timeout,
-                            allow_redirects=True)
+        # `url` here is a search-engine result, not a link we built, so it is
+        # fetched through the guard rather than handed straight to requests —
+        # an indexed URL resolving to an internal address is still an internal
+        # address. Redirects are followed inside safe_get, a hop at a time.
+        resp = safe_get(_fetchable(url), headers=headers, timeout=timeout)
+    except BlockedRequest:
+        out["status_code"] = -4
+        return out
     except requests.exceptions.Timeout:
         out["status_code"] = -1
         return out

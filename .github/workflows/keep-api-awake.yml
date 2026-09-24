@@ -1,0 +1,92 @@
+# Keeps the Render backend from spinning down.
+#
+# Render's free tier suspends a web service after 15 minutes with no inbound
+# request, and the next visitor then pays a 30-60 second cold start before the
+# first lookup returns. That wait is long enough that people assume the tool is
+# broken and leave, so the service is kept warm instead.
+#
+# /api/health is the target on purpose: it is the one route exempted from rate
+# limiting in backend/app.py, so a ping every few minutes can never eat into a
+# real caller's budget, and it does no work beyond reporting config.
+#
+# WHAT THIS DOES NOT GUARANTEE
+# GitHub runs scheduled workflows on a best-effort queue. Runs are routinely
+# late by several minutes and are dropped outright when the platform is busy,
+# so a 10-minute cron does NOT guarantee a ping inside every 15-minute window.
+# It keeps the service warm the large majority of the time, which is the
+# realistic ceiling for a free, in-repo solution. For a hard guarantee, point
+# an external uptime monitor at the same URL on a 5-minute interval and treat
+# this workflow as the backup.
+#
+# GitHub also disables scheduled workflows in a repository that has gone 60
+# days without a commit. This repo is active, but if it ever goes quiet, the
+# pings stop silently and the first warning is a slow site.
+#
+# ONLY ONE SERVICE IS PINGED, DELIBERATELY
+# Render's free plan bills a shared pool of 750 instance-hours per month per
+# account. A calendar month is ~730 hours, so exactly one service can stay
+# awake around the clock and still fit. Adding a second URL here would put the
+# account over the cap and get both suspended until the cycle resets.
+
+name: Keep API Awake
+
+on:
+  schedule:
+    # Every 10 minutes, leaving 5 minutes of slack against Render's 15-minute
+    # idle timeout for the queue delay described above.
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-api-awake
+  # A ping that is still queued when the next one starts has been overtaken by
+  # it; the newer one keeps the service just as warm.
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Ping the health endpoint
+        env:
+          # Set the repository variable API_BASE_URL to move this off the
+          # default without editing the workflow. The default is the value
+          # already published in the site's CSP connect-src, so it is not a
+          # secret — but keeping it a variable means the URL is changed in one
+          # place when the service moves.
+          API_BASE: ${{ vars.API_BASE_URL || 'https://myrecon.onrender.com' }}
+        run: |
+          set -uo pipefail
+
+          url="${API_BASE%/}/api/health"
+          echo "Pinging $url"
+
+          # Three attempts, because the FIRST request after a spin-down is the
+          # one that pays the cold start and can exceed a short timeout or be
+          # dropped by the proxy while the container boots. Failing on that
+          # would report the service as down at the exact moment this workflow
+          # is doing its job.
+          for attempt in 1 2 3; do
+            code=$(curl -sS -o /tmp/health.json -w '%{http_code}' \
+                        --max-time 90 "$url" 2>/tmp/curl.err || echo "000")
+
+            if [ "$code" = "200" ]; then
+              echo "Attempt $attempt: HTTP 200"
+              head -c 400 /tmp/health.json; echo
+              exit 0
+            fi
+
+            echo "Attempt $attempt: HTTP $code"
+            [ -s /tmp/curl.err ] && sed 's/^/  curl: /' /tmp/curl.err
+            [ "$attempt" -lt 3 ] && sleep 20
+          done
+
+          # All three failed, so this is a real outage rather than a cold
+          # start. Failing the job is what turns this into a free uptime
+          # alert — GitHub emails on the transition from passing to failing.
+          echo "::error::$url did not return 200 after 3 attempts."
+          exit 1

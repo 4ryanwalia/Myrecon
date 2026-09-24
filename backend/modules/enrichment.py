@@ -6,12 +6,15 @@
 ╚══════════════════════════════════════════════════════════════╝
 """
 
-import re
-import requests
-import time
-import hashlib
 import html
+import hashlib
+import re
+import time
 from typing import Optional
+
+import requests
+
+from core.netguard import safe_get
 
 HEADERS = {
     "User-Agent": (
@@ -41,7 +44,14 @@ TIMEOUT = 8
 # ──────────────────────────────────────────────────────────────
 
 def _download_image(url: str, timeout: int = 6) -> bytes:
-    """Download an image and return raw bytes."""
+    """
+    Download an image and return raw bytes.
+
+    The URL here comes out of a third party's API response, not from us, so it
+    goes through `safe_get`: an image link pointing at 169.254.169.254 or at
+    localhost is a request to read this instance's own metadata, and following
+    it blind is how that gets handed out. See core/netguard.py.
+    """
     if not url or not url.startswith("http"):
         return b""
     try:
@@ -49,8 +59,8 @@ def _download_image(url: str, timeout: int = 6) -> bytes:
         # The frontend will render the image directly using referrerpolicy="no-referrer".
         if "cdninstagram" in url or "scontent" in url:
             return b""
-            
-        resp = requests.get(url, headers=HEADERS, timeout=timeout, stream=True)
+
+        resp = safe_get(url, headers=HEADERS, timeout=timeout, stream=True)
         if resp.status_code == 200 and len(resp.content) < 5_000_000:
             return resp.content
     except Exception:
