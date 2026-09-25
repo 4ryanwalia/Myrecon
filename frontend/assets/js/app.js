@@ -1786,6 +1786,11 @@
     initHeroRotate();
     buildTabs();
     if ($("#tool")) {
+      // Wake the API as soon as the tool is on screen. Render's free tier sleeps
+      // after 15 idle minutes and takes ~50 s to boot, so starting that boot
+      // while the visitor is still typing hides most or all of it. /api/health
+      // is exempt from rate limiting and does no work.
+      fetch(CFG.apiBase + "/api/health", { cache: "no-store" }).catch(() => {});
       switchTool("username");
       renderHistory();
       renderSaved();
