@@ -13,10 +13,17 @@ of sources that are documented, stable, and accurate:
   • XposedOrNot breach analytics  (free, documented, per-breach detail)
   • Have I Been Pwned             (official API, when a key is configured)
   • GitHub commit-email search    (official API)
+  • keys.openpgp.org              (lists an address only once its owner
+                                   has confirmed it by email)
+
+"Linked services" is built only from those: named breaches the address
+appears in, plus the public profiles above. Sign-up and password-reset
+forms are deliberately not probed; see _linked_services.
 """
 
 import hashlib
 import os
+import re
 from typing import Optional
 
 import requests
@@ -128,6 +135,108 @@ def _flatten_categories(tree: dict) -> list:
                 "count": _int(leaf.get("value")),
             })
     return sorted(out, key=lambda x: x["count"], reverse=True)
+
+
+# Breach names that are compilations, not a company's own user table: combo
+# lists, stealer logs, paste scrapes, spam-bot and verification dumps. Being in
+# one says nothing about which sites the address was registered on, so they
+# are counted but never listed as a linked service.
+_COMPILATION = re.compile(
+    r"collection|combo|compil|stealer|\blogs?$|anti.?public|exploit\.?in|pemiblanc|"
+    r"spambot|river.?city|verifications?\.?io|paste|unknown|^private|cit0day|"
+    r"naz\.?api|synthient|telegram|breach.?(db|base)|leak.?(db|base)|aggregat",
+    re.I,
+)
+
+
+def _service_key(name: str) -> str:
+    """"LinkedIn" and "linkedin.com" -> one key."""
+    key = str(name or "").strip().lower()
+    key = re.sub(r"\.(com|net|org|io|co|me|ru|de|fr|uk|in)$", "", key)
+    return re.sub(r"[^a-z0-9]", "", key)
+
+
+def _domain_of(name: str) -> str:
+    name = str(name or "").strip().lower()
+    return name if re.fullmatch(r"[a-z0-9-]+(\.[a-z0-9-]+)+", name) else ""
+
+
+def _linked_services(gravatar: dict, github, pgp: dict, breaches: dict,
+                     darkweb: dict, fallback: dict) -> dict:
+    """
+    Every service this address is tied to by evidence, one row each.
+
+    Two kinds of evidence, and the row says which:
+      breach   the address is in that company's own leaked user data, so it
+               was registered there at the time (it may have been closed since)
+      profile  a public source answered for this exact address right now
+
+    Deliberately NOT here: probing sign-up or password-reset forms ("is this
+    email taken?") on Spotify, Apple and the like. That is how tools such as
+    holehe work; it breaks those sites' terms, is unreliable from a
+    datacentre, and some forms email the address's owner. A site missing from
+    this list therefore means "no evidence", never "no account".
+    """
+    rows: dict = {}
+    compilations = set()
+
+    def add(name, kind, evidence, url="", domain="", date=""):
+        key = _service_key(name)
+        if not key:
+            return
+        row = rows.get(key)
+        if row is None:
+            rows[key] = {"service": str(name).strip(), "kind": kind, "evidence": evidence,
+                         "url": url, "domain": domain, "date": date}
+            return
+        # Keep the strongest piece of evidence; fill blanks from the others.
+        if row["kind"] == "breach" and kind == "profile":
+            row.update(kind=kind, evidence=evidence, url=url or row["url"])
+        row["url"] = row["url"] or url
+        row["domain"] = row["domain"] or domain
+        row["date"] = row["date"] or date
+
+    if gravatar.get("exists"):
+        add("Gravatar", "profile", "Public Gravatar profile for this address",
+            gravatar.get("profile_url") or "https://gravatar.com", "gravatar.com")
+        for acc in gravatar.get("accounts") or []:
+            if acc.get("name"):
+                add(acc["name"], "profile", "Listed on this address's Gravatar profile",
+                    acc.get("url", ""))
+    if github:
+        add("GitHub", "profile", "GitHub account using this email",
+            github.get("url", ""), "github.com")
+    if (pgp or {}).get("exists"):
+        add("OpenPGP key", "profile", "Published key; the owner confirmed this address",
+            "https://keys.openpgp.org", "keys.openpgp.org")
+
+    def add_breach(name, domain="", date=""):
+        if not name:
+            return
+        if _COMPILATION.search(str(name)):
+            compilations.add(_service_key(name))
+            return
+        domain = domain or _domain_of(name)
+        year = str(date or "")[:4]
+        year = year if year.isdigit() else ""
+        add(name, "breach", "In this company's leaked user data",
+            f"https://{domain}" if domain else "", domain, year)
+
+    for b in darkweb.get("breaches") or []:
+        add_breach(b.get("name"), b.get("domain", ""), b.get("date", ""))
+    for src in (breaches, fallback or {}):
+        for b in src.get("sources") or []:
+            add_breach(b.get("name"), "", b.get("date", ""))
+
+    ordered = sorted(rows.values(),
+                     key=lambda r: (r["kind"] != "profile", r["service"].lower()))
+    return {
+        "services": ordered,
+        "count": len(ordered),
+        "from_breaches": sum(r["kind"] == "breach" for r in ordered),
+        "from_profiles": sum(r["kind"] == "profile" for r in ordered),
+        "compilations_skipped": len(compilations),
+    }
 
 
 class EmailLookup:
@@ -492,6 +601,25 @@ class EmailLookup:
             pass
         return None
 
+    # ── keys.openpgp.org (verifying keyserver) ───────────────────
+    def pgp(self, email: str) -> dict:
+        """
+        keys.openpgp.org publishes an address only after its owner clicks a
+        confirmation link, so a 200 here is the owner's own doing. Older
+        SKS-style servers are not used: anyone can upload a key naming any
+        address there. 404 means no confirmed key.
+        """
+        try:
+            resp = requests.get(f"https://keys.openpgp.org/vks/v1/by-email/{email}",
+                                headers=_HEADERS, timeout=6)
+            if resp.status_code == 200 and "BEGIN PGP PUBLIC KEY" in resp.text[:200]:
+                return {"exists": True, "status": "ok"}
+            if resp.status_code == 404:
+                return {"exists": False, "status": "ok"}
+        except requests.RequestException:
+            pass
+        return {"exists": False, "status": "unavailable"}
+
     # ── Orchestration ────────────────────────────────────────────
     def scan(self, email: str) -> dict:
         analysis = self.analyze(email)
@@ -507,6 +635,8 @@ class EmailLookup:
                     else {"source": "XposedOrNot", "status": "skipped",
                           "breached": False, "count": 0, "sources": []})
         github = self.github(email)
+        pgp = self.pgp(email)
+        services = _linked_services(gravatar, github, pgp, breaches, darkweb, fallback)
 
         linked = []
         if gravatar["exists"]:
@@ -521,12 +651,15 @@ class EmailLookup:
         # record tally. LeakCheck's "found" counts leaked *rows* (often
         # thousands for one address), so using it as a breach count both
         # overstated exposure and pinned the client's score to maximum.
-        names = {s.get("name", "").strip().lower()
+        # Names go through _service_key because LeakCheck says "Canva.com"
+        # where XposedOrNot says "Canva"; compared raw, one breach counted twice.
+        names = {_service_key(s.get("name", ""))
                  for s in breaches.get("sources") or [] if s.get("name")}
-        names |= {b["name"].strip().lower() for b in darkweb["breaches"] if b.get("name")}
+        names |= {_service_key(b["name"]) for b in darkweb["breaches"] if b.get("name")}
         if fallback and fallback.get("status") == "ok":
-            names |= {s.get("name", "").strip().lower()
+            names |= {_service_key(s.get("name", ""))
                       for s in fallback.get("sources") or [] if s.get("name")}
+        names.discard("")
         # darkweb["count"] covers every breach found, including any trimmed
         # from the detail list by _MAX_BREACH_DETAILS.
         breach_count = max(len(names), darkweb["count"])
@@ -548,11 +681,14 @@ class EmailLookup:
             "analysis": analysis,
             "gravatar": gravatar,
             "github": github,
+            "pgp": pgp,
+            "linked_services": services,
             "breaches": breaches,
             "darkweb": darkweb,
             "fallback": fallback,
             "summary": {
                 "linked_accounts": sorted(set(linked)),
+                "linked_services_count": services["count"],
                 "breached": breached,
                 "breach_outcome": outcome,
                 "breach_coverage": {"completed": completed, "attempted": attempted, "sources": coverage},

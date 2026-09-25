@@ -174,6 +174,13 @@ def email_report(data: dict) -> None:
     ui.kv("records exposed", _num(summary.get("records_exposed")))
     ui.kv("linked accounts", summary.get("linked_accounts"))
 
+    services = (data.get("linked_services") or {}).get("services") or []
+    if services:
+        ui.section(f"Linked services ({len(services)})")
+        for row in services:
+            when = f' ({row["date"]})' if row.get("date") else ""
+            ui.kv(row.get("service", ""), row.get("evidence", "") + when, indent=4)
+
     if analysis:
         ui.section("Address")
         for key in ("local_part", "domain", "provider", "provider_type",

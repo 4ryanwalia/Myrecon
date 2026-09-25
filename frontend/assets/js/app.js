@@ -735,6 +735,7 @@
     // were breached needs next, and the evidence below can run to 30 cards.
     html += emailNextSteps(outcome, data);
     html += breachAlertCta(outcome);
+    html += linkedServices(data.linked_services);
 
     if (dw.exposed_data && dw.exposed_data.length) {
       const top = dw.exposed_data.slice(0, 10), max = top[0].count || 1;
@@ -798,7 +799,8 @@
       data.github ? pivotChip("username", data.github.username, data.github.username) : "",
     ]);
 
-    if (s.linked_accounts && s.linked_accounts.length) {
+    // Results cached before linked_services existed still show the old chips.
+    if (!data.linked_services && s.linked_accounts && s.linked_accounts.length) {
       html += `<div class="section-label">Linked accounts</div>`;
       html += `<div class="chips">${s.linked_accounts.map((x) => `<span class="pill">${esc(x)}</span>`).join("")}</div>`;
     }
@@ -819,6 +821,32 @@
     resultsEl().innerHTML = html;
     animateCountUps();
     linkBreachWriteups();
+  }
+
+  // Services this address is tied to, each with the evidence that ties it.
+  // Built server-side from breach records and public profiles only; sign-up
+  // forms are never probed, so a missing site means "no evidence", and the
+  // footnote says so rather than letting absence read as "no account".
+  function linkedServices(ls) {
+    if (!ls) return "";
+    const rows = ls.services || [];
+    const skipped = ls.compilations_skipped || 0;
+    let html = `<div class="section-label">Services linked to this email
+      <span class="hint">${rows.length ? `${rows.length} found` : "none found"}</span></div>`;
+    if (rows.length) {
+      html += `<ul class="svc-list">${rows.map((r) => {
+        const tag = r.kind === "profile"
+          ? `<span class="pill ok">public profile</span>`
+          : `<span class="pill">breach record${r.date ? " · " + esc(r.date) : ""}</span>`;
+        const name = r.url
+          ? `<a href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener nofollow">${esc(r.service)}</a>`
+          : esc(r.service);
+        return `<li><span class="svc-name">${name}</span>${tag}<span class="svc-ev">${esc(r.evidence)}</span></li>`;
+      }).join("")}</ul>`;
+    }
+    html += `<p class="hint svc-note">Taken from breach records and public profiles. We don't test sign-up or login forms, so a site not listed here may still have an account.${
+      skipped ? ` ${skipped} combined leak list${skipped === 1 ? "" : "s"} left out because ${skipped === 1 ? "it doesn't" : "they don't"} show which site the address was used on.` : ""}</p>`;
+    return html;
   }
 
   // What to do about an email result. Templated from the outcome, never
@@ -1734,7 +1762,11 @@
       L.push(`Coverage: ${outcome.coverage}${outcome.partial ? " (incomplete)" : ""}`, outcome.detail);
       outcome.sources.forEach((source) => L.push(`- ${source.name}: ${source.status}${source.error ? ", " + source.error : ""}`));
       if (outcome.partial) L.push("Exposure score: unavailable because coverage is incomplete.");
-      if ((s.linked_accounts || []).length) L.push(`Linked accounts: ${s.linked_accounts.join(", ")}`);
+      const svc = (d.linked_services && d.linked_services.services) || [];
+      if (svc.length) {
+        L.push(`Linked services (${svc.length}):`);
+        svc.forEach((r) => L.push(`- ${r.service}: ${r.evidence}${r.date ? ` (${r.date})` : ""}`));
+      } else if ((s.linked_accounts || []).length) L.push(`Linked accounts: ${s.linked_accounts.join(", ")}`);
     } else if (res.tool === "domain") {
       const w = d.whois || {};
       L.push(`Registrar: ${w.registrar || "-"}`);
