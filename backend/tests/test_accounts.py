@@ -290,3 +290,11 @@ def test_dev_test_account_is_forced_off_in_production():
     # config.py computes it as (not IS_PRODUCTION) and the flag; the test
     # suite runs with FLASK_ENV unset, i.e. production.
     assert config.IS_PRODUCTION and config.DEV_TEST_ACCOUNT is False
+
+
+def test_plans_serve_the_web_signin_config_only_when_set(client, monkeypatch):
+    monkeypatch.setattr(config, "FIREBASE_WEB_API_KEY", "")
+    assert client.get("/api/plans").get_json()["firebase"] is None
+    monkeypatch.setattr(config, "FIREBASE_WEB_API_KEY", "public-web-key")
+    fb = client.get("/api/plans").get_json()["firebase"]
+    assert fb["apiKey"] == "public-web-key" and fb["projectId"] == config.FIREBASE_PROJECT_ID

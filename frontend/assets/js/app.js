@@ -247,19 +247,19 @@
           body = "Guests get 5 username scans a day, and they reset at midnight UTC. Every other tool still works.";
           break;
         }
-        body = "Guests get 5 scans a day. Sign in with Google (free) for unlimited standard scans and 2 full 560-platform scans a week.";
+        body = "Guests get 5 scans a day. Sign in with Google (free) for unlimited standard scans and 2 Pro 560-platform scans a week.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
-        title = err.code === "auth_invalid" ? "Please sign in again" : "The full scan needs a free account";
-        body = "Sign in with Google to run the full 560-platform scan. Free accounts get 2 full scans a week.";
+        title = err.code === "auth_invalid" ? "Please sign in again" : "The Pro scan needs a free account";
+        body = "Sign in with Google to run the Pro 560-platform scan. Free accounts get 2 Pro scans a week.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "upgrade_required": {
         const resets = acct.free_resets_at ? new Date(acct.free_resets_at).toLocaleDateString() : "next week";
-        title = "You've used this week's full scans";
-        body = `Your 2 free full scans come back on ${esc(resets)}. A Pro pass adds more now (₹99 for 50 scans over 7 days, or ₹299 for 200 over 30 days). The standard 100-platform scan stays unlimited.`;
+        title = "You've used this week's free Pro scans";
+        body = `Your 2 free Pro scans come back on ${esc(resets)}. A Pro pass adds more now (₹99 for 50 scans over 7 days, or ₹299 for 200 over 30 days). The standard 100-platform scan stays unlimited.`;
         action = `<a class="btn btn-primary" href="/pricing.html">See Pro passes</a>
           <button type="button" class="btn btn-ghost" data-gate="standard">Run a standard scan</button>`;
         break;
@@ -342,7 +342,7 @@
   // clean result means little if a third of the platforms never answered.
   function coverageLine(c) {
     const decided = (c.found || 0) + (c.not_found || 0);
-    return `<p class="coverage-line hint">Full scan: ${c.total} platforms, ${decided} gave a definite answer,
+    return `<p class="coverage-line hint">Pro scan: ${c.total} platforms, ${decided} gave a definite answer,
       ${c.undetermined || 0} could not tell, ${c.unreachable || 0} blocked or timed out from our server
       (the <a href="/app.html">Android app</a> checks from your phone and gets through more of them).</p>`;
   }
@@ -363,8 +363,8 @@
 
   function fullScanNudge() {
     return `<div class="panel gate slim"><p>This was the 100-platform scan. Sign in free to run the
-      <strong>full 560-platform scan</strong> (2 a week, or more with Pro).</p>
-      <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the full scan</button></div></div>`;
+      <strong>Pro 560-platform scan</strong> (2 free a week, more with a Pro pass).</p>
+      <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the Pro scan</button></div></div>`;
   }
 
   // Addresses and identifiers the handle leaks, as opposed to where it exists.
@@ -1178,7 +1178,9 @@
         try {
           await window.MyReconAccount.signIn();
         } catch (e) {
-          throw new GateError(e.message || "Sign-in was cancelled.", "sign_in_required");
+          const msg = window.MyReconAccount.friendly(e);
+          if (!msg) return; // closed the popup: leave the page as it was
+          throw new GateError(msg, "sign_in_required");
         }
       }
       if (activeTool === "username") {
@@ -1223,12 +1225,12 @@
       note.textContent = st && st.user ? "" : "No sign-in needed.";
       return;
     }
-    if (!A || !A.enabled) { note.textContent = "Full scans open soon."; return; }
+    if (!A || !A.enabled) { note.textContent = "Pro scans open soon."; return; }
     if (!st.user) { note.textContent = "You'll be asked to sign in with Google (free)."; return; }
     if (!acct) { note.textContent = ""; return; }
     note.textContent = acct.tier === "pro"
-      ? `Pro: ${acct.pro_scans_left} full scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
-      : `${acct.free_scans_left} of ${acct.free_scans_per_week} free full scans left this week.`;
+      ? `Pro: ${acct.pro_scans_left} Pro scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
+      : `${acct.free_scans_left} of ${acct.free_scans_per_week} free Pro scans left this week.`;
   }
 
   // ---- Username: live streaming scan with progress -----------------

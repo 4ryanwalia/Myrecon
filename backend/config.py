@@ -135,6 +135,14 @@ FIREBASE_DB_URL = os.environ.get(
     "https://myrecon-bugsnaps-default-rtdb.asia-southeast1.firebasedatabase.app",
 )
 FIREBASE_SERVICE_ACCOUNT = os.environ.get("FIREBASE_SERVICE_ACCOUNT", "")
+# Web sign-in config handed to the browser by /api/plans. Public by design (a
+# Firebase web key identifies the project, it authorises nothing), but kept in
+# the environment rather than the repo: the Security workflow refuses any
+# AIza-shaped literal. The app id is the "MyRecon web" app, 25 Sep 2026.
+FIREBASE_WEB_API_KEY = os.environ.get("FIREBASE_WEB_API_KEY", "")
+FIREBASE_WEB_APP_ID = os.environ.get(
+    "FIREBASE_WEB_APP_ID", "1:549280929178:web:cadd9e52ec56f410945623"
+)
 GUEST_SCANS_PER_DAY = _get_int("GUEST_SCANS_PER_DAY", 5)
 FREE_FULL_PER_WEEK = _get_int("FREE_FULL_PER_WEEK", 2)
 # Concurrent 560-platform sweeps per worker. Each one holds 24 sockets; more

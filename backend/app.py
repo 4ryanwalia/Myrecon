@@ -608,6 +608,14 @@ def _register_routes(app: Flask) -> None:
         return responses.ok({
             # Only ever true on a local development server; see config.py.
             "dev_test_account": config.DEV_TEST_ACCOUNT,
+            # Web sign-in config, so one Render setting switches accounts on
+            # without a frontend rebuild. Every value here is public.
+            "firebase": {
+                "apiKey": config.FIREBASE_WEB_API_KEY,
+                "appId": config.FIREBASE_WEB_APP_ID,
+                "projectId": config.FIREBASE_PROJECT_ID,
+                "authDomain": f"{config.FIREBASE_PROJECT_ID}.firebaseapp.com",
+            } if config.FIREBASE_WEB_API_KEY and store.persistent() else None,
             "accounts_enabled": store.persistent(),
             "payments_enabled": razorpay.enabled() and store.persistent(),
             "razorpay_key_id": config.RAZORPAY_KEY_ID if razorpay.enabled() else None,

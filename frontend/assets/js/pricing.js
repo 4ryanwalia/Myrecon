@@ -67,7 +67,8 @@
     if (plansInfo && !plansInfo.payments_enabled) { note("Payments open soon. Your free account works now."); return; }
     try {
       if (!A.state().user) await A.signIn();
-    } catch {
+    } catch (e) {
+      note(A.friendly(e));
       return;
     }
     note("Preparing checkout…");
@@ -110,7 +111,7 @@
     document.querySelectorAll("[data-buy]").forEach((b) =>
       b.addEventListener("click", () => buy(b.dataset.buy)));
     document.querySelectorAll("[data-signin]").forEach((b) =>
-      b.addEventListener("click", () => A && A.signIn().catch(() => {})));
+      b.addEventListener("click", () => A && A.signIn().catch((e) => note(A.friendly(e)))));
     $("#signOutBtn")?.addEventListener("click", () => A && A.signOut());
 
     if (A) await A.ready;
