@@ -1092,6 +1092,14 @@ main > p a, main > ul li a, main > ol li a {
   width: 24px; height: 24px; border-radius: 50%; display: inline-grid; place-items: center;
   background: var(--accent-2); color: #fff; font-size: 0.75rem;
 }
+img.nav-avatar, img.acct-avatar { object-fit: cover; background: var(--border-control); }
+.acct-avatar {
+  width: 32px; height: 32px; border-radius: 50%; display: inline-grid; place-items: center;
+  color: #fff; font-size: 0.9rem; font-weight: 700; flex: none;
+}
+#acctWho { display: inline-flex; align-items: center; gap: 10px; }
+.plan.current { border-color: var(--ok); }
+.btn.is-current, .btn.is-current:disabled { opacity: 1; cursor: default; color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
 .nav-tier { font-size: 0.75rem; color: var(--text-dim); }
 .nav-tier.pro { color: var(--ok); }
 

@@ -176,6 +176,35 @@
     return (err && err.message) || "Sign-in failed. Please try again.";
   }
 
+  // Profile picture from the Google account; if there is none, or it fails to
+  // load, a coloured initial. The colour is picked from the uid, so it looks
+  // random but stays the same for one person on every page and device. Drawn
+  // locally rather than fetched from an avatar service, so no identifier
+  // leaves the page.
+  function avatarHue(seed) {
+    let h = 0;
+    for (const c of String(seed || "")) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return h % 360;
+  }
+
+  function avatarHtml(u, cls) {
+    if (!u) return "";
+    const initial = (u.name || u.email || "?").trim().charAt(0).toUpperCase();
+    const hue = avatarHue(u.uid || u.email);
+    const letter = `<span class="${cls || "nav-avatar"}" aria-hidden="true" `
+      + `style="background:hsl(${hue} 55% 42%)">${esc(initial)}</span>`;
+    if (!u.photo || !/^https:\/\//.test(u.photo)) return letter;
+    return `<img class="${cls || "nav-avatar"}" src="${esc(u.photo)}" alt="" aria-hidden="true" `
+      + `referrerpolicy="no-referrer" loading="lazy" data-fallback="${esc(letter)}">`;
+  }
+
+  // Swap a broken profile photo for the initial.
+  function wireAvatar(root) {
+    root.querySelectorAll("img[data-fallback]").forEach((img) => {
+      img.addEventListener("error", () => { img.outerHTML = img.dataset.fallback; }, { once: true });
+    });
+  }
+
   function renderNav() {
     if (!enabled) return;
     const host = document.querySelector(".nav-inner");
@@ -190,12 +219,12 @@
     }
     if (user) {
       const tier = account && account.tier === "pro" ? "Pro" : "Free";
-      const initial = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
       btn.href = "/pricing.html#account";
       btn.removeAttribute("role");
       btn.onclick = null;
-      btn.innerHTML = `<span class="nav-avatar" aria-hidden="true">${esc(initial)}</span>`
+      btn.innerHTML = avatarHtml(state().user)
         + `<span class="nav-tier${tier === "Pro" ? " pro" : ""}">${tier}</span>`;
+      wireAvatar(btn);
       btn.setAttribute("aria-label", `Account: ${tier} plan`);
     } else {
       btn.href = "#";
@@ -212,7 +241,7 @@
   window.MyReconAccount = {
     get enabled() { return enabled; },
     ready, load, signIn, signOut, authHeaders, token, refreshAccount, onChange, state,
-    friendly,
+    friendly, avatarHtml, wireAvatar,
   };
 
   // ---- start-up -------------------------------------------------------

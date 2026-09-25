@@ -40,10 +40,14 @@
   function renderAccount(st) {
     const box = $("#account");
     if (!box) return;
+    renderPlanButtons(st);
     if (!st || !st.user) { box.hidden = true; return; }
     box.hidden = false;
     const acct = st.account;
-    $("#acctWho").textContent = `Signed in as ${st.user.email || st.user.name || "you"}`;
+    const who = $("#acctWho");
+    who.innerHTML = A.avatarHtml(st.user, "acct-avatar")
+      + `<span>Signed in as ${escHtml(st.user.email || st.user.name || "you")}</span>`;
+    A.wireAvatar(who);
     if (!acct) {
       $("#acctPlan").textContent = "Account";
       $("#acctUsage").textContent = "";
@@ -63,9 +67,26 @@
     }
   }
 
-  // ---- saved scans --------------------------------------------------
+  // The Free account card: a sign-in button for visitors, and a status once
+  // signed in, so nobody is asked to sign in again after they already have.
+  function renderPlanButtons(st) {
+    const signedIn = !!(st && st.user);
+    const pro = signedIn && st.account && st.account.tier === "pro";
+    document.querySelectorAll("[data-signin]").forEach((b) => {
+      b.disabled = signedIn;
+      b.classList.toggle("is-current", signedIn);
+      b.textContent = !signedIn ? "Sign in with Google" : pro ? "Included with Pro" : "Your current plan";
+    });
+    document.querySelectorAll("[data-plan-card]").forEach((card) => {
+      const current = card.dataset.planCard === (pro ? st.account.plan : signedIn ? "free" : "guest");
+      card.classList.toggle("current", current);
+    });
+  }
+
   const escHtml = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => (
     { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  // ---- saved scans --------------------------------------------------
 
   async function api(method, path) {
     const res = await fetch(CFG.apiBase + path, { method, headers: await A.authHeaders() });
