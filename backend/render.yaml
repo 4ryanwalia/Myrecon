@@ -33,3 +33,14 @@ services:
         sync: false
       - key: GITHUB_TOKEN
         sync: false
+      # Accounts: Firebase service-account JSON (raw or base64) for the
+      # Realtime Database. Without it the full scan is switched off.
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
+      # Pro passes. Key id is public, the two secrets are not.
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false

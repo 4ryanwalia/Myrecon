@@ -19,6 +19,18 @@ import os
 
 os.environ.setdefault("FLASK_ENV", "development")
 
+# backend/.env (gitignored) for local secrets such as Razorpay test keys.
+# A plain KEY=VALUE reader rather than python-dotenv: one less dependency,
+# and real environment variables still win.
+_ENV_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+if os.path.exists(_ENV_FILE):
+    with open(_ENV_FILE, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, _, value = line.partition("=")
+                os.environ.setdefault(key.strip(), value.strip())
+
 from app import app  # noqa: E402 - must follow the env default above
 
 if __name__ == "__main__":

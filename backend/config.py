@@ -55,15 +55,14 @@ SECRET_KEY_IS_EPHEMERAL = not SECRET_KEY
 if SECRET_KEY_IS_EPHEMERAL:
     SECRET_KEY = os.urandom(32).hex()
     if IS_PRODUCTION:
-        # Deliberately a warning and not a raise. Nothing is signed with this
-        # key today, so refusing to boot would trade a latent problem for a
-        # certain outage on the next deploy. `/api/health` reports the state so
-        # it is visible, and app.py escalates to a hard failure the moment a
-        # signed session actually exists.
+        # Deliberately a warning and not a raise: refusing to boot would trade
+        # a degraded feature for a certain outage. What degrades: the guest
+        # scan counter is keyed with this, so with two workers each holding
+        # its own random key, a guest's daily allowance is counted per worker.
+        # `/api/health` reports the state so it is visible.
         logging.getLogger("myrecon.config").error(
-            "SECRET_KEY is not set: using a per-worker random key. Nothing is "
-            "signed today so this is not yet exploitable, but set SECRET_KEY in "
-            "the Render dashboard before adding sessions or signed tokens."
+            "SECRET_KEY is not set: using a per-worker random key. Set SECRET_KEY "
+            "in the Render dashboard so guest scan limits are counted consistently."
         )
 
 # ── Request limits ───────────────────────────────────────────────
@@ -123,6 +122,37 @@ RATE_LIMIT_WINDOW = _get_int("RATE_LIMIT_WINDOW", 60)       # seconds
 CACHE_ENABLED = _get_bool("CACHE_ENABLED", True)
 CACHE_TTL = _get_int("CACHE_TTL", 600)                      # seconds
 
+# ── Accounts & plans ─────────────────────────────────────────────
+# Sign-in is Firebase Auth (Google) on the same project as the Android app.
+# Verifying a token needs only the project id, which is public.
+FIREBASE_PROJECT_ID = os.environ.get("FIREBASE_PROJECT_ID", "myrecon-bugsnaps")
+# Account state (plan, weekly usage) lives in that project's Realtime Database
+# under /web, written with a service account. The JSON key, raw or base64, goes
+# in the Render dashboard. Without it accounts are off and the full scan is
+# unavailable; guest limits still apply, from memory.
+FIREBASE_DB_URL = os.environ.get(
+    "FIREBASE_DB_URL",
+    "https://myrecon-bugsnaps-default-rtdb.asia-southeast1.firebasedatabase.app",
+)
+FIREBASE_SERVICE_ACCOUNT = os.environ.get("FIREBASE_SERVICE_ACCOUNT", "")
+GUEST_SCANS_PER_DAY = _get_int("GUEST_SCANS_PER_DAY", 5)
+FREE_FULL_PER_WEEK = _get_int("FREE_FULL_PER_WEEK", 2)
+# Concurrent 560-platform sweeps per worker. Each one holds 24 sockets; more
+# than this on a 512 MB instance starves every other lookup.
+FULL_SCAN_SLOTS = _get_int("FULL_SCAN_SLOTS", 2)
+
+# Razorpay (Pro passes). Key id is public; the two secrets are not.
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
+RAZORPAY_WEBHOOK_SECRET = os.environ.get("RAZORPAY_WEBHOOK_SECRET", "")
+
+# Local testing only: treat requests with no Authorization header as one fixed
+# signed-in test user, with accounts held in memory, so checkout and the full
+# scan can be exercised before Firebase sign-in is configured. Forced off in
+# production whatever the variable says; a stray value there must never turn
+# every visitor into the same account.
+DEV_TEST_ACCOUNT = (not IS_PRODUCTION) and _get_bool("DEV_TEST_ACCOUNT", False)
+
 # ── Scan tuning ──────────────────────────────────────────────────
 SCAN_MAX_WORKERS = _get_int("SCAN_MAX_WORKERS", 20)
 REQUEST_TIMEOUT = _get_int("REQUEST_TIMEOUT", 10)
@@ -138,6 +168,9 @@ def public_config() -> dict:
             "google_search": bool(GOOGLE_API_KEY and GOOGLE_CX_ID),
             "rate_limit": RATE_LIMIT_ENABLED,
             "cache": CACHE_ENABLED,
+            "accounts": bool(FIREBASE_SERVICE_ACCOUNT and FIREBASE_DB_URL),
+            "payments": bool(RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET),
+            "payment_webhook": bool(RAZORPAY_WEBHOOK_SECRET),
         },
         # Surfaced so a misconfigured deploy is visible without shell access.
         # It reports only whether a key was supplied, never the key.

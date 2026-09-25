@@ -115,20 +115,50 @@
   }
 
   // ---------------------------------------------------------------- API
+  // A refusal the page can act on (sign in, upgrade, come back tomorrow),
+  // as opposed to a failure. Carries the server's code and, for
+  // upgrade_required, the account's remaining allowance.
+  class GateError extends Error {
+    constructor(message, code, account) {
+      super(message);
+      this.code = code;
+      this.account = account || null;
+    }
+  }
+  const GATE_CODES = ["sign_in_required", "upgrade_required", "guest_limit",
+    "accounts_unavailable", "auth_invalid"];
+
+  function errorFrom(res, data) {
+    const msg = (data && data.error) || `Request failed (${res.status})`;
+    return data && GATE_CODES.includes(data.code)
+      ? new GateError(msg, data.code, data.account) : new Error(msg);
+  }
+
+  // Signed-in requests carry the Firebase ID token. account.js owns it; a
+  // guest gets no header at all.
+  async function authHeaders() {
+    try {
+      return window.MyReconAccount ? await window.MyReconAccount.authHeaders() : {};
+    } catch {
+      return {};
+    }
+  }
+
   async function api(endpoint, body) {
     const url = CFG.apiBase + endpoint;
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 90000);
+    // The full sweep checks 560 platforms and can take well over a minute.
+    const timer = setTimeout(() => ctrl.abort(), body && body.scope === "full" ? 180000 : 90000);
     try {
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(await authHeaders()) },
         body: JSON.stringify(body),
         signal: ctrl.signal,
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.status === "error") {
-        throw new Error(data.error || `Request failed (${res.status})`);
+        throw errorFrom(res, data);
       }
       return data;
     } catch (e) {
@@ -204,6 +234,44 @@
     resultsEl().innerHTML = `<div class="error-box" role="alert">${esc(msg)}</div>`;
   }
 
+  // What to show when the server refuses a scan for a reason the visitor can
+  // fix. Each one says what happened and offers the one action that helps.
+  function setGate(err) {
+    const acct = err.account || {};
+    const canSignIn = !!(window.MyReconAccount && window.MyReconAccount.enabled);
+    let title, body, action = "";
+    switch (err.code) {
+      case "guest_limit":
+        title = "That's today's free scans";
+        if (!canSignIn) {
+          body = "Guests get 5 username scans a day, and they reset at midnight UTC. Every other tool still works.";
+          break;
+        }
+        body = "Guests get 5 scans a day. Sign in with Google (free) for unlimited standard scans and 2 full 560-platform scans a week.";
+        action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
+        break;
+      case "sign_in_required":
+      case "auth_invalid":
+        title = err.code === "auth_invalid" ? "Please sign in again" : "The full scan needs a free account";
+        body = "Sign in with Google to run the full 560-platform scan. Free accounts get 2 full scans a week.";
+        action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
+        break;
+      case "upgrade_required": {
+        const resets = acct.free_resets_at ? new Date(acct.free_resets_at).toLocaleDateString() : "next week";
+        title = "You've used this week's full scans";
+        body = `Your 2 free full scans come back on ${esc(resets)}. A Pro pass adds more now (₹99 for 50 scans over 7 days, or ₹299 for 200 over 30 days). The standard 100-platform scan stays unlimited.`;
+        action = `<a class="btn btn-primary" href="/pricing.html">See Pro passes</a>
+          <button type="button" class="btn btn-ghost" data-gate="standard">Run a standard scan</button>`;
+        break;
+      }
+      default:
+        title = "Not available right now";
+        body = esc(err.message);
+    }
+    resultsEl().innerHTML = `<div class="panel gate" role="alert">
+      <h3>${esc(title)}</h3><p>${body}</p><div class="gate-actions">${action}</div></div>`;
+  }
+
   function resultsHeader(title, count) {
     return `
       <div class="results-bar">
@@ -261,9 +329,42 @@
       html += `</div>`;
     }
 
+    html += unverifiedPanel(data.unverified || []);
     html += rejectedPanel(data.rejected || [], s.checked || 0);
+    if (data.coverage) html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
+    else if ((data.query || {}).deep && !signedIn()
+      && window.MyReconAccount && window.MyReconAccount.enabled) html += fullScanNudge();
     r.innerHTML = html;
     animateCountUps();
+  }
+
+  // The full sweep reports how much of the map it could actually read. A
+  // clean result means little if a third of the platforms never answered.
+  function coverageLine(c) {
+    const decided = (c.found || 0) + (c.not_found || 0);
+    return `<p class="coverage-line hint">Full scan: ${c.total} platforms, ${decided} gave a definite answer,
+      ${c.undetermined || 0} could not tell, ${c.unreachable || 0} blocked or timed out from our server
+      (the <a href="/app.html">Android app</a> checks from your phone and gets through more of them).</p>`;
+  }
+
+  // Platforms that answered but show one page to everybody, so no checker can
+  // tell. Listed as links to open yourself, never counted as found.
+  function unverifiedPanel(rows) {
+    if (!rows.length) return "";
+    const items = rows.map((x) => `<tr>
+      <td><a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener nofollow">${esc(x.platform)}</a></td>
+      <td class="rj-why">${esc(x.reason)}</td></tr>`).join("");
+    return `<details class="panel rejected">
+      <summary>${rows.length} worth checking by hand
+        <span class="hint">these sites can't be verified automatically</span></summary>
+      <div class="rj-scroll"><table class="rj-table"><tbody>${items}</tbody></table></div>
+    </details>`;
+  }
+
+  function fullScanNudge() {
+    return `<div class="panel gate slim"><p>This was the 100-platform scan. Sign in free to run the
+      <strong>full 560-platform scan</strong> (2 a week, or more with Pro).</p>
+      <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the full scan</button></div></div>`;
   }
 
   // Addresses and identifiers the handle leaks, as opposed to where it exists.
@@ -1060,10 +1161,26 @@
     }
 
     const body = { [tool.field]: value };
-    if (tool.deep) body.deep = $("#deepToggle")?.checked || false;
+    if (tool.deep) {
+      const scope = currentScope();
+      body.deep = scope !== "quick";
+      body.scope = scope === "full" ? "full" : "standard";
+    }
 
     $("#runBtn").disabled = true;
     try {
+      // The full scan needs an account; ask for one before spending a request
+      // on a guaranteed 401. A closed popup just leaves the page as it was.
+      if (body.scope === "full" && !signedIn()) {
+        if (!(window.MyReconAccount && window.MyReconAccount.enabled)) {
+          throw new GateError("Accounts are not switched on yet.", "accounts_unavailable");
+        }
+        try {
+          await window.MyReconAccount.signIn();
+        } catch (e) {
+          throw new GateError(e.message || "Sign-in was cancelled.", "sign_in_required");
+        }
+      }
       if (activeTool === "username") {
         await runUsernameStream(value, body);
       } else {
@@ -1075,10 +1192,43 @@
         bindActions();
       }
     } catch (e) {
-      setError(e.message);
+      if (e instanceof GateError) setGate(e); else setError(e.message);
     } finally {
       $("#runBtn").disabled = false;
+      refreshScopeNote(true);
     }
+  }
+
+  // ---- Scan size and account state ---------------------------------
+  function currentScope() {
+    const picked = document.querySelector('input[name="scope"]:checked');
+    return picked ? picked.value : "standard";
+  }
+
+  function signedIn() {
+    const st = window.MyReconAccount && window.MyReconAccount.state();
+    return !!(st && st.user);
+  }
+
+  // One line under the picker that says what the chosen size will cost.
+  async function refreshScopeNote(reload) {
+    const note = $("#scopeNote");
+    if (!note) return;
+    const A = window.MyReconAccount;
+    const st = A ? A.state() : null;
+    if (reload && st && st.user) await A.refreshAccount();
+    const acct = st && st.user ? A.state().account : null;
+    const scope = currentScope();
+    if (scope !== "full") {
+      note.textContent = st && st.user ? "" : "No sign-in needed.";
+      return;
+    }
+    if (!A || !A.enabled) { note.textContent = "Full scans open soon."; return; }
+    if (!st.user) { note.textContent = "You'll be asked to sign in with Google (free)."; return; }
+    if (!acct) { note.textContent = ""; return; }
+    note.textContent = acct.tier === "pro"
+      ? `Pro: ${acct.pro_scans_left} full scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
+      : `${acct.free_scans_left} of ${acct.free_scans_per_week} free full scans left this week.`;
   }
 
   // ---- Username: live streaming scan with progress -----------------
@@ -1132,7 +1282,7 @@
     try {
       res = await fetch(CFG.apiBase + CFG.endpoints.usernameStream, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(await authHeaders()) },
         body: JSON.stringify(body),
       });
     } catch {
@@ -1140,9 +1290,9 @@
     }
     if (res.status === 404) return runUsernameFallback(value, body); // older backend
     if (!res.ok || !res.body) {
-      let msg = `Request failed (${res.status})`;
-      try { const j = await res.json(); msg = j.error || msg; } catch {}
-      throw new Error(msg);
+      let data = {};
+      try { data = await res.json(); } catch {}
+      throw errorFrom(res, data);
     }
 
     const reader = res.body.getReader();
@@ -1654,6 +1804,24 @@
         e.stopPropagation();
         loadWayback(el);
       });
+      // Sign-in / upgrade prompts. "full" and "standard" re-run the same
+      // handle at that size; "signin" signs in and re-runs what was asked.
+      resultsEl().addEventListener("click", async (e) => {
+        const el = e.target.closest("[data-gate]");
+        if (!el) return;
+        const want = el.dataset.gate;
+        if (want === "signin") {
+          try { await window.MyReconAccount.signIn(); } catch { return; }
+        } else {
+          const radio = document.querySelector(`input[name="scope"][value="${want}"]`);
+          if (radio) radio.checked = true;
+        }
+        refreshScopeNote(false);
+        if ($("#queryInput").value.trim()) run();
+      });
+      $$('input[name="scope"]').forEach((el) => el.addEventListener("change", () => refreshScopeNote(false)));
+      if (window.MyReconAccount) window.MyReconAccount.onChange(() => refreshScopeNote(false));
+      refreshScopeNote(false);
       $("#revealBtn")?.addEventListener("click", () => {
         setReveal($("#queryInput").type === "password");
         $("#queryInput").focus();

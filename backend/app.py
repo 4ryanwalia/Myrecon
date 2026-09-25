@@ -13,13 +13,16 @@ import functools
 import hashlib
 import json
 import logging
+import threading
 
-from flask import Flask, request, g, Response, stream_with_context
+from flask import Flask, request, g, Response, jsonify, stream_with_context
 
 import config
 from core.cache import TTLCache
 from core.ratelimit import RateLimiter
 from core import clientip, responses, validation
+from core.firebase_auth import AuthError, verify_id_token
+from core.plans import GuestLimit, NoAllowance
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("myrecon")
@@ -82,7 +85,10 @@ def _register_cors(app: Flask) -> None:
 
         if resp.headers.get("Access-Control-Allow-Origin"):
             resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-            resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+            # Authorization carries a signed-in user's Firebase ID token. A
+            # bearer header, not a cookie, so nothing rides along on a
+            # cross-site request and credentials mode stays off.
+            resp.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
             resp.headers["Access-Control-Max-Age"] = "86400"
 
         # Security headers applied to every response, CORS or not.
@@ -231,6 +237,84 @@ def _json_body() -> dict:
     return request.get_json(force=True, silent=True) or {}
 
 
+# ── Accounts ─────────────────────────────────────────────────────
+
+class SignInRequired(Exception):
+    """This action needs an account."""
+
+
+class AccountsUnavailable(Exception):
+    """Accounts are switched off on this deploy (no store configured)."""
+
+
+def _signed_in_user():
+    """
+    The verified Firebase user for this request, or None for a guest.
+
+    A token that is present but bad raises AuthError (401) rather than quietly
+    downgrading to guest, so the page refreshes its sign-in instead of silently
+    spending the visitor's guest allowance.
+    """
+    header = request.headers.get("Authorization", "")
+    if not header:
+        if config.DEV_TEST_ACCOUNT:  # local testing only, see config.py
+            return {"sub": "dev-test-user", "email": "dev@localhost", "name": "Dev Test"}
+        return None
+    scheme, _, token = header.partition(" ")
+    if scheme.lower() != "bearer" or not token.strip():
+        raise AuthError("Malformed Authorization header.")
+    return verify_id_token(token.strip())
+
+
+def _require_user():
+    user = _signed_in_user()
+    if user is None:
+        raise SignInRequired()
+    return user
+
+
+def _scope(body: dict) -> str:
+    scope = str(body.get("scope") or "standard").strip().lower()
+    if scope not in ("standard", "full"):
+        raise validation.ValidationError("scope must be 'standard' or 'full'.")
+    return scope
+
+
+def _admit_scan(scope: str, cached: bool):
+    """
+    Decide whether this scan may run, charging the allowance it uses.
+
+    Returns (uid, charged) where `charged` names the allowance to refund if
+    the scan fails, or None when nothing was charged. Raises SignInRequired,
+    AccountsUnavailable, NoAllowance or GuestLimit, each with its own status.
+    """
+    from core import plans, store
+
+    user = _signed_in_user()
+    if scope == "standard":
+        if user is None:
+            plans.consume_guest_scan(_client_ip())
+        return (user or {}).get("sub"), None
+
+    if user is None:
+        raise SignInRequired()
+    if not store.persistent():
+        raise AccountsUnavailable()
+    uid = user["sub"]
+    account = plans.get_account(uid, user.get("email", ""), user.get("name", ""))
+    if cached:
+        # Serving a result already in the cache costs nobody anything, so it
+        # is not charged, but it is still a full-scan feature.
+        if account["full_scans_left"] <= 0:
+            raise NoAllowance(account)
+        return uid, None
+    return uid, plans.consume_full_scan(uid)
+
+
+# Concurrent 560-platform sweeps in this worker. Each holds 24 sockets.
+_full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
+
+
 # ── Routes ───────────────────────────────────────────────────────
 
 def _register_routes(app: Flask) -> None:
@@ -283,6 +367,24 @@ def _register_routes(app: Flask) -> None:
         body = _json_body()
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
+        if _scope(body) == "full":
+            from core import plans
+            from services.search import _run_full
+            key = _cache_key("username_full", username)
+            hit = _cache.get(key) if config.CACHE_ENABLED else None
+            uid, charged = _admit_scan("full", hit is not None)
+            if hit is not None:
+                return responses.ok(hit)
+            with _full_slots:
+                try:
+                    data = _run_full(username)
+                except Exception:
+                    plans.refund_full_scan(uid, charged)
+                    raise
+            if config.CACHE_ENABLED:
+                _cache.set(key, data)
+            return responses.ok(data)
+        _admit_scan("standard", False)
         return responses.ok(cached_username(username, deep))
 
     @app.route("/api/username/stream", methods=["POST", "OPTIONS"])
@@ -300,19 +402,42 @@ def _register_routes(app: Flask) -> None:
         body = _json_body()
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
-        key = _cache_key("username", username, deep)
+        scope = _scope(body)
+        key = (_cache_key("username_full", username) if scope == "full"
+               else _cache_key("username", username, deep))
         cached_hit = _cache.get(key) if config.CACHE_ENABLED else None
+        # Admitted before the response starts, so a refusal is a real
+        # 401/402/429 the page can act on, not an error halfway down a stream.
+        uid, charged = _admit_scan(scope, cached_hit is not None)
 
         def generate():
+            from core import plans
             if cached_hit is not None:
                 yield json.dumps({"type": "complete", "data": cached_hit}) + "\n"
                 return
-            for event in stream_username(username, deep):
-                if event.get("type") == "complete" and config.CACHE_ENABLED:
-                    data = event.get("data")
-                    if isinstance(data, dict) and data.get("status") != "error":
-                        _cache.set(key, data)
-                yield json.dumps(event) + "\n"
+            slot = _full_slots if scope == "full" else None
+            if slot is not None and not slot.acquire(blocking=False):
+                yield json.dumps({"type": "progress", "phase": "Queued", "percent": 1,
+                                  "detail": "Waiting for a free scan slot…"}) + "\n"
+                slot.acquire()
+            failed = False
+            try:
+                for event in stream_username(username, deep, scope):
+                    if event.get("type") == "error":
+                        failed = True
+                    if event.get("type") == "complete":
+                        data = event.get("data")
+                        if (config.CACHE_ENABLED and isinstance(data, dict)
+                                and data.get("status") != "error"):
+                            _cache.set(key, data)
+                    yield json.dumps(event) + "\n"
+            finally:
+                if slot is not None:
+                    slot.release()
+                # A scan that failed is given back. A closed tab is not a
+                # failure: the sweep was already running and still counts.
+                if charged and failed:
+                    plans.refund_full_scan(uid, charged)
 
         resp = Response(stream_with_context(generate()), mimetype="application/x-ndjson")
         resp.headers["Cache-Control"] = "no-cache"
@@ -340,6 +465,9 @@ def _register_routes(app: Flask) -> None:
         # away here with a clear message instead of being quietly guessed at.
         query = validation.username(body.get("query", ""))
         deep = validation.boolean(body.get("deep"))
+        # Deep Search runs the standard username scan underneath, so it draws
+        # on the same guest allowance.
+        _admit_scan("standard", False)
 
         def generate():
             # investigate() reports progress through a callback, but a
@@ -471,6 +599,143 @@ def _register_routes(app: Flask) -> None:
         history = {k: v for k, v in cached_wayback(url).items() if k != "status"}
         return responses.ok({"url": url, "history": history})
 
+    # ── Accounts & billing ───────────────────────────────────────
+
+    @app.route("/api/plans")
+    def api_plans():
+        """Public: tiers, limits, and whether sign-in and payments are live."""
+        from core import plans, razorpay, store
+        return responses.ok({
+            # Only ever true on a local development server; see config.py.
+            "dev_test_account": config.DEV_TEST_ACCOUNT,
+            "accounts_enabled": store.persistent(),
+            "payments_enabled": razorpay.enabled() and store.persistent(),
+            "razorpay_key_id": config.RAZORPAY_KEY_ID if razorpay.enabled() else None,
+            "limits": {
+                "standard_platforms": plans.STANDARD_PLATFORMS,
+                "full_platforms": plans.FULL_PLATFORMS,
+                "guest_scans_per_day": plans.GUEST_SCANS_PER_DAY,
+                "free_full_scans_per_week": plans.FREE_FULL_PER_WEEK,
+            },
+            "plans": list(plans.PLANS.values()),
+        })
+
+    @app.route("/api/me")
+    def api_me():
+        from core import plans, store
+        user = _require_user()
+        if not store.persistent():
+            raise AccountsUnavailable()
+        return responses.ok({"account": plans.get_account(
+            user["sub"], user.get("email", ""), user.get("name", ""))})
+
+    @app.route("/api/billing/order", methods=["POST", "OPTIONS"])
+    def api_billing_order():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import plans, razorpay, store
+        user = _require_user()
+        if not (razorpay.enabled() and store.persistent()):
+            return responses.error("Payments are not open yet.", status=503,
+                                   code="payments_unavailable")
+        plan_id = str(_json_body().get("plan", "")).strip().lower()
+        plan = plans.PLANS.get(plan_id)
+        if not plan:
+            raise validation.ValidationError("Unknown plan.")
+        amount = plan["price_inr"] * 100
+        if amount < 100:  # Razorpay's minimum order is 100 paise
+            raise validation.ValidationError("Amount is below Razorpay's minimum.")
+        try:
+            order = razorpay.create_order(
+                amount,
+                receipt=f"{plan_id}-{user['sub'][:24]}",
+                notes={"uid": user["sub"], "plan": plan_id},
+            )
+        except razorpay.RazorpayAuthError:
+            log.error("Razorpay rejected the API keys; check RAZORPAY_KEY_ID/SECRET")
+            return responses.error("Payments are misconfigured. Please try later.",
+                                   status=401, code="razorpay_auth_failed")
+        except razorpay.RazorpayError as exc:
+            log.error("Razorpay order creation failed: %s", exc)
+            return responses.error("Could not start the payment. Please try again.",
+                                   status=500, code="razorpay_error")
+        return responses.ok({
+            "order_id": order["id"], "amount": order["amount"],
+            "currency": order["currency"], "key_id": config.RAZORPAY_KEY_ID,
+            "plan": plan, "email": user.get("email", ""), "name": user.get("name", ""),
+        })
+
+    def _grant_from_order(order_id: str, expect_uid=None) -> bool:
+        """
+        Apply the pass an order paid for. Who gets it and which plan are read
+        from the order's notes, which only this server writes, never from
+        anything the browser sent.
+        """
+        from core import plans, razorpay
+        if not order_id.startswith("order_") or len(order_id) > 40:
+            return False
+        order = razorpay.fetch_order(order_id)
+        notes = order.get("notes") or {}
+        uid, plan_id = notes.get("uid"), notes.get("plan")
+        if order.get("status") != "paid" or plan_id not in plans.PLANS or not uid:
+            return False
+        if expect_uid is not None and uid != expect_uid:
+            return False
+        if int(order.get("amount_paid", 0)) < plans.PLANS[plan_id]["price_inr"] * 100:
+            return False
+        plans.grant_pass(uid, plan_id, order_id)
+        return True
+
+    @app.route("/api/billing/verify", methods=["POST", "OPTIONS"])
+    def api_billing_verify():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import plans, razorpay
+        user = _require_user()
+        body = _json_body()
+        order_id = str(body.get("razorpay_order_id", ""))
+        payment_id = str(body.get("razorpay_payment_id", ""))
+        signature = str(body.get("razorpay_signature", ""))
+        if not (order_id and payment_id and signature):
+            return responses.error("Missing payment fields.", status=400,
+                                   code="payment_fields_missing")
+        if not razorpay.payment_signature_ok(order_id, payment_id, signature):
+            return responses.error("Payment could not be verified.", status=400,
+                                   code="payment_unverified")
+        try:
+            applied = _grant_from_order(order_id, expect_uid=user["sub"])
+        except razorpay.RazorpayError as exc:
+            # The signature already proves the payment; the webhook (or a
+            # retry) applies the pass once Razorpay answers again.
+            log.error("Razorpay order fetch failed during verify: %s", exc)
+            applied = False
+        # Not applied with a good signature means Razorpay has not marked the
+        # order paid yet; the webhook applies it when capture finishes.
+        return responses.ok({"applied": applied, "pending": not applied,
+                             "account": plans.get_account(user["sub"])})
+
+    @app.route("/api/billing/webhook", methods=["POST"])
+    def api_billing_webhook():
+        """Razorpay's server-to-server notice. Only the signature is trusted."""
+        from core import razorpay
+        if request.content_length and request.content_length > config.MAX_BODY_BYTES:
+            raise PayloadTooLarge()
+        raw = request.get_data(cache=True)
+        if not razorpay.webhook_signature_ok(raw, request.headers.get("X-Razorpay-Signature", "")):
+            return responses.error("Bad signature.", status=400, code="bad_signature")
+        try:
+            event = json.loads(raw or b"{}")
+        except ValueError:
+            return responses.error("Bad payload.", status=400, code="bad_payload")
+        payload = event.get("payload") or {}
+        order_id = (((payload.get("order") or {}).get("entity") or {}).get("id")
+                    or ((payload.get("payment") or {}).get("entity") or {}).get("order_id"))
+        if event.get("event") in ("order.paid", "payment.captured") and order_id:
+            _grant_from_order(order_id)
+        # 200 once the signature checks out, whatever happened, or Razorpay
+        # retries the same event for a day.
+        return responses.ok({"received": True})
+
 
 # ── Error handling ───────────────────────────────────────────────
 
@@ -478,6 +743,39 @@ def _register_errors(app: Flask) -> None:
     @app.errorhandler(validation.ValidationError)
     def on_validation_error(err):
         return responses.error(str(err), status=422, code="invalid_input")
+
+    @app.errorhandler(AuthError)
+    def on_auth_error(err):
+        return responses.error(str(err), status=401, code="auth_invalid")
+
+    @app.errorhandler(SignInRequired)
+    def on_sign_in_required(_err):
+        return responses.error(
+            "Sign in (free) to run the full scan.", status=401, code="sign_in_required",
+        )
+
+    @app.errorhandler(AccountsUnavailable)
+    def on_accounts_unavailable(_err):
+        return responses.error(
+            "Accounts are not switched on yet. The standard scan still works.",
+            status=503, code="accounts_unavailable",
+        )
+
+    @app.errorhandler(GuestLimit)
+    def on_guest_limit(_err):
+        return responses.error(
+            f"Guests get {config.GUEST_SCANS_PER_DAY} scans a day. "
+            "Sign in free to keep going.",
+            status=429, code="guest_limit",
+        )
+
+    @app.errorhandler(NoAllowance)
+    def on_no_allowance(err):
+        return jsonify({
+            "status": "error", "code": "upgrade_required",
+            "error": "You have used this week's free full scans. Pro passes add more.",
+            "account": err.entitlements,
+        }), 402
 
     @app.errorhandler(404)
     def on_404(_err):

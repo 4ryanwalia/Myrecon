@@ -331,7 +331,7 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
 
     return {
         "status": "ok",
-        "query": {"username": username, "deep": deep},
+        "query": {"username": username, "deep": deep, "scope": "standard"},
         "summary": {
             "total": len(profiles) + len(documents) + len(mentions),
             "profiles": len(profiles),
@@ -349,12 +349,94 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     }
 
 
+def _run_full(username: str, emit=_noop) -> dict:
+    """
+    The signed-in tier: the Android app's 560-platform sweep, run here.
+
+    Same envelope as _run_username so the page renders it with the same code,
+    plus two things only this engine can say: `coverage` (how much of the map
+    was legible, blocked platforms included) and `unverified` (platforms that
+    answered but cannot distinguish a real account from a placeholder, shown
+    as links to check by hand, never as found).
+    """
+    from modules.sweep import Sweep, FOUND, NOT_FOUND
+
+    emit({"type": "progress", "phase": "Checking platforms", "percent": 2,
+          "detail": "Starting full scan…"})
+
+    def on_result(hit, checked, total):
+        emit({
+            "type": "progress", "phase": "Checking platforms",
+            "percent": max(2, int(checked / total * 68)),
+            "detail": f"[{checked}/{total}] {hit['platform']}, "
+                      f"{'found' if hit['exists'] else 'no match'}",
+        })
+        if hit["exists"]:
+            emit({"type": "found", "result": _live_view(hit, username)})
+
+    hits, coverage = Sweep(username).run(on_result=on_result)
+
+    found = [h for h in hits if h["verdict"] == FOUND]
+    for r in found:
+        r["category"] = categorise_result(r, username)
+    unverified = sorted(
+        ({"platform": h["platform"], "url": h["url"], "reason": h["reason"]}
+         for h in hits if h["verdict"] not in (FOUND, NOT_FOUND) and not h["unreachable"]),
+        key=lambda r: r["platform"].lower(),
+    )
+    rejected = sorted(
+        ({"platform": h["platform"], "url": h["url"], "status_code": h["status_code"],
+          "reason": h["reason"]}
+         for h in hits if h["verdict"] == NOT_FOUND or h["unreachable"]),
+        key=lambda r: r["platform"].lower(),
+    )
+
+    emit({"type": "progress", "phase": "Enriching profiles", "percent": 70,
+          "detail": "Fetching profile details…"})
+    _enrich_profiles(found, emit)
+    exposures = _code_exposure(found, username, emit)
+
+    emit({"type": "progress", "phase": "Correlating identities", "percent": 97,
+          "detail": "Linking profiles across platforms…"})
+    clusters = []
+    try:
+        clusters = IdentityCorrelator().correlate(found, target_username=username)
+        for c in clusters:
+            c.pop("profile_pic_data", None)
+    except Exception:
+        pass
+    _strip_binary(found)
+    profiles, documents, mentions = _bucket(found)
+
+    return {
+        "status": "ok",
+        "query": {"username": username, "deep": True, "scope": "full"},
+        "summary": {
+            "total": len(profiles) + len(documents) + len(mentions),
+            "profiles": len(profiles),
+            "documents": len(documents),
+            "mentions": len(mentions),
+            "clusters": len(clusters),
+            "checked": coverage["total"],
+            "rejected": len(rejected),
+            "unverified": len(unverified),
+            "exposures": len(exposures),
+        },
+        "coverage": coverage,
+        "results": {"profiles": profiles, "documents": documents, "mentions": mentions},
+        "identity_clusters": clusters,
+        "exposures": exposures,
+        "rejected": rejected,
+        "unverified": unverified,
+    }
+
+
 def search_username(username: str, deep: bool = False) -> dict:
     """Non-streaming entry point (used by the cached JSON endpoint)."""
     return _run_username(username, deep, _noop)
 
 
-def stream_username(username: str, deep: bool = False):
+def stream_username(username: str, deep: bool = False, scope: str = "standard"):
     """
     Generator yielding progress event dicts, ending with either
     {"type": "complete", "data": <result>} or {"type": "error", ...}.
@@ -370,7 +452,10 @@ def stream_username(username: str, deep: bool = False):
 
     def worker():
         try:
-            holder["data"] = _run_username(username, deep, emit)
+            if scope == "full":
+                holder["data"] = _run_full(username, emit)
+            else:
+                holder["data"] = _run_username(username, deep, emit)
         except Exception as e:  # noqa: BLE001
             holder["error"] = str(e)
         finally:

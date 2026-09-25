@@ -195,6 +195,9 @@ PLATFORMS: list[tuple[str, str, int]] = [
 
 TOTAL_PLATFORMS = len(PLATFORMS)
 
+# The public, no-sign-in scan stops here. Signed-in users get the full sweep.
+STANDARD_LIMIT = 100
+
 # Platforms that need a longer timeout (SPAs / slow APIs).
 SLOW_PLATFORMS = {
     "Instagram", "Facebook", "TikTok", "LinkedIn", "Threads", "Pinterest",
@@ -591,11 +594,13 @@ class UsernameChecker:
     def scan(self, username: str, callback=None, deep: bool = False) -> list[dict]:
         """
         Scan platforms for `username`. Fast mode checks the first 50; deep
-        mode checks all. `callback(module, message, progress, results)` is
-        invoked after each platform completes (used for live progress).
+        mode checks the first STANDARD_LIMIT, the public tier. The 560-platform
+        sweep for signed-in users is modules/sweep.py, not this.
+        `callback(module, message, progress, results)` is invoked after each
+        platform completes (used for live progress).
         """
         self._stop_flag = False
-        platforms = PLATFORMS if deep else PLATFORMS[:50]
+        platforms = PLATFORMS[:STANDARD_LIMIT] if deep else PLATFORMS[:50]
         total = len(platforms)
         results: list[dict] = []
         completed = 0

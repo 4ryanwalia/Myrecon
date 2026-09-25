@@ -45,19 +45,19 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav"><div class="container nav-inner">
     <a class="brand" href="/"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
     <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
   </div></header>
 
   <main class="container legal" id="main">
     <h1>Privacy Policy</h1>
-    <p class="legal-meta">Last updated: 24 September 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
+    <p class="legal-meta">Last updated: 25 September 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
 
     <div class="legal-summary">
       <h2>The short version</h2>
       <ul>
-        <li><strong>No accounts.</strong> There is nothing to register, so there is no name, password or payment detail to hold.</li>
+        <li><strong>Accounts are optional.</strong> Every tool works without one. If you sign in with Google for the full scan, we hold your email, name and a count of scans used, never what you searched. We never see card, UPI or bank details: Razorpay handles payment.</li>
         <li><strong>We do not keep your searches.</strong> No database of queries, no history on our servers. Results sit in a short-lived memory cache for up to ten minutes and then vanish.</li>
         <li><strong>Your history lives in your browser</strong>, not with us, and you can wipe it in one click.</li>
         <li><strong>Passwords never leave your device.</strong> The password checker hashes locally and sends five characters of that hash.</li>
@@ -110,7 +110,7 @@
 
     <section id="what">
       <h2>2. What we process, and why</h2>
-      <p>There is no registration on MyRecon, so we hold no profile of you. What follows is the complete list of what is processed when you use the site.</p>
+      <p>Registration on MyRecon is optional. Without it we hold no profile of you; with it we hold only what the account rows below describe. What follows is the complete list of what is processed when you use the site.</p>
 
       <div class="legal-table-wrap">
         <table>
@@ -150,6 +150,24 @@
               <td>Until you clear it</td>
             </tr>
             <tr>
+              <td><strong>If you sign in</strong>: your Google account&rsquo;s email address and display name, a Firebase user ID, and how many full scans you have used this week and on any pass</td>
+              <td>To give you the full scan and keep count of your allowance</td>
+              <td>Google Firebase (Authentication, and a Realtime Database in Singapore) under our project. Never which usernames you scanned</td>
+              <td>Until you ask us to delete the account</td>
+            </tr>
+            <tr>
+              <td><strong>If you buy a Pro pass</strong>: the Razorpay order and payment ID, the pass, the amount and the time</td>
+              <td>To apply the pass, handle refunds, and keep the records tax law requires</td>
+              <td>Razorpay processes the payment itself; we keep the reference only</td>
+              <td>As long as Indian tax and accounting law requires, currently up to 8 years</td>
+            </tr>
+            <tr>
+              <td><strong>A daily scan counter for visitors who are not signed in</strong></td>
+              <td>The 5-scans-a-day limit</td>
+              <td>The same Firebase database, stored as a keyed hash of your IP address that changes every day and cannot be turned back into the address without our server&rsquo;s secret key</td>
+              <td>Deleted after two days</td>
+            </tr>
+            <tr>
               <td><strong>Advertising identifiers and cookies</strong></td>
               <td>To show advertising, which funds the free tools</td>
               <td>Google. Never to us</td>
@@ -166,7 +184,7 @@
       </div>
 
       <div class="legal-note">
-        <p><strong>We do not persist your search queries or their results to a database.</strong> There is no account system, so there is nothing tying one lookup to another or to you. The in-memory cache is keyed on the query itself, lives on a single server instance, holds at most a couple of thousand entries, and is gone when the process restarts.</p>
+        <p><strong>We do not persist your search queries or their results to a database.</strong> Signing in does not change this: an account holds a count of full scans, never which handles were scanned, so nothing ties one lookup to another or to you. The in-memory cache is keyed on the query itself, lives on a single server instance, holds at most a couple of thousand entries, and is gone when the process restarts.</p>
       </div>
 
       <h3>Third-party sources</h3>
@@ -199,10 +217,10 @@
       <h2>5. Legal bases</h2>
       <p>For anyone covered by the UK or EU GDPR, these are the bases we rely on:</p>
       <ul>
-        <li><strong>Performance of a contract / taking steps at your request</strong> (Art. 6(1)(b)), running the lookup you asked for and returning the answer.</li>
-        <li><strong>Legitimate interests</strong> (Art. 6(1)(f)), keeping the service available and free from abuse, through rate limiting, server logs and short-lived caching. Our interest is in a service that stays up and is not used to attack anyone; the data involved is minimal and is not used to profile you.</li>
+        <li><strong>Performance of a contract / taking steps at your request</strong> (Art. 6(1)(b)), running the lookup you asked for and returning the answer; and, if you sign in or buy a pass, keeping your account and applying the allowance you paid for.</li>
+        <li><strong>Legitimate interests</strong> (Art. 6(1)(f)), keeping the service available and free from abuse, through rate limiting, the daily guest scan counter, server logs and short-lived caching. Our interest is in a service that stays up and is not used to attack anyone; the data involved is minimal and is not used to profile you.</li>
         <li><strong>Consent</strong> (Art. 6(1)(a)), advertising cookies, where a consent message applies to you. Withdrawable at any time from the footer of any page, as easily as it was given.</li>
-        <li><strong>Legal obligation</strong> (Art. 6(1)(c)), where we have to keep or produce something by law.</li>
+        <li><strong>Legal obligation</strong> (Art. 6(1)(c)), where we have to keep or produce something by law, including payment records for tax purposes.</li>
       </ul>
       <p>Storing your theme, history and saved investigations in your browser is done on the basis that you asked for it: it is a preference you set and a feature you used, and nothing is transmitted to us.</p>
     </section>
@@ -219,6 +237,8 @@
             <tr><td><strong>Render</strong></td><td>Hosts the API</td><td>IP address, the request, standard logs</td></tr>
             <tr><td><strong>Google</strong> (AdSense)</td><td>Serves advertising</td><td>Cookies, IP address, page context, never what you type into the tool</td></tr>
             <tr><td><strong>Google</strong> (Firebase)</td><td>Counts invites in the Android app</td><td>An invite code, a one-way hash derived from the phone&rsquo;s app-specific Android ID, the time, and the IP address the request comes from, only when an install came from an invite link, or while someone is looking at their own invite count</td></tr>
+            <tr><td><strong>Google</strong> (Firebase, website accounts)</td><td>Google sign-in and the store of account allowances</td><td>If you sign in: your Google email address, name and user ID, and your scan counts. For visitors who are not signed in: a daily-rotating keyed hash used for the guest scan limit</td></tr>
+            <tr><td><strong>Razorpay</strong></td><td>Processes Pro pass payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
             <tr><td><strong>Google Fonts</strong></td><td>Serves the typeface</td><td>IP address and browser details when a font loads</td></tr>
             <tr><td><strong>Have I Been Pwned</strong></td><td>The breach catalogue, breach logos, and the Pwned Passwords API</td><td>Your IP address, and a five-character hash prefix when you check a password. The address itself only where a breach lookup is configured to use HIBP directly</td></tr>
             <tr><td><strong>XposedOrNot</strong>, <strong>LeakCheck</strong></td><td>Answer &ldquo;has this address been breached&rdquo;</td><td>The email address you queried</td></tr>
@@ -245,6 +265,9 @@
         <li><strong>IP address for rate limiting:</strong> 60 seconds.</li>
         <li><strong>Server logs:</strong> the standard short retention of our hosting providers, used for security and diagnostics and not to profile visitors.</li>
         <li><strong>App invite records:</strong> kept for as long as the invite programme runs, because they are what stops the same phone being counted twice, and deleted when it ends.</li>
+        <li><strong>Accounts:</strong> until you ask us to delete yours. Deletion removes the account and its usage counts; payment records we are required to keep are retained for the legal period.</li>
+        <li><strong>Payment records:</strong> as long as Indian tax and accounting law requires, currently up to 8 years.</li>
+        <li><strong>Guest scan counters:</strong> two days.</li>
         <li><strong>Browser storage:</strong> until you clear it. We cannot clear it for you, and we cannot read it.</li>
         <li><strong>Email correspondence:</strong> as long as needed to deal with the matter, and for a reasonable period afterwards as a record.</li>
       </ul>
@@ -369,7 +392,7 @@
 
   <footer class="footer"><div class="container"><div class="footer-bottom">
     <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-    <span><a href="/contact.html">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    <span><a href="/contact.html">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/refunds.html">Refunds</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
   </div></div></footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>

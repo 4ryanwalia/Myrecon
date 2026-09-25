@@ -51,7 +51,7 @@ def categorise_result(result: dict, target: str = "") -> str:
 
     # Already verified upstream by an HTTP check against a known profile URL.
     source = result.get("source", "")
-    if source in ("username_check", "email_lookup"):
+    if source in ("username_check", "username_sweep", "email_lookup"):
         return "profile"
 
     match = profile_handle(url)

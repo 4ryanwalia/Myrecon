@@ -45,14 +45,14 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav"><div class="container nav-inner">
     <a class="brand" href="/"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/about.html">About</a></nav>
+    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
     <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
   </div></header>
 
   <main class="container legal" id="main">
     <h1>Cookie Policy</h1>
-    <p class="legal-meta">Last updated: 14 September 2026</p>
+    <p class="legal-meta">Last updated: 25 September 2026</p>
 
     <div class="legal-summary">
       <h2>The short version</h2>
@@ -97,6 +97,8 @@
             <tr><td><code>myrecon-theme</code></td><td>Local storage</td><td>Remembers whether you chose the light or dark theme, so the site does not flip back on every visit.</td><td>Until you clear it</td></tr>
             <tr><td><code>myrecon.theme</code></td><td>Local storage</td><td>The same preference for the Deep Search page, which keeps its own copy.</td><td>Until you clear it</td></tr>
             <tr><td><code>myrecon-history</code></td><td>Local storage</td><td>Your recent lookups, so the tool can show them again. Clearable from the tool with the &ldquo;Clear history&rdquo; button.</td><td>Until you clear it</td></tr>
+            <tr><td><code>mr_signed_in</code></td><td>Local storage</td><td>Only if you sign in: a one-bit hint that you are signed in, so the page knows to load the sign-in code. Removed when you sign out.</td><td>Until you sign out</td></tr>
+            <tr><td><code>firebaseLocalStorageDb</code></td><td>IndexedDB</td><td>Only if you sign in: Firebase keeps your signed-in session here so you stay signed in between visits. Sent to Google only to refresh the session, and to us as the proof of sign-in when you run a scan.</td><td>Until you sign out</td></tr>
             <tr><td><code>myrecon-saved</code></td><td>Local storage</td><td>Investigations you explicitly pressed &ldquo;Save&rdquo; on. Each one is individually removable.</td><td>Until you clear it</td></tr>
           </tbody>
         </table>
@@ -186,7 +188,7 @@
 
   <footer class="footer"><div class="container"><div class="footer-bottom">
     <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-    <span><a href="/contact.html">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
+    <span><a href="/contact.html">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/refunds.html">Refunds</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
   </div></div></footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>

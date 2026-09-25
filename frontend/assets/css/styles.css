@@ -1069,3 +1069,48 @@ main > p a, main > ul li a, main > ol li a {
   .android-split { grid-template-columns: 1fr; gap: 30px; }
   .phone-mock { max-width: 255px; }
 }
+
+/* ---------------------------------------------------------------- accounts & scan size */
+.scope-picker { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.scope-opt {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  padding: 7px 12px; border: 1px solid var(--border-control); border-radius: 999px;
+  font-size: 0.85rem; color: var(--text-dim); min-height: 36px;
+}
+.scope-opt input { accent-color: var(--accent); margin: 0; }
+.scope-opt:has(input:checked) { border-color: var(--accent); color: var(--text); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.scope-opt .hint { font-size: 0.78rem; }
+.scope-note { font-size: 0.8rem; }
+
+.nav-account {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border: 1px solid var(--border-control); border-radius: 999px;
+  font-size: 0.85rem; font-weight: 600; color: var(--text); text-decoration: none; white-space: nowrap;
+}
+.nav-account:hover { border-color: var(--accent); }
+.nav-avatar {
+  width: 24px; height: 24px; border-radius: 50%; display: inline-grid; place-items: center;
+  background: var(--accent-2); color: #fff; font-size: 0.75rem;
+}
+.nav-tier { font-size: 0.75rem; color: var(--text-dim); }
+.nav-tier.pro { color: var(--ok); }
+
+.panel.gate { margin-top: 12px; }
+.panel.gate h3 { margin-bottom: 6px; }
+.panel.gate p { color: var(--text-dim); line-height: 1.6; }
+.panel.gate.slim p { font-size: 0.92rem; }
+.gate-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.coverage-line { margin: 8px 0 12px; line-height: 1.55; }
+
+/* ---------------------------------------------------------------- pricing */
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 24px 0; }
+.plan { display: flex; flex-direction: column; gap: 10px; }
+.plan.featured { border-color: var(--accent); }
+.plan h3 { font-size: 1.1rem; }
+.plan .price { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+.plan .price small { font-size: 0.9rem; font-weight: 500; color: var(--text-dim); }
+.plan ul { list-style: none; display: grid; gap: 6px; color: var(--text-dim); font-size: 0.92rem; flex: 1; }
+.plan ul li::before { content: "✓ "; color: var(--ok); }
+.plan .btn { justify-content: center; }
+.account-box { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.account-box .who { color: var(--text-dim); font-size: 0.92rem; }
