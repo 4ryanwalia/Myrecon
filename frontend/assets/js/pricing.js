@@ -56,7 +56,7 @@
     if (acct.tier === "pro") {
       $("#acctPlan").textContent = acct.plan === "monthly" ? "Pro Monthly" : "Pro Weekly";
       $("#acctUsage").textContent =
-        `${acct.pro_scans_left} Pro scans left, until ${new Date(acct.pro_until).toLocaleDateString()}.`
+        `${acct.pro_scans_left} Pro scans and ${acct.extended_scans_left || 0} Extended scans left, until ${new Date(acct.pro_until).toLocaleDateString()}.`
         + (acct.free_scans_left > 0 ? " Your free Pro scan is still unused." : "");
     } else {
       $("#acctPlan").textContent = "Free account";
@@ -118,7 +118,7 @@
       <div class="scan-row">
         <div class="scan-main">
           <strong>${escHtml(s.handle)}</strong>
-          <span class="scan-badge${s.scope === "full" || s.scope === "extended" ? " pro" : ""}">${s.scope === "extended" ? "Extended · " + Number(s.checked || 3166).toLocaleString() : s.scope === "full" ? "Pro · 560" : "Standard · 100"}</span>
+          <span class="scan-badge${s.scope === "full" || s.scope === "extended" ? " pro" : ""}">${s.scope === "extended" ? "Extended · " + Number(s.checked || 3166).toLocaleString() : s.scope === "full" ? "Pro · " + Number(s.checked || 561) : "Standard · 100"}</span>
           <span class="hint">${escHtml(new Date(s.at).toLocaleString())} · ${Number(s.profiles) || 0} found</span>
         </div>
         <div class="scan-actions">
@@ -151,7 +151,7 @@
       amount: order.amount,
       currency: order.currency,
       name: "MyRecon",
-      description: `${order.plan.label}: ${order.plan.full_scans} full scans, ${order.plan.days} days`,
+      description: `${order.plan.label}: ${order.plan.full_scans} full scans, ${order.plan.extended_scans} Extended, ${order.plan.days} days`,
       prefill: { email: order.email || "", name: order.name || "" },
       theme: { color: "#2563eb" },
       handler: async (resp) => {

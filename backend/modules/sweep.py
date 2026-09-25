@@ -1,9 +1,12 @@
 """
 Full username sweep, the website's port of the Android app's engine.
 
-The catalogue (data/platforms_full.json, 560 platforms) is exported from the
-app's PlatformCatalogue by CatalogueExportTest, not re-typed, so the two lists
-cannot drift by hand. The verdict logic below is a line-by-line port of
+The catalogue (data/platforms_full.json) is exported from the app's
+PlatformCatalogue by CatalogueExportTest, not re-typed, so the two lists
+cannot drift by hand. One web-only exception is appended at the end:
+GooglePlayStore, promoted from the extra tier (it passed the same import
+test). Re-exporting drops it, so re-append it, at the end, after the 100
+the guest preview shows. The verdict logic below is a line-by-line port of
 UsernameSweep.probe(); the Kotlin carries the long-form reasoning for every
 rule, and the comments here only mark where Python had to differ.
 
@@ -49,7 +52,7 @@ TOTAL = len(CATALOGUE)
 # The Extended scan's extra tier: sites from the Maigret list that passed this
 # engine's own test (a known-real handle FOUND, two impossible ones not). Built
 # by tools/maigret_web_import.py, never hand-edited. Kept apart from CATALOGUE
-# so the Pro scan stays the app's 560 and stays fast.
+# so the Pro scan stays close to the app's 560 and stays fast.
 _EXTRA_PATH = os.path.join(os.path.dirname(_CATALOGUE_PATH), "platforms_extra.json")
 try:
     with open(_EXTRA_PATH, encoding="utf-8") as _fh:

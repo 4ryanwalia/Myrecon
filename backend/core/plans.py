@@ -2,14 +2,18 @@
 Who may run which scan, and how many.
 
   guest       up to GUEST_SCANS_PER_DAY scans per address; a full sweep
-              processes 560 catalogue entries but reveals only the first
+              processes the 561-entry catalogue but reveals only the first
               100 verdicts (some entries may be unknown or out of time)
   free        standard scans unmetered, FREE_FULL_SCANS Pro (full) scans in
               total: a one-time trial, not a weekly allowance
   pro weekly  PLANS["weekly"]: a 7-day pass with its own full-scan allowance
+              and a separate, smaller Extended allowance
   pro monthly PLANS["monthly"]: a 30-day pass, same idea
 
-A "full" scan is the 560-platform sweep ported from the Android app. Every
+A "full" scan is the sweep ported from the Android app (its 560 platforms
+plus Google Play developer pages, which only the web checks). An "extended"
+scan runs that plus the imported tier, 3,166 in all; it is Pro-only and is
+paid from its own allowance, never from full scans or the free trial. Every
 other tool stays free for everyone; accounts change scan limits and how much
 of a full sweep is visible.
 
@@ -25,10 +29,12 @@ runs out.
 
 Record at /web/users/<uid>:
   {"email", "name", "created",
-   "pro":  {"plan", "until" (ms), "scans_left"},
+   "pro":  {"plan", "until" (ms), "scans_left", "extended_left"},
    "free": {"used_total"}}
 (Records from the weekly-allowance days carry "week"/"used"; they are
-ignored, so everyone starts the one-time trial fresh.)
+ignored, so everyone starts the one-time trial fresh. A pass bought before
+Extended had its own allowance has no "extended_left" and is read as its
+plan's allowance.)
 """
 
 import datetime as _dt
@@ -48,20 +54,21 @@ FREE_FULL_SCANS = config.FREE_FULL_SCANS
 
 PLANS = {
     "weekly": {"id": "weekly", "label": "Pro Weekly", "price_inr": 99,
-               "days": 7, "full_scans": 10},
+               "days": 7, "full_scans": 10, "extended_scans": 2},
     "monthly": {"id": "monthly", "label": "Pro Monthly", "price_inr": 299,
-                "days": 30, "full_scans": 50},
+                "days": 30, "full_scans": 50, "extended_scans": 6},
 }
 
 _DAY_MS = 86_400_000
 
 
 class NoAllowance(Exception):
-    """Signed in, but no full scans left. Carries the entitlements."""
+    """Signed in, but no scans of this kind left. Carries the entitlements."""
 
-    def __init__(self, ent: dict):
-        super().__init__("no full scans left")
+    def __init__(self, ent: dict, scope: str = "full"):
+        super().__init__(f"no {scope} scans left")
         self.entitlements = ent
+        self.scope = scope
 
 
 class GuestLimit(Exception):
@@ -87,6 +94,7 @@ def entitlements(record, now_ms=None) -> dict:
     free_used = int((record.get("free") or {}).get("used_total", 0))
     free_left = max(0, FREE_FULL_SCANS - free_used)
     pro_left = max(0, int(pro.get("scans_left", 0))) if pro_active else 0
+    extended_left = max(0, int(_extended_left(pro))) if pro_active else 0
     return {
         "tier": "pro" if pro_active else "free",
         "plan": pro.get("plan") if pro_active else None,
@@ -95,7 +103,14 @@ def entitlements(record, now_ms=None) -> dict:
         "free_scans_left": free_left,
         "free_scans_total": FREE_FULL_SCANS,
         "full_scans_left": pro_left + free_left,
+        "extended_scans_left": extended_left,
     }
+
+
+def _extended_left(pro: dict) -> int:
+    if "extended_left" in pro:
+        return int(pro["extended_left"])
+    return PLANS.get(pro.get("plan"), {}).get("extended_scans", 0)
 
 
 def get_account(uid: str, email: str = "", name: str = "") -> dict:
@@ -140,12 +155,34 @@ def consume_full_scan(uid: str) -> str:
     return spent["source"]
 
 
+def consume_extended_scan(uid: str) -> str:
+    """Spend one Extended scan from an active pass. Returns "extended"."""
+    denied = {}
+
+    def fn(cur):
+        cur = cur or {"created": _now_ms()}
+        ent = entitlements(cur)
+        if ent["extended_scans_left"] <= 0:
+            denied["ent"] = ent
+            raise Abort()
+        cur["pro"]["extended_left"] = ent["extended_scans_left"] - 1
+        return cur
+
+    try:
+        store.transaction(_user_path(uid), fn)
+    except Abort:
+        raise NoAllowance(denied["ent"], "extended")
+    return "extended"
+
+
 def refund_full_scan(uid: str, source: str) -> None:
     """Give back a scan whose pipeline failed. Best effort."""
     def fn(cur):
         if not cur:
             raise Abort()
-        if source == "pro" and cur.get("pro"):
+        if source == "extended" and cur.get("pro"):
+            cur["pro"]["extended_left"] = _extended_left(cur["pro"]) + 1
+        elif source == "pro" and cur.get("pro"):
             cur["pro"]["scans_left"] = int(cur["pro"].get("scans_left", 0)) + 1
         elif source == "free" and cur.get("free"):
             cur["free"]["used_total"] = max(0, int(cur["free"].get("used_total", 0)) - 1)
@@ -188,6 +225,7 @@ def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
             "plan": plan_id if not active else _longer(pro.get("plan"), plan_id),
             "until": start + plan["days"] * _DAY_MS,
             "scans_left": (int(pro.get("scans_left", 0)) if active else 0) + plan["full_scans"],
+            "extended_left": (_extended_left(pro) if active else 0) + plan["extended_scans"],
         }
         return cur
 

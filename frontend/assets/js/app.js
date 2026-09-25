@@ -119,10 +119,11 @@
   // as opposed to a failure. Carries the server's code and, for
   // upgrade_required, the account's remaining allowance.
   class GateError extends Error {
-    constructor(message, code, account) {
+    constructor(message, code, account, scope) {
       super(message);
       this.code = code;
       this.account = account || null;
+      this.scope = scope || null;
     }
   }
   const GATE_CODES = ["sign_in_required", "upgrade_required", "guest_limit",
@@ -131,7 +132,7 @@
   function errorFrom(res, data) {
     const msg = (data && data.error) || `Request failed (${res.status})`;
     return data && GATE_CODES.includes(data.code)
-      ? new GateError(msg, data.code, data.account) : new Error(msg);
+      ? new GateError(msg, data.code, data.account, data.scope) : new Error(msg);
   }
 
   // Signed-in requests carry the Firebase ID token. account.js owns it; a
@@ -147,7 +148,7 @@
   async function api(endpoint, body) {
     const url = CFG.apiBase + endpoint;
     const ctrl = new AbortController();
-    // The full sweep checks 560 platforms and can take well over a minute;
+    // The full sweep checks 561 platforms and can take well over a minute;
     // the extended one checks several times that.
     const scopeWait = { full: 180000, extended: 330000 };
     const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || 90000);
@@ -246,19 +247,26 @@
       case "guest_limit":
         title = "That's today's free scans";
         if (!canSignIn) {
-          body = "Guests get 5 username scans a day. Each full sweep checks 560 platforms and shows a 100-platform preview. The allowance resets at midnight UTC.";
+          body = "Guests get 5 username scans a day. Each full sweep checks 561 platforms and shows a 100-platform preview. The allowance resets at midnight UTC.";
           break;
         }
-        body = "Guests get 5 username scans a day. Sign in with Google for unlimited standard scans and one free full 560-platform report.";
+        body = "Guests get 5 username scans a day. Sign in with Google for unlimited standard scans and one free full 561-platform report.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
         title = err.code === "auth_invalid" ? "Please sign in again" : "The full report needs a free account";
-        body = "Sign in with Google to request the complete 560-platform report. Your first full scan is free.";
+        body = "Sign in with Google to request the complete 561-platform report. Your first full scan is free.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "upgrade_required": {
+        if (err.scope === "extended") {
+          title = acct.tier === "pro" ? "You've used your Extended scans" : "Extended scans come with Pro";
+          body = `Pro Weekly includes 2 Extended scans (₹99, 7 days) and Pro Monthly includes 6 (₹299, 30 days). Full 561-platform scans and the standard 100-platform scan are still available.`;
+          action = `<a class="btn btn-primary" href="/pricing.html">See Pro passes</a>
+          <button type="button" class="btn btn-ghost" data-gate="full">Run a full scan</button>`;
+          break;
+        }
         title = acct.tier === "pro" ? "You've used your Pro pass scans" : "You've used your free Pro scan";
         body = `A Pro pass adds more (₹99 for 10 scans over 7 days, or ₹299 for 50 over 30 days). The standard 100-platform scan stays unlimited.`;
         action = `<a class="btn btn-primary" href="/pricing.html">See Pro passes</a>
@@ -436,7 +444,7 @@
 
     if (preview) html += previewNotice(preview);
 
-    // A score calculated from 100 visible platforms would misstate a 560-
+    // A score calculated from 100 visible platforms would misstate a 561-
     // platform sweep. Signed-in reports still get the complete score.
     const exp = preview ? null : computeExposure("username", data);
     lastExposure = exp;
@@ -564,7 +572,7 @@
 
   function fullScanNudge() {
     return `<div class="panel gate slim"><p>This was the 100-platform quick scan. Run the
-      <strong>560-platform sweep</strong> to see a guest preview, then sign in to request the full report.</p>
+      <strong>561-platform sweep</strong> to see a guest preview, then sign in to request the full report.</p>
       <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the full sweep</button></div></div>`;
   }
 
@@ -1420,7 +1428,7 @@
   }
 
   // ---- Scan size and account state ---------------------------------
-  // Size of the Extended tier: the 560 plus every imported site that passed
+  // Size of the Extended tier: the full 561 plus every imported site that passed
   // the sweep engine's own test (tools/maigret_web_import.py). Matches
   // /api/plans limits.extended_platforms and data/platforms.json.
   const EXTENDED_PLATFORMS = Number(window.MYRECON_EXTENDED_PLATFORMS) || 3166;
@@ -1449,17 +1457,22 @@
       return;
     }
     if (scope === "extended" && (!st || !st.user)) {
-      note.textContent = `Checks ${EXTENDED_PLATFORMS.toLocaleString()} platforms in about 5 minutes. Sign in to run it; it uses one Pro scan.`;
+      note.textContent = `Checks ${EXTENDED_PLATFORMS.toLocaleString()} platforms in about 5 minutes. Included with Pro passes: 2 a week or 6 a month.`;
       return;
     }
     if (!st || !st.user) {
-      note.textContent = "Checks all 560 platforms. Guests see results from 100; sign in to request the full report.";
+      note.textContent = "Checks all 561 platforms. Guests see results from 100; sign in to request the full report.";
       return;
     }
     if (!acct) { note.textContent = ""; return; }
-    const lead = scope === "extended"
-      ? `${EXTENDED_PLATFORMS.toLocaleString()} platforms, about 5 minutes, uses one Pro scan. ` : "";
-    note.textContent = lead + (acct.tier === "pro"
+    if (scope === "extended") {
+      const lead = `${EXTENDED_PLATFORMS.toLocaleString()} platforms, about 5 minutes. `;
+      note.textContent = lead + (acct.tier === "pro"
+        ? `${acct.extended_scans_left || 0} Extended scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
+        : "Included with Pro passes: 2 with Pro Weekly, 6 with Pro Monthly.");
+      return;
+    }
+    note.textContent = (acct.tier === "pro"
       ? `Pro: ${acct.pro_scans_left} Pro scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
       : (acct.free_scans_left > 0 ? "Your free Pro scan is ready." : "Free Pro scan used. A Pro pass adds more."));
   }
@@ -1473,7 +1486,7 @@
     const extended = body && body.scope === "extended";
     const full = extended || (body && body.scope === "full");
     const preview = full && !extended && !signedIn();
-    const size = extended ? EXTENDED_PLATFORMS.toLocaleString() : (full ? "560" : "100");
+    const size = extended ? EXTENDED_PLATFORMS.toLocaleString() : (full ? "561" : "100");
     resultsEl().innerHTML = `
       <div class="loading scan" role="status" aria-live="polite">
         <div class="scan-head">

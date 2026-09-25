@@ -304,6 +304,14 @@ def _admit_scan(scope: str, cached: bool):
         raise AccountsUnavailable()
     uid = user["sub"]
     account = plans.get_account(uid, user.get("email", ""), user.get("name", ""))
+    if scope == "extended":
+        # Pro passes only, from their own small allowance (2 a week, 6 a
+        # month). Never paid from full scans or the free trial.
+        if cached:
+            if account["extended_scans_left"] <= 0:
+                raise NoAllowance(account, "extended")
+            return uid, None
+        return uid, plans.consume_extended_scan(uid)
     if cached:
         # Serving a result already in the cache costs nobody anything, so it
         # is not charged, but it is still a full-scan feature.
@@ -331,7 +339,7 @@ def _remember(uid, data):
         return None
 
 
-# Concurrent 560-platform sweeps in this worker. Each holds 24 sockets.
+# Concurrent full and extended sweeps in this worker. Each holds 24 sockets.
 _full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
 
 
@@ -929,9 +937,14 @@ def _register_errors(app: Flask) -> None:
 
     @app.errorhandler(NoAllowance)
     def on_no_allowance(err):
+        if err.scope == "extended":
+            message = ("Extended scans come with a Pro pass: 2 with Pro Weekly, "
+                       "6 with Pro Monthly.")
+        else:
+            message = "You have used your free Pro scan. A Pro pass adds more."
         return jsonify({
-            "status": "error", "code": "upgrade_required",
-            "error": "You have used your free Pro scan. A Pro pass adds more.",
+            "status": "error", "code": "upgrade_required", "scope": err.scope,
+            "error": message,
             "account": err.entitlements,
         }), 402
 

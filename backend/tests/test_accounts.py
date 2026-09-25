@@ -119,7 +119,8 @@ def test_guest_full_scan_uses_guest_allowance_and_returns_preview(client):
     r = _scan(client, scope="full")
     assert r.status_code == 200
     assert r.get_json()["preview"] == {
-        "checked": 560, "visible": 100, "hidden": 460,
+        "checked": plans.FULL_PLATFORMS, "visible": 100,
+        "hidden": plans.FULL_PLATFORMS - 100,
         "hidden_findings": 0,
         "requires_sign_in": True,
     }
@@ -195,7 +196,7 @@ def test_guest_stream_withholds_locked_events_and_details(client, monkeypatch):
     assert "hidden.example" not in wire
     assert full["results"]["profiles"][1]["platform"] not in wire
     assert [e["type"] for e in emitted] == ["progress", "found", "complete"]
-    assert emitted[-1]["data"]["preview"]["checked"] == 560
+    assert emitted[-1]["data"]["preview"]["checked"] == plans.FULL_PLATFORMS
 
 
 def test_guest_stream_redacts_a_cached_full_result(client, monkeypatch):
@@ -265,6 +266,52 @@ def test_expired_pass_falls_back_to_free():
     store.store.transaction("web/users/u", lambda _: rec)
     acct = plans.get_account("u")
     assert acct["tier"] == "free" and acct["full_scans_left"] == 1
+
+
+# ── extended allowance ──────────────────────────────────────────
+
+def test_extended_is_pro_only_and_leaves_the_free_trial_alone(client):
+    t = _token()
+    body = _scan(client, t, "extended").get_json()
+    assert body["code"] == "upgrade_required" and body["scope"] == "extended"
+    assert plans.get_account("user-1")["free_scans_left"] == plans.FREE_FULL_SCANS
+
+
+def test_weekly_pass_gives_two_extended_scans_apart_from_full_ones(client):
+    plans.grant_pass("user-1", "weekly", "order_A")
+    t = _token()
+    assert [_scan(client, t, "extended").status_code for _ in range(3)] == [200, 200, 402]
+    acct = plans.get_account("user-1")
+    assert acct["extended_scans_left"] == 0 and acct["pro_scans_left"] == 10
+
+
+def test_monthly_pass_gives_six_extended_scans_and_passes_stack():
+    plans.grant_pass("u", "monthly", "order_A")
+    assert plans.get_account("u")["extended_scans_left"] == 6
+    plans.grant_pass("u", "weekly", "order_B")
+    assert plans.get_account("u")["extended_scans_left"] == 8
+
+
+def test_pass_bought_before_extended_allowance_reads_its_plan_default():
+    plans.grant_pass("u", "monthly", "order_A")
+    rec = store.store.get("web/users/u")
+    del rec["pro"]["extended_left"]
+    store.store.transaction("web/users/u", lambda _: rec)
+    assert plans.get_account("u")["extended_scans_left"] == 6
+    assert plans.consume_extended_scan("u") == "extended"
+    assert plans.get_account("u")["extended_scans_left"] == 5
+
+
+def test_failed_extended_scan_is_refunded(monkeypatch, client):
+    import services.search as search
+
+    def boom(*a, **k):
+        raise RuntimeError("sweep died")
+    plans.grant_pass("user-1", "weekly", "order_A")
+    monkeypatch.setattr(search, "_run_full", boom)
+    app_module.app.config["PROPAGATE_EXCEPTIONS"] = False
+    assert _scan(client, _token(), "extended").status_code == 500
+    assert plans.get_account("user-1")["extended_scans_left"] == 2
 
 
 # ── billing ─────────────────────────────────────────────────────
