@@ -42,9 +42,9 @@ FREE_FULL_SCANS = config.FREE_FULL_SCANS
 
 PLANS = {
     "weekly": {"id": "weekly", "label": "Pro Weekly", "price_inr": 99,
-               "days": 7, "full_scans": 50},
+               "days": 7, "full_scans": 10},
     "monthly": {"id": "monthly", "label": "Pro Monthly", "price_inr": 299,
-                "days": 30, "full_scans": 200},
+                "days": 30, "full_scans": 50},
 }
 
 _DAY_MS = 86_400_000

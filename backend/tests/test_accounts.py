@@ -150,7 +150,7 @@ def test_pass_is_applied_once_per_order():
     assert plans.grant_pass("u", "weekly", "order_A") is True
     assert plans.grant_pass("u", "weekly", "order_A") is False  # webhook after verify
     acct = plans.get_account("u")
-    assert acct["tier"] == "pro" and acct["pro_scans_left"] == 50
+    assert acct["tier"] == "pro" and acct["pro_scans_left"] == 10
 
 
 def test_passes_stack():
@@ -158,7 +158,7 @@ def test_passes_stack():
     first_until = plans.get_account("u")["pro_until"]
     plans.grant_pass("u", "monthly", "order_B")
     acct = plans.get_account("u")
-    assert acct["pro_scans_left"] == 250
+    assert acct["pro_scans_left"] == 60
     assert acct["pro_until"] - first_until == 30 * 86_400_000
     assert acct["plan"] == "monthly"
 
@@ -167,7 +167,7 @@ def test_pro_scans_are_spent_before_free_ones():
     plans.grant_pass("u", "weekly", "order_A")
     assert plans.consume_full_scan("u") == "pro"
     acct = plans.get_account("u")
-    assert acct["pro_scans_left"] == 49 and acct["free_scans_left"] == 1
+    assert acct["pro_scans_left"] == 9 and acct["free_scans_left"] == 1
 
 
 def test_expired_pass_falls_back_to_free():
@@ -207,7 +207,7 @@ def _verify(client, token, sig=None):
 def test_verify_applies_the_pass(client, keys, monkeypatch):
     monkeypatch.setattr(razorpay, "fetch_order", lambda oid: _paid_order())
     r = _verify(client, _token()).get_json()
-    assert r["applied"] is True and r["account"]["pro_scans_left"] == 50
+    assert r["applied"] is True and r["account"]["pro_scans_left"] == 10
 
 
 def test_verify_rejects_a_forged_signature(client, keys, monkeypatch):
@@ -241,7 +241,7 @@ def test_webhook_needs_a_valid_signature(client, keys, monkeypatch):
     assert good.status_code == 200 and plans.get_account("user-1")["tier"] == "pro"
     # ...and the browser's verify arriving afterwards does not apply it twice.
     _verify(client, _token())
-    assert plans.get_account("user-1")["pro_scans_left"] == 50
+    assert plans.get_account("user-1")["pro_scans_left"] == 10
 
 
 def test_plans_endpoint_never_exposes_secrets(client, keys):

@@ -258,7 +258,7 @@
         break;
       case "upgrade_required": {
         title = acct.tier === "pro" ? "You've used your Pro pass scans" : "You've used your free Pro scan";
-        body = `A Pro pass adds more (₹99 for 50 scans over 7 days, or ₹299 for 200 over 30 days). The standard 100-platform scan stays unlimited.`;
+        body = `A Pro pass adds more (₹99 for 10 scans over 7 days, or ₹299 for 50 over 30 days). The standard 100-platform scan stays unlimited.`;
         action = `<a class="btn btn-primary" href="/pricing.html">See Pro passes</a>
           <button type="button" class="btn btn-ghost" data-gate="standard">Run a standard scan</button>`;
         break;
