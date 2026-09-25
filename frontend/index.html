@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OSINT Tool for Username, Email & Breach Lookup | MyRecon</title>
-  <meta name="description" content="Scan a username across 561 platforms. Guests see a 100-platform preview; sign in to request the full report. Check email, passwords, domains, DNS and IP addresses too.">
+  <meta name="description" content="Scan a username across 500+ platforms. Guests see a 100-platform preview; sign in to request the full report. Check email, passwords, domains, DNS and IP addresses too.">
   <meta name="keywords" content="OSINT, username search, email intelligence, breach detection, password exposure check, pwned password, WHOIS lookup, DNS records, IP geolocation, reverse DNS, digital footprint">
   <meta name="author" content="MyRecon">
   <meta name="robots" content="index, follow">
@@ -79,7 +79,7 @@
       { "@type": "Question", "name": "How accurate are the results?", "acceptedAnswer": { "@type": "Answer", "text": "MyRecon favours reliable, documented sources such as RDAP, DNS-over-HTTPS, and official breach and profile APIs, and verifies username matches with confidence scoring. Matches are labelled by confidence and should be independently confirmed." } },
       { "@type": "Question", "name": "Is it safe to type a password into the password checker?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The password is hashed with SHA-1 inside your browser and only the first five characters of the hash are sent to the Pwned Passwords service, a technique called k-anonymity. That prefix is shared by thousands of different passwords, so it identifies nothing, and the final matching happens locally. The password never reaches MyRecon's servers, is never written to browser storage, and is never placed in a URL." } },
       { "@type": "Question", "name": "Does MyRecon search the dark web?", "acceptedAnswer": { "@type": "Answer", "text": "Not in the way the phrase is usually sold. Live crawling of dark web marketplaces is not something any free service can do. MyRecon checks your email and passwords against published breach corpora, the credential dumps that were traded on criminal forums and have since been released and catalogued. That is the same underlying data most consumer dark web monitoring products check." } },
-      { "@type": "Question", "name": "Is MyRecon free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Guests can scan a username across 561 platforms and see a 100-platform preview. Sign in for one free full report. Email, password exposure, domain, DNS, and IP lookups remain free." } },
+      { "@type": "Question", "name": "Is MyRecon free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Guests can scan a username across 500+ platforms and see a 100-platform preview. Sign in for one free full report. Email, password exposure, domain, DNS, and IP lookups remain free." } },
       { "@type": "Question", "name": "Is MyRecon legit?", "acceptedAnswer": { "@type": "Answer", "text": "It is free, needs no account, takes no card details, and its source is published under the MIT licence. Rather than asking you to trust that, we publish six tests you can run yourself, starting with searching for a username that cannot exist and seeing whether the tool reports accounts for it. Those tests work on any tool in this category." } },
       { "@type": "Question", "name": "What is the difference between the username sweep and Deep Search?", "acceptedAnswer": { "@type": "Answer", "text": "The sweep asks each platform directly whether an account with that handle exists, so it finds profiles nobody has ever linked to. Deep Search asks search engines what they have indexed about the handle, so it finds posts, documents and archived pages no catalogue would list. They fail in opposite directions, which is why both exist." } }
     ]
@@ -115,7 +115,7 @@
         <div class="hero-copy">
           <span class="eyebrow"><span class="dot"></span> Live public-source intelligence</span>
           <h1>Investigate any <span class="hero-word" id="heroWord">digital footprint</span><br><span class="fx-grad">with MyRecon</span></h1>
-          <p class="lead">Scan a username across 561 public platforms. Explore the first 100 as a guest, then sign in to request the full report. Email, password, domain, DNS and IP tools are here too.</p>
+          <p class="lead">Scan a username across 500+ public platforms. Explore the first 100 as a guest, then sign in to request the full report. Email, password, domain, DNS and IP tools are here too.</p>
           <!-- The tool lives in the hero so it is the first thing a visitor sees.
                IDs are unchanged; app.js finds everything by id. -->
           <div class="tool hero-tool" id="tool" aria-label="OSINT tools">
@@ -140,8 +140,8 @@
               <div class="opt-row" id="deepWrap">
                 <div class="scope-picker" role="radiogroup" aria-label="Scan size">
                   <label class="scope-opt"><input type="radio" name="scope" value="standard"> Quick <span class="hint">100 platforms</span></label>
-                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="full" checked> Full sweep <span class="hint">561 platforms</span></label>
-                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="extended"> Extended <span class="hint">3,166 platforms</span></label>
+                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="full" checked> Full sweep <span class="hint">500+ platforms</span></label>
+                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="extended"> Extended <span class="hint">3,000+ platforms</span></label>
                 </div>
                 <span class="hint scope-note" id="scopeNote"></span>
               </div>
@@ -181,8 +181,8 @@
       <div class="container">
         <div class="fx-marquee" aria-label="Data sources">
           <div class="fx-marquee-track">
-            <span class="chip">RDAP</span><span class="chip">DNS-over-HTTPS</span><span class="chip">LeakCheck</span><span class="chip">XposedOrNot</span><span class="chip">Pwned Passwords</span><span class="chip">Wayback Machine</span><span class="chip">Gravatar</span><span class="chip">SPF · DMARC</span><span class="chip">Reverse DNS</span><span class="chip">ASN ownership</span><span class="chip">561-platform sweep</span><span class="chip">Browser history</span>
-            <span class="chip" aria-hidden="true">RDAP</span><span class="chip" aria-hidden="true">DNS-over-HTTPS</span><span class="chip" aria-hidden="true">LeakCheck</span><span class="chip" aria-hidden="true">XposedOrNot</span><span class="chip" aria-hidden="true">Pwned Passwords</span><span class="chip" aria-hidden="true">Wayback Machine</span><span class="chip" aria-hidden="true">Gravatar</span><span class="chip" aria-hidden="true">SPF · DMARC</span><span class="chip" aria-hidden="true">Reverse DNS</span><span class="chip" aria-hidden="true">ASN ownership</span><span class="chip" aria-hidden="true">561-platform sweep</span><span class="chip" aria-hidden="true">Browser history</span>
+            <span class="chip">RDAP</span><span class="chip">DNS-over-HTTPS</span><span class="chip">LeakCheck</span><span class="chip">XposedOrNot</span><span class="chip">Pwned Passwords</span><span class="chip">Wayback Machine</span><span class="chip">Gravatar</span><span class="chip">SPF · DMARC</span><span class="chip">Reverse DNS</span><span class="chip">ASN ownership</span><span class="chip">500+ platform sweep</span><span class="chip">Browser history</span>
+            <span class="chip" aria-hidden="true">RDAP</span><span class="chip" aria-hidden="true">DNS-over-HTTPS</span><span class="chip" aria-hidden="true">LeakCheck</span><span class="chip" aria-hidden="true">XposedOrNot</span><span class="chip" aria-hidden="true">Pwned Passwords</span><span class="chip" aria-hidden="true">Wayback Machine</span><span class="chip" aria-hidden="true">Gravatar</span><span class="chip" aria-hidden="true">SPF · DMARC</span><span class="chip" aria-hidden="true">Reverse DNS</span><span class="chip" aria-hidden="true">ASN ownership</span><span class="chip" aria-hidden="true">500+ platform sweep</span><span class="chip" aria-hidden="true">Browser history</span>
           </div>
         </div>
       </div>
@@ -200,8 +200,8 @@
       <div class="container">
         <div class="fx-stats slim">
           <div class="fx-stat"><div class="n" data-count="100">100</div><div class="l">platforms free, no sign-in</div></div>
-          <div class="fx-stat"><div class="n" data-count="561">561</div><div class="l">in a full sweep</div></div>
-          <div class="fx-stat"><div class="n" data-count="3166">3,166</div><div class="l">in an Extended scan</div></div>
+          <div class="fx-stat"><div class="n" data-count="500" data-suffix="+">500+</div><div class="l">in a full sweep</div></div>
+          <div class="fx-stat"><div class="n" data-count="3000" data-suffix="+">3,000+</div><div class="l">in an Extended scan</div></div>
           <div class="fx-stat"><div class="n" data-count="900" data-suffix="M+">900M+</div><div class="l">breached passwords, checked privately</div></div>
         </div>
       </div>
@@ -374,7 +374,7 @@
           <details><summary>What is the difference between the WHOIS and DNS tools?</summary><p>WHOIS/RDAP tells you about a domain's <em>registration</em>: who registered it, when, the registrar, and its expiry. DNS tells you how the domain currently <em>resolves</em>: its A, MX, TXT, NS, and other records. The Domain tool combines both plus the resolved server's geolocation; the DNS tool focuses purely on records. Our <a href="/guides/">guides</a> and <a href="/deep-search.html">Deep Search</a> explain each in depth.</p></details>
           <details><summary>Is it safe to type a password into the password checker?</summary><p>Yes, and you don't have to take our word for it. Your password is hashed with SHA-1 <em>inside your browser</em>, and only the first five characters of that hash are sent to the Pwned Passwords service, a technique called k-anonymity. That prefix is shared by many thousands of different passwords, so it identifies nothing. The matching is done locally on the list that comes back. Your password never reaches MyRecon's servers, is never written to your browser storage, and is never placed in a URL. We also ask the service to pad its response so its size gives nothing away.</p></details>
           <details><summary>Does MyRecon search the dark web?</summary><p>Honestly: not in the way that phrase is usually sold. Nobody can crawl dark web marketplaces live for free, and services that genuinely infiltrate criminal forums charge thousands per month. What MyRecon does is check your email and passwords against the <em>breach corpora</em>: the credential dumps that were traded on those forums and have since been published and catalogued. That is the same underlying data most consumer "dark web monitoring" products actually check, and every source we use is documented and free.</p></details>
-          <details><summary>Is MyRecon free?</summary><p>Yes. Guests can run a 561-platform username sweep and see results from the first 100 platforms. Sign in for one free full report; extra full reports use Pro passes. Email, password exposure, domain, DNS, and IP lookups remain free. Guest username scans have a daily allowance to keep the service available.</p></details>
+          <details><summary>Is MyRecon free?</summary><p>Yes. Guests can run a 500+ platform username sweep and see results from the first 100 platforms. Sign in for one free full report; extra full reports use Pro passes. Email, password exposure, domain, DNS, and IP lookups remain free. Guest username scans have a daily allowance to keep the service available.</p></details>
           <details><summary>Is MyRecon legit?</summary><p>It is free, needs no account, takes no card details, and its source is published under the MIT licence, but you should not take that on trust from the people selling it. We wrote up <a href="/is-myrecon-legit.html">six tests you can run yourself</a>, starting with the one that matters most: search for a username that cannot exist and see whether the tool reports accounts for it. Those tests work on any tool in this category, not just ours.</p></details>
           <details><summary>What is the difference between the username sweep and Deep Search?</summary><p>The sweep asks each platform directly whether an account with that handle exists, so it finds profiles nobody has ever linked to. Deep Search asks search engines what they have indexed about the handle, so it finds posts, documents and archived pages no catalogue would list. They fail in opposite directions, which is why both exist, <a href="/username-sweep-vs-deep-search.html">the full comparison is here</a>.</p></details>
           <details><summary>Can I remove my information from MyRecon?</summary><p>MyRecon doesn't host a database of people, it queries public sources live at the moment you search. To reduce what appears, you need to reduce your public footprint at the source: delete unused accounts, tighten privacy settings, and change passwords exposed in breaches. Our guide on <a href="/guides/reduce-your-digital-footprint.html">reducing your digital footprint</a> walks through exactly how.</p></details>

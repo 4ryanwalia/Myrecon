@@ -118,7 +118,7 @@
       <div class="scan-row">
         <div class="scan-main">
           <strong>${escHtml(s.handle)}</strong>
-          <span class="scan-badge${s.scope === "full" || s.scope === "extended" ? " pro" : ""}">${s.scope === "extended" ? "Extended · " + Number(s.checked || 3166).toLocaleString() : s.scope === "full" ? "Pro · " + Number(s.checked || 561) : "Standard · 100"}</span>
+          <span class="scan-badge${s.scope === "full" || s.scope === "extended" ? " pro" : ""}">${s.scope === "extended" ? "Extended · 3,000+" : s.scope === "full" ? "Pro · 500+" : "Standard · 100"}</span>
           <span class="hint">${escHtml(new Date(s.at).toLocaleString())} · ${Number(s.profiles) || 0} found</span>
         </div>
         <div class="scan-actions">
