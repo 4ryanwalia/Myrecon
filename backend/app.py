@@ -275,8 +275,8 @@ def _require_user():
 
 def _scope(body: dict) -> str:
     scope = str(body.get("scope") or "standard").strip().lower()
-    if scope not in ("standard", "full"):
-        raise validation.ValidationError("scope must be 'standard' or 'full'.")
+    if scope not in ("standard", "full", "extended"):
+        raise validation.ValidationError("scope must be 'standard', 'full' or 'extended'.")
     return scope
 
 
@@ -292,6 +292,10 @@ def _admit_scan(scope: str, cached: bool):
 
     user = _signed_in_user()
     if user is None:
+        if scope == "extended":
+            # No guest preview of the extended tier: its first 100 platforms
+            # are the same 100 a guest full scan already shows.
+            raise SignInRequired()
         plans.consume_guest_scan(_client_ip())
         return None, None
     if scope == "standard":
@@ -355,6 +359,9 @@ def _guest_full_preview(data: dict) -> dict:
     )
     unverified = [r for r in (data.get("unverified") or []) if r.get("platform") in visible]
     rejected = [r for r in (data.get("rejected") or []) if r.get("platform") in visible]
+    platform_checks = [
+        r for r in (data.get("platform_checks") or []) if r.get("platform") in visible
+    ]
     total = len(CATALOGUE)
     shown_count = min(STANDARD_LIMIT, total)
     return {
@@ -376,6 +383,7 @@ def _guest_full_preview(data: dict) -> dict:
         "exposures": [],
         "rejected": rejected,
         "unverified": unverified,
+        "platform_checks": platform_checks,
         "preview": {
             "checked": total,
             "visible": shown_count,
@@ -461,18 +469,19 @@ def _register_routes(app: Flask) -> None:
         body = _json_body()
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
-        if _scope(body) == "full":
+        scope = _scope(body)
+        if scope in ("full", "extended"):
             from core import plans
             from services.search import _run_full
-            key = _cache_key("username_full", username)
+            key = _cache_key("username_" + scope, username)
             hit = _cache.get(key) if config.CACHE_ENABLED else None
-            uid, charged = _admit_scan("full", hit is not None)
+            uid, charged = _admit_scan(scope, hit is not None)
             if hit is not None:
                 shown = _guest_full_preview(hit) if uid is None else hit
                 return responses.ok({**shown, "history_id": _remember(uid, hit)})
             with _full_slots:
                 try:
-                    data = _run_full(username)
+                    data = _run_full(username, extended=scope == "extended")
                 except Exception:
                     plans.refund_full_scan(uid, charged)
                     raise
@@ -500,7 +509,7 @@ def _register_routes(app: Flask) -> None:
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
         scope = _scope(body)
-        key = (_cache_key("username_full", username) if scope == "full"
+        key = (_cache_key("username_" + scope, username) if scope in ("full", "extended")
                else _cache_key("username", username, deep))
         cached_hit = _cache.get(key) if config.CACHE_ENABLED else None
         # Admitted before the response starts, so a refusal is a real
@@ -519,7 +528,7 @@ def _register_routes(app: Flask) -> None:
                 yield json.dumps({"type": "complete", "data": shown,
                                   "history_id": _remember(uid, cached_hit)}) + "\n"
                 return
-            slot = _full_slots if scope == "full" else None
+            slot = _full_slots if scope in ("full", "extended") else None
             if slot is not None and not slot.acquire(blocking=False):
                 yield json.dumps({"type": "progress", "phase": "Queued", "percent": 1,
                                   "detail": "Waiting for a free scan slot…"}) + "\n"
@@ -730,6 +739,7 @@ def _register_routes(app: Flask) -> None:
             "limits": {
                 "standard_platforms": plans.STANDARD_PLATFORMS,
                 "full_platforms": plans.FULL_PLATFORMS,
+                "extended_platforms": plans.EXTENDED_PLATFORMS,
                 "guest_scans_per_day": plans.GUEST_SCANS_PER_DAY,
                 "free_full_scans_total": plans.FREE_FULL_SCANS,
             },

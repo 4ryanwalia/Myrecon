@@ -42,6 +42,7 @@ from core.store import Abort, store
 
 from modules.username_checker import STANDARD_LIMIT as STANDARD_PLATFORMS  # noqa: E402
 from modules.sweep import TOTAL as FULL_PLATFORMS  # noqa: E402
+from modules.sweep import EXTENDED_TOTAL as EXTENDED_PLATFORMS  # noqa: E402
 GUEST_SCANS_PER_DAY = config.GUEST_SCANS_PER_DAY
 FREE_FULL_SCANS = config.FREE_FULL_SCANS
 

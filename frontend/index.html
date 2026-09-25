@@ -49,8 +49,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=14">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=8">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=15">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=9">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -141,12 +141,13 @@
                 <div class="scope-picker" role="radiogroup" aria-label="Scan size">
                   <label class="scope-opt"><input type="radio" name="scope" value="standard"> Quick <span class="hint">100 platforms</span></label>
                   <label class="scope-opt scope-full"><input type="radio" name="scope" value="full" checked> Full sweep <span class="hint">560 platforms</span></label>
+                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="extended"> Extended <span class="hint">3,166 platforms</span></label>
                 </div>
                 <span class="hint scope-note" id="scopeNote"></span>
               </div>
               <div class="examples" id="examples"></div>
             </div>
-            <p class="tool-foot"><span class="kbd">Enter</span> to run · results appear below · signed-in scans can be saved · <a href="/vs/">how we compare</a></p>
+            <p class="tool-foot"><span class="kbd">Enter</span> to run · results appear below · signed-in scans can be saved · <a href="/vs/">how we compare</a><span class="tool-exit"> · <a href="/" id="toolExit">back to overview</a></span></p>
           </div>
         </div>
         <div class="orbit" id="fxOrbit" role="img" aria-label="Illustration: a radar sweeping social platforms such as Instagram, Snapchat, X, TikTok, YouTube, Reddit and GitHub for one username.">
@@ -195,13 +196,13 @@
 
     <!-- Numbers. Each one is countable on the site itself, none is a
          marketing estimate. -->
-    <section class="section" id="numbers" style="padding-top:34px">
+    <section class="section" id="numbers">
       <div class="container">
-        <div class="fx-stats">
-          <div class="fx-stat fx-card"><div class="n" data-count="100">100</div><div class="l">platform verdicts shown in a guest preview</div><div class="bar"><span style="--fill:.22"></span></div></div>
-          <div class="fx-stat fx-card"><div class="n" data-count="560">560</div><div class="l">platforms checked in a full username sweep</div><div class="bar"><span></span></div></div>
-          <div class="fx-stat fx-card"><div class="n" data-count="900" data-suffix="M+">900M+</div><div class="l">breached passwords, checked without the password leaving your browser</div><div class="bar"><span style="--fill:.9"></span></div></div>
-          <div class="fx-stat fx-card"><div class="n" data-count="0">0</div><div class="l">cards needed to start a guest scan</div><div class="bar"><span style="--fill:.02"></span></div></div>
+        <div class="fx-stats slim">
+          <div class="fx-stat"><div class="n" data-count="100">100</div><div class="l">platforms free, no sign-in</div></div>
+          <div class="fx-stat"><div class="n" data-count="560">560</div><div class="l">in a full sweep</div></div>
+          <div class="fx-stat"><div class="n" data-count="3166">3,166</div><div class="l">in an Extended scan</div></div>
+          <div class="fx-stat"><div class="n" data-count="900" data-suffix="M+">900M+</div><div class="l">breached passwords, checked privately</div></div>
         </div>
       </div>
     </section>
@@ -406,7 +407,7 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/email-outcome.js?v=1"></script>
   <script src="/assets/js/account.js?v=3"></script>
-  <script src="/assets/js/app.js?v=20"></script>
+  <script src="/assets/js/app.js?v=21"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=7" defer></script>
 </body>

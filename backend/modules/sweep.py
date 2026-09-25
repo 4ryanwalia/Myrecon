@@ -46,6 +46,20 @@ with open(_CATALOGUE_PATH, encoding="utf-8") as _fh:
 
 TOTAL = len(CATALOGUE)
 
+# The Extended scan's extra tier: sites from the Maigret list that passed this
+# engine's own test (a known-real handle FOUND, two impossible ones not). Built
+# by tools/maigret_web_import.py, never hand-edited. Kept apart from CATALOGUE
+# so the Pro scan stays the app's 560 and stays fast.
+_EXTRA_PATH = os.path.join(os.path.dirname(_CATALOGUE_PATH), "platforms_extra.json")
+try:
+    with open(_EXTRA_PATH, encoding="utf-8") as _fh:
+        EXTRA: list = json.load(_fh)
+except FileNotFoundError:
+    EXTRA = []
+
+EXTENDED = CATALOGUE + EXTRA
+EXTENDED_TOTAL = len(EXTENDED)
+
 FOUND, NOT_FOUND, UNKNOWN = "found", "not_found", "unknown"
 
 # (label, unreachable). Labels match the app's Reason enum word for word.
@@ -322,12 +336,13 @@ def _differs(a, b):
 class Sweep:
     """One sweep: a pooled session, one control handle, a shared deadline."""
 
-    def __init__(self, handle, deadline_seconds=DEADLINE_SECONDS):
+    def __init__(self, handle, deadline_seconds=DEADLINE_SECONDS, concurrency=CONCURRENCY):
         self.handle = handle.strip().lstrip("@")
+        self.concurrency = concurrency
         self.control = _control_handle()
         self.deadline = time.monotonic() + deadline_seconds
         self.session = requests.Session()
-        adapter = HTTPAdapter(pool_connections=64, pool_maxsize=CONCURRENCY, max_retries=0)
+        adapter = HTTPAdapter(pool_connections=64, pool_maxsize=concurrency, max_retries=0)
         self.session.mount("https://", adapter)
         self.session.mount("http://", adapter)
         # No cookie jar, like the app's OkHttp client. With one, the first
@@ -445,6 +460,16 @@ class Sweep:
 
         if _host_templated(p["url"]) and not _DNS_LABEL.match(handle):
             return self._hit(p, UNKNOWN, url, 0, "unverified", "invalid_handle")
+        # Imported platforms carry the site's own username rule. A handle the
+        # site could never register would 404, and 404 reads as proof of
+        # absence, so it is unknown instead of a confident "no account".
+        rule = p.get("regex_check")
+        if rule:
+            try:
+                if not re.search(rule, handle):
+                    return self._hit(p, UNKNOWN, url, 0, "unverified", "invalid_handle")
+            except re.error:
+                pass
         if time.monotonic() > self.deadline or self._stop.is_set():
             return self._hit(p, UNKNOWN, url, 0, "unverified", "out_of_time")
 
@@ -566,7 +591,7 @@ class Sweep:
                                  "unverified", "transport")
 
         try:
-            with ThreadPoolExecutor(max_workers=CONCURRENCY) as pool:
+            with ThreadPoolExecutor(max_workers=self.concurrency) as pool:
                 futures = [pool.submit(guarded, p) for p in platforms]
                 for fut in as_completed(futures):
                     hit = fut.result()

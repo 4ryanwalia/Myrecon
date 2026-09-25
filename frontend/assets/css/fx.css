@@ -540,3 +540,45 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 @media (prefers-reduced-motion: reduce) {
   .results .progress > i, .live-found .card { animation: none !important; }
 }
+
+/* Numbers strip: one quiet row instead of four cards. */
+.fx-stats.slim { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 56px; padding: 6px 0; }
+.fx-stats.slim .fx-stat { background: none; border: 0; padding: 0; text-align: center; overflow: visible; }
+.fx-stats.slim .fx-stat .n { font-size: clamp(1.35rem, 3vw, 1.7rem); color: var(--text); }
+.fx-stats.slim .fx-stat .l { font-size: 0.8rem; margin-top: 2px; color: var(--text-mute); }
+#numbers { padding: 26px 0; }
+@media (max-width: 560px) {
+  .fx-stats.slim { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+}
+
+/* Tool mode: once a lookup runs, the homepage becomes the tool. Everything
+   below the results and the decorative half of the hero step aside. */
+body.tool-mode main > section:not(.hero):not(.results-section) { display: none !important; }
+body.tool-mode .hero .orbit,
+body.tool-mode .hero .fx-marquee,
+body.tool-mode .hero .eyebrow,
+body.tool-mode .hero h1,
+body.tool-mode .hero .lead { display: none !important; }
+body.tool-mode .hero { padding-top: 22px; padding-bottom: 6px; min-height: 0; }
+body.tool-mode .hero-grid,
+body.tool-mode.home-page .hero-grid { grid-template-columns: minmax(0, 1fr) !important; max-width: 980px; margin-inline: auto; }
+body.tool-mode .results-section { max-width: 980px; }
+.tool-exit { display: none; }
+body.tool-mode .tool-exit { display: inline; }
+
+/* Results view switch (signed-in): cards or account map, never both. */
+.view-switch { display: inline-flex; gap: 2px; padding: 3px; margin: 4px 0 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
+.view-switch button { border: 0; background: none; color: var(--text-dim); font: inherit; font-size: 0.84rem; padding: 6px 16px; border-radius: 999px; cursor: pointer; min-height: 34px; }
+.view-switch button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.view-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* The map only exists at desktop width (see .relationship-panel), so below
+   that the switch disappears and the cards always show. */
+@media (max-width: 1099px) {
+  .view-switch { display: none; }
+  [data-view-pane="cards"][hidden] { display: block !important; }
+}
+/* Account map marks: brand logo, or the platform's favicon over initials. */
+.relationship-logo { fill: currentColor; pointer-events: none; }
+.relationship-favicon { opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.relationship-favicon.ok { opacity: 1; }
+.relationship-initials.covered { visibility: hidden; }

@@ -166,6 +166,56 @@ def _rejections(checker: UsernameChecker) -> list[dict]:
     return out
 
 
+def _standard_platform_checks(checker: UsernameChecker) -> list[dict]:
+    """Return one honest, compact outcome for every standard-scan request.
+
+    The existing ``rejected`` list is deliberately only the non-matches.  It
+    answers why a profile was omitted, but it cannot answer the more basic
+    question a report reader has: *which platforms did this scan actually
+    visit?*  Keep that record separate from findings and do not turn a timeout,
+    a block, or weak evidence into a "no account" claim.
+    """
+    checks = []
+    for result in getattr(checker, "all_results", []):
+        status_code = result.get("status_code", 0)
+        score = result.get("match_score")
+        if result.get("exists"):
+            verdict = "possible" if result.get("confidence") == "low" else "found"
+            reason = ("only weak profile signals" if verdict == "possible"
+                      else "profile signals matched")
+        elif (status_code in (404, 410)
+              or (isinstance(score, (int, float)) and score <= -10)):
+            verdict = "not_found"
+            reason = result.get("reason") or "the platform reported no such account"
+        else:
+            verdict = "unknown"
+            reason = result.get("reason") or "the platform could not verify this handle"
+        checks.append({
+            "platform": result.get("platform", ""),
+            "url": result.get("url", ""),
+            "verdict": verdict,
+            "status_code": status_code,
+            "reason": reason,
+        })
+    return sorted(checks, key=lambda r: r["platform"].lower())
+
+
+def _full_platform_checks(hits: list[dict]) -> list[dict]:
+    """Project every full-sweep verdict into the report's platform-check log."""
+    checks = []
+    for hit in hits:
+        checks.append({
+            "platform": hit.get("platform", ""),
+            "category": hit.get("platform_category", ""),
+            "url": hit.get("url", ""),
+            "verdict": hit.get("verdict", "unknown"),
+            "status_code": hit.get("status_code", 0),
+            "reason": hit.get("reason", ""),
+            "unreachable": bool(hit.get("unreachable")),
+        })
+    return sorted(checks, key=lambda r: r["platform"].lower())
+
+
 def _code_exposure(profiles: list[dict], username: str, emit=_noop) -> list[dict]:
     """
     Findings about what the handle leaks, as opposed to where it exists.
@@ -279,6 +329,7 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
             emit({"type": "found", "result": _live_view(r, username)})
 
     rejected: list[dict] = []
+    platform_checks: list[dict] = []
     try:
         checker = UsernameChecker(max_workers=20 if deep else 12, delay=0)
         found = checker.scan(username, callback=_checker_cb, deep=deep)
@@ -286,6 +337,7 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
             r["category"] = categorise_result(r, username)
         all_results.extend(found)
         rejected = _rejections(checker)
+        platform_checks = _standard_platform_checks(checker)
     except Exception as e:  # noqa: BLE001 - surface as a soft error
         all_results.append({
             "source": "username_check", "error": True, "platform": "Error",
@@ -338,7 +390,7 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
             "documents": len(documents),
             "mentions": len(mentions),
             "clusters": len(clusters),
-            "checked": len(profiles) + len(rejected),
+            "checked": len(platform_checks),
             "rejected": len(rejected),
             "exposures": len(exposures),
         },
@@ -346,10 +398,11 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
         "identity_clusters": clusters,
         "exposures": exposures,
         "rejected": rejected,
+        "platform_checks": platform_checks,
     }
 
 
-def _run_full(username: str, emit=_noop) -> dict:
+def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
     """
     The Android app's 560-platform sweep, run here for guests and accounts.
 
@@ -362,10 +415,10 @@ def _run_full(username: str, emit=_noop) -> dict:
     answered but cannot distinguish a real account from a placeholder, shown
     as links to check by hand, never as found).
     """
-    from modules.sweep import Sweep, FOUND, NOT_FOUND
+    from modules.sweep import Sweep, FOUND, NOT_FOUND, EXTENDED
 
     emit({"type": "progress", "phase": "Checking platforms", "percent": 2,
-          "detail": "Starting full scan…"})
+          "detail": "Starting extended scan…" if extended else "Starting full scan…"})
 
     def on_result(hit, checked, total):
         emit({
@@ -377,7 +430,14 @@ def _run_full(username: str, emit=_noop) -> dict:
         if hit["exists"]:
             emit({"type": "found", "result": _live_view(hit, username)})
 
-    hits, coverage = Sweep(username).run(on_result=on_result)
+    if extended:
+        # Most of the extra tier is API-backed forums and instances, one light
+        # request each, so it runs wider and gets a longer clock.
+        sweep = Sweep(username, deadline_seconds=270, concurrency=96)
+        hits, coverage = sweep.run(on_result=on_result, platforms=EXTENDED)
+    else:
+        hits, coverage = Sweep(username).run(on_result=on_result)
+    platform_checks = _full_platform_checks(hits)
 
     found = [h for h in hits if h["verdict"] == FOUND]
     for r in found:
@@ -413,14 +473,15 @@ def _run_full(username: str, emit=_noop) -> dict:
 
     return {
         "status": "ok",
-        "query": {"username": username, "deep": True, "scope": "full"},
+        "query": {"username": username, "deep": True,
+                  "scope": "extended" if extended else "full"},
         "summary": {
             "total": len(profiles) + len(documents) + len(mentions),
             "profiles": len(profiles),
             "documents": len(documents),
             "mentions": len(mentions),
             "clusters": len(clusters),
-            "checked": coverage["total"],
+            "checked": len(platform_checks),
             "rejected": len(rejected),
             "unverified": len(unverified),
             "exposures": len(exposures),
@@ -431,6 +492,7 @@ def _run_full(username: str, emit=_noop) -> dict:
         "exposures": exposures,
         "rejected": rejected,
         "unverified": unverified,
+        "platform_checks": platform_checks,
     }
 
 
@@ -455,8 +517,8 @@ def stream_username(username: str, deep: bool = False, scope: str = "standard"):
 
     def worker():
         try:
-            if scope == "full":
-                holder["data"] = _run_full(username, emit)
+            if scope in ("full", "extended"):
+                holder["data"] = _run_full(username, emit, extended=scope == "extended")
             else:
                 holder["data"] = _run_username(username, deep, emit)
         except Exception as e:  # noqa: BLE001

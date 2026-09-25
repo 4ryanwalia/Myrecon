@@ -27,8 +27,12 @@ Limits, surfaced rather than hidden:
 
 import os
 import re
+import threading
+import time
 
 import requests
+
+from core.cache import TTLCache
 
 API = "https://api.github.com"
 
@@ -40,6 +44,37 @@ _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _TIMEOUT = 12
 _MAX_REPOS = 5
 _COMMITS_PER_REPO = 30
+
+# A finished answer for a handle is reused for six hours: commit history does
+# not change between two scans of the same person, and every repeat costs six
+# calls out of a 60/hour budget that the whole server shares. Errors are never
+# cached, so a failed look is retried on the next scan.
+_RESULTS = TTLCache(ttl=6 * 3600, max_entries=500)
+
+# Once GitHub says the budget is spent, remember when it refills and stop
+# asking until then. Without this every scan in that hour made one more
+# doomed call and printed the same failure.
+_limit_lock = threading.Lock()
+_limited_until = 0.0
+
+
+def _note_limit(resp) -> None:
+    global _limited_until
+    try:
+        reset = float(resp.headers.get("X-RateLimit-Reset", "0"))
+    except ValueError:
+        reset = 0.0
+    with _limit_lock:
+        _limited_until = max(_limited_until, reset or time.time() + 900)
+
+
+def _limit_error():
+    with _limit_lock:
+        until = _limited_until
+    if until <= time.time():
+        return None
+    return {"error": "GitHub's hourly lookup limit is used up",
+            "limited": True, "retry_at": int(until), "emails": []}
 
 
 def _headers() -> dict:
@@ -73,6 +108,21 @@ def github_commit_emails(username: str, max_repos: int = _MAX_REPOS,
     if not username:
         return {"emails": [], "repos_checked": 0, "commits_seen": 0, "protected": False}
 
+    key = f"{username.lower()}|{max_repos}"
+    cached = _RESULTS.get(key)
+    if cached is not None:
+        return cached
+    limited = _limit_error()
+    if limited:
+        return limited
+
+    result = _lookup(username, max_repos, timeout)
+    if "error" not in result:
+        _RESULTS.set(key, result)
+    return result
+
+
+def _lookup(username: str, max_repos: int, timeout: int) -> dict:
     headers = _headers()
     try:
         resp = requests.get(
@@ -86,8 +136,9 @@ def github_commit_emails(username: str, max_repos: int = _MAX_REPOS,
     if resp.status_code == 404:
         return {"error": "no such GitHub user", "emails": []}
     if _rate_limited(resp):
-        return {"error": "GitHub rate limit reached (set GITHUB_TOKEN to raise it)",
-                "emails": []}
+        _note_limit(resp)
+        return _limit_error() or {"error": "GitHub's hourly lookup limit is used up",
+                                  "limited": True, "emails": []}
     if resp.status_code != 200:
         return {"error": f"GitHub returned {resp.status_code}", "emails": []}
 
@@ -116,6 +167,7 @@ def github_commit_emails(username: str, max_repos: int = _MAX_REPOS,
         except requests.RequestException:
             continue
         if _rate_limited(cresp):
+            _note_limit(cresp)
             break
         if cresp.status_code != 200:
             continue

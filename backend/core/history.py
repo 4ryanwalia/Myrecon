@@ -65,7 +65,7 @@ def save(uid: str, result: dict) -> str:
     scan_id = _store.store.push(f"web/scans/{uid}", _trim(result))
     _store.store.set(f"web/history/{uid}/{scan_id}", {
         "handle": str(query.get("username", ""))[:64],
-        "scope": "full" if query.get("scope") == "full" else "standard",
+        "scope": query.get("scope") if query.get("scope") in ("full", "extended") else "standard",
         "at": int(time.time() * 1000),
         "profiles": int(summary.get("profiles", 0) or 0),
         "checked": int(summary.get("checked", 0) or 0),

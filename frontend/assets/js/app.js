@@ -147,8 +147,10 @@
   async function api(endpoint, body) {
     const url = CFG.apiBase + endpoint;
     const ctrl = new AbortController();
-    // The full sweep checks 560 platforms and can take well over a minute.
-    const timer = setTimeout(() => ctrl.abort(), body && body.scope === "full" ? 180000 : 90000);
+    // The full sweep checks 560 platforms and can take well over a minute;
+    // the extended one checks several times that.
+    const scopeWait = { full: 180000, extended: 330000 };
+    const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || 90000);
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -338,6 +340,48 @@
   // The map uses only found/possible profiles returned in this report. An
   // edge means the searched handle appeared on that platform, never that
   // every profile belongs to one person. Keep all visible profiles in the list.
+  // Brand marks the site already ships (assets/img/platforms.svg, Simple
+  // Icons, CC0), with each brand's colour. Anything else falls back to the
+  // platform's own favicon, then to initials if that does not load.
+  const MAP_MARKS = {
+    instagram: ["instagram", "#E4405F"], facebook: ["facebook", "#0866FF"],
+    youtube: ["youtube", "#FF0000"], reddit: ["reddit", "#FF4500"],
+    discord: ["discord", "#5865F2"], telegram: ["telegram", "#26A5E4"],
+    twitch: ["twitch", "#9146FF"], spotify: ["spotify", "#1DB954"],
+    pinterest: ["pinterest", "#E60023"], steam: ["steam", "#66C0F4"],
+    snapchat: ["snapchat", "#FFFC00"], tiktok: ["tiktok", "currentColor"],
+    x: ["x", "currentColor"], "twitter / x": ["x", "currentColor"], twitter: ["x", "currentColor"],
+    github: ["github", "currentColor"], gist: ["github", "currentColor"],
+    medium: ["medium", "currentColor"], threads: ["threads", "currentColor"],
+  };
+
+  function mapMark(r, x, y) {
+    const name = String(r.platform || "").trim().toLowerCase();
+    const mark = MAP_MARKS[name];
+    if (mark) {
+      return `<svg x="${(x - 14).toFixed(1)}" y="${(y - 14).toFixed(1)}" width="28" height="28"
+        viewBox="0 0 24 24" class="relationship-logo" style="color:${mark[1]}"><use href="/assets/img/platforms.svg#${mark[0]}"/></svg>`;
+    }
+    const host = hostOf(r.url);
+    const initials = esc(String(r.platform || host || "Profile").slice(0, 2).toUpperCase());
+    const text = `<text x="${x.toFixed(1)}" y="${(y + 5).toFixed(1)}" class="relationship-initials">${initials}</text>`;
+    if (!host) return text;
+    return text + `<image href="https://${esc(host)}/favicon.ico" x="${(x - 13).toFixed(1)}" y="${(y - 13).toFixed(1)}"
+      width="26" height="26" class="relationship-favicon" preserveAspectRatio="xMidYMid meet"/>`;
+  }
+
+  // Favicons stay invisible until they load; one that fails is removed so the
+  // initials underneath remain. Listeners, not inline handlers, for the CSP.
+  function wireMapFavicons(root) {
+    root.querySelectorAll(".relationship-favicon").forEach((img) => {
+      img.addEventListener("load", () => {
+        img.classList.add("ok");
+        img.previousElementSibling?.classList.add("covered");
+      }, { once: true });
+      img.addEventListener("error", () => img.remove(), { once: true });
+    });
+  }
+
   function relationshipGraph(handle, profiles) {
     const mapped = profiles.filter((r) => safeUrl(r.url) &&
       (r.verdict === "found" || (r.exists === true && ["high", "medium"].includes(r.confidence))));
@@ -351,12 +395,11 @@
       `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`).join("");
     const nodes = points.map(({ r, x, y }) => {
       const name = String(r.platform || hostOf(r.url) || "Profile");
-      const initials = name.slice(0, 2).toUpperCase();
       const possible = r.confidence === "medium";
       return `<a href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener nofollow"
           aria-label="Open ${possible ? "possible" : "found"} ${esc(name)} profile">
           <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="28" class="relationship-node${possible ? " possible" : ""}"/>
-          <text x="${x.toFixed(1)}" y="${(y + 5).toFixed(1)}" class="relationship-initials">${esc(initials)}</text>
+          ${mapMark(r, x, y)}
           <text x="${x.toFixed(1)}" y="${(y + 45).toFixed(1)}" class="relationship-label">${esc(name.slice(0, 17))}</text>
           <title>${esc(name)}: ${possible ? "possible" : "found"} match for this handle</title>
         </a>`;
@@ -377,8 +420,8 @@
         <span class="relationship-total">${mapped.length} mapped from this report</span></div>
       <div class="relationship-body"><div class="relationship-visual">${graph}</div>
         <div class="relationship-context"><strong>What the links mean</strong>
-          <p>These platform checks found or suggested a public profile for the searched handle. A shared handle alone does not establish that the same person owns every account. Review the confidence label on each result below.</p>
-          ${mapped.length > plotted.length ? `<p class="relationship-more">Map shows ${plotted.length} of ${mapped.length} found or possible profiles. All visible profiles are listed below.</p>` : ""}
+          <p>These platform checks found or suggested a public profile for the searched handle. A shared handle alone does not establish that the same person owns every account. Check the confidence label on each card.</p>
+          ${mapped.length > plotted.length ? `<p class="relationship-more">Map shows ${plotted.length} of ${mapped.length} found or possible profiles. Switch to Cards to see every one.</p>` : ""}
           <span class="relationship-key"><i></i> Found profile <i class="possible"></i> Possible match</span>
         </div></div>
     </section>`;
@@ -407,8 +450,6 @@
     const relDomains = usernameRelatedDomains(data);
     if (relDomains.length) html += pivotRow("Related domains", relDomains.map((d) => pivotChip("domain", d, d)));
 
-    html += relationshipGraph(data.query.username, profiles);
-
     (data.identity_clusters || []).forEach((c) => { html += clusterCard(c); });
 
     html += exposuresPanel(data.exposures || []);
@@ -416,18 +457,39 @@
     if (!profiles.length && !documents.length && !mentions.length) {
       html += emptyState("No public profiles were found for this username.");
     } else {
-      html += `<div class="card-grid">`;
-      profiles.concat(documents, mentions).forEach((item) => { html += profileCard(item); });
-      html += `</div>`;
+      let cards = `<div class="card-grid">`;
+      profiles.concat(documents, mentions).forEach((item) => { cards += profileCard(item); });
+      cards += `</div>`;
+      // The account map is for signed-in reports, and it replaces the cards
+      // rather than sitting above them: one view of the same profiles at a time.
+      if (signedIn() && !preview && profiles.length) {
+        const view = resultsView();
+        html += `<div class="view-switch" role="group" aria-label="Show results as">
+            <button type="button" data-view="cards" aria-pressed="${view === "cards"}">Cards</button>
+            <button type="button" data-view="map" aria-pressed="${view === "map"}">Account map</button>
+          </div>
+          <div data-view-pane="cards"${view === "cards" ? "" : " hidden"}>${cards}</div>
+          <div data-view-pane="map"${view === "map" ? "" : " hidden"}>${relationshipGraph(data.query.username, profiles)}</div>`;
+      } else {
+        html += cards;
+      }
     }
 
-    html += unverifiedPanel(data.unverified || []);
-    html += rejectedPanel(data.rejected || [], s.checked || 0);
+    const platformChecks = data.platform_checks || [];
+    if (platformChecks.length) {
+      html += platformChecksPanel(platformChecks, s.checked || 0, data.query.username);
+    } else {
+      // Older saved reports predate the complete platform-check log. Keep their
+      // original disclosures useful instead of rendering an empty new panel.
+      html += unverifiedPanel(data.unverified || []);
+      html += rejectedPanel(data.rejected || [], s.checked || 0);
+    }
     if (data.coverage && !preview) html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
     else if ((data.query || {}).deep && !signedIn()
       && !preview && window.MyReconAccount && window.MyReconAccount.enabled) html += fullScanNudge();
     if (preview) html += previewUnlock(preview);
     r.innerHTML = html;
+    wireMapFavicons(r);
     animateCountUps();
   }
 
@@ -438,6 +500,52 @@
     return `<p class="coverage-line hint">Pro scan: ${c.total} platforms, ${decided} gave a definite answer,
       ${c.undetermined || 0} could not tell, ${c.unreachable || 0} blocked or timed out from our server
       (the <a href="/app.html">Android app</a> checks from your phone and gets through more of them).</p>`;
+  }
+
+  // One row for every platform the selected scan actually reached. This is a
+  // report of the request, not an assertion that a username is absent: blocks,
+  // timeouts, and weak signals stay "could not verify" or "possible".
+  function platformChecksPanel(checks, checked, username) {
+    if (!checks.length) return "";
+    const labels = {
+      found: "Profile found", possible: "Possible",
+      not_found: "No match", unknown: "Could not verify",
+    };
+    const counts = { found: 0, possible: 0, not_found: 0, unknown: 0 };
+    checks.forEach((check) => {
+      const verdict = Object.prototype.hasOwnProperty.call(counts, check.verdict)
+        ? check.verdict : "unknown";
+      counts[verdict] += 1;
+    });
+    const total = Number(checked) > 0 ? Number(checked) : checks.length;
+    const handle = String(username || "").replace(/^@+/, "");
+    const rows = [...checks].sort((a, b) => String(a.platform || "").localeCompare(String(b.platform || "")))
+      .map((check) => {
+        const verdict = Object.prototype.hasOwnProperty.call(labels, check.verdict)
+          ? check.verdict : "unknown";
+        const url = safeUrl(check.url);
+        const name = esc(check.platform || "Platform");
+        const platform = url
+          ? `<a href="${esc(url)}" target="_blank" rel="noopener nofollow">${name}</a>`
+          : name;
+        const category = check.category ? ` · ${esc(check.category)}` : "";
+        const status = check.unreachable && verdict === "unknown" ? "Unavailable" : labels[verdict];
+        return `<tr><td>${platform}<span class="hint">${category}</span></td>
+          <td class="rj-code">${esc(status)}</td>
+          <td class="rj-why">${esc(check.reason || "No additional response detail was available.")}</td></tr>`;
+      }).join("");
+    const outcomes = [
+      counts.found ? `${counts.found} found` : "",
+      counts.possible ? `${counts.possible} possible` : "",
+      counts.not_found ? `${counts.not_found} no match` : "",
+      counts.unknown ? `${counts.unknown} unverified` : "",
+    ].filter(Boolean).join(" · ");
+    return `<details class="panel rejected platform-checks">
+      <summary>${total} platforms checked${handle ? ` for @${esc(handle)}` : ""}
+        <span class="hint">${esc(outcomes)}</span></summary>
+      <p class="hint" style="margin:0;padding:0 20px 14px">This is the exact scan record for this username. A blocked, timed-out, or ambiguous platform is not treated as a no-account result. <a href="/data/platforms.json" download>Download the current platform catalogue</a>.</p>
+      <div class="rj-scroll"><table class="rj-table"><thead><tr><th scope="col">Platform</th><th scope="col">Outcome</th><th scope="col">Why</th></tr></thead><tbody>${rows}</tbody></table></div>
+    </details>`;
   }
 
   // Platforms that answered but show one page to everybody, so no checker can
@@ -481,8 +589,16 @@
         rows += `<div class="expo-row ok"><div class="expo-val">No address exposed</div>
           <div class="expo-why">every public commit uses GitHub's noreply address</div></div>`;
       }
-      if (x.error) {
-        rows += `<div class="expo-row"><div class="expo-why">Commit check unavailable, ${esc(x.error)}</div></div>`;
+      if (x.limited) {
+        // Not a finding and not a clean result: say it was skipped and when it
+        // can run again, without developer jargon about tokens.
+        const at = x.retry_at
+          ? new Date(x.retry_at * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          : "";
+        rows += `<div class="expo-row"><div class="expo-why">Commit email check skipped this time,
+          GitHub's free lookups are busy${at ? `. Scan again after ${esc(at)} to include it` : ". Scan again later to include it"}.</div></div>`;
+      } else if (x.error) {
+        rows += `<div class="expo-row"><div class="expo-why">Commit email check could not run, ${esc(x.error)}</div></div>`;
       }
     });
     if (!rows) return "";
@@ -1228,6 +1344,7 @@
     // Never trim a secret, leading and trailing spaces are part of a password.
     const value = tool.secret ? input.value : input.value.trim();
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
+    enterToolMode();
 
     // Local-only tools resolve in the browser. They deliberately clear
     // lastResult rather than set it, so every result action (save, copy link,
@@ -1257,7 +1374,7 @@
     if (tool.deep) {
       const scope = currentScope();
       body.deep = scope !== "quick";
-      body.scope = scope === "full" ? "full" : "standard";
+      body.scope = scope === "full" || scope === "extended" ? scope : "standard";
     }
 
     $("#runBtn").disabled = true;
@@ -1280,7 +1397,34 @@
     }
   }
 
+  // ---- Results view (cards / account map) -----------------------------
+  // Remembered per browser; a convenience only, so storage failures fall back
+  // to cards.
+  function resultsView() {
+    try { return localStorage.getItem("myrecon.resultsView") === "map" ? "map" : "cards"; }
+    catch { return "cards"; }
+  }
+
+  function setResultsView(view) {
+    try { localStorage.setItem("myrecon.resultsView", view); } catch { /* ignore */ }
+    $$("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === view)));
+    $$("[data-view-pane]").forEach((p) => { p.hidden = p.dataset.viewPane !== view; });
+  }
+
+  // Once a lookup runs, the homepage becomes the tool: the marketing sections
+  // below and the hero illustration are hidden by CSS until the visitor goes
+  // back to the overview.
+  function enterToolMode() {
+    if (document.body.classList.contains("tool-mode")) return;
+    document.body.classList.add("tool-mode");
+  }
+
   // ---- Scan size and account state ---------------------------------
+  // Size of the Extended tier: the 560 plus every imported site that passed
+  // the sweep engine's own test (tools/maigret_web_import.py). Matches
+  // /api/plans limits.extended_platforms and data/platforms.json.
+  const EXTENDED_PLATFORMS = Number(window.MYRECON_EXTENDED_PLATFORMS) || 3166;
+
   function currentScope() {
     const picked = document.querySelector('input[name="scope"]:checked');
     return picked ? picked.value : "standard";
@@ -1300,8 +1444,12 @@
     if (reload && st && st.user) await A.refreshAccount();
     const acct = st && st.user ? A.state().account : null;
     const scope = currentScope();
-    if (scope !== "full") {
+    if (scope !== "full" && scope !== "extended") {
       note.textContent = "Quick scan checks 100 platforms.";
+      return;
+    }
+    if (scope === "extended" && (!st || !st.user)) {
+      note.textContent = `Checks ${EXTENDED_PLATFORMS.toLocaleString()} platforms in about 5 minutes. Sign in to run it; it uses one Pro scan.`;
       return;
     }
     if (!st || !st.user) {
@@ -1309,9 +1457,11 @@
       return;
     }
     if (!acct) { note.textContent = ""; return; }
-    note.textContent = acct.tier === "pro"
+    const lead = scope === "extended"
+      ? `${EXTENDED_PLATFORMS.toLocaleString()} platforms, about 5 minutes, uses one Pro scan. ` : "";
+    note.textContent = lead + (acct.tier === "pro"
       ? `Pro: ${acct.pro_scans_left} Pro scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
-      : (acct.free_scans_left > 0 ? "Your free Pro scan is ready." : "Free Pro scan used. A Pro pass adds more.");
+      : (acct.free_scans_left > 0 ? "Your free Pro scan is ready." : "Free Pro scan used. A Pro pass adds more."));
   }
 
   // ---- Username: live streaming scan with progress -----------------
@@ -1320,20 +1470,22 @@
 
   function setScanning(body) {
     liveSeen = new Set();
-    const full = body && body.scope === "full";
-    const preview = full && !signedIn();
+    const extended = body && body.scope === "extended";
+    const full = extended || (body && body.scope === "full");
+    const preview = full && !extended && !signedIn();
+    const size = extended ? EXTENDED_PLATFORMS.toLocaleString() : (full ? "560" : "100");
     resultsEl().innerHTML = `
       <div class="loading scan" role="status" aria-live="polite">
         <div class="scan-head">
           <div class="spinner"></div>
           <div class="scan-meta">
             <h3 id="scanPhase">Starting scan…</h3>
-            <p class="hint" id="scanDetail">Preparing the ${full ? "560-platform" : "100-platform"} sweep.</p>
+            <p class="hint" id="scanDetail">Preparing the ${size}-platform sweep.</p>
           </div>
           <div class="scan-pct" id="scanPct">0%</div>
         </div>
         <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
-        <div class="scan-facts"><span>${full ? "560" : "100"} platforms in sweep</span>
+        <div class="scan-facts"><span>${size} platforms in sweep</span>
           <span>${preview ? "Guest preview: first 100 platform verdicts visible" : "Confirmed matches appear as platforms answer"}</span></div>
       </div>
       <div class="live-found" id="liveFound" hidden>
@@ -1434,9 +1586,10 @@
       const scan = data.scan;
       const q = scan.query || {};
       $("#queryInput").value = q.username || "";
-      const radio = document.querySelector(`input[name="scope"][value="${q.scope === "full" ? "full" : "standard"}"]`);
+      const radio = document.querySelector(`input[name="scope"][value="${q.scope === "full" || q.scope === "extended" ? q.scope : "standard"}"]`);
       if (radio) radio.checked = true;
       lastResult = { tool: "username", query: q.username || "", data: scan };
+      enterToolMode();
       renderUsername(scan);
       bindActions();
       refreshScopeNote(false);
@@ -1953,6 +2106,10 @@
         }
         refreshScopeNote(false);
         if ($("#queryInput").value.trim()) run();
+      });
+      resultsEl().addEventListener("click", (e) => {
+        const b = e.target.closest("[data-view]");
+        if (b) setResultsView(b.dataset.view);
       });
       $$('input[name="scope"]').forEach((el) => el.addEventListener("change", () => refreshScopeNote(false)));
       if (window.MyReconAccount) window.MyReconAccount.onChange(() => refreshScopeNote(false));
