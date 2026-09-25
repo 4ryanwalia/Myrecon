@@ -48,10 +48,17 @@ jobs:
           # name containing "key"/"secret"/"token". Kept narrow on purpose: a
           # noisy check is one people start skipping.
           pattern='AIza[0-9A-Za-z_-]{30,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+          # The one allowed exception: the Firebase *web* API key of the
+          # myrecon-bugsnaps project, which the browser must have to offer
+          # Google sign-in. Firebase documents web keys as public identifiers,
+          # not secrets; access is enforced by the database rules and the
+          # server's token check. Exactly this literal, nothing else AIza-shaped.
+          public_firebase_web_key='AIzaSyA8NWjy6WSCBSevzODJfosUqq05FbGV00M'
           if grep -rInE "$pattern" \
                --exclude-dir=.git --exclude-dir=node_modules \
                --exclude-dir=build --exclude-dir=.gradle \
-               --exclude=security.yml . ; then
+               --exclude=security.yml --exclude=.gitleaks.toml . \
+               | grep -vF "$public_firebase_web_key" ; then
             echo "::error::A credential-shaped literal is present in the tree."
             exit 1
           fi

@@ -127,9 +127,9 @@ def test_full_scan_off_without_a_persistent_store(client, monkeypatch):
 
 # ── free and pro allowances ─────────────────────────────────────
 
-def test_free_account_gets_two_full_scans_a_week(client):
+def test_free_account_gets_one_pro_scan_ever(client):
     t = _token()
-    assert [_scan(client, t, "full").status_code for _ in range(3)] == [200, 200, 402]
+    assert [_scan(client, t, "full").status_code for _ in range(2)] == [200, 402]
     body = _scan(client, t, "full").get_json()
     assert body["code"] == "upgrade_required"
     assert body["account"]["full_scans_left"] == 0
@@ -143,7 +143,7 @@ def test_failed_full_scan_is_refunded(monkeypatch, client):
     monkeypatch.setattr(search, "_run_full", boom)
     app_module.app.config["PROPAGATE_EXCEPTIONS"] = False
     assert _scan(client, _token(), "full").status_code == 500
-    assert plans.get_account("user-1")["free_scans_left"] == plans.FREE_FULL_PER_WEEK
+    assert plans.get_account("user-1")["free_scans_left"] == plans.FREE_FULL_SCANS
 
 
 def test_pass_is_applied_once_per_order():
@@ -167,7 +167,7 @@ def test_pro_scans_are_spent_before_free_ones():
     plans.grant_pass("u", "weekly", "order_A")
     assert plans.consume_full_scan("u") == "pro"
     acct = plans.get_account("u")
-    assert acct["pro_scans_left"] == 49 and acct["free_scans_left"] == 2
+    assert acct["pro_scans_left"] == 49 and acct["free_scans_left"] == 1
 
 
 def test_expired_pass_falls_back_to_free():
@@ -176,7 +176,7 @@ def test_expired_pass_falls_back_to_free():
     rec["pro"]["until"] = 1
     store.store.transaction("web/users/u", lambda _: rec)
     acct = plans.get_account("u")
-    assert acct["tier"] == "free" and acct["full_scans_left"] == 2
+    assert acct["tier"] == "free" and acct["full_scans_left"] == 1
 
 
 # ── billing ─────────────────────────────────────────────────────
@@ -298,3 +298,58 @@ def test_plans_serve_the_web_signin_config_only_when_set(client, monkeypatch):
     monkeypatch.setattr(config, "FIREBASE_WEB_API_KEY", "public-web-key")
     fb = client.get("/api/plans").get_json()["firebase"]
     assert fb["apiKey"] == "public-web-key" and fb["projectId"] == config.FIREBASE_PROJECT_ID
+
+
+# ── scan history ────────────────────────────────────────────────
+
+def _auth(token):
+    return {"Authorization": f"Bearer {token}"}
+
+
+def test_signed_in_scans_are_saved_and_reopened(client):
+    t = _token()
+    r = _scan(client, t).get_json()
+    assert r["history_id"]
+    scans = client.get("/api/history", headers=_auth(t)).get_json()["scans"]
+    assert len(scans) == 1 and scans[0]["id"] == r["history_id"]
+    one = client.get(f"/api/history/{r['history_id']}", headers=_auth(t)).get_json()["scan"]
+    assert one["status"] == "ok" and one["rejected"] == []
+
+
+def test_guest_scans_are_not_saved(client):
+    assert _scan(client).get_json()["history_id"] is None
+
+
+def test_history_is_private_to_its_owner(client):
+    mine = _scan(client, _token(uid="alice")).get_json()["history_id"]
+    bob = _token(uid="bob")
+    assert client.get("/api/history", headers=_auth(bob)).get_json()["scans"] == []
+    assert client.get(f"/api/history/{mine}", headers=_auth(bob)).status_code == 404
+
+
+def test_history_needs_sign_in(client):
+    assert client.get("/api/history").status_code == 401
+
+
+def test_history_keeps_only_the_newest(client, monkeypatch):
+    from core import history
+    monkeypatch.setattr(history, "MAX_SCANS", 3)
+    t = _token()
+    ids = [_scan(client, t).get_json()["history_id"] for _ in range(5)]
+    kept = [s["id"] for s in client.get("/api/history", headers=_auth(t)).get_json()["scans"]]
+    assert sorted(kept) == sorted(ids[-3:])
+    assert client.get(f"/api/history/{ids[0]}", headers=_auth(t)).status_code == 404
+
+
+def test_history_delete_one_and_all(client):
+    t = _token()
+    a = _scan(client, t).get_json()["history_id"]
+    _scan(client, t)
+    assert client.delete(f"/api/history/{a}", headers=_auth(t)).status_code == 200
+    assert len(client.get("/api/history", headers=_auth(t)).get_json()["scans"]) == 1
+    client.delete("/api/history", headers=_auth(t))
+    assert client.get("/api/history", headers=_auth(t)).get_json()["scans"] == []
+
+
+def test_history_id_is_validated(client):
+    assert client.get("/api/history/..%2F..%2Fusers", headers=_auth(_token())).status_code == 404

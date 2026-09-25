@@ -84,7 +84,7 @@ def _register_cors(app: Flask) -> None:
             resp.headers["Vary"] = "Origin"
 
         if resp.headers.get("Access-Control-Allow-Origin"):
-            resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+            resp.headers["Access-Control-Allow-Methods"] = "GET, POST, DELETE, OPTIONS"
             # Authorization carries a signed-in user's Firebase ID token. A
             # bearer header, not a cookie, so nothing rides along on a
             # cross-site request and credentials mode stays off.
@@ -311,6 +311,24 @@ def _admit_scan(scope: str, cached: bool):
     return uid, plans.consume_full_scan(uid)
 
 
+def _remember(uid, data):
+    """
+    Save a finished scan to the signed-in user's history. Returns its id, or
+    None for guests and on any failure: history is a convenience and must
+    never turn a successful scan into an error.
+    """
+    from core import history, store
+    if not uid or not store.persistent() or not isinstance(data, dict):
+        return None
+    if data.get("status") == "error":
+        return None
+    try:
+        return history.save(uid, data)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("Could not save scan history: %s", exc)
+        return None
+
+
 # Concurrent 560-platform sweeps in this worker. Each holds 24 sockets.
 _full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
 
@@ -374,7 +392,7 @@ def _register_routes(app: Flask) -> None:
             hit = _cache.get(key) if config.CACHE_ENABLED else None
             uid, charged = _admit_scan("full", hit is not None)
             if hit is not None:
-                return responses.ok(hit)
+                return responses.ok({**hit, "history_id": _remember(uid, hit)})
             with _full_slots:
                 try:
                     data = _run_full(username)
@@ -383,9 +401,10 @@ def _register_routes(app: Flask) -> None:
                     raise
             if config.CACHE_ENABLED:
                 _cache.set(key, data)
-            return responses.ok(data)
-        _admit_scan("standard", False)
-        return responses.ok(cached_username(username, deep))
+            return responses.ok({**data, "history_id": _remember(uid, data)})
+        uid, _ = _admit_scan("standard", False)
+        data = cached_username(username, deep)
+        return responses.ok({**data, "history_id": _remember(uid, data)})
 
     @app.route("/api/username/stream", methods=["POST", "OPTIONS"])
     def api_username_stream():
@@ -413,7 +432,8 @@ def _register_routes(app: Flask) -> None:
         def generate():
             from core import plans
             if cached_hit is not None:
-                yield json.dumps({"type": "complete", "data": cached_hit}) + "\n"
+                yield json.dumps({"type": "complete", "data": cached_hit,
+                                  "history_id": _remember(uid, cached_hit)}) + "\n"
                 return
             slot = _full_slots if scope == "full" else None
             if slot is not None and not slot.acquire(blocking=False):
@@ -430,6 +450,7 @@ def _register_routes(app: Flask) -> None:
                         if (config.CACHE_ENABLED and isinstance(data, dict)
                                 and data.get("status") != "error"):
                             _cache.set(key, data)
+                        event = {**event, "history_id": _remember(uid, data)}
                     yield json.dumps(event) + "\n"
             finally:
                 if slot is not None:
@@ -623,10 +644,41 @@ def _register_routes(app: Flask) -> None:
                 "standard_platforms": plans.STANDARD_PLATFORMS,
                 "full_platforms": plans.FULL_PLATFORMS,
                 "guest_scans_per_day": plans.GUEST_SCANS_PER_DAY,
-                "free_full_scans_per_week": plans.FREE_FULL_PER_WEEK,
+                "free_full_scans_total": plans.FREE_FULL_SCANS,
             },
             "plans": list(plans.PLANS.values()),
         })
+
+    @app.route("/api/history", methods=["GET", "DELETE", "OPTIONS"])
+    def api_history():
+        """The signed-in user's saved scans, newest first. DELETE clears all."""
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import history, store
+        user = _require_user()
+        if not store.persistent():
+            raise AccountsUnavailable()
+        if request.method == "DELETE":
+            history.clear(user["sub"])
+            return responses.ok({"scans": []})
+        return responses.ok({"scans": history.list_scans(user["sub"])})
+
+    @app.route("/api/history/<scan_id>", methods=["GET", "DELETE", "OPTIONS"])
+    def api_history_item(scan_id):
+        """One saved scan, only ever the caller's own."""
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import history, store
+        user = _require_user()
+        if not store.persistent():
+            raise AccountsUnavailable()
+        try:
+            if request.method == "DELETE":
+                history.delete(user["sub"], scan_id)
+                return responses.ok({"deleted": scan_id})
+            return responses.ok({"scan": history.get(user["sub"], scan_id)})
+        except history.NotFound:
+            return responses.error("No such scan.", status=404, code="not_found")
 
     @app.route("/api/me")
     def api_me():
@@ -781,7 +833,7 @@ def _register_errors(app: Flask) -> None:
     def on_no_allowance(err):
         return jsonify({
             "status": "error", "code": "upgrade_required",
-            "error": "You have used this week's free full scans. Pro passes add more.",
+            "error": "You have used your free Pro scan. A Pro pass adds more.",
             "account": err.entitlements,
         }), 402
 

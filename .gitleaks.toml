@@ -1,0 +1,15 @@
+# gitleaks: the default rules, plus one allowlisted literal.
+#
+# AIzaSyA8NWjy6WSCBSevzODJfosUqq05FbGV00M is the Firebase *web* API key of the
+# myrecon-bugsnaps project. The browser needs it to offer Google sign-in, and
+# Firebase documents web keys as public identifiers rather than secrets: what
+# protects data is the Realtime Database rules and the server's ID-token check.
+# Only this exact string is allowed; every other Google key shape still fails.
+# See .github/workflows/security.yml for the matching grep exception.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Public Firebase web API key (myrecon-bugsnaps)"
+regexes = ['''AIzaSyA8NWjy6WSCBSevzODJfosUqq05FbGV00M''']

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyRecon Pricing: Free, Pro Weekly and Pro Monthly</title>
-  <meta name="description" content="Every MyRecon tool is free. Sign in free for the full 560-platform username scan twice a week, or get a Pro pass: ₹99 for 50 full scans over 7 days, ₹299 for 200 over 30 days.">
+  <meta name="description" content="Every MyRecon tool is free. Sign in free for one Pro 560-platform username scan, or get a Pro pass: ₹99 for 50 full scans over 7 days, ₹299 for 200 over 30 days.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="canonical" href="https://www.myrecon.xyz/pricing.html">
@@ -34,7 +34,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=11">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=13">
   <link rel="stylesheet" href="/assets/css/fx.css?v=7">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"MyRecon Pricing: Free, Pro Weekly and Pro Monthly","url":"https://www.myrecon.xyz/pricing.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Pricing","item":"https://www.myrecon.xyz/pricing.html"}]}}</script>
 </head>
@@ -68,6 +68,15 @@
       </div>
     </section>
 
+    <section class="panel" id="scans" style="margin-top:16px" hidden>
+      <div class="scans-head">
+        <h2 style="font-size:1.1rem">Your scans</h2>
+        <button type="button" class="btn btn-ghost btn-sm" id="clearScans" hidden>Delete all</button>
+      </div>
+      <p class="hint" style="margin-top:4px">Username scans you run while signed in, newest first. Open one to see its results again without rescanning.</p>
+      <div id="scanList" class="scan-list" aria-live="polite"></div>
+    </section>
+
     <div class="plans">
       <div class="panel plan">
         <h3>Guest</h3>
@@ -85,7 +94,8 @@
         <ul>
           <li>Google sign-in, nothing to pay</li>
           <li>Unlimited 100-platform scans</li>
-          <li>2 full 560-platform scans a week</li>
+          <li>1 Pro 560-platform scan, free</li>
+          <li>Your scans saved to your account</li>
         </ul>
         <button type="button" class="btn btn-ghost" data-signin>Sign in with Google</button>
       </div>
@@ -94,7 +104,7 @@
         <div class="price">₹99 <small>/ 7 days</small></div>
         <ul>
           <li>50 full 560-platform scans</li>
-          <li>Plus your 2 free ones each week</li>
+          <li>Scan history saved to your account</li>
           <li>One-time payment, no auto-renew</li>
         </ul>
         <button type="button" class="btn btn-primary" data-buy="weekly">Get Pro Weekly</button>
@@ -104,7 +114,7 @@
         <div class="price">₹299 <small>/ 30 days</small></div>
         <ul>
           <li>200 full 560-platform scans</li>
-          <li>Plus your 2 free ones each week</li>
+          <li>Scan history saved to your account</li>
           <li>One-time payment, no auto-renew</li>
         </ul>
         <button type="button" class="btn btn-primary" data-buy="monthly">Get Pro Monthly</button>
@@ -130,11 +140,11 @@
   </main>
 
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon · myrecon.xyz</span><span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/refunds.html" style="color:var(--text-dim)">Refunds</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span></div></div></footer>
-  <script src="/assets/js/env.js?v=13"></script>
+  <script src="/assets/js/env.js?v=14"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/account.js?v=2"></script>
-  <script src="/assets/js/app.js?v=17"></script>
-  <script src="/assets/js/pricing.js?v=2"></script>
+  <script src="/assets/js/app.js?v=18"></script>
+  <script src="/assets/js/pricing.js?v=3"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=7" defer></script>
 </body>

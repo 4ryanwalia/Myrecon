@@ -247,19 +247,18 @@
           body = "Guests get 5 username scans a day, and they reset at midnight UTC. Every other tool still works.";
           break;
         }
-        body = "Guests get 5 scans a day. Sign in with Google (free) for unlimited standard scans and 2 Pro 560-platform scans a week.";
+        body = "Guests get 5 scans a day. Sign in with Google (free) for unlimited standard scans and one free Pro 560-platform scan.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
         title = err.code === "auth_invalid" ? "Please sign in again" : "The Pro scan needs a free account";
-        body = "Sign in with Google to run the Pro 560-platform scan. Free accounts get 2 Pro scans a week.";
+        body = "Sign in with Google to run the Pro 560-platform scan. Your first Pro scan is free.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "upgrade_required": {
-        const resets = acct.free_resets_at ? new Date(acct.free_resets_at).toLocaleDateString() : "next week";
-        title = "You've used this week's free Pro scans";
-        body = `Your 2 free Pro scans come back on ${esc(resets)}. A Pro pass adds more now (₹99 for 50 scans over 7 days, or ₹299 for 200 over 30 days). The standard 100-platform scan stays unlimited.`;
+        title = acct.tier === "pro" ? "You've used your Pro pass scans" : "You've used your free Pro scan";
+        body = `A Pro pass adds more (₹99 for 50 scans over 7 days, or ₹299 for 200 over 30 days). The standard 100-platform scan stays unlimited.`;
         action = `<a class="btn btn-primary" href="/pricing.html">See Pro passes</a>
           <button type="button" class="btn btn-ghost" data-gate="standard">Run a standard scan</button>`;
         break;
@@ -363,7 +362,7 @@
 
   function fullScanNudge() {
     return `<div class="panel gate slim"><p>This was the 100-platform scan. Sign in free to run the
-      <strong>Pro 560-platform scan</strong> (2 free a week, more with a Pro pass).</p>
+      <strong>Pro 560-platform scan</strong> (your first one is free with sign-in).</p>
       <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the Pro scan</button></div></div>`;
   }
 
@@ -1230,7 +1229,7 @@
     if (!acct) { note.textContent = ""; return; }
     note.textContent = acct.tier === "pro"
       ? `Pro: ${acct.pro_scans_left} Pro scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
-      : `${acct.free_scans_left} of ${acct.free_scans_per_week} free Pro scans left this week.`;
+      : (acct.free_scans_left > 0 ? "Your free Pro scan is ready." : "Free Pro scan used. A Pro pass adds more.");
   }
 
   // ---- Username: live streaming scan with progress -----------------
@@ -1301,6 +1300,7 @@
     const decoder = new TextDecoder();
     let buffer = "";
     let finalData = null;
+    let savedId = null;
 
     const handleLine = (line) => {
       line = line.trim();
@@ -1308,7 +1308,7 @@
       let ev; try { ev = JSON.parse(line); } catch { return; }
       if (ev.type === "progress") updateScanUI(ev);
       else if (ev.type === "found") addLiveCard(ev.result);
-      else if (ev.type === "complete") finalData = ev.data;
+      else if (ev.type === "complete") { finalData = ev.data; savedId = ev.history_id; }
       else if (ev.type === "error") throw new Error(ev.error || "Scan failed");
     };
 
@@ -1327,8 +1327,37 @@
     if (!finalData) throw new Error("The scan did not complete. Please try again.");
     lastResult = { tool: "username", query: value, data: finalData };
     renderUsername(finalData);
+    if (savedId) toast("Saved to your scans.");
     pushHistory("username", value);
     bindActions();
+  }
+
+  // A scan from the account's history, shown as it was. Nothing is rescanned
+  // and nothing is charged; the result comes back from the user's own store.
+  async function openSavedScan(id) {
+    setLoading("username");
+    try {
+      if (window.MyReconAccount) await window.MyReconAccount.ready;
+      if (!signedIn()) {
+        throw new GateError("Sign in to open your saved scans.", "sign_in_required");
+      }
+      const res = await fetch(CFG.apiBase + "/api/history/" + encodeURIComponent(id),
+        { headers: await authHeaders() });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === "error") throw errorFrom(res, data);
+      const scan = data.scan;
+      const q = scan.query || {};
+      $("#queryInput").value = q.username || "";
+      const radio = document.querySelector(`input[name="scope"][value="${q.scope === "full" ? "full" : "standard"}"]`);
+      if (radio) radio.checked = true;
+      lastResult = { tool: "username", query: q.username || "", data: scan };
+      renderUsername(scan);
+      bindActions();
+      refreshScopeNote(false);
+      toast("Opened a saved scan. Nothing was rescanned.");
+    } catch (e) {
+      if (e instanceof GateError) setGate(e); else setError(e.message);
+    }
   }
 
   async function runUsernameFallback(value, body) {
@@ -1834,7 +1863,8 @@
       const linked = params.get("tool");
       if (linked && TOOLS[linked] && !TOOLS[linked].secret) {
         switchTool(linked);
-        if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); }
+        if (params.get("scan")) openSavedScan(params.get("scan"));
+        else if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); }
       }
     }
   });

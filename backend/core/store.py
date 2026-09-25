@@ -41,10 +41,31 @@ class _MemoryStore:
     def __init__(self):
         self._data: dict = {}
         self._lock = threading.RLock()
+        self._seq = 0
 
     def get(self, path: str) -> Any:
         with self._lock:
-            return json.loads(json.dumps(self._data.get(path)))
+            if path in self._data:
+                return json.loads(json.dumps(self._data[path]))
+            # A parent path returns its direct children, as RTDB does.
+            prefix = path.rstrip("/") + "/"
+            children = {
+                k[len(prefix):]: v for k, v in self._data.items()
+                if k.startswith(prefix) and "/" not in k[len(prefix):]
+            }
+            return json.loads(json.dumps(children)) if children else None
+
+    def push(self, path: str, value: Any) -> str:
+        """Store under a new chronologically sortable child id."""
+        with self._lock:
+            self._seq += 1
+            key = f"{int(time.time() * 1000):013d}{self._seq:06d}"
+            self._data[f"{path.rstrip('/')}/{key}"] = json.loads(json.dumps(value))
+            return key
+
+    def set(self, path: str, value: Any) -> None:
+        with self._lock:
+            self._data[path] = json.loads(json.dumps(value))
 
     def transaction(self, path: str, fn: Callable[[Any], Any]) -> Any:
         with self._lock:
@@ -127,6 +148,18 @@ class _RTDBStore:
         resp = self._http.get(self._url(path), timeout=10, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+
+    def push(self, path: str, value: Any) -> str:
+        """POST creates a child with a server-generated, chronological id."""
+        resp = self._http.post(self._url(path), data=json.dumps(value),
+                               timeout=10, headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()["name"]
+
+    def set(self, path: str, value: Any) -> None:
+        resp = self._http.put(self._url(path), data=json.dumps(value),
+                              timeout=10, headers=self._headers())
+        resp.raise_for_status()
 
     def transaction(self, path: str, fn: Callable[[Any], Any], retries: int = 10) -> Any:
         for _ in range(retries):

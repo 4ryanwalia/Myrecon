@@ -144,7 +144,8 @@ FIREBASE_WEB_APP_ID = os.environ.get(
     "FIREBASE_WEB_APP_ID", "1:549280929178:web:cadd9e52ec56f410945623"
 )
 GUEST_SCANS_PER_DAY = _get_int("GUEST_SCANS_PER_DAY", 5)
-FREE_FULL_PER_WEEK = _get_int("FREE_FULL_PER_WEEK", 2)
+# Pro (560-platform) scans a free account gets, once, ever: a trial.
+FREE_FULL_SCANS = _get_int("FREE_FULL_SCANS", 1)
 # Concurrent 560-platform sweeps per worker. Each one holds 24 sockets; more
 # than this on a 512 MB instance starves every other lookup.
 FULL_SCAN_SLOTS = _get_int("FULL_SCAN_SLOTS", 2)

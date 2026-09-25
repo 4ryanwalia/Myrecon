@@ -2,7 +2,8 @@
 Who may run which scan, and how many.
 
   guest       standard scan (100 platforms), GUEST_SCANS_PER_DAY per address
-  free        standard scans unmetered, FREE_FULL_PER_WEEK full scans a week
+  free        standard scans unmetered, FREE_FULL_SCANS Pro (full) scans in
+              total: a one-time trial, not a weekly allowance
   pro weekly  PLANS["weekly"]: a 7-day pass with its own full-scan allowance
   pro monthly PLANS["monthly"]: a 30-day pass, same idea
 
@@ -15,12 +16,14 @@ date and adding the scans.
 
 A full scan is charged when it starts and refunded if the pipeline fails, so
 a crashed scan never costs anything. Pro allowance is spent before the free
-weekly allowance, so free scans are still there once a pass runs out.
+trial scan, so an unused trial is still there once a pass runs out.
 
 Record at /web/users/<uid>:
   {"email", "name", "created",
    "pro":  {"plan", "until" (ms), "scans_left"},
-   "free": {"week": "2026-W39", "used"}}
+   "free": {"used_total"}}
+(Records from the weekly-allowance days carry "week"/"used"; they are
+ignored, so everyone starts the one-time trial fresh.)
 """
 
 import datetime as _dt
@@ -35,7 +38,7 @@ from core.store import Abort, store
 from modules.username_checker import STANDARD_LIMIT as STANDARD_PLATFORMS  # noqa: E402
 from modules.sweep import TOTAL as FULL_PLATFORMS  # noqa: E402
 GUEST_SCANS_PER_DAY = config.GUEST_SCANS_PER_DAY
-FREE_FULL_PER_WEEK = config.FREE_FULL_PER_WEEK
+FREE_FULL_SCANS = config.FREE_FULL_SCANS
 
 PLANS = {
     "weekly": {"id": "weekly", "label": "Pro Weekly", "price_inr": 99,
@@ -63,16 +66,6 @@ def _now_ms() -> int:
     return int(time.time() * 1000)
 
 
-def _iso_week(ms: int) -> str:
-    d = _dt.datetime.fromtimestamp(ms / 1000, _dt.timezone.utc).date()
-    y, w, _ = d.isocalendar()
-    return f"{y}-W{w:02d}"
-
-
-def _next_monday_ms(ms: int) -> int:
-    d = _dt.datetime.fromtimestamp(ms / 1000, _dt.timezone.utc)
-    start = (d - _dt.timedelta(days=d.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
-    return int((start + _dt.timedelta(days=7)).timestamp() * 1000)
 
 
 def _user_path(uid: str) -> str:
@@ -85,10 +78,8 @@ def entitlements(record, now_ms=None) -> dict:
     record = record or {}
     pro = record.get("pro") or {}
     pro_active = bool(pro) and pro.get("until", 0) > now
-    free = record.get("free") or {}
-    week = _iso_week(now)
-    free_used = free.get("used", 0) if free.get("week") == week else 0
-    free_left = max(0, FREE_FULL_PER_WEEK - free_used)
+    free_used = int((record.get("free") or {}).get("used_total", 0))
+    free_left = max(0, FREE_FULL_SCANS - free_used)
     pro_left = max(0, int(pro.get("scans_left", 0))) if pro_active else 0
     return {
         "tier": "pro" if pro_active else "free",
@@ -96,8 +87,7 @@ def entitlements(record, now_ms=None) -> dict:
         "pro_until": pro.get("until") if pro_active else None,
         "pro_scans_left": pro_left,
         "free_scans_left": free_left,
-        "free_scans_per_week": FREE_FULL_PER_WEEK,
-        "free_resets_at": _next_monday_ms(now),
+        "free_scans_total": FREE_FULL_SCANS,
         "full_scans_left": pro_left + free_left,
     }
 
@@ -129,10 +119,8 @@ def consume_full_scan(uid: str) -> str:
             cur["pro"]["scans_left"] = ent["pro_scans_left"] - 1
             spent["source"] = "pro"
         elif ent["free_scans_left"] > 0:
-            week = _iso_week(_now_ms())
-            free = cur.get("free") or {}
-            used = free.get("used", 0) if free.get("week") == week else 0
-            cur["free"] = {"week": week, "used": used + 1}
+            used = int((cur.get("free") or {}).get("used_total", 0))
+            cur["free"] = {"used_total": used + 1}
             spent["source"] = "free"
         else:
             spent["denied"] = ent
@@ -154,7 +142,7 @@ def refund_full_scan(uid: str, source: str) -> None:
         if source == "pro" and cur.get("pro"):
             cur["pro"]["scans_left"] = int(cur["pro"].get("scans_left", 0)) + 1
         elif source == "free" and cur.get("free"):
-            cur["free"]["used"] = max(0, int(cur["free"].get("used", 0)) - 1)
+            cur["free"]["used_total"] = max(0, int(cur["free"].get("used_total", 0)) - 1)
         return cur
 
     try:

@@ -52,14 +52,59 @@
     if (acct.tier === "pro") {
       $("#acctPlan").textContent = acct.plan === "monthly" ? "Pro Monthly" : "Pro Weekly";
       $("#acctUsage").textContent =
-        `${acct.pro_scans_left} Pro full scans left, until ${new Date(acct.pro_until).toLocaleDateString()}. `
-        + `${acct.free_scans_left} of ${acct.free_scans_per_week} free ones left this week.`;
+        `${acct.pro_scans_left} Pro scans left, until ${new Date(acct.pro_until).toLocaleDateString()}.`
+        + (acct.free_scans_left > 0 ? " Your free Pro scan is still unused." : "");
     } else {
       $("#acctPlan").textContent = "Free account";
       $("#acctUsage").textContent =
-        `${acct.free_scans_left} of ${acct.free_scans_per_week} free full scans left this week `
-        + `(resets ${new Date(acct.free_resets_at).toLocaleDateString()}).`;
+        acct.free_scans_left > 0
+        ? "Your free Pro scan is ready to use."
+        : "You've used your free Pro scan. A Pro pass adds more.";
     }
+  }
+
+  // ---- saved scans --------------------------------------------------
+  const escHtml = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  async function api(method, path) {
+    const res = await fetch(CFG.apiBase + path, { method, headers: await A.authHeaders() });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.status === "error") throw new Error(data.error || `Request failed (${res.status})`);
+    return data;
+  }
+
+  async function loadScans() {
+    const box = $("#scans"), list = $("#scanList");
+    if (!box || !list) return;
+    const st = A.state();
+    if (!st.user) { box.hidden = true; return; }
+    box.hidden = false;
+    list.innerHTML = `<p class="hint">Loading your scans…</p>`;
+    let scans;
+    try {
+      scans = (await api("GET", "/api/history")).scans || [];
+    } catch (e) {
+      list.innerHTML = `<p class="hint">Could not load your scans: ${escHtml(e.message)}</p>`;
+      return;
+    }
+    $("#clearScans").hidden = !scans.length;
+    if (!scans.length) {
+      list.innerHTML = `<p class="hint">No saved scans yet. <a href="/#tool">Run a username scan</a> while signed in and it appears here.</p>`;
+      return;
+    }
+    list.innerHTML = scans.map((s) => `
+      <div class="scan-row">
+        <div class="scan-main">
+          <strong>${escHtml(s.handle)}</strong>
+          <span class="scan-badge${s.scope === "full" ? " pro" : ""}">${s.scope === "full" ? "Pro · 560" : "Standard · 100"}</span>
+          <span class="hint">${escHtml(new Date(s.at).toLocaleString())} · ${Number(s.profiles) || 0} found</span>
+        </div>
+        <div class="scan-actions">
+          <a class="btn btn-sm" href="/#tool=username&amp;scan=${encodeURIComponent(s.id)}">Open</a>
+          <button type="button" class="btn btn-ghost btn-sm" data-del-scan="${escHtml(s.id)}" aria-label="Delete scan of ${escHtml(s.handle)}">Delete</button>
+        </div>
+      </div>`).join("");
   }
 
   async function buy(planId) {
@@ -119,8 +164,27 @@
       note("Sign-in and Pro passes open soon. Every tool already works without an account.");
       return;
     }
-    A.onChange(renderAccount);
-    renderAccount(A.state());
+    let lastUid = null;
+    const onState = (st) => {
+      renderAccount(st);
+      const uid = st && st.user ? st.user.uid : null;
+      if (uid !== lastUid) { lastUid = uid; loadScans(); }
+    };
+    A.onChange(onState);
+    onState(A.state());
+    $("#scanList")?.addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-del-scan]");
+      if (!btn) return;
+      btn.disabled = true;
+      try { await api("DELETE", `/api/history/${encodeURIComponent(btn.dataset.delScan)}`); }
+      catch (err) { note(err.message); }
+      loadScans();
+    });
+    $("#clearScans")?.addEventListener("click", async () => {
+      if (!confirm("Delete all your saved scans? This cannot be undone.")) return;
+      try { await api("DELETE", "/api/history"); } catch (err) { note(err.message); }
+      loadScans();
+    });
     try {
       const res = await fetch(CFG.apiBase + "/api/plans");
       plansInfo = (await res.json()) || null;

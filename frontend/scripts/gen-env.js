@@ -22,15 +22,18 @@ const out = path.join(__dirname, "..", "assets", "js", "env.js");
 // Firebase web config for Google sign-in (assets/js/account.js). Every value
 // here is public by design: a Firebase web API key identifies the project, it
 // does not authorise anything; the database rules and the server's token check
-// do that. Leave FIREBASE_WEB_API_KEY unset and accounts simply stay off.
+// do that.
 //
-// The key comes from Vercel's environment, never a literal here, even though
-// it is public: the Security workflow fails on any AIza-shaped string, and
-// that guard exists because a real Google key once sat in this tree.
-// The app id default is the "MyRecon web" app in myrecon-bugsnaps (25 Sep
-// 2026). Deliberately no measurementId / Analytics: it would add collection
-// the privacy policy does not declare, the same reason the app has none.
-const fbKey = (process.env.FIREBASE_WEB_API_KEY || "").trim();
+// Defaults are the "MyRecon web" app in myrecon-bugsnaps (25 Sep 2026), baked
+// in so the sign-in button is there on first paint instead of waiting for the
+// API, which on Render's free tier can take ~50 s to wake. The key is
+// explicitly allowlisted in .gitleaks.toml and the Security workflow; any
+// other Google key shape still fails CI. Env vars override; set
+// FIREBASE_WEB_API_KEY=off to switch accounts off.
+// Deliberately no measurementId / Analytics: it would add collection the
+// privacy policy does not declare, the same reason the app has none.
+const fbKeyRaw = (process.env.FIREBASE_WEB_API_KEY || "AIzaSyA8NWjy6WSCBSevzODJfosUqq05FbGV00M").trim();
+const fbKey = fbKeyRaw === "off" ? "" : fbKeyRaw;
 const fbAppId = (process.env.FIREBASE_WEB_APP_ID || "1:549280929178:web:cadd9e52ec56f410945623").trim();
 const fbProject = (process.env.FIREBASE_PROJECT_ID || "myrecon-bugsnaps").trim();
 const firebase = fbKey && fbAppId

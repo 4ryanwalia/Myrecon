@@ -1114,3 +1114,19 @@ main > p a, main > ul li a, main > ol li a {
 .plan .btn { justify-content: center; }
 .account-box { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .account-box .who { color: var(--text-dim); font-size: 0.92rem; }
+
+/* ---------------------------------------------------------------- saved scans */
+.scans-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.scan-list { display: grid; gap: 8px; margin-top: 12px; }
+.scan-row {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.scan-main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; min-width: 0; }
+.scan-main strong { overflow-wrap: anywhere; }
+.scan-badge {
+  font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--border-control); color: var(--text-dim);
+}
+.scan-badge.pro { border-color: var(--accent); color: var(--accent); }
+.scan-actions { display: flex; gap: 6px; }
