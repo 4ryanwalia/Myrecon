@@ -244,16 +244,16 @@
       case "guest_limit":
         title = "That's today's free scans";
         if (!canSignIn) {
-          body = "Guests get 5 username scans a day, and they reset at midnight UTC. Every other tool still works.";
+          body = "Guests get 5 username scans a day. Each full sweep checks 560 platforms and shows a 100-platform preview. The allowance resets at midnight UTC.";
           break;
         }
-        body = "Guests get 5 scans a day. Sign in with Google (free) for unlimited standard scans and one free Pro 560-platform scan.";
+        body = "Guests get 5 username scans a day. Sign in with Google for unlimited standard scans and one free full 560-platform report.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
-        title = err.code === "auth_invalid" ? "Please sign in again" : "The Pro scan needs a free account";
-        body = "Sign in with Google to run the Pro 560-platform scan. Your first Pro scan is free.";
+        title = err.code === "auth_invalid" ? "Please sign in again" : "The full report needs a free account";
+        body = "Sign in with Google to request the complete 560-platform report. Your first full scan is free.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "upgrade_required": {
@@ -298,15 +298,106 @@
   }
 
   // -- Username results
+  function previewMeta(data) {
+    const p = data && data.preview;
+    if (!p || p.requires_sign_in !== true) return null;
+    const checked = Number(p.checked), visible = Number(p.visible), hidden = Number(p.hidden);
+    if (![checked, visible, hidden].every(Number.isFinite) || checked <= 0 || visible < 0 || hidden < 0) return null;
+    const hiddenFindings = Number(p.hidden_findings);
+    return { checked, visible, hidden,
+      hiddenFindings: Number.isFinite(hiddenFindings) && hiddenFindings >= 0 ? hiddenFindings : null };
+  }
+
+  function previewNotice(p) {
+    return `<div class="preview-notice" role="status">
+      <span class="preview-eyebrow">Guest preview</span>
+      <strong>${p.visible} of ${p.checked} platforms shown</strong>
+      <span>Results below include only the visible platforms.</span>
+    </div>`;
+  }
+
+  function previewUnlock(p) {
+    const canSignIn = !!(window.MyReconAccount && window.MyReconAccount.enabled);
+    return `<section class="panel unlock-report" aria-labelledby="unlockTitle">
+      <div class="unlock-copy">
+        <span class="preview-eyebrow">Full report</span>
+        <h3 id="unlockTitle">${p.hiddenFindings > 0
+          ? `${p.hiddenFindings} more ${p.hiddenFindings === 1 ? "finding is" : "findings are"} in the full report`
+          : `Unlock all ${p.checked} platform details`}</h3>
+        <p>The sweep covered a ${p.checked}-platform catalogue. Your guest preview shows verdicts from ${p.visible} of them. Sign in to request the full report, including matches and links from the remaining platforms.</p>
+        <div class="unlock-counts"><span>${p.visible} shown</span><span>${p.hidden} locked</span></div>
+      </div>
+      <div class="unlock-action">
+        ${canSignIn ? `<button type="button" class="btn btn-primary" data-gate="unlock">Sign in to unlock</button>
+          <span class="hint">One full scan is free with an account. The scan may run again.</span>`
+          : `<span class="hint">Sign-in is temporarily unavailable. Your visible results remain above.</span>`}
+      </div>
+    </section>`;
+  }
+
+  // The map uses only found/possible profiles returned in this report. An
+  // edge means the searched handle appeared on that platform, never that
+  // every profile belongs to one person. Keep all visible profiles in the list.
+  function relationshipGraph(handle, profiles) {
+    const mapped = profiles.filter((r) => safeUrl(r.url) &&
+      (r.verdict === "found" || (r.exists === true && ["high", "medium"].includes(r.confidence))));
+    const plotted = mapped.slice(0, 9);
+    const w = 760, h = 470, cx = 380, cy = 222, rx = 278, ry = 156;
+    const points = plotted.map((r, i) => {
+      const angle = -Math.PI / 2 + i * (2 * Math.PI / plotted.length);
+      return { r, x: cx + rx * Math.cos(angle), y: cy + ry * Math.sin(angle) };
+    });
+    const edges = points.map(({ x, y }) =>
+      `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`).join("");
+    const nodes = points.map(({ r, x, y }) => {
+      const name = String(r.platform || hostOf(r.url) || "Profile");
+      const initials = name.slice(0, 2).toUpperCase();
+      const possible = r.confidence === "medium";
+      return `<a href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener nofollow"
+          aria-label="Open ${possible ? "possible" : "found"} ${esc(name)} profile">
+          <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="28" class="relationship-node${possible ? " possible" : ""}"/>
+          <text x="${x.toFixed(1)}" y="${(y + 5).toFixed(1)}" class="relationship-initials">${esc(initials)}</text>
+          <text x="${x.toFixed(1)}" y="${(y + 45).toFixed(1)}" class="relationship-label">${esc(name.slice(0, 17))}</text>
+          <title>${esc(name)}: ${possible ? "possible" : "found"} match for this handle</title>
+        </a>`;
+    }).join("");
+    const graph = plotted.length ? `<svg viewBox="0 0 ${w} ${h}" role="img"
+        aria-label="${plotted.length} found or possible platform profiles connected by the searched handle">
+        <circle cx="${cx}" cy="${cy}" r="192" class="relationship-ring"/>
+        <circle cx="${cx}" cy="${cy}" r="116" class="relationship-ring inner"/>
+        <g class="relationship-edges">${edges}</g>
+        <circle cx="${cx}" cy="${cy}" r="68" class="relationship-core"/>
+        <text x="${cx}" y="${cy - 1}" class="relationship-handle">@${esc(String(handle || "").slice(0, 19))}</text>
+        <text x="${cx}" y="${cy + 19}" class="relationship-core-sub">searched handle</text>
+        <g class="relationship-nodes">${nodes}</g>
+      </svg>` : `<div class="relationship-empty">No found or possible public profiles in the visible results.</div>`;
+    return `<section class="relationship-panel" aria-labelledby="relationshipTitle">
+      <div class="relationship-heading"><div><span class="preview-eyebrow">Account map</span>
+        <h3 id="relationshipTitle">Profiles sharing this handle</h3></div>
+        <span class="relationship-total">${mapped.length} mapped from this report</span></div>
+      <div class="relationship-body"><div class="relationship-visual">${graph}</div>
+        <div class="relationship-context"><strong>What the links mean</strong>
+          <p>These platform checks found or suggested a public profile for the searched handle. A shared handle alone does not establish that the same person owns every account. Review the confidence label on each result below.</p>
+          ${mapped.length > plotted.length ? `<p class="relationship-more">Map shows ${plotted.length} of ${mapped.length} found or possible profiles. All visible profiles are listed below.</p>` : ""}
+          <span class="relationship-key"><i></i> Found profile <i class="possible"></i> Possible match</span>
+        </div></div>
+    </section>`;
+  }
+
   function renderUsername(data) {
     const r = resultsEl();
     const { profiles = [], documents = [], mentions = [] } = data.results || {};
     const s = data.summary || {};
-    let html = resultsHeader(`Results for “${esc(data.query.username)}”`, `${s.total || 0} findings`);
+    const preview = previewMeta(data);
+    let html = resultsHeader(`Results for “${data.query.username}”`, `${s.total || 0} ${preview ? "visible findings" : "findings"}`);
 
-    const exp = computeExposure("username", data);
+    if (preview) html += previewNotice(preview);
+
+    // A score calculated from 100 visible platforms would misstate a 560-
+    // platform sweep. Signed-in reports still get the complete score.
+    const exp = preview ? null : computeExposure("username", data);
     lastExposure = exp;
-    if ((s.profiles || 0) > 0) html += exposureGauge(exp);
+    if (exp && (s.profiles || 0) > 0) html += exposureGauge(exp);
 
     html += `<div class="summary-grid">
       ${stat(s.profiles, "Profiles")}${stat(s.documents, "Documents")}
@@ -315,6 +406,8 @@
 
     const relDomains = usernameRelatedDomains(data);
     if (relDomains.length) html += pivotRow("Related domains", relDomains.map((d) => pivotChip("domain", d, d)));
+
+    html += relationshipGraph(data.query.username, profiles);
 
     (data.identity_clusters || []).forEach((c) => { html += clusterCard(c); });
 
@@ -330,9 +423,10 @@
 
     html += unverifiedPanel(data.unverified || []);
     html += rejectedPanel(data.rejected || [], s.checked || 0);
-    if (data.coverage) html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
+    if (data.coverage && !preview) html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
     else if ((data.query || {}).deep && !signedIn()
-      && window.MyReconAccount && window.MyReconAccount.enabled) html += fullScanNudge();
+      && !preview && window.MyReconAccount && window.MyReconAccount.enabled) html += fullScanNudge();
+    if (preview) html += previewUnlock(preview);
     r.innerHTML = html;
     animateCountUps();
   }
@@ -361,9 +455,9 @@
   }
 
   function fullScanNudge() {
-    return `<div class="panel gate slim"><p>This was the 100-platform scan. Sign in free to run the
-      <strong>Pro 560-platform scan</strong> (your first one is free with sign-in).</p>
-      <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the Pro scan</button></div></div>`;
+    return `<div class="panel gate slim"><p>This was the 100-platform quick scan. Run the
+      <strong>560-platform sweep</strong> to see a guest preview, then sign in to request the full report.</p>
+      <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the full sweep</button></div></div>`;
   }
 
   // Addresses and identifiers the handle leaks, as opposed to where it exists.
@@ -1168,20 +1262,6 @@
 
     $("#runBtn").disabled = true;
     try {
-      // The full scan needs an account; ask for one before spending a request
-      // on a guaranteed 401. A closed popup just leaves the page as it was.
-      if (body.scope === "full" && !signedIn()) {
-        if (!(window.MyReconAccount && window.MyReconAccount.enabled)) {
-          throw new GateError("Accounts are not switched on yet.", "accounts_unavailable");
-        }
-        try {
-          await window.MyReconAccount.signIn();
-        } catch (e) {
-          const msg = window.MyReconAccount.friendly(e);
-          if (!msg) return; // closed the popup: leave the page as it was
-          throw new GateError(msg, "sign_in_required");
-        }
-      }
       if (activeTool === "username") {
         await runUsernameStream(value, body);
       } else {
@@ -1221,11 +1301,13 @@
     const acct = st && st.user ? A.state().account : null;
     const scope = currentScope();
     if (scope !== "full") {
-      note.textContent = st && st.user ? "" : "No sign-in needed.";
+      note.textContent = "Quick scan checks 100 platforms.";
       return;
     }
-    if (!A || !A.enabled) { note.textContent = "Pro scans open soon."; return; }
-    if (!st.user) { note.textContent = "You'll be asked to sign in with Google (free)."; return; }
+    if (!st || !st.user) {
+      note.textContent = "Checks all 560 platforms. Guests see results from 100; sign in to request the full report.";
+      return;
+    }
     if (!acct) { note.textContent = ""; return; }
     note.textContent = acct.tier === "pro"
       ? `Pro: ${acct.pro_scans_left} Pro scans left until ${new Date(acct.pro_until).toLocaleDateString()}.`
@@ -1236,22 +1318,26 @@
   // Platforms already drawn as live cards during this sweep.
   let liveSeen = new Set();
 
-  function setScanning() {
+  function setScanning(body) {
     liveSeen = new Set();
+    const full = body && body.scope === "full";
+    const preview = full && !signedIn();
     resultsEl().innerHTML = `
       <div class="loading scan" role="status" aria-live="polite">
         <div class="scan-head">
           <div class="spinner"></div>
           <div class="scan-meta">
             <h3 id="scanPhase">Starting scan…</h3>
-            <p class="hint" id="scanDetail">Preparing the platform sweep.</p>
+            <p class="hint" id="scanDetail">Preparing the ${full ? "560-platform" : "100-platform"} sweep.</p>
           </div>
           <div class="scan-pct" id="scanPct">0%</div>
         </div>
         <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
+        <div class="scan-facts"><span>${full ? "560" : "100"} platforms in sweep</span>
+          <span>${preview ? "Guest preview: first 100 platform verdicts visible" : "Confirmed matches appear as platforms answer"}</span></div>
       </div>
       <div class="live-found" id="liveFound" hidden>
-        <div class="section-label">Found so far: <span id="liveCount">0</span></div>
+        <div class="section-label">${preview ? "Visible matches so far" : "Found so far"}: <span id="liveCount">0</span></div>
         <div class="card-grid" id="liveGrid"></div>
       </div>`;
   }
@@ -1278,7 +1364,7 @@
   }
 
   async function runUsernameStream(value, body) {
-    setScanning();
+    setScanning(body);
     let res;
     try {
       res = await fetch(CFG.apiBase + CFG.endpoints.usernameStream, {
@@ -1428,9 +1514,12 @@
     const scored = lastResult.tool === "username" || lastResult.tool === "email";
     const scoreBit = scored && lastExposure ? `, exposure score ${lastExposure.score}/100 (${lastExposure.label})`
       : lastResult.tool === "email" ? `, ${window.MyReconEmailOutcome(lastResult.data).label}` : "";
+    const preview = lastResult.tool === "username" ? previewMeta(lastResult.data) : null;
+    const previewBit = preview
+      ? `, guest preview: ${preview.visible} of ${preview.checked} platform verdicts visible` : "";
     const payload = {
       title: "MyRecon, OSINT report",
-      text: `${TOOLS[lastResult.tool].label} report for ${lastResult.query}${scoreBit}`,
+      text: `${TOOLS[lastResult.tool].label} report for ${lastResult.query}${scoreBit}${previewBit}`,
       url: shareUrl(),
     };
     if (navigator.share) {
@@ -1448,7 +1537,9 @@
   function printReport() {
     if (!lastResult) return;
     const meta = $("#printMeta");
-    if (meta) meta.textContent = `${TOOLS[lastResult.tool].label} report · Target: ${lastResult.query} · ${new Date().toLocaleString()}`;
+    const preview = lastResult.tool === "username" ? previewMeta(lastResult.data) : null;
+    if (meta) meta.textContent = `${TOOLS[lastResult.tool].label} report · Target: ${lastResult.query} · ${new Date().toLocaleString()}`
+      + (preview ? ` · Guest preview: ${preview.visible} of ${preview.checked} platforms shown` : "");
     const prev = document.title;
     document.title = `MyRecon ${TOOLS[lastResult.tool].label} report: ${lastResult.query}`;
     window.print();
@@ -1458,14 +1549,16 @@
   function buildTextSummary(res) {
     const d = res.data;
     const L = [`MyRecon, ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
-    const exposure = res.tool === "username" || (res.tool === "email" && !window.MyReconEmailOutcome(d).partial)
+    const exposure = (res.tool === "username" && !previewMeta(d)) || (res.tool === "email" && !window.MyReconEmailOutcome(d).partial)
       ? computeExposure(res.tool, d) : null;
     if (exposure) {
       L.push(`Digital exposure score: ${exposure.score}/100 (${exposure.label})`, "");
     }
     if (res.tool === "username") {
+      const preview = previewMeta(d);
+      if (preview) L.push(`Guest preview: ${preview.visible} of ${preview.checked} platforms shown; ${preview.hidden} platform verdicts require sign-in.`, "");
       const all = [].concat(d.results?.profiles || [], d.results?.documents || [], d.results?.mentions || []);
-      L.push(`${all.length} results found:`);
+      L.push(`${all.length} ${preview ? "visible results" : "results"} found:`);
       all.forEach((r) => L.push(`- ${r.platform || hostOf(r.url)}, ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`));
     } else if (res.tool === "email") {
       const a = d.analysis || {}, s = d.summary || {};
@@ -1840,14 +1933,20 @@
         e.stopPropagation();
         loadWayback(el);
       });
-      // Sign-in / upgrade prompts. "full" and "standard" re-run the same
-      // handle at that size; "signin" signs in and re-runs what was asked.
+      // Sign-in / upgrade prompts. Unlock uses the query from the rendered
+      // preview so editing the input cannot silently unlock a different scan.
       resultsEl().addEventListener("click", async (e) => {
         const el = e.target.closest("[data-gate]");
         if (!el) return;
         const want = el.dataset.gate;
-        if (want === "signin") {
+        if (want === "signin" || want === "unlock") {
           try { await window.MyReconAccount.signIn(); } catch { return; }
+          if (want === "unlock") {
+            if (lastResult?.tool !== "username" || !previewMeta(lastResult.data)) return;
+            $("#queryInput").value = lastResult.query;
+            const full = document.querySelector('input[name="scope"][value="full"]');
+            if (full) full.checked = true;
+          }
         } else {
           const radio = document.querySelector(`input[name="scope"][value="${want}"]`);
           if (radio) radio.checked = true;

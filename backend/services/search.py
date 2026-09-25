@@ -351,7 +351,10 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
 
 def _run_full(username: str, emit=_noop) -> dict:
     """
-    The signed-in tier: the Android app's 560-platform sweep, run here.
+    The Android app's 560-platform sweep, run here for guests and accounts.
+
+    Guest responses are projected to a 100-platform preview by the API layer;
+    this function always builds the complete result for authorized unlocks.
 
     Same envelope as _run_username so the page renders it with the same code,
     plus two things only this engine can say: `coverage` (how much of the map

@@ -1,9 +1,10 @@
 # MyRecon — OSINT Intelligence Platform
 
 **myrecon.xyz** — a fast, accurate, privacy-respecting open-source intelligence
-platform. Search usernames across **100+ platforms**, analyse emails and breach
-exposure, investigate domains, DNS and IP addresses, and read a photograph's own
-metadata — all from free, keyless public sources.
+platform. Search usernames across a **560-platform sweep**, analyse emails and
+breach exposure, investigate domains, DNS and IP addresses, and read a
+photograph's own metadata. Guests can run the username sweep and see details
+from its first 100 platforms; signing in unlocks the full report.
 
 One engine, three front doors:
 
@@ -13,11 +14,10 @@ frontend/   Static site (SPA)   → deploy to Vercel     (myrecon.xyz)
 cli/        Terminal client     → run it from a clone  (python myrecon.py)
 ```
 
-The frontend never talks to third-party OSINT sources directly — it calls the
-MyRecon API, which owns all validation, rate limiting, caching, and secrets. The
-CLI skips the network hop entirely and calls the same service functions in
-process, so a terminal answer and a myrecon.xyz answer come from one
-implementation and cannot drift apart.
+The frontend sends server-backed lookups to the MyRecon API, which owns input
+validation, rate limiting, caching, and secrets. The password checker is an
+exception: it hashes locally and sends only a hash prefix to Pwned Passwords.
+The CLI skips the API hop and calls the same service functions in process.
 
 > **The Android app is not in this repository.** This repo is the website and
 > the terminal client. The app is developed separately and is not tracked here.
@@ -81,14 +81,17 @@ defaults already allow the common localhost ports.
 
 ## What MyRecon can do
 
-Every lookup below is free and keyless unless the table says otherwise. Nothing
-requires an account, and no API key is needed to run the platform.
+Core lookups are free and keyless unless the table says otherwise. A guest can
+run the 560-platform username sweep, with results from the first 100 platforms
+visible. A free account unlocks the full report and includes one full scan;
+additional full scans need a Pro pass. The other lookups remain available
+without an account.
 
 ### Identity
 
 | Capability | What it actually does | Where |
 | --- | --- | --- |
-| **Username search** | Checks **100+ platforms** in parallel — the first 50 in a fast scan, all of them with `--deep` — using per-platform validators to cut false positives, then enriches hits with avatars, bios and follower counts. Reports the platforms it checked and *rejected*, with the reason. | web, CLI, API |
+| **Username search** | The full web/API sweep checks **560 platforms** in parallel, using per-platform evidence to avoid false positives. Guests see details from the first 100 platforms and a sign-in prompt for the full report. The standard checker also supports 50-platform fast scans and 100-platform deep scans in the CLI and API. Confirmed profiles can be enriched with avatars and bios; platforms without enough evidence are reported honestly. | web, CLI, API |
 | **Profile enrichment** | Fetches one profile's public detail from one platform — used when a client's own address gets refused and the server's does not. | web, CLI, API |
 | **Identity correlation** | Groups accounts that share a handle into clusters with a 0–100 confidence score and the factors behind it. | web, CLI, API |
 | **Investigation graph** | Builds an entity/relationship graph from a scan and writes a rule-based assessment over it. No language model is involved. | web, CLI, API |
@@ -134,6 +137,7 @@ requires an account, and no API key is needed to run the platform.
   accounts.
 - **Platform** — dark/light theme, JSON and CSV export, browser-local search
   history, live streaming progress for long scans, and honest empty states.
+  Guest exports contain the same 100-platform preview shown on screen.
 
 ### Deliberately absent
 
@@ -265,6 +269,11 @@ python -m http.server 8000
 The site is plain HTML, CSS and JavaScript with no build framework. The only
 build step injects the API URL, so nothing needs compiling to work locally.
 
+For a username, guests run the 560-platform sweep and receive a preview of
+the first 100 platforms. Sign in to unlock the full report. The free account
+includes one full scan; Pro passes add more. Other tools remain usable as a
+guest.
+
 | Page | Purpose |
 | --- | --- |
 | `index.html` | The search app — every lookup the API exposes. |
@@ -286,8 +295,8 @@ Every endpoint takes `POST` with a JSON body and returns
 | Endpoint | Body |
 | --- | --- |
 | `GET /api/health` | — |
-| `POST /api/username` | `{"username": "...", "deep": false}` |
-| `POST /api/username/stream` | same; responds as NDJSON progress events |
+| `POST /api/username` | `{"username": "...", "scope": "full"}`; guests receive a 100-platform preview |
+| `POST /api/username/stream` | same; responds as NDJSON progress events and a preview or full result according to access |
 | `POST /api/investigate/stream` | `{"query": "...", "deep": false}`; NDJSON |
 | `POST /api/fullname` | `{"full_name": "..."}` |
 | `POST /api/email` | `{"email": "..."}` |
@@ -354,6 +363,11 @@ All configuration is environment variables; no secrets are ever committed.
 | `REQUEST_TIMEOUT` | `10` | Per-request timeout, in seconds. |
 | `MAX_BODY_BYTES` | `65536` | Request body ceiling. |
 | `TRUSTED_PROXY_DEPTH` | `0` | How many `X-Forwarded-For` hops to trust. |
+| `GUEST_SCANS_PER_DAY` | `5` | Daily guest username sweeps per address; each full sweep returns a 100-platform preview. |
+| `FREE_FULL_SCANS` | `1` | One-time full-report scan for a free signed-in account. |
+| `FULL_SCAN_SLOTS` | `2` | Concurrent 560-platform sweeps per worker. |
+| `FIREBASE_SERVICE_ACCOUNT` | — | Service-account JSON for persistent web account state and full-report access. |
+| `FIREBASE_WEB_API_KEY` | — | Public Firebase web configuration needed for browser sign-in. |
 | `GOOGLE_API_KEY` | — | *Optional.* Full-name and reverse-image search. |
 | `GOOGLE_CX_ID` | — | *Optional.* The Programmable Search engine id. |
 | `HIBP_API_KEY` | — | *Optional.* Have I Been Pwned breach data. |
@@ -374,6 +388,8 @@ All configuration is environment variables; no secrets are ever committed.
    - `FLASK_ENV=production`
    - `ALLOWED_ORIGINS=https://myrecon.xyz,https://www.myrecon.xyz`
    - `SECRET_KEY` (Render can generate it)
+   - `FIREBASE_SERVICE_ACCOUNT` and `FIREBASE_WEB_API_KEY` to enable sign-in
+     and full-report access
    - Optional: `GOOGLE_API_KEY`, `GOOGLE_CX_ID`, `HIBP_API_KEY`, `GITHUB_TOKEN`
 4. Health check path: `/api/health`.
 

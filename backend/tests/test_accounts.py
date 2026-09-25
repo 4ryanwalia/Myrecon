@@ -115,9 +115,97 @@ def test_signed_in_standard_scans_are_not_metered(client):
         assert _scan(client, token=_token()).status_code == 200
 
 
-def test_guest_cannot_run_full_scan(client):
+def test_guest_full_scan_uses_guest_allowance_and_returns_preview(client):
     r = _scan(client, scope="full")
-    assert r.status_code == 401 and r.get_json()["code"] == "sign_in_required"
+    assert r.status_code == 200
+    assert r.get_json()["preview"] == {
+        "checked": 560, "visible": 100, "hidden": 460,
+        "hidden_findings": 0,
+        "requires_sign_in": True,
+    }
+    for _ in range(plans.GUEST_SCANS_PER_DAY - 1):
+        assert _scan(client, scope="full").status_code == 200
+    assert _scan(client, scope="full").get_json()["code"] == "guest_limit"
+
+
+def _full_result():
+    from modules.sweep import CATALOGUE
+    visible, hidden = CATALOGUE[0]["name"], CATALOGUE[100]["name"]
+    return {
+        "status": "ok",
+        "query": {"username": "octocat", "deep": True, "scope": "full"},
+        "summary": {"total": 2, "profiles": 2, "checked": 560, "clusters": 1},
+        "coverage": {"total": 560, "found": 2, "not_found": 558},
+        "results": {"profiles": [
+            {"platform": visible, "url": "https://visible.example/octocat", "exists": True},
+            {"platform": hidden, "url": "https://hidden.example/octocat", "exists": True},
+        ], "documents": [], "mentions": []},
+        "identity_clusters": [{"profiles": [{"url": "https://hidden.example/octocat"}]}],
+        "exposures": [{"url": "https://hidden.example/octocat"}],
+        "rejected": [{"platform": visible, "url": "https://visible.example/other"},
+                     {"platform": hidden, "url": "https://hidden.example/other"}],
+        "unverified": [{"platform": hidden, "url": "https://hidden.example/unknown"}],
+    }
+
+
+def test_guest_preview_cannot_leak_cached_full_result(client, monkeypatch):
+    import services.search as search
+    full = _full_result()
+    calls = []
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    monkeypatch.setattr(search, "_run_full", lambda *a, **k: (calls.append(1), full)[1])
+    guest = _scan(client, scope="full").get_json()
+    serialized = json.dumps(guest)
+    assert len(calls) == 1
+    assert guest["summary"]["profiles"] == 1
+    assert guest["summary"]["checked"] == 100
+    assert guest["preview"]["hidden_findings"] == 1
+    assert "https://visible.example/octocat" in serialized
+    assert "hidden.example" not in serialized
+    assert "coverage" not in guest
+    assert guest["identity_clusters"] == [] and guest["exposures"] == []
+    assert full["results"]["profiles"][1]["url"] == "https://hidden.example/octocat"
+    assert "preview" not in full
+    signed_in = _scan(client, token=_token(), scope="full").get_json()
+    assert len(calls) == 1  # raw cache can serve an authorized full request
+    assert "https://hidden.example/octocat" in json.dumps(signed_in)
+    assert "preview" not in signed_in
+    cached_guest = _scan(client, scope="full").get_json()
+    assert len(calls) == 1
+    assert "hidden.example" not in json.dumps(cached_guest)
+
+
+def test_guest_stream_withholds_locked_events_and_details(client, monkeypatch):
+    import services.search as search
+    full = _full_result()
+    visible, hidden = full["results"]["profiles"]
+
+    def events(*_args, **_kwargs):
+        yield {"type": "progress", "phase": "Checking platforms", "percent": 50,
+               "detail": f"[280/560] {hidden['platform']}, found"}
+        yield {"type": "found", "result": hidden}
+        yield {"type": "found", "result": visible}
+        yield {"type": "complete", "data": full}
+
+    monkeypatch.setattr(search, "stream_username", events)
+    r = client.post("/api/username/stream", json={"username": "octocat", "scope": "full"})
+    assert r.status_code == 200
+    wire = r.get_data(as_text=True)
+    emitted = [json.loads(line) for line in wire.splitlines()]
+    assert "hidden.example" not in wire
+    assert full["results"]["profiles"][1]["platform"] not in wire
+    assert [e["type"] for e in emitted] == ["progress", "found", "complete"]
+    assert emitted[-1]["data"]["preview"]["checked"] == 560
+
+
+def test_guest_stream_redacts_a_cached_full_result(client, monkeypatch):
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    app_module._cache.set(app_module._cache_key("username_full", "octocat"), _full_result())
+    r = client.post("/api/username/stream", json={"username": "octocat", "scope": "full"})
+    wire = r.get_data(as_text=True)
+    assert r.status_code == 200
+    assert "hidden.example" not in wire
+    assert json.loads(wire)["data"]["preview"]["hidden_findings"] == 1
 
 
 def test_full_scan_off_without_a_persistent_store(client, monkeypatch):
@@ -265,10 +353,10 @@ def test_handle_cannot_steer_a_subdomain_request():
     assert hit["verdict"] == "unknown" and hit["reason_code"] == "invalid_handle"
 
 
-def test_stream_refuses_before_streaming(client):
+def test_stream_rejects_bad_token_before_streaming(client):
     r = client.post("/api/username/stream", data=json.dumps({"username": "octocat", "scope": "full"}),
-                    headers={"Content-Type": "application/json"})
-    assert r.status_code == 401 and r.get_json()["code"] == "sign_in_required"
+                    headers={"Content-Type": "application/json", "Authorization": "Bearer bad"})
+    assert r.status_code == 401 and r.get_json()["code"] == "auth_invalid"
 
 
 def test_verify_rejects_missing_fields(client, keys):

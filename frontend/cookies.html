@@ -85,11 +85,11 @@
 
     <section id="first-party">
       <h2>2. What MyRecon stores (no cookies)</h2>
-      <p>MyRecon has no accounts, no sessions and no server-side state tied to you, so there is nothing for a cookie of ours to do, and our own code sets none. (Google’s advertising script does set a few cookies under the myrecon.xyz name; those are Google’s and are listed in <a href="#third-party">section 3</a>.) What our code uses instead is local storage, for four things, all of which exist to make the tool behave the way you asked it to:</p>
+      <p>MyRecon offers optional Google sign-in. Our own code does not set a session cookie; it uses browser storage for preferences, recent lookups, saved items and Firebase authentication state. Google&rsquo;s advertising script may set cookies under the myrecon.xyz name, listed in <a href="#third-party">section 3</a>.</p>
 
       <div class="legal-table-wrap">
         <table>
-          <caption>First-party browser storage. None of these are cookies, and none are transmitted to us or to anyone else.</caption>
+          <caption>Browser storage used by MyRecon. Firebase authentication state is used to send an ID token for signed-in requests.</caption>
           <thead>
             <tr><th scope="col">Key</th><th scope="col">Type</th><th scope="col">Purpose</th><th scope="col">Lasts</th></tr>
           </thead>
@@ -105,7 +105,7 @@
       </div>
 
       <div class="legal-note">
-        <p>These four are <strong>strictly necessary, or explicitly requested by you</strong>: a preference you set, a history the tool exists to show you, a save you pressed a button for. Under the ePrivacy rules that category does not require consent, which is why you are not asked about them. They hold no identifier we can read: everything stays in your browser. Clearing site data for myrecon.xyz removes all four at once.</p>
+        <p>Preferences, recent lookups and saved items stay in your browser. If you sign in, Firebase keeps authentication state there and sends an ID token to Google and to our API when needed to confirm your account. Clearing site data for myrecon.xyz removes these browser entries; signing out ends the Firebase session.</p>
       </div>
     </section>
 
@@ -171,7 +171,7 @@
       <p>Every major browser lets you block third-party cookies outright, delete what is already stored, or clear everything for a single site. Look under privacy settings for &ldquo;Cookies and site data&rdquo; in <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Chrome</a>, <a href="https://support.mozilla.org/kb/enhanced-tracking-protection-firefox-desktop" target="_blank" rel="noopener">Firefox</a>, <a href="https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac" target="_blank" rel="noopener">Safari</a> or <a href="https://support.microsoft.com/microsoft-edge" target="_blank" rel="noopener">Edge</a>. Blocking third-party cookies breaks nothing on this site.</p>
 
       <h3>Clear what MyRecon stores</h3>
-      <p>Your recent-lookup history has a <strong>Clear history</strong> button in the tool, and each saved investigation has its own remove control. Clearing site data for myrecon.xyz in your browser removes all four local storage keys at once.</p>
+      <p>Your recent-lookup history has a <strong>Clear history</strong> button in the tool, and each saved investigation has its own remove control. Clearing site data for myrecon.xyz in your browser removes its local storage and IndexedDB entries.</p>
 
       <h3>Global Privacy Control</h3>
       <p>We do not sell or share personal information, so there is nothing on our side for a <a href="https://globalprivacycontrol.org/" target="_blank" rel="noopener">Global Privacy Control</a> signal to switch off, what the signal asks for is already how this site works. Your browser sends it to Google as well, independently of us, and Google treats it as an opt-out of sale and sharing under US state privacy laws. To be certain either way, use the advertising controls above as well.</p>

@@ -1,22 +1,27 @@
 """
 Who may run which scan, and how many.
 
-  guest       standard scan (100 platforms), GUEST_SCANS_PER_DAY per address
+  guest       up to GUEST_SCANS_PER_DAY scans per address; a full sweep
+              processes 560 catalogue entries but reveals only the first
+              100 verdicts (some entries may be unknown or out of time)
   free        standard scans unmetered, FREE_FULL_SCANS Pro (full) scans in
               total: a one-time trial, not a weekly allowance
   pro weekly  PLANS["weekly"]: a 7-day pass with its own full-scan allowance
   pro monthly PLANS["monthly"]: a 30-day pass, same idea
 
 A "full" scan is the 560-platform sweep ported from the Android app. Every
-other tool stays free for everyone; accounts only change scan limits.
+other tool stays free for everyone; accounts change scan limits and how much
+of a full sweep is visible.
 
 Passes are one-time payments, not subscriptions: nothing renews, so nothing
 has to be cancelled. Buying while a pass is active stacks, extending the end
 date and adding the scans.
 
-A full scan is charged when it starts and refunded if the pipeline fails, so
-a crashed scan never costs anything. Pro allowance is spent before the free
-trial scan, so an unused trial is still there once a pass runs out.
+An uncached signed-in full scan is charged when it starts and refunded if the
+pipeline fails, so a crashed scan never costs a Pro scan. A cached full result
+still requires an available allowance but does not spend it. Pro allowance is
+spent before the free trial scan, so an unused trial is still there once a pass
+runs out.
 
 Record at /web/users/<uid>:
   {"email", "name", "created",

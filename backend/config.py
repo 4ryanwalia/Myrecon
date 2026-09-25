@@ -128,8 +128,9 @@ CACHE_TTL = _get_int("CACHE_TTL", 600)                      # seconds
 FIREBASE_PROJECT_ID = os.environ.get("FIREBASE_PROJECT_ID", "myrecon-bugsnaps")
 # Account state (plan, weekly usage) lives in that project's Realtime Database
 # under /web, written with a service account. The JSON key, raw or base64, goes
-# in the Render dashboard. Without it accounts are off and the full scan is
-# unavailable; guest limits still apply, from memory.
+# in the Render dashboard. Without it account features are off, but guests
+# can still run a 560-entry sweep and see the first 100 verdicts. Guest limits
+# still apply from memory.
 FIREBASE_DB_URL = os.environ.get(
     "FIREBASE_DB_URL",
     "https://myrecon-bugsnaps-default-rtdb.asia-southeast1.firebasedatabase.app",

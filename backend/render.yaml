@@ -34,7 +34,8 @@ services:
       - key: GITHUB_TOKEN
         sync: false
       # Accounts: Firebase service-account JSON (raw or base64) for the
-      # Realtime Database. Without it the full scan is switched off.
+      # Realtime Database. Guest scans still run without account storage,
+      # but sign-in and full-report unlocks need this configuration.
       - key: FIREBASE_SERVICE_ACCOUNT
         sync: false
       # Pro passes. Key id is public, the two secrets are not.

@@ -285,19 +285,17 @@ def _admit_scan(scope: str, cached: bool):
     Decide whether this scan may run, charging the allowance it uses.
 
     Returns (uid, charged) where `charged` names the allowance to refund if
-    the scan fails, or None when nothing was charged. Raises SignInRequired,
-    AccountsUnavailable, NoAllowance or GuestLimit, each with its own status.
+    the scan fails, or None when nothing was charged. A guest full scan runs
+    the same sweep but only receives the first 100 platform verdicts.
     """
     from core import plans, store
 
     user = _signed_in_user()
-    if scope == "standard":
-        if user is None:
-            plans.consume_guest_scan(_client_ip())
-        return (user or {}).get("sub"), None
-
     if user is None:
-        raise SignInRequired()
+        plans.consume_guest_scan(_client_ip())
+        return None, None
+    if scope == "standard":
+        return user["sub"], None
     if not store.persistent():
         raise AccountsUnavailable()
     uid = user["sub"]
@@ -331,6 +329,84 @@ def _remember(uid, data):
 
 # Concurrent 560-platform sweeps in this worker. Each holds 24 sockets.
 _full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
+
+
+def _guest_full_preview(data: dict) -> dict:
+    """Project a full sweep onto the public catalogue window.
+
+    This runs at the response boundary, including for cache hits. The cached
+    object remains complete for a signed-in caller, while every guest response
+    derives its details and headline counts only from the public 100 sites.
+    `checked` is the number of catalogue verdicts, including unknown and
+    out-of-time verdicts; it is not a count of successful network responses.
+    """
+    from modules.sweep import CATALOGUE
+    from modules.username_checker import STANDARD_LIMIT
+
+    visible = {platform["name"] for platform in CATALOGUE[:STANDARD_LIMIT]}
+    results = data.get("results") or {}
+    shown = {
+        key: [r for r in (results.get(key) or []) if r.get("platform") in visible]
+        for key in ("profiles", "documents", "mentions")
+    }
+    hidden_findings = sum(
+        1 for key in ("profiles", "documents", "mentions")
+        for r in (results.get(key) or []) if r.get("platform") not in visible
+    )
+    unverified = [r for r in (data.get("unverified") or []) if r.get("platform") in visible]
+    rejected = [r for r in (data.get("rejected") or []) if r.get("platform") in visible]
+    total = len(CATALOGUE)
+    shown_count = min(STANDARD_LIMIT, total)
+    return {
+        "status": data.get("status", "ok"),
+        "query": data.get("query") or {},
+        "summary": {
+            "total": sum(map(len, shown.values())),
+            "profiles": len(shown["profiles"]),
+            "documents": len(shown["documents"]),
+            "mentions": len(shown["mentions"]),
+            "clusters": 0,
+            "checked": shown_count,
+            "rejected": len(rejected),
+            "unverified": len(unverified),
+            "exposures": 0,
+        },
+        "results": shown,
+        "identity_clusters": [],
+        "exposures": [],
+        "rejected": rejected,
+        "unverified": unverified,
+        "preview": {
+            "checked": total,
+            "visible": shown_count,
+            "hidden": total - shown_count,
+            "hidden_findings": hidden_findings,
+            "requires_sign_in": True,
+        },
+    }
+
+
+def _guest_stream_event(event: dict, visible: set[str]):
+    """Remove locked platform data before an NDJSON event leaves the server."""
+    kind = event.get("type")
+    if kind == "found":
+        return event if (event.get("result") or {}).get("platform") in visible else None
+    if kind == "progress":
+        # Full-sweep progress names the site that just responded. Keep progress
+        # live while withholding the 460 locked platform names and verdicts.
+        if event.get("phase") == "Queued":
+            phase, detail = "Queued", "Waiting for a scan slot…"
+        elif event.get("phase") == "Checking platforms":
+            phase, detail = "Checking platforms", "Sweeping all public platforms…"
+        else:
+            phase, detail = "Preparing results", "Preparing the visible report…"
+        return {"type": "progress", "phase": phase,
+                "percent": event.get("percent", 0), "detail": detail}
+    if kind == "complete":
+        return {**event, "data": _guest_full_preview(event.get("data") or {})}
+    if kind == "error":
+        return {"type": "error", "error": "The scan failed. Please try again."}
+    return None
 
 
 # ── Routes ───────────────────────────────────────────────────────
@@ -392,7 +468,8 @@ def _register_routes(app: Flask) -> None:
             hit = _cache.get(key) if config.CACHE_ENABLED else None
             uid, charged = _admit_scan("full", hit is not None)
             if hit is not None:
-                return responses.ok({**hit, "history_id": _remember(uid, hit)})
+                shown = _guest_full_preview(hit) if uid is None else hit
+                return responses.ok({**shown, "history_id": _remember(uid, hit)})
             with _full_slots:
                 try:
                     data = _run_full(username)
@@ -401,7 +478,8 @@ def _register_routes(app: Flask) -> None:
                     raise
             if config.CACHE_ENABLED:
                 _cache.set(key, data)
-            return responses.ok({**data, "history_id": _remember(uid, data)})
+            shown = _guest_full_preview(data) if uid is None else data
+            return responses.ok({**shown, "history_id": _remember(uid, data)})
         uid, _ = _admit_scan("standard", False)
         data = cached_username(username, deep)
         return responses.ok({**data, "history_id": _remember(uid, data)})
@@ -428,11 +506,17 @@ def _register_routes(app: Flask) -> None:
         # Admitted before the response starts, so a refusal is a real
         # 401/402/429 the page can act on, not an error halfway down a stream.
         uid, charged = _admit_scan(scope, cached_hit is not None)
+        guest_full = scope == "full" and uid is None
+        if guest_full:
+            from modules.sweep import CATALOGUE
+            from modules.username_checker import STANDARD_LIMIT
+            visible = {p["name"] for p in CATALOGUE[:STANDARD_LIMIT]}
 
         def generate():
             from core import plans
             if cached_hit is not None:
-                yield json.dumps({"type": "complete", "data": cached_hit,
+                shown = _guest_full_preview(cached_hit) if guest_full else cached_hit
+                yield json.dumps({"type": "complete", "data": shown,
                                   "history_id": _remember(uid, cached_hit)}) + "\n"
                 return
             slot = _full_slots if scope == "full" else None
@@ -451,7 +535,10 @@ def _register_routes(app: Flask) -> None:
                                 and data.get("status") != "error"):
                             _cache.set(key, data)
                         event = {**event, "history_id": _remember(uid, data)}
-                    yield json.dumps(event) + "\n"
+                    if guest_full:
+                        event = _guest_stream_event(event, visible)
+                    if event is not None:
+                        yield json.dumps(event) + "\n"
             finally:
                 if slot is not None:
                     slot.release()
@@ -811,13 +898,14 @@ def _register_errors(app: Flask) -> None:
     @app.errorhandler(SignInRequired)
     def on_sign_in_required(_err):
         return responses.error(
-            "Sign in (free) to run the full scan.", status=401, code="sign_in_required",
+            "Sign in to unlock the full report and use account features.",
+            status=401, code="sign_in_required",
         )
 
     @app.errorhandler(AccountsUnavailable)
     def on_accounts_unavailable(_err):
         return responses.error(
-            "Accounts are not switched on yet. The standard scan still works.",
+            "Account features are not switched on yet. Guest preview scans still work.",
             status=503, code="accounts_unavailable",
         )
 

@@ -218,7 +218,7 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
    counter-rotates by the same amount so it stays upright. Decorative, and
    paused by fx.js whenever the hero is off-screen.
    ========================================================================== */
-.hero-grid { display: grid; grid-template-columns: 1fr; gap: 26px; align-items: center; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; align-items: center; }
 .hero-copy { min-width: 0; }
 
 @media (min-width: 1100px) {
@@ -290,6 +290,10 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 .core-handle { font: 600 .74rem/1.1 var(--mono); color: var(--text); }
 .core-count { font: 500 .64rem/1 var(--mono); color: var(--text-mute); }
 .core-count b { color: var(--ok); }
+.orbit-caption { position: absolute; left: 50%; bottom: -9px; transform: translateX(-50%);
+  z-index: 2; padding: 4px 9px; border: 1px solid var(--border-strong);
+  border-radius: 5px; background: var(--surface); color: var(--text-dim);
+  font: 600 .59rem/1.3 var(--mono); letter-spacing: .04em; white-space: nowrap; }
 
 .orbit.paused *, .orbit.paused *::before, .orbit.paused *::after { animation-play-state: paused !important; }
 
@@ -369,6 +373,10 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
   .hero-tool .field-row { flex-direction: column; }
   .hero-tool #runBtn { width: 100%; }
   .hero-tool .tab { flex: 0 0 auto; padding: 8px 11px; }
+  .home-page .nav-inner { gap: 8px; }
+  .home-page .nav-inner > .brand { margin-right: auto; gap: 7px; font-size: 1rem; }
+  .home-page .nav-inner > .brand small { display: none; }
+  .home-page .scope-opt { min-height: 44px; }
 }
 .results-section:has(.results:empty) { display: none; }
 @media (prefers-reduced-motion: reduce) {
@@ -388,6 +396,9 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 .results .progress.determinate > i { animation: none; }
 .results .scan-pct { font-size: 1.4rem; }
 .results .scan-meta #scanDetail { font-family: var(--mono); font-size: .78rem; color: var(--text-dim); }
+.scan-facts { display: flex; gap: 8px 22px; flex-wrap: wrap; margin-top: 14px;
+  font: 600 .7rem/1.5 var(--mono); letter-spacing: .03em; color: var(--text-mute); }
+.scan-facts span:first-child { color: var(--text); }
 
 /* Cards found during the sweep, shown under the progress while it runs. */
 .live-found { margin-top: 18px; }
@@ -398,6 +409,100 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 /* Result header */
 .results .results-bar h2 { font-size: 1.08rem; }
 .results .results-bar .hint { font-family: var(--mono); font-size: .76rem; padding: 3px 8px; border-radius: 6px; background: var(--surface-2); }
+
+/* A guest receives only server-approved preview data. This label stays with
+   the visible report in exports and on the screen; it never counts hidden
+   platform verdicts as found accounts. */
+.preview-notice {
+  display: flex; gap: 10px 18px; align-items: center; flex-wrap: wrap;
+  margin: 0 0 16px; padding: 11px 16px; border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent); border-radius: var(--radius-sm);
+  background: var(--bg-soft); font-size: .82rem; color: var(--text-dim);
+}
+.preview-notice strong { color: var(--text); font: 700 .86rem/1.3 var(--mono); }
+.preview-eyebrow { color: var(--text-mute); font: 700 .65rem/1.3 var(--mono);
+  letter-spacing: .13em; text-transform: uppercase; }
+.unlock-report { display: flex; align-items: center; justify-content: space-between;
+  gap: 28px; margin: 24px 0 34px; padding: 28px 30px; }
+.unlock-copy { max-width: 68ch; }
+.unlock-report h3 { margin: 8px 0 7px; font-size: clamp(1.15rem, 2vw, 1.55rem); }
+.unlock-report p { color: var(--text-dim); font-size: .88rem; }
+.unlock-counts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.unlock-counts span { padding: 5px 9px; border: 1px solid var(--border-strong);
+  border-radius: 5px; font: 700 .7rem var(--mono); text-transform: uppercase; letter-spacing: .07em; }
+.unlock-action { flex: 0 0 250px; display: grid; gap: 8px; text-align: center; }
+.unlock-action .btn { width: 100%; }
+.unlock-action .hint { line-height: 1.45; }
+@media (max-width: 700px) {
+  .unlock-report { display: block; padding: 20px; }
+  .unlock-action { margin-top: 18px; }
+}
+
+/* Real result map. The illustrated orbit in the hero is intentionally kept
+   separate from this evidence-based view. Mobile keeps the existing cards. */
+.relationship-panel { display: none; }
+@media (min-width: 1100px) {
+  .relationship-panel {
+    display: block; margin: 18px 0 22px; border: 1px solid var(--border);
+    border-radius: var(--radius); background: var(--surface); overflow: hidden;
+  }
+  .relationship-heading { display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; padding: 17px 22px; border-bottom: 1px solid var(--border); }
+  .relationship-heading h3 { margin-top: 4px; font-size: 1.08rem; }
+  .relationship-total { font: 700 .74rem var(--mono); color: var(--text-dim);
+    white-space: nowrap; }
+  .relationship-body { display: grid; grid-template-columns: minmax(0, 1fr) 240px; }
+  .relationship-visual { min-height: 380px; display: grid; place-items: center;
+    background-color: var(--bg-soft);
+    background-image: radial-gradient(color-mix(in srgb, var(--border-strong) 75%, transparent) 1px, transparent 1px);
+    background-size: 22px 22px; }
+  .relationship-visual svg { display: block; width: min(100%, 760px); height: auto; }
+  .relationship-ring { fill: none; stroke: var(--border-strong); stroke-width: 1;
+    stroke-dasharray: 3 7; }
+  .relationship-ring.inner { stroke: var(--border); }
+  .relationship-edges line { stroke: var(--border-strong); stroke-width: 1.5; }
+  .relationship-core { fill: var(--surface-2); stroke: var(--accent); stroke-width: 2; }
+  .relationship-handle { fill: var(--text); font: 700 13px var(--mono); text-anchor: middle; }
+  .relationship-core-sub { fill: var(--text-mute); font: 9px var(--mono); text-anchor: middle; }
+  .relationship-node { fill: var(--surface); stroke: var(--ok); stroke-width: 2; }
+  .relationship-node.possible { stroke: var(--warn); }
+  .relationship-nodes a:hover .relationship-node,
+  .relationship-nodes a:focus-visible .relationship-node { fill: var(--surface-2); stroke-width: 3; }
+  .relationship-initials { fill: var(--text); font: 700 11px var(--mono); text-anchor: middle; pointer-events: none; }
+  .relationship-label { fill: var(--text-dim); font: 10px var(--mono); text-anchor: middle; pointer-events: none; }
+  .relationship-context { border-left: 1px solid var(--border); padding: 26px 21px;
+    color: var(--text-dim); font-size: .82rem; line-height: 1.6; }
+  .relationship-context strong { color: var(--text); font-size: .88rem; }
+  .relationship-context p { margin-top: 10px; }
+  .relationship-more { color: var(--text-mute); }
+  .relationship-key { display: flex; align-items: center; gap: 8px; margin-top: 22px;
+    font: 600 .72rem var(--mono); flex-wrap: wrap; }
+  .relationship-key i { width: 10px; height: 10px; border: 2px solid var(--ok);
+    border-radius: 50%; display: inline-block; }
+  .relationship-key i.possible { border-color: var(--warn); margin-left: 8px; }
+  .relationship-empty { max-width: 36ch; padding: 20px; text-align: center;
+    color: var(--text-dim); font-size: .9rem; }
+}
+
+/* The landing panel gains a broad console feel on laptop screens. All rules
+   below the breakpoint leave the phone's headline, tool and orbit order alone. */
+@media (min-width: 1100px) {
+  .home-page .hero { padding-top: 55px; }
+  .home-page .hero-grid, .home-page .results-section { max-width: 1390px; }
+  .home-page .hero-grid { grid-template-columns: minmax(0, 1.16fr) minmax(0, .84fr);
+    gap: 44px; align-items: center; }
+  .home-page .hero h1 { max-width: 18ch; line-height: 1.08; }
+  .home-page .hero .lead { margin-left: 0; text-align: left; }
+  .home-page .hero-tool { margin-top: 30px; }
+  .home-page .hero-tool .panel { border-radius: 8px; }
+  .home-page .hero-tool .tool-tabs { background: transparent; border-color: var(--border-strong);
+    border-radius: 7px; }
+  .home-page .hero-tool .tab { border-radius: 4px; font-family: var(--mono);
+    font-size: .74rem; }
+  .home-page .hero-tool .input, .home-page .hero-tool #runBtn { border-radius: 6px; }
+  .home-page .orbit { transform: translateY(22px); }
+  .home-page .results .loading.scan { border-radius: 8px; }
+}
 
 /* Stat tiles */
 .results .stat { text-align: left; }
