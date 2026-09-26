@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node scripts/gen-env.js && node scripts/build-breaches.js && node scripts/build-case-files.js && node scripts/build-data-api.js && node scripts/build-sitemap.js",
+  "buildCommand": "node scripts/gen-env.js && node scripts/build-breaches.js && node scripts/build-case-files.js && node scripts/build-data-api.js && node scripts/build-seo-pages.js && node scripts/build-sitemap.js",
   "outputDirectory": ".",
   "redirects": [
     {
@@ -94,6 +94,40 @@
           "value": "public, max-age=0, must-revalidate, stale-while-revalidate=604800"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/pricing",
+      "destination": "/pricing.html"
+    },
+    {
+      "source": "/features",
+      "destination": "/features.html"
+    },
+    {
+      "source": "/enterprise-osint-api",
+      "destination": "/enterprise-osint-api.html"
+    },
+    {
+      "source": "/privacy-audit",
+      "destination": "/privacy-audit.html"
+    },
+    {
+      "source": "/find/:slug",
+      "destination": "/find/:slug.html"
+    },
+    {
+      "source": "/privacy/:slug",
+      "destination": "/privacy/:slug.html"
+    },
+    {
+      "source": "/guides/:slug",
+      "destination": "/guides/:slug.html"
+    },
+    {
+      "source": "/vs/:slug",
+      "destination": "/vs/:slug.html"
     }
   ]
 }

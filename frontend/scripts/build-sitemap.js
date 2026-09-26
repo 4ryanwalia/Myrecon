@@ -56,7 +56,12 @@ const SECTIONS = [
   { test: (u) => u.startsWith("/breaches/"), changefreq: "monthly", priority: "0.6" },
   { test: (u) => u === "/guides/", changefreq: "weekly", priority: "0.9" },
   { test: (u) => u.startsWith("/guides/"), changefreq: "monthly", priority: "0.8" },
+  { test: (u) => u === "/find/", changefreq: "weekly", priority: "0.9" },
+  { test: (u) => u.startsWith("/find/"), changefreq: "monthly", priority: "0.8" },
+  { test: (u) => u === "/privacy/", changefreq: "weekly", priority: "0.9" },
+  { test: (u) => u.startsWith("/privacy/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/services.html" || u === "/app.html" || u === "/deep-search.html", changefreq: "monthly", priority: "0.9" },
+  { test: (u) => u === "/pricing" || u === "/features" || u === "/privacy-audit" || u === "/enterprise-osint-api", changefreq: "monthly", priority: "0.9" },
   // The three explainer pages. High-intent search targets ("is X legit",
   // "X vs Y"), so they sit above About and below the tool pages. Without an
   // entry here they would fall through to the 0.3 catch-all, which is where
@@ -83,8 +88,22 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-/** /guides/index.html is served at /guides/, index the directory, not the file. */
-function toUrlPath(file) {
+/** Prefer a page's canonical URL; this also supports clean URLs backed by .html files. */
+function toUrlPath(file, html) {
+  const canonicalTag = [...html.matchAll(/<link\b[^>]*>/gi)]
+    .map((match) => match[0])
+    .find((tag) => /\brel=["']canonical["']/i.test(tag));
+  const canonicalHref = canonicalTag && canonicalTag.match(/\bhref=["']([^"']+)["']/i)?.[1];
+  if (canonicalHref) {
+    try {
+      const canonical = new URL(canonicalHref, SITE);
+      if (["myrecon.xyz", "www.myrecon.xyz"].includes(canonical.hostname)) {
+        return canonical.pathname || "/";
+      }
+    } catch {
+      // Fall through to the path on disk when a page has a malformed canonical.
+    }
+  }
   const rel = path.relative(ROOT, file).split(path.sep).join("/");
   return "/" + (rel.endsWith("index.html") ? rel.slice(0, -"index.html".length) : rel);
 }
@@ -114,7 +133,7 @@ function main() {
 
   for (const file of walk(ROOT)) {
     const html = fs.readFileSync(file, "utf8");
-    const url = toUrlPath(file);
+    const url = toUrlPath(file, html);
 
     const robots = html.match(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
     if (robots && /noindex|none/i.test(robots[1])) {
@@ -135,10 +154,21 @@ function main() {
   // that changed nothing produces no diff.
   entries.sort((a, b) => (a.url === "/" ? -1 : b.url === "/" ? 1 : a.url.localeCompare(b.url)));
 
+  const unique = [];
+  const canonicalPaths = new Set();
+  for (const entry of entries) {
+    if (canonicalPaths.has(entry.url)) {
+      skipped.push(`${entry.url} (duplicate canonical)`);
+      continue;
+    }
+    canonicalPaths.add(entry.url);
+    unique.push(entry);
+  }
+
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    entries
+    unique
       .map(
         (e) =>
           `  <url><loc>${SITE}${e.url}</loc><lastmod>${e.lastmod}</lastmod>` +
@@ -151,7 +181,7 @@ function main() {
   // whole file as changed on every build.
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), xml.replace(/\r\n/g, "\n"), "utf8");
 
-  console.log(`[sitemap] ${entries.length} URLs written`);
+  console.log(`[sitemap] ${unique.length} URLs written`);
   if (skipped.length) console.log(`[sitemap] skipped ${skipped.length}: ${skipped.join(", ")}`);
 
   // 50,000 is the per-file ceiling in the protocol. Nowhere near it, but a

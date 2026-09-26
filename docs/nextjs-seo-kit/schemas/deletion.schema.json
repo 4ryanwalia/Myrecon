@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.myrecon.xyz/schemas/deletion.schema.json",
+  "title": "MyRecon deletion page",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "slug",
+    "status",
+    "title",
+    "description",
+    "h1",
+    "focus_keyword",
+    "intro",
+    "sections",
+    "faq",
+    "sources",
+    "reviewed_at",
+    "modified_at",
+    "reviewer",
+    "cta",
+    "service",
+    "official_help_url",
+    "steps",
+    "caveat",
+    "optout_link",
+    "audit_pitch"
+  ],
+  "properties": {
+    "kind": {
+      "const": "deletion"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "published"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 25,
+      "maxLength": 70
+    },
+    "description": {
+      "type": "string",
+      "minLength": 80,
+      "maxLength": 180
+    },
+    "h1": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 160
+    },
+    "focus_keyword": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 160
+    },
+    "intro": {
+      "type": "string",
+      "minLength": 80
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "heading",
+          "body"
+        ],
+        "properties": {
+          "heading": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 160
+          },
+          "body": {
+            "type": "string",
+            "minLength": 80
+          }
+        }
+      }
+    },
+    "faq": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "answer"],
+        "properties": {
+          "question": {"type": "string", "minLength": 8, "maxLength": 160},
+          "answer": {"type": "string", "minLength": 80}
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https://"
+      }
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "modified_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 3
+    },
+    "cta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "href"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 160
+        },
+        "href": {
+          "type": "string",
+          "pattern": "^/(?:[a-z0-9/?=&-]*)$"
+        }
+      }
+    },
+    "service": {
+      "type": "string",
+      "minLength": 2
+    },
+    "official_help_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 80
+      }
+    },
+    "caveat": {
+      "type": "string",
+      "minLength": 80
+    },
+    "optout_link": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "audit_pitch": {
+      "type": "string",
+      "minLength": 80
+    }
+  }
+}

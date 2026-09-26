@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.myrecon.xyz/schemas/target.schema.json",
+  "title": "MyRecon target page",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "slug",
+    "status",
+    "title",
+    "description",
+    "h1",
+    "focus_keyword",
+    "intro",
+    "sections",
+    "faq",
+    "sources",
+    "reviewed_at",
+    "modified_at",
+    "reviewer",
+    "cta",
+    "platform",
+    "manual_steps",
+    "scan_trigger"
+  ],
+  "properties": {
+    "kind": {
+      "const": "target"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "published"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 25,
+      "maxLength": 70
+    },
+    "description": {
+      "type": "string",
+      "minLength": 80,
+      "maxLength": 180
+    },
+    "h1": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 160
+    },
+    "focus_keyword": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 160
+    },
+    "intro": {
+      "type": "string",
+      "minLength": 80
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "heading",
+          "body"
+        ],
+        "properties": {
+          "heading": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 160
+          },
+          "body": {
+            "type": "string",
+            "minLength": 80
+          }
+        }
+      }
+    },
+    "faq": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "answer"],
+        "properties": {
+          "question": {"type": "string", "minLength": 8, "maxLength": 160},
+          "answer": {"type": "string", "minLength": 80}
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https://"
+      }
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "modified_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 3
+    },
+    "cta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "href"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 160
+        },
+        "href": {
+          "type": "string",
+          "pattern": "^/(?:[a-z0-9/?=&-]*)$"
+        }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "official_url",
+        "public_lookup",
+        "limitations",
+        "privacy_overview",
+        "false_positive_note"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "official_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "public_lookup": {
+          "type": "string",
+          "minLength": 80
+        },
+        "limitations": {
+          "type": "string",
+          "minLength": 80
+        },
+        "privacy_overview": {
+          "type": "string",
+          "minLength": 80
+        },
+        "false_positive_note": {
+          "type": "string",
+          "minLength": 80
+        }
+      }
+    },
+    "manual_steps": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 80
+      }
+    },
+    "scan_trigger": {
+      "type": "string",
+      "enum": [
+        "username"
+      ]
+    }
+  }
+}
