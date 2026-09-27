@@ -1,6 +1,8 @@
 # MyRecon
 
-**Audit your own public digital footprint with evidence you can inspect.** MyRecon brings username, email, breach, domain, DNS, and IP lookups into one web app. This repository also contains a Python CLI and the Flask API behind the site.
+**Open-source OSINT toolkit for authorized digital-footprint audits.** Check usernames, breach exposure, domains, DNS, and IPs with a web app, Python CLI, or Flask API.
+
+Username OSINT · breach checks · domain intelligence · DNS/IP lookup · Python · Flask
 
 [Try the web app](https://myrecon.xyz) · [Run the CLI](#quick-start) · [Explore the API](#api) · [See the code](#project-layout)
 
@@ -122,7 +124,13 @@ python -m pytest backend/tests -q
 
 ## Contributing
 
-Focused issues and pull requests are welcome. For a platform-verdict change, include a reproducible example and explain what evidence distinguishes `found`, `not_found`, and `unknown`. Please avoid posting personal lookup results, private data, or API keys in issues. [Open an issue](https://github.com/4ryanwalia/Myrecon/issues).
+Contributions are welcome. Here are useful ways to help:
+
+- **Improve platform coverage:** add or update a platform verdict check and include fixtures or a reproducible example that demonstrates the expected `found`, `not_found`, or `unknown` result.
+- **Improve documentation:** clarify setup, API/CLI usage, or how to verify a finding. Keep examples safe to share and grounded in public sources.
+- **Strengthen API and CLI tests:** cover a user-visible command or endpoint, including error and uncertain-result cases where relevant.
+
+For substantial or behavior-changing work, open an [issue](https://github.com/4ryanwalia/Myrecon/issues) first to agree on scope. Then submit a focused pull request that links the issue, explains the change, and summarizes relevant test results. Do not include personal lookup results, private data, or API keys. Every pull request requires explicit approval from the project maintainer before merge; submission does not guarantee acceptance.
 
 If MyRecon helps you understand your footprint, [star the repository](https://github.com/4ryanwalia/Myrecon) to help others discover it.
 
