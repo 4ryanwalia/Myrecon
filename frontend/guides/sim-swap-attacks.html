@@ -48,6 +48,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the first sign of a SIM swap?","acceptedAnswer":{"@type":"Answer","text":"Your phone loses mobile service and will not recover, no calls, no texts, often an \"emergency calls only\" or \"no SIM\" indicator, while wifi still works. If that happens without explanation and is quickly followed by password reset emails, treat it as an attack in progress rather than a network fault."}},{"@type":"Question","name":"Can a SIM swap happen if I use an eSIM?","acceptedAnswer":{"@type":"Answer","text":"Yes. An eSIM removes the physical card but not the underlying process: the number is still an account with a carrier, and transferring the profile to a new device is a support operation an attacker can target in the same way."}},{"@type":"Question","name":"Does a port-out PIN actually stop it?","acceptedAnswer":{"@type":"Answer","text":"It stops the common version. Most successful swaps come from a support agent being socially engineered, and a PIN or port freeze gives that agent something to check that the attacker does not have. It does not stop an insider with system access, which is why it is worth removing SMS from your important accounts as well."}},{"@type":"Question","name":"Why do attackers want a phone number specifically?","acceptedAnswer":{"@type":"Answer","text":"Because so many services treat it as proof of identity. It receives one-time codes, it authorises password resets, it retrieves voicemail, and it is accepted as a verification factor by banks and platforms, so controlling it for even twenty minutes can be enough to take several accounts."}}]}</script>
   <link rel="stylesheet" href="/assets/css/content-app-promo.css">
   <link rel="stylesheet" href="/assets/css/content-app-context.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -180,12 +181,42 @@
 </article>
   </main>
 
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>

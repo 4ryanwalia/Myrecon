@@ -48,6 +48,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do AI people-search apps actually find anything?","acceptedAnswer":{"@type":"Answer","text":"Most of them query the same public web a search engine does, then present the results in a dossier-style layout. They cannot see private profiles, direct messages, deleted posts, likes or location history, because none of that is published. An app that appears to know more than a careful web search is usually either reformatting public data or reselling a data-broker record, and in both cases the underlying information was already reachable without paying."}},{"@type":"Question","name":"How can I test a people-search app before paying?","acceptedAnswer":{"@type":"Answer","text":"Search for a string nobody could have registered, random letters and digits, such as zzqnope99123xqq. A tool that returns profiles or a confident dossier for an invented identity is not detecting people; it is producing output regardless of input. Then search for yourself and check whether anything it reports is something you could not have found with a few minutes of ordinary web searching."}},{"@type":"Question","name":"Why does the app show results but ask me to subscribe to see them?","acceptedAnswer":{"@type":"Answer","text":"A blurred or counted result shown before payment is a conversion device, not a finding. Producing a count costs nothing and can be generated without any lookup having taken place. Treat a blurred result as an advertisement until the app has shown you at least one verifiable item, a link you can open and check yourself."}},{"@type":"Question","name":"Is it legal to look someone else up?","acceptedAnswer":{"@type":"Answer","text":"Reading genuinely public information is generally lawful in most jurisdictions, but the purpose matters and the rules differ by country. Compiling a profile of a private individual to contact, monitor, pressure or embarrass them can breach anti-stalking, harassment and data-protection law regardless of whether each individual fact was public. Employment, tenancy and credit decisions are separately regulated in many countries and usually require a licensed, consented process."}},{"@type":"Question","name":"What can a username search honestly find?","acceptedAnswer":{"@type":"Answer","text":"Accounts that are publicly visible and reachable at a predictable URL for that handle, plus pages elsewhere on the web that mention or link to them. That is a real footprint and it is often larger than people expect. It is not a comment history, a follower list, a private account or anything requiring a logged-in session."}}]}</script>
   <link rel="stylesheet" href="/assets/css/content-app-promo.css">
   <link rel="stylesheet" href="/assets/css/content-app-context.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -164,12 +165,42 @@
 </article>
   </main>
 
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>

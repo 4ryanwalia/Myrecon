@@ -48,6 +48,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is there a free data breach API with no key?","acceptedAnswer":{"@type":"Answer","text":"Yes. MyRecon publishes its breach archive as versioned static JSON at /data/v1/ with no account, no API key and no rate limit beyond fair use, with CORS enabled so browser JavaScript can call it directly. The data originates from Have I Been Pwned under CC BY 4.0, so attribution to Have I Been Pwned is required if you publish it."}},{"@type":"Question","name":"How often should a breach monitor poll?","acceptedAnswer":{"@type":"Answer","text":"Once or twice a day is enough. The archive rebuilds daily, so polling every minute returns the identical payload hundreds of times and finds nothing a daily check would miss. Read the generated field in the response to see whether the data actually changed before doing any work."}},{"@type":"Question","name":"Can I monitor a specific email address for breaches with this API?","acceptedAnswer":{"@type":"Answer","text":"No. This API serves breach metadata, which incidents happened and what was exposed, and holds no personal records, so it cannot be queried by email address. For per-address checking use Have I Been Pwned's own API, which is built for it. A monitor built on metadata alerts you that an incident happened at a service you use, which you then act on yourself."}},{"@type":"Question","name":"What is the most common mistake when building a breach monitor?","acceptedAnswer":{"@type":"Answer","text":"Alerting on everything. A monitor that fires on every new record in the archive gets muted within a week, at which point it is worse than no monitor because it creates a false sense of coverage. Filter to what you actually care about, the domains you use, or a severity threshold, before you send anything."}}]}</script>
   <link rel="stylesheet" href="/assets/css/content-app-promo.css">
   <link rel="stylesheet" href="/assets/css/content-app-context.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -238,12 +239,42 @@ document.querySelector("#list").textContent =
 </article>
   </main>
 
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/developers.html" style="color:var(--text-dim)">API</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=10"></script>
