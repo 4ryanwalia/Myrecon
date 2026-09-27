@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node scripts/gen-env.js && node scripts/build-breaches.js && node scripts/build-case-files.js && node scripts/build-data-api.js && node scripts/build-sitemap.js",
+  "buildCommand": "node scripts/gen-env.js && node scripts/build-breaches.js && node scripts/build-case-files.js && node scripts/build-data-api.js && node scripts/build-seo-pages.js && node scripts/build-sitemap.js",
   "outputDirectory": ".",
   "redirects": [
     {
@@ -8,6 +8,18 @@
       "destination": "/",
       "permanent": true
     },
+    { "source": "/find/roblox-profile", "destination": "/find/roblox-user", "permanent": true },
+    { "source": "/find/roblox-profile.html", "destination": "/find/roblox-user", "permanent": true },
+    { "source": "/privacy/opt-out-of-spokeo", "destination": "/privacy/opt-out-spokeo", "permanent": true },
+    { "source": "/privacy/opt-out-of-spokeo.html", "destination": "/privacy/opt-out-spokeo", "permanent": true },
+    { "source": "/privacy/opt-out-of-beenverified", "destination": "/privacy/remove-beenverified-record", "permanent": true },
+    { "source": "/privacy/opt-out-of-beenverified.html", "destination": "/privacy/remove-beenverified-record", "permanent": true },
+    { "source": "/privacy/opt-out-of-whitepages", "destination": "/privacy/delete-whitepages-info", "permanent": true },
+    { "source": "/privacy/opt-out-of-whitepages.html", "destination": "/privacy/delete-whitepages-info", "permanent": true },
+    { "source": "/privacy/remove-personal-info-from-google-audit", "destination": "/privacy/request-google-search-removal", "permanent": true },
+    { "source": "/privacy/remove-personal-info-from-google-audit.html", "destination": "/privacy/request-google-search-removal", "permanent": true },
+    { "source": "/privacy/data-broker-opt-out-checklist", "destination": "/privacy/remove-data-from-people-search-sites", "permanent": true },
+    { "source": "/privacy/data-broker-opt-out-checklist.html", "destination": "/privacy/remove-data-from-people-search-sites", "permanent": true },
     {
       "source": "/content/:path*",
       "destination": "/breaches/",
@@ -94,6 +106,40 @@
           "value": "public, max-age=0, must-revalidate, stale-while-revalidate=604800"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/pricing",
+      "destination": "/pricing.html"
+    },
+    {
+      "source": "/features",
+      "destination": "/features.html"
+    },
+    {
+      "source": "/enterprise-osint-api",
+      "destination": "/enterprise-osint-api.html"
+    },
+    {
+      "source": "/privacy-audit",
+      "destination": "/privacy-audit.html"
+    },
+    {
+      "source": "/find/:slug",
+      "destination": "/find/:slug.html"
+    },
+    {
+      "source": "/privacy/:slug",
+      "destination": "/privacy/:slug.html"
+    },
+    {
+      "source": "/guides/:slug",
+      "destination": "/guides/:slug.html"
+    },
+    {
+      "source": "/vs/:slug",
+      "destination": "/vs/:slug.html"
     }
   ]
 }
