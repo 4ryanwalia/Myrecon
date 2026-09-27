@@ -1,0 +1,64 @@
+/* Content-page Android invitation. In flow, so it never covers the article. */
+.content-app-promo { display: none; }
+.content-app-promo[hidden] { display: none !important; }
+
+@media (max-width: 700px) {
+  .content-app-promo {
+    position: relative;
+    display: block;
+    margin: 24px 0 32px;
+    padding: 18px;
+    border: 1px solid var(--border-strong, #425575);
+    border-radius: var(--radius-sm, 10px);
+    background: var(--surface, #111a2b);
+    color: var(--text, #e8eef7);
+  }
+
+  .content-app-promo h2 {
+    margin: 0 36px 8px 0;
+    font-size: 1.1rem;
+    line-height: 1.35;
+  }
+
+  .content-app-promo p {
+    margin: 0 0 12px;
+    color: var(--text-dim, #9aabc4);
+    font-size: .94rem;
+    line-height: 1.5;
+  }
+
+  .content-app-promo .content-app-promo__link {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--accent-2, #2563eb);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .content-app-promo .content-app-promo__link:hover,
+  .content-app-promo .content-app-promo__link:focus-visible {
+    text-decoration: underline;
+  }
+
+  .content-app-promo [data-app-promo-dismiss] {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-control, #586e98);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text, #e8eef7);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .content-app-promo :focus-visible {
+    outline: 3px solid var(--accent, #4a8bf7);
+    outline-offset: 3px;
+  }
+}

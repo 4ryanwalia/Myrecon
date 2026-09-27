@@ -42,10 +42,12 @@
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"Passkeys Explained: Logging In Without a Password","description":"What a passkey actually is, why a convincing fake site cannot use one, what happens when you lose the device, and the recovery path that quietly undoes the whole benefit.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1203,"mainEntityOfPage":"https://www.myrecon.xyz/guides/passkeys-explained.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"Passkeys Explained: Logging In Without a Password","description":"What a passkey actually is, why a convincing fake site cannot use one, what happens when you lose the device, and the recovery path that quietly undoes the whole benefit.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-27","wordCount":1203,"mainEntityOfPage":"https://www.myrecon.xyz/guides/passkeys-explained.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Passkeys Explained: Logging In Without a Password","item":"https://www.myrecon.xyz/guides/passkeys-explained.html"}],"@context":"https://schema.org"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my fingerprint sent to the website?","acceptedAnswer":{"@type":"Answer","text":"No. The biometric check happens entirely on your device and is only there to unlock the private key already stored on it. Your fingerprint or face data never leaves the hardware, is never transmitted, and the website never receives anything but a signature."}},{"@type":"Question","name":"What happens if I lose my phone?","acceptedAnswer":{"@type":"Answer","text":"It depends on which kind of passkey you have. A synced passkey is restored when you sign into your platform account or password manager on a new device. A device-bound passkey on a lost phone is gone, and you recover through whatever backup method the service offers, which is why you should enrol a second device or keep backup codes."}},{"@type":"Question","name":"Are passkeys safer than an authenticator app?","acceptedAnswer":{"@type":"Answer","text":"Yes, in the way that matters most. An authenticator code can be typed into a fake site and relayed to the real one within its thirty-second life. A passkey is bound to the real site's domain, so a fake site cannot use it at all, the browser will not offer it."}},{"@type":"Question","name":"Can a passkey be stolen in a data breach?","acceptedAnswer":{"@type":"Answer","text":"Not in a usable form. The service stores only your public key, which cannot log anyone in. That is a structural difference from passwords: breaching the server yields nothing an attacker can replay."}},{"@type":"Question","name":"Do I still need a password?","acceptedAnswer":{"@type":"Answer","text":"On most services, yes, the password usually remains as a fallback, which means the account is still only as strong as that fallback. The full benefit arrives when a service lets you remove the password entirely, and a growing number now do."}}]}</script>
+  <link rel="stylesheet" href="/assets/css/content-app-promo.css">
+  <link rel="stylesheet" href="/assets/css/content-app-context.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -62,6 +64,12 @@
     <article class="article">
       <span class="kicker">Security</span>
       <h1>Passkeys Explained: Logging In Without a Password</h1>
+<aside class="content-app-promo" data-content-app-promo aria-label="MyRecon Android app">
+  <button type="button" data-app-promo-dismiss aria-label="Dismiss app invitation">×</button>
+  <h2>MyRecon on Android</h2>
+  <p>Check public usernames on your phone. Free, with no signup. Closed testing is open to eligible testers; public release is coming soon.</p>
+  <a class="content-app-promo__link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View on Google Play</a>
+</aside>
       <p class="meta">Published 14 September 2026 · 7 min read</p>
 
 <p class="lead">A passkey is not a password you do not have to remember. It is a different mechanism entirely: there is no shared secret, nothing for a breached company to lose, and nothing a convincing fake site can persuade you to hand over. Understanding why requires about two minutes of cryptography, and it is worth them.</p>
@@ -159,7 +167,12 @@
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
-    </article>
+    <section class="content-app-context" data-content-app-context aria-label="MyRecon Android app">
+  <h2>Review your public footprint with MyRecon</h2>
+  <p>Put this guide into practice with a public username self-audit on your own accounts or accounts you are authorized to review. Check every candidate at its source. The Android app runs a username sweep from your phone and labels uncertain checks as unknown.</p>
+  <p>Core app tools are free and need no signup. The Google Play listing is in closed testing, so only eligible testers can access it until public release. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View MyRecon on Google Play</a>.</p>
+</section>
+</article>
   </main>
 
   <footer class="footer">
@@ -173,5 +186,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=7" defer></script>
+  <script src="/assets/js/content-app-promo.js" defer></script>
 </body>
 </html>

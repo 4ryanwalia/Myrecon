@@ -26,6 +26,8 @@
     .seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}
     .seo-library-link{margin-top:32px}.seo-library-link a{margin-right:12px}
   </style>
+  <link rel="stylesheet" href="/assets/css/content-app-promo.css">
+  <link rel="stylesheet" href="/assets/css/content-app-context.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -35,7 +37,13 @@
   </div></header>
   <main id="main" class="container prose seo-page">
     <nav class="seo-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="/find/">Platform lookups</a></nav>
-    <article><span class="kicker">Platform lookups</span><h1>Find a public Medium author page by username</h1><p class="seo-intro">Medium Author Username Lookup starts with a candidate handle, but a matching string is only a lead. This Medium-focused page explains how to check the relevant author page, what a public result can and cannot show, and how to keep a possible match separate from an identity claim.</p>
+    <article><span class="kicker">Platform lookups</span><h1>Find a public Medium author page by username</h1>
+<aside class="content-app-promo" data-content-app-promo aria-label="MyRecon Android app">
+  <button type="button" data-app-promo-dismiss aria-label="Dismiss app invitation">×</button>
+  <h2>MyRecon on Android</h2>
+  <p>Check public usernames on your phone. Free, with no signup. Closed testing is open to eligible testers; public release is coming soon.</p>
+  <a class="content-app-promo__link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View on Google Play</a>
+</aside><p class="seo-intro">Medium Author Username Lookup starts with a candidate handle, but a matching string is only a lead. This Medium-focused page explains how to check the relevant author page, what a public result can and cannot show, and how to keep a possible match separate from an identity claim.</p>
 
     <section class="seo-section"><h2>Check it manually</h2><ol><li>Open https://medium.com/ and use its own public profile search or the exact handle URL when the service documents one. Search only a username you own or are authorized to review; this guide does not cover private-account discovery.</li><li>Open the candidate author page page and confirm the destination is a current Medium account, not a generic error, unrelated result, or search-engine snippet. Save the canonical URL and the date if you need a reproducible self-audit.</li><li>Compare a separate, voluntarily public clue such as a self-linked site or matching biography before drawing a conclusion. A handle alone can be shared or reassigned, and blocked checks should stay unknown rather than being recorded as a negative.</li></ol>
       <p>Coverage depends on the current Medium interface and supported public checks. Private settings, authentication, rate limits, or technical failures can prevent verification; a missing result is not proof of absence.</p></section>
@@ -58,8 +66,14 @@
       <section class="seo-faq"><h2>Frequently asked questions</h2><details><summary>Can a Medium username match prove who owns it?</summary><p>No. Handles can be shared, changed, or reassigned. Open the public author page and look for independent, voluntarily published context before making an attribution; if evidence is inconclusive, leave the match unresolved.</p></details><details><summary>Does this find private Medium profiles?</summary><p>No. This workflow is limited to supported checks and information available on public pages. Private accounts, login-only material, blocked requests, and hidden membership data are not exposed by a username lookup.</p></details><details><summary>What should I do if a Medium result is unavailable?</summary><p>Record the check as unavailable or unknown, then use Medium&#39;s official search directly if appropriate. A timeout, redirect, or access block is not proof that the profile is absent.</p></details></section>
       <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a></nav>
       <section class="seo-section seo-sources"><h2>Sources</h2><ul><li><a href="https://medium.com/" target="_blank" rel="noopener noreferrer">https://medium.com/</a></li><li><a href="https://www.myrecon.xyz/" target="_blank" rel="noopener noreferrer">https://www.myrecon.xyz/</a></li></ul></section>
-    </article>
+    <section class="content-app-context" data-content-app-context aria-label="MyRecon Android app">
+  <h2>Review your public footprint with MyRecon</h2>
+  <p>Use the app for a broader self-audit of supported public usernames. Availability differs by platform, and a matching handle does not establish who owns an account. The Android app runs a username sweep from your phone and labels uncertain checks as unknown.</p>
+  <p>Core app tools are free and need no signup. The Google Play listing is in closed testing, so only eligible testers can access it until public release. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View MyRecon on Google Play</a>.</p>
+</section>
+</article>
   </main>
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a></span></div></div></footer>
   <script src="/assets/js/username-search-input.js" defer></script>
+  <script src="/assets/js/content-app-promo.js" defer></script>
 </body></html>

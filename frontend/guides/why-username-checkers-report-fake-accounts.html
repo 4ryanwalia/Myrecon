@@ -53,7 +53,9 @@
        either. Dataset does: what was measured, when, over how many subjects,
        and under what licence it may be reused. The same numbers appear in the
        Key finding block and the table, if one is edited, all three move. -->
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Username-checker false positives: response comparison across 24 platforms","description":"For each of 24 platforms, the HTTP status code and response body size returned for a username known to exist versus an invented username. Six platforms returned byte-for-byte identical responses, meaning the response carries no evidence that an account exists.","creator":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"datePublished":"2026-09-06","dateModified":"2026-09-06","license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"keywords":["username search","OSINT","false positives","HTTP response","account enumeration"],"measurementTechnique":"Paired HTTP GET requests to each platform's profile URL, one for a handle known to exist, one for the control handle zzqnope99123xqq, issued from a residential connection within the same minute, recording status code and response body size.","variableMeasured":[{"@type":"PropertyValue","name":"HTTP status code"},{"@type":"PropertyValue","name":"Response body size in bytes"}],"url":"https://www.myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Username-checker false positives: response comparison across 24 platforms","description":"For each of 24 platforms, the HTTP status code and response body size returned for a username known to exist versus an invented username. Six platforms returned byte-for-byte identical responses, meaning the response carries no evidence that an account exists.","creator":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"datePublished":"2026-09-06","dateModified":"2026-09-27","license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"keywords":["username search","OSINT","false positives","HTTP response","account enumeration"],"measurementTechnique":"Paired HTTP GET requests to each platform's profile URL, one for a handle known to exist, one for the control handle zzqnope99123xqq, issued from a residential connection within the same minute, recording status code and response body size.","variableMeasured":[{"@type":"PropertyValue","name":"HTTP status code"},{"@type":"PropertyValue","name":"Response body size in bytes"}],"url":"https://www.myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html"}</script>
+  <link rel="stylesheet" href="/assets/css/content-app-promo.css">
+  <link rel="stylesheet" href="/assets/css/content-app-context.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -70,6 +72,12 @@
     <article class="article">
       <span class="kicker">Research</span>
       <h1>Why Username Checkers Report Accounts That Don't Exist</h1>
+<aside class="content-app-promo" data-content-app-promo aria-label="MyRecon Android app">
+  <button type="button" data-app-promo-dismiss aria-label="Dismiss app invitation">×</button>
+  <h2>MyRecon on Android</h2>
+  <p>Check public usernames on your phone. Free, with no signup. Closed testing is open to eligible testers; public release is coming soon.</p>
+  <a class="content-app-promo__link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View on Google Play</a>
+</aside>
       <p class="meta">Updated 6 September 2026 · 7 min read</p>
 
       <p class="lead">Run a handle through almost any username-search tool and you will get a wall of green ticks. Click a few and you will find pages that say the account is not there. This is not a bug in one tool, it is a structural problem with how these checks work, and we can show you the measurements that prove it.</p>
@@ -189,7 +197,12 @@ duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0     
       </ul>
 
       <p style="margin-top:30px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
-    </article>
+    <section class="content-app-context" data-content-app-context aria-label="MyRecon Android app">
+  <h2>Review your public footprint with MyRecon</h2>
+  <p>Put this guide into practice with a public username self-audit on your own accounts or accounts you are authorized to review. Check every candidate at its source. The Android app runs a username sweep from your phone and labels uncertain checks as unknown.</p>
+  <p>Core app tools are free and need no signup. The Google Play listing is in closed testing, so only eligible testers can access it until public release. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View MyRecon on Google Play</a>.</p>
+</section>
+</article>
   </main>
 
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon · myrecon.xyz</span><span><a href="/contact.html" style="color:var(--text-dim)">Contact</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html" style="color:var(--text-dim)">Terms</a> · <a href="/cookies.html">Cookies</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span></div></div></footer>
@@ -198,5 +211,6 @@ duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0     
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=7" defer></script>
+  <script src="/assets/js/content-app-promo.js" defer></script>
 </body>
 </html>

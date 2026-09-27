@@ -42,10 +42,12 @@
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"What Your Photos Give Away: EXIF and Image Metadata","description":"What is stored inside an image file, which platforms strip it and which do not, how to read it, and why a missing timestamp proves nothing either way.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-14","wordCount":1257,"mainEntityOfPage":"https://www.myrecon.xyz/guides/photo-metadata-exif.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"What Your Photos Give Away: EXIF and Image Metadata","description":"What is stored inside an image file, which platforms strip it and which do not, how to read it, and why a missing timestamp proves nothing either way.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-14","dateModified":"2026-09-27","wordCount":1257,"mainEntityOfPage":"https://www.myrecon.xyz/guides/photo-metadata-exif.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"What Your Photos Give Away: EXIF and Image Metadata","item":"https://www.myrecon.xyz/guides/photo-metadata-exif.html"}],"@context":"https://schema.org"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does posting a photo on social media reveal my location?","acceptedAnswer":{"@type":"Answer","text":"Usually not through EXIF: the major platforms strip metadata when they re-encode uploads. The location leak on social media is far more often the visible content of the photo, a street sign, a view from a window, a repeated background, or a location tag you added yourself."}},{"@type":"Question","name":"Where does EXIF survive?","acceptedAnswer":{"@type":"Answer","text":"In files sent as email attachments, shared through messaging apps that preserve originals or send as a document, downloaded from cloud storage, and hosted on personal websites and forums that do not re-encode. Anywhere the original file moves rather than a re-compressed copy of it."}},{"@type":"Question","name":"Can EXIF data be faked?","acceptedAnswer":{"@type":"Answer","text":"Easily. Every field is editable with free tools, including the timestamp and the GPS coordinates. Metadata is a claim made by whoever last saved the file, which is why it corroborates other evidence rather than establishing anything on its own."}},{"@type":"Question","name":"How do I remove metadata before sharing a photo?","acceptedAnswer":{"@type":"Answer","text":"On Windows, the file properties dialog has a \"remove properties and personal information\" option. On macOS, Preview can strip location. Phones offer a location toggle in the share sheet, and screenshotting an image produces a new file with none of the original metadata at all."}}]}</script>
+  <link rel="stylesheet" href="/assets/css/content-app-promo.css">
+  <link rel="stylesheet" href="/assets/css/content-app-context.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -62,6 +64,12 @@
     <article class="article">
       <span class="kicker">Image intelligence</span>
       <h1>What Your Photos Give Away: EXIF and Image Metadata</h1>
+<aside class="content-app-promo" data-content-app-promo aria-label="MyRecon Android app">
+  <button type="button" data-app-promo-dismiss aria-label="Dismiss app invitation">×</button>
+  <h2>MyRecon on Android</h2>
+  <p>Check public usernames on your phone. Free, with no signup. Closed testing is open to eligible testers; public release is coming soon.</p>
+  <a class="content-app-promo__link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View on Google Play</a>
+</aside>
       <p class="meta">Published 14 September 2026 · 7 min read</p>
 
 <p class="lead">An image file is not only an image. Cameras and phones write a block of data into it describing the device, the settings, the moment and sometimes the exact coordinates, and whether any of that reaches the person who receives the photo depends entirely on the route it travelled.</p>
@@ -151,7 +159,12 @@
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
-    </article>
+    <section class="content-app-context" data-content-app-context aria-label="MyRecon Android app">
+  <h2>Review your public footprint with MyRecon</h2>
+  <p>Put this guide into practice with a public username self-audit on your own accounts or accounts you are authorized to review. Check every candidate at its source. The Android app runs a username sweep from your phone and labels uncertain checks as unknown.</p>
+  <p>Core app tools are free and need no signup. The Google Play listing is in closed testing, so only eligible testers can access it until public release. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View MyRecon on Google Play</a>.</p>
+</section>
+</article>
   </main>
 
   <footer class="footer">
@@ -165,5 +178,6 @@
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=7" defer></script>
+  <script src="/assets/js/content-app-promo.js" defer></script>
 </body>
 </html>

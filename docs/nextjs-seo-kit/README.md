@@ -1,8 +1,8 @@
-# MyRecon programmatic SEO kit: 200 route records
+# MyRecon programmatic SEO kit: 208 route records
 
 The repository's live frontend is static HTML on Vercel; the root `app/` is an Android Gradle module. `build.py` still emits a separate Next.js migration preview under `generated-next-app/`. Production pages use `frontend/scripts/build-seo-pages.js`, which renders the same published JSON records as static HTML, and Vercel rewrites their extensionless canonical routes to those files. Keep the Next.js output separate; do not point `build.py` at `frontend/` or the repository root.
 
-The inventory contains **5 core + 25 comparison + 79 platform + 49 guide + 42 privacy = 200** routes. Six same-intent duplicates now permanently redirect to their surviving pages and are excluded from the inventory and sitemap. `data/inventory.json` is the route and keyword list; `data/content/{kind}/{slug}.json` contains one strict-schema record per route, marked `published`. `data/pages.json` is an aggregate mirror for tools that expect one JSON array. The reviewer value `Codex editorial pass` identifies automated content generation, not independent human approval. Platform coverage and official privacy instructions can change, so verify those sources during editorial maintenance.
+The inventory contains **5 core + 25 comparison + 79 platform + 57 guide + 42 privacy = 208** routes. Six same-intent duplicates now permanently redirect to their surviving pages and are excluded from the inventory and sitemap. `data/inventory.json` is the route and keyword list; `data/content/{kind}/{slug}.json` contains one strict-schema record per route, marked `published`. `data/pages.json` is an aggregate mirror for tools that expect one JSON array. The reviewer value `Codex editorial pass` identifies automated content generation, not independent human approval. Platform coverage and official privacy instructions can change, so verify those sources during editorial maintenance.
 
 ## 1. URL taxonomy
 
@@ -11,7 +11,7 @@ The inventory contains **5 core + 25 comparison + 79 platform + 49 guide + 42 pr
 | Core SaaS | `/`, `/features`, `/pricing`, `/enterprise-osint-api`, `/privacy-audit` (5) | OSINT social media lookup; digital footprint audit; legal OSINT API | Product and commercial | One clean URL per product job; self-canonical; redirect old `.html` URL only after migration |
 | Comparisons | `/vs/{tool}` (25) | `{tool} alternative`, `MyRecon vs {tool}` | Commercial investigation | Self-canonical when independently useful; old `.html` routes require redirects before migration |
 | Platform targets | `/find/{platform-purpose}` (79) | `{platform} username lookup`, `find {platform} profile` | Task and tool | Some routes are manual-only or describe distinct entities; confirm support and merge duplicate intent before public release |
-| OSINT guides | `/guides/{question}` (49) | Public profile search, verification, privacy, and evidence workflows | Informational | Keep one answer per distinct question and preserve privacy boundaries |
+| OSINT guides | `/guides/{question}` (57) | Public profile search, verification, privacy, and evidence workflows | Informational | Keep one answer per distinct question and preserve privacy boundaries |
 | Privacy and deletion | `/privacy/{task}` (42) | Account deletion, broker opt-out, and search-result removal | Removal and self-audit | Official instructions change; verify each source and date before public release |
 
 The complete current route list lives in `data/inventory.json`. It includes the requested platform routes such as `/find/threads-account`, `/find/roblox-user`, `/find/pinterest-board`, and `/find/kick-streamer`; broker routes such as `/privacy/delete-whitepages-info` and `/privacy/opt-out-radaris`; the six requested investigation guides; and comparisons for Epieos, OSINT Combine, and SEON.

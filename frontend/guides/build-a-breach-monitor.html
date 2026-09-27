@@ -42,10 +42,12 @@
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"TechArticle","headline":"Build a Data Breach Monitor With a Free API","description":"A working breach monitor in about forty lines of Python, using a free keyless JSON API. Polling, change detection, alerting, and the mistakes that make one useless.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-21","dateModified":"2026-09-21","proficiencyLevel":"Beginner","dependencies":"Python 3.8+, standard library only","mainEntityOfPage":"https://www.myrecon.xyz/guides/build-a-breach-monitor.html"}
+  {"@context":"https://schema.org","@type":"TechArticle","headline":"Build a Data Breach Monitor With a Free API","description":"A working breach monitor in about forty lines of Python, using a free keyless JSON API. Polling, change detection, alerting, and the mistakes that make one useless.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-09-21","dateModified":"2026-09-27","proficiencyLevel":"Beginner","dependencies":"Python 3.8+, standard library only","mainEntityOfPage":"https://www.myrecon.xyz/guides/build-a-breach-monitor.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Build a Data Breach Monitor With a Free API","item":"https://www.myrecon.xyz/guides/build-a-breach-monitor.html"}],"@context":"https://schema.org"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is there a free data breach API with no key?","acceptedAnswer":{"@type":"Answer","text":"Yes. MyRecon publishes its breach archive as versioned static JSON at /data/v1/ with no account, no API key and no rate limit beyond fair use, with CORS enabled so browser JavaScript can call it directly. The data originates from Have I Been Pwned under CC BY 4.0, so attribution to Have I Been Pwned is required if you publish it."}},{"@type":"Question","name":"How often should a breach monitor poll?","acceptedAnswer":{"@type":"Answer","text":"Once or twice a day is enough. The archive rebuilds daily, so polling every minute returns the identical payload hundreds of times and finds nothing a daily check would miss. Read the generated field in the response to see whether the data actually changed before doing any work."}},{"@type":"Question","name":"Can I monitor a specific email address for breaches with this API?","acceptedAnswer":{"@type":"Answer","text":"No. This API serves breach metadata, which incidents happened and what was exposed, and holds no personal records, so it cannot be queried by email address. For per-address checking use Have I Been Pwned's own API, which is built for it. A monitor built on metadata alerts you that an incident happened at a service you use, which you then act on yourself."}},{"@type":"Question","name":"What is the most common mistake when building a breach monitor?","acceptedAnswer":{"@type":"Answer","text":"Alerting on everything. A monitor that fires on every new record in the archive gets muted within a week, at which point it is worse than no monitor because it creates a false sense of coverage. Filter to what you actually care about, the domains you use, or a severity threshold, before you send anything."}}]}</script>
+  <link rel="stylesheet" href="/assets/css/content-app-promo.css">
+  <link rel="stylesheet" href="/assets/css/content-app-context.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -62,6 +64,12 @@
     <article class="article">
       <span class="kicker">Build</span>
       <h1>Build a Data Breach Monitor With a Free API</h1>
+<aside class="content-app-promo" data-content-app-promo aria-label="MyRecon Android app">
+  <button type="button" data-app-promo-dismiss aria-label="Dismiss app invitation">×</button>
+  <h2>MyRecon on Android</h2>
+  <p>Check public usernames on your phone. Free, with no signup. Closed testing is open to eligible testers; public release is coming soon.</p>
+  <a class="content-app-promo__link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View on Google Play</a>
+</aside>
       <p class="meta">Published 21 September 2026 · 9 min read · Python 3.8+, standard library only</p>
 
       <p class="lead">A breach monitor is a small program: fetch a list, compare it to the last one you saw, tell someone about the difference. The hard part is not the code, it is deciding what deserves an alert, because a monitor that cries wolf gets muted, and a muted monitor is worse than none at all. Here is a working one, and the reasoning behind each decision in it.</p>
@@ -222,7 +230,12 @@ document.querySelector("#list").textContent =
       </ul>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/developers.html">← API documentation</a></p>
-    </article>
+    <section class="content-app-context" data-content-app-context aria-label="MyRecon Android app">
+  <h2>Review your public footprint with MyRecon</h2>
+  <p>Put this guide into practice with a public username self-audit on your own accounts or accounts you are authorized to review. Check every candidate at its source. The Android app runs a username sweep from your phone and labels uncertain checks as unknown.</p>
+  <p>Core app tools are free and need no signup. The Google Play listing is in closed testing, so only eligible testers can access it until public release. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View MyRecon on Google Play</a>.</p>
+</section>
+</article>
   </main>
 
   <footer class="footer">
@@ -236,5 +249,6 @@ document.querySelector("#list").textContent =
   <script src="/assets/js/app.js?v=10"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=7" defer></script>
+  <script src="/assets/js/content-app-promo.js" defer></script>
 </body>
 </html>

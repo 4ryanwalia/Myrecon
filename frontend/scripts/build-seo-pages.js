@@ -10,6 +10,7 @@ const FRONTEND = path.resolve(__dirname, "..");
 const REPO_CONTENT = path.resolve(FRONTEND, "..", "docs", "nextjs-seo-kit", "data", "content");
 const BUNDLED_CONTENT = path.join(FRONTEND, "content", "seo-pages");
 const MANIFEST = path.join(FRONTEND, ".seo-pages-manifest.json");
+const GUIDE_IMAGES = path.join(FRONTEND, "assets", "img", "guides");
 const SITE = "https://www.myrecon.xyz";
 const CLUSTERS = { target: "find", comparison: "vs", guide: "guides", deletion: "privacy" };
 const LABELS = { target: "Platform lookups", comparison: "Comparisons", guide: "Guides", deletion: "Privacy guides" };
@@ -29,6 +30,87 @@ function esc(value) {
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 function safeJson(value) { return JSON.stringify(value).replace(/</g, "\\u003c"); }
+function guideImagePath(record) { return `/assets/img/guides/${record.slug}.svg`; }
+function guideMobileImagePath(record) { return `/assets/img/guides/${record.slug}-mobile.svg`; }
+function guideTheme(record) {
+  const slug = record.slug.toLowerCase();
+  const platformPrivacy = {
+    "steam-profile-privacy-checklist": ["Steam settings", "Signed-out view", "Recheck exposure"],
+    "github-public-profile-privacy-checklist": ["Profile fields", "Public activity", "Email privacy"],
+    "discord-profile-privacy-settings": ["Profile preview", "Server context", "Privacy controls"],
+    "reddit-profile-visibility-guide": ["Public posts", "Profile settings", "Old content"],
+    "youtube-subscriptions-privacy-audit": ["Subscriptions", "Playlist settings", "Public preview"],
+    "pinterest-private-profile-guide": ["Board visibility", "Profile preview", "Search footprint"],
+    "x-public-post-privacy-audit": ["Audience controls", "Older posts", "Public preview"],
+    "linkedin-public-profile-visibility-check": ["Profile settings", "Public preview", "Search visibility"],
+  };
+  if (platformPrivacy[slug]) return { color: "#a8cfaa", steps: platformPrivacy[slug] };
+  const themes = [
+    { match: /image/, color: "#84c5d3", steps: ["Reference image", "Reverse search", "Original source"] },
+    { match: /impersonation|brand/, color: "#e4ae80", steps: ["Official account", "Lookalike signal", "Report with evidence"] },
+    { match: /breach|exposure|email|phone/, color: "#e3b582", steps: ["Known identifier", "Public signal", "Risk review"] },
+    { match: /evidence|document|chain|notes/, color: "#c1acd9", steps: ["Source URL", "Date and context", "Supported finding"] },
+    { match: /privacy|footprint|family|protect|reuse/, color: "#a8cfaa", steps: ["Public accounts", "Visibility check", "Action list"] },
+    { match: /profile|account|social|username|creator|alias|identity|entity/, color: "#91b9dc", steps: ["Known identifier", "Official profile", "Verified context"] },
+  ];
+  return themes.find((item) => item.match.test(slug)) ||
+    { color: "#a7b6d2", steps: ["Narrow question", "Public sources", "Documented result"] };
+}
+function guideDiagram(record) {
+  const theme = guideTheme(record);
+  const words = record.h1.split(/\s+/);
+  const titleLines = [""];
+  for (const word of words) {
+    const last = titleLines.length - 1;
+    if (titleLines[last] && `${titleLines[last]} ${word}`.length > 38 && titleLines.length < 2) titleLines.push(word);
+    else titleLines[last] += `${titleLines[last] ? " " : ""}${word}`;
+  }
+  const cards = theme.steps.map((step, index) => {
+    const x = 54 + index * 374;
+    return `<g><rect x="${x}" y="250" width="342" height="151" rx="12" fill="#151c2a" stroke="#394457" stroke-width="2"/><text x="${x + 23}" y="298" fill="${theme.color}" font-size="30" font-weight="700">0${index + 1}</text><text x="${x + 23}" y="354" fill="#f3f6fb" font-size="25" font-weight="600">${esc(step)}</text></g>`;
+  }).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="450" viewBox="0 0 1200 450" role="img" aria-labelledby="title desc">
+<title id="title">${esc(record.h1)}: visual workflow</title><desc id="desc">${theme.steps.map(esc).join("; ")}</desc>
+<rect width="1200" height="450" fill="#0d1320"/><rect x="1" y="1" width="1198" height="448" rx="16" fill="none" stroke="#394457" stroke-width="2"/>
+<rect x="54" y="50" width="8" height="128" rx="4" fill="${theme.color}"/>
+<text x="84" y="85" fill="${theme.color}" font-size="18" font-weight="700" letter-spacing="3">MYRECON GUIDE</text>
+${titleLines.map((line, index) => `<text x="84" y="${132 + index * 48}" fill="#f3f6fb" font-size="38" font-weight="700">${esc(line)}</text>`).join("")}
+<path d="M396 326h42m332 0h42" stroke="${theme.color}" stroke-width="4" stroke-linecap="round"/>
+${cards}
+<text x="54" y="430" fill="#a8b3c7" font-size="17">Use public sources · Verify each lead · Record uncertainty</text>
+</svg>\n`;
+}
+function guideMobileDiagram(record) {
+  const theme = guideTheme(record);
+  const titleWords = record.h1.split(/\s+/);
+  const lines = [""];
+  for (const word of titleWords) {
+    const last = lines.length - 1;
+    if (lines[last] && `${lines[last]} ${word}`.length > 27 && lines.length < 3) lines.push(word);
+    else lines[last] += `${lines[last] ? " " : ""}${word}`;
+  }
+  const cards = theme.steps.map((step, index) => {
+    const y = 280 + index * 162;
+    return `<g><rect x="38" y="${y}" width="564" height="134" rx="12" fill="#151c2a" stroke="#394457" stroke-width="2"/><text x="65" y="${y + 55}" fill="${theme.color}" font-size="31" font-weight="700">0${index + 1}</text><text x="65" y="${y + 103}" fill="#f3f6fb" font-size="30" font-weight="600">${esc(step)}</text></g>`;
+  }).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="850" viewBox="0 0 640 850" role="img" aria-labelledby="title desc">
+<title id="title">${esc(record.h1)}: visual workflow</title><desc id="desc">${theme.steps.map(esc).join("; ")}</desc>
+<rect width="640" height="850" fill="#0d1320"/><rect x="1" y="1" width="638" height="848" rx="16" fill="none" stroke="#394457" stroke-width="2"/>
+<rect x="38" y="46" width="8" height="167" rx="4" fill="${theme.color}"/>
+<text x="68" y="80" fill="${theme.color}" font-size="19" font-weight="700" letter-spacing="3">MYRECON GUIDE</text>
+${lines.map((line, index) => `<text x="68" y="${130 + index * 44}" fill="#f3f6fb" font-size="34" font-weight="700">${esc(line)}</text>`).join("")}
+<path d="M320 414v28m0 134v28" stroke="${theme.color}" stroke-width="4" stroke-linecap="round"/>
+${cards}
+<text x="38" y="814" fill="#a8b3c7" font-size="17">Public sources · Verify leads · Record uncertainty</text>
+</svg>\n`;
+}
+function writeGuideDiagram(record) {
+  if (record.kind !== "guide") return;
+  if (!/^[a-z0-9-]+$/.test(record.slug)) fail(`Unsafe guide image slug: ${record.slug}`);
+  fs.mkdirSync(GUIDE_IMAGES, { recursive: true });
+  fs.writeFileSync(path.join(GUIDE_IMAGES, `${record.slug}.svg`), guideDiagram(record), "utf8");
+  fs.writeFileSync(path.join(GUIDE_IMAGES, `${record.slug}-mobile.svg`), guideMobileDiagram(record), "utf8");
+}
 function routeFor(record) {
   if (record.kind === "core") return record.slug === "home" ? "/" : `/${record.slug}`;
   return `/${CLUSTERS[record.kind]}/${record.slug}`;
@@ -193,7 +275,8 @@ ${jsonLd(record, route)}
     .seo-faq summary{font-weight:700;cursor:pointer}.seo-faq details p{margin-top:10px;line-height:1.7}.seo-sources{font-size:.92rem}
     .seo-table-wrap{overflow-x:auto}.seo-table-wrap table{width:100%;border-collapse:collapse}.seo-table-wrap th,.seo-table-wrap td{padding:10px;border:1px solid var(--border,#394252);text-align:left;vertical-align:top}
     .seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}
-    .seo-library-link{margin-top:32px}.seo-library-link a{margin-right:12px}
+    .seo-library-link{margin-top:32px}.seo-library-link a{margin-right:12px}${record.kind === "guide" ? `
+    .seo-guide-figure{margin:28px 0 34px}.seo-guide-figure img{display:block;width:100%;height:auto;border-radius:12px}.seo-guide-figure figcaption{margin-top:9px;color:var(--text-dim);font-size:.88rem;line-height:1.5}` : ""}
   </style>
 </head>
 <body>
@@ -204,7 +287,8 @@ ${jsonLd(record, route)}
   </div></header>
   <main id="main" class="container prose seo-page">
     <nav class="seo-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="${categoryRoute}">${esc(label)}</a></nav>
-    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p>
+    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p>${record.kind === "guide" ? `
+      <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>A practical overview of the public-source review described below.</figcaption></figure>` : ""}
       ${renderSpecific(record)}${renderSections(record)}
       <section class="seo-cta"><h2>Check a public username</h2><p>Use accounts and identifiers you own or are authorized to review. A matching username is a lead, not proof of identity.</p>
         <username-search-input></username-search-input></section>
@@ -308,6 +392,7 @@ function main() {
   const byKind = new Map();
   let rendered = 0;
   for (const record of records) {
+    writeGuideDiagram(record);
     const route = routeFor(record);
     const preserved = PRESERVED.get(route);
     if (preserved) { syncPreservedPage(record); continue; }

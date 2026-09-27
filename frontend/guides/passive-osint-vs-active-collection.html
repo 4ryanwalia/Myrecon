@@ -25,7 +25,10 @@
     .seo-table-wrap{overflow-x:auto}.seo-table-wrap table{width:100%;border-collapse:collapse}.seo-table-wrap th,.seo-table-wrap td{padding:10px;border:1px solid var(--border,#394252);text-align:left;vertical-align:top}
     .seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}
     .seo-library-link{margin-top:32px}.seo-library-link a{margin-right:12px}
+    .seo-guide-figure{margin:28px 0 34px}.seo-guide-figure img{display:block;width:100%;height:auto;border-radius:12px}.seo-guide-figure figcaption{margin-top:9px;color:var(--text-dim);font-size:.88rem;line-height:1.5}
   </style>
+  <link rel="stylesheet" href="/assets/css/content-app-promo.css">
+  <link rel="stylesheet" href="/assets/css/content-app-context.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -35,7 +38,14 @@
   </div></header>
   <main id="main" class="container prose seo-page">
     <nav class="seo-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="/guides/">Guides</a></nav>
-    <article><span class="kicker">Guides</span><h1>Passive OSINT Vs Active Collection</h1><p class="seo-intro">Passive OSINT Vs Active Collection is best handled as a narrow, documented question rather than a hunt for every possible connection. Passive review of already public material differs from contacting accounts, joining communities, or triggering platform actions; define that boundary first. This guide gives a repeatable way to check public information, note uncertainty, and stop when the available evidence is not enough.</p>
+    <article><span class="kicker">Guides</span><h1>Passive OSINT Vs Active Collection</h1>
+<aside class="content-app-promo" data-content-app-promo aria-label="MyRecon Android app">
+  <button type="button" data-app-promo-dismiss aria-label="Dismiss app invitation">×</button>
+  <h2>MyRecon on Android</h2>
+  <p>Check public usernames on your phone. Free, with no signup. Closed testing is open to eligible testers; public release is coming soon.</p>
+  <a class="content-app-promo__link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View on Google Play</a>
+</aside><p class="seo-intro">Passive OSINT Vs Active Collection is best handled as a narrow, documented question rather than a hunt for every possible connection. Passive review of already public material differs from contacting accounts, joining communities, or triggering platform actions; define that boundary first. This guide gives a repeatable way to check public information, note uncertainty, and stop when the available evidence is not enough.</p>
+      <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="/assets/img/guides/passive-osint-vs-active-collection-mobile.svg" width="640" height="850"><img src="/assets/img/guides/passive-osint-vs-active-collection.svg" alt="Passive OSINT Vs Active Collection: Narrow question, then Public sources, then Documented result." width="1200" height="450" decoding="async"></picture><figcaption>A practical overview of the public-source review described below.</figcaption></figure>
 
     <section class="seo-section"><h2>Key takeaways</h2><ul><li>Write down the narrow question behind passive osint vs active collection and use only public information that is relevant to answering it.</li><li>Open original sources, record dates and URLs, and distinguish direct observations from assumptions when working on passive osint vs active collection.</li><li>Treat blocked, deleted, private, or ambiguous material as unknown; do not bypass a service control to fill the gap.</li></ul></section>
     <section class="seo-section" id="section-1">
@@ -55,8 +65,14 @@
       <section class="seo-faq"><h2>Frequently asked questions</h2><details><summary>Can passive osint vs active collection establish a person&#39;s identity?</summary><p>No. Public search results can suggest a lead but cannot establish identity by themselves. Confirm the original page and seek independent, voluntarily published evidence; if the evidence does not support a clear link, report it as uncertain.</p></details><details><summary>What is a privacy-aware way to passive osint vs active collection?</summary><p>Use only sources and identifiers that fit a lawful, authorized purpose, check the platform&#39;s own public pages, and avoid access controls or account-recovery endpoints. Passive review of already public material differs from contacting accounts, joining communities, or triggering platform actions; define that boundary first. Keep only the minimum notes needed for the task.</p></details><details><summary>What if the public evidence is incomplete?</summary><p>Mark the result unknown, record which page or check could not be verified, and do not turn a timeout or absence of indexed material into a conclusion. Recheck later only if the task remains authorized and useful.</p></details></section>
       <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a></nav>
       <section class="seo-section seo-sources"><h2>Sources</h2><ul><li><a href="https://www.ftc.gov/business-guidance/privacy-security" target="_blank" rel="noopener noreferrer">https://www.ftc.gov/business-guidance/privacy-security</a></li><li><a href="https://www.myrecon.xyz/" target="_blank" rel="noopener noreferrer">https://www.myrecon.xyz/</a></li></ul></section>
-    </article>
+    <section class="content-app-context" data-content-app-context aria-label="MyRecon Android app">
+  <h2>Review your public footprint with MyRecon</h2>
+  <p>Put this guide into practice with a public username self-audit on your own accounts or accounts you are authorized to review. Check every candidate at its source. The Android app runs a username sweep from your phone and labels uncertain checks as unknown.</p>
+  <p>Core app tools are free and need no signup. The Google Play listing is in closed testing, so only eligible testers can access it until public release. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View MyRecon on Google Play</a>.</p>
+</section>
+</article>
   </main>
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a></span></div></div></footer>
   <script src="/assets/js/username-search-input.js" defer></script>
+  <script src="/assets/js/content-app-promo.js" defer></script>
 </body></html>
