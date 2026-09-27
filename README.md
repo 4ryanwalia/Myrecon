@@ -1,488 +1,131 @@
-# MyRecon — OSINT Intelligence Platform
+# MyRecon
 
-**myrecon.xyz** — a fast, accurate, privacy-respecting open-source intelligence
-platform. Search usernames across a **560-platform sweep**, analyse emails and
-breach exposure, investigate domains, DNS and IP addresses, and read a
-photograph's own metadata. Guests can run the username sweep and see details
-from its first 100 platforms; signing in unlocks the full report.
+**Audit your own public digital footprint with evidence you can inspect.** MyRecon brings username, email, breach, domain, DNS, and IP lookups into one web app. This repository also contains a Python CLI and the Flask API behind the site.
 
-One engine, three front doors:
+[Try the web app](https://myrecon.xyz) · [Run the CLI](#quick-start) · [Explore the API](#api) · [See the code](#project-layout)
 
-```
-backend/    Flask REST API      → deploy to Render     (the engine)
-frontend/   Static site (SPA)   → deploy to Vercel     (myrecon.xyz)
-cli/        Terminal client     → run it from a clone  (python myrecon.py)
-```
+![MyRecon web app with a username lookup and an illustrative platform map](docs/web-home.png)
 
-The frontend sends server-backed lookups to the MyRecon API, which owns input
-validation, rate limiting, caching, and secrets. The password checker is an
-exception: it hashes locally and sends only a hash prefix to Pwned Passwords.
-The CLI skips the API hop and calls the same service functions in process.
+MyRecon is built for self-audits and authorized research. A shared username is not proof that two accounts belong to the same person.
 
-> **The Android app is not in this repository.** This repo is the website and
-> the terminal client. The app is developed separately and is not tracked here.
+## Why use it?
 
-<p align="center">
-  <img src="docs/cli-home.png" width="760"
-       alt="The MyRecon terminal client: a red MYRECON wordmark drawn out of its own letters, above every command grouped by what it investigates — identity, email, infrastructure, images and places, web history.">
-</p>
-
-<p align="center">
-  <em>Run <code>python myrecon.py</code> with no arguments for this screen.</em>
-</p>
-
----
-
-## Contents
-
-- [Quick start](#quick-start)
-- [What MyRecon can do](#what-myrecon-can-do)
-- [The terminal client](#the-terminal-client)
-- [The website](#the-website)
-- [The HTTP API](#the-http-api)
-- [Architecture](#architecture)
-- [Configuration](#configuration)
-- [Deployment](#deployment)
-- [Automation](#automation)
-- [Tests](#tests)
-- [Security notes](#security-notes)
-- [Legacy cleanup](#legacy-cleanup)
-- [License](#license)
-
----
+- **Evidence-aware username results.** A platform is marked `found` only with positive evidence, `not_found` with negative evidence, and `unknown` when a block, sign-in wall, timeout, or ambiguous page prevents a conclusion. An HTTP 200 response alone does not prove an account exists.
+- **One place for your exposure checks.** Explore public breach data and email signals, inspect DNS and registration records, and review IP and hosting information.
+- **Use the interface that fits.** Search in the browser, run a scriptable CLI locally, or integrate with the HTTP API. The website streams scan progress and supports JSON and CSV exports.
 
 ## Quick start
 
-Nothing to install for the lookups themselves — the engine needs `requests`, and
-`Flask` only if you want the API.
+Try a username lookup in the [web app](https://myrecon.xyz), or run the CLI from a clone:
 
 ```bash
 git clone https://github.com/4ryanwalia/Myrecon.git
 cd Myrecon
-pip install -r backend/requirements.txt
-python myrecon.py username torvalds
+python -m pip install -r backend/requirements.txt
+python myrecon.py username yourhandle
 ```
 
-Run the API and the site locally instead:
+Replace `yourhandle` with a username you own or have permission to investigate. The CLI checks 50 platforms by default; `--deep` checks 100. It runs the shared lookup services locally, without starting the web server.
+
+```bash
+python myrecon.py username yourhandle --deep
+python myrecon.py domain example.com
+python myrecon.py --help
+```
+
+![MyRecon terminal command menu](docs/cli-home.png)
+
+## What is included?
+
+| Capability | Website | CLI | Notes |
+| --- | :---: | :---: | --- |
+| Username sweep and profile evidence | Yes | Yes | The website currently has 561 standard catalogue entries. The CLI checks 50 or 100. |
+| Extended username sweep | Yes | No | Opt-in Pro scan across 3,166 catalogue entries, including the standard set. |
+| Email and breach exposure | Yes | Yes | Checks supported public sources; source availability can vary. |
+| Domain, DNS, RDAP/WHOIS, IP, and certificate-transparency subdomains | Yes | Yes | Public infrastructure data. |
+| Investigation graph and profile enrichment | Yes | Yes | Relationships are leads to verify, not identity claims. |
+| Local image metadata and hashes | No | Yes | Reads a local file without uploading it; install `Pillow` and `numpy` for image decoding. |
+| Place lookup from GPS coordinates | No | Yes | Uses public geodata sources to describe coordinates; it does not recognize landmarks in a picture. |
+| Password exposure check | Yes | No | Hashes in the browser and sends only a hash prefix to Pwned Passwords. |
+| Full-name and reverse-image web search | Yes | Yes | Requires Google Programmable Search credentials. |
+
+**Website access:** Guests can run the standard 561-entry sweep but see the first 100 platform verdicts. A signed-in free account gets one full report; Pro passes add full and Extended scan allowances. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
+
+The [Android app](https://myrecon.xyz/app.html) is a separate product. Its source is not in this repository.
+
+## How username verdicts work
+
+| Verdict | Meaning |
+| --- | --- |
+| `found` | The platform returned positive account evidence, such as a user object, profile marker, or a page that differs from a known missing-user control. |
+| `not_found` | The platform returned negative evidence, such as a 404/410, a missing-user message, or the same page as a known missing-user control. |
+| `unknown` | The platform blocked the request or did not provide enough evidence. This includes challenges, login walls, timeouts, and ambiguous redirects. |
+
+Network conditions and platform behaviour change. Treat results as leads and verify important findings at the source. See [how to verify an OSINT finding](https://myrecon.xyz/guides/verify-an-osint-finding.html).
+
+## Run the website locally
+
+Start the API and static site in separate terminals after installing the backend requirements:
 
 ```bash
 python myrecon.py serve
 ```
 
 ```bash
-cd frontend && python -m http.server 8000
-```
-
-Then open <http://localhost:8000>. On `localhost` the frontend targets
-`http://localhost:5000` automatically, and the backend's development CORS
-defaults already allow the common localhost ports.
-
----
-
-## What MyRecon can do
-
-Core lookups are free and keyless unless the table says otherwise. A guest can
-run the 560-platform username sweep, with results from the first 100 platforms
-visible. A free account unlocks the full report and includes one full scan;
-additional full scans need a Pro pass. The other lookups remain available
-without an account.
-
-### Identity
-
-| Capability | What it actually does | Where |
-| --- | --- | --- |
-| **Username search** | The full web/API sweep checks **560 platforms** in parallel, using per-platform evidence to avoid false positives. Guests see details from the first 100 platforms and a sign-in prompt for the full report. The standard checker also supports 50-platform fast scans and 100-platform deep scans in the CLI and API. Confirmed profiles can be enriched with avatars and bios; platforms without enough evidence are reported honestly. | web, CLI, API |
-| **Profile enrichment** | Fetches one profile's public detail from one platform — used when a client's own address gets refused and the server's does not. | web, CLI, API |
-| **Identity correlation** | Groups accounts that share a handle into clusters with a 0–100 confidence score and the factors behind it. | web, CLI, API |
-| **Investigation graph** | Builds an entity/relationship graph from a scan and writes a rule-based assessment over it. No language model is involved. | web, CLI, API |
-| **Code exposure** | When a GitHub account is confirmed, reads public commit metadata for the email addresses it leaks. | web, CLI, API |
-| **Full-name search** | Web search for a person's name. **Needs a Google Custom Search key.** | web, CLI, API |
-
-### Email
-
-| Capability | What it actually does |
-| --- | --- |
-| **Address analysis** | Provider and provider type, MX over DNS-over-HTTPS, deliverability, plus-addressing, disposable-address detection. |
-| **Breach exposure** | Named breaches, dates, record counts and the data types exposed, with a risk band. Counts *distinct breaches*, never leaked rows. |
-| **Linked accounts** | Gravatar profile, its linked accounts, and GitHub by commit email. |
-| **Have I Been Pwned** | Additional breach sources. *Optional — needs `HIBP_API_KEY`.* |
-
-### Infrastructure
-
-| Capability | What it actually does |
-| --- | --- |
-| **Domain intelligence** | Registration, DNS and hosting for a domain in one report. |
-| **WHOIS / RDAP** | Registrar, lifecycle dates, DNSSEC, statuses, nameservers. |
-| **DNS records** | A, AAAA, MX, NS, TXT, CNAME, SOA, CAA over DNS-over-HTTPS. |
-| **IP intelligence** | Geolocation, ASN and network ownership, reverse DNS, and mobile/proxy/hosting flags. |
-| **Subdomains** | Enumerated from Certificate Transparency logs (crt.sh, CertSpotter). |
-
-### Images and places
-
-| Capability | What it actually does | Where |
-| --- | --- | --- |
-| **Image forensics** | Reads a local file's own bytes: EXIF, camera identity, capture settings, GPS, cryptographic hashes and three perceptual hashes, plus provenance signals stated as observations rather than verdicts. Deterministic, offline, no third party. | CLI |
-| **Place from coordinates** | Resolves GPS to a named place with its address, Wikidata id, Wikipedia summary and nearby notable places. The honest substitute for landmark recognition — it reports what the coordinates say, not what a photo looks like. | CLI |
-| **Reverse image search** | Finds pages carrying an image, by URL. **Needs a Google Custom Search key.** | web, CLI, API |
-| **Archive history** | How long a URL has been archived and a link to the latest capture (Wayback Machine). | web, CLI, API |
-
-### The site itself
-
-- **Breach Files** — an article for each known breach, rebuilt from Have I Been
-  Pwned every six hours by a GitHub Action and published automatically.
-- **Case Files** — written investigations of major incidents.
-- **Guides** — 20+ explainers: username OSINT, DNS records, SPF/DKIM/DMARC,
-  WHOIS/RDAP, stealer logs, phishing, 2FA, data brokers, reducing your
-  footprint, verifying a finding, and why username checkers report fake
-  accounts.
-- **Platform** — dark/light theme, JSON and CSV export, browser-local search
-  history, live streaming progress for long scans, and honest empty states.
-  Guest exports contain the same 100-platform preview shown on screen.
-
-### Deliberately absent
-
-No reverse-image-by-upload, OCR, landmark or logo recognition, and no face
-recognition. Each needs a paid vision API or asserts identity from appearance;
-the platform resolves GPS and reads metadata instead, and says so where a user
-would otherwise expect the feature.
-
----
-
-## The terminal client
-
-```bash
-python myrecon.py <command> [options]
-python -m cli <command> [options]     # identical
-```
-
-Run it with no arguments for the command screen above; `python myrecon.py
-<command> --help` documents any one command.
-
-No server, no API key, no packaging step. Results print as a readable report;
-progress goes to stderr so `--json` redirects cleanly to a file.
-
-<p align="center">
-  <img src="docs/cli-username-scan.png" width="880"
-       alt="A username sweep in the terminal: 25 confirmed profiles out of 123 platforms checked, listed as a table of platform, detail and URL.">
-</p>
-
-<p align="center">
-  <em>One handle, 100+ platforms — <code>python myrecon.py username &lt;handle&gt; --deep</code></em>
-</p>
-
-### Commands
-
-| Command | What it does |
-| --- | --- |
-| `username <handle>` | Sweep 100+ platforms, enrich, correlate, report exposure. |
-| `name "<full name>"` | Full-name web search. *Needs a Google CSE key.* |
-| `email <address>` | Breach exposure, Gravatar, GitHub, address analysis. |
-| `domain <domain>` | Registration, DNS and hosting in one report. |
-| `dns <domain>` | DNS records over DNS-over-HTTPS. |
-| `whois <domain>` | Registration record via RDAP. |
-| `ip <address>` | Geolocation, ASN, reverse DNS, proxy/hosting flags. |
-| `subdomains <domain>` | Subdomains from Certificate Transparency logs. |
-| `enrich <platform> <user>` | One profile's details from one platform. |
-| `wayback <url>` | Archive history and the most recent capture. |
-| `image <url>` | Reverse image search. *Needs a Google CSE key.* |
-| `forensics <path>` | Analyse a local image: EXIF, GPS, hashes, provenance. |
-| `geo <lat> <lon>` | Resolve coordinates to a place, keyless. |
-| `investigate <handle>` | Entity graph for a handle, with an assessment. |
-| `platforms` | List every platform the sweep checks. |
-| `serve` | Run the MyRecon API on this machine. |
-
-### Options
-
-| Flag | Effect |
-| --- | --- |
-| `--deep` | Wider, slower sweep. `username`, `name`, `image`. |
-| `--all` | Show every row, including the platforms checked and rejected. |
-| `--json` | Print the raw service result instead of a report. |
-| `--quiet`, `-q` | No progress line. |
-| `--color auto\|always\|never` | Colour control. `NO_COLOR` is honoured. |
-| `--radius <m>` | Search radius for `geo` (default 1000 m). |
-| `--host`, `--port` | Bind address for `serve`. |
-
-Exit codes: `0` success, `1` the lookup failed, `2` bad input, `130` interrupted.
-
-### Worked examples
-
-```bash
-python myrecon.py username torvalds --deep --all
-```
-
-```bash
-python myrecon.py email someone@example.com
-```
-
-```bash
-python myrecon.py forensics ./photo.jpg
-```
-
-A photo that still carries GPS prints its coordinates and the exact command to
-resolve them:
-
-```bash
-python myrecon.py geo 51.5007 -0.1246
-```
-
-<p align="center">
-  <img src="docs/cli-geo.png" width="880"
-       alt="MyRecon resolving coordinates in a terminal: Big Ben, Bridge Street, Westminster, with its Wikidata id, OpenStreetMap links and a 100/100 confidence score.">
-</p>
-
-Coordinates only. It reports what the GPS says, never what the picture looks
-like — see [Deliberately absent](#deliberately-absent).
-
-Pipe a scan into any JSON tool:
-
-```bash
-python myrecon.py username torvalds --json > scan.json
-```
-
-### Optional extras
-
-`forensics` decodes images and computes DCT hashes, which needs two libraries
-the API does not install:
-
-```bash
-pip install Pillow numpy
-```
-
-`name` and `image` need a Google Programmable Search key in the environment of
-the machine running the scan:
-
-```bash
-export GOOGLE_API_KEY=...   # Windows: $env:GOOGLE_API_KEY="..."
-export GOOGLE_CX_ID=...
-```
-
----
-
-## The website
-
-```bash
 cd frontend
 python -m http.server 8000
 ```
 
-The site is plain HTML, CSS and JavaScript with no build framework. The only
-build step injects the API URL, so nothing needs compiling to work locally.
+Open [http://localhost:8000](http://localhost:8000). The local frontend uses the API on `http://localhost:5000`. Guest lookups work without account configuration; sign-in and paid plans require Firebase and payment-provider settings.
 
-For a username, guests run the 560-platform sweep and receive a preview of
-the first 100 platforms. Sign in to unlock the full report. The free account
-includes one full scan; Pro passes add more. Other tools remain usable as a
-guest.
+## API
 
-| Page | Purpose |
-| --- | --- |
-| `index.html` | The search app — every lookup the API exposes. |
-| `deep-search.html` | Handle investigation with the graph view. |
-| `breaches/` | Breach Files index and one page per breach. |
-| `breaches/case-files/` | Long-form investigations. |
-| `guides/` | Explainers and how-tos. |
-| `services.html`, `about.html`, `founder.html`, `contact.html` | Platform pages. |
-| `app.html` | The Android app's landing page. |
-| `privacy.html`, `terms.html`, `cookies.html` | Policies. |
-
----
-
-## The HTTP API
-
-Every endpoint takes `POST` with a JSON body and returns
-`{"status": "ok", ...}` or `{"status": "error", "code": ..., "error": ...}`.
-
-| Endpoint | Body |
-| --- | --- |
-| `GET /api/health` | — |
-| `POST /api/username` | `{"username": "...", "scope": "full"}`; guests receive a 100-platform preview |
-| `POST /api/username/stream` | same; responds as NDJSON progress events and a preview or full result according to access |
-| `POST /api/investigate/stream` | `{"query": "...", "deep": false}`; NDJSON |
-| `POST /api/fullname` | `{"full_name": "..."}` |
-| `POST /api/email` | `{"email": "..."}` |
-| `POST /api/domain` | `{"domain": "..."}` |
-| `POST /api/dns` | `{"domain": "..."}` |
-| `POST /api/whois` | `{"domain": "..."}` |
-| `POST /api/ip` | `{"ip": "..."}` |
-| `POST /api/subdomains` | `{"domain": "..."}` |
-| `POST /api/image` | `{"image_url": "...", "deep": false}` |
-| `POST /api/enrich` | `{"platform": "...", "username": "..."}` |
-| `POST /api/wayback` | `{"url": "..."}` |
+The Flask API lives in [`backend/`](backend/). For example, with the API running locally:
 
 ```bash
-curl -X POST http://localhost:5000/api/username \
-  -H "Content-Type: application/json" \
-  -d '{"username":"torvalds"}'
+curl -X POST http://localhost:5000/api/dns -H "Content-Type: application/json" -d '{"domain":"example.com"}'
 ```
 
-Streaming endpoints emit newline-delimited JSON: `{"type":"progress",...}`
-events during the scan, then `{"type":"complete","data":{...}}`.
+Selected routes include `POST /api/username`, `POST /api/username/stream`, `POST /api/email`, `POST /api/domain`, `POST /api/dns`, `POST /api/whois`, `POST /api/ip`, and `GET /api/health`. Streaming routes send newline-delimited JSON progress and completion events. See [`backend/app.py`](backend/app.py) for the complete route list, including account and plan endpoints.
 
----
+## Project layout
 
-## Architecture
+| Path | Purpose |
+| --- | --- |
+| [`backend/modules/`](backend/modules/) | Public-source lookup engines and platform verdicts. |
+| [`backend/services/`](backend/services/) | Service functions shared by the API and CLI. |
+| [`backend/core/`](backend/core/) | Input validation, rate limits, caching, and request controls. |
+| [`frontend/`](frontend/) | Static HTML, CSS, and JavaScript for the web app, guides, and breach archive. |
+| [`cli/`](cli/) | CLI commands and terminal output. |
+| [`backend/tests/`](backend/tests/) | Backend tests. |
 
-| Concern | Where | Notes |
-| --- | --- | --- |
-| OSINT engines | `backend/modules/` | One module per source. No Flask imports — importable anywhere. |
-| Service layer | `backend/services/` | The seam the API *and* the CLI both call. |
-| Request plumbing | `backend/core/` | Validation, rate limiting, TTL cache, client IP, responses. |
-| API | `backend/app.py` | Routes, CORS, caching decorators, error handlers. |
-| UI | `frontend/` | HTML/CSS/JS, no framework; a tiny build step injects the API URL. |
-| Terminal | `cli/` | Argument parsing and rendering only; zero lookup logic. |
-| Secrets | Environment variables | Nothing is committed. See `backend/.env.example`. |
+The web frontend is deployed from Vercel using [`frontend/vercel.json`](frontend/vercel.json); the API has a Render blueprint at [`backend/render.yaml`](backend/render.yaml). The site also publishes [Breach Files](https://myrecon.xyz/breaches/) and [practical guides](https://myrecon.xyz/guides/).
 
-**Why split?** Vercel serverless is a poor fit for long-running, threaded
-username scans; Render gives the API a real, always-warm server. Vercel gives
-the static frontend a global CDN with excellent Core Web Vitals. The two
-communicate over a configurable API base URL — there are no hardcoded URLs in
-application code.
+## Configuration and tests
 
-**Why the CLI imports instead of calling HTTP:** a terminal user already has the
-engine on disk. Going through the network would add a server to run, a rate
-limit to hit, and a second place for an answer to differ.
+Core CLI lookups need no API key. Optional integrations and hosted account features use environment variables:
 
----
+| Variables | Purpose |
+| --- | --- |
+| `GOOGLE_API_KEY`, `GOOGLE_CX_ID` | Full-name and reverse-image web search. |
+| `GITHUB_TOKEN` | Higher GitHub API rate limit for public-source lookups. |
+| `FIREBASE_SERVICE_ACCOUNT`, Firebase web configuration | Sign-in and persistent web account state. |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Pro pass checkout and webhook handling. |
+| `API_BASE_URL` | API origin for the hosted frontend build. |
 
-## Configuration
-
-All configuration is environment variables; no secrets are ever committed.
-
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `FLASK_ENV` | `production` | `development` relaxes the CORS allow-list to localhost. |
-| `ALLOWED_ORIGINS` | myrecon.xyz origins | Comma-separated CORS allow-list. |
-| `SECRET_KEY` | *(ephemeral)* | Set it in production before anything is signed. |
-| `PORT` | `5000` | Bind port. |
-| `RATE_LIMIT_ENABLED` | `true` | Per-IP limiting. |
-| `RATE_LIMIT_REQUESTS` | `30` | Requests per window. |
-| `RATE_LIMIT_WINDOW` | `60` | Window, in seconds. |
-| `CACHE_ENABLED` | `true` | TTL response cache. |
-| `CACHE_TTL` | `600` | Cache lifetime, in seconds. |
-| `SCAN_MAX_WORKERS` | `20` | Sweep concurrency. |
-| `REQUEST_TIMEOUT` | `10` | Per-request timeout, in seconds. |
-| `MAX_BODY_BYTES` | `65536` | Request body ceiling. |
-| `TRUSTED_PROXY_DEPTH` | `0` | How many `X-Forwarded-For` hops to trust. |
-| `GUEST_SCANS_PER_DAY` | `5` | Daily guest username sweeps per address; each full sweep returns a 100-platform preview. |
-| `FREE_FULL_SCANS` | `1` | One-time full-report scan for a free signed-in account. |
-| `FULL_SCAN_SLOTS` | `2` | Concurrent 560-platform sweeps per worker. |
-| `FIREBASE_SERVICE_ACCOUNT` | — | Service-account JSON for persistent web account state and full-report access. |
-| `FIREBASE_WEB_API_KEY` | — | Public Firebase web configuration needed for browser sign-in. |
-| `GOOGLE_API_KEY` | — | *Optional.* Full-name and reverse-image search. |
-| `GOOGLE_CX_ID` | — | *Optional.* The Programmable Search engine id. |
-| `HIBP_API_KEY` | — | *Optional.* Have I Been Pwned breach data. |
-| `GITHUB_TOKEN` | — | *Optional.* Raises GitHub's unauthenticated rate limit. |
-| `API_BASE_URL` | same-origin | *Frontend build.* The Render URL to call. |
-
----
-
-## Deployment
-
-### Backend → Render
-
-1. New **Blueprint** (or Web Service) pointing at this repo; root directory
-   `backend`. `backend/render.yaml` is a ready-to-use blueprint.
-2. Start command:
-   `gunicorn wsgi:app --workers 2 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT`
-3. Set environment variables:
-   - `FLASK_ENV=production`
-   - `ALLOWED_ORIGINS=https://myrecon.xyz,https://www.myrecon.xyz`
-   - `SECRET_KEY` (Render can generate it)
-   - `FIREBASE_SERVICE_ACCOUNT` and `FIREBASE_WEB_API_KEY` to enable sign-in
-     and full-report access
-   - Optional: `GOOGLE_API_KEY`, `GOOGLE_CX_ID`, `HIBP_API_KEY`, `GITHUB_TOKEN`
-4. Health check path: `/api/health`.
-
-### Frontend → Vercel
-
-1. New Project; root directory `frontend`. Framework preset: **Other**.
-2. Add environment variable **`API_BASE_URL`** = your Render URL, e.g.
-   `https://myrecon-api.onrender.com`.
-3. The build command runs four generators:
-   `gen-env.js` (injects the API URL) → `build-breaches.js` →
-   `build-case-files.js` → `build-sitemap.js`.
-4. Point the `myrecon.xyz` domain at the Vercel project.
-
-After both are live, make sure Render's `ALLOWED_ORIGINS` includes the exact
-Vercel/custom-domain origin so CORS succeeds.
-
-> **Changing the API host?** The new origin must also be added to `connect-src`
-> in the Content-Security-Policy in `frontend/vercel.json`. The browser enforces
-> that list, so an API host missing from it has every lookup blocked before the
-> request leaves the page — and the only symptom is a console error.
-
----
-
-## Automation
-
-| What | Where | When |
-| --- | --- | --- |
-| **Breach Files** | `.github/workflows/breach-files.yml` | Every 6 hours. Rebuilds `/breaches/` from Have I Been Pwned, writes the JSON feed and sitemap entries, and commits only when something changed — which is what triggers the Vercel deploy. |
-| **IndexNow** | `frontend/scripts/indexnow.js` | After a publish. Submits changed URLs to Bing, DuckDuckGo, Yandex and Seznam. Google does not participate, so this complements Search Console. |
-| **Sitemap** | `frontend/scripts/build-sitemap.js` | Every build. |
-
----
-
-## Tests
+Keep credentials out of source control. To run the backend test suite:
 
 ```bash
+python -m pip install pytest
 python -m pytest backend/tests -q
 ```
 
-Covers client-IP resolution behind proxies, the network guard, and rate limiting
-end to end.
+## Contributing
 
----
+Focused issues and pull requests are welcome. For a platform-verdict change, include a reproducible example and explain what evidence distinguishes `found`, `not_found`, and `unknown`. Please avoid posting personal lookup results, private data, or API keys in issues. [Open an issue](https://github.com/4ryanwalia/Myrecon/issues).
 
-## Security notes
-
-- All user input is validated and sanitised server-side
-  (`backend/core/validation.py`); validators raise messages that are safe to
-  show a user.
-- API endpoints are rate-limited per IP and protected by an origin allow-list.
-- Outbound requests pass through a network guard before they are made.
-- Security headers (`X-Content-Type-Options`, `X-Frame-Options`,
-  `Referrer-Policy`, HSTS, CSP) are applied by both the API and Vercel.
-- **Secrets live only in environment variables.**
-
-> ⚠️ **Rotate old keys.** The pre-refactor `config.py` (see *Legacy cleanup*)
-> committed live Google and SerpAPI keys in plaintext. Treat them as compromised
-> and revoke/rotate them in the respective consoles.
-
----
-
-## Legacy cleanup
-
-The refactor left the original single-app/desktop code in place. It is ignored
-by git and used by neither deployment, so it can be deleted whenever you are
-ready:
-
-```bash
-rm -f main.py web_main.py config.py vercel.json Procfile \
-      requirements.txt requirements-desktop.txt
-rm -rf gui assets web modules services utils data
-```
-
-Everything the platform needs lives under `backend/`, `frontend/` and `cli/`.
-
----
-
-## Using this responsibly
-
-MyRecon reports what public sources already publish. Accounts that share a
-handle are frequently unrelated people, and the platform labels them that way
-rather than asserting an identity. Findings are a starting point for
-verification, not a conclusion — see the guide on verifying an OSINT finding.
-
----
+If MyRecon helps you understand your footprint, [star the repository](https://github.com/4ryanwalia/Myrecon) to help others discover it.
 
 ## License
 
-MyRecon is released under the [MIT License](LICENSE) — use it, modify it, ship
-it, commercially or not, as long as the copyright notice and the licence text
-travel with it. The software comes with no warranty.
-
-The licence covers the code in this repository. It does not cover the MyRecon
-name and logo, and it says nothing about the third-party sources the platform
-queries — data from HIBP and other providers stays under whatever terms those
-providers set.
+The code is released under the [MIT License](LICENSE). The MyRecon name and logo are not granted under that license. Third-party data remains subject to its providers' terms.
