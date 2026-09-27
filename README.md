@@ -51,7 +51,7 @@ python myrecon.py --help
 
 **Website access:** Guests can run the standard 561-entry sweep but see the first 100 platform verdicts. A signed-in free account gets one full report; Pro passes add full and Extended scan allowances. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
 
-The [Android app](https://myrecon.xyz/app.html) is a separate product. Its source is not in this repository.
+The [Android app](https://myrecon.xyz/app.html) is maintained separately; its source is not in this repository.
 
 ## How username verdicts work
 
@@ -125,6 +125,10 @@ python -m pytest backend/tests -q
 Focused issues and pull requests are welcome. For a platform-verdict change, include a reproducible example and explain what evidence distinguishes `found`, `not_found`, and `unknown`. Please avoid posting personal lookup results, private data, or API keys in issues. [Open an issue](https://github.com/4ryanwalia/Myrecon/issues).
 
 If MyRecon helps you understand your footprint, [star the repository](https://github.com/4ryanwalia/Myrecon) to help others discover it.
+
+## Security
+
+Do not commit credentials or personal scan results. Earlier repository history included plaintext keys in a legacy configuration file. Treat those keys as compromised and rotate or revoke them; removing a file does not erase Git history.
 
 ## License
 
