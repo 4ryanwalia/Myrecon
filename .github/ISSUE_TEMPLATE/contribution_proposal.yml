@@ -1,0 +1,28 @@
+name: Contribution proposal
+description: Agree on the scope of a feature, provider change, or substantial contribution.
+title: "[Proposal]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Wait for @4ryanwalia to approve substantial or behavior-changing work before starting. Every pull request also needs explicit maintainer approval before merge."
+  - type: textarea
+    id: need
+    attributes:
+      label: User problem
+      description: Who benefits, and what can they not do reliably today?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Proposed scope
+      description: Describe the change and likely files. Keep the proposal focused.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification plan
+      description: Explain how reviewers can verify it. For provider changes, cover found, not_found, and unknown with safe fixtures.
+    validations:
+      required: true

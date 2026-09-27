@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a reproducible problem using safe sample data.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "For vulnerabilities, arrange private disclosure through https://myrecon.xyz/contact.html. Do not include credentials, cookies, or personal lookup results."
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include expected and actual behavior. For a verdict error, explain the evidence without identifying a person.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Use synthetic input or a minimal sanitized fixture where possible.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Commit or release, operating system, and Python version or browser.
+    validations:
+      required: true

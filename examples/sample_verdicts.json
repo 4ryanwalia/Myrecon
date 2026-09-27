@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "description": "Illustrative verdicts only. This fixture is not a scan result or an accuracy benchmark.",
+  "results": [
+    {
+      "platform": "Sample Forum",
+      "verdict": "found",
+      "evidence": "A fictional profile response contains a platform-specific account marker.",
+      "next_step": "Verify the profile at its source; matching handles do not prove identity."
+    },
+    {
+      "platform": "Sample Code Host",
+      "verdict": "not_found",
+      "evidence": "A fictional account endpoint returns an explicit missing-user response.",
+      "next_step": "Treat this as a result for this source and time, not proof of no online presence."
+    },
+    {
+      "platform": "Sample Community",
+      "verdict": "unknown",
+      "evidence": "The fictional response is HTTP 200, but the body is a sign-in wall.",
+      "next_step": "Leave the result unresolved. HTTP success alone is not account evidence."
+    },
+    {
+      "platform": "Sample Gallery",
+      "verdict": "unknown",
+      "evidence": "The fictional request times out before account evidence is available.",
+      "next_step": "Retry later if appropriate; a timeout cannot establish absence."
+    }
+  ]
+}

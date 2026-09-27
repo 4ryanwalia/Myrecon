@@ -4,7 +4,7 @@
 
 Username OSINT · breach checks · domain intelligence · DNS/IP lookup · Python · Flask
 
-[Try the web app](https://myrecon.xyz) · [Run the CLI](#quick-start) · [Explore the API](#api) · [See the code](#project-layout)
+[Try the web app](https://myrecon.xyz) · [Offline demo](#try-the-verdict-demo) · [Run the CLI](#quick-start) · [Explore the API](#api) · [Contribute](CONTRIBUTING.md)
 
 ![MyRecon web app with a username lookup and an illustrative platform map](docs/web-home.png)
 
@@ -15,6 +15,16 @@ MyRecon is built for self-audits and authorized research. A shared username is n
 - **Evidence-aware username results.** A platform is marked `found` only with positive evidence, `not_found` with negative evidence, and `unknown` when a block, sign-in wall, timeout, or ambiguous page prevents a conclusion. An HTTP 200 response alone does not prove an account exists.
 - **One place for your exposure checks.** Explore public breach data and email signals, inspect DNS and registration records, and review IP and hosting information.
 - **Use the interface that fits.** Search in the browser, run a scriptable CLI locally, or integrate with the HTTP API. The website streams scan progress and supports JSON and CSV exports.
+
+## Try the verdict demo
+
+See why a sign-in wall and a timeout stay `unknown`. After cloning this repository, run:
+
+```bash
+python examples/offline_demo.py
+```
+
+No dependencies, account, API key, or network needed. Four **synthetic examples** show `found`, `not_found`, and `unknown` with evidence and a suggested next step. This illustrates the verdict contract; it is not a live scan or accuracy benchmark. Use `--json` for labeled sample output, or [read the walkthrough](examples/README.md).
 
 ## Quick start
 
@@ -124,7 +134,7 @@ python -m pytest backend/tests -q
 
 ## Contributing
 
-Contributions are welcome. Here are useful ways to help:
+Contributions are welcome. Read the [contribution guide](CONTRIBUTING.md) for setup, evidence requirements, and the maintainer approval process. Here are useful ways to help:
 
 - **Improve platform coverage:** add or update a platform verdict check and include fixtures or a reproducible example that demonstrates the expected `found`, `not_found`, or `unknown` result.
 - **Improve documentation:** clarify setup, API/CLI usage, or how to verify a finding. Keep examples safe to share and grounded in public sources.
