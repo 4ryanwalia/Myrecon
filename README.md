@@ -10,6 +10,12 @@ Username OSINT · breach checks · domain intelligence · DNS/IP lookup · Pytho
 
 MyRecon is built for self-audits and authorized research. A shared username is not proof that two accounts belong to the same person.
 
+## What problem are we solving?
+
+Digital-footprint checks are often scattered across separate tools, and username search tools can mistake a block page, sign-in wall, or generic HTTP 200 response for proof that an account exists. That creates fragmented investigations and false confidence.
+
+MyRecon brings public username signals, supported breach exposure checks, and domain/DNS/IP research into one web app, Python CLI, and API. Each username result is labeled `found`, `not_found`, or `unknown` according to the evidence available, so an inconclusive lookup stays inconclusive. It is designed for people auditing their own footprint and for authorized research using public sources.
+
 ## Why use it?
 
 - **Evidence-aware username results.** A platform is marked `found` only with positive evidence, `not_found` with negative evidence, and `unknown` when a block, sign-in wall, timeout, or ambiguous page prevents a conclusion. An HTTP 200 response alone does not prove an account exists.
