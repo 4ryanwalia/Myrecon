@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  var analyticsPage = new URL(window.location.href);
+  var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+  gtag('config', 'G-3L8YYC6NKF', {
+    page_location: analyticsPage.origin + analyticsPage.pathname,
+    page_referrer: analyticsReferrer
+  });
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cookie Policy: What Is Stored and By Whom | MyRecon</title>
@@ -37,8 +50,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=59222c1f25">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=34c262df74">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=0fdcb1db58">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Cookie Policy: What Is Stored and By Whom","description":"MyRecon’s own code sets no cookies. Every cookie and browser storage key on the site, who sets it, what it does, and how to control it.","url":"https://www.myrecon.xyz/cookies.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Cookie policy","item":"https://www.myrecon.xyz/cookies.html"}]}}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
 </head>
@@ -58,9 +71,9 @@
     <div class="legal-summary">
       <h2>The short version</h2>
       <ul>
-        <li><strong>MyRecon’s own code sets no cookies.</strong> Every cookie you pick up here is placed by Google’s advertising script, a few of them stored under the myrecon.xyz name, but set and read by Google, not by us.</li>
+        <li><strong>MyRecon’s own code sets no session cookies.</strong> Google Analytics sets measurement cookies, and Google advertising may set separate advertising cookies.</li>
         <li>The site keeps four things in your browser&rsquo;s local storage, your theme, your recent lookups and your saved investigations. They never leave your device, and they are not cookies.</li>
-        <li>The only cookies here come from <strong>Google advertising</strong>, which runs on the tool, the guides and the breach archive. These policy pages, the contact page and Deep Search carry none.</li>
+        <li>Google Analytics runs on site pages, including policy, contact and Deep Search pages. Advertising cookies are separate and depend on where ads run.</li>
         <li>In the EEA, the UK and Switzerland those cookies are set only after you agree, through Google&rsquo;s certified consent message. You can reopen it at any time from the footer of any page.</li>
       </ul>
     </div>
@@ -70,7 +83,7 @@
       <ol>
         <li><a href="#what">What cookies and local storage are</a></li>
         <li><a href="#first-party">What MyRecon stores (no cookies)</a></li>
-        <li><a href="#third-party">Third-party cookies: Google advertising</a></li>
+        <li><a href="#third-party">Google Analytics and advertising cookies</a></li>
         <li><a href="#other-third-party">Other third parties we load</a></li>
         <li><a href="#consent">How consent works here</a></li>
         <li><a href="#manage">How to manage or refuse cookies</a></li>
@@ -111,7 +124,8 @@
     </section>
 
     <section id="third-party">
-      <h2>3. Third-party cookies: Google advertising</h2>
+      <h2>3. Google Analytics and advertising cookies</h2>
+      <p>Google Analytics measures site visits using first-party cookies such as <code>_ga</code> and <code>_ga_*</code>. It receives the page path without query strings or fragments, page title, browser and device signals, and a cookie identifier. Lookup values in URLs are excluded from page measurement.</p>
       <p>Parts of this site carry advertising, which is what pays for the free tools and the written archive. Advertising is served by <strong>Google</strong> (Google AdSense). When an ad is served, Google and its partners may set and read cookies in your browser, and may use web beacons and your IP address to collect information.</p>
       <p>These cookies are set by Google under Google&rsquo;s own policies, not ours. We do not control them, cannot read them, and receive no personal data from them. Typical examples of what Google sets in this context:</p>
 
@@ -122,6 +136,7 @@
             <tr><th scope="col">Cookie</th><th scope="col">Set by</th><th scope="col">Purpose</th><th scope="col">Typical duration</th></tr>
           </thead>
           <tbody>
+            <tr><td><code>_ga</code>, <code>_ga_*</code></td><td>myrecon.xyz, by Google Analytics</td><td>Website usage measurement.</td><td>Up to 2 years by default, subject to browser limits</td></tr>
             <tr><td><code>__gads</code>, <code>__gpi</code>, <code>__eoi</code></td><td>myrecon.xyz, by Google&rsquo;s script</td><td>Ad selection and delivery, frequency capping, and measuring how ads perform.</td><td>Up to about 13 months</td></tr>
             <tr><td><code>IDE</code>, <code>DSID</code></td><td>doubleclick.net</td><td>Ad measurement and, where you have consented, personalisation.</td><td>Two weeks to about 13 months</td></tr>
             <tr><td><code>NID</code></td><td>google.com</td><td>Google preferences, including ad settings.</td><td>About 6 months</td></tr>
@@ -151,7 +166,7 @@
 
     <section id="consent">
       <h2>5. How consent works here</h2>
-      <p>If you are in the <strong>European Economic Area, the United Kingdom or Switzerland</strong>, Google&rsquo;s EU user consent policy applies. Advertising cookies are set only after you have made a choice through a <strong>Google-certified consent message</strong>, shown before personalised ads are served. Refusing locks you out of nothing: the site and every tool on it work exactly the same either way, you simply see non-personalised advertising, or none.</p>
+      <p>If you are in the <strong>European Economic Area, the United Kingdom or Switzerland</strong>, Google&rsquo;s EU user consent policy applies. Advertising cookies are managed through a <strong>Google-certified consent message</strong>. That message does not currently manage Google Analytics consent; Analytics loads on site pages. Browser controls below can block or delete its cookies.</p>
       <p>We use Google&rsquo;s own certified message rather than a banner of our own design, and that is deliberate. Google requires a certified consent platform for ads served in those regions, so a home-made banner would not be a valid basis for the cookies Google sets. It would only be a second prompt standing in front of the real one.</p>
       <p>Outside those regions no ad-consent prompt is shown, which is the standard behaviour of the advertising system. You can still refuse or delete these cookies at any time using the controls in the next section, and those controls work everywhere.</p>
       <p><strong>Withdrawing is as easy as consenting.</strong> Use the cookie control in the footer of every page to reopen the consent message and change your answer.</p>
@@ -227,6 +242,6 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=15acbbe76e"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=4ad625047f" defer></script>
+  <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
 </body>
 </html>

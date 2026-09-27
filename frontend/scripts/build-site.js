@@ -11,6 +11,7 @@ const scripts = [
   'enhance-site-footer.js',
   'version-site-assets.js',
   'build-sitemap.js',
+  'install-google-tag.js',
 ];
 
 for (const script of scripts) {
