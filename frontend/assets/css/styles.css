@@ -1,39 +1,29 @@
 /* ==========================================================================
    MyRecon, Design System
-   Modern OSINT/cybersecurity aesthetic. Dark by default, full light theme.
+   Neutral surfaces and reassuring green. Dark by default, full light theme.
    ========================================================================== */
 
 :root {
-  /* Dark theme (default), solid, professional palette (no gradients) */
-  --bg: #0a0f1a;
-  --bg-soft: #0e1524;
-  --surface: #111a2b;
-  --surface-2: #16223a;
-  --border: #1f2b42;
-  --border-strong: #2c3c5a;
-  --text: #e8eef7;
-  --text-dim: #9aabc4;
-  /* Was #647089: 3.85:1 on --bg and 3.49:1 on --surface, under the 4.5
-     WCAG AA needs for text this size. Lifted until it clears on --bg,
-     --surface and --surface-2 alike, while staying clearly dimmer than
-     --text-dim so the hierarchy is unchanged. */
-  --text-mute: #7d8aa3;
-  /* Was #3b82f6: fine on --bg (5.21:1) but 4.31:1 on --surface-2, and it is
-     used as link/label text inside those cards. Lifted until it clears 4.5
-     on every surface it sits on. Never a solid button background (that is
-     --accent-2), so nothing depends on white staying legible over it. */
-  --accent: #4a8bf7;
-  --accent-2: #2563eb;
-  /* --border is decorative (1.35:1) and stays that way for card and section
-     rules. Controls are different: WCAG 1.4.11 wants 3:1 for the boundary
-     that is the only thing identifying an input or an icon-only button. */
-  --border-control: #586e98;
-  --ring: rgba(59, 130, 246, 0.40);
+  /* Dark mode uses charcoal neutrals with green reserved for actions and trust. */
+  --bg: #101713;
+  --bg-soft: #151d18;
+  --surface: #1b2520;
+  --surface-2: #223029;
+  --border: #334239;
+  --border-strong: #46594c;
+  --text: #f4f7f2;
+  --text-dim: #c0cec3;
+  --text-mute: #a2b4a6;
+  --accent: #7fd5a0;
+  --accent-text: #9de5b8;
+  --accent-2: #247a4e;
+  --border-control: #718976;
+  --ring: rgba(127, 213, 160, 0.38);
   --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7);
   --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.6);
 
   /* Semantic */
-  --ok: #34d399;
+  --ok: #61d394;
   --warn: #fbbf24;
   --danger: #fb7185;
   --info: #38bdf8;
@@ -49,31 +39,26 @@
 }
 
 :root[data-theme="light"] {
-  --bg: #f5f7fb;
-  --bg-soft: #eef2f9;
+  --bg: #f7faf7;
+  --bg-soft: #edf3ee;
   --surface: #ffffff;
-  --surface-2: #f3f6fc;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text: #0f172a;
-  --text-dim: #475569;
-  --text-mute: #5f6f86;  /* was #94a3b8, 2.56:1 on white */
-  --accent: #2563eb;
-  --accent-2: #1d4ed8;
-  --border-control: #748399;
-  --ring: rgba(37, 99, 235, 0.35);
-  --shadow: 0 18px 40px -20px rgba(15, 23, 42, 0.25);
-  --shadow-sm: 0 6px 18px -12px rgba(15, 23, 42, 0.2);
+  --surface-2: #f2f7f2;
+  --border: #dce8de;
+  --border-strong: #c2d5c5;
+  --text: #18241c;
+  --text-dim: #425548;
+  --text-mute: #526857;
+  --accent: #1e7548;
+  --accent-text: #1b6e42;
+  --accent-2: #16633a;
+  --border-control: #748b78;
+  --ring: rgba(30, 117, 72, 0.28);
+  --shadow: 0 18px 40px -20px rgba(24, 45, 29, 0.18);
+  --shadow-sm: 0 6px 18px -12px rgba(24, 45, 29, 0.16);
 
-  /* The semantic colours were never given light-theme values, so the dark
-     palette's bright ones carried over onto a near-white background and were
-     used as TEXT in seventeen places, the exposure verdicts, the confidence
-     tags, the error box, the severity badges. Measured on white they ran
-     1.67:1 (warn), 1.92 (ok), 2.14 (info) and 2.69 (danger); the amber was
-     effectively invisible. These are the same hues darkened until each clears
-     4.5:1 on --bg, --surface and --surface-2 alike. */
-  --ok: #047857;
-  --warn: #a84d08;  /* was #b45309, 4.47:1 on --bg-soft, just under AA */
+  /* Semantic text colors retain contrast against every light surface. */
+  --ok: #157347;
+  --warn: #a84d08;
   --danger: #be123c;
   --info: #0369a1;
 }
@@ -142,8 +127,6 @@ button, input, select { font: inherit; color: inherit; }
 .brand .logo { width: 30px; height: 30px; }
 .brand small {
   font-weight: 700; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
-  /* Was var(--accent) on the tinted chip: 4.47:1, just under the 4.5 needed
-     at this size. --accent-text is the same hue lifted far enough to pass. */
   color: var(--accent-text); padding: 3px 7px; border-radius: 6px; align-self: center;
   background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
@@ -233,8 +216,6 @@ button, input, select { font: inherit; color: inherit; }
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 14px 24px; border-radius: var(--radius-sm); border: none; cursor: pointer;
   font-weight: 700; font-size: 0.95rem; transition: transform 0.12s, box-shadow 0.18s, opacity 0.18s;
-  /* --accent-2, not --accent: white on #3b82f6 is 3.67:1, and .btn text is
-     15.2px, below the large-text threshold that would allow 3:1. */
   background: var(--accent-2); color: #ffffff; white-space: nowrap;
 }
 .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px -10px var(--accent); }
@@ -244,10 +225,7 @@ button, input, select { font: inherit; color: inherit; }
 .btn-ghost:hover { box-shadow: none; border-color: var(--border-strong); }
 .btn-sm { padding: 8px 14px; font-size: 0.82rem; }
 
-/* Buttons carry their own colour. Without this an `a.btn` can inherit the
-   accent link colour and render blue-on-blue (invisible label). */
-/* Same 3.67:1 problem as .btn, this rule was putting --accent back for
-   links styled as buttons and for the primary variant. */
+/* Buttons carry their own color so linked buttons remain legible. */
 a.btn, .btn-primary { background: var(--accent-2); color: #ffffff; }
 a.btn-ghost, .btn-ghost { background: var(--surface-2); color: var(--text); }
 
@@ -643,7 +621,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
    still a button. Without the :not(), this rule ties on specificity with
    `a.btn` and wins on order, painting accent-on-accent and leaving the label
    invisible. That is what happened to "Get it on Google Play" on the home
-   page: the text was there, the same blue as the button behind it. */
+   page: the text was there, the same color as the button behind it. */
 .prose a:not(.btn), .faq a:not(.btn) { color: var(--accent); }
 
 /* Article (guide) typography */
@@ -882,16 +860,13 @@ main :is(p, li, td, address) a:not(:where(.btn, .chip, .pivot, .ex-chip)) {
 
 /* Related guides, the cross-links at the foot of each article. Indented list
    markers sit outside the text so the links read as a list of destinations
-   rather than a paragraph of blue. */
+   rather than a paragraph of accent-colored text. */
 .related-guides { margin: 0 0 8px; padding-left: 20px; }
 .related-guides li { margin-bottom: 8px; color: var(--text-dim); }
 .related-guides a { color: var(--accent); }
 .related-guides a:hover { text-decoration: underline; }
 
-/* Accent lifted until it clears 4.5:1 on the dark chip backgrounds. Defined
-   per theme so the light palette keeps its own darker accent. */
-:root { --accent-text: #60a5fa; }
-:root[data-theme="light"] { --accent-text: #1d4ed8; }
+/* Accent text clears 4.5:1 on tinted chips in both themes. */
 
 /* Prose links are underlined. Colour alone measured 1.57:1 against the
    surrounding text, under the 3:1 minimum, so a reader who does not

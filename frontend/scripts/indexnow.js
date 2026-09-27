@@ -5,10 +5,10 @@
  * value gone. IndexNow inverts it: one HTTP POST and the URL is queued for
  * indexing in minutes.
  *
- * Bing, DuckDuckGo, Yandex and Seznam all consume the same endpoint, so a
- * single submission reaches all of them. Google does NOT participate, it has
- * declined to adopt IndexNow, so this complements Search Console rather than
- * replacing it.
+ * The endpoint notifies Bing and other search engines that participate in
+ * IndexNow. Bing says its search index powers services including DuckDuckGo,
+ * but this is not a direct DuckDuckGo submission. Google does not participate,
+ * so this complements Search Console rather than replacing it.
  *
  * Ownership is proved by hosting a file named after the key, containing the
  * key, at the site root. That is why the key is public and why it being public

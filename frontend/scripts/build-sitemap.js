@@ -56,6 +56,8 @@ const SECTIONS = [
   { test: (u) => u.startsWith("/breaches/"), changefreq: "monthly", priority: "0.6" },
   { test: (u) => u === "/guides/", changefreq: "weekly", priority: "0.9" },
   { test: (u) => u.startsWith("/guides/"), changefreq: "monthly", priority: "0.8" },
+  { test: (u) => u === "/blog/", changefreq: "weekly", priority: "0.9" },
+  { test: (u) => u.startsWith("/blog/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/find/", changefreq: "weekly", priority: "0.9" },
   { test: (u) => u.startsWith("/find/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/privacy/", changefreq: "weekly", priority: "0.9" },

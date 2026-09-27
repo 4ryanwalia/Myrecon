@@ -6,7 +6,7 @@
   <title>Medibank Hack 2022: Refusing to Pay, and the Fallout</title>
   <meta name="description" content="Medibank refused to pay the ransom. The attackers published 9.7 million customers' health claims data in tranches, organised to cause the most distress.">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#0a0f1a">
+  <meta name="theme-color" content="#101713">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/medibank-2022.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
@@ -23,8 +23,8 @@
   <meta name="twitter:description" content="Medibank refused to pay the ransom. The attackers published 9.7 million customers' health claims data in tranches, organised to cause the most distress.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=c285203a4c">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=c285203a4c">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
@@ -34,8 +34,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=7">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=59222c1f25">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=34c262df74">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
@@ -43,13 +43,13 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Medibank data breach","item":"https://www.myrecon.xyz/breaches/case-files/medibank-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why did Medibank refuse to pay?","acceptedAnswer":{"@type":"Answer","text":"The company said publicly that paying would not guarantee the data was returned or deleted, and would make Australian organisations a more attractive target. The Australian government supported the position. It is the correct analysis in the general case, and it also meant the customers in the file bore the consequences of a decision made on behalf of everyone else, which is the uncomfortable part nobody enjoys stating."}},{"@type":"Question","name":"What made this breach different from Optus?","acceptedAnswer":{"@type":"Answer","text":"Optus lost identity documents, which can be replaced. Medibank lost health claims data, records of treatment, including procedures people had chosen not to tell anyone about. There is no reissue process for that. The attackers understood it, and published the most sensitive categories first."}},{"@type":"Question","name":"How did the attackers get in?","acceptedAnswer":{"@type":"Answer","text":"Through credentials belonging to a third-party IT services contractor. The credentials did not have multi-factor authentication, so possession of the password was sufficient. They were used to reach Medibank's network, and roughly 200GB of data was taken over several weeks before detection."}},{"@type":"Question","name":"Was anyone held responsible?","acceptedAnswer":{"@type":"Answer","text":"In January 2024 Australia used its cyber sanctions powers for the first time, against Aleksandr Ermakov, a Russian national it named as involved. Sanctions make it a criminal offence to provide him assets and freeze what can be reached. He has not stood trial. Separately, the privacy regulator commenced civil penalty proceedings against Medibank."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/css/site-footer.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=6bbbea3ebc" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -198,7 +198,7 @@
   <div class="site-footer__panel">
     <div class="site-footer__top">
       <div class="site-footer__identity">
-        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=6bbbea3ebc" width="36" height="36" alt=""> <span>MyRecon</span></a>
         <p>Public-source research tools for personal audits and authorized work.</p>
         <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
       </div>
@@ -208,7 +208,7 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
@@ -232,9 +232,9 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/app.js?v=15acbbe76e"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=7" defer></script>
+  <script src="/assets/js/fx.js?v=4ad625047f" defer></script>
 </body>
 </html>

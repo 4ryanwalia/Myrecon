@@ -1,4 +1,4 @@
-# Rebuilds /breaches/ from Have I Been Pwned, then tells the search engines.
+# Rebuilds /breaches/ and /blog/, refreshes the sitemap, then tells search engines.
 #
 # The generator is the bulk of the job: it fetches the catalogue, writes the
 # article pages, the JSON feed the app reads, and the sitemap entries.
@@ -31,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Keep commit history for the sitemap's truthful lastmod fallback.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -38,28 +41,34 @@ jobs:
 
       - name: Generate articles
         working-directory: frontend
-        run: node scripts/build-breaches.js
+        run: |
+          node scripts/build-breaches.js
+          node scripts/build-blog.js
+          node scripts/enhance-site-footer.js
+          node scripts/version-site-assets.js
+          node scripts/build-sitemap.js
 
       - name: Commit if anything changed
         id: commit
         run: |
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No breach updates this run."
-            echo "changed=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
           # Which article URLs actually changed. Worked out before the commit,
           # while git status still reports them as dirty. IndexNow asks for
           # changed URLs only — re-submitting untouched pages on every run is
           # how a domain gets its submissions throttled or ignored.
-          CHANGED=$(git status --porcelain frontend/breaches | awk '{print $NF}' | grep -E '^frontend/breaches/.*[.]html$' | sed 's|^frontend|https://www.myrecon.xyz|' | tr '\n' ' ')
+          CHANGED=$(git status --porcelain frontend/breaches frontend/blog | awk '{print $NF}' | grep -E '^frontend/(breaches|blog)/.*[.]html$' | sed 's|^frontend|https://www.myrecon.xyz|' | tr '\n' ' ')
           echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+
+          # The footer and asset version pass can refresh pages outside these
+          # two article directories, so stage the full generated frontend.
+          git add frontend
+          if git diff --cached --quiet; then
+            echo "No site updates this run."
+            exit 0
+          fi
 
           git config user.name "myrecon-bot"
           git config user.email "bot@myrecon.xyz"
-          git add frontend/breaches frontend/assets/data/breaches.json frontend/sitemap.xml
-          git commit -m "Breach Files: scheduled update"
+          git commit -m "Refresh breach files and blog"
           git push
 
       - name: Tell the search engines

@@ -6,8 +6,10 @@ const scripts = [
   'build-case-files.js',
   'build-data-api.js',
   'build-seo-pages.js',
+  'build-blog.js',
   'enhance-content-pages.js',
   'enhance-site-footer.js',
+  'version-site-assets.js',
   'build-sitemap.js',
 ];
 

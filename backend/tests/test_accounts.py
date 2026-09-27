@@ -242,6 +242,48 @@ def test_pass_is_applied_once_per_order():
     assert acct["tier"] == "pro" and acct["pro_scans_left"] == 10
 
 
+def test_payment_retry_grants_pass_if_user_write_failed(monkeypatch):
+    original = store.store.transaction
+    failed = {"value": False}
+
+    def fail_user_write_once(path, fn, retries=10):
+        if path == "web/users/u" and not failed["value"]:
+            failed["value"] = True
+            raise RuntimeError("temporary database failure")
+        return original(path, fn)
+
+    monkeypatch.setattr(store.store, "transaction", fail_user_write_once)
+    with pytest.raises(RuntimeError, match="temporary database failure"):
+        plans.grant_pass("u", "weekly", "order_retry_user")
+
+    # No processed-payment claim was committed before the entitlement write.
+    assert plans.grant_pass("u", "weekly", "order_retry_user") is True
+    assert plans.get_account("u")["pro_scans_left"] == 10
+
+
+def test_payment_retry_does_not_grant_pass_twice_if_ledger_write_failed(monkeypatch):
+    ref = "order_retry_ledger"
+    ref_key = hashlib.sha256(ref.encode()).hexdigest()[:40]
+    payment_path = f"web/payments/{ref_key}"
+    original = store.store.transaction
+    failed = {"value": False}
+
+    def fail_ledger_write_once(path, fn, retries=10):
+        if path == payment_path and not failed["value"]:
+            failed["value"] = True
+            raise RuntimeError("temporary ledger failure")
+        return original(path, fn)
+
+    monkeypatch.setattr(store.store, "transaction", fail_ledger_write_once)
+    with pytest.raises(RuntimeError, match="temporary ledger failure"):
+        plans.grant_pass("u", "weekly", ref)
+    assert plans.get_account("u")["pro_scans_left"] == 10
+
+    assert plans.grant_pass("u", "weekly", ref) is True
+    assert plans.get_account("u")["pro_scans_left"] == 10
+    assert store.store.get(payment_path)["ref"] == ref
+
+
 def test_passes_stack():
     plans.grant_pass("u", "weekly", "order_A")
     first_until = plans.get_account("u")["pro_until"]

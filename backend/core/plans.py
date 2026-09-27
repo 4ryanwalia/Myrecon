@@ -30,7 +30,8 @@ runs out.
 Record at /web/users/<uid>:
   {"email", "name", "created",
    "pro":  {"plan", "until" (ms), "scans_left", "extended_left"},
-   "free": {"used_total"}}
+   "free": {"used_total"},
+   "payments": {<hashed order id>: true}}
 (Records from the weekly-allowance days carry "week"/"used"; they are
 ignored, so everyone starts the one-time trial fresh. A pass bought before
 Extended had its own allowance has no "extended_left" and is read as its
@@ -198,25 +199,30 @@ def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
     """
     Apply a paid pass exactly once per payment reference (the Razorpay order
     id). Both the browser's verify call and Razorpay's webhook land here, in
-    either order, and only the first one counts. Returns True if it applied.
+    either order. The idempotency marker and entitlement update share one
+    user-record transaction, so a failed database write cannot leave a payment
+    marked as processed before its scans were granted. Returns True when this
+    call grants the pass or repairs its missing ledger entry, and False once
+    the ledger already records the order.
     """
     plan = PLANS[plan_id]
     ref_key = hashlib.sha256(payment_ref.encode()).hexdigest()[:40]
-    claimed = {}
-
-    def claim(cur):
-        if cur is not None:
-            raise Abort()
-        claimed["ok"] = True
-        return {"uid": uid, "plan": plan_id, "ref": payment_ref, "at": _now_ms()}
-
-    try:
-        store.transaction(f"web/payments/{ref_key}", claim)
-    except Abort:
+    payment_path = f"web/payments/{ref_key}"
+    if store.get(payment_path) is not None:
         return False
+
+    applied = {"value": False}
 
     def apply(cur):
         cur = cur or {"created": _now_ms()}
+        payments = cur.get("payments") or {}
+        if ref_key in payments:
+            # A previous attempt committed the pass but failed before it could
+            # write the compatibility ledger. Repair the ledger on retry
+            # without adding scans a second time.
+            applied["value"] = True
+            return cur
+
         now = _now_ms()
         pro = cur.get("pro") or {}
         active = pro.get("until", 0) > now
@@ -227,10 +233,23 @@ def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
             "scans_left": (int(pro.get("scans_left", 0)) if active else 0) + plan["full_scans"],
             "extended_left": (_extended_left(pro) if active else 0) + plan["extended_scans"],
         }
+        # RTDB transacts this marker and the allowance together, so concurrent
+        # webhook and UI verification calls cannot grant this order twice.
+        payments[ref_key] = True
+        cur["payments"] = payments
+        applied["value"] = True
         return cur
 
     store.transaction(_user_path(uid), apply)
-    return True
+
+    # Keep the shared ledger for operational lookup and compatibility. If
+    # this write fails, a retry is still safe because the user record has the
+    # idempotency marker already.
+    def record(cur):
+        return cur or {"uid": uid, "plan": plan_id, "ref": payment_ref, "at": _now_ms()}
+
+    store.transaction(payment_path, record)
+    return applied["value"]
 
 
 def _longer(a, b):

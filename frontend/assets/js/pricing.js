@@ -153,7 +153,7 @@
       name: "MyRecon",
       description: `${order.plan.label}: ${order.plan.full_scans} full scans, ${order.plan.extended_scans} Extended, ${order.plan.days} days`,
       prefill: { email: order.email || "", name: order.name || "" },
-      theme: { color: "#2563eb" },
+      theme: { color: "#16633a" },
       handler: async (resp) => {
         note("Confirming payment…");
         try {

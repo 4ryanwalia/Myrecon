@@ -1,14 +1,18 @@
 # SEO overhaul — myrecon.xyz
 
-Branch `seo-overhaul`, 7 commits, nothing pushed or deployed.
+## Current site (27 September 2026)
 
-**Stack, for the record.** The Vercel deployment is `frontend/` — hand-written
-static HTML, **no framework, no `package.json`, no dependencies**. Build is
-`node scripts/gen-env.js && node scripts/build-breaches.js && node scripts/build-sitemap.js`
-with `outputDirectory: "."`. There is no `next.config.js`, no `<head>`
-abstraction and no native sitemap mechanism, so every `<head>` is maintained in
-43 HTML files — of which the 14 `/breaches/*` pages are **generated** by
-`scripts/build-breaches.js` and were fixed in the generator, not the output.
+The production site is the static `frontend/` project on Vercel. Its build
+command is `node scripts/build-site.js`. The build renders 208 published SEO
+records, the breach archive, case files, and nine original privacy blog
+articles, then applies the shared footer and asset versions before creating
+the sitemap. The generated sitemap currently lists 373 indexable URLs. The
+Next.js kit under `docs/nextjs-seo-kit/` is a source and export kit; it is not
+the production router. These counts describe the current generated output and
+will change when content is added or removed.
+
+The audit below is preserved as a historical snapshot. Its original 43-page
+counts, branch names, and deployment notes no longer describe production.
 
 The root `vercel.json` points at `web_main.py`; that is a legacy Python target
 and **not** what serves the live site. Confirmed against production:

@@ -13,7 +13,10 @@
     String(s ?? "").replace(/[&<>"']/g, (c) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  const THEME_KEY = "myrecon.theme";
+  // Match the main site so the theme remains consistent when people move
+  // between the lookup tool and Deep Search. Storage can be disabled by the
+  // browser, so theme preference must never block the investigation UI.
+  const THEME_KEY = "myrecon-theme";
   // --ds-* aliases, not the raw semantic tokens: the base palette's --ok/--warn
   // are tuned for the dark ground and fail contrast on white. See deep-search.css.
   const stripeFor = (band) =>
@@ -21,7 +24,13 @@
 
   // ---------------------------------------------------------------- chrome
   function initChrome() {
-    const apply = (t) => document.documentElement.setAttribute("data-theme", t);
+    const apply = (t) => {
+      document.documentElement.setAttribute("data-theme", t);
+      const browserTheme = document.querySelector('meta[name="theme-color"]');
+      if (browserTheme) browserTheme.content = t === "light" ? "#f7faf7" : "#101713";
+      const toggle = $("#themeToggle");
+      if (toggle) toggle.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
+    };
 
   /* Any URL that reaches an href or src attribute goes through here first.
    *
@@ -48,11 +57,13 @@
       return "";
     }
   };
-    const saved = localStorage.getItem(THEME_KEY);
+    let saved = null;
+    try { saved = window.localStorage.getItem(THEME_KEY); } catch { /* storage is optional */ }
+    if (saved !== "light" && saved !== "dark") saved = null;
     apply(saved || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
     $("#themeToggle")?.addEventListener("click", () => {
       const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      localStorage.setItem(THEME_KEY, next);
+      try { window.localStorage.setItem(THEME_KEY, next); } catch { /* storage is optional */ }
       apply(next);
     });
     $("#navToggle")?.addEventListener("click", () => $("#navLinks")?.classList.toggle("open"));

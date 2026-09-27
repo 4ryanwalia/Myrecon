@@ -83,18 +83,33 @@
 
   // ---------------------------------------------------------------- theme
   const THEME_KEY = "myrecon-theme";
+  // Browser storage is optional. It can throw in privacy modes, embedded
+  // browsers, and when the quota is full; none of those should stop a lookup.
+  function storageGet(key) {
+    try { return window.localStorage.getItem(key); } catch { return null; }
+  }
+  function storageSet(key, value) {
+    try { window.localStorage.setItem(key, value); return true; } catch { return false; }
+  }
+  function storageRemove(key) {
+    try { window.localStorage.removeItem(key); return true; } catch { return false; }
+  }
+
   function applyTheme(t) {
     document.documentElement.setAttribute("data-theme", t);
+    const browserTheme = document.querySelector('meta[name="theme-color"]');
+    if (browserTheme) browserTheme.content = t === "light" ? "#f7faf7" : "#101713";
     const btn = $("#themeToggle");
     if (btn) btn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
   }
   function initTheme() {
-    const saved = localStorage.getItem(THEME_KEY);
+    const stored = storageGet(THEME_KEY);
+    const saved = stored === "light" || stored === "dark" ? stored : null;
     const prefers = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
     applyTheme(saved || prefers);
     $("#themeToggle")?.addEventListener("click", () => {
       const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      localStorage.setItem(THEME_KEY, next);
+      storageSet(THEME_KEY, next);
       applyTheme(next);
     });
   }
@@ -1807,12 +1822,20 @@
 
   // ---- Saved investigations (localStorage) --------------------------
   const SKEY = "myrecon-saved";
-  function getSaved() { try { return JSON.parse(localStorage.getItem(SKEY)) || []; } catch { return []; } }
+  function getSaved() {
+    try {
+      const saved = JSON.parse(storageGet(SKEY));
+      return Array.isArray(saved) ? saved : [];
+    } catch { return []; }
+  }
   function saveCurrent(btn) {
     if (!lastResult) return;
     let s = getSaved().filter((x) => !(x.tool === lastResult.tool && x.query === lastResult.query));
     s.unshift({ tool: lastResult.tool, query: lastResult.query, at: Date.now(), note: quickStat(lastResult) });
-    localStorage.setItem(SKEY, JSON.stringify(s.slice(0, 50)));
+    if (!storageSet(SKEY, JSON.stringify(s.slice(0, 50)))) {
+      toast("Browser storage is unavailable, so this result could not be saved.", "err");
+      return;
+    }
     renderSaved();
     if (btn) { btn.textContent = "Saved"; btn.disabled = true; }
     toast("Saved to your investigations.");
@@ -1837,12 +1860,12 @@
     // open on two empty sections between the tool and everything else.
     $("#saved-section")?.toggleAttribute("hidden", !s.length);
     if (!s.length) { wrap.innerHTML = ""; return; }
-    wrap.innerHTML = `<div class="history-list">` + s.map((x) => `
+    wrap.innerHTML = `<div class="history-list">` + s.map((x, i) => `
       <div class="history-item" data-tool="${esc(x.tool)}" data-query="${esc(x.query)}">
         <div class="ico">${icon(TOOLS[x.tool] ? TOOLS[x.tool].icon : "search", 17)}</div>
         <div class="meta"><div class="q">${esc(x.query)}</div>
           <div class="t">${TOOLS[x.tool] ? esc(TOOLS[x.tool].label) : ""}${x.note ? " · " + esc(x.tool === "email" && x.note === "no breaches" ? "Older result · rerun to verify coverage" : x.note) : ""}</div></div>
-        <button type="button" class="icon-btn btn-sm" data-del="${esc(x.tool)}|${esc(x.query)}" aria-label="Remove ${esc(x.query)} from saved" title="Remove ${esc(x.query)} from saved">&times;</button>
+        <button type="button" class="icon-btn btn-sm" data-del="${i}" aria-label="Remove ${esc(x.query)} from saved" title="Remove ${esc(x.query)} from saved">&times;</button>
       </div>`).join("") + `</div>`;
     $$(".history-item", wrap).forEach((el) => el.addEventListener("click", (e) => {
       if (e.target.closest("[data-del]")) return;
@@ -1850,8 +1873,14 @@
       window.scrollTo({ top: $("#tool").offsetTop - 70, behavior: "smooth" });
     }));
     $$("[data-del]", wrap).forEach((b) => b.addEventListener("click", () => {
-      const [tool, query] = b.dataset.del.split("|");
-      localStorage.setItem(SKEY, JSON.stringify(getSaved().filter((x) => !(x.tool === tool && x.query === query))));
+      const saved = getSaved();
+      const index = Number(b.dataset.del);
+      if (!Number.isInteger(index) || index < 0 || index >= saved.length) return;
+      saved.splice(index, 1);
+      if (!storageSet(SKEY, JSON.stringify(saved))) {
+        toast("Browser storage is unavailable, so this item could not be removed.", "err");
+        return;
+      }
       renderSaved();
     }));
   }
@@ -1904,12 +1933,19 @@
 
   // ---------------------------------------------------------------- history
   const HKEY = "myrecon-history";
-  function getHistory() { try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch { return []; } }
+  function getHistory() {
+    try {
+      const history = JSON.parse(storageGet(HKEY));
+      return Array.isArray(history) ? history : [];
+    } catch { return []; }
+  }
   function pushHistory(tool, query) {
     let h = getHistory().filter((x) => !(x.tool === tool && x.query === query));
     h.unshift({ tool, query, at: Date.now() });
     h = h.slice(0, 20);
-    localStorage.setItem(HKEY, JSON.stringify(h));
+    // Search results are still successful if optional local history cannot
+    // be written (for example, in a private browser with storage disabled).
+    if (!storageSet(HKEY, JSON.stringify(h))) return;
     renderHistory();
   }
   function renderHistory() {
@@ -1931,7 +1967,13 @@
       run();
       window.scrollTo({ top: $("#tool").offsetTop - 70, behavior: "smooth" });
     }));
-    $("#clearHistory")?.addEventListener("click", () => { localStorage.removeItem(HKEY); renderHistory(); });
+    $("#clearHistory")?.addEventListener("click", () => {
+      if (!storageRemove(HKEY)) {
+        toast("Browser storage is unavailable, so history could not be cleared.", "err");
+        return;
+      }
+      renderHistory();
+    });
   }
 
   // ---------------------------------------------------------------- tabs

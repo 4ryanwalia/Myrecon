@@ -60,6 +60,12 @@
   if (io && !reduce) {
     var groups = new Map();
     document.querySelectorAll(REVEAL).forEach(function (n) {
+      // The short homepage sections should be readable immediately, including
+      // after a direct jump to the footer or a full-page capture.
+      if (n.closest('#numbers, #features, #faq')) {
+        n.classList.add('fx-in');
+        return;
+      }
       // Stagger siblings inside the same grid so a row cascades in.
       var p = n.parentElement;
       var i = groups.get(p) || 0;
@@ -175,7 +181,7 @@
   var W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 1.5);
   var nodes = [], LINK = 130, colA = "", colB = "";
 
-  function palette() { colA = colB = css("--accent") || "#4a8bf7"; }
+  function palette() { colA = colB = css("--accent") || "#7fd5a0"; }
   function resize() {
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = W * DPR; canvas.height = H * DPR;
