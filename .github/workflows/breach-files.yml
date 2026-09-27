@@ -1,9 +1,9 @@
-# Rebuilds /breaches/ and /blog/, refreshes the sitemap, then tells search engines.
+# Rebuilds /breaches/ and /blog/, then proposes generated updates for review.
 #
 # The generator is the bulk of the job: it fetches the catalogue, writes the
 # article pages, the JSON feed the app reads, and the sitemap entries.
-# Committing the result is what triggers a Vercel deploy, so the site updates
-# itself without anyone touching it.
+# The protected main branch requires the maintainer's review. The scheduled job
+# updates one pull request; merging it triggers the deploy and IndexNow workflow.
 #
 # It commits only when something actually changed — a no-op run leaves no
 # commit behind, which keeps the history readable and avoids a deploy that
@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: breach-files
@@ -48,18 +49,11 @@ jobs:
           node scripts/version-site-assets.js
           node scripts/build-sitemap.js
 
-      - name: Commit if anything changed
-        id: commit
+      - name: Propose changed pages
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          # Which article URLs actually changed. Worked out before the commit,
-          # while git status still reports them as dirty. IndexNow asks for
-          # changed URLs only — re-submitting untouched pages on every run is
-          # how a domain gets its submissions throttled or ignored.
-          CHANGED=$(git status --porcelain frontend/breaches frontend/blog | awk '{print $NF}' | grep -E '^frontend/(breaches|blog)/.*[.]html$' | sed 's|^frontend|https://www.myrecon.xyz|' | tr '\n' ' ')
-          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
-
-          # The footer and asset version pass can refresh pages outside these
-          # two article directories, so stage the full generated frontend.
+          # Footer and asset versions can refresh pages outside article folders.
           git add frontend
           if git diff --cached --quiet; then
             echo "No site updates this run."
@@ -68,13 +62,14 @@ jobs:
 
           git config user.name "myrecon-bot"
           git config user.email "bot@myrecon.xyz"
+          git checkout -B automation/breach-files
           git commit -m "Refresh breach files and blog"
-          git push
+          git push --force-with-lease origin HEAD:refs/heads/automation/breach-files
 
-      - name: Tell the search engines
-        # Runs after the push, because the push is what triggers the deploy.
-        # Submitting first would send a crawler to the previous version of the
-        # page, which is worse than not submitting at all.
-        if: steps.commit.outputs.changed != ''
-        working-directory: frontend
-        run: node scripts/indexnow.js ${{ steps.commit.outputs.changed }}
+          if gh pr view automation/breach-files --json url --jq .url >/dev/null 2>&1; then
+            echo "Updated existing Breach Files pull request."
+          else
+            gh pr create --base main --head automation/breach-files \
+              --title "Refresh breach files and blog" \
+              --body "Scheduled generated content update. Please review the diff and approve before merge. IndexNow runs after the merged pages reach main."
+          fi

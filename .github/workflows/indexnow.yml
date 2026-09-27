@@ -1,0 +1,44 @@
+# Notify IndexNow only after reviewed article changes reach main.
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/breaches/**"
+      - "frontend/blog/**"
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Submit changed article URLs
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          mapfile -t pages < <(
+            git diff --name-only "$BEFORE" "$AFTER" -- frontend/breaches frontend/blog |
+              grep -E '^frontend/(breaches|blog)/.*[.]html$' || true
+          )
+          if (( ${#pages[@]} == 0 )); then
+            echo "No article URLs changed."
+            exit 0
+          fi
+
+          urls=()
+          for page in "${pages[@]}"; do
+            urls+=("https://www.myrecon.xyz/${page#frontend/}")
+          done
+          node frontend/scripts/indexnow.js "${urls[@]}"
