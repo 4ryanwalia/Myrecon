@@ -201,9 +201,8 @@ def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
     id). Both the browser's verify call and Razorpay's webhook land here, in
     either order. The idempotency marker and entitlement update share one
     user-record transaction, so a failed database write cannot leave a payment
-    marked as processed before its scans were granted. Returns True when this
-    call grants the pass or repairs its missing ledger entry, and False once
-    the ledger already records the order.
+    marked as processed before its scans were granted. Returns True when the
+    pass is active for this order, including a retry after a successful grant.
     """
     plan = PLANS[plan_id]
     ref_key = hashlib.sha256(payment_ref.encode()).hexdigest()[:40]

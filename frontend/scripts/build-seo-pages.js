@@ -152,6 +152,12 @@ function allRecords(contentRoot) {
     const dir = path.join(contentRoot, folder.name);
     for (const name of fs.readdirSync(dir).filter((file) => file.endsWith(".json"))) {
       const record = JSON.parse(fs.readFileSync(path.join(dir, name), "utf8"));
+      if (record.status === "redirected") {
+        if (typeof record.redirect_to !== "string" || !record.redirect_to.startsWith("/")) {
+          fail(`${name}: redirected records need a local redirect_to path`);
+        }
+        continue;
+      }
       if (record.status !== "published") fail(`${name}: only published records can be rendered`);
       if (!record.title || record.title.length > 60) fail(`${name}: title must be 1–60 characters`);
       if (!record.description || record.description.length > 160) fail(`${name}: description must be 1–160 characters`);
@@ -252,11 +258,11 @@ function renderPage(record) {
   const categoryRoute = CLUSTERS[record.kind] ? `/${CLUSTERS[record.kind]}/` : "/";
   const sourceList = [...new Set([...(record.sources || []), record.official_help_url, record.optout_link].filter(Boolean))];
   return `<!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${esc(record.title)}</title><meta name="description" content="${esc(record.description)}">
-  <meta name="robots" content="index, follow"><meta name="theme-color" content="#0a0f1a">
+  <meta name="robots" content="index, follow"><meta name="theme-color" content="#f7faf7">
   <link rel="canonical" href="${SITE}${route}">
   <meta property="og:type" content="article"><meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="${esc(record.title)}"><meta property="og:description" content="${esc(record.description)}">
@@ -310,7 +316,7 @@ function renderHub(kind, records) {
   const list = records.map((record) => `      <a href="${esc(routeFor(record))}"><strong>${esc(record.h1)}</strong><br><span>${esc(record.description)}</span></a>`).join("\n");
   const pageRecord = { title, h1: title, description, intro: `Browse the MyRecon ${LABELS[kind].toLowerCase()} library. Each page explains a specific task, its evidence limits, and appropriate public-source steps.`, kind, modified_at: new Date().toISOString().slice(0, 10), faq: [] };
   const hubSchema = safeJson({ "@context": "https://schema.org", "@type": "CollectionPage", name: title, description, url: `${SITE}${route}`, mainEntity: { "@type": "ItemList", itemListElement: records.map((record, index) => ({ "@type": "ListItem", position: index + 1, name: record.h1, url: `${SITE}${routeFor(record)}` })) } });
-  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index, follow"><link rel="canonical" href="${SITE}${route}"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/">MyRecon <small>OSINT</small></a><nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(title)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index, follow"><meta name="theme-color" content="#f7faf7"><link rel="canonical" href="${SITE}${route}"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/">MyRecon <small>OSINT</small></a><nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(title)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer></body></html>`;
 }
 function setAttr(tag, attr, value) {
   const escaped = esc(value);

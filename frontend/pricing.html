@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OSINT Lookup Pricing | MyRecon</title>
   <meta name="description" content="Learn OSINT lookup pricing. Review current product details, confirm public sources, and try a careful MyRecon username search.">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#101713">
+  <meta name="theme-color" content="#f7faf7">
   <link rel="canonical" href="https://www.myrecon.xyz/pricing">
 
   <!-- Open Graph / Twitter -->
@@ -34,7 +47,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=0fdcb1db58">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=ec18ed59d1">
   <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"MyRecon Pricing: Free, Pro Weekly and Pro Monthly","url":"https://www.myrecon.xyz/pricing","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Pricing","item":"https://www.myrecon.xyz/pricing"}]}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does MyRecon provide for OSINT lookup pricing?","acceptedAnswer":{"@type":"Answer","text":"MyRecon provides product functions described on its current website, including a public username lookup across supported checks. Exact scope, access, and plan details can change; review the live interface and verify each candidate at its original source."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can MyRecon see private accounts?","acceptedAnswer":{"@type":"Answer","text":"No. Public username checks do not grant access to private accounts or restricted content. Use service-approved access and consent, and do not bypass login walls or platform controls to complete a search."}}]}</script>
@@ -86,7 +99,7 @@
         <ul>
           <li>Every tool, no sign-in</li>
           <li>500+ platform sweep, first 100 platform verdicts shown</li>
-          <li>5 scans a day</li>
+          <li>5 username scans a day</li>
         </ul>
         <a class="btn btn-ghost" href="/#tool">Use the tool</a>
       </div>
@@ -153,7 +166,7 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
@@ -182,10 +195,9 @@
   <script src="/assets/js/env.js?v=14"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/account.js?v=3"></script>
-  <script src="/assets/js/app.js?v=15acbbe76e"></script>
+  <script src="/assets/js/app.js?v=7f1f90105e"></script>
   <script src="/assets/js/pricing.js?v=9a0b26f504"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
-  <script src="/assets/js/username-search-input.js" defer></script>
 </body>
 </html>

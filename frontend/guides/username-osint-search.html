@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Username OSINT: Find Accounts Across Platforms | MyRecon</title>
   <meta name="description" content="How username enumeration works across social and developer platforms, why a match is not proof of identity, and how to verify a profile with confidence signals.">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#101713">
+  <meta name="theme-color" content="#f7faf7">
   <link rel="canonical" href="https://www.myrecon.xyz/guides/username-osint-search.html">
 
   <!-- Open Graph / Twitter -->
@@ -37,7 +50,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=0fdcb1db58">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=ec18ed59d1">
   <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
@@ -201,7 +214,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=15acbbe76e"></script>
+  <script src="/assets/js/app.js?v=7f1f90105e"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
   <script src="/assets/js/content-app-promo.js" defer></script>

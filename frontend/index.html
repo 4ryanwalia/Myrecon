@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OSINT Social Media Lookup | MyRecon</title>
@@ -49,7 +62,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=0fdcb1db58">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=ec18ed59d1">
   <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
 
   <!-- Google AdSense -->
@@ -69,7 +82,7 @@
     "featureList": ["Username search across a wide range of platforms", "Email intelligence and breach detection", "Password exposure checking against breached credential corpora", "Domain WHOIS lookup", "DNS records", "IP geolocation and reverse DNS"]
   }
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What can I check with MyRecon?","acceptedAnswer":{"@type":"Answer","text":"MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can I run a username search across social media with MyRecon?","acceptedAnswer":{"@type":"Answer","text":"MyRecon checks usernames against supported public profile sources across social, developer, and community platforms. Coverage varies by platform; a blocked or inconclusive check is not proof that a profile is absent."}},{"@type":"Question","name":"Does an online username lookup confirm who owns an account?","acceptedAnswer":{"@type":"Answer","text":"No. MyRecon’s per-platform validation helps keep false positives low, but no username search is 100% accurate or proves the same person controls multiple profiles. Treat a match as a lead and verify it with independent public evidence."}},{"@type":"Question","name":"Can MyRecon find private or restricted profiles?","acceptedAnswer":{"@type":"Answer","text":"Sometimes. MyRecon can find a profile and show limited details a platform makes publicly available, even when the profile is marked private. It cannot view private posts, messages, or other restricted content. Coverage varies by platform, so checks may be inconclusive."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What can I check with MyRecon?","acceptedAnswer":{"@type":"Answer","text":"MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can MyRecon confirm that a profile belongs to a person?","acceptedAnswer":{"@type":"Answer","text":"No. A matching username is only a lead. Confirm important conclusions with independent public evidence and keep uncertain links unconfirmed. MyRecon does not access private accounts or restricted content."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630},"description":"An open-source intelligence platform for username search, email and breach intelligence, password exposure checks, WHOIS, DNS and IP investigation.","founder":{"@type":"Person","name":"Aryan Walia"},"email":"aryan@bugsnaps.in"},{"@type":"WebSite","@id":"https://www.myrecon.xyz/#website","url":"https://www.myrecon.xyz/","name":"MyRecon","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"inLanguage":"en","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.myrecon.xyz/#tool=username&q={search_term_string}"},"query-input":"required name=search_term_string"}}]}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
 </head>
@@ -221,6 +234,132 @@
       </div>
     </section>
 
+    <!-- Android app -->
+    <section class="section alt" id="android">
+      <div class="container">
+        <h2>Now on Android</h2>
+        <p class="sub">The same investigation, run from your own phone, where platforms answer far more readily than they answer a server.</p>
+
+        <div class="android-split">
+          <div class="android-copy">
+            <p>
+              MyRecon for Android checks a username across <strong>a wide range of platforms</strong> directly
+              from your handset, watches for newly published data breaches without ever sending your address
+              anywhere, reads the metadata still buried in a photo, and shows you where a QR code actually
+              leads before you open it.
+            </p>
+            <ul class="android-points">
+              <li><strong>No account, no signup.</strong> Nothing to create, nothing to remember.</li>
+              <li><strong>Every result is verified.</strong> A site answering &ldquo;200 OK&rdquo; is not treated as proof an account exists, and anything unconfirmed says so instead of padding the total.</li>
+              <li><strong>Photos and passwords never leave the phone.</strong> Metadata is read on-device; a password is hashed before anything is sent.</li>
+            </ul>
+            <p>
+              <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener">Get it on Google Play</a>
+              <a class="btn btn-ghost" href="/app.html" style="margin-left:8px">What it does</a>
+            </p>
+          </div>
+
+          <!-- An illustration of the sweep, not a screenshot. See styles.css. -->
+          <div class="phone-mock" role="img" aria-label="The MyRecon Android app running a username sweep: github found, reddit found, instagram not found, medium found, steam unconfirmed.">
+            <div class="phone-rail"></div>
+            <div class="phone-app" aria-hidden="true">
+              <div class="phone-bar">
+                <img src="/assets/img/logo.svg?v=6bbbea3ebc" alt="" width="22" height="22">
+                <div><b>MyRecon</b><span>OSINT &middot; public sources only</span></div>
+              </div>
+
+              <div class="phone-panel-label">live sweep <i></i> <u>example</u></div>
+              <div class="phone-panel">
+                <div class="phone-cmd"><i>&rsaquo;</i><span>sweep @yourhandle</span></div>
+                <div class="phone-row"><b>github</b><i></i><span class="v-found">FOUND</span></div>
+                <div class="phone-row"><b>reddit</b><i></i><span class="v-found">FOUND</span></div>
+                <div class="phone-row"><b>instagram</b><i></i><span class="v-none">NOT FOUND</span></div>
+                <div class="phone-row"><b>medium</b><i></i><span class="v-found">FOUND</span></div>
+                <div class="phone-row"><b>steam</b><i></i><span class="v-maybe">UNCONFIRMED</span></div>
+                <div class="phone-sum">= 3 found &middot; 1 unconfirmed &middot; the rest checked and clear</div>
+              </div>
+
+              <div class="phone-nav">
+                <span>Lookup</span><span>Breaches</span><span>Scan</span><span>Photo</span><span>Password</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how">
+      <div class="container prose">
+        <h2>How MyRecon works</h2>
+        <p class="sub">MyRecon turns a single starting point, a username, email, domain, or IP address, into a structured picture of a public online footprint. It queries documented, reliable sources and verifies each result before showing it, so you spend time on real leads instead of noise.</p>
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><div><h3>Enter a target</h3><p>Pick a tool and enter what you already know: a handle, an email address, a domain name, or an IP. Start as a guest; sign in if you want the full username report or saved scan history.</p></div></div>
+          <div class="step"><span class="step-n">2</span><div><h3>We gather and verify</h3><p>MyRecon checks the target against public sources, platform profile pages, breach databases, RDAP/WHOIS registries, DNS-over-HTTPS resolvers, and IP geolocation providers, and scores each finding for confidence so false positives are filtered out.</p></div></div>
+          <div class="step"><span class="step-n">3</span><div><h3>Investigate and pivot</h3><p>Results arrive as clean cards you can open, export as JSON or CSV, and pivot from: a discovered domain, email, or handle becomes a one-click next lookup, so an investigation flows naturally from one lead to the next.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Written archive. The tool answers a question about one identifier;
+         these answer the questions people ask before and after running it,
+         which is most of why anyone arrives here from a search engine. -->
+    <section class="section" id="research">
+      <div class="container prose">
+        <h2>Read the archive</h2>
+        <p class="sub">Alongside the tools, MyRecon publishes a written record of how personal data actually gets exposed: a daily breach archive, long-form case files on the incidents that changed the rules, and practical guides to reducing your own exposure.</p>
+        <div class="feature-grid">
+          <div class="feature">
+            <h3><a href="/breaches/case-files/" style="color:inherit">Case Files</a></h3>
+            <p>Long-form accounts of the landmark breaches, Equifax's unpatched web form, the contractor's password that stopped a pipeline, the API that had no lock on it. What happened, how, what it cost, and what it changed. Sourced from regulatory findings, court records and company disclosures.</p>
+            <p><a href="/breaches/case-files/">Browse the case files →</a></p>
+          </div>
+          <div class="feature">
+            <h3><a href="/breaches/" style="color:inherit">The Breach Files</a></h3>
+            <p>Every breach worth understanding as it is confirmed: who was hit, what was taken, how many people it reached, and what each exposed field means for the person it belongs to. Updated daily, with our own severity scoring and analysis on every entry.</p>
+            <p><a href="/breaches/">Open the breach archive →</a></p>
+          </div>
+          <div class="feature">
+            <h3><a href="/guides/" style="color:inherit">Guides</a></h3>
+            <p>How the underlying systems work and what to do about them, checking an address against known breaches, reading DNS and WHOIS records, spotting phishing, shrinking a public footprint, and verifying an OSINT finding before acting on it.</p>
+            <p><a href="/guides/">Read the guides →</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who it's for -->
+    <section class="section alt" id="use-cases">
+      <div class="container prose">
+        <h2>Who uses MyRecon</h2>
+        <p class="sub">Open-source intelligence is useful far beyond security teams. MyRecon is built for anyone who needs to understand what public data says about a person, brand, or piece of infrastructure.</p>
+        <div class="feature-grid">
+          <div class="feature"><h3>Protect your own footprint</h3><p>Search your own username and email to see which platforms and breaches expose your data, then lock down or remove what you no longer use. A quick self-audit is the fastest way to understand your exposure.</p></div>
+          <div class="feature"><h3>Security researchers</h3><p>Enumerate a target's public profiles, map a domain's DNS and hosting, and correlate identities across platforms during authorized assessments and responsible-disclosure work.</p></div>
+          <div class="feature"><h3>Recruiters &amp; verification</h3><p>Confirm that a candidate's professional profiles and portfolio links are consistent, and check that a company domain's registration and mail setup look legitimate.</p></div>
+          <div class="feature"><h3>Fraud &amp; trust teams</h3><p>Check whether an email is disposable, whether a domain was registered recently, and whether an IP belongs to a hosting provider or proxy, useful signals when assessing risk.</p></div>
+          <div class="feature"><h3>Journalists &amp; OSINT</h3><p>Build a verifiable picture from public records: who registered a domain, where a server is hosted, and which accounts share a handle, all with sources you can cite.</p></div>
+          <div class="feature"><h3>Developers &amp; sysadmins</h3><p>Inspect DNS records, mail configuration, nameservers, and reverse DNS quickly during setup and debugging, without stitching together half a dozen command-line tools.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Head to head -->
+    <section class="section" id="versus">
+      <div class="container prose">
+        <h2>MyRecon vs the tools you already know</h2>
+        <p class="sub">Sherlock, Maigret, WhatsMyName and Have I Been Pwned are good at what they do, and we say where each one beats us. Here is what actually differs, feature by feature.</p>
+        <div class="vs-grid">
+          <a class="vs-card" href="/vs/sherlock.html"><span class="kind">CLI scanner</span><h3>MyRecon vs Sherlock</h3><p>400+ sites from a terminal against a confidence-scored search in the browser.</p><span class="go">Compare</span></a>
+          <a class="vs-card" href="/vs/maigret.html"><span class="kind">CLI scanner</span><h3>MyRecon vs Maigret</h3><p>The biggest site list in open source, and what a bigger list does and does not buy you.</p><span class="go">Compare</span></a>
+          <a class="vs-card" href="/vs/whatsmyname.html"><span class="kind">Web + dataset</span><h3>MyRecon vs WhatsMyName</h3><p>The community dataset built to kill false positives, next to ours.</p><span class="go">Compare</span></a>
+          <a class="vs-card" href="/vs/have-i-been-pwned.html"><span class="kind">Breach search</span><h3>MyRecon vs Have I Been Pwned</h3><p>The breach authority, which we build on, and what we add around it.</p><span class="go">Compare</span></a>
+        </div>
+        <p><a href="/vs/">All comparisons →</a></p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
     <section class="section" id="faq">
       <div class="container prose">
         <h2>Common questions</h2>
@@ -233,7 +372,7 @@
         </div>
       </div>
     </section>
-  </main>
+  <section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">What can I check with MyRecon?</summary><p style="margin-top:10px;line-height:1.65">MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Does a missing username result prove no account exists?</summary><p style="margin-top:10px;line-height:1.65">No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Can MyRecon confirm that a profile belongs to a person?</summary><p style="margin-top:10px;line-height:1.65">No. A matching username is only a lead. Confirm important conclusions with independent public evidence and keep uncertain links unconfirmed. MyRecon does not access private accounts or restricted content.</p></details></section></main>
 
   <footer class="site-footer">
   <div class="site-footer__panel">
@@ -276,7 +415,7 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/email-outcome.js?v=1"></script>
   <script src="/assets/js/account.js?v=3"></script>
-  <script src="/assets/js/app.js?v=15acbbe76e"></script>
+  <script src="/assets/js/app.js?v=7f1f90105e"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
 </body>

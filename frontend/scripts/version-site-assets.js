@@ -23,9 +23,11 @@ const versions = ASSETS.map((url) => {
 let updated = 0;
 function updatePage(file) {
   const before = fs.readFileSync(file, 'utf8');
+  const defaultTheme = /<html\b[^>]*\bdata-theme=["']light["']/i.test(before) ? 'light' : 'dark';
+  const themeColor = defaultTheme === 'light' ? '#f7faf7' : '#101713';
   let after = before.replace(
     /(<meta\s+name=["']theme-color["']\s+content=["'])[^"']*(["']\s*\/?>)/gi,
-    '$1#101713$2',
+    `$1${themeColor}$2`,
   );
   for (const [url, version] of versions) {
     const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

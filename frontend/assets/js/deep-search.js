@@ -60,7 +60,8 @@
     let saved = null;
     try { saved = window.localStorage.getItem(THEME_KEY); } catch { /* storage is optional */ }
     if (saved !== "light" && saved !== "dark") saved = null;
-    apply(saved || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
+    const defaultTheme = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+    apply(saved || defaultTheme);
     $("#themeToggle")?.addEventListener("click", () => {
       const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
       try { window.localStorage.setItem(THEME_KEY, next); } catch { /* storage is optional */ }

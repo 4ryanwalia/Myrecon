@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  var analyticsPage = new URL(window.location.href);
-  var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
-  gtag('config', 'G-3L8YYC6NKF', {
-    page_location: analyticsPage.origin + analyticsPage.pathname,
-    page_referrer: analyticsReferrer
-  });
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cookie Policy: What Is Stored and By Whom | MyRecon</title>
   <meta name="description" content="MyRecon’s own code sets no cookies. This policy lists every cookie and browser storage key used on the site, who sets it, what it does, and how to control it.">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#101713">
+  <meta name="theme-color" content="#f7faf7">
   <link rel="canonical" href="https://www.myrecon.xyz/cookies.html">
 
   <!-- Open Graph / Twitter -->
@@ -50,7 +50,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=0fdcb1db58">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=ec18ed59d1">
   <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Cookie Policy: What Is Stored and By Whom","description":"MyRecon’s own code sets no cookies. Every cookie and browser storage key on the site, who sets it, what it does, and how to control it.","url":"https://www.myrecon.xyz/cookies.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Cookie policy","item":"https://www.myrecon.xyz/cookies.html"}]}}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
@@ -99,7 +99,7 @@
 
     <section id="first-party">
       <h2>2. What MyRecon stores (no cookies)</h2>
-      <p>MyRecon offers optional Google sign-in. Our own code does not set a session cookie; it uses browser storage for preferences, recent lookups, saved items and Firebase authentication state. Google&rsquo;s advertising script may set cookies under the myrecon.xyz name, listed in <a href="#third-party">section 3</a>.</p>
+      <p>MyRecon offers optional Google sign-in. Our own code does not set a session cookie; it uses browser storage for preferences, recent lookups, saved items and Firebase authentication state. Google Analytics sets first-party measurement cookies, and Google&rsquo;s advertising script may set separate advertising cookies. See <a href="#third-party">section 3</a>.</p>
 
       <div class="legal-table-wrap">
         <table>
@@ -125,7 +125,8 @@
 
     <section id="third-party">
       <h2>3. Google Analytics and advertising cookies</h2>
-      <p>Google Analytics measures site visits using first-party cookies such as <code>_ga</code> and <code>_ga_*</code>. It receives the page path without query strings or fragments, page title, browser and device signals, and a cookie identifier. Lookup values in URLs are excluded from page measurement.</p>
+      <p>Google Analytics measures site visits using first-party cookies, commonly named <code>_ga</code> and <code>_ga_*</code>. It receives the page path without query strings, page title, browser and device signals, and a random cookie identifier. We configure page measurement to omit query strings and fragments, so lookup values included in URLs are not sent to Analytics. Google&rsquo;s Analytics retention is controlled by the property settings and its published <a href="https://support.google.com/analytics/answer/7667196" target="_blank" rel="noopener">data retention controls</a>.</p>
+      <p>Parts of this site also carry advertising, which is what pays for the free tools and the written archive. Advertising is served by <strong>Google</strong> (Google AdSense). When an ad is served, Google and its partners may set and read separate cookies in your browser, and may use web beacons and your IP address to collect information.</p>
       <p>Parts of this site carry advertising, which is what pays for the free tools and the written archive. Advertising is served by <strong>Google</strong> (Google AdSense). When an ad is served, Google and its partners may set and read cookies in your browser, and may use web beacons and your IP address to collect information.</p>
       <p>These cookies are set by Google under Google&rsquo;s own policies, not ours. We do not control them, cannot read them, and receive no personal data from them. Typical examples of what Google sets in this context:</p>
 
@@ -136,7 +137,8 @@
             <tr><th scope="col">Cookie</th><th scope="col">Set by</th><th scope="col">Purpose</th><th scope="col">Typical duration</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>_ga</code>, <code>_ga_*</code></td><td>myrecon.xyz, by Google Analytics</td><td>Website usage measurement.</td><td>Up to 2 years by default, subject to browser limits</td></tr>
+            <tr><td><code>_ga</code></td><td>myrecon.xyz, by Google Analytics</td><td>Distinguishes visitors for aggregate website usage measurement.</td><td>Up to 2 years by default, subject to browser limits and Google settings</td></tr>
+            <tr><td><code>_ga_*</code></td><td>myrecon.xyz, by Google Analytics</td><td>Maintains session state for website usage measurement.</td><td>Up to 2 years by default, subject to browser limits and Google settings</td></tr>
             <tr><td><code>__gads</code>, <code>__gpi</code>, <code>__eoi</code></td><td>myrecon.xyz, by Google&rsquo;s script</td><td>Ad selection and delivery, frequency capping, and measuring how ads perform.</td><td>Up to about 13 months</td></tr>
             <tr><td><code>IDE</code>, <code>DSID</code></td><td>doubleclick.net</td><td>Ad measurement and, where you have consented, personalisation.</td><td>Two weeks to about 13 months</td></tr>
             <tr><td><code>NID</code></td><td>google.com</td><td>Google preferences, including ad settings.</td><td>About 6 months</td></tr>
@@ -166,9 +168,9 @@
 
     <section id="consent">
       <h2>5. How consent works here</h2>
-      <p>If you are in the <strong>European Economic Area, the United Kingdom or Switzerland</strong>, Google&rsquo;s EU user consent policy applies. Advertising cookies are managed through a <strong>Google-certified consent message</strong>. That message does not currently manage Google Analytics consent; Analytics loads on site pages. Browser controls below can block or delete its cookies.</p>
+      <p>If you are in the <strong>European Economic Area, the United Kingdom or Switzerland</strong>, Google&rsquo;s EU user consent policy applies. Advertising cookies are set only after you have made a choice through a <strong>Google-certified consent message</strong>. The current message is configured for advertising and does not manage Google Analytics consent. Analytics is currently loaded on site pages; use your browser controls below to block or delete its cookies.</p>
       <p>We use Google&rsquo;s own certified message rather than a banner of our own design, and that is deliberate. Google requires a certified consent platform for ads served in those regions, so a home-made banner would not be a valid basis for the cookies Google sets. It would only be a second prompt standing in front of the real one.</p>
-      <p>Outside those regions no ad-consent prompt is shown, which is the standard behaviour of the advertising system. You can still refuse or delete these cookies at any time using the controls in the next section, and those controls work everywhere.</p>
+      <p>Outside those regions no ad-consent prompt is shown, which is the standard behaviour of the advertising system. You can refuse or delete analytics and advertising cookies at any time using the controls in the next section.</p>
       <p><strong>Withdrawing is as easy as consenting.</strong> Use the cookie control in the footer of every page to reopen the consent message and change your answer.</p>
     </section>
 
@@ -240,7 +242,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=15acbbe76e"></script>
+  <script src="/assets/js/app.js?v=7f1f90105e"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
 </body>

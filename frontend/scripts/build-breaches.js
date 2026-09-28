@@ -440,14 +440,27 @@ function normaliseUrl(url) {
 }
 
 const HEAD = (opts) => `<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(opts.title)}</title>
   <meta name="description" content="${esc(opts.description)}">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#0a0f1a">
+  <meta name="theme-color" content="#f7faf7">
   <link rel="canonical" href="${esc(opts.url)}">
   <meta property="og:type" content="${opts.ogType || "website"}">
   <meta property="og:site_name" content="MyRecon">
@@ -464,8 +477,8 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <meta name="twitter:description" content="${esc(opts.description)}">
   <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=2">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=2">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
@@ -475,8 +488,8 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=10">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=7">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=16">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=10">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
@@ -486,7 +499,7 @@ ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n`
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=2" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -503,10 +516,10 @@ const FOOT = `
   </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=10"></script>
+  <script src="/assets/js/app.js?v=23"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=7" defer></script>
+  <script src="/assets/js/fx.js?v=8" defer></script>
 </body>
 </html>
 `;

@@ -105,8 +105,8 @@
   function initTheme() {
     const stored = storageGet(THEME_KEY);
     const saved = stored === "light" || stored === "dark" ? stored : null;
-    const prefers = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-    applyTheme(saved || prefers);
+    const defaultTheme = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+    applyTheme(saved || defaultTheme);
     $("#themeToggle")?.addEventListener("click", () => {
       const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
       storageSet(THEME_KEY, next);

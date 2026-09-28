@@ -1,10 +1,10 @@
-# Rebuilds /breaches/ and /blog/, then publishes generated updates to main.
+# Rebuilds /breaches/ and /blog/, refreshes the sitemap, then tells the search engines.
 #
-# The generator is the bulk of the job: it fetches the catalogue, writes the
-# article pages, the JSON feed the app reads, and the sitemap entries.
-# A repository-scoped deploy key lets this job publish generated content to
-# main. The main ruleset still requires maintainer review for human pull
-# requests. The push triggers the Security and IndexNow workflows.
+# The breach generator fetches the catalogue, writes its article pages and
+# JSON feed. The blog generator renders the hand-written privacy articles, and
+# the sitemap generator walks the final output so every indexable page is listed.
+# Committing the result is what triggers a Vercel deploy, so the site updates
+# itself without anyone touching it.
 #
 # It commits only when something actually changed — a no-op run leaves no
 # commit behind, which keeps the history readable and avoids a deploy that
@@ -36,10 +36,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          # Start from the current main tip for scheduled and manual runs.
           ref: main
           ssh-key: ${{ secrets.BREACH_FILES_DEPLOY_KEY }}
-          # Keep commit history for the sitemap's truthful lastmod fallback.
+          # build-sitemap.js uses the last file-changing commit as a truthful
+          # lastmod fallback; a shallow checkout would replace those dates
+          # with checkout-time mtimes across the whole site.
           fetch-depth: 0
 
       - uses: actions/setup-node@v5
@@ -55,16 +56,32 @@ jobs:
           node scripts/version-site-assets.js
           node scripts/build-sitemap.js
 
-      - name: Publish changed pages to main
+      - name: Commit and publish generated pages
+        id: commit
         run: |
-          # Footer and asset versions can refresh pages outside article folders.
           git add frontend
           if git diff --cached --quiet; then
             echo "No site updates this run."
+            echo "changed=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
+          # Which article URLs actually changed. Worked out before the commit,
+          # while git status still reports them as dirty. IndexNow asks for
+          # changed URLs only — re-submitting untouched pages on every run is
+          # how a domain gets its submissions throttled or ignored.
+          CHANGED=$(git status --porcelain frontend/breaches frontend/blog | awk '{print $NF}' | grep -E '^frontend/(breaches|blog)/.*[.]html$' | sed 's|^frontend|https://www.myrecon.xyz|' | tr '\n' ' ')
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+
           git config user.name "myrecon-bot"
           git config user.email "bot@myrecon.xyz"
-          git commit -m "Refresh breach files and blog"
+          git commit -m "Breach Files: scheduled update"
           git push origin HEAD:main
+
+      - name: Tell the search engines
+        # Runs after the push, because the push is what triggers the deploy.
+        # Submitting first would send a crawler to the previous version of the
+        # page, which is worse than not submitting at all.
+        if: steps.commit.outputs.changed != ''
+        working-directory: frontend
+        run: node scripts/indexnow.js ${{ steps.commit.outputs.changed }}

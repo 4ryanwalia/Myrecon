@@ -16,22 +16,6 @@ const ROOT = path.join(__dirname, "..");
 const SOURCE = path.join(ROOT, "content", "blog");
 const OUT = path.join(ROOT, "blog");
 const SITE = "https://www.myrecon.xyz";
-const IMAGE_OUT = path.join(ROOT, "assets", "img", "blog");
-
-// Small editorial diagrams explain the action in each article. These are
-// generated locally, so no external image licence or third-party request is
-// needed when a reader opens a page.
-const ILLUSTRATIONS = {
-  "account-deletion-vs-deactivation": ["Export data", "Check linked services", "Choose a path"],
-  "after-finding-an-old-account": ["Confirm ownership", "Secure the account", "Keep or close"],
-  "delete-old-online-accounts": ["List your accounts", "Export and unlink", "Request deletion"],
-  "find-your-own-old-accounts": ["Search your inbox", "Check saved logins", "Verify your profile"],
-  "instagram-privacy-self-audit": ["View as a stranger", "Review discovery", "Secure access"],
-  "own-footprint-audit-checklist": ["List public profiles", "Prioritise changes", "Review again"],
-  "report-social-media-impersonation": ["Preserve evidence", "Report the profile", "Protect contacts"],
-  "username-reuse-privacy": ["Repeated handle", "Connected profiles", "Separate contexts"],
-  "why-online-privacy-matters": ["Know the audience", "Check the context", "Keep control"],
-};
 
 const esc = (value) => String(value == null ? "" : value)
   .replace(/&/g, "&amp;")
@@ -56,7 +40,6 @@ function readArticles() {
         if (!meta[field]) throw new Error(`${file}: missing ${field}`);
       }
       if (!body || !/<h2\b/i.test(body)) throw new Error(`${file}: article needs body text and section headings`);
-      if (!ILLUSTRATIONS[slug]) throw new Error(`${file}: add an article illustration`);
       return { ...meta, slug, body, url: `${SITE}/blog/${slug}.html` };
     })
     .sort((a, b) => a.headline.localeCompare(b.headline));
@@ -76,7 +59,6 @@ function schema(article) {
     publisher: { "@id": `${SITE}/#organization` },
     isPartOf: { "@id": `${SITE}/#website` },
     mainEntityOfPage: article.url,
-    image: `${SITE}/assets/img/blog/${article.slug}.svg`,
   };
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
@@ -98,14 +80,27 @@ function shellHead({ title, description, url, article, crumbs }) {
   const ogType = article ? "article" : "website";
   const blogCurrent = article ? "" : ' aria-current="page"';
   return `<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#101713">
+  <meta name="theme-color" content="#f7faf7">
   <link rel="canonical" href="${esc(url)}">
   <meta property="og:type" content="${ogType}">
   <meta property="og:site_name" content="MyRecon">
@@ -160,33 +155,6 @@ function shellFoot() {
 `;
 }
 
-function illustration(article) {
-  const steps = ILLUSTRATIONS[article.slug];
-  const cards = steps.map((label, index) => {
-    const x = 74 + index * 378;
-    const number = String(index + 1).padStart(2, "0");
-    return `<g>
-      <rect x="${x}" y="216" width="294" height="246" rx="22" fill="#18283a" stroke="#45647c" stroke-width="2"/>
-      <circle cx="${x + 52}" cy="275" r="26" fill="#24536c"/>
-      <text x="${x + 52}" y="284" text-anchor="middle" fill="#b9f5db" font-family="Arial,sans-serif" font-size="23" font-weight="700">${number}</text>
-      <path d="M${x + 30} 337h234" stroke="#39556a" stroke-width="2"/>
-      <text x="${x + 30}" y="392" fill="#f1f7f8" font-family="Arial,sans-serif" font-size="27" font-weight="700">${esc(label)}</text>
-    </g>`;
-  }).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-    <title id="title">${esc(article.headline)}</title>
-    <desc id="desc">A three-step visual guide: ${steps.map(esc).join(", ")}.</desc>
-    <rect width="1200" height="630" fill="#101b29"/>
-    <path d="M0 549h1200M0 550l160-160M1040 390l160 160" stroke="#29445a" stroke-width="2" fill="none"/>
-    <text x="74" y="88" fill="#9de5b8" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="4">MYRECON FIELD GUIDE</text>
-    <text x="74" y="162" fill="#f1f7f8" font-family="Arial,sans-serif" font-size="36" font-weight="700">${esc(article.category.toUpperCase())}</text>
-    ${cards}
-    <path d="M378 339h64m314 0h64" stroke="#9de5b8" stroke-width="4" stroke-linecap="round"/>
-    <path d="m432 330 10 9-10 9m378-18 10 9-10 9" stroke="#9de5b8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <text x="74" y="575" fill="#b9cbd3" font-family="Arial,sans-serif" font-size="19">Review your own accounts and public information.</text>
-  </svg>\n`;
-}
-
 function articlePage(article) {
   const displayDate = new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
     day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
@@ -197,7 +165,6 @@ function articlePage(article) {
       <span class="kicker">${esc(article.category)}</span>
       <h1>${esc(article.headline)}</h1>
       <p class="meta"><time datetime="${esc(article.datePublished)}">${displayDate}</time> · MyRecon editorial</p>
-      <figure style="margin:24px 0 32px"><img src="/assets/img/blog/${article.slug}.svg" alt="Three-step illustration: ${ILLUSTRATIONS[article.slug].map(esc).join(", ")}" width="1200" height="630" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--border)" loading="eager"><figcaption style="color:var(--text-mute);font-size:.85rem;margin-top:9px">A visual summary of the steps in this article.</figcaption></figure>
       ${article.body}
       <div class="callout">
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
@@ -230,7 +197,7 @@ function indexPage(articles) {
     </section>
     <script type="application/ld+json">${list}</script>
     <div class="guide-grid">
-${articles.map((article) => `      <a class="guide-card" href="/blog/${article.slug}.html"><img src="/assets/img/blog/${article.slug}.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">${esc(article.category)}</span><h2>${esc(article.headline)}</h2><p>${esc(article.description)}</p><span class="read">Read article →</span></a>`).join("\n")}
+${articles.map((article) => `      <a class="guide-card" href="/blog/${article.slug}.html"><span class="kicker">${esc(article.category)}</span><h2>${esc(article.headline)}</h2><p>${esc(article.description)}</p><span class="read">Read article →</span></a>`).join("\n")}
     </div>
     <h2 style="font-size:1.2rem;font-weight:700;margin:40px 0 10px">Explore MyRecon</h2>
     <p><a href="/guides/">Privacy and security guides</a> · <a href="/vs/">Tool comparisons</a> · <a href="/breaches/">Breach archive</a> · <a href="/services.html">Removal service</a></p>
@@ -245,15 +212,11 @@ function main() {
   const articles = readArticles();
   if (articles.length < 8) throw new Error(`Expected at least 8 complete articles; found ${articles.length}`);
   fs.mkdirSync(OUT, { recursive: true });
-  fs.mkdirSync(IMAGE_OUT, { recursive: true });
   const expected = new Set(["index.html", ...articles.map((article) => `${article.slug}.html`)]);
   for (const file of fs.readdirSync(OUT)) {
     if (file.endsWith(".html") && !expected.has(file)) fs.unlinkSync(path.join(OUT, file));
   }
-  for (const article of articles) {
-    fs.writeFileSync(path.join(IMAGE_OUT, `${article.slug}.svg`), illustration(article), "utf8");
-    fs.writeFileSync(path.join(OUT, `${article.slug}.html`), articlePage(article), "utf8");
-  }
+  for (const article of articles) fs.writeFileSync(path.join(OUT, `${article.slug}.html`), articlePage(article), "utf8");
   fs.writeFileSync(path.join(OUT, "index.html"), indexPage(articles), "utf8");
   console.log(`[blog] ${articles.length} original articles and /blog/ index written`);
 }

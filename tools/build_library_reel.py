@@ -1,27 +1,15 @@
-"""Build the eight-second library reel from the checked-in scene and audio."""
-
-import argparse
 from pathlib import Path
 import shutil
 import subprocess
+import imageio_ffmpeg
 
 root = Path(__file__).resolve().parents[1]
 assets = root / "output" / "library-reel"
 assets.mkdir(parents=True, exist_ok=True)
 
-parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--source", type=Path, help="Optional replacement scene image")
-args = parser.parse_args()
+source = Path(r"C:\Users\91966\.codex\generated_images\01a0ac46-7d63-7b40-8862-591040770c15\exec-082d9646-79d9-46b2-89bc-ee4c81b3448d.png")
 image = assets / "library-scene.png"
-if args.source and args.source.resolve() != image.resolve():
-    shutil.copy2(args.source, image)
-if not image.is_file():
-    parser.error(f"scene image missing: {image}")
-
-try:
-    import imageio_ffmpeg
-except ImportError:
-    parser.error("install imageio-ffmpeg with: python -m pip install imageio-ffmpeg")
+shutil.copy2(source, image)
 
 ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
 out = assets / "myrecon-library-reel.mp4"

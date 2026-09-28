@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyRecon Blog: Privacy, Instagram and Account Cleanup</title>
   <meta name="description" content="Practical MyRecon articles on online privacy, public-profile self-audits, account deletion and safer username habits. Written for people managing their own digital footprint.">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#101713">
+  <meta name="theme-color" content="#f7faf7">
   <link rel="canonical" href="https://www.myrecon.xyz/blog/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
@@ -21,15 +34,15 @@
   <meta name="twitter:title" content="MyRecon Blog: Privacy, Instagram and Account Cleanup">
   <meta name="twitter:description" content="Practical MyRecon articles on online privacy, public-profile self-audits, account deletion and safer username habits. Written for people managing their own digital footprint.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=c285203a4c">
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=c285203a4c">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=2">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=2">
   <link rel="manifest" href="/site.webmanifest">
   <style>*{box-sizing:border-box;margin:0;padding:0}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=0fdcb1db58">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=16">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=10">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"MyRecon Blog: Privacy and Account Cleanup","description":"Practical MyRecon articles on online privacy, public-profile self-audits, account deletion and safer username habits. Written for people managing their own digital footprint.","url":"https://www.myrecon.xyz/blog/","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"}}</script>
@@ -40,7 +53,7 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=6bbbea3ebc" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=2" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/" aria-current="page">Blog</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -55,15 +68,15 @@
       <p><a href="/#tool">Run a username self-audit</a> · <a href="/services.html">Learn about footprint removal support</a> · <a href="/vs/">Compare MyRecon with other tools</a></p>
     </section>
     <div class="guide-grid">
-      <a class="guide-card" href="/blog/own-footprint-audit-checklist.html"><img src="/assets/img/blog/own-footprint-audit-checklist.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Self-audit</span><h2>A Digital Footprint Audit Worksheet for Your Own Accounts</h2><p>Use this worksheet to inventory public profiles you control, prioritise privacy changes, track deletion requests and review results without storing secrets.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/account-deletion-vs-deactivation.html"><img src="/assets/img/blog/account-deletion-vs-deactivation.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Account cleanup</span><h2>Delete or Deactivate an Account? How to Choose</h2><p>Account deletion and deactivation differ. Check exports, subscriptions, linked sign-ins, waiting periods and search-result cleanup before choosing.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/after-finding-an-old-account.html"><img src="/assets/img/blog/after-finding-an-old-account.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Account cleanup</span><h2>Found an Old Account? Secure, Update or Delete It</h2><p>If you locate a forgotten account you control, confirm access, update recovery details, check for misuse and close it safely if you no longer need it.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/username-reuse-privacy.html"><img src="/assets/img/blog/username-reuse-privacy.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Privacy</span><h2>How Reusing a Username Can Connect Your Accounts</h2><p>A reused handle can link profiles that were meant for different audiences. Learn how to audit your own usernames and reduce accidental connections.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/delete-old-online-accounts.html"><img src="/assets/img/blog/delete-old-online-accounts.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Account cleanup</span><h2>How to Delete Old Online Accounts Safely</h2><p>Find accounts you own, save important data, cancel linked services and request deletion in the right order. A practical checklist for closing old profiles.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/find-your-own-old-accounts.html"><img src="/assets/img/blog/find-your-own-old-accounts.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Self-audit</span><h2>How to Find Your Own Old Social Media Accounts</h2><p>Use old inboxes, saved logins and your own usernames to locate forgotten accounts you control. Confirm ownership before changing or closing any profile.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/report-social-media-impersonation.html"><img src="/assets/img/blog/report-social-media-impersonation.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Account safety</span><h2>How to Respond to a Social Media Impersonator</h2><p>Preserve evidence, report an impersonating profile through the platform, secure your accounts and help contacts avoid scams without escalating contact.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/instagram-privacy-self-audit.html"><img src="/assets/img/blog/instagram-privacy-self-audit.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Account privacy</span><h2>Instagram Privacy Audit: A Checklist for Your Own Account</h2><p>Review what strangers can see on your Instagram profile, check discovery and tagging controls, and secure the account you own with this practical checklist.</p><span class="read">Read article →</span></a>
-      <a class="guide-card" href="/blog/why-online-privacy-matters.html"><img src="/assets/img/blog/why-online-privacy-matters.svg" alt="" width="1200" height="630" loading="lazy" style="display:block;width:100%;height:auto;border-radius:9px;margin-bottom:14px"><span class="kicker">Privacy</span><h2>Why Online Privacy Matters, Even When You Have Nothing to Hide</h2><p>Online privacy gives you control over who can use your information, how it is combined and when it is shared. Learn what to review and where to start.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/own-footprint-audit-checklist.html"><span class="kicker">Self-audit</span><h2>A Digital Footprint Audit Worksheet for Your Own Accounts</h2><p>Use this worksheet to inventory public profiles you control, prioritise privacy changes, track deletion requests and review results without storing secrets.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/account-deletion-vs-deactivation.html"><span class="kicker">Account cleanup</span><h2>Delete or Deactivate an Account? How to Choose</h2><p>Account deletion and deactivation differ. Check exports, subscriptions, linked sign-ins, waiting periods and search-result cleanup before choosing.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/after-finding-an-old-account.html"><span class="kicker">Account cleanup</span><h2>Found an Old Account? Secure, Update or Delete It</h2><p>If you locate a forgotten account you control, confirm access, update recovery details, check for misuse and close it safely if you no longer need it.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/username-reuse-privacy.html"><span class="kicker">Privacy</span><h2>How Reusing a Username Can Connect Your Accounts</h2><p>A reused handle can link profiles that were meant for different audiences. Learn how to audit your own usernames and reduce accidental connections.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/delete-old-online-accounts.html"><span class="kicker">Account cleanup</span><h2>How to Delete Old Online Accounts Safely</h2><p>Find accounts you own, save important data, cancel linked services and request deletion in the right order. A practical checklist for closing old profiles.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/find-your-own-old-accounts.html"><span class="kicker">Self-audit</span><h2>How to Find Your Own Old Social Media Accounts</h2><p>Use old inboxes, saved logins and your own usernames to locate forgotten accounts you control. Confirm ownership before changing or closing any profile.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/report-social-media-impersonation.html"><span class="kicker">Account safety</span><h2>How to Respond to a Social Media Impersonator</h2><p>Preserve evidence, report an impersonating profile through the platform, secure your accounts and help contacts avoid scams without escalating contact.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/instagram-privacy-self-audit.html"><span class="kicker">Account privacy</span><h2>Instagram Privacy Audit: A Checklist for Your Own Account</h2><p>Review what strangers can see on your Instagram profile, check discovery and tagging controls, and secure the account you own with this practical checklist.</p><span class="read">Read article →</span></a>
+      <a class="guide-card" href="/blog/why-online-privacy-matters.html"><span class="kicker">Privacy</span><h2>Why Online Privacy Matters, Even When You Have Nothing to Hide</h2><p>Online privacy gives you control over who can use your information, how it is combined and when it is shared. Learn what to review and where to start.</p><span class="read">Read article →</span></a>
     </div>
     <h2 style="font-size:1.2rem;font-weight:700;margin:40px 0 10px">Explore MyRecon</h2>
     <p><a href="/guides/">Privacy and security guides</a> · <a href="/vs/">Tool comparisons</a> · <a href="/breaches/">Breach archive</a> · <a href="/services.html">Removal service</a></p>
@@ -107,8 +120,8 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=15acbbe76e"></script>
+  <script src="/assets/js/app.js?v=23"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
+  <script src="/assets/js/fx.js?v=8" defer></script>
 </body>
 </html>

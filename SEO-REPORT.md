@@ -20,6 +20,23 @@ and **not** what serves the live site. Confirmed against production:
 
 ---
 
+## Content and sitemap refresh — 27 September 2026
+
+The 43-page figure and deployment notes below are the original audit snapshot,
+not the current page count. The frontend's generated sitemap now contains 168
+indexable URLs: the previous 158 plus `/blog/` and nine original privacy and
+account-cleanup articles. The new articles are hand-written source files under
+`frontend/content/blog/`; `scripts/build-blog.js` renders them, and
+`scripts/build-sitemap.js` discovers the resulting public pages. The scheduled
+content workflow now rebuilds the blog and sitemap as well as the breach feed.
+
+This is a local working-tree result. Publishing the changes and requesting
+crawls still requires the normal deployment and search-engine account access.
+A sitemap helps discovery but does not guarantee crawling, indexing or a
+ranking position.
+
+---
+
 ## 1. Status
 
 ### Phase 1 — Crawlability
@@ -444,9 +461,12 @@ picture and would need re-verifying if the canonical host ever changed.
    **"Import from Google Search Console"**, which carries the verification and
    the sitemap across in about two minutes. The manual route is the
    `msvalidate.01` tag, already slotted in the same place.
-6. **IndexNow already works** — `scripts/indexnow.js` posts to Bing, DuckDuckGo,
-   Yandex and Seznam, and its key file is live. Google does not participate, so
-   step 4 is not optional.
+6. **IndexNow is configured** — `scripts/indexnow.js` submits changed URLs to
+   Bing and other participating engines; its key file is present. Bing says its
+   index powers services including DuckDuckGo, but this is not a direct
+   DuckDuckGo submission. Google does not participate, so use Search Console
+   and the sitemap for Google. Submissions request discovery; they do not
+   guarantee indexing or a ranking position.
 
 ---
 
