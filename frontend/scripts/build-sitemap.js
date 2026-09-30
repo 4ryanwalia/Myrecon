@@ -41,7 +41,7 @@ const ROOT = path.join(__dirname, "..");
 const SITE = "https://www.myrecon.xyz";
 
 /** Directories that never contain indexable pages. */
-const EXCLUDE_DIRS = new Set(["node_modules", ".git", ".vercel", "content", "scripts"]);
+const EXCLUDE_DIRS = new Set(["node_modules", ".git", ".vercel", "content", "data", "scripts"]);
 
 /** Individual files that are real pages but must not be indexed. */
 const EXCLUDE_FILES = new Set(["404.html"]);

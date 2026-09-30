@@ -2,20 +2,18 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Security fixes target the current `main` branch and the deployed website and
+API. This repository does not publish the numbered support versions from the
+GitHub policy template. Older snapshots should be updated to the current release.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Use [GitHub private vulnerability reporting](https://github.com/4ryanwalia/Myrecon/security/advisories/new)
+if available. Otherwise, contact the maintainer through the
+[contact page](https://www.myrecon.xyz/contact.html) or email
+[aryan@bugsnaps.in](mailto:aryan@bugsnaps.in) to arrange private disclosure.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Include the affected revision or URL, reproducible steps, and the expected and
+observed behavior. Keep credentials, private lookup results, and personal data
+out of public issues and attachments. Test only systems and accounts you are
+authorized to assess. Response timing is not guaranteed.

@@ -12,9 +12,77 @@
     "licence": "https://creativecommons.org/licenses/by/4.0/",
     "notice": "Breach data originates from Have I Been Pwned and is licensed CC BY 4.0. If you publish it you must credit Have I Been Pwned. A link to https://www.myrecon.xyz/breaches/ is appreciated but not required by the licence."
   },
-  "count": 44,
-  "total_accounts": 5785873810,
+  "count": 45,
+  "total_accounts": 5786297757,
   "breaches": [
+    {
+      "name": "Medela",
+      "title": "Medela",
+      "slug": "medela",
+      "url": "https://www.myrecon.xyz/breaches/medela.html",
+      "domain": "medela.com",
+      "breach_date": "2026-09-07",
+      "added_date": "2026-09-30T11:48:28Z",
+      "accounts": 423947,
+      "data_classes": [
+        "Email addresses",
+        "Employers",
+        "Job titles",
+        "Names",
+        "Phone numbers",
+        "Physical addresses",
+        "Salutations",
+        "Support tickets"
+      ],
+      "verified": true,
+      "sensitive": true,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Medela.png",
+      "severity": 61,
+      "band": "Severe",
+      "data_provider": null,
+      "summary": "In September 2026, Swiss medical device company Medela was the target of a ShinyHunters \"pay or leak\" extortion campaign. The data allegedly obtained in the breach was later published publicly and included 424k unique email addresses belonging predominantly to healthcare professionals, Medela staff and leads. The exposed data consisted primarily of corporate contact information, including names…",
+      "fields": [
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Employers",
+          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Job titles",
+          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
+        },
+        {
+          "name": "Salutations",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Support tickets",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
+    },
     {
       "name": "McKesson",
       "title": "McKesson",
