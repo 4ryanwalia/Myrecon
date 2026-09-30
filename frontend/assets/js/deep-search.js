@@ -36,6 +36,8 @@
   function renderAccess(state) {
     const paid = !!(state?.user && state.account?.deep_search_enabled);
     const pending = !!(state?.user && !state.account);
+    const preview = $("#dsPreview");
+    if (preview) preview.hidden = paid;
     $("#dsAccess").className = "ds-access" + (paid ? " is-paid" : "");
     $("#dsAccessTitle").textContent = paid ? "Deep Search is ready" : pending ? "Checking your plan" : "Included in the ₹99 paid plan";
     $("#dsAccessNote").textContent = paid

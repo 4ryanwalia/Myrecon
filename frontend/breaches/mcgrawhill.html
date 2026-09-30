@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"McGraw Hill data breach, 13,500,136 accounts exposed","description":"On 10 April 2026, McGraw Hill was breached. 13,500,136 accounts were exposed, including email addresses, names, phone numbers. MyRecon rates it 67/100, severe.","datePublished":"2026-04-16","dateModified":"2026-04-16","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/mcgrawhill.html","image":"https://logos.haveibeenpwned.com/McGrawHill.png"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"McGraw Hill","item":"https://www.myrecon.xyz/breaches/mcgrawhill.html"}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
@@ -91,14 +89,18 @@
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
-      <form class="bx-check" data-breach-check>
-        <label for="bxEmail">Was your address in this breach?</label>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;McGrawHill&quot;,&quot;breach_date&quot;:&quot;2026-04-10&quot;}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="bxEmail">Check your email for McGraw Hill</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="bxEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="bxEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Provider coverage can be incomplete.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <section class="bx-editorial">
@@ -119,14 +121,17 @@ breaches, and it is why "stop using the service" is advice that does not
 apply here.</p>
       </section>
 
-      <h2>What happened</h2>
+      <h2 id="story">The story behind the breach</h2>
       <div class="bx-source">
-        <p>In April 2026, education company <a href="https://www.bleepingcomputer.com/news/security/mcgraw-hill-confirms-data-breach-following-extortion-threat/" target="_blank" rel="noopener nofollow">McGraw Hill confirmed a data breach following an extortion attempt</a>. Attributed to a Salesforce misconfiguration, the company stated the incident exposed "a limited set of data from a webpage hosted by Salesforce on its platform". More than 100GB of data was later publicly distributed, containing 13.5M unique email addresses across multiple files, with additional fields such as name, physical address and phone number appearing inconsistently across some records.</p>
+        <p>In April 2026, education company McGraw Hill confirmed a data breach following an extortion attempt . Attributed to a Salesforce misconfiguration, the company stated the incident exposed &quot;a limited set of data from a webpage hosted by Salesforce on its platform&quot;.</p>
+<p>More than 100GB of data was later publicly distributed, containing 13.5M unique email addresses across multiple files, with additional fields such as name, physical address and phone number appearing inconsistently across some records.</p>
         <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#McGrawHill" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0 licence</a>.</p>
       </div>
 
-      <h2>Who was behind it</h2>
-      <p>No party has been publicly confirmed as responsible, and this page will not name one. Most breaches are never formally attributed: data surfaces on a forum or inside a combined dump long after the intrusion, and the trail back to a specific actor is rarely made public. Where a group has claimed responsibility it is usually named in the account above, that claim is theirs, not a finding of ours.</p>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Attributed to a Salesforce misconfiguration, the company stated the incident exposed &quot;a limited set of data from a webpage hosted by Salesforce on its platform&quot;.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>In April 2026, education company McGraw Hill confirmed a data breach following an extortion attempt .</p><p class="bx-check-note">Reported demands or attempts to sell data describe what happened, rather than prove every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>13,500,136 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.</p>
+<p>The reported exposed data includes Email addresses, Names, Phone numbers, Physical addresses.</p></section>
 
       <h2>What was exposed, and why it matters</h2>
       <ul class="bx-classes">
@@ -156,7 +161,7 @@ apply here.</p>
       <h2>Questions people ask about this breach</h2>
       <div class="bx-faq">
         <h3>Was my email address in the McGraw Hill breach?</h3>
-        <p>Enter it in the box at the top of this page. MyRecon checks it against this breach and every other one on record, and the address is never stored.</p>
+        <p>Use the email box on this page. The result applies only to this incident. If the provider does not cover this breach, we say so. A missing match does not prove you were unaffected.</p>
 
         <h3>What data was leaked in the McGraw Hill breach?</h3>
         <p>email addresses, names, phone numbers, physical addresses. Each one is explained above, along with what it means for the person it belongs to.</p>
@@ -238,9 +243,9 @@ apply here.</p>
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

@@ -87,10 +87,11 @@ test("breach names from every source stay visible above advice and merge duplica
 test("account checks show off and unavailable states without relabeling historical breaches", () => {
   const { api } = browser();
   const ls = { services: [{ service: "Adobe", kind: "breach", evidence: "Historical breach" }] };
-  assert.match(api.linkedServices(ls, { enabled: false }), /Account checks are off/);
+  assert.match(api.linkedServices(ls, { enabled: false }), /Live account checks are off/);
   const html = api.linkedServices(ls, { enabled: true, sources: [{ name: "GitHub", status: "rate_limited" }] });
   assert.match(html, /rate limited/);
-  assert.doesNotMatch(html, /svc-name[^>]*>Adobe/);
+  assert.match(html, /svc-name[^>]*>Adobe/);
+  assert.match(html, /historical breach/);
 });
 
 for (const [name, data, label] of [
@@ -119,4 +120,18 @@ test("completed negatives show scoped no-match language", () => {
   assert.ok(results.innerHTML.includes("No match in checked sources"));
   assert.ok(!results.innerHTML.includes("No breaches found"));
   assert.ok(!results.innerHTML.includes('data-action="retry-email"'));
+});
+
+test("registration coverage exposes Spotify signals and unknown services separately", () => {
+  const { api } = browser();
+  const data = { status: "ok", checked: 1, attempted: 111, catalogue_count: 123, services: [
+    { service: "Spotify", status: "found", reason: "Registration signal" },
+    { service: "Instagram", status: "rate_limited", reason: "Provider blocked" },
+    { service: "<unsafe>", status: "timeout", reason: "Timed out" }] };
+  const html = api.linkedServices({ services: [{ service: "Spotify", kind: "registration", evidence: "Registration signal" }] }, { enabled: true }, data);
+  assert.match(html, /1 answered of 111 eligible/);
+  assert.match(html, /123 service modules/);
+  assert.match(html, /Blocked or rate limited/);
+  assert.match(html, /&lt;unsafe&gt;/);
+  assert.doesNotMatch(html, /<unsafe>/);
 });

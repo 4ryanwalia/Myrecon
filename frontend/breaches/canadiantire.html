@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Canadian Tire data breach, 38,306,562 accounts exposed","description":"On 2 October 2025, Canadian Tire was breached. 38,306,562 accounts were exposed, including dates of birth, email addresses, genders. MyRecon rates it 77/100, severe.","datePublished":"2026-02-25","dateModified":"2026-02-25","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/canadiantire.html","image":"https://logos.haveibeenpwned.com/CanadianTire.png"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Canadian Tire","item":"https://www.myrecon.xyz/breaches/canadiantire.html"}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
@@ -91,14 +89,18 @@
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
-      <form class="bx-check" data-breach-check>
-        <label for="bxEmail">Was your address in this breach?</label>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;CanadianTire&quot;,&quot;breach_date&quot;:&quot;2025-10-02&quot;}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="bxEmail">Check your email for Canadian Tire</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="bxEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="bxEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Provider coverage can be incomplete.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <section class="bx-editorial">
@@ -121,15 +123,18 @@ to transact. It can be used to be believed, and that is the attack that
 follows a retail breach.</p>
       </section>
 
-      <h2>What happened</h2>
+      <h2 id="story">The story behind the breach</h2>
       <div class="bx-source">
-        <p>In October 2025, <a href="https://www.montechnicien.com/en/canadian-tire-in-crisis-42-million-accounts-exposed/" target="_blank" rel="noopener nofollow">retailer Canadian Tire was the victim of a data breach</a> that exposed almost 42M records. The data contained 38M unique email addresses along with names, phone numbers and physical addresses. Passwords were stored as PBKDF2 hashes and for a subset of records, dates of birth and partial credit card data were also included (card type, expiry and masked card number). In <a href="https://corp.canadiantire.ca/English/Cyber-Incident/default.aspx" target="_blank" rel="noopener nofollow">its disclosure notice</a>, Canadian Tire advised that the incident did not impact bank account information or loyalty program data.</p>
+        <p>In October 2025, retailer Canadian Tire was the victim of a data breach that exposed almost 42M records. The data contained 38M unique email addresses along with names, phone numbers and physical addresses. Passwords were stored as PBKDF2 hashes and for a subset of records, dates of birth and partial credit card data were also included (card type, expiry and masked card number).</p>
+<p>In its disclosure notice , Canadian Tire advised that the incident did not impact bank account information or loyalty program data.</p>
         <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#CanadianTire" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0 licence</a>.</p>
       </div>
       <p><a class="btn btn-ghost btn-sm" href="https://corp.canadiantire.ca/English/Cyber-Incident/default.aspx" target="_blank" rel="noopener nofollow">Read the original disclosure ↗</a></p>
 
-      <h2>Who was behind it</h2>
-      <p>No party has been publicly confirmed as responsible, and this page will not name one. Most breaches are never formally attributed: data surfaces on a forum or inside a combined dump long after the intrusion, and the trail back to a specific actor is rarely made public. Where a group has claimed responsibility it is usually named in the account above, that claim is theirs, not a finding of ours.</p>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>The published account does not explain the exact way the data was obtained.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Reported demands or attempts to sell data describe what happened, rather than prove every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>38,306,562 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.</p>
+<p>The reported exposed data includes Dates of birth, Email addresses, Genders, Names, Partial credit card data, Passwords, Phone numbers, Physical addresses.</p></section>
 
       <h2>What was exposed, and why it matters</h2>
       <ul class="bx-classes">
@@ -164,7 +169,7 @@ follows a retail breach.</p>
       <h2>Questions people ask about this breach</h2>
       <div class="bx-faq">
         <h3>Was my email address in the Canadian Tire breach?</h3>
-        <p>Enter it in the box at the top of this page. MyRecon checks it against this breach and every other one on record, and the address is never stored.</p>
+        <p>Use the email box on this page. The result applies only to this incident. If the provider does not cover this breach, we say so. A missing match does not prove you were unaffected.</p>
 
         <h3>What data was leaked in the Canadian Tire breach?</h3>
         <p>dates of birth, email addresses, genders, names, partial credit card data, passwords, phone numbers, physical addresses. Each one is explained above, along with what it means for the person it belongs to.</p>
@@ -246,9 +251,9 @@ follows a retail breach.</p>
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

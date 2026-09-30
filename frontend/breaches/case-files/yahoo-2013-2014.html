@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Yahoo, 2013–2014: three billion accounts, and three years of silence","description":"Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the company.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Yahoo data breaches"},"wordCount":1191}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Yahoo data breaches","item":"https://www.myrecon.xyz/breaches/case-files/yahoo-2013-2014.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many accounts were in the Yahoo breach?","acceptedAnswer":{"@type":"Answer","text":"Three billion, every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion."}},{"@type":"Question","name":"Were Yahoo passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Many of them, yes. The 2013 set used MD5, a hashing algorithm that was already considered unfit for passwords at the time and can be attacked at enormous speed on consumer graphics hardware. Worse, security questions and answers were taken too, and in some cases stored without encryption, and almost nobody changes their mother's maiden name after a breach."}},{"@type":"Question","name":"What were the forged cookies?","acceptedAnswer":{"@type":"Answer","text":"The attackers obtained Yahoo's internal account management tooling and used it to mint authentication cookies, browser tokens that told Yahoo's servers a user had already logged in. A forged cookie bypasses the password entirely, so changing the password did not evict the intruder. Yahoo invalidated the forged cookies in 2016."}},{"@type":"Question","name":"Did the breach affect the Verizon sale?","acceptedAnswer":{"@type":"Answer","text":"It cost $350 million. Verizon had agreed to buy Yahoo's operating business for $4.83 billion in July 2016; after the disclosures the price was renegotiated to roughly $4.48 billion, with the two companies splitting certain liabilities. The SEC later fined the remaining entity, Altaba, $35 million for failing to disclose the 2014 breach to investors for two years."}}]}</script>
@@ -90,7 +88,18 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Email addresses · Phone numbers · Dates of birth · Hashed passwords (MD5 in the 2013 set) · Security questions and answers, some unencrypted</p>
 
-<p class="lead">Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Spear-phishing an employee, then forged authentication cookies</p>
+<p>The 2014 intrusion began the way most do: a spear-phishing email that worked on one employee. From that foothold, the attackers reached two things that mattered far more than any individual mailbox. The first was the User Database, the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers. The second was the Account Management Tool, Yahoo's internal administrative console.</p>
+<p>Why the cookies matter more than the passwords. With access to the account management tooling, the attackers could mint their own authentication cookies, the tokens a browser holds that tell a server &quot;this person has already logged in&quot;. A forged cookie bypasses the password entirely. It also survives a password change, which is the single piece of advice every breach notice gives.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>$350 million cut from the Verizon sale price; $35 million SEC penalty; $117.5 million class settlement</p>
+<p>The commercial consequences were real but oddly indirect. The purchase price fell by $350 million and the two companies agreed to share certain liabilities. Yahoo's general counsel resigned; chief executive Marissa Mayer forfeited her annual bonus and equity award.</p>
+<p>The SEC's $35 million penalty in 2018 was the first time it had punished a company specifically for failing to tell investors about a data breach, and it landed not because Yahoo was breached but because Yahoo's own risk disclosures had continued to describe breaches as a hypothetical future risk while it knew about a real one.</p>
+<p>For users, the practical result was three billion accounts' worth of email addresses, phone numbers and security answers circulating permanently, plus the discovery that a password change had never been enough against forged session tokens.</p>
+<p>Reported scale: 3 billion accounts.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p>
 
 <h2>What happened</h2>
 
@@ -153,19 +162,22 @@
   <li><strong>Change every security answer you have reused.</strong> Not just at Yahoo. If you ever answered "first school" the same way at a bank, that answer is in circulation. Where a site insists on security questions, treat the answer as a second password and store it in a password manager rather than telling the truth.</li>
   <li><strong>Kill reused passwords first.</strong> The Yahoo dump has been folded into every credential collection since, which means it is tried automatically against other services, see <a href="/breaches/case-files/collection-1-2019.html">how those aggregated lists are used</a>.</li>
   <li><strong>Move recovery to something you still control.</strong> Point the recovery address and phone number of your important accounts at a mailbox you actively read, and turn on <a href="/guides/two-factor-authentication.html">two-factor authentication</a> where it is offered.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -250,9 +262,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

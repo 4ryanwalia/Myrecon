@@ -33,6 +33,32 @@
     "band": "Critical",
     "data_provider": null,
     "summary": "During 2025, Synthient aggregated billions of records of \"threat data\" from various internet sources. The data contained 183M unique email addresses alongside the websites they were entered into and the passwords used. After normalising and deduplicating the data, 183 million unique email addresses remained, each linked to the website where the credentials were captured, and the password used…",
+    "story": {
+      "background": [
+        "During 2025, Synthient aggregated billions of records of \"threat data\" from various internet sources . The data contained 183M unique email addresses alongside the websites they were entered into and the passwords used. After normalising and deduplicating the data, 183 million unique email addresses remained, each linked to the website where the credentials were captured, and the password used.",
+        "This dataset is now searchable in HIBP by email address, password, domain, and the site on which the credentials were entered."
+      ],
+      "how": [
+        "The records came from information-stealing malware on people's devices, rather than a single company database."
+      ],
+      "motive": [],
+      "outcome": [
+        "182,962,095 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, Passwords."
+      ],
+      "editorial": [
+        "183 million unique addresses, harvested by malware from individual people's own machines, gathered into one set in the course of a single year. The volume is the finding. Endpoint infection is not a rare misfortune that befalls careless people, at this scale it is a background condition of using a computer. What separates this from a leaked database is where the data was standing when it was taken.",
+        "A breach exposes what a company stored about you. A stealer log exposes what you typed, into services that were never breached, including ones whose security is genuinely good, along with whatever the browser had saved on your behalf. The browser's password store is usually the first thing collected, because it is one file and anything running as you can decrypt it.",
+        "So the response starts with the machine and not the accounts. Cracked software and convincing installers for legitimate tools are how most of these infections arrive, which is why the population in these files skews towards people who thought they were being resourceful rather than reckless.",
+        "If an address of yours turns up in a set like this, treat everything entered on that device as known, clean or rebuild it first, and only then rotate credentials, beginning with the mailbox that can reset all the others."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "SynthientStealerLogThreatData",
+        "breach_date": "2025-04-11"
+      }
+    ],
     "fields": [
       {
         "name": "Passwords",

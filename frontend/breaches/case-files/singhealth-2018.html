@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SingHealth, 2018: 1.5 million patients, taken on the way to one of them","description":"An advanced attacker spent months inside Singapore's largest health system, repeatedly and specifically seeking one patient's records. A million and a half others were taken en route.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/singhealth-2018.html","articleSection":"Case Files","about":{"@type":"Thing","name":"SingHealth cyberattack"},"wordCount":1170}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"SingHealth cyberattack","item":"https://www.myrecon.xyz/breaches/case-files/singhealth-2018.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What was actually taken?","acceptedAnswer":{"@type":"Answer","text":"Demographic records for about 1.5 million people who had visited SingHealth outpatient clinics over a seven-year period: name, national identity card number, address, gender, race and date of birth. For roughly 160,000 of those patients, records of dispensed outpatient medicines were also taken. Diagnoses, doctors' notes and test results were not, the attackers queried a specific database in a specific way, and what they took reflects that."}},{"@type":"Question","name":"Was the Prime Minister specifically targeted?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Committee of Inquiry found that the records of Prime Minister Lee Hsien Loong were repeatedly and specifically targeted, along with those of a number of other individuals. That finding is what separates this case from an ordinary healthcare breach: the bulk data was not the objective but the by-product of reaching one person's prescription history."}},{"@type":"Question","name":"How did the attackers get in?","acceptedAnswer":{"@type":"Answer","text":"Through a front-end workstation, most likely via a phishing email carrying malware. From that foothold they moved laterally through the network over a period of months, obtained credentials for privileged accounts, and eventually reached a server from which they could query the electronic medical records database directly. It is the standard shape of a targeted intrusion: the entry point is mundane, and the work happens afterwards."}},{"@type":"Question","name":"Why were the failings made public in such detail?","acceptedAnswer":{"@type":"Answer","text":"Singapore convened a Committee of Inquiry with public hearings, and its report names specific technical weaknesses and specific human decisions, including administrative accounts with weak passwords, unpatched software, and staff who saw anomalies and did not escalate them. Very few countries publish that level of detail about a government-linked breach. The report is more useful to defenders than almost any vendor incident write-up, precisely because it does not protect anyone."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · National registration identity card numbers · Addresses · Genders · Races · Dates of birth · Outpatient dispensed medicines</p>
 
-<p class="lead">On 20 July 2018 Singapore announced that the personal records of 1.5 million people, a quarter of the country's population, had been taken from its largest healthcare group. The inquiry that followed established something rarer than the number: the attackers had been looking for one patient in particular, and they found him.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>On 20 July 2018 Singapore announced that the personal records of 1.5 million people, a quarter of the country's population, had been taken from its largest healthcare group. The inquiry that followed established something rarer than the number: the attackers had been looking for one patient in particular, and they found him.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>A compromised front-end workstation, then lateral movement to a privileged account and queries against the electronic medical records database</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>S$750,000 fine for the health IT agency and S$250,000 for SingHealth; a public Committee of Inquiry and sixteen recommendations</p>
+<p>Reported scale: 1.5 million patients' personal particulars; about 160,000 patients' outpatient dispensed-medicine records.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On 20 July 2018 Singapore announced that the personal records of 1.5 million people, a quarter of the country's population, had been taken from its largest healthcare group. The inquiry that followed established something rarer than the number: the attackers had been looking for one patient in particular, and they found him.</p>
 
 <h2>What happened</h2>
 
@@ -144,19 +148,22 @@
 
 <p>The exposed set is demographic and durable: name, identity card number, address, race, gender and date of birth, plus dispensed medicines for a subset. None of it can be changed. An NRIC number in particular is a lifelong identifier, which is why the years after this breach saw sustained official effort to discourage organisations from treating it as proof of identity rather than merely as a reference number.</p>
 
-<p>The realistic risk is impersonation rather than fraud on an account. A caller who already knows your identity card number, your address and your date of birth passes the informal test most people apply to decide whether somebody is genuine, and for the smaller group whose medication records were taken, a caller who can also reference a real prescription is more convincing still. No clinic, insurer or government agency resolves anything by asking you to confirm a one-time code. Hang up and dial a number you already had.</p>
+<p>The realistic risk is impersonation rather than fraud on an account. A caller who already knows your identity card number, your address and your date of birth passes the informal test most people apply to decide whether somebody is genuine, and for the smaller group whose medication records were taken, a caller who can also reference a real prescription is more convincing still. No clinic, insurer or government agency resolves anything by asking you to confirm a one-time code. Hang up and dial a number you already had.</p></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -241,9 +248,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

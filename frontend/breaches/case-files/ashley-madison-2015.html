@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Ashley Madison, 2015: when the data itself was the weapon","description":"The Impact Team did not sell the Ashley Madison data. They published it, 32 million people, a paid deletion service that did not delete, and consequences measured in lives.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Ashley Madison data breach"},"wordCount":1081}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Ashley Madison data breach","item":"https://www.myrecon.xyz/breaches/case-files/ashley-madison-2015.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were Ashley Madison passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password, a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase."}},{"@type":"Question","name":"Did Ashley Madison really charge to delete data it kept?","acceptedAnswer":{"@type":"Answer","text":"It offered a paid \"full delete\" option, and regulators found that the deletion was not complete, payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case."}},{"@type":"Question","name":"Were all the accounts real people?","acceptedAnswer":{"@type":"Answer","text":"No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address, which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users."}},{"@type":"Question","name":"Was anyone caught?","acceptedAnswer":{"@type":"Answer","text":"No. The Impact Team was never identified, and no charges were ever brought. The company's chief executive resigned, the business was renamed Ruby Corp, and Ashley Madison continues to operate."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Email addresses · Home addresses · Partial card data and transaction records · Sexual preferences stated on profiles · bcrypt password hashes, plus a weak legacy token</p>
 
-<p class="lead">Every other case file here is about data being stolen for money. Ashley Madison is the one where the data was taken in order to be published, by people who wanted the exposure itself to be the punishment, and it is the clearest demonstration that the harm from a breach is not always fraud. Sometimes it is simply that someone now knows.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Every other case file here is about data being stolen for money. Ashley Madison is the one where the data was taken in order to be published, by people who wanted the exposure itself to be the punishment, and it is the clearest demonstration that the harm from a breach is not always fraud. Sometimes it is simply that someone now knows.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Never publicly established; the attackers claimed insider-level access</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>$1.6 million FTC and state settlement, $11.2 million class settlement, the chief executive's job</p>
+<p>Reported scale: 32 million user records.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Every other case file here is about data being stolen for money. Ashley Madison is the one where the data was taken in order to be published, by people who wanted the exposure itself to be the punishment, and it is the clearest demonstration that the harm from a breach is not always fraud. Sometimes it is simply that someone now knows.</p>
 
 <h2>What happened</h2>
 
@@ -152,19 +156,22 @@
   <li><strong>Do not pay extortion demands.</strong> The data has been public for a decade; payment buys nothing and marks you as responsive. Report the attempt to your national cybercrime reporting service.</li>
   <li><strong>Change any password used there, and anywhere it was reused.</strong> Eleven million were recovered from the weak token path.</li>
   <li><strong>Think about what else you have signed up to under your real address.</strong> The general lesson of this case is that a service's discretion policy does not survive its database being published, see <a href="/guides/reduce-your-digital-footprint.html">how to find and shrink what is already out there</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;AshleyMadison&quot;,&quot;breach_date&quot;:&quot;2015-08-18&quot;,&quot;match_year&quot;:true}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -248,9 +255,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

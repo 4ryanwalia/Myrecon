@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LastPass, 2022: the vaults were stolen, and then attacked offline","description":"An engineer's home media server was the way into a password manager's cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"LastPass data breach"},"wordCount":907}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"LastPass data breach","item":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were LastPass passwords decrypted?","acceptedAnswer":{"@type":"Answer","text":"Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall."}},{"@type":"Question","name":"What was not encrypted?","acceptedAnswer":{"@type":"Answer","text":"Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with, including which cryptocurrency exchanges."}},{"@type":"Question","name":"How did they get in through someone's home computer?","acceptedAnswer":{"@type":"Answer","text":"The attackers used information from the earlier August incident to identify a senior DevOps engineer, then exploited a vulnerability in a third-party media software package running on that engineer's personal home computer. That gave them a keylogger, which captured the engineer's master password after multi-factor authentication, which opened a corporate vault holding the keys to cloud backups."}},{"@type":"Question","name":"Should I still use a password manager?","acceptedAnswer":{"@type":"Answer","text":"Yes. The alternative, reused passwords, or a notebook, fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Encrypted password vaults · Website URLs stored in vaults (unencrypted) · Names · Billing addresses · Email addresses · Phone numbers · IP addresses</p>
 
-<p class="lead">A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building, and why the encryption holding is not the same as being safe.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building, and why the encryption holding is not the same as being safe.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>A compromised developer account, then a vulnerability in third-party software on a senior engineer's home computer</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Reputational collapse in the security community; substantial downstream theft from users</p>
+<p>Reported scale: backups of customer vaults, affecting tens of millions of accounts.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building, and why the encryption holding is not the same as being safe.</p>
 
 <h2>Two incidents, one chain</h2>
 
@@ -145,19 +149,22 @@
   <li><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.</li>
   <li><strong>Then rotate by value: email, banking, anything holding payment details.</strong> Yes, it is a long weekend of work. It is also the only real remediation.</li>
   <li><strong>Keep using a manager, with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -241,9 +248,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

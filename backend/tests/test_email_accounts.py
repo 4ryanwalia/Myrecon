@@ -103,6 +103,7 @@ def test_switch_off_skips_all_public_account_network_calls(monkeypatch):
     assert result["summary"]["breached"]
     assert result["github"] is None
     assert result["summary"]["linked_accounts"] == []
+    assert result["registration_checks"]["status"] == "skipped"
     assert result["account_checks"]["enabled"] is False
     assert all(s["status"] == "skipped" for s in result["account_checks"]["sources"])
 
@@ -120,3 +121,13 @@ def test_route_passes_account_choice(monkeypatch, option):
     response = appmod.create_app().test_client().post("/api/email", json={"email": EMAIL, "check_linked_accounts": option})
     assert response.status_code == 200
     assert calls == [option]
+
+
+def test_email_api_defaults_to_live_account_checks_off(monkeypatch):
+    import services.email as service
+    calls = []
+    monkeypatch.setattr(config, "RATE_LIMIT_ENABLED", False)
+    monkeypatch.setattr(service, "scan_email", lambda email, check_linked_accounts: calls.append(check_linked_accounts) or {})
+    response = appmod.create_app().test_client().post("/api/email", json={"email": EMAIL})
+    assert response.status_code == 200
+    assert calls == [False]

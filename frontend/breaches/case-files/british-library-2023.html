@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"The British Library, 2023: the ransom was refused and the catalogue stayed dark","description":"Rhysida exfiltrated around 600GB and auctioned it. The lasting damage was not the data leaving, it was that thirty years of accumulated systems could not simply be switched back on.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/british-library-2023.html","articleSection":"Case Files","about":{"@type":"Thing","name":"British Library ransomware attack"},"wordCount":981}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"British Library ransomware attack","item":"https://www.myrecon.xyz/breaches/case-files/british-library-2023.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Did the British Library pay the ransom?","acceptedAnswer":{"@type":"Answer","text":"No. Rhysida put the stolen data up for auction at 20 bitcoin and, when it did not sell, published the bulk of it. A publicly funded body paying a criminal group is not a straightforward option even setting aside the ethics, it raises sanctions exposure and the use of public money to fund organised crime. The Library refused, and then absorbed the consequence in full view."}},{"@type":"Question","name":"Why did recovery take so long if there were backups?","acceptedAnswer":{"@type":"Answer","text":"Because restoring data is not the same as restoring a service. The Library's estate had accumulated over decades, and a significant part of it ran on legacy infrastructure that could not be safely reinstated onto modern, hardened platforms. Much of what looked like recovery was actually rebuilding: standing up replacement systems and migrating to them, rather than switching the old ones back on. Age was both the reason the attack succeeded and the reason recovery dragged."}},{"@type":"Question","name":"What was in the stolen data?","acceptedAnswer":{"@type":"Answer","text":"Internal documents and employee personal data, including HR and financial material, along with some user account data. The Library advised users who had reused their Library password elsewhere to change it. Researchers' reading histories and the collection itself were not the target, the damage to scholarship came from services being unavailable, not from what the attackers took."}},{"@type":"Question","name":"What makes this case unusual?","acceptedAnswer":{"@type":"Answer","text":"The report the Library published in March 2024. Rather than a short statement, it set out what happened, which weaknesses contributed, and what the institution had and had not addressed beforehand, including its own reliance on ageing systems and the absence of multi-factor authentication on the access route that was used. Very few organisations publish that. Its practical value to other institutions is larger than the incident itself."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Employee personal data · Internal financial and HR documents · Some user account data</p>
 
-<p class="lead">A national library is not an obvious target. It holds no card numbers worth speaking of, sells almost nothing, and its most valuable assets are objects that cannot be encrypted. Rhysida attacked it anyway, and the result was an unusually clear demonstration that the harm in a ransomware attack often has very little to do with the data.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>A national library is not an obvious target. It holds no card numbers worth speaking of, sells almost nothing, and its most valuable assets are objects that cannot be encrypted. Rhysida attacked it anyway, and the result was an unusually clear demonstration that the harm in a ransomware attack often has very little to do with the data.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Most likely compromised credentials for third-party access on a Terminal Services server provisioned without multi-factor authentication</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Recovery reported in the region of £6, 7 million, met from the Library's own reserves; core services disrupted for the best part of a year</p>
+<p>Reported scale: Around 600GB exfiltrated, roughly 490,000 files, including employee personal data.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">A national library is not an obvious target. It holds no card numbers worth speaking of, sells almost nothing, and its most valuable assets are objects that cannot be encrypted. Rhysida attacked it anyway, and the result was an unusually clear demonstration that the harm in a ransomware attack often has very little to do with the data.</p>
 
 <h2>What happened</h2>
 
@@ -134,19 +138,22 @@
 
 <p>The population most affected is staff rather than readers. Employee personal data, including HR and financial records, was published, and there is no mechanism for withdrawing it once it is on a leak site. The remedies there are the ones that apply to any exposure of identity data: vigilance about approaches that cite real internal detail, and scepticism about anyone who establishes credibility by reciting information that is now freely available.</p>
 
-<p>For readers, the exposure was narrower. The Library advised anyone who had reused their Library account password elsewhere to change it, which is the correct advice and worth restating in general form: the harm from a leaked password at a low-value service is almost entirely determined by whether that password exists anywhere else. If it was unique, a breach of the service that held it is an inconvenience. If it was not, the breach is about your email account, and it always was.</p>
+<p>For readers, the exposure was narrower. The Library advised anyone who had reused their Library account password elsewhere to change it, which is the correct advice and worth restating in general form: the harm from a leaked password at a low-value service is almost entirely determined by whether that password exists anywhere else. If it was unique, a breach of the service that held it is an inconvenience. If it was not, the breach is about your email account, and it always was.</p></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -231,9 +238,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

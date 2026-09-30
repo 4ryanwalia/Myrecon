@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Heartland, 2008: 130 million cards from a company that had just passed its audit","description":"Heartland was certified compliant with the card industry security standard. A SQL injection flaw let attackers plant a sniffer on the network that processed 100 million transactions a month.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/heartland-2008.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Heartland Payment Systems data breach"},"wordCount":674}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Heartland Payment Systems data breach","item":"https://www.myrecon.xyz/breaches/case-files/heartland-2008.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How can a company be PCI compliant and still be breached?","acceptedAnswer":{"@type":"Answer","text":"Because compliance is a point-in-time assessment against a checklist, and security is a continuous property of a live system. Heartland had been assessed as compliant shortly before the breach. The assessment did not find the SQL injection flaw in a web application, and nothing in a passed audit stops an attacker who arrives the following week."}},{"@type":"Question","name":"What is a packet sniffer and why was it so effective here?","acceptedAnswer":{"@type":"Answer","text":"Software that captures network traffic as it passes. Card data was encrypted in transit to and from merchants but was processed in the clear inside Heartland's own network. A sniffer placed there could read card numbers and full magnetic stripe data from a stream carrying around 100 million transactions a month."}},{"@type":"Question","name":"Did the breach kill the company?","acceptedAnswer":{"@type":"Answer","text":"No. Heartland disclosed publicly, absorbed roughly $145 million in costs, and its chief executive became an unusually vocal advocate for end-to-end encryption of card data, arguing publicly that the industry's approach was inadequate. The company was later acquired. Candour after a breach turned out to be survivable."}},{"@type":"Question","name":"Why did disclosure happen on inauguration day?","acceptedAnswer":{"@type":"Answer","text":"Heartland announced on 20 January 2009, the day of the US presidential inauguration, and was widely criticised for choosing a day when the news agenda was full. It is one of the earliest and most-cited examples of disclosure timing being treated as a communications decision, which is exactly why the timing of any breach announcement is now scrutinised."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Card numbers · Expiry dates · Magnetic stripe track data</p>
 
-<p class="lead">Heartland Payment Systems processed around 100 million card transactions a month for small and medium-sized merchants. It had been assessed as compliant with the card industry's security standard. It was also, at that moment, hosting a packet sniffer that had been quietly copying card data off its own network for months.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Heartland Payment Systems processed around 100 million card transactions a month for small and medium-sized merchants. It had been assessed as compliant with the card industry's security standard. It was also, at that moment, hosting a packet sniffer that had been quietly copying card data off its own network for months.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>SQL injection into a corporate web application, then lateral movement and a packet sniffer on the payment network</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Around $145 million in settlements and costs</p>
+<p>Reported scale: about 130 million card numbers.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 3 min</summary><p class="lead">Heartland Payment Systems processed around 100 million card transactions a month for small and medium-sized merchants. It had been assessed as compliant with the card industry's security standard. It was also, at that moment, hosting a packet sniffer that had been quietly copying card data off its own network for months.</p>
 
 <h2>What happened</h2>
 
@@ -136,19 +140,22 @@
   <li><strong>Segment networks by sensitivity, not by convenience.</strong> The months the attackers spent bridging corporate to payment were months of opportunity to detect them.</li>
   <li><strong>Reduce where sensitive data exists in readable form.</strong> Encryption at rest and in transit is table stakes; the interesting question is what happens in between.</li>
   <li><strong>As a cardholder: this is why chip cards and tokenised mobile payments exist.</strong> Both remove the reusable secret that sniffers of this era were harvesting.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -232,9 +239,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

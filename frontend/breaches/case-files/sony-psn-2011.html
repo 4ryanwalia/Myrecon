@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"PlayStation Network, 2011: 77 million accounts and 23 days offline","description":"Sony took PlayStation Network down for 23 days after attackers took 77 million account records. The ICO later found the attack could have been prevented.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/sony-psn-2011.html","articleSection":"Case Files","about":{"@type":"Thing","name":"PlayStation Network outage and data breach"},"wordCount":898}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"PlayStation Network outage and data breach","item":"https://www.myrecon.xyz/breaches/case-files/sony-psn-2011.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were PlayStation Network passwords encrypted?","acceptedAnswer":{"@type":"Answer","text":"Sony initially said only that they were not stored in plain text, which is a statement that can cover anything from robust protection to a reversible transformation. Days later it said the passwords had been hashed. The UK regulator's later finding was that password security was not up to standard for a company of Sony's resources. The gap between the first vague statement and the later detail is the part users remember."}},{"@type":"Question","name":"Were credit cards stolen?","acceptedAnswer":{"@type":"Answer","text":"Sony said there was no evidence card data was taken, while acknowledging it could not rule it out, and noted that the card table was encrypted. Widespread card fraud attributable to the incident was never established. Given 77 million accounts, the absence of a documented fraud wave is reasonable evidence the card data held."}},{"@type":"Question","name":"Why was PlayStation Network down for 23 days?","acceptedAnswer":{"@type":"Answer","text":"Because Sony did not simply patch and restart. It rebuilt the service on new infrastructure in a different data centre with a redesigned security architecture, having concluded that the existing environment could not be trusted. That is the right decision and it is also why the outage was measured in weeks. Recovering from a breach and restoring a service are different projects."}},{"@type":"Question","name":"What did Sony give affected users?","acceptedAnswer":{"@type":"Answer","text":"A Welcome Back programme of free games and PlayStation Plus subscription time, plus identity theft protection in some regions. A US class action settled in 2014 for up to $15 million in games and credits. The UK ICO fine of £250,000 was appealed and the appeal later withdrawn."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Addresses · Email addresses · Dates of birth · PSN login credentials · Purchase history · Some card details on file</p>
 
-<p class="lead">For 23 days in the spring of 2011, nobody could play online on a PlayStation 3. It remains the longest outage a major consumer online service has taken voluntarily, and Sony took it because the alternative was bringing back a network it no longer trusted.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>For 23 days in the spring of 2011, nobody could play online on a PlayStation 3. It remains the longest outage a major consumer online service has taken voluntarily, and Sony took it because the alternative was bringing back a network it no longer trusted.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Intrusion into application servers running outdated, unpatched software behind an inadequately protected network boundary</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Sony estimated around $171 million; the UK ICO fined it £250,000 in 2013</p>
+<p>Reported scale: 77 million PSN accounts, plus 24.6 million Sony Online Entertainment accounts.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">For 23 days in the spring of 2011, nobody could play online on a PlayStation 3. It remains the longest outage a major consumer online service has taken voluntarily, and Sony took it because the alternative was bringing back a network it no longer trusted.</p>
 
 <h2>What happened</h2>
 
@@ -143,19 +147,22 @@
   <li><strong>Turn on two-factor authentication on gaming accounts.</strong> They hold payment methods, purchase libraries worth real money, and an identity that other players trust.</li>
   <li><strong>Remove stored cards you do not need.</strong> A saved card is a convenience you use occasionally and a liability that is held permanently.</li>
   <li><strong>Date of birth was in this file.</strong> It is still asked as an identity check by banks and telecoms companies today, which is a good argument for not treating it as secret.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -240,9 +247,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

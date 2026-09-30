@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"VTech, 2015: six million children in a toy company's database","description":"A breach of a children's tablet maker exposed 6.4 million child profiles, along with chat logs and photographs. The attacker's stated motive was to prove it was possible.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/vtech-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"VTech data breach"},"wordCount":1022}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"VTech data breach","item":"https://www.myrecon.xyz/breaches/case-files/vtech-2015.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is children's data treated as a special category?","acceptedAnswer":{"@type":"Answer","text":"Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service."}},{"@type":"Question","name":"What actually made this breach so bad technically?","acceptedAnswer":{"@type":"Answer","text":"Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection, such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit."}},{"@type":"Question","name":"What did the attacker do with the data?","acceptedAnswer":{"@type":"Answer","text":"Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful, an arrest followed in the UK, but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested."}},{"@type":"Question","name":"Did VTech face consequences?","acceptedAnswer":{"@type":"Answer","text":"The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Children's names · Dates of birth · Genders · Parents' names and addresses · Email addresses · Password hashes and plain-text security answers · Chat logs and photographs from Kid Connect</p>
 
-<p class="lead">Most breach write-ups can tell you what the victims should do next. This one largely cannot, because the victims were four, six and nine years old, and the identifiers that leaked are ones they will carry for the rest of their lives.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Most breach write-ups can tell you what the victims should do next. This one largely cannot, because the victims were four, six and nine years old, and the identifiers that leaked are ones they will carry for the rest of their lives.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>SQL injection against the Learning Lodge app store, with passwords protected only by unsalted MD5 and security answers stored in plain text</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>$650,000 FTC settlement in 2018 over children's privacy violations</p>
+<p>Reported scale: Around 4.9 million parent accounts and 6.4 million child profiles.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Most breach write-ups can tell you what the victims should do next. This one largely cannot, because the victims were four, six and nine years old, and the identifiers that leaked are ones they will carry for the rest of their lives.</p>
 
 <h2>What happened</h2>
 
@@ -150,19 +154,22 @@
   <li><strong>Never reuse a household password on a toy or children's service.</strong> These are among the least well-secured consumer services in existence, and this case is the proof.</li>
   <li><strong>Check whether the messaging feature stores anything centrally.</strong> If a child can send a photograph through the product, that photograph is on a server somewhere with a retention policy you have not read.</li>
   <li><strong>Where a jurisdiction gives children deletion rights, use them when a device is retired.</strong> The account usually outlives the toy by many years, and nobody goes back to close it.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;VTech&quot;,&quot;breach_date&quot;:&quot;2015-11-27&quot;,&quot;match_year&quot;:true}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -247,9 +254,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

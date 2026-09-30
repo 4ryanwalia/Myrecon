@@ -35,6 +35,30 @@
     "band": "Severe",
     "data_provider": null,
     "summary": "In early 2023, over 200M records scraped from Twitter appeared on a popular hacking forum. The data was obtained sometime in 2021 by abusing an API that enabled email addresses to be resolved to Twitter profiles. The subsequent results were then composed into a corpus of data containing email addresses alongside public Twitter profile information including names, usernames and follower counts.",
+    "story": {
+      "background": [
+        "In early 2023, over 200M records scraped from Twitter appeared on a popular hacking forum . The data was obtained sometime in 2021 by abusing an API that enabled email addresses to be resolved to Twitter profiles. The subsequent results were then composed into a corpus of data containing email addresses alongside public Twitter profile information including names, usernames and follower counts."
+      ],
+      "how": [
+        "In early 2023, over 200M records scraped from Twitter appeared on a popular hacking forum ."
+      ],
+      "motive": [],
+      "outcome": [
+        "211,524,284 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, Names, Social media profiles, Usernames."
+      ],
+      "editorial": [
+        "This one is dangerous for a reason the account count does not convey. The API that was abused resolved an email address to a profile. The resulting file therefore does something no ordinary credential dump does: it links a pseudonymous handle to a real email address. For most people that is an annoyance.",
+        "For anyone whose account was deliberately separated from their identity, someone posting under a pseudonym about a government, an employer, an abusive partner, a religion they left, or a diagnosis, it is the specific harm they built the separation to prevent. The link is not reversible, the file is public, and a password change does nothing about it. If that applies to you, the useful response is not account hygiene.",
+        "It is to check which email address the pseudonymous account was registered with, assume the connection is known, and decide whether the account should continue under that identity at all."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "Twitter200M",
+        "breach_date": "2021-01-01"
+      }
+    ],
     "fields": [
       {
         "name": "Names",

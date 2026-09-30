@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"WannaCry, 2017: the patch had been available for two months","description":"A leaked intelligence-agency exploit turned ransomware into a worm that needed nobody to click anything. Microsoft had shipped the fix in March. The NHS lost 19,000 appointments in May.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/wannacry-2017.html","articleSection":"Case Files","about":{"@type":"Thing","name":"WannaCry ransomware outbreak"},"wordCount":1134}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"WannaCry ransomware outbreak","item":"https://www.myrecon.xyz/breaches/case-files/wannacry-2017.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How is a worm different from ordinary ransomware?","acceptedAnswer":{"@type":"Answer","text":"Ordinary ransomware needs a person to do something, open an attachment, run a file, follow a link. A worm does not. WannaCry carried an exploit for a network file-sharing protocol, so an infected machine could scan for and infect other reachable machines by itself. Nobody at the organisations hit had to make a mistake on the day. One vulnerable machine anywhere on a flat network was enough to take the network."}},{"@type":"Question","name":"If Microsoft had already patched it, why did it spread?","acceptedAnswer":{"@type":"Answer","text":"Because patching a large estate is not one action. MS17-010 shipped in March 2017 and the outbreak was in May, and in between sat change control windows, machines that only patch when someone is logged in, systems whose vendors had not certified the update, and equipment nobody could take offline. The patch existed. Applying it everywhere was a programme of work, not a decision."}},{"@type":"Question","name":"What was the kill switch?","acceptedAnswer":{"@type":"Answer","text":"The malware checked whether a particular unregistered domain resolved before encrypting, and stopped if it did, most likely a check for the kind of sandbox that answers every DNS query. A researcher analysing the sample registered the domain for a few dollars, which halted a large share of new infections worldwide within hours. It was a real and enormous intervention, and it was also luck, and it did nothing for machines already encrypted."}},{"@type":"Question","name":"Did the NHS pay any ransoms?","acceptedAnswer":{"@type":"Answer","text":"The National Audit Office found no NHS organisation paid the ransom. The ransom was in any case a poor deal: the payment and decryption mechanism was crude, tracking who had paid was unreliable, and the operators collected a relatively trivial sum overall. The cost was almost entirely in disruption, cancelled care and recovery, not in payments."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Encrypted files across hospitals, manufacturers and logistics firms · Clinical service availability</p>
 
-<p class="lead">On the afternoon of 12 May 2017, screens across English hospitals turned red. Appointments were cancelled, ambulances diverted, and staff went back to paper, not because anyone at those hospitals clicked anything, but because a machine somewhere on the network was reachable on port 445 and had not been patched since March.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>On the afternoon of 12 May 2017, screens across English hospitals turned red. Appointments were cancelled, ambulances diverted, and staff went back to paper, not because anyone at those hospitals clicked anything, but because a machine somewhere on the network was reachable on port 445 and had not been patched since March.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>The EternalBlue exploit against Microsoft's SMBv1 file-sharing protocol, leaked publicly the previous month and patched by Microsoft in March 2017</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Estimated £92 million to the NHS in England alone; 80 of 236 trusts disrupted and over 19,000 appointments cancelled</p>
+<p>Reported scale: No data stolen; more than 200,000 computers encrypted across around 150 countries.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On the afternoon of 12 May 2017, screens across English hospitals turned red. Appointments were cancelled, ambulances diverted, and staff went back to paper, not because anyone at those hospitals clicked anything, but because a machine somewhere on the network was reachable on port 445 and had not been patched since March.</p>
 
 <h2>What happened</h2>
 
@@ -141,19 +145,22 @@
 
 <p>For individuals, the ordinary advice covers this entirely: keep automatic updates on, and keep a backup that is not permanently connected to the machine it protects. The people who lost personal files to WannaCry were overwhelmingly those whose only copy was on the encrypted disk, or on a drive plugged into it.</p>
 
-<p>For anyone responsible for a network containing equipment that cannot be patched, a clinic, a workshop, a small factory, the practical lesson is that patching is not the only lever and often not the available one. Put the unpatchable things where the rest of the network cannot reach them, take away their internet access if they do not need it, and test whether you could restore from backup while the systems are down rather than assuming you could. WannaCry was survivable. What determined survival was almost never how modern the machines were.</p>
+<p>For anyone responsible for a network containing equipment that cannot be patched, a clinic, a workshop, a small factory, the practical lesson is that patching is not the only lever and often not the available one. Put the unpatchable things where the rest of the network cannot reach them, take away their internet access if they do not need it, and test whether you could restore from backup while the systems are down rather than assuming you could. WannaCry was survivable. What determined survival was almost never how modern the machines were.</p></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -238,9 +245,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

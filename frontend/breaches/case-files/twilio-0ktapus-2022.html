@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"0ktapus, 2022: one text message, one hundred and thirty companies","description":"A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies. Cloudflare was targeted with the same messages and lost nothing.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"0ktapus phishing campaign"},"wordCount":927}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"0ktapus phishing campaign","item":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"If they had one-time codes, is two-factor authentication useless?","acceptedAnswer":{"@type":"Answer","text":"No, the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one."}},{"@type":"Question","name":"What actually happened to Twilio customers?","acceptedAnswer":{"@type":"Answer","text":"Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them."}},{"@type":"Question","name":"Why is it called 0ktapus?","acceptedAnswer":{"@type":"Answer","text":"Group-IB, which analysed the campaign, named it after the phishing pages themselves, most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises."}},{"@type":"Question","name":"How did attackers know which employees to text?","acceptedAnswer":{"@type":"Answer","text":"Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Corporate credentials · One-time passcodes · Customer support tooling access · Phone numbers of 1,900 Signal users</p>
 
-<p class="lead">In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>SMS phishing to employees, directing them to convincing fake single sign-on pages that relayed credentials and one-time codes in real time</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Not disclosed; downstream compromises at Twilio, Signal, DoorDash, Mailchimp and others</p>
+<p>Reported scale: ~9,900 accounts and ~5,400 one-time codes captured across 130+ organisations.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p>
 
 <h2>What happened</h2>
 
@@ -140,19 +144,22 @@
   <li><strong>Treat any login page you arrived at from a message as hostile.</strong> Not because you will spot the fake, the people in this case did not, but because navigating there yourself removes the attack entirely.</li>
   <li><strong>A code you were asked for is more dangerous than a password you volunteered.</strong> Legitimate services do not phone or text asking you to read a code back. That request is, on its own, sufficient evidence of an attack.</li>
   <li><strong>Assume your work phone number is known.</strong> It leaks from directories, breaches and conference lists, and it is the delivery channel for this entire class of attack.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -237,9 +244,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

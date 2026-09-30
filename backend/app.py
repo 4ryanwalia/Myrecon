@@ -14,6 +14,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 import threading
 
 from flask import Flask, request, g, Response, jsonify, stream_with_context
@@ -465,6 +466,27 @@ def _register_routes(app: Flask) -> None:
             },
         })
 
+    @app.route("/api/breach-check", methods=["POST", "OPTIONS"])
+    def api_breach_check():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from services.breach_check import check_incident
+        body = _json_body()
+        email = validation.email(body.get("email", ""))
+        targets = body.get("targets", [])
+        if not isinstance(targets, list) or len(targets) > 3:
+            raise validation.ValidationError("Invalid breach selection.")
+        for target in targets:
+            if (not isinstance(target, dict) or not isinstance(target.get("name"), str)
+                    or not 1 <= len(target["name"]) <= 120
+                    or not isinstance(target.get("breach_date"), str)
+                    or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", target["breach_date"])
+                    or not isinstance(target.get("match_year", False), bool)):
+                raise validation.ValidationError("Invalid breach selection.")
+        resp, status = responses.ok(check_incident(email, targets))
+        resp.headers["Cache-Control"] = "no-store"
+        return resp, status
+
     @app.route("/api/username", methods=["POST", "OPTIONS"])
     def api_username():
         if request.method == "OPTIONS":
@@ -658,8 +680,16 @@ def _register_routes(app: Flask) -> None:
         email = validation.email(body.get("email", ""))
         # Email/breach responses are processed live and never retained in the
         # application cache or the account scan database.
-        check_linked = validation.boolean(body.get("check_linked_accounts"), default=True)
+        check_linked = validation.boolean(body.get("check_linked_accounts"), default=False)
         return responses.ok(scan_email(email, check_linked_accounts=check_linked))
+
+    @app.route("/api/email/accounts", methods=["POST", "OPTIONS"])
+    def api_email_accounts():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from modules.registered_accounts import scan_registered_accounts
+        email = validation.email(_json_body().get("email", ""))
+        return responses.ok({"registration_checks": scan_registered_accounts(email)})
 
     @app.route("/api/domain", methods=["POST", "OPTIONS"])
     def api_domain():

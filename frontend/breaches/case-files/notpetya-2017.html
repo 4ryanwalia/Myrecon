@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"NotPetya, 2017: the update that cost ten billion dollars","description":"A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours. Damage is estimated at $10 billion.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/notpetya-2017.html","articleSection":"Case Files","about":{"@type":"Thing","name":"NotPetya cyberattack"},"wordCount":1077}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"NotPetya cyberattack","item":"https://www.myrecon.xyz/breaches/case-files/notpetya-2017.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was NotPetya ransomware?","acceptedAnswer":{"@type":"Answer","text":"It was designed to look like ransomware and was not one. Real ransomware needs a working payment and decryption path, because a crew that never returns files stops being paid. NotPetya overwrote the key material it claimed to be holding and used a single hardcoded contact address that the email provider shut down within hours. Recovery was never on offer. The ransom screen was camouflage for a destructive weapon."}},{"@type":"Question","name":"Was any data stolen in NotPetya?","acceptedAnswer":{"@type":"Answer","text":"No. This is the unusual thing about it. Nothing was exfiltrated and nobody was blackmailed with leaked files. The entire cost came from destroyed machines, lost production and the months of rebuilding, which is why it remains the most expensive cyber incident on record despite exposing no personal data at all."}},{"@type":"Question","name":"How did NotPetya spread so fast?","acceptedAnswer":{"@type":"Answer","text":"It used three methods at once: EternalBlue, the leaked NSA exploit for a Windows file-sharing flaw; EternalRomance, a related exploit; and credential theft from the memory of each machine it reached, which let it log into other machines legitimately using Windows' own administration tools. That third method is why patched machines still fell. A fully updated computer will still accept a valid administrator password."}},{"@type":"Question","name":"Did insurance cover NotPetya losses?","acceptedAnswer":{"@type":"Answer","text":"Not without a fight. Insurers initially refused several of the largest claims by invoking war exclusions, arguing a state attack was an act of war. Mondelez settled with Zurich in 2022 and Merck settled in January 2024, after a New Jersey appellate court ruled that the exclusion did not apply to a cyberattack on this wording. Policies have been rewritten since with explicit state-actor clauses."}}]}</script>
@@ -89,7 +87,13 @@
         <div class="cf-fact"><dt>What it cost</dt><dd>~$10 billion globally. Maersk ~$300m, Merck ~$870m, FedEx's TNT ~$400m, Mondelez ~$188m</dd></div>
       </dl>
 
-<p class="lead">On 27 June 2017, accountants across Ukraine opened their tax software and it updated itself, as it had a hundred times before. Within hours, shipping terminals in India stopped moving containers, a chocolate factory in Australia stopped making chocolate, and hospitals in Pennsylvania could not access patient records. Nothing was stolen. That was never the objective.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>On 27 June 2017, accountants across Ukraine opened their tax software and it updated itself, as it had a hundred times before. Within hours, shipping terminals in India stopped moving containers, a chocolate factory in Australia stopped making chocolate, and hospitals in Pennsylvania could not access patient records. Nothing was stolen. That was never the objective.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Compromised update server for M.E.Doc, Ukrainian tax accounting software, then automatic spread using EternalBlue and stolen credentials</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>Then it overwrote the master boot record and displayed a ransom demand.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>~$10 billion globally. Maersk ~$300m, Merck ~$870m, FedEx's TNT ~$400m, Mondelez ~$188m</p>
+<p>Reported scale: No data stolen, an estimated $10 billion in destroyed systems.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On 27 June 2017, accountants across Ukraine opened their tax software and it updated itself, as it had a hundred times before. Within hours, shipping terminals in India stopped moving containers, a chocolate factory in Australia stopped making chocolate, and hospitals in Pennsylvania could not access patient records. Nothing was stolen. That was never the objective.</p>
 
 <h2>What happened</h2>
 
@@ -156,19 +160,22 @@
   <li><strong>Patching is necessary and not sufficient.</strong> NotPetya spread to fully patched machines using valid credentials. Limiting where administrator accounts can log in matters as much as keeping software current.</li>
   <li><strong>Know what would happen if your directory service vanished.</strong> Most organisations have never tested restoring it, and most recovery plans quietly assume it survives.</li>
   <li><strong>For individuals: a ransom screen is not proof there is a key.</strong> Paying never guarantees recovery, and in this case it could not have delivered it. A current offline backup is the only reliable answer.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -253,9 +260,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

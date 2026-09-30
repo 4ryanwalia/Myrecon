@@ -144,7 +144,7 @@ def test_email_unexpected_failure_keeps_other_provider_results(monkeypatch):
     monkeypatch.setattr(lookup, "xposed_check_email", lambda e: {"status": "ok", "checked": True, "breached": True, "count": 1, "sources": [{"name": "Fixture"}]})
     monkeypatch.setattr(lookup, "github", lambda e: None)
     monkeypatch.setattr(lookup, "pgp", lambda e: {"exists": False})
-    result = lookup.scan("fixture@example.com")
+    result = lookup.scan("fixture@example.com", check_linked_accounts=True)
     assert result["gravatar"]["exists"]
     assert result["summary"]["breached"]
     assert result["summary"]["breach_status"] == "partial_unavailable"
@@ -162,7 +162,7 @@ def test_email_route_never_caches_even_successful_lookups(monkeypatch):
     for _ in range(2):
         assert client.post("/api/email", json={"email": "fixture@example.com"}).status_code == 200
     assert len(calls) == 2
-    assert all(option is True for _, option in calls)
+    assert all(option is False for _, option in calls)
 
 
 def test_username_soft_failure_survives_stream_completion(monkeypatch):

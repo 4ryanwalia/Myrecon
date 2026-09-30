@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Cambridge Analytica, 2018: the breach that was not a breach","description":"Data on 87 million Facebook users reached a political consultancy. Nothing was hacked. The platform handed it over through a documented feature working exactly as designed.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/cambridge-analytica-2018.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Facebook and Cambridge Analytica data scandal"},"wordCount":952}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Facebook and Cambridge Analytica data scandal","item":"https://www.myrecon.xyz/breaches/case-files/cambridge-analytica-2018.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was Cambridge Analytica a data breach?","acceptedAnswer":{"@type":"Answer","text":"Facebook argued strenuously that it was not, and on a narrow technical reading it was right: no system was compromised and no access control failed. The data was collected through an API doing precisely what it was built to do. The term still stuck, because from the perspective of the 87 million people involved, information about them ended up somewhere they had never agreed to and could not have prevented. That gap between what is technically a breach and what is experienced as one is the whole reason this case matters."}},{"@type":"Question","name":"How did 270,000 quiz takers become 87 million people?","acceptedAnswer":{"@type":"Answer","text":"Facebook's Graph API in that era let an app request not only the installing user's data but data about their friends. So one person taking a personality quiz handed over their own profile and a slice of everyone they were connected to. The friends were never asked, never notified, and had no way to find out. Facebook restricted this in 2014 and removed it in 2015, but apps that had already collected data kept what they had."}},{"@type":"Question","name":"Did Cambridge Analytica actually swing an election?","acceptedAnswer":{"@type":"Answer","text":"This is genuinely disputed and worth stating as such. The company marketed psychographic targeting as decisively effective; academic researchers have been consistently sceptical that the technique performs meaningfully better than conventional demographic targeting. What is not disputed is that the data was obtained, transferred and used. Whether it worked is a separate question from whether it was permissible."}},{"@type":"Question","name":"What happened to the companies involved?","acceptedAnswer":{"@type":"Answer","text":"Cambridge Analytica and SCL Elections entered insolvency proceedings in May 2018. Facebook paid a $5 billion penalty to the FTC in 2019, the largest privacy penalty in US history at that point, settled with the SEC for $100 million over its disclosures to investors, and was fined £500,000 by the UK ICO, the maximum available under the pre-GDPR regime that applied to the conduct."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Profile data · Page likes · Locations · Friend lists · Some private messages for a small subset</p>
 
-<p class="lead">Nothing was hacked. No password was stolen, no server was compromised, no vulnerability was exploited. Data on up to 87 million people moved from a social network to a political consultancy through a documented feature, used as documented, by an app that had been approved. This is a case file about a platform working correctly and that being the problem.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Nothing was hacked. No password was stolen, no server was compromised, no vulnerability was exploited. Data on up to 87 million people moved from a social network to a political consultancy through a documented feature, used as documented, by an app that had been approved. This is a case file about a platform working correctly and that being the problem.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Legitimate use of Facebook's Graph API by a third-party app, then onward transfer of the data in breach of platform terms</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>$5 billion FTC penalty against Facebook, a $100 million SEC settlement, a £500,000 ICO fine, and the closure of Cambridge Analytica</p>
+<p>Reported scale: Up to 87 million Facebook users.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Nothing was hacked. No password was stolen, no server was compromised, no vulnerability was exploited. Data on up to 87 million people moved from a social network to a political consultancy through a documented feature, used as documented, by an app that had been approved. This is a case file about a platform working correctly and that being the problem.</p>
 
 <h2>What happened</h2>
 
@@ -145,19 +149,22 @@
   <li><strong>Assume anything a friend can see about you can leave with them.</strong> Their app permissions, their screenshots, their account compromise. Privacy settings govern visibility, not what happens afterwards.</li>
   <li><strong>Quizzes and personality tests remain a collection method, not a pastime.</strong> The format survived the scandal because it works, and the permissions it requests are the entire product.</li>
   <li><strong>Page likes are more revealing than you would guess.</strong> The research underpinning this case showed that a modest set of likes predicts attributes people consider private. The data does not need to be sensitive to produce a sensitive inference.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -242,9 +249,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

@@ -17,8 +17,8 @@ of sources that are documented, stable, and accurate:
                                    has confirmed it by email)
 
 "Linked services" is built only from those: named breaches the address
-appears in, plus the public profiles above. Sign-up and password-reset
-forms are deliberately not probed; see _linked_services.
+appears in, public profiles, and optional bounded registration signals.
+Password-recovery requests are excluded; see registered_accounts.
 """
 
 import hashlib
@@ -171,11 +171,9 @@ def _linked_services(gravatar: dict, github, pgp: dict, breaches: dict,
                was registered there at the time (it may have been closed since)
       profile  a public source answered for this exact address right now
 
-    Deliberately NOT here: probing sign-up or password-reset forms ("is this
-    email taken?") on Spotify, Apple and the like. That is how tools such as
-    holehe work; it breaks those sites' terms, is unreliable from a
-    datacentre, and some forms email the address's owner. A site missing from
-    this list therefore means "no evidence", never "no account".
+    Historical records are evidence of a past service association, not proof
+    of an active account. Optional registration signals are merged separately.
+    A missing service means no evidence, never no account.
     """
     rows: dict = {}
     compilations = set()
@@ -237,6 +235,24 @@ def _linked_services(gravatar: dict, github, pgp: dict, breaches: dict,
         "from_profiles": sum(r["kind"] == "profile" for r in ordered),
         "compilations_skipped": len(compilations),
     }
+
+
+def _merge_registration_services(services: dict, registration: dict) -> dict:
+    rows = {_service_key(r["service"]): {**r} for r in services["services"]}
+    for check in registration.get("services", []):
+        if check.get("status") != "found":
+            continue
+        key = _service_key(check["domain"] or check["service"])
+        old = rows.get(key)
+        if old:
+            old["registration_status"] = "found"
+            old["registration_evidence"] = check["reason"]
+        else:
+            rows[key] = {"service": check["service"], "kind": "registration", "domain": check["domain"],
+                         "url": f'https://{check["domain"]}', "date": "", "evidence": check["reason"]}
+    ordered = sorted(rows.values(), key=lambda r: (r["kind"] == "breach", r["service"].lower()))
+    return {**services, "services": ordered, "count": len(ordered),
+            "from_registration": sum(r["kind"] == "registration" or r.get("registration_status") == "found" for r in ordered)}
 
 
 class EmailLookup:
@@ -655,7 +671,7 @@ class EmailLookup:
         return {"exists": False, "status": "unavailable"}
 
     # ── Orchestration ────────────────────────────────────────────
-    def scan(self, email: str, check_linked_accounts: bool = True) -> dict:
+    def scan(self, email: str, check_linked_accounts: bool = False) -> dict:
         errors = []
 
         def safely(name, method, defaults, nullable=False):
@@ -703,6 +719,10 @@ class EmailLookup:
         pgp = (safely("OpenPGP", self.pgp, {"exists": False})
                if check_linked_accounts else {"exists": False, "status": "skipped"})
         services = _linked_services(gravatar, github, pgp, breaches, darkweb, fallback)
+        from modules.registered_accounts import scan_registered_accounts
+        registration = (scan_registered_accounts(email) if check_linked_accounts
+                        else {"status": "skipped", "services": [], "checked": 0, "attempted": 0})
+        services = _merge_registration_services(services, registration)
 
         linked = []
         if gravatar["exists"]:
@@ -755,6 +775,7 @@ class EmailLookup:
             "analysis": analysis,
             "gravatar": gravatar,
             "github": github,
+            "registration_checks": registration,
             "account_checks": {"enabled": check_linked_accounts, "sources": [
                 {"name": "GitHub", "status": (github_result or {}).get("status", "found" if github else "no_match")},
                 {"name": "Gravatar", "status": gravatar.get("status", "found" if gravatar.get("exists") else "no_match")},

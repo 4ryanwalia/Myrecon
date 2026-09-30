@@ -399,34 +399,16 @@ a.card { display: block; }
 .linklike:hover { text-decoration-thickness: 2px; }
 
 /* Question-first starts in the empty results state */
-.quick-starts {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px;
-  max-width: 760px; margin: 20px auto 0; text-align: left;
-}
-/* Let the starter choices use the width of their panel on wide screens. */
-.home-page .results-section .empty:has(.quick-starts) {
-  padding: clamp(24px, 3vw, 42px);
-  text-align: left;
-}
-.home-page .results-section .quick-starts {
-  max-width: none;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 22px;
-}
-@media (max-width: 820px) {
-  .home-page .results-section .quick-starts { grid-template-columns: 1fr; }
-}
-.quick-start {
-  display: flex; align-items: flex-start; gap: 12px; padding: 14px; cursor: pointer;
-  font-family: inherit; text-align: left; color: var(--text);
-  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm);
-  transition: border-color 0.16s, transform 0.12s;
-}
-.quick-start:hover { border-color: var(--accent); transform: translateY(-1px); }
-.empty .quick-start svg { flex-shrink: 0; margin: 2px 0 0; opacity: 1; color: var(--accent); }
-.quick-start strong { display: block; font-size: 0.9rem; font-weight: 650; }
-.quick-start small { display: block; margin-top: 3px; font-size: 0.8rem; line-height: 1.45; color: var(--text-mute); }
+.quick-links { max-width:760px; margin:20px auto 0; text-align:left; border-top:1px solid var(--border); }
+.home-page .results-section .empty:has(.quick-links) { padding:clamp(24px,3vw,42px); text-align:left; }
+.home-page .results-section .quick-links { max-width:none; }
+.quick-link { display:flex; width:100%; align-items:center; gap:14px; padding:16px 0; cursor:pointer; font:inherit; text-align:left; color:var(--text); background:none; border:0; border-bottom:1px solid var(--border); }
+.quick-link:hover { color:var(--accent-text); }
+.quick-link:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+.empty .quick-link svg { flex-shrink:0; margin:0; opacity:1; color:var(--text-dim); }
+.quick-link strong { display:block; font-size:.9rem; font-weight:600; }
+.quick-link small { display:block; margin-top:3px; font-size:.8rem; line-height:1.45; color:var(--text-mute); }
+.quick-link-arrow { margin-left:auto; flex-shrink:0; }
 
 /* Saved-item remove button */
 .history-item [data-del] { margin-left: auto; width: 28px; height: 28px; font-size: 1.05rem; line-height: 1; flex-shrink: 0; }
@@ -1186,3 +1168,9 @@ img.nav-avatar, img.acct-avatar { object-fit: cover; background: var(--border-co
 .bc-details[open] summary::after { content: ' −'; }
 .bc-details .bc-body { padding: 10px 0 0; }
 @media (max-width: 600px) { .bc-title { flex-direction: column; gap: 5px; } .bc-title .bc-meta { margin-left: 0; } }
+
+/* Optional email registration coverage. */
+.registration-coverage { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+.registration-coverage summary { cursor: pointer; font-weight: 600; line-height: 1.5; }
+.registration-coverage[open] .svc-list { max-height: 480px; overflow-y: auto; margin-top: 12px; }
+.registration-coverage .svc-ev { overflow-wrap: anywhere; }

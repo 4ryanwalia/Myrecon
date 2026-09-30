@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Marriott and Starwood, 2018: a breach that came with the acquisition","description":"Marriott bought Starwood in 2016. The reservation database it acquired had already been compromised for two years, and nobody found out until 2018.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/marriott-starwood-2018.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Marriott Starwood guest reservation database breach"},"wordCount":814}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Marriott Starwood guest reservation database breach","item":"https://www.myrecon.xyz/breaches/case-files/marriott-starwood-2018.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many people were affected by the Marriott breach?","acceptedAnswer":{"@type":"Answer","text":"Marriott's first statement said up to 500 million guest records. A revised estimate in January 2019 put it at around 339 million, of which roughly 5.25 million contained unencrypted passport numbers and about 20.3 million contained encrypted ones. Records are not people: frequent travellers appear many times."}},{"@type":"Question","name":"Why does a travel record matter more than it sounds?","acceptedAnswer":{"@type":"Answer","text":"Because it is a movement history. Names, passport numbers, arrival and departure dates and hotel locations, held over four years, reconstruct who was where and when, and, by correlation, who was there at the same time. For most travellers that is a privacy loss. For diplomats, executives and intelligence officers it is an operational one, which is why this breach was read as espionage rather than fraud."}},{"@type":"Question","name":"Did the breach start before Marriott owned Starwood?","acceptedAnswer":{"@type":"Answer","text":"Yes. The compromise of the Starwood reservation system dates to 2014; Marriott completed its acquisition of Starwood in 2016 and continued operating the inherited system until 2018. That sequence is why this case is cited in every discussion of cybersecurity due diligence in mergers and acquisitions."}},{"@type":"Question","name":"What was the fine?","acceptedAnswer":{"@type":"Answer","text":"The UK Information Commissioner's Office issued a notice of intent to fine Marriott £99 million in 2019 and settled on £18.4 million in October 2020, reducing it for remediation and for the economic impact of the pandemic. It remains one of the larger GDPR penalties issued by the UK regulator."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Addresses · Phone numbers · Email addresses · Passport numbers (5.25 million unencrypted) · Arrival and departure dates · Reservation details · Some encrypted payment cards</p>
 
-<p class="lead">Marriott announced in November 2018 that its Starwood guest reservation database had been compromised. The striking detail was not the number of records. It was the start date: 2014, two years before Marriott bought Starwood, and four years before anyone noticed.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Marriott announced in November 2018 that its Starwood guest reservation database had been compromised. The striking detail was not the number of records. It was the start date: 2014, two years before Marriott bought Starwood, and four years before anyone noticed.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Long-running compromise of the Starwood reservation system, present before the acquisition</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>£18.4 million fine from the UK Information Commissioner's Office</p>
+<p>Reported scale: about 339 million guest records.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Marriott announced in November 2018 that its Starwood guest reservation database had been compromised. The striking detail was not the number of records. It was the start date: 2014, two years before Marriott bought Starwood, and four years before anyone noticed.</p>
 
 <h2>What happened</h2>
 
@@ -141,19 +145,22 @@
   <li><strong>Assume your travel dates are known.</strong> There is no remediation for that, but it changes how you should read a message that references a trip you actually took, familiarity is not authentication.</li>
   <li><strong>Watch for travel-themed phishing.</strong> Loyalty account takeovers and "problem with your booking" messages are the direct downstream use of this data.</li>
   <li><strong>Review what your loyalty accounts still hold.</strong> Old profiles accumulate passport details, addresses and card tokens long after the trip, <a href="/guides/reduce-your-digital-footprint.html">clearing out what you no longer need</a> is the only control you hold yourself.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;Marriott&quot;,&quot;breach_date&quot;:&quot;2018-11-30&quot;,&quot;match_year&quot;:true}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -237,9 +244,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

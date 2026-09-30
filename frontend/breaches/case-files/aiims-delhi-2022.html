@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"AIIMS Delhi, 2022: the hospital went back to paper, and the record stayed thin","description":"Ransomware took India's flagship public hospital offline for weeks. What was taken, whether a ransom was demanded, and who was responsible were never established publicly.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/aiims-delhi-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"AIIMS Delhi ransomware attack"},"wordCount":1019}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"AIIMS Delhi ransomware attack","item":"https://www.myrecon.xyz/breaches/case-files/aiims-delhi-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many patient records were affected?","acceptedAnswer":{"@type":"Answer","text":"No verified figure exists. Press reports at the time cited figures in the tens of millions of patient records, including those of prominent individuals, but these were attributed to unnamed sources rather than to any published forensic finding. The hospital and the government did not publish a count. Repeating an unverified number as though it were established is how a large share of breach reporting goes wrong, and this file declines to do it."}},{"@type":"Question","name":"Was a ransom demanded?","acceptedAnswer":{"@type":"Answer","text":"Press reports described a demand of around ₹200 crore in cryptocurrency. Officials subsequently stated in public that no ransom demand had been received. Both accounts were reported widely and neither was accompanied by evidence. What can be said with confidence is that systems were encrypted and services were disrupted for weeks."}},{"@type":"Question","name":"Who was responsible?","acceptedAnswer":{"@type":"Answer","text":"This was never established publicly. Investigating agencies were involved and various attributions circulated in the press, including claims of foreign origin. No evidence supporting any specific attribution was published, and attribution asserted without published evidence is not a finding, it is a claim."}},{"@type":"Question","name":"Why is there so little documented about a breach this significant?","acceptedAnswer":{"@type":"Answer","text":"Because at the time there was no enforced statutory obligation to publish one. India's Digital Personal Data Protection Act was passed in 2023, after this incident, and the reporting duties that did exist ran to a national agency rather than to the public or to patients. Absent a duty to publish findings, there is no mechanism that produces a document like Singapore's SingHealth inquiry report or the British Library's post-incident paper."}}]}</script>
@@ -90,7 +88,14 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Patient records (extent unverified) · Hospital administrative systems · Clinical service availability</p>
 
-<p class="lead">On 23 November 2022 the servers running the systems at the All India Institute of Medical Sciences in New Delhi were encrypted. Registration, appointments, laboratory reports and billing moved to paper, at a hospital that sees thousands of outpatients daily and takes referrals from across the country. Nearly four years later, most of the basic facts about the incident remain unestablished.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>On 23 November 2022 the servers running the systems at the All India Institute of Medical Sciences in New Delhi were encrypted. Registration, appointments, laboratory reports and billing moved to paper, at a hospital that sees thousands of outpatients daily and takes referrals from across the country. Nearly four years later, most of the basic facts about the incident remain unestablished.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Not established publicly; ransomware affecting servers hosting the hospital's e-hospital systems</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>Press reports described a ransom demand of around ₹200 crore in cryptocurrency.</p>
+<p>Officials later stated publicly that no ransom demand had been received.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Outpatient, inpatient, laboratory and billing services on manual processes for roughly two weeks, at a hospital handling thousands of patients a day</p>
+<p>Reported scale: Reported to involve patient records at national scale; no verified figure was ever published.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On 23 November 2022 the servers running the systems at the All India Institute of Medical Sciences in New Delhi were encrypted. Registration, appointments, laboratory reports and billing moved to paper, at a hospital that sees thousands of outpatients daily and takes referrals from across the country. Nearly four years later, most of the basic facts about the incident remain unestablished.</p>
 
 <h2>What happened</h2>
 
@@ -141,19 +146,22 @@
 
 <p>Assume the data held about you may have been affected, and that no notification is coming, because none was ever issued. Hospital records in India typically hold name, contact details, address, age, identity numbers where collected, and clinical detail, a combination that supports convincing impersonation rather than direct financial fraud.</p>
 
-<p>The approach that follows is the same one that works for every unverified exposure: treat knowledge of your details as proof of nothing. A caller who cites a genuine past appointment, a test result, or an identity number has established only that they have access to a record. No hospital, insurer or government office completes anything by asking for a one-time password or a payment to an individual account. Ring back on a number you looked up yourself, and treat unexpected contact referencing your medical history with the same suspicion you would give a message about your bank.</p>
+<p>The approach that follows is the same one that works for every unverified exposure: treat knowledge of your details as proof of nothing. A caller who cites a genuine past appointment, a test result, or an identity number has established only that they have access to a record. No hospital, insurer or government office completes anything by asking for a one-time password or a payment to an individual account. Ring back on a number you looked up yourself, and treat unexpected contact referencing your medical history with the same suspicion you would give a message about your bank.</p></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -238,9 +246,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

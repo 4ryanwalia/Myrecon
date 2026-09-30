@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"MGM Resorts, 2023: a ten-minute phone call to the help desk","description":"Attackers found an MGM employee on LinkedIn, called the IT help desk pretending to be them, and got a password reset. Slot machines and room keys stopped working for ten days.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/mgm-resorts-2023.html","articleSection":"Case Files","about":{"@type":"Thing","name":"MGM Resorts cyberattack"},"wordCount":951}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"MGM Resorts cyberattack","item":"https://www.myrecon.xyz/breaches/case-files/mgm-resorts-2023.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How did attackers get into MGM without hacking anything?","acceptedAnswer":{"@type":"Answer","text":"They identified an employee through public professional profiles, gathered enough detail to sound like that person, and called the internal IT help desk asking for account recovery. The help desk performed the reset. From there the attackers had a working corporate identity and went after the identity provider that sits behind every other system. The technical skill in this attack was almost entirely conversational."}},{"@type":"Question","name":"Why did slot machines stop working?","acceptedAnswer":{"@type":"Answer","text":"They did not fail individually. MGM shut down large parts of its own network deliberately to stop the attackers moving further, and modern casino and hotel operations depend on that network for nearly everything, reservations, digital room keys, points of sale, gaming floor systems. The visible chaos was the containment decision, not the attack itself, and that trade-off is one every victim has to make quickly and with poor information."}},{"@type":"Question","name":"Did MGM pay a ransom?","acceptedAnswer":{"@type":"Answer","text":"MGM has said publicly that it did not pay. Caesars Entertainment, targeted by the same crew shortly before, was widely reported to have paid approximately $15 million. The contrast is instructive: Caesars avoided the operational collapse, MGM avoided funding the group, and both ended up in regulatory filings and class actions regardless."}},{"@type":"Question","name":"Who is Scattered Spider?","acceptedAnswer":{"@type":"Answer","text":"A loosely organised, largely English-speaking group, many members reportedly young, some teenagers, tracked under names including UNC3944 and Octo Tempest. Their signature is social engineering rather than exploitation: help desk impersonation, SIM swapping, and phishing that targets the account recovery process rather than the password. Several arrests have been made in the US and UK since 2024."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Contact details · Dates of birth · Driver's licence numbers · A smaller set of Social Security and passport numbers</p>
 
-<p class="lead">On the Las Vegas Strip in September 2023, guests queued at reception because digital room keys had stopped working, slot machines sat dark, and staff wrote restaurant orders on paper. The intrusion that caused it did not involve a vulnerability. It involved a phone call to the IT help desk by somebody who had read an employee's LinkedIn profile.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>On the Las Vegas Strip in September 2023, guests queued at reception because digital room keys had stopped working, slot machines sat dark, and staff wrote restaurant orders on paper. The intrusion that caused it did not involve a vulnerability. It involved a phone call to the IT help desk by somebody who had read an employee's LinkedIn profile.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Social engineering of the IT help desk to obtain a credential reset, then abuse of the identity provider</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>MGM reported roughly $100 million in impact for the quarter, plus about $10 million in one-off costs</p>
+<p>Reported scale: Personal data of customers who transacted with MGM before March 2019.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">On the Las Vegas Strip in September 2023, guests queued at reception because digital room keys had stopped working, slot machines sat dark, and staff wrote restaurant orders on paper. The intrusion that caused it did not involve a vulnerability. It involved a phone call to the IT help desk by somebody who had read an employee's LinkedIn profile.</p>
 
 <h2>What happened</h2>
 
@@ -143,19 +147,22 @@
   <li><strong>Driver's licence and passport numbers are identity documents, not passwords.</strong> You cannot rotate them. Where your jurisdiction allows a credit freeze, that is the control that actually blocks their use.</li>
   <li><strong>Expect hotel-themed phishing.</strong> A loyalty account, a stay history and a real name make a convincing "your recent booking" email, and these lists get resold for years.</li>
   <li><strong>At work, ask what your own help desk requires to reset your MFA.</strong> If the answer is a set of facts about you that a stranger could find, that is the finding.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -240,9 +247,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

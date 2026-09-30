@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Collection #1, 2019: 773 million addresses, and nobody was breached","description":"Collection #1 was not a hack. It was 87GB of everyone else's hacks, merged and deduplicated into a single file built for one purpose: automated login attempts.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/collection-1-2019.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Collection #1 credential aggregate"},"wordCount":841}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Collection #1 credential aggregate","item":"https://www.myrecon.xyz/breaches/case-files/collection-1-2019.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which company was breached in Collection #1?","acceptedAnswer":{"@type":"Answer","text":"None. That is the point. Collection #1 is an aggregate, thousands of separate breaches, many of them years old, merged and deduplicated into one file. Finding your address in it tells you that you appeared in at least one of those sources, not that any particular service was compromised in 2019."}},{"@type":"Question","name":"What is credential stuffing?","acceptedAnswer":{"@type":"Answer","text":"Feeding a list of real email-and-password pairs into automated software that tries them against other services. It works because password reuse is common: a small success rate against tens of millions of pairs still yields a large number of working accounts, and each one looks like a normal login rather than an attack."}},{"@type":"Question","name":"How big were Collections #2 to #5?","acceptedAnswer":{"@type":"Answer","text":"Far bigger, roughly 845GB in total against Collection #1's 87GB, across tens of billions of rows, though with heavy duplication between them. Size is a poor measure of danger here: what matters is how many unique, still-valid credential pairs a file contains, and that number is always much smaller than the headline."}},{"@type":"Question","name":"Was my password in Collection #1?","acceptedAnswer":{"@type":"Answer","text":"Around 21 million unique plaintext passwords were in it. Services such as Have I Been Pwned's Pwned Passwords let you check a password without sending it anywhere, using a technique called k-anonymity that only transmits the first five characters of its hash. If a password of yours appears, replace it everywhere it has ever been used."}}]}</script>
@@ -89,7 +87,14 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Email addresses · Cracked plaintext passwords</p>
 
-<p class="lead">In January 2019, a file called Collection #1 appeared on a popular cloud storage service and then on a hacking forum: 87 gigabytes, 12,000 files, 772,904,991 unique email addresses and 21,222,975 unique passwords. It was the largest set of credentials ever loaded into Have I Been Pwned. No company had been breached to produce it. That is what makes it worth a case file.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>In January 2019, a file called Collection #1 appeared on a popular cloud storage service and then on a hacking forum: 87 gigabytes, 12,000 files, 772,904,991 unique email addresses and 21,222,975 unique passwords. It was the largest set of credentials ever loaded into Have I Been Pwned. No company had been breached to produce it. That is what makes it worth a case file.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Aggregation of thousands of earlier breaches into one deduplicated combination list</p>
+<p>Credential stuffing is the whole purpose. The mechanics are unglamorous: Load the list into stuffing software, the well-known tools are sold openly and have graphical interfaces. Point it at a target's login endpoint , often the mobile API rather than the web form, because mobile endpoints historically had weaker rate limiting. Route the attempts through proxies so they appear to come from thousands of residential addresses rather than one server.</p>
+<p>Harvest the hits. A success rate of a fraction of a percent, against tens of millions of pairs, still produces a very large number of working accounts. Sell them by category. Streaming accounts, food delivery credit, loyalty points, gaming inventories, and, the valuable ones, email accounts, which can reset everything else. Nothing here requires a vulnerability in the service being attacked.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Reported scale: 772,904,991 unique email addresses; 21,222,975 unique passwords.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In January 2019, a file called Collection #1 appeared on a popular cloud storage service and then on a hacking forum: 87 gigabytes, 12,000 files, 772,904,991 unique email addresses and 21,222,975 unique passwords. It was the largest set of credentials ever loaded into Have I Been Pwned. No company had been breached to produce it. That is what makes it worth a case file.</p>
 
 <h2>What it actually was</h2>
 
@@ -136,19 +141,22 @@
   <li><strong>Check the passwords themselves, not just the addresses.</strong> A breached-password service will tell you whether a specific password is already in circulation without ever seeing the password.</li>
   <li><strong>Turn on two-factor authentication.</strong> It is the control that makes stuffing fail even when the password is correct, <a href="/guides/two-factor-authentication.html">the options ranked by how well they hold up</a>.</li>
   <li><strong>Ignore the size of the headline.</strong> When the next "largest leak ever" is announced, ask how many unique credentials in it are new. The answer is usually "almost none", <a href="/breaches/">the archive of individually confirmed breaches</a> is the more useful thing to watch.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -232,9 +240,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

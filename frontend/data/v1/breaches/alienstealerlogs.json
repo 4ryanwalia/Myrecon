@@ -33,6 +33,30 @@
     "band": "Critical",
     "data_provider": null,
     "summary": "In February 2025, 23 billion rows of stealer logs were obtained from a Telegram channel known as ALIEN TXTBASE. The data contained 284M unique email addresses alongside the websites they were entered into and the passwords used. This data is now searchable in HIBP by both email domain and the domain of the target website.",
+    "story": {
+      "background": [
+        "In February 2025, 23 billion rows of stealer logs were obtained from a Telegram channel known as ALIEN TXTBASE . The data contained 284M unique email addresses alongside the websites they were entered into and the passwords used. This data is now searchable in HIBP by both email domain and the domain of the target website."
+      ],
+      "how": [
+        "The records came from information-stealing malware on people's devices, rather than a single company database."
+      ],
+      "motive": [],
+      "outcome": [
+        "284,132,969 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, Passwords."
+      ],
+      "editorial": [
+        "This is not a company's breach and reading it as one gets the response wrong. Stealer logs come from malware running on individual people's own computers, recording credentials as they are typed. If your address appears here, no service failed you. A machine you used was infected, and everything entered on it during that period should be assumed captured.",
+        "What makes a stealer log more dangerous than an ordinary credential dump is the third column. A leaked password list tells an attacker a password you once used. A stealer log tells them the password, the website it was entered into, and the email address that goes with it, a working login rather than a guess. Credential stuffing becomes unnecessary when the file already says where the key fits.",
+        "So the action here is different from every other entry in this archive. Changing one password is not the fix. Clean the device first, because otherwise the new password is captured too, then rotate credentials starting with email and anything financial."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "AlienStealerLogs",
+        "breach_date": "2025-02-15"
+      }
+    ],
     "fields": [
       {
         "name": "Passwords",

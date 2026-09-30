@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"RockYou, 2009: the 32 million plaintext passwords that became a wordlist","description":"A widget company stored 32 million passwords in plain text and lost them to a basic SQL injection. The file became the wordlist the whole security industry still uses.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/rockyou-2009.html","articleSection":"Case Files","about":{"@type":"Thing","name":"RockYou data breach"},"wordCount":946}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"RockYou data breach","item":"https://www.myrecon.xyz/breaches/case-files/rockyou-2009.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is rockyou.txt?","acceptedAnswer":{"@type":"Answer","text":"It is the list of unique passwords extracted from the 2009 RockYou breach, roughly 14 million entries after deduplication. Because the passwords were stored in plain text, the list is a record of what real people actually chose rather than a guess at it. It ships with Kali Linux and is still the default wordlist for password auditing and cracking tools."}},{"@type":"Question","name":"How did the RockYou breach happen?","acceptedAnswer":{"@type":"Answer","text":"A SQL injection flaw in a web application. SQL injection happens when user input is pasted into a database query instead of being passed as a parameter, letting an attacker rewrite the query and read tables directly. It was already a well-understood and easily prevented flaw in 2009."}},{"@type":"Question","name":"Why were the passwords in plain text?","acceptedAnswer":{"@type":"Answer","text":"RockYou simply stored them as typed, with no hashing at all. That meant anyone who read the database read every password. It also meant the company could, in principle, read them, which is why \"we will never ask for your password\" is a weaker promise than \"we could not tell you your password if we wanted to\"."}},{"@type":"Question","name":"Is the RockYou list still dangerous?","acceptedAnswer":{"@type":"Answer","text":"The individual passwords are sixteen years old, but the patterns are not. The same structures, a name plus a year, a keyboard run, a word with a digit on the end, still dominate, which is exactly why the list remains effective against modern password databases."}}]}</script>
@@ -90,7 +88,15 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Email addresses · Passwords in plain text</p>
 
-<p class="lead">Thirty-two million accounts is a small breach by modern standards, and RockYou, a company that made quizzes and photo widgets for MySpace and Facebook, is not a name most people remember. It is nonetheless one of the most consequential breaches ever recorded, because of a single detail: the passwords were not hashed. They were stored exactly as typed. That file is still in daily use.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Thirty-two million accounts is a small breach by modern standards, and RockYou, a company that made quizzes and photo widgets for MySpace and Facebook, is not a name most people remember. It is nonetheless one of the most consequential breaches ever recorded, because of a single detail: the passwords were not hashed. They were stored exactly as typed. That file is still in daily use.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>SQL injection against an unpatched web application</p>
+<p>The deduplicated list of unique passwords from the dump, about 14 million entries, became rockyou.txt . It ships with Kali Linux. It is the default wordlist for Hashcat and John the Ripper tutorials, the first thing tried in almost every password-audit engagement, and the baseline against which new cracking techniques are measured. This is a genuinely strange legacy.</p>
+<p>A company's worst day became free infrastructure for the entire security profession, and the reason it works so well is not technical sophistication, it is that the file is a record of authentic human choice, taken from people who had no idea anyone would ever read it. Synthetic password lists are guesses about what people pick. RockYou is evidence.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>An FTC settlement in 2012 covering both the security failure and children's privacy violations</p>
+<p>Reported scale: 32.6 million accounts.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Thirty-two million accounts is a small breach by modern standards, and RockYou, a company that made quizzes and photo widgets for MySpace and Facebook, is not a name most people remember. It is nonetheless one of the most consequential breaches ever recorded, because of a single detail: the passwords were not hashed. They were stored exactly as typed. That file is still in daily use.</p>
 
 <h2>What happened</h2>
 
@@ -143,19 +149,22 @@
   <li><strong>Length beats complexity.</strong> The RockYou distribution shows that human-chosen "complex" passwords cluster in predictable ways. A long passphrase or generated string sits outside the patterns entirely, see <a href="/guides/strong-passwords-guide.html">the practical guide to passwords that actually resist this</a>.</li>
   <li><strong>Never reuse across sites.</strong> Every point in this case file is about one file opening many doors.</li>
   <li><strong>Check your own addresses against known breaches.</strong> Sixteen years of dumps have accumulated behind most long-lived email addresses, <a href="/guides/check-email-data-breach.html">here is how to look</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;RockYou&quot;,&quot;breach_date&quot;:&quot;2009-12-14&quot;,&quot;match_year&quot;:true}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -239,9 +248,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

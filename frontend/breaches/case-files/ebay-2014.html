@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"eBay, 2014: 145 million users and a notice nobody saw","description":"Attackers used a handful of employees' credentials to reach eBay's user database and sat inside for months. The company then handled the announcement about as badly as it could.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/ebay-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"eBay data breach"},"wordCount":890}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"eBay data breach","item":"https://www.myrecon.xyz/breaches/case-files/ebay-2014.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was financial data stolen from eBay?","acceptedAnswer":{"@type":"Answer","text":"No. PayPal was a separate company operationally at the time, on separate infrastructure, and eBay stated repeatedly that payment data was unaffected. That was true and it was also used to make the breach sound smaller than it was. Name, address, phone number, date of birth and email for 145 million people is a better identity fraud dataset than a card number, because none of it can be cancelled."}},{"@type":"Question","name":"Were eBay passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"eBay described the passwords as encrypted and never published the algorithm used, which meant nobody outside could assess how much protection that offered. In the absence of that detail the safe assumption for users was that the passwords would eventually be recoverable, and anyone who had reused an eBay password elsewhere needed to change it everywhere, which is exactly what the company should have said plainly."}},{"@type":"Question","name":"Why was eBay criticised for its response?","acceptedAnswer":{"@type":"Answer","text":"The intrusion happened in late February or early March and was discovered in early May, and eBay disclosed on 21 May. When it did, the announcement went out awkwardly: a post appeared on the PayPal blog, the password reset prompt did not reach many users promptly, and there was no email to some account holders for days. For an event requiring 145 million people to take an action, the delivery of the message was the whole job."}},{"@type":"Question","name":"Should I still worry about the eBay breach?","acceptedAnswer":{"@type":"Answer","text":"Not about the password, if you changed it. The durable exposure is the combination of full name, postal address, phone number and date of birth, which is still a working identity package twelve years later and still appears in combined data sets sold today."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Email addresses · Physical addresses · Phone numbers · Dates of birth · Encrypted passwords</p>
 
-<p class="lead">The eBay breach is remembered less for how it happened than for how it was announced. A hundred and forty-five million people needed to change a password, and a large number of them found out from the news.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>The eBay breach is remembered less for how it happened than for how it was announced. A hundred and forty-five million people needed to change a password, and a large number of them found out from the news.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Compromised credentials belonging to a small number of eBay employees, used to reach the internal network</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>No major regulatory fine; a multi-state investigation closed without penalty</p>
+<p>Reported scale: 145 million user records.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">The eBay breach is remembered less for how it happened than for how it was announced. A hundred and forty-five million people needed to change a password, and a large number of them found out from the news.</p>
 
 <h2>What happened</h2>
 
@@ -140,19 +144,22 @@
   <li><strong>Check the address against a breach search.</strong> Twelve-year-old exposure still determines which phishing lists you are on.</li>
   <li><strong>Date of birth is the quiet one.</strong> It is a standard identity verification question and it was in this file for 145 million people.</li>
   <li><strong>Turn on two-factor authentication on marketplace accounts.</strong> A hijacked seller or buyer account with genuine history is worth far more to a fraudster than a new one, which is why old accounts are targeted specifically.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -237,9 +244,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

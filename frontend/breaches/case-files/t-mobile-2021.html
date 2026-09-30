@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers","description":"An internet-exposed router led to a data centre and then to records on tens of millions of people, most of whom had only ever applied for service.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"T-Mobile data breach"},"wordCount":832}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"T-Mobile data breach","item":"https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"I only applied to T-Mobile and never joined. Was I affected?","acceptedAnswer":{"@type":"Answer","text":"Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile, a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years."}},{"@type":"Question","name":"How did the attacker get in?","acceptedAnswer":{"@type":"Answer","text":"He described it publicly: an internet-exposed router with weak protection gave a foothold, from which he reached a data centre and, eventually, servers holding customer data. He characterised T-Mobile's security as poor, which the subsequent regulatory settlements did not seriously contest."}},{"@type":"Question","name":"Why does T-Mobile appear in breach lists so often?","acceptedAnswer":{"@type":"Answer","text":"Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond, a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure."}},{"@type":"Question","name":"What is an account PIN and why did it matter?","acceptedAnswer":{"@type":"Answer","text":"It is the code that authenticates you to the carrier when you call support, and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Social Security numbers · Driver's licence and ID numbers · Phone numbers · Account PINs for some prepaid customers</p>
 
-<p class="lead">In August 2021 a 21-year-old told reporters how he had done it: an unprotected router exposed to the internet, then a route into a data centre, then more than a hundred servers holding customer data. What made the T-Mobile breach unusual was not the method. It was who was in the file, tens of millions of people who had applied for a phone contract and, in many cases, never got one.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>In August 2021 a 21-year-old told reporters how he had done it: an unprotected router exposed to the internet, then a route into a data centre, then more than a hundred servers holding customer data. What made the T-Mobile breach unusual was not the method. It was who was in the file, tens of millions of people who had applied for a phone contract and, in many cases, never got one.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>An internet-exposed router, then lateral movement into a data centre</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>$350 million class settlement plus a $150 million security spending commitment; a later $31.5 million settlement with the FCC</p>
+<p>Reported scale: over 76 million records, including about 40 million former and prospective customers.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In August 2021 a 21-year-old told reporters how he had done it: an unprotected router exposed to the internet, then a route into a data centre, then more than a hundred servers holding customer data. What made the T-Mobile breach unusual was not the method. It was who was in the file, tens of millions of people who had applied for a phone contract and, in many cases, never got one.</p>
 
 <h2>What happened</h2>
 
@@ -148,19 +152,22 @@
   <li><strong>Set a port-out PIN and account lock with your current carrier</strong>, whoever that is. It is free and it is the single best defence against SIM swapping.</li>
   <li><strong>Move critical accounts off SMS codes</strong>-<a href="/guides/two-factor-authentication.html">the practical hierarchy of second factors</a>.</li>
   <li><strong>Check your exposure across the other carrier breaches too.</strong> Anyone who has changed provider a few times is likely to appear in more than one, <a href="/breaches/">the archive tracks them as they are confirmed</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -244,9 +251,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

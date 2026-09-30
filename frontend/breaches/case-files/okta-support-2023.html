@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Okta, 2023: the breach arrived through the help desk, inside debugging files","description":"Attackers reached Okta's support case system and read HAR files customers had uploaded for troubleshooting. Those files contained live session tokens.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/okta-support-2023.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Okta customer support system breach"},"wordCount":1172}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Okta customer support system breach","item":"https://www.myrecon.xyz/breaches/case-files/okta-support-2023.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a HAR file and why is it dangerous?","acceptedAnswer":{"@type":"Answer","text":"A HAR file is an HTTP Archive: a recording of everything a browser sent and received during a session, which support teams ask for because it shows exactly what went wrong. It records request headers, and request headers carry session cookies and authorisation tokens. So a HAR file captured from a logged-in session is a container holding live credentials, produced by a user who believes they are sending a log file."}},{"@type":"Question","name":"How did the attackers get into the support system?","acceptedAnswer":{"@type":"Answer","text":"Okta reported that a service account's credentials had been saved into an employee's personal Google profile while signed into Chrome on a company-managed laptop. Compromise of that personal account therefore exposed a corporate service credential. It is an unusually clean illustration of why browser profile sync across personal and work identities is a security boundary problem and not a convenience question."}},{"@type":"Question","name":"How was the attack detected?","acceptedAnswer":{"@type":"Answer","text":"By a customer. BeyondTrust identified suspicious activity against its own Okta tenant, traced it to a session token from a HAR file it had uploaded days earlier, and reported it to Okta. Cloudflare and 1Password identified related activity. The detection came from downstream organisations watching their own logs, not from the provider, which is a genuine argument for customers monitoring their identity provider's activity independently."}},{"@type":"Question","name":"Why did the number change from 134 customers to everyone?","acceptedAnswer":{"@type":"Answer","text":"Okta's initial disclosure described 134 customers whose uploaded files were accessed. A month later it disclosed that a report the attacker had run contained the names and email addresses of essentially all users of the customer support system, around 18,400. The first figure covered files retrieved; the second covered a report that had been overlooked in the initial analysis. Early breach numbers are almost always the floor."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Session tokens and cookies in uploaded HAR files · Customer support case contents · Names and email addresses of support system users</p>
 
-<p class="lead">Okta sells identity. Its entire product is being the trusted place where a company's employees authenticate, which makes it one of the highest-value targets in enterprise software. In October 2023 it was breached, not through its authentication platform, but through the support portal where customers upload files to explain what is broken.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Okta sells identity. Its entire product is being the trusted place where a company's employees authenticate, which makes it one of the highest-value targets in enterprise software. In October 2023 it was breached, not through its authentication platform, but through the support portal where customers upload files to explain what is broken.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>A service account whose credentials had been saved into a personal Google profile on a managed device, used to access the customer support case management system and the HAR files stored in it</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Downstream intrusions at multiple security vendors; a revised disclosure a month later; sustained reputational damage to an identity provider</p>
+<p>Reported scale: Initially reported as 134 customers; later disclosed as affecting the details of essentially all users of the support system, around 18,400.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Okta sells identity. Its entire product is being the trusted place where a company's employees authenticate, which makes it one of the highest-value targets in enterprise software. In October 2023 it was breached, not through its authentication platform, but through the support portal where customers upload files to explain what is broken.</p>
 
 <h2>What happened</h2>
 
@@ -140,19 +144,22 @@
 
 <p>The practical takeaway generalises well beyond Okta customers. Before uploading a HAR file, a browser export, or a debug log to any vendor, assume it contains live credentials, because in most cases it does. Use a sanitiser, or capture the recording from a session you are willing to invalidate and then log out to kill it.</p>
 
-<p>And if you administer an identity provider, the two controls that would have limited this are worth putting in place today: hardware-backed or passkey authentication for every administrative account, and an alert when an administrative session appears from an address or device that has not been seen before. The first stops credential theft from mattering. The second catches the case where a valid session shows up somewhere it should not be, which is exactly what happened here, and what the customers who caught it were watching for.</p>
+<p>And if you administer an identity provider, the two controls that would have limited this are worth putting in place today: hardware-backed or passkey authentication for every administrative account, and an alert when an administrative session appears from an address or device that has not been seen before. The first stops credential theft from mattering. The second catches the case where a valid session shows up somewhere it should not be, which is exactly what happened here, and what the customers who caught it were watching for.</p></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -237,9 +244,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

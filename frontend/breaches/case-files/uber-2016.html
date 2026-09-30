@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Uber, 2016: the breach that was paid to disappear","description":"Uber lost 57 million records, paid the attackers $100,000 through its bug bounty programme, called it a research payment, and said nothing for a year.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/uber-2016.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Uber data breach and cover-up"},"wordCount":903}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Uber data breach and cover-up","item":"https://www.myrecon.xyz/breaches/case-files/uber-2016.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What did Uber actually do wrong?","acceptedAnswer":{"@type":"Answer","text":"Two separate things. The breach itself was a credential-handling failure: access keys in a private code repository that reached a cloud storage account. The far more serious conduct was the response, paying the attackers $100,000 through the bug bounty programme, having them sign non-disclosure agreements describing the theft as research, and not notifying users, drivers or regulators for more than a year, while the company was already under investigation for an earlier breach."}},{"@type":"Question","name":"Was the chief security officer really convicted?","acceptedAnswer":{"@type":"Answer","text":"Yes. Joe Sullivan was convicted in October 2022 of obstructing a Federal Trade Commission proceeding and misprision of a felony, and sentenced in 2023 to three years of probation. It is the case that established personal criminal exposure for a security executive over the handling of a breach, rather than the breach itself."}},{"@type":"Question","name":"Is paying a bug bounty for stolen data legitimate?","acceptedAnswer":{"@type":"Answer","text":"Paying a researcher who finds a flaw is normal and valuable. Paying people who have already taken customer data, in exchange for silence and a signed agreement, is something else, and prosecutors treated the bounty framing as concealment rather than disclosure. The distinction is whether data was exfiltrated and whether the people affected were told."}},{"@type":"Question","name":"What data was taken?","acceptedAnswer":{"@type":"Answer","text":"Names, email addresses and mobile numbers for around 57 million riders and drivers, plus roughly 600,000 US driver's licence numbers belonging to drivers. No trip history, card numbers or dates of birth were reported as taken."}}]}</script>
@@ -90,7 +88,15 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Email addresses · Phone numbers · 600,000 US driver's licence numbers</p>
 
-<p class="lead">By the standards of this archive, Uber's 2016 breach is small. Fifty-seven million names, email addresses and phone numbers, plus 600,000 driver's licence numbers, serious, but not remarkable. It is here because of what happened afterwards, which ended with a chief security officer being convicted in a federal court for the way a breach was handled.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>By the standards of this archive, Uber's 2016 breach is small. Fifty-seven million names, email addresses and phone numbers, plus 600,000 driver's licence numbers, serious, but not remarkable. It is here because of what happened afterwards, which ended with a chief security officer being convicted in a federal court for the way a breach was handled.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Credentials found in a private code repository, used to reach cloud storage</p>
+<p>The technical story is short and depressingly common. Uber engineers used a private code repository. Credentials for the company's cloud storage were present in that repository. Attackers obtained access to the repository, found the keys, and used them to reach a storage account containing rider and driver records. Keys in source control is a failure that predates cloud computing and has survived every attempt to design it out.</p>
+<p>The reason it persists is that it is convenient at exactly the moment an engineer is trying to make something work, and invisible thereafter. The modern answer, short-lived credentials issued to a workload rather than long-lived keys held by a person, plus automated secret scanning on every commit, exists largely because of cases like this one.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>$148 million multistate settlement; the chief security officer criminally convicted</p>
+<p>Reported scale: 57 million riders and drivers; 600,000 driver's licence numbers.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">By the standards of this archive, Uber's 2016 breach is small. Fifty-seven million names, email addresses and phone numbers, plus 600,000 driver's licence numbers, serious, but not remarkable. It is here because of what happened afterwards, which ended with a chief security officer being convicted in a federal court for the way a breach was handled.</p>
 
 <h2>How the data was taken</h2>
 
@@ -144,19 +150,22 @@
   <li><strong>The exposed fields are contact details, so expect targeting rather than fraud.</strong> A phone number tied to a real name and a known service is exactly what a smishing campaign needs.</li>
   <li><strong>Drivers should watch identity documents.</strong> 600,000 driver's licence numbers were in the set; a licence number supports impersonation in ways a phone number does not.</li>
   <li><strong>Re-check which apps hold your identity documents today</strong>, and remove what is no longer needed, see <a href="/guides/reduce-your-digital-footprint.html">how to audit that footprint</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -241,9 +250,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

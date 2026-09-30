@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Anthem, 2015: 78.8 million health records and one query that looked wrong","description":"A database administrator noticed a query running under his own name that he had not run. Behind it were 78.8 million member records, taken over the course of a year.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/anthem-2015.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Anthem data breach"},"wordCount":920}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Anthem data breach","item":"https://www.myrecon.xyz/breaches/case-files/anthem-2015.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was medical treatment data stolen from Anthem?","acceptedAnswer":{"@type":"Answer","text":"No. Anthem reported that clinical and claims information, diagnoses, treatments, test results, was not taken. What was taken was the membership file: names, dates of birth, Social Security numbers, member IDs, addresses and employment data. That is an identity-theft dataset rather than a medical one, which is bad in a different way."}},{"@type":"Question","name":"How was the Anthem breach discovered?","acceptedAnswer":{"@type":"Answer","text":"A database administrator noticed a query running under his own credentials that he had not run, and raised it. Everything that followed, the investigation, the disclosure, the eventual scope, came from one person questioning something that looked slightly wrong rather than from an automated control."}},{"@type":"Question","name":"Why is health insurance data so valuable?","acceptedAnswer":{"@type":"Answer","text":"Because it combines a permanent national identifier with enough personal detail to pass identity verification, and because medical identity fraud is slow to detect. A fraudulent credit card shows up on a statement within weeks; fraudulent care billed against your member ID may not surface for years, and unwinding it is far harder."}},{"@type":"Question","name":"What penalties followed?","acceptedAnswer":{"@type":"Answer","text":"A $115 million class-action settlement in 2017, a $16 million settlement with the US Department of Health and Human Services in 2018, the largest HIPAA penalty on record at that point, and a $39.5 million settlement with state attorneys general in 2020."}}]}</script>
@@ -90,7 +88,15 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Social Security numbers · Member ID numbers · Addresses · Email addresses · Employment and income data</p>
 
-<p class="lead">The Anthem breach was found because a database administrator looked at a query running under his own account, did not recognise it, and asked about it. Everything else, the largest health data breach in US history at the time, the largest HIPAA penalty ever levied, a federal indictment, followed from that one moment of professional suspicion.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>The Anthem breach was found because a database administrator looked at a query running under his own account, did not recognise it, and asked about it. Everything else, the largest health data breach in US history at the time, the largest HIPAA penalty ever levied, a federal indictment, followed from that one moment of professional suspicion.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Spear-phishing a subsidiary, then stolen credentials into a data warehouse</p>
+<p>The entry point was a spear-phishing campaign against a subsidiary. At least one employee opened a message and their credentials were captured; from there the attackers escalated and moved laterally until they reached credentials with access to the enterprise data warehouse. The control that would have stopped it.</p>
+<p>The California Department of Insurance's examination, and Anthem's own remediation commitments, kept returning to the same theme: privileged access to a warehouse holding tens of millions of member records was reachable with a password alone. Multi-factor authentication on administrative and remote access, and tighter segmentation between the corporate network and the warehouse, are the two controls that recur in every finding. They were not exotic in 2014.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>$115 million class settlement, $16 million HIPAA penalty, $39.5 million to state attorneys general</p>
+<p>Reported scale: 78.8 million people.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">The Anthem breach was found because a database administrator looked at a query running under his own account, did not recognise it, and asked about it. Everything else, the largest health data breach in US history at the time, the largest HIPAA penalty ever levied, a federal indictment, followed from that one moment of professional suspicion.</p>
 
 <h2>What happened</h2>
 
@@ -147,19 +153,22 @@
   <li><strong>Freeze your credit files.</strong> The Social Security numbers in this breach support ordinary financial fraud as readily as medical fraud.</li>
   <li><strong>Ask for a copy of your medical records if you suspect misuse</strong>, and correct them. Errors introduced by someone else's treatment under your identity can affect your own care.</li>
   <li><strong>Treat calls about your coverage as unverified.</strong> Anyone who knows your member ID has not proved they are your insurer, <a href="/guides/how-to-spot-phishing.html">what to check before you answer anything</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -244,9 +253,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

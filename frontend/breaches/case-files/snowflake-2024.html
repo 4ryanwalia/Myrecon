@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Snowflake, 2024: 165 companies breached without anyone touching Snowflake","description":"Ticketmaster, AT&T, Santander and around 160 others lost data from their own cloud warehouses. The credentials came from infostealer malware, some of it years old.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Snowflake customer account compromises"},"wordCount":836}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Snowflake customer account compromises","item":"https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was Snowflake itself hacked?","acceptedAnswer":{"@type":"Answer","text":"No. Investigations by Snowflake and by Mandiant found no vulnerability in the platform and no compromise of Snowflake's own systems. The attacker logged into individual customer accounts using valid usernames and passwords, on accounts that did not require a second factor."}},{"@type":"Question","name":"Where did the credentials come from?","acceptedAnswer":{"@type":"Answer","text":"Infostealer malware on the computers of employees and contractors, in some cases years earlier. Infostealers harvest everything a browser has saved and sell the output as \"logs\". A credential stolen in 2020 still worked in 2024 because nobody had rotated it and nothing else was required to use it."}},{"@type":"Question","name":"Whose data was taken?","acceptedAnswer":{"@type":"Answer","text":"The list includes Ticketmaster, where the attacker claimed 560 million records; AT&T, where call and text metadata for nearly all of its mobile customers was taken; Santander; Advance Auto Parts; Neiman Marcus; and around 160 other Snowflake customer tenants. Each victim owned its own data and its own configuration."}},{"@type":"Question","name":"Whose fault was it?","acceptedAnswer":{"@type":"Answer","text":"The uncomfortable answer is that responsibility was shared and the model made that easy to miss. Customers chose not to enforce MFA and did not rotate credentials; the platform allowed single-factor access to bulk data by default. Snowflake subsequently moved to enforce MFA for new accounts, which is an admission that the default mattered."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Contact details · Transaction and ticketing records · Call and text metadata · Banking data for some victims</p>
 
-<p class="lead">In the space of two months in 2024, roughly 165 companies lost data out of their own cloud data warehouses, Ticketmaster, AT&T, Santander and a long list of others. There was no vulnerability. The attacker signed in with a correct username and password on accounts that asked for nothing else, using credentials that had been stolen from employees' computers, in some cases four years earlier.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>In the space of two months in 2024, roughly 165 companies lost data out of their own cloud data warehouses, Ticketmaster, AT&amp;T, Santander and a long list of others. There was no vulnerability. The attacker signed in with a correct username and password on accounts that asked for nothing else, using credentials that had been stolen from employees' computers, in some cases four years earlier.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Credentials stolen by infostealer malware, used against cloud accounts that had no multi-factor authentication</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Extortion demands against individual victims; regulatory and class action exposure across many companies at once</p>
+<p>Reported scale: around 165 customer tenants; hundreds of millions of individual records.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In the space of two months in 2024, roughly 165 companies lost data out of their own cloud data warehouses, Ticketmaster, AT&T, Santander and a long list of others. There was no vulnerability. The attacker signed in with a correct username and password on accounts that asked for nothing else, using credentials that had been stolen from employees' computers, in some cases four years earlier.</p>
 
 <h2>What happened</h2>
 
@@ -154,19 +158,22 @@
   <li><strong>Assume contact details are circulating.</strong> Ticketing and retail data drives convincing "there is a problem with your order" scams.</li>
   <li><strong>If you administer cloud data platforms, audit for single-factor accounts today.</strong> Service accounts and long-lived analyst logins are where this lives.</li>
   <li><strong>Check whether your own machine has ever been infected.</strong> Infostealer exposure is personal, follows you across employers, and does not show up in company logs, <a href="/breaches/">the archive tracks stealer-log collections as they are confirmed</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -251,9 +258,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

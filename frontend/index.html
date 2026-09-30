@@ -62,7 +62,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
 
   <!-- Google AdSense -->
@@ -85,8 +85,9 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What can I check with MyRecon?","acceptedAnswer":{"@type":"Answer","text":"MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can MyRecon confirm that a profile belongs to a person?","acceptedAnswer":{"@type":"Answer","text":"No. A matching username is only a lead. Confirm important conclusions with independent public evidence and keep uncertain links unconfirmed. MyRecon does not access private accounts or restricted content."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630},"description":"An open-source intelligence platform for username search, email and breach intelligence, password exposure checks, WHOIS, DNS and IP investigation.","founder":{"@type":"Person","name":"Aryan Walia"},"email":"aryan@bugsnaps.in"},{"@type":"WebSite","@id":"https://www.myrecon.xyz/#website","url":"https://www.myrecon.xyz/","name":"MyRecon","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"inLanguage":"en","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.myrecon.xyz/#tool=username&q={search_term_string}"},"query-input":"required name=search_term_string"}}]}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
-  <link rel="stylesheet" href="/assets/css/trust.css?v=e95563d693">
-  <link rel="stylesheet" href="/assets/css/username-benchmark.css?v=73ef0f7066">
+  <link rel="stylesheet" href="/assets/css/trust.css?v=dfb3ad6777">
+  <link rel="stylesheet" href="/assets/css/username-benchmark.css?v=67a6bf90f8">
+  <link rel="stylesheet" href="/assets/css/deep-search-preview.css?v=bd7c7cdb1d">
 </head>
 <body class="home-page">
   <a class="skip-link" href="#tool">Skip to the tool</a>
@@ -168,7 +169,7 @@
               <div class="detect-hint" id="detectHint" role="status" hidden></div>
               <div class="email-options" id="emailOptions" hidden>
                 <label class="email-toggle" for="linkedAccountsToggle">
-                  <span><strong>Check linked accounts</strong><span class="hint" id="linkedAccountsHelp">Also check public GitHub, Gravatar and OpenPGP evidence for this exact email.</span></span>
+                  <span><strong>Check linked accounts</strong><span class="hint" id="linkedAccountsHelp">Check 100+ service modules, including Spotify, with Holehe. Sends this email to responding services. Breach-linked services such as Canva appear in results too.</span></span>
                   <input id="linkedAccountsToggle" type="checkbox" role="switch" aria-describedby="linkedAccountsHelp">
                 </label>
               </div>
@@ -182,6 +183,11 @@
               </div>
               <div class="examples" id="examples"></div>
             </div>
+            <a class="deep-search-entry" href="/deep-search.html" aria-label="Explore Deep Search: go beyond usernames and profiles">
+              <span class="deep-search-entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="6"/><path d="m14.5 14.5 5 5M10 6v8M6 10h8" stroke-linecap="round"/></svg></span>
+              <span class="deep-search-entry-copy"><span class="deep-search-entry-title">Deep Search <span class="deep-search-plan-tag">Paid plan</span></span><span class="deep-search-entry-description">Go beyond usernames and profiles. Explore public comments, mentions and linked accounts.</span></span>
+              <span class="deep-search-entry-action">See what it finds <span aria-hidden="true">↗</span></span>
+            </a>
             <details class="privacy-disclosure" id="data-handling">
               <summary>
                 <span class="privacy-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4 6v6c0 4 4 7 8 9 4-2 8-5 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
@@ -196,7 +202,7 @@
               </div>
             </details>
             <nav class="tool-support" aria-label="Product transparency"><a href="/#benchmarks">Benchmark evidence <span aria-hidden="true">↗</span></a><a href="/#changelog">What's new <span aria-hidden="true">↗</span></a></nav>
-            <p class="tool-foot"><a href="/deep-search.html">Deep Search · Paid</a> · <span class="kbd">Enter</span> to run · results appear below · signed-in scans can be saved · <a href="/vs/">how we compare</a><span class="tool-exit"> · <a href="/" id="toolExit">back to overview</a></span></p>
+            <p class="tool-foot"><span class="kbd">Enter</span> to run · results appear below · signed-in scans can be saved · <a href="/vs/">how we compare</a><span class="tool-exit"> · <a href="/" id="toolExit">back to overview</a></span></p>
           </div>
       </div>
 
@@ -225,32 +231,32 @@
     </section>
 
     <section class="section home-essentials" id="features" aria-label="Explore MyRecon">
-      <div class="container home-resource-grid">
-        <a href="/pricing.html"><span class="section-kicker">Choose your scope</span><h2>Free to start.</h2><p>Guest previews. 5 standard scans a day with sign-in. ₹99 adds unlimited standard scans and 10 Extended scans.</p><span class="resource-link">See plans →</span></a>
-        <a href="/guides/"><span class="section-kicker">Understand your results</span><h2>Follow the evidence.</h2><p>Practical OSINT and privacy guides for checking sources and reducing your digital footprint.</p><span class="resource-link">Read the guides →</span></a>
-        <a href="/breaches/"><span class="section-kicker">Research exposure</span><h2>Know what leaked.</h2><p>Browse sourced breach summaries and incident case files. Check your own email in the tool above.</p><span class="resource-link">Explore breaches →</span></a>
+      <div class="container home-resource-list">
+        <a href="/pricing.html"><h2>Choose your scope</h2><p>Start free. The ₹99 plan unlocks Deep Search, unlimited standard scans and 10 Extended scans.</p><span class="resource-link">See plans →</span></a>
+        <a href="/guides/"><h2>Follow the evidence</h2><p>Practical guides to checking sources and reducing your digital footprint.</p><span class="resource-link">Read the guides →</span></a>
+        <a href="/breaches/"><h2>Research exposure</h2><p>Sourced breach summaries and incident case files. Check your own email in the tool above.</p><span class="resource-link">Explore breaches →</span></a>
       </div>
     </section>
 
     <section class="section alt trust-section" id="benchmarks" aria-labelledby="benchmarkHeading">
       <div class="container">
         <div class="trust-heading">
-          <div><span class="section-kicker">Public benchmark / Source evidence</span><h2 id="benchmarkHeading">The numbers, in context.</h2></div>
-          <p class="trust-intro">A full-catalogue username case study and a daily regression sample. See the reported leads, source checks and unknowns behind the numbers.</p>
+          <div><span class="section-kicker">Public benchmark / 4ryanwalia</span><h2 id="benchmarkHeading">One username. Three tools.</h2></div>
+          <p class="trust-intro">MyRecon, Sherlock and Maigret searched the same handle. Compare how many leads each returned, then see which held up to source review.</p>
         </div>
         <article class="username-case" aria-labelledby="usernameCaseHeading">
-          <span class="section-kicker">Full-catalogue case study / 4ryanwalia</span>
-          <h3 id="usernameCaseHeading">Fewer leads only help when the evidence holds up.</h3>
+          <h3 id="usernameCaseHeading">Recorded results for 4ryanwalia</h3>
           <p id="usernameCaseTakeaway">Loading the recorded MyRecon, Sherlock, Maigret and OSINTsearch comparison...</p>
           <div id="usernameCaseContent" hidden>
             <p id="usernameCaseWhen"></p>
             <div class="case-controls">
               <label>Comparison scope<select id="usernameCaseScope"><option value="full">Full catalogues</option><option value="shared">Shared profile addresses</option></select></label>
-              <label>Inspect reported leads<select id="usernameCaseFilter"><option value="all">All reported leads</option><option value="found">Source-supported</option><option value="not_found">Source-contradicted</option><option value="unknown">Unverified</option></select></label>
             </div>
-            <div class="benchmark-table-wrap" id="usernameCaseSummary"></div>
+            <div id="usernameCaseGraph" class="case-graph" role="region" aria-label="Reported unique leads and observed false positives by tool"></div>
+            <p id="usernameCaseGraphNote"></p>
+            <details class="case-evidence"><summary>Read comparison counts and catalogue sizes</summary><div class="benchmark-table-wrap" id="usernameCaseSummary"></div></details>
             <p>MyRecon keeps blocked, ambiguous and unverified checks out of its found list. Contradicted leads are observed false-positive profile results; unverified leads are not counted as false positives. A smaller list can reduce review work, but it can also miss accounts.</p>
-            <details class="case-evidence"><summary>Inspect each reported profile and its evidence</summary><div class="benchmark-table-wrap" id="usernameCaseLeads"></div></details>
+            <details class="case-evidence"><summary>Inspect each reported profile and its evidence</summary><div class="case-controls"><label>Inspect reported leads<select id="usernameCaseFilter"><option value="all">All reported leads</option><option value="found">Source-supported</option><option value="not_found">Source-contradicted</option><option value="unknown">Unverified</option></select></label></div><div class="benchmark-table-wrap" id="usernameCaseLeads"></div></details>
             <details class="case-evidence"><summary>Why Sherlock's bundled and current results differ</summary><p id="usernameCaseDiagnostic"></p></details>
             <details class="case-evidence"><summary>What we corrected in MyRecon</summary><p id="usernameCaseCorrection"></p></details>
             <details class="case-evidence"><summary>OSINTsearch: what the free preview exposes</summary><p id="usernameCasePreview"></p><ul id="usernameCaseNamed"></ul><a href="/data/benchmark-evidence/osintsearch-4ryanwalia.jpg" target="_blank" rel="noopener">View the captured preview</a></details>
@@ -258,7 +264,8 @@
             <div class="case-links"><a href="/data/username-benchmark.json">Open case-study data and methodology</a><a href="/data/benchmark-evidence/">Reproduction instructions</a></div>
           </div>
         </article>
-        <h3>Daily regression sample: 10 usernames × 3 platforms</h3>
+        <details class="case-daily"><summary>Daily benchmark: 10 usernames across GitHub, GitLab and Hacker News</summary>
+        <p class="trust-intro">A separate, smaller sample tracks changes over time. These checks are not added to the full-catalogue case study above.</p>
         <div class="benchmark-status"><span id="benchmarkSchedule">Scheduled every 24 hours</span><span id="benchmarkUpdated">Loading latest measurements...</span></div>
         <div id="benchmarkContent" aria-busy="true">
           <div class="benchmark-grid">
@@ -300,6 +307,7 @@
           <a class="btn btn-ghost" href="/data/benchmarks.json">Open raw run data <span aria-hidden="true">↗</span></a>
         </div>
         <details class="benchmark-comparison"><summary><span>How this benchmark is measured</span><span class="disclosure-arrow" aria-hidden="true">+</span></summary><div class="benchmark-methodology"><p><strong>Scope:</strong> GitHub, GitLab and Hacker News. Five public usernames and five synthetic controls are checked every day. Reference labels require official API account objects or explicit absence. Unexpected or blocked API responses remain unscored.</p><p><strong>False-positive rate:</strong> FP / (FP + TN), using definitive reference negatives only. Accuracy is (TP + TN) / all definitive outcomes. Check the unknown and unscored counts before interpreting a high percentage.</p><p><strong>Named tools:</strong> Actual <a href="https://github.com/sherlock-project/sherlock" target="_blank" rel="noopener noreferrer">Sherlock</a> and <a href="https://github.com/soxoj/maigret" target="_blank" rel="noopener noreferrer">Maigret</a> engines use pinned code and their own bundled detection rules. Each tool checks the same usernames and named platforms with up to three concurrent requests. Sherlock and Maigret use eight-second timeouts; MyRecon uses a six-second connect/eight-second read timeout and a 45-second sweep deadline. Endpoints, headers and validation differ; tools run in sequence on the same network. Timings exclude imports/startup and do not rank full-catalogue performance. The HTTP 200 heuristic remains an optional baseline.</p><p><strong>Unknowns:</strong> Native errors, disabled or unsupported sites, missing outputs and known HTTP failures remain unknown. No retries, recursive enrichment, proxies or block bypass is enabled. Raw runs record native statuses, tool versions, code revisions and detection-rule fingerprints. Older runs without a tool have gaps.</p><p><strong>Schedule:</strong> Daily at 03:17 UTC (08:47 IST). Scheduled jobs may be delayed. The last successful timestamp and stale-data state are shown above. No customer search data is used.</p></div></details>
+        </details>
       </div>
     </section>
     <section class="section trust-section" id="changelog" aria-labelledby="changelogHeading">
@@ -361,14 +369,14 @@
 </footer>
 
   <script src="/assets/js/env.js?v=14"></script>
-  <script src="/assets/js/config.js?v=10"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
   <script src="/assets/js/email-outcome.js?v=1"></script>
   <script src="/assets/js/account.js?v=3"></script>
   <script src="/assets/js/partial-results.js?v=4fbe1f16f7"></script>
-  <script src="/assets/js/username-benchmark.js?v=b244280050" defer></script>
+  <script src="/assets/js/username-benchmark.js?v=a296636737" defer></script>
   <script src="/assets/js/benchmarks.js?v=774ff0e8fc" defer></script>
   <script src="/assets/js/trust.js?v=50b0508fdc" defer></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

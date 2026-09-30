@@ -166,7 +166,7 @@
     // The full sweep checks 561 platforms and can take well over a minute;
     // the extended one checks several times that.
     const scopeWait = { full: 180000, extended: 330000 };
-    const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || 90000);
+    const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || (endpoint === CFG.endpoints.email ? 140000 : 90000));
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -766,7 +766,7 @@
     // were breached needs next, and the evidence below can run to 30 cards.
     html += emailNextSteps(outcome, data);
     html += breachAlertCta(outcome);
-    html += linkedServices(data.linked_services, data.account_checks);
+    html += linkedServices(data.linked_services, data.account_checks, data.registration_checks);
 
     if (dw.exposed_data && dw.exposed_data.length) {
       const top = dw.exposed_data.slice(0, 10), max = top[0].count || 1;
@@ -879,29 +879,35 @@
   // Built server-side from breach records and public profiles only; sign-up
   // forms are never probed, so a missing site means "no evidence", and the
   // footnote says so rather than letting absence read as "no account".
-  function linkedServices(ls, checks) {
+  function linkedServices(ls, checks, registration) {
     if (!ls && !checks) return "";
     ls = ls || {};
-    const rows = (ls.services || []).filter((r) => r.kind === "profile");
-    let html = `<div class="section-label">Public accounts linked to this email
-      <span class="hint">${checks?.enabled === false ? "not checked" : rows.length ? `${rows.length} found` : "no public evidence"}</span></div>`;
+    const rows = ls.services || [];
+    let html = `<div class="section-label">Accounts and services linked to this email
+      <span class="hint">${rows.length ? `${rows.length} linked services` : "no evidence returned"}</span></div>`;
     if (rows.length) {
       html += `<ul class="svc-list">${rows.map((r) => {
-        const tag = r.kind === "profile"
-          ? `<span class="pill ok">public profile</span>`
-          : `<span class="pill">breach record${r.date ? " · " + esc(r.date) : ""}</span>`;
+        const tag = r.kind === "profile" ? `<span class="pill ok">public profile evidence</span>`
+          : r.kind === "registration" ? `<span class="pill">registration signal</span>`
+          : `<span class="pill">historical breach${r.date ? " · " + esc(r.date) : ""}</span>`;
         const name = r.url
           ? `<a href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener nofollow">${esc(r.service)}</a>`
           : esc(r.service);
-        return `<li><span class="svc-name">${name}</span>${tag}<span class="svc-ev">${esc(r.evidence)}</span></li>`;
+        return `<li><span class="svc-name">${name}</span>${tag}<span class="svc-ev">${esc(r.evidence)}${r.kind === "breach" ? ". Evidence of a past association; the account may have been closed." : ""}${r.registration_evidence ? ". " + esc(r.registration_evidence) : ""}</span></li>`;
       }).join("")}</ul>`;
     }
     if (checks?.enabled === false) {
-      html += `<p class="hint">Account checks are off. Turn on “Check linked accounts” above and run the lookup to check public sources.</p>`;
+      html += `<p class="hint">Live account checks are off. Breach-linked services still appear above. Turn on “Check linked accounts” and run the lookup for registration signals.</p>`;
     } else if (checks) {
       html += `<ul class="source-coverage">${(checks.sources || []).map((source) => `<li><strong>${esc(source.name)}</strong>: ${esc(source.status === "no_match" ? "no public match" : source.status.replace(/_/g, " "))}</li>`).join("")}</ul>`;
     }
-    html += `<p class="hint svc-note">Only public evidence is shown. Private account emails cannot be checked. Public evidence does not prove account ownership. No public match means no evidence, not no account. Historical breach entries are shown in the breach list above.</p>`;
+    if (registration && registration.status !== "skipped") {
+      const statuses = { found: "Registration signal", no_signal: "No registration signal", unavailable: "Unavailable", rate_limited: "Blocked or rate limited", timeout: "Timed out", skipped: "Skipped" };
+      html += `<details class="registration-coverage"><summary>Holehe checks: ${registration.checked || 0} answered of ${registration.attempted || 0} eligible · ${registration.catalogue_count || 0} service modules</summary>
+        <p class="hint">Every service has its own outcome. Skipped or blocked checks are not negative results.</p>
+        <ul class="svc-list">${(registration.services || []).map((r) => `<li><span class="svc-name">${esc(r.service)}</span><span class="pill">${esc(statuses[r.status] || r.status)}</span><span class="svc-ev">${esc(r.reason)}</span></li>`).join("")}</ul></details>`;
+    }
+    html += `<p class="hint svc-note">Breach records show historical service associations. Registration signals are service responses, not verified profiles or proof of ownership. No signal does not prove no account. Combined leak lists are excluded from account evidence. <a href="https://github.com/megadose/holehe" target="_blank" rel="noopener">Holehe source</a></p>`;
     return html;
   }
 
@@ -1272,7 +1278,7 @@
       score = Math.round((breached ? 35 : 0) + Math.min(bc, 45) + linked * 6 + grav * 8);
       factors = [
         { label: "Breaches", value: bc },
-        { label: "Linked accounts", value: linked },
+        { label: "Public account signals", value: linked },
         { label: "Gravatar", value: grav ? "Yes" : "No" },
       ];
     }
@@ -1851,6 +1857,10 @@
         L.push(`Public account checks: ${d.account_checks.enabled ? "enabled" : "off"}`);
         (d.account_checks.sources || []).forEach((source) => L.push(`- ${source.name}: ${source.status}`));
       }
+      if (d.registration_checks && d.registration_checks.status !== "skipped") {
+        L.push(`Registration checks: ${d.registration_checks.checked || 0} answered of ${d.registration_checks.attempted || 0} eligible`);
+        (d.registration_checks.services || []).forEach((r) => L.push(`- ${r.service}: ${r.status}; ${r.reason}`));
+      }
       const svc = (d.linked_services && d.linked_services.services) || [];
       if (svc.length) {
         L.push(`Linked services (${svc.length}):`);
@@ -2110,9 +2120,9 @@
     return `<div class="empty">
       <p class="empty-title">Ready when you are</p>
       <p>Enter a target above, or start from a question:</p>
-      <div class="quick-starts">${starts.map(([t, q, d]) => `
-        <button type="button" class="quick-start" data-quick="${t}">${icon(TOOLS[t].icon, 18)}
-          <span><strong>${esc(q)}</strong><small>${esc(d)}</small></span></button>`).join("")}
+      <div class="quick-links">${starts.map(([t, q, d]) => `
+        <button type="button" class="quick-link" data-quick="${t}">${icon(TOOLS[t].icon, 18)}
+          <span><strong>${esc(q)}</strong><small>${esc(d)}</small></span><span class="quick-link-arrow" aria-hidden="true">→</span></button>`).join("")}
       </div>
     </div>`;
   }

@@ -34,6 +34,30 @@
     "band": "Critical",
     "data_provider": null,
     "summary": "In May 2024, 2B rows of data with 361M unique email addresses were collated from malicious Telegram channels. The data contained 122GB across 1.7k files with email addresses, usernames, passwords and in many cases, the website they were entered into. The data appears to have been sourced from a combination of existing combolists and info stealer malware.",
+    "story": {
+      "background": [
+        "In May 2024, 2B rows of data with 361M unique email addresses were collated from malicious Telegram channels . The data contained 122GB across 1.7k files with email addresses, usernames, passwords and in many cases, the website they were entered into. The data appears to have been sourced from a combination of existing combolists and info stealer malware."
+      ],
+      "how": [
+        "The data appears to have been sourced from a combination of existing combolists and info stealer malware."
+      ],
+      "motive": [],
+      "outcome": [
+        "361,468,099 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, Passwords, Usernames."
+      ],
+      "editorial": [
+        "The detail that sets this collection apart from an ordinary password dump is in the description: in many cases the records include the website the credentials were entered into . That turns a list of email-and-password pairs into a targeting list, an attacker no longer has to spray a credential across a hundred services hoping for a match, because the file already says where it worked.",
+        "The other half of the source is information-stealing malware, which changes what the data means for the person in it. Credentials harvested from an infected device were captured as they were typed. They can include accounts at sites that have never been breached, passwords created after every previous breach notification, and sessions from a browser's saved-password store in one sweep.",
+        "So the honest read of an appearance here is: your password is known, possibly with the site it belongs to, and possibly because a machine you used was compromised rather than a company you trusted. Clean the device first if there is any chance it was the source. Then rotate credentials in order of what they can unlock, email before everything, because email resets everything."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "TelegramCombolists",
+        "breach_date": "2024-05-28"
+      }
+    ],
     "fields": [
       {
         "name": "Passwords",

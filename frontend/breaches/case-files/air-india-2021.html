@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Air India, 2021: ten years of passengers, lost by a supplier","description":"Air India lost 4.5 million passengers' data, including passport details going back a decade, because the company that runs its reservation platform was breached.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/air-india-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Air India data breach"},"wordCount":684}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Air India data breach","item":"https://www.myrecon.xyz/breaches/case-files/air-india-2021.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Who is SITA and why did an airline breach start there?","acceptedAnswer":{"@type":"Answer","text":"SITA is an air transport technology provider whose Passenger Service System handles reservations and passenger processing for many airlines worldwide. Airlines rely on shared platforms like it rather than each building their own. When one such platform is compromised, the passengers of every airline using it are exposed at once, Air India was one of several carriers affected by this incident."}},{"@type":"Question","name":"How far back did the data go?","acceptedAnswer":{"@type":"Answer","text":"Air India said the compromised data covered passengers registered between August 2011 and February 2021, roughly ten years. Long retention is the quiet multiplier in breaches like this: the intrusion lasted weeks, and the damage covered a decade."}},{"@type":"Question","name":"Was payment card data included?","acceptedAnswer":{"@type":"Answer","text":"Some card data was reported as affected, but Air India stated that CVV and CVC security codes were not held by it. Passport information is the more durable concern, since a passport number stays valid for years and supports identity fraud in ways an expiring card does not."}},{"@type":"Question","name":"What should affected passengers do?","acceptedAnswer":{"@type":"Answer","text":"Change frequent flyer passwords, particularly if reused; watch for travel-themed phishing that references real bookings; and be alert to identity verification requests that quote passport details. Where a passport has since been renewed, the risk from the old number falls away naturally."}}]}</script>
@@ -89,7 +87,12 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Dates of birth · Contact details · Passport information · Ticket information · Frequent flyer data · Some payment card data, without CVV</p>
 
-<p class="lead">In May 2021, Air India told 4.5 million passengers that their data had been taken, names, dates of birth, contact details, passport information, ticket data and frequent flyer records, covering everyone who had travelled with it between August 2011 and February 2021. The intrusion had not happened at Air India. It happened at the company that runs the reservation platform.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>In May 2021, Air India told 4.5 million passengers that their data had been taken, names, dates of birth, contact details, passport information, ticket data and frequent flyer records, covering everyone who had travelled with it between August 2011 and February 2021. The intrusion had not happened at Air India. It happened at the company that runs the reservation platform.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Compromise of SITA Passenger Service System, a shared platform used by many airlines</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Reported scale: about 4.5 million passengers.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 3 min</summary><p class="lead">In May 2021, Air India told 4.5 million passengers that their data had been taken, names, dates of birth, contact details, passport information, ticket data and frequent flyer records, covering everyone who had travelled with it between August 2011 and February 2021. The intrusion had not happened at Air India. It happened at the company that runs the reservation platform.</p>
 
 <h2>What happened</h2>
 
@@ -131,19 +134,22 @@
   <li><strong>Change frequent flyer passwords and enable two-factor authentication.</strong> Loyalty accounts are directly monetisable and are attacked constantly.</li>
   <li><strong>Treat booking-related messages with suspicion.</strong> Verify through the airline's app or website rather than a link, <a href="/guides/how-to-spot-phishing.html">what distinguishes a real travel notice from a good imitation</a>.</li>
   <li><strong>Ask airlines and hotels to delete what they no longer need.</strong> Data protection rights differ by country, but the request costs nothing and the retention default is otherwise forever.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;AirIndia&quot;,&quot;breach_date&quot;:&quot;2021-05-21&quot;,&quot;match_year&quot;:true}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -227,9 +233,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

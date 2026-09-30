@@ -38,6 +38,35 @@
     "band": "Severe",
     "data_provider": null,
     "summary": "In February 2023, data alleged to have been taken from the fraud protection service Eye4Fraud was listed for sale on a popular hacking forum. Spanning tens of millions of rows with 16M unique email addresses, the data was spread across 147 tables totalling 65GB and included both direct users of the service and what appears to be individuals who'd placed orders on other services that implemented…",
+    "story": {
+      "background": [
+        "In February 2023, data alleged to have been taken from the fraud protection service Eye4Fraud was listed for sale on a popular hacking forum .",
+        "Spanning tens of millions of rows with 16M unique email addresses, the data was spread across 147 tables totalling 65GB and included both direct users of the service and what appears to be individuals who'd placed orders on other services that implemented Eye4Fraud to protect their sales.",
+        "The data included names and bcrypt password hashes for users, and names, phone numbers, physical addresses and partial credit card data (card type and last 4 digits) for orders placed using the service. Eye4Fraud did not respond to multiple attempts to report the incident."
+      ],
+      "how": [
+        "The published account does not explain the exact way the data was obtained."
+      ],
+      "motive": [
+        "In February 2023, data alleged to have been taken from the fraud protection service Eye4Fraud was listed for sale on a popular hacking forum ."
+      ],
+      "outcome": [
+        "16,000,591 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, IP addresses, Names, Partial credit card data, Passwords, Phone numbers, Physical addresses."
+      ],
+      "editorial": [
+        "There is an unavoidable irony in a fraud prevention service losing its data, but the mechanism is the more interesting part. The records include both direct users of the service and people who simply placed orders with merchants that used it. Most of the second group had no idea the company existed, and no way to find out.",
+        "This is what a verification layer does structurally: to check whether an order is fraudulent, it has to receive the order, the name, the address, the phone number, the partial card data. Hundreds of merchants send that in, and it accumulates in one place. The service is doing exactly what it was hired to do, and in doing so becomes a far more attractive target than any individual shop it protects.",
+        "147 tables across 65GB also tells you something about how this data was kept. That is a warehouse, not a working set, years of retained transaction context long past the point where it could inform a fraud decision. The defensible version of this business holds each record for as long as the check requires and deletes it afterwards.",
+        "For anyone in the file: the partial card data is not spendable, but it is persuasive. A caller who can recite the last four digits and your address sounds like your bank precisely because most people treat those details as proof. They are not proof; they are in this file."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "Eye4Fraud",
+        "breach_date": "2023-01-25"
+      }
+    ],
     "fields": [
       {
         "name": "Passwords",

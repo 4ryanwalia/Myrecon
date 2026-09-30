@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"First American, 2019: 885 million documents behind a number you could count up","description":"Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of any kind.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/first-american-2019.html","articleSection":"Case Files","about":{"@type":"Thing","name":"First American Financial document exposure"},"wordCount":1088}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"First American Financial document exposure","item":"https://www.myrecon.xyz/breaches/case-files/first-american-2019.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an insecure direct object reference?","acceptedAnswer":{"@type":"Answer","text":"It is what happens when an application identifies a record by a number in the address and never checks whether the person asking is entitled to that record. If document 75000000 is yours, document 74999999 belongs to somebody else, and if the only thing standing between a visitor and that file is the fact that they have not tried, there is no access control at all. The flaw needs no tooling and no skill to exploit. It needs arithmetic."}},{"@type":"Question","name":"Was the data actually stolen?","acceptedAnswer":{"@type":"Answer","text":"There is no evidence of mass harvesting, and the company's review identified a limited number of documents accessed by outside parties. That sounds more reassuring than it is. The exposure spanned sixteen years of records reachable without logging in, which means the population of people who could have retrieved them quietly leaves no trace by definition. Absence of evidence over a window that long is weak evidence of absence."}},{"@type":"Question","name":"Why did a title insurer hold my bank statements?","acceptedAnswer":{"@type":"Answer","text":"Because US property closings run through title and escrow companies. To insure title and move the money they collect the paperwork of the whole transaction: identification, mortgage documents, tax records, bank statements, wire instructions and signed receipts. Most buyers never think of the title company as a data holder, and it ends up with a more complete financial picture of a household than the bank does."}},{"@type":"Question","name":"Had anyone noticed the flaw before it became public?","acceptedAnswer":{"@type":"Answer","text":"Yes. Regulators found that First American's own internal penetration testing had identified the vulnerability months earlier, in December 2018. It was recorded, assigned a low severity, and remediation was not completed. The finding existed inside the company for roughly half a year before a member of the public reported the same problem from outside."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Bank account numbers · Bank statements · Mortgage and tax records · Social Security numbers · Wire transfer receipts · Driver's licence images</p>
 
-<p class="lead">There was no intrusion, no malware, no stolen password and no attacker. The documents were served to anyone who asked for them, and asking meant editing a number at the end of a web address. Behind that number sat roughly 885 million files: the paperwork of American house purchases going back to 2003.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>There was no intrusion, no malware, no stolen password and no attacker. The documents were served to anyone who asked for them, and asking meant editing a number at the end of a web address. Behind that number sat roughly 885 million files: the paperwork of American house purchases going back to 2003.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Insecure direct object reference, changing a document number in the URL returned another customer's file, with no authentication required</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>A US$1 million penalty from the New York Department of Financial Services in 2023, the first settlement under its cybersecurity regulation, followed by a separate SEC settlement over disclosure controls</p>
+<p>Reported scale: About 885 million documents, the oldest dating to 2003.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">There was no intrusion, no malware, no stolen password and no attacker. The documents were served to anyone who asked for them, and asking meant editing a number at the end of a web address. Behind that number sat roughly 885 million files: the paperwork of American house purchases going back to 2003.</p>
 
 <h2>What happened</h2>
 
@@ -136,19 +140,22 @@
 
 <p>The practical exposure is the same one the case files on Equifax and the OPM describe, for the same reason: the data that leaked does not expire. A Social Security number, a date of birth and a bank account number are as useful to a fraudster now as they were in 2019. A credit freeze at each of the three bureaus is the countermeasure that matches that permanence, it is free, it is reversible, and unlike monitoring it prevents rather than reports.</p>
 
-<p>One exposure here is more specific and worth naming. Wire transfer receipts and closing documents are the raw material of real estate wire fraud, in which a buyer receives convincing instructions to send their deposit to the wrong account, referencing a genuine transaction with correct names, amounts and dates. If you are closing on a property, confirm wire instructions by calling a number you sourced yourself, never one contained in the email carrying the instructions.</p>
+<p>One exposure here is more specific and worth naming. Wire transfer receipts and closing documents are the raw material of real estate wire fraud, in which a buyer receives convincing instructions to send their deposit to the wrong account, referencing a genuine transaction with correct names, amounts and dates. If you are closing on a property, confirm wire instructions by calling a number you sourced yourself, never one contained in the email carrying the instructions.</p></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -233,9 +240,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

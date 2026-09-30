@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"23andMe, 2023: 14,000 accounts opened the door to 6.9 million people","description":"Attackers logged into 14,000 accounts with recycled passwords. A feature that connects relatives then exposed 6.9 million people who had done nothing wrong.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/23andme-2023.html","articleSection":"Case Files","about":{"@type":"Thing","name":"23andMe credential stuffing breach"},"wordCount":902}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"23andMe credential stuffing breach","item":"https://www.myrecon.xyz/breaches/case-files/23andme-2023.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was 23andMe hacked?","acceptedAnswer":{"@type":"Answer","text":"Not in the sense of a system being breached. Attackers logged into roughly 14,000 individual accounts using email and password pairs recycled from other companies' breaches, credential stuffing. The accounts worked because those customers had reused passwords and had not turned on two-factor authentication."}},{"@type":"Question","name":"How did 14,000 accounts become 6.9 million people?","acceptedAnswer":{"@type":"Answer","text":"Through DNA Relatives, an opt-in feature that shows you other users who share DNA with you, along with their display name, relationship estimate and profile details. Once inside one account, an attacker could see everyone matched to it. Multiply across thousands of accounts and the exposure compounds far beyond the accounts actually compromised."}},{"@type":"Question","name":"Was raw genetic data stolen?","acceptedAnswer":{"@type":"Answer","text":"Not raw sequence data. What was exposed was profile information and the derived results: ancestry composition, ethnicity estimates, birth years, locations, and how users were related to one another. That is still genetic information about a person, and it is not information they can change."}},{"@type":"Question","name":"Why was the ethnicity data particularly serious?","acceptedAnswer":{"@type":"Answer","text":"Because of how it was used. Subsets of the stolen data were advertised specifically as lists of people with Ashkenazi Jewish ancestry and of people with Chinese ancestry. A dataset organised by ethnicity, with names and locations attached, is a targeting list, and that is why this breach is discussed in terms of physical safety rather than fraud."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Names · Profile photos · Birth years · Locations · Ancestry and ethnicity estimates · Relationship labels between matched relatives</p>
 
-<p class="lead">Nobody broke into 23andMe. Attackers logged in, to about 14,000 accounts, using email and password pairs recycled from other companies' breaches. Because of one feature designed to connect relatives, those 14,000 logins exposed the profile data of roughly 6.9 million people, almost none of whom had done anything wrong.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Nobody broke into 23andMe. Attackers logged in, to about 14,000 accounts, using email and password pairs recycled from other companies' breaches. Because of one feature designed to connect relatives, those 14,000 logins exposed the profile data of roughly 6.9 million people, almost none of whom had done anything wrong.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Credential stuffing with passwords from earlier breaches, amplified by the DNA Relatives feature</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>A $30 million settlement, a joint UK and Canadian regulatory finding, and the company's later bankruptcy</p>
+<p>Reported scale: about 6.9 million people, from 14,000 compromised accounts.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Nobody broke into 23andMe. Attackers logged in, to about 14,000 accounts, using email and password pairs recycled from other companies' breaches. Because of one feature designed to connect relatives, those 14,000 logins exposed the profile data of roughly 6.9 million people, almost none of whom had done anything wrong.</p>
 
 <h2>What happened</h2>
 
@@ -160,19 +164,22 @@
   <li><strong>Review relative-matching and profile visibility settings.</strong> Opting out of matching removes you from the amplification path entirely.</li>
   <li><strong>Consider deleting data and requesting sample destruction</strong> if you no longer use the service. Most providers document this; it is worth doing while the company still exists to process the request.</li>
   <li><strong>Remember it is not only your decision.</strong> Testing exposes information about relatives who never consented, and that is a conversation worth having with them rather than for them.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;23andMe&quot;,&quot;breach_date&quot;:&quot;2023-10-06&quot;,&quot;match_year&quot;:true}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -256,9 +263,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

@@ -40,6 +40,30 @@
     "band": "Severe",
     "data_provider": null,
     "summary": "In December 2023, hundreds of gigabytes of data allegedly taken from Indian ISP and digital TV provider Hathway appeared on a popular hacking website. The incident exposed extensive personal information including 4.7M unique email addresses along with names, physical and IP addresses, phone numbers, password hashes and support ticket logs.",
+    "story": {
+      "background": [
+        "In December 2023, hundreds of gigabytes of data allegedly taken from Indian ISP and digital TV provider Hathway appeared on a popular hacking website . The incident exposed extensive personal information including 4.7M unique email addresses along with names, physical and IP addresses, phone numbers, password hashes and support ticket logs."
+      ],
+      "how": [
+        "The published account does not explain the exact way the data was obtained."
+      ],
+      "motive": [],
+      "outcome": [
+        "4,670,080 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Device information, Email addresses, IP addresses, Names, Passwords, Phone numbers, Physical addresses, Salutations, Support tickets."
+      ],
+      "editorial": [
+        "The field that makes this one worse than its size suggests is the last one in the list: support ticket logs. Every other data class here is structured, a name goes in the name box, an address in the address box.",
+        "A support ticket is whatever the customer typed while frustrated, which routinely includes account numbers, alternate phone numbers, details about who else lives at the address, and often a password, because people paste them in when asked to describe the problem. An internet provider also holds a category of data almost nobody else does: the link between a person, a physical address and an IP address over time.",
+        "That mapping is what turns an IP address found elsewhere into a name, and it is the single most useful record an ISP keeps from an investigative point of view. For Indian subscribers specifically, the practical risk that follows is the support call that already knows your plan, your address and your last complaint. That is not a coincidence and it is not the provider calling."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "Hathway",
+        "breach_date": "2023-12-17"
+      }
+    ],
     "fields": [
       {
         "name": "Passwords",

@@ -47,11 +47,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=bef64dbeee">
   <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Uber, 2022: multi-factor authentication held, and then somebody sent a WhatsApp message","description":"A contractor's password was bought, their phone was buried in approval prompts, and a helpful message finished the job. The real prize was an admin credential sitting in a script.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/uber-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Uber 2022 internal systems breach"},"wordCount":1062}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Uber 2022 internal systems breach","item":"https://www.myrecon.xyz/breaches/case-files/uber-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is MFA fatigue?","acceptedAnswer":{"@type":"Answer","text":"Where the second factor is a push notification that the user approves with a tap, an attacker who already has the password can request approval over and over. The victim's phone fills with prompts, at any hour, with no way to make them stop. Eventually somebody taps approve, to end the noise, or because they assume a system is malfunctioning. The control is not bypassed technically. It is worn down."}},{"@type":"Question","name":"How did the attacker get the password in the first place?","acceptedAnswer":{"@type":"Answer","text":"Reporting indicates the contractor's corporate credentials were obtained from a dark web marketplace, having most likely been captured by information-stealing malware on a personal device. This is the ordinary supply chain for initial access now: the credential is a commodity bought for a small sum, and the work begins after login."}},{"@type":"Question","name":"What did the attacker actually reach?","acceptedAnswer":{"@type":"Answer","text":"After getting onto the internal network they found a PowerShell script on a shared drive containing hardcoded credentials for a privileged access management system, the vault holding administrative secrets. That unlocked access to a range of internal tools including cloud consoles, the identity provider, internal dashboards and Slack, where the attacker announced the breach. Uber stated it found no evidence of access to customer accounts or trip history."}},{"@type":"Question","name":"Why does a vulnerability disclosure programme matter here?","acceptedAnswer":{"@type":"Answer","text":"Because the attacker reached Uber's account on its bug bounty platform, which holds reports of vulnerabilities that have been submitted but not yet fixed. That is a list of ways into the company, written by researchers, held in one place. Any organisation running a disclosure programme should treat that account as a crown-jewel system rather than a security team convenience."}}]}</script>
@@ -90,7 +88,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Internal collaboration and messaging systems · Cloud and identity administration consoles · Internal vulnerability reports</p>
 
-<p class="lead">Uber had multi-factor authentication. It was enabled, it was enforced, and on the night of 15 September 2022 it worked precisely as specified: a login attempt from an unrecognised source generated an approval request to the account holder's phone. Then it generated another, and another, and then the account holder received a WhatsApp message explaining that the prompts would stop if they accepted one.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Uber had multi-factor authentication. It was enabled, it was enforced, and on the night of 15 September 2022 it worked precisely as specified: a login attempt from an unrecognised source generated an approval request to the account holder's phone. Then it generated another, and another, and then the account holder received a WhatsApp message explaining that the prompts would stop if they accepted one.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Stolen contractor credentials, multi-factor fatigue plus social engineering over WhatsApp, then hardcoded privileged credentials found in an internal PowerShell script</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>No customer data loss established; internal tooling compromised, including access to the company's vulnerability disclosure programme</p>
+<p>Reported scale: No evidence of access to customer accounts or trip data; internal tools, Slack, cloud consoles and vulnerability reports were reached.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Uber had multi-factor authentication. It was enabled, it was enforced, and on the night of 15 September 2022 it worked precisely as specified: a login attempt from an unrecognised source generated an approval request to the account holder's phone. Then it generated another, and another, and then the account holder received a WhatsApp message explaining that the prompts would stop if they accepted one.</p>
 
 <h2>What happened</h2>
 
@@ -136,19 +140,22 @@
 
 <p>Uber stated that it found no evidence of access to customer accounts, trip histories or payment details, and no customer data exposure was subsequently established. On the current public record there is nothing for riders or drivers to remediate from this incident, and this archive is not going to manufacture an action item where none exists.</p>
 
-<p>The applicable lesson is about your own accounts rather than about Uber. If your second factor is a push notification or an SMS code, it protects you against bulk attacks and not against someone who has decided to target you specifically. On the accounts that can reset everything else, your primary email above all, move to a passkey or a hardware security key. And treat any unexpected approval prompt as what it is: proof that somebody already has your password, and an instruction to change it rather than a decision about whether to tap approve.</p>
+<p>The applicable lesson is about your own accounts rather than about Uber. If your second factor is a push notification or an SMS code, it protects you against bulk attacks and not against someone who has decided to target you specifically. On the accounts that can reset everything else, your primary email above all, move to a passkey or a hardware security key. And treat any unexpected approval prompt as what it is: proof that somebody already has your password, and an instruction to change it rather than a decision about whether to tap approve.</p></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -233,9 +240,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=971ef00e0d"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
