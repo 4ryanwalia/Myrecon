@@ -166,6 +166,14 @@
 .graph-selected { stroke:var(--border-strong); stroke-width:1; stroke-dasharray:3 5; }
 .graph-point { cursor:crosshair; }
 .graph-point:focus-visible { outline:none; stroke:var(--text); stroke-width:3; }
+.benchmark-compare-control { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:22px; font-size:.78rem; color:var(--text-dim); }
+.benchmark-compare-control select { min-height:40px; max-width:100%; background:var(--bg-soft); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 12px; font:500 .78rem var(--font); }
+.benchmark-compare-control select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.benchmark-tool-note { font:.68rem/1.6 var(--mono); color:var(--text-mute); }
+.graph-comparison { stroke:var(--text-dim); stroke-dasharray:6 4; }
+.graph-point.graph-comparison { fill:var(--text-dim); stroke-dasharray:none; }
+.readout-sherlock > span,.readout-maigret > span { color:var(--text-dim); }
+@media (max-width:700px) { .benchmark-tool-note { flex-basis:100%; } }
 .home-page .benchmark-evidence { border:0; background:none; margin-bottom:8px; padding:16px 0; }
 .home-page .benchmark-comparison + .benchmark-comparison { margin-top:12px; }
 .home-page .changelog-layout { grid-template-columns:1fr 2fr; gap:40px; }

@@ -44,3 +44,25 @@ test('coverage shows unknown outcomes even when scored accuracy is perfect', () 
   assert.equal(graphSeries([outage], 'fp')[0].values[0], null);
   assert.equal(graphSeries([outage], 'coverage')[0].values[0], 0);
 });
+
+test('named tools have gaps in older runs and are validated when present', () => {
+  const old = run();
+  const measured = run();
+  measured.tools.sherlock = stats();
+  measured.tools.maigret = stats({ p50_seconds: 3 });
+  assert.equal(validRun(old), true);
+  assert.equal(validRun(measured), true);
+  assert.deepEqual(graphSeries([old, measured], 'fp', ['myrecon', 'sherlock'])[1].values, [null, 1]);
+  assert.deepEqual(graphSeries([old, measured], 'speed', ['myrecon', 'maigret'])[1].values, [null, 3]);
+  measured.tools.sherlock.accuracy_percent = 100;
+  assert.equal(validRun(measured), false);
+});
+
+test('failed named runner is unavailable, including coverage and speed', () => {
+  const measured = run();
+  measured.tools.sherlock = stats();
+  measured.tool_metadata = { sherlock: { status: 'unavailable' } };
+  for (const mode of ['fp', 'accuracy', 'coverage', 'speed']) {
+    assert.equal(graphSeries([measured], mode, ['myrecon', 'sherlock'])[1].values[0], null);
+  }
+});

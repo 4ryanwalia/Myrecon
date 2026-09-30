@@ -1,17 +1,21 @@
 (function () {
   "use strict";
-  const TOOLS = ["myrecon", "http200_baseline"];
-  const LABELS = { myrecon: "MyRecon", http200_baseline: "HTTP 200 baseline" };
+  const KNOWN_TOOLS = ["myrecon", "sherlock", "maigret", "http200_baseline"];
+  const LABELS = { myrecon: "MyRecon", sherlock: "Sherlock", maigret: "Maigret", http200_baseline: "HTTP 200 baseline" };
+  let comparison = "sherlock";
+  const toolsShown = () => ["myrecon", comparison];
   const MODES = {
     fp: { key: "FP", title: "False positives", unit: "count" },
     accuracy: { key: "accuracy_percent", title: "Accuracy on definitive checks", unit: "%" },
     coverage: { key: "coverage_percent", title: "Definitive scored coverage", unit: "%" },
     speed: { key: "p50_seconds", title: "Median time per username", unit: "seconds" }
   };
-  function graphSeries(runs, mode) {
+  function graphSeries(runs, mode, tools = ["myrecon", "http200_baseline"]) {
     const key = MODES[mode].key;
-    return TOOLS.map((tool) => ({ tool, values: runs.map((run) => {
+    return tools.map((tool) => ({ tool, values: runs.map((run) => {
       const stats = run.tools[tool];
+      // Named tools were not measured in the older baseline-only runs.
+      if (!stats || run.tool_metadata?.[tool]?.status === "unavailable") return null;
       // An outage is a gap, never a measured zero false-positive point.
       if (mode === "fp" && stats.negative_denominator === 0) return null;
       return Number.isFinite(stats[key]) ? stats[key] : null;
@@ -19,7 +23,8 @@
   }
   function validRun(run) {
     if (!run || !Number.isFinite(Date.parse(run.started_at_utc)) || !Number.isFinite(Date.parse(run.finished_at_utc)) || !run.tools) return false;
-    return TOOLS.every((tool) => {
+    if (!run.tools.myrecon || !run.tools.http200_baseline) return false;
+    return KNOWN_TOOLS.filter((tool) => Object.hasOwn(run.tools, tool)).every((tool) => {
       const s = run.tools[tool];
       if (!s) return false;
       const counts = ["TP", "TN", "FP", "FN", "unknown", "unscored", "unknown_negative", "total", "scored", "negative_denominator"];
@@ -73,9 +78,11 @@
     return node;
   }
   function renderGraph() {
-    const runs = history.slice(-14), series = graphSeries(runs, mode), settings = MODES[mode];
+    const runs = history.slice(-14), series = graphSeries(runs, mode, toolsShown()), settings = MODES[mode];
     const graph = document.getElementById("benchmarkGraph");
     graph.replaceChildren();
+    text("benchmarkComparisonLabel", LABELS[comparison]);
+    graph.dataset.comparison = comparison;
     const picker = document.getElementById("benchmarkRunPicker");
     picker.replaceChildren(...runs.map((run, i) => {
       const option = el("option", stamp(run) + (i === runs.length - 1 ? " · latest" : ""));
@@ -96,6 +103,9 @@
         item.append(el("span", LABELS[s.tool]), el("strong", formatted));
         return item;
       }));
+      const meta = runs[i].tool_metadata?.[comparison];
+      text("benchmarkToolNote", meta ? `${LABELS[comparison]} ${meta.version} · ${meta.commit.slice(0, 8)} · ${meta.status === "measured" ? "own bundled detection rules" : "unavailable in this run"}`
+        : comparison === "http200_baseline" ? "Status-only heuristic. This is not a named OSINT tool." : `${LABELS[comparison]} was not measured in this older run.`);
       if (selectedLine) {
         selectedLine.setAttribute("x1", selectedLine.dataset["x" + i]);
         selectedLine.setAttribute("x2", selectedLine.dataset["x" + i]);
@@ -112,7 +122,7 @@
       const firstTime = Date.parse(runs[0].started_at_utc), lastTime = Date.parse(runs.at(-1).started_at_utc);
       const x = (i) => firstTime === lastTime ? (left + w - right) / 2 : left + (Date.parse(runs[i].started_at_utc) - firstTime) / (lastTime - firstTime) * (w - left - right);
       const y = (value) => h - bottom - value * (h - top - bottom) / max;
-      const chart = svgNode("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": `${settings.title}: MyRecon and HTTP 200 baseline. Read exact values in the table below.` });
+      const chart = svgNode("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": `${settings.title}: MyRecon and ${LABELS[comparison]}. Read exact values in the table below.` });
       chart.append(svgNode("title", {}, settings.title + " by UTC run date"));
       selectedLine = svgNode("line", { y1: top, y2: h - bottom, class: "graph-selected" });
       runs.forEach((run, i) => { selectedLine.dataset["x" + i] = String(x(i)); });
@@ -140,12 +150,12 @@
           path += `${previous ? "L" : "M"}${x(i)},${y(value)} `;
           previous = true;
         });
-        chart.append(svgNode("path", { d: path, class: "graph-line graph-" + s.tool }));
+        chart.append(svgNode("path", { d: path, class: "graph-line graph-" + s.tool + (s.tool !== "myrecon" ? " graph-comparison" : "") }));
         s.values.forEach((value, i) => {
           if (value === null) return;
           // A ring and filled dot keep coinciding zero-count series visible.
           const label = `${stamp(runs[i])}: ${LABELS[s.tool]} ${value} ${settings.unit}`;
-          const point = svgNode("circle", { cx: x(i), cy: y(value), r: s.tool === "myrecon" ? 6 : 3, class: "graph-point graph-" + s.tool, tabindex: 0, role: "img", "aria-label": label });
+          const point = svgNode("circle", { cx: x(i), cy: y(value), r: s.tool === "myrecon" ? 6 : 3, class: "graph-point graph-" + s.tool + (s.tool !== "myrecon" ? " graph-comparison" : ""), tabindex: 0, role: "img", "aria-label": label });
           point.append(svgNode("title", {}, label));
           point.addEventListener("pointerenter", () => inspect(i));
           point.addEventListener("focus", () => inspect(i));
@@ -157,16 +167,16 @@
     }
     inspect(runs.findIndex((run) => run.started_at_utc === inspectedRun));
     const rows = runs.map((run, i) => [stamp(run), ...series.map((s) => s.values[i] === null ? "Unavailable" : `${s.values[i]} ${settings.unit}`)]);
-    document.getElementById("benchmarkGraphTable").replaceChildren(table(["Date (UTC)", "MyRecon", "HTTP 200 baseline"], rows));
+    document.getElementById("benchmarkGraphTable").replaceChildren(table(["Run (UTC)", ...toolsShown().map((tool) => LABELS[tool])], rows));
     const scopeNote = mode === "fp" ? "Counts use each tool's definitive reference negatives. See coverage and unknowns below; the denominators can differ."
       : mode === "accuracy" ? "Accuracy excludes unknown and unscored checks. Higher accuracy with lower coverage is not an overall ranking."
       : mode === "coverage" ? "The share of all checks with a definitive prediction and a usable reference. Unknown and unscored outcomes reduce coverage."
-      : "Different validation work and concurrency settings make these timings descriptive, not a fair speed ranking.";
+      : "Same usernames and named platforms, but endpoints and validation differ. Timings exclude imports/startup and do not rank full-catalogue performance.";
     text("benchmarkChartNote", (runs.length === 1 ? "First run recorded. Daily history will build from the next run. " : "") + scopeNote);
   }
   function renderDetails(run) {
     const wrap = document.getElementById("benchmarkRunDetails"), summary = el("div", undefined, "benchmark-table-wrap");
-    summary.append(table(["Tool", "True +", "True −", "False +", "False −", "Unknown", "Unscored", "Coverage"], TOOLS.map((tool) => {
+    summary.append(table(["Tool", "True +", "True −", "False +", "False −", "Unknown", "Unscored", "Coverage"], KNOWN_TOOLS.filter((tool) => run.tools[tool]).map((tool) => {
       const s = run.tools[tool]; return [LABELS[tool], s.TP, s.TN, s.FP, s.FN, s.unknown, s.unscored, percent(s.coverage_percent)];
     }), "Unknown predictions and unavailable reference checks are excluded from scored outcomes."));
     const controls = el("div", undefined, "benchmark-table-wrap");
@@ -230,6 +240,11 @@
       document.querySelectorAll("[data-benchmark-chart]").forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
       if (history.length) renderGraph();
     }));
+    document.getElementById("benchmarkComparison").addEventListener("change", (event) => {
+      if (!["sherlock", "maigret", "http200_baseline"].includes(event.target.value)) return;
+      comparison = event.target.value;
+      if (history.length) renderGraph();
+    });
     load();
     let resizeTimer;
     window.addEventListener("resize", () => {

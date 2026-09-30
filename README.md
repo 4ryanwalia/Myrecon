@@ -26,7 +26,7 @@ MyRecon brings public username signals, supported breach exposure checks, and do
 
 [Username OSINT guide](https://www.myrecon.xyz/guides/username-osint-search.html) · [Platform profile lookups](https://www.myrecon.xyz/find/) · [Privacy guides](https://www.myrecon.xyz/privacy/) · [OSINT tool comparisons](https://www.myrecon.xyz/vs/)
 
-The [public benchmark dashboard](https://www.myrecon.xyz/#benchmarks) publishes daily measurements for 10 fixed usernames across GitHub, GitLab and Hacker News. Inspect [raw runs and methodology](frontend/data/benchmarks.json) for timestamps, verdicts, coverage and unknown outcomes. This small regression sample shares API evidence with the engine; it is not an independent accuracy audit or a ranking against named OSINT tools.
+The [public benchmark dashboard](https://www.myrecon.xyz/#benchmarks) publishes daily measurements for 10 fixed usernames across GitHub, GitLab and Hacker News. Inspect [raw runs and methodology](frontend/data/benchmarks.json) for timestamps, verdicts, coverage and unknown outcomes. Compare actual MyRecon, Sherlock and Maigret runs, with recorded versions and coverage, or select the HTTP 200 heuristic. This small regression sample shares API evidence with the reference; it is not an independent accuracy audit or a full-catalogue ranking. [Reproduce the named-tool benchmark](docs/NAMED-TOOL-BENCHMARKS.md).
 
 ## Try the verdict demo
 

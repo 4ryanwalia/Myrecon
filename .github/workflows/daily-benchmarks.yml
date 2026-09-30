@@ -30,13 +30,13 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install benchmark dependencies
-        run: pip install requests pytest
+        run: pip install requests pytest -r backend/tools/requirements-benchmark.txt
       - name: Check scoring and evidence rules
         run: python -m pytest backend/tests/test_daily_benchmark.py -q
       - name: Run ten public controls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python backend/tools/daily_benchmark.py
+        run: python backend/tools/daily_benchmark.py --require-named-tools
       - name: Retain reproducible evidence
         uses: actions/upload-artifact@v4
         with:

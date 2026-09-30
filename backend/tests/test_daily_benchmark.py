@@ -67,3 +67,45 @@ def test_publish_replaces_same_day_and_preserves_previous_days(tmp_path):
 def test_percentiles_interpolate_and_handle_no_timings():
     assert benchmark.percentile([10, 2, 8, 4], .5) == 6
     assert benchmark.percentile([], .95) is None
+
+
+def test_unavailable_named_tool_never_produces_negative_or_timing(monkeypatch):
+    def fail(*args, **kwargs):
+        raise benchmark.subprocess.TimeoutExpired("worker", 420)
+    monkeypatch.setattr(benchmark.subprocess, "run", fail)
+    result = benchmark.named_tool("sherlock", {"usernames": ["octocat"], "platforms": ["GitHub"]})
+    assert result["metadata"]["status"] == "unavailable"
+    assert result["controls"][0]["duration_seconds"] is None
+    assert result["controls"][0]["checks"]["GitHub"]["verdict"] == "unknown"
+
+
+def test_named_tool_rejects_unexpected_upstream_commit(monkeypatch):
+    def fake(*args, **kwargs):
+        command = args[0]
+        Path(command[-1]).write_text(json.dumps({"metadata": {"commit": "wrong"}}), encoding="utf-8")
+    monkeypatch.setattr(benchmark.subprocess, "run", fake)
+    result = benchmark.named_tool("maigret", {"usernames": ["octocat"], "platforms": ["GitHub"]})
+    assert result["metadata"]["status"] == "unavailable"
+
+
+def test_native_tool_status_and_upstream_failures_stay_distinct():
+    spec = importlib.util.spec_from_file_location("benchmark_worker", Path(__file__).parents[1] / "tools/benchmark_worker.py")
+    worker = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(worker)
+    from types import SimpleNamespace
+    def result(native, code):
+        return worker.normalize_result({"status": SimpleNamespace(status=SimpleNamespace(name=native)), "http_status": code})
+    assert result("CLAIMED", 200)["verdict"] == "found"
+    assert result("AVAILABLE", 404)["verdict"] == "not_found"
+    for native in ("CLAIMED", "AVAILABLE", "UNKNOWN", "ILLEGAL", "WAF"):
+        for code in (403, 429, 503):
+            assert result(native, code)["verdict"] == "unknown"
+    assert result("WAF", 200)["verdict"] == "unknown"
+    assert result("ILLEGAL", None)["verdict"] == "unknown"
+    assert result("CLAIMED", 200)["native_status"] == "CLAIMED"
+
+
+def test_named_tool_pins_match_isolated_install_requirements():
+    requirements = (Path(__file__).parents[1] / "tools/requirements-benchmark.txt").read_text()
+    for pin in benchmark.NAMED_TOOLS.values():
+        assert f"{pin['package']} @ git+{pin['repository']}.git@{pin['commit']}" in requirements
