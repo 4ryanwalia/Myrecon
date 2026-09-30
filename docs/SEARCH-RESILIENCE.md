@@ -1,10 +1,14 @@
 # Privacy UI and resilient lookup changes
 
-The production website is the static `frontend/` site and uses the Flask API in `backend/`. This change does not deploy either service.
+The production website is the static `frontend/` site and uses the Flask API in `backend/`. Both services must be deployed together for the full result and error contract.
 
 The privacy disclosure sits beside the lookup controls on the homepage and Deep Search. It describes the current account records, username history, browser storage, temporary caching, provider sharing, analytics and IP-based abuse controls. The existing system cannot truthfully promise zero retention, email-only signup or no third-party processing. Email API results now bypass the application cache and are never written to account history. Search-related diagnostics omit exception details and Instagram handles. Hosting and provider logging is outside this application change.
 
-The benchmark comparison labels 0% false positives, high verification accuracy and fast execution speed as targets or approaches, not measured claims. `frontend/data/benchmarks.json` is the public evidence placeholder. It contains methodology and required raw run fields; measured values are null and runs are empty. Publish a reproducible, consented or synthetic benchmark before replacing these qualifiers. Do not publish sensitive search identifiers in benchmark data.
+The homepage renders real measurements from `frontend/data/benchmarks.json`, including false-positive counts and denominators, accuracy, definitive coverage, unknown/unscored counts, median and p95 duration, UTC dates and raw per-platform evidence. The graph offers false-positive, accuracy and timing views and an accessible data table. Outages create missing graph points, never zero-error claims. It labels measurements stale after 30 hours.
+
+`backend/tools/daily_benchmark.py` uses the production `Sweep` on ten fixed handles from `backend/data/benchmark-usernames.json`, across GitHub, GitLab and Hacker News. Typed official API responses establish per-run reference labels; blocks, errors and malformed responses produce unknown references. The reference shares some API evidence with the engine: this is a small regression sample, not an independent accuracy audit, an identity check or a whole-catalogue estimate. Customer search history is never used. A separately labeled HTTP 200 heuristic provides a minimal baseline, not a result for a named OSINT competitor. Its serial timing and Sweep's parallel validation are descriptive, not an equal-configuration ranking.
+
+The `Daily public benchmarks` GitHub Actions workflow runs daily at 03:17 UTC (08:47 IST), and supports manual dispatch. Scheduled runs can be delayed by GitHub. It reuses the existing reviewed main-branch publisher deploy key and commits only the generated benchmark JSON, which triggers Vercel. Repository review protections remain unchanged. The file keeps the last 90 daily samples; manual reruns replace the same UTC day. An artifact also retains the raw evidence. Run locally with `python backend/tools/daily_benchmark.py`; source failures remain visible and script-wide failures leave the previous JSON intact.
 
 ## Append a changelog entry
 
@@ -46,7 +50,7 @@ Responses retain `status: "ok"` for backward compatibility and add `partial` plu
 | `frontend/index.html`, `frontend/deep-search.html`, `frontend/privacy.html` | Privacy disclosure, benchmark comparison, public changelog and accurate retention copy |
 | `frontend/assets/js/app.js`, `frontend/assets/js/deep-search.js`, `frontend/assets/js/partial-results.js` | Partial-result warnings, stream deadlines, render recovery, report warnings and Deep Search URL-validator scope fix |
 | `frontend/assets/js/trust.js`, `frontend/assets/css/trust.css` | Responsive trust sections and safe changelog loading with retry fallback |
-| `frontend/data/changelog.json`, `frontend/data/benchmarks.json` | Editable public updates and an explicitly unpublished evidence placeholder |
+| `frontend/data/changelog.json`, `frontend/data/benchmarks.json` | Editable public updates and timestamped measured benchmark history |
 | `frontend/scripts/version-site-assets.js`, generated HTML asset references | Version the new assets and refresh changed script URLs across the static site |
 | `backend/tests/test_search_resilience.py`, `backend/tests/test_breach_sources.py`, `frontend/tests/search-resilience.test.cjs` | Outage, timeout, concurrency, retry, privacy, rendering and source-status regressions |
 

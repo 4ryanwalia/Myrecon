@@ -56,6 +56,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"T-Mobile data breach","item":"https://www.myrecon.xyz/breaches/case-files/t-mobile-2021.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"I only applied to T-Mobile and never joined. Was I affected?","acceptedAnswer":{"@type":"Answer","text":"Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile, a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years."}},{"@type":"Question","name":"How did the attacker get in?","acceptedAnswer":{"@type":"Answer","text":"He described it publicly: an internet-exposed router with weak protection gave a foothold, from which he reached a data centre and, eventually, servers holding customer data. He characterised T-Mobile's security as poor, which the subsequent regulatory settlements did not seriously contest."}},{"@type":"Question","name":"Why does T-Mobile appear in breach lists so often?","acceptedAnswer":{"@type":"Answer","text":"Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond, a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure."}},{"@type":"Question","name":"What is an account PIN and why did it matter?","acceptedAnswer":{"@type":"Answer","text":"It is the code that authenticates you to the carrier when you call support, and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -206,12 +207,42 @@
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
   </main>
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=6bbbea3ebc" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=b5ced231e6"></script>

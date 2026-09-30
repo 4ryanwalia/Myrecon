@@ -56,6 +56,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"VTech data breach","item":"https://www.myrecon.xyz/breaches/case-files/vtech-2015.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is children's data treated as a special category?","acceptedAnswer":{"@type":"Answer","text":"Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service."}},{"@type":"Question","name":"What actually made this breach so bad technically?","acceptedAnswer":{"@type":"Answer","text":"Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection, such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit."}},{"@type":"Question","name":"What did the attacker do with the data?","acceptedAnswer":{"@type":"Answer","text":"Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful, an arrest followed in the UK, but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested."}},{"@type":"Question","name":"Did VTech face consequences?","acceptedAnswer":{"@type":"Answer","text":"The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -209,12 +210,42 @@
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
   </main>
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=6bbbea3ebc" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=b5ced231e6"></script>

@@ -10,12 +10,12 @@ const ASSETS = [
   '/assets/css/site-footer.css',
   '/assets/css/trust.css',
   '/assets/js/trust.js',
+  '/assets/js/benchmarks.js',
   '/assets/js/partial-results.js',
   '/assets/js/app.js',
   '/assets/js/deep-search.js',
   '/assets/js/fx.js',
   '/assets/js/pricing.js',
-  '/assets/js/account.js',
   '/assets/img/logo.svg',
   '/assets/img/favicon.svg',
 ];

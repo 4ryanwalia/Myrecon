@@ -17,7 +17,7 @@
       if (!entries.length) throw new Error("No published updates");
       const list = document.createElement("ol");
       list.className = "changelog-list";
-      entries.sort((a, b) => b.date.localeCompare(a.date)).forEach((entry, index) => {
+      entries.sort((a, b) => b.date.localeCompare(a.date)).slice(0, Number(target.dataset.limit) || entries.length).forEach((entry, index) => {
         const row = document.createElement("li");
         row.className = "changelog-entry";
         const date = document.createElement("time");

@@ -13,6 +13,7 @@ import functools
 import hashlib
 import json
 import logging
+import os
 import threading
 
 from flask import Flask, request, g, Response, jsonify, stream_with_context
@@ -452,6 +453,7 @@ def _register_routes(app: Flask) -> None:
     def health():
         return responses.ok({
             "service": config.public_config(),
+            "revision": os.getenv("RENDER_GIT_COMMIT", ""),
             # How this caller is identified for rate limiting. It echoes only
             # the caller's own address back to them, which they already know,
             # and the hop count as a bare integer, enough to confirm after a

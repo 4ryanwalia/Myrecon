@@ -310,7 +310,7 @@ ${jsonLd(record, route)}
 }
 function renderHub(kind, records) {
   const section = CLUSTERS[kind];
-  const title = `MyRecon ${LABELS[kind]}`;
+  const title = ({ target: "Username Search by Platform | MyRecon", comparison: "OSINT Tool Comparisons | MyRecon", guide: "OSINT & Digital Footprint Guides | MyRecon", deletion: "Account Deletion & Online Privacy Guides | MyRecon" })[kind];
   const description = `Browse ${records.length} ${LABELS[kind].toLowerCase()} from MyRecon. Review public information, official sources, and the limits of each workflow.`;
   const route = `/${section}/`;
   const list = records.map((record) => `      <a href="${esc(routeFor(record))}"><strong>${esc(record.h1)}</strong><br><span>${esc(record.description)}</span></a>`).join("\n");

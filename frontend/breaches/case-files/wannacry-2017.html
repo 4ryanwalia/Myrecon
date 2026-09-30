@@ -56,6 +56,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"WannaCry ransomware outbreak","item":"https://www.myrecon.xyz/breaches/case-files/wannacry-2017.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How is a worm different from ordinary ransomware?","acceptedAnswer":{"@type":"Answer","text":"Ordinary ransomware needs a person to do something, open an attachment, run a file, follow a link. A worm does not. WannaCry carried an exploit for a network file-sharing protocol, so an infected machine could scan for and infect other reachable machines by itself. Nobody at the organisations hit had to make a mistake on the day. One vulnerable machine anywhere on a flat network was enough to take the network."}},{"@type":"Question","name":"If Microsoft had already patched it, why did it spread?","acceptedAnswer":{"@type":"Answer","text":"Because patching a large estate is not one action. MS17-010 shipped in March 2017 and the outbreak was in May, and in between sat change control windows, machines that only patch when someone is logged in, systems whose vendors had not certified the update, and equipment nobody could take offline. The patch existed. Applying it everywhere was a programme of work, not a decision."}},{"@type":"Question","name":"What was the kill switch?","acceptedAnswer":{"@type":"Answer","text":"The malware checked whether a particular unregistered domain resolved before encrypting, and stopped if it did, most likely a check for the kind of sandbox that answers every DNS query. A researcher analysing the sample registered the domain for a few dollars, which halted a large share of new infections worldwide within hours. It was a real and enormous intervention, and it was also luck, and it did nothing for machines already encrypted."}},{"@type":"Question","name":"Did the NHS pay any ransoms?","acceptedAnswer":{"@type":"Answer","text":"The National Audit Office found no NHS organisation paid the ransom. The ransom was in any case a poor deal: the payment and decryption mechanism was crude, tracking who had paid was unreliable, and the operators collected a relatively trivial sum overall. The cost was almost entirely in disruption, cancelled care and recovery, not in payments."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -200,12 +201,42 @@
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
   </main>
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=6bbbea3ebc" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=b5ced231e6"></script>

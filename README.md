@@ -1,8 +1,8 @@
-# MyRecon
+# MyRecon: Username Search & OSINT Toolkit
 
 **Open-source OSINT toolkit for authorized digital-footprint audits.** Check usernames, breach exposure, domains, DNS, and IPs with a web app, Python CLI, or Flask API.
 
-Username OSINT · breach checks · domain intelligence · DNS/IP lookup · Python · Flask
+Public username search · digital footprint audit · email breach checker · WHOIS and DNS lookup · IP intelligence
 
 [Try the web app](https://myrecon.xyz) · [Offline demo](#try-the-verdict-demo) · [Run the CLI](#quick-start) · [Explore the API](#api) · [Contribute](CONTRIBUTING.md)
 
@@ -16,11 +16,17 @@ Digital-footprint checks are often scattered across separate tools, and username
 
 MyRecon brings public username signals, supported breach exposure checks, and domain/DNS/IP research into one web app, Python CLI, and API. Each username result is labeled `found`, `not_found`, or `unknown` according to the evidence available, so an inconclusive lookup stays inconclusive. It is designed for people auditing their own footprint and for authorized research using public sources.
 
-## Why use it?
+## Username search and digital footprint tools
 
 - **Evidence-aware username results.** A platform is marked `found` only with positive evidence, `not_found` with negative evidence, and `unknown` when a block, sign-in wall, timeout, or ambiguous page prevents a conclusion. An HTTP 200 response alone does not prove an account exists.
 - **One place for your exposure checks.** Explore public breach data and email signals, inspect DNS and registration records, and review IP and hosting information.
 - **Use the interface that fits.** Search in the browser, run a scriptable CLI locally, or integrate with the HTTP API. The website streams scan progress and supports JSON and CSV exports.
+
+## Guides and measured benchmarks
+
+[Username OSINT guide](https://www.myrecon.xyz/guides/username-osint-search.html) · [Platform profile lookups](https://www.myrecon.xyz/find/) · [Privacy guides](https://www.myrecon.xyz/privacy/) · [OSINT tool comparisons](https://www.myrecon.xyz/vs/)
+
+The [public benchmark dashboard](https://www.myrecon.xyz/#benchmarks) publishes daily measurements for 10 fixed usernames across GitHub, GitLab and Hacker News. Inspect [raw runs and methodology](frontend/data/benchmarks.json) for timestamps, verdicts, coverage and unknown outcomes. This small regression sample shares API evidence with the engine; it is not an independent accuracy audit or a ranking against named OSINT tools.
 
 ## Try the verdict demo
 
