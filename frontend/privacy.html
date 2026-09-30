@@ -137,13 +137,13 @@
               <td><strong>The identifier you look up</strong>: a username, email address, domain, IP address or name</td>
               <td>To run the lookup you asked for</td>
               <td>Our API, then on to the public sources needed to answer it</td>
-              <td>Not written to any database. Held in an in-memory cache for up to 10 minutes, then discarded</td>
+              <td>Email lookups are processed live without application caching or account database retention. Username reports are saved for signed-in users; other lookup results may be cached in memory for up to 10 minutes</td>
             </tr>
             <tr>
               <td><strong>Results of that lookup</strong></td>
               <td>To show you the answer and to make a repeated identical lookup fast</td>
-              <td>Returned to your browser; a copy sits in the same in-memory cache</td>
-              <td>Up to 10 minutes in cache. In your browser until you clear it</td>
+              <td>Returned to your browser; non-email results may also sit in the in-memory cache</td>
+              <td>Email results are not cached by the application. Other results may be cached for up to 10 minutes. Signed-in username reports remain until deleted; browser history and saved investigations remain until you clear them</td>
             </tr>
             <tr>
               <td><strong>Your IP address</strong></td>
@@ -176,7 +176,7 @@
               <td>Your newest 50 scans. Delete any of them, or all, from your account page at any time; all of it goes when your account is deleted</td>
             </tr>
             <tr>
-              <td><strong>If you buy a Pro pass</strong>: the Razorpay order and payment ID, the pass, the amount and the time</td>
+              <td><strong>If you buy an Extended scan pack</strong>: the Razorpay order and payment ID, the pack, the amount and the time</td>
               <td>To apply the pass, sort out payment problems, and keep the records tax law requires</td>
               <td>Razorpay processes the payment itself; we keep the reference only</td>
               <td>As long as Indian tax and accounting law requires, currently up to 8 years</td>
@@ -265,7 +265,7 @@
             <tr><td><strong>Google</strong> (Analytics)</td><td>Measures website visits</td><td>IP address, browser and device signals, page path without query strings, page title and an analytics cookie identifier. Search values are not included.</td></tr>
             <tr><td><strong>Google</strong> (Firebase)</td><td>Counts invites in the Android app</td><td>An invite code, a one-way hash derived from the phone&rsquo;s app-specific Android ID, the time, and the IP address the request comes from, only when an install came from an invite link, or while someone is looking at their own invite count</td></tr>
             <tr><td><strong>Google</strong> (Firebase, website accounts)</td><td>Google sign-in and the store of account allowances</td><td>If you sign in: your Google email address, name and user ID, and your scan counts. For visitors who are not signed in: a daily-rotating keyed hash used for the guest scan limit</td></tr>
-            <tr><td><strong>Razorpay</strong></td><td>Processes Pro pass payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
+            <tr><td><strong>Razorpay</strong></td><td>Processes Extended scan pack payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
             <tr><td><strong>Google Fonts</strong></td><td>Serves the typeface</td><td>IP address and browser details when a font loads</td></tr>
             <tr><td><strong>Have I Been Pwned</strong></td><td>The breach catalogue, breach logos, and the Pwned Passwords API</td><td>Your IP address, and a five-character hash prefix when you check a password. The address itself only where a breach lookup is configured to use HIBP directly</td></tr>
             <tr><td><strong>XposedOrNot</strong>, <strong>LeakCheck</strong></td><td>Answer &ldquo;has this address been breached&rdquo;</td><td>The email address you queried</td></tr>
@@ -456,7 +456,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=7f1f90105e"></script>
+  <script src="/assets/js/app.js?v=b5ced231e6"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
 </body>

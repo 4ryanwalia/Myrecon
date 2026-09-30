@@ -1,0 +1,18 @@
+{
+  "status": "unpublished",
+  "updated_on": "2026-09-30",
+  "notice": "No raw comparative benchmark runs have been published. Targets are not measured results or guarantees.",
+  "metrics": {
+    "false_positive_rate": {"target_percent": 0, "measured_percent": null},
+    "verification_accuracy": {"target": "High verification accuracy", "measured_percent": null},
+    "execution_speed": {"target": "Fast execution speed", "p50_seconds": null, "p95_seconds": null}
+  },
+  "methodology": {
+    "dataset": "Use consented or synthetic handles with independently checked positive and negative ground truth. Publish platform coverage and unknown outcomes separately.",
+    "false_positive_rate": "FP / (FP + TN), evaluated only on ground-truth negatives with definitive outcomes. Publish exclusions and unknown-negative counts.",
+    "accuracy": "(TP + TN) / (TP + TN + FP + FN), evaluated on definitive outcomes. Publish unknown and unchecked counts separately.",
+    "timing": "Repeat the same dataset, scope, network and configuration for each tool. Report p50 and p95 wall-clock duration, cold or warm cache state, timeouts and provider limits.",
+    "required_run_fields": ["started_at_utc", "finished_at_utc", "tool", "version_or_commit", "scope", "dataset_id", "platforms", "cache_state", "network_environment", "TP", "TN", "FP", "FN", "unknown", "unchecked", "duration_seconds"]
+  },
+  "runs": []
+}

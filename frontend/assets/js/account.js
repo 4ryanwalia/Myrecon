@@ -218,12 +218,12 @@
       host.insertBefore(btn, theme || null);
     }
     if (user) {
-      const tier = account && account.tier === "pro" ? "Pro" : "Free";
+      const tier = account && account.standard_scans_unlimited ? "Extended" : "Free";
       btn.href = "/pricing.html#account";
       btn.removeAttribute("role");
       btn.onclick = null;
       btn.innerHTML = avatarHtml(state().user)
-        + `<span class="nav-tier${tier === "Pro" ? " pro" : ""}">${tier}</span>`;
+        + `<span class="nav-tier${tier === "Extended" ? " pro" : ""}">${tier}</span>`;
       wireAvatar(btn);
       btn.setAttribute("aria-label", `Account: ${tier} plan`);
     } else {

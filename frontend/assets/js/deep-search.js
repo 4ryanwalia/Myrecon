@@ -22,6 +22,19 @@
   const stripeFor = (band) =>
     band === "high" ? "var(--ds-ok)" : band === "medium" ? "var(--ds-warn)" : "var(--ds-mute)";
 
+  const safeUrl = (u) => {
+    const raw = String(u ?? "").trim();
+    if (!raw) return "";
+    try {
+      // Resolved against the page so relative URLs keep working; the protocol
+      // check then sees what the browser would actually navigate to.
+      const parsed = new URL(raw, location.href);
+      return (parsed.protocol === "http:" || parsed.protocol === "https:") ? parsed.href : "";
+    } catch {
+      return "";
+    }
+  };
+
   // ---------------------------------------------------------------- chrome
   function initChrome() {
     const apply = (t) => {
@@ -45,18 +58,6 @@
    * Anything that is not http(s) becomes "", which renders as a dead link
    * instead of a live script.
    */
-  const safeUrl = (u) => {
-    const raw = String(u ?? "").trim();
-    if (!raw) return "";
-    try {
-      // Resolved against the page so relative URLs keep working; the protocol
-      // check then sees what the browser would actually navigate to.
-      const parsed = new URL(raw, location.href);
-      return (parsed.protocol === "http:" || parsed.protocol === "https:") ? parsed.href : "";
-    } catch {
-      return "";
-    }
-  };
     let saved = null;
     try { saved = window.localStorage.getItem(THEME_KEY); } catch { /* storage is optional */ }
     if (saved !== "light" && saved !== "dark") saved = null;
@@ -221,22 +222,38 @@
     if (!query) { input.focus(); return; }
 
     const btn = $("#dsRun");
+    if (btn.disabled) return;
     btn.disabled = true;
     resetConsole();
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 120000);
+    let reader;
+    let completed = false;
 
     try {
       const res = await fetch(CFG.apiBase + "/api/investigate/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, deep: $("#dsDeep").checked }),
+        signal: controller.signal,
       });
-      if (!res.ok || !res.body) throw new Error(`Request failed (HTTP ${res.status}).`);
+      if (!res.ok || !res.body) {
+        const failure = await res.json().catch(() => ({}));
+        throw new Error(failure.error || `Request failed (HTTP ${res.status}).`);
+      }
 
       // NDJSON: one JSON object per line, so hold a buffer across chunks and
       // only parse on a newline, a chunk boundary can land mid-object.
-      const reader = res.body.getReader();
+      reader = res.body.getReader();
       const dec = new TextDecoder();
       let buf = "";
+      function handleLine(line) {
+        if (!line.trim()) return;
+        const ev = JSON.parse(line);
+        if (ev.type === "progress") pushEvent(ev);
+        else if (ev.type === "error") throw new Error(ev.error || "Investigation failed.");
+        else if (ev.type === "complete") { finish(ev.data); completed = true; }
+      }
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -244,32 +261,38 @@
         const lines = buf.split("\n");
         buf = lines.pop() || "";
         for (const line of lines) {
-          if (!line.trim()) continue;
-          let ev;
-          try { ev = JSON.parse(line); } catch { continue; }
-          if (ev.type === "progress") pushEvent(ev);
-          else if (ev.type === "error") throw new Error(ev.error || "Investigation failed.");
-          else if (ev.type === "complete") finish(ev.data);
+          handleLine(line);
         }
       }
+      buf += dec.decode();
+      if (buf.trim()) handleLine(buf);
+      if (!completed) throw new Error("The investigation was interrupted before it completed. Try again later.");
     } catch (err) {
       const box = $("#dsConsole");
       box.className = "ds-console failed";
-      $("#dsStatus").textContent = err.message || "Investigation failed.";
-      $("#dsOut").innerHTML = `<div class="error-box" role="alert">${esc(err.message)}</div>`;
+      const message = err.name === "AbortError" ? "The investigation reached its time limit. Try again later." : err.message || "Investigation failed.";
+      $("#dsStatus").textContent = message;
+      $("#dsOut").innerHTML = `<div class="error-box" role="alert">${esc(message)}</div>`;
     } finally {
+      clearTimeout(timer);
+      if (reader) await reader.cancel().catch(() => {});
       btn.disabled = false;
     }
   }
 
   function finish(data) {
+    if (!data || data.status === "error") throw new Error(data?.error || "Investigation failed.");
     const box = $("#dsConsole");
     box.className = "ds-console done";
     $("#dsBar").style.width = "100%";
     $("#dsCount").textContent = "100%";
     const n = ((data.graph || {}).summary || {}).entities || 0;
     $("#dsStatus").textContent = `Complete, ${n} entit${n === 1 ? "y" : "ies"} for ${data.handle || ""}`;
-    render(data);
+    try { render(data); }
+    catch {
+      $("#dsOut").innerHTML = `<div class="error-box" role="alert">Results arrived, but this view could not be displayed. Try the search again.</div>`;
+    }
+    $("#dsOut").insertAdjacentHTML("afterbegin", window.MyReconPartial?.notice(data) || "");
   }
 
   document.addEventListener("DOMContentLoaded", () => {

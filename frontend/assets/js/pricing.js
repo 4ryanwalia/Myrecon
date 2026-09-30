@@ -1,10 +1,10 @@
-/* MyRecon, pricing page: account status and Pro pass checkout.
+/* MyRecon, pricing page: account status and Extended pack checkout.
  *
  * The server does everything that matters. It creates the Razorpay order
  * (with the buyer's account id in the order notes), checks the payment
- * signature, and applies the pass. This page only opens Checkout for an order
+ * signature, and applies the pack. This page only opens Checkout for an order
  * the server made and reports what the server said back, so nothing a
- * visitor edits in the browser can grant a pass.
+ * visitor edits in the browser can grant a pack.
  */
 (function () {
   "use strict";
@@ -53,32 +53,29 @@
       $("#acctUsage").textContent = "";
       return;
     }
-    if (acct.tier === "pro") {
-      $("#acctPlan").textContent = acct.plan === "monthly" ? "Pro Monthly" : "Pro Weekly";
-      $("#acctUsage").textContent =
-        `${acct.pro_scans_left} Pro scans and ${acct.extended_scans_left || 0} Extended scans left, until ${new Date(acct.pro_until).toLocaleDateString()}.`
-        + (acct.free_scans_left > 0 ? " Your free Pro scan is still unused." : "");
-    } else {
-      $("#acctPlan").textContent = "Free account";
-      $("#acctUsage").textContent =
-        acct.free_scans_left > 0
-        ? "Your free Pro scan is ready to use."
-        : "You've used your free Pro scan. A Pro pass adds more.";
-    }
+    $("#acctPlan").textContent = acct.standard_scans_unlimited ? "Extended Scan Pack" : "Free standard account";
+    const pack = Number(acct.extended_pack_scans_left) || 0;
+    const legacy = Number(acct.extended_legacy_scans_left) || 0;
+    $("#acctUsage").textContent = (acct.standard_scans_unlimited
+      ? "Unlimited standard 500+ platform scans included with your paid plan. "
+      : `${acct.standard_scans_left} of 5 free standard scans left today. Resets at midnight UTC (${new Date(acct.standard_resets_at).toLocaleString()}). `)
+      + (pack ? `${pack} Extended pack scans left, no expiry. ` : "")
+      + (legacy ? `${legacy} scans from a previous pass, until ${new Date(acct.extended_legacy_until).toLocaleDateString()}.` : "")
+      + (!pack && !legacy ? "Get 10 Extended scans for ₹99 when you need wider coverage." : "");
   }
 
   // The Free account card: a sign-in button for visitors, and a status once
   // signed in, so nobody is asked to sign in again after they already have.
   function renderPlanButtons(st) {
     const signedIn = !!(st && st.user);
-    const pro = signedIn && st.account && st.account.tier === "pro";
+    const pro = signedIn && st.account && st.account.standard_scans_unlimited;
     document.querySelectorAll("[data-signin]").forEach((b) => {
       b.disabled = signedIn;
       b.classList.toggle("is-current", signedIn);
-      b.textContent = !signedIn ? "Sign in with Google" : pro ? "Included with Pro" : "Your current plan";
+      b.textContent = !signedIn ? "Sign in with Google" : pro ? "Unlimited standard included" : "Standard: 5 scans a day";
     });
     document.querySelectorAll("[data-plan-card]").forEach((card) => {
-      const current = card.dataset.planCard === (pro ? st.account.plan : signedIn ? "free" : "guest");
+      const current = card.dataset.planCard === (pro ? "extended" : signedIn ? "free" : "guest");
       card.classList.toggle("current", current);
     });
   }
@@ -118,7 +115,7 @@
       <div class="scan-row">
         <div class="scan-main">
           <strong>${escHtml(s.handle)}</strong>
-          <span class="scan-badge${s.scope === "full" || s.scope === "extended" ? " pro" : ""}">${s.scope === "extended" ? "Extended · 3,000+" : s.scope === "full" ? "Pro · 500+" : "Standard · 100"}</span>
+          <span class="scan-badge${s.scope === "full" || s.scope === "extended" ? " pro" : ""}">${s.scope === "extended" ? "Extended · 3,000+" : s.scope === "full" ? "Standard · 500+" : "Quick · 100"}</span>
           <span class="hint">${escHtml(new Date(s.at).toLocaleString())} · ${Number(s.profiles) || 0} found</span>
         </div>
         <div class="scan-actions">
@@ -151,7 +148,7 @@
       amount: order.amount,
       currency: order.currency,
       name: "MyRecon",
-      description: `${order.plan.label}: ${order.plan.full_scans} full scans, ${order.plan.extended_scans} Extended, ${order.plan.days} days`,
+      description: `${order.plan.label}: unlimited standard scans + ${order.plan.extended_scans} Extended scans, no expiry`,
       prefill: { email: order.email || "", name: order.name || "" },
       theme: { color: "#16633a" },
       handler: async (resp) => {
@@ -159,12 +156,12 @@
         try {
           const r = await post("/api/billing/verify", resp);
           note(r.applied
-            ? "Payment received. Your Pro pass is active."
+            ? "Payment received. Your Extended scans are ready."
             : "Payment received. It can take a minute to show here; refresh shortly.");
           await A.refreshAccount();
           renderAccount(A.state());
         } catch (e) {
-          note(`${e.message} If you were charged, the pass is applied automatically once Razorpay confirms it. Contact us if it isn't within an hour.`);
+          note(`${e.message} If you were charged, the pack is applied automatically once Razorpay confirms it. Contact us if it isn't within an hour.`);
         }
       },
       modal: { ondismiss: () => note("") },
@@ -182,7 +179,7 @@
 
     if (A) await A.ready;
     if (!A || !A.enabled) {
-      note("Sign-in and Pro passes open soon. Every tool already works without an account.");
+      note("Sign-in is temporarily unavailable. Guest previews and other free tools still work.");
       return;
     }
     let lastUid = null;
@@ -209,7 +206,7 @@
     try {
       const res = await fetch(CFG.apiBase + "/api/plans");
       plansInfo = (await res.json()) || null;
-      if (plansInfo && !plansInfo.payments_enabled) note("Pro passes open soon. Free accounts work now.");
+      if (plansInfo && !plansInfo.payments_enabled) note("Extended packs open soon. Free accounts get 5 standard scans a day.");
     } catch {}
   });
 })();

@@ -1,41 +1,20 @@
-"""
-Who may run which scan, and how many.
+"""Website scan access and paid credits.
 
-  guest       up to GUEST_SCANS_PER_DAY scans per address; a full sweep
-              processes the 561-entry catalogue but reveals only the first
-              100 verdicts (some entries may be unknown or out of time)
-  free        standard scans unmetered, FREE_FULL_SCANS Pro (full) scans in
-              total: a one-time trial, not a weekly allowance
-  pro weekly  PLANS["weekly"]: a 7-day pass with its own full-scan allowance
-              and a separate, smaller Extended allowance
-  pro monthly PLANS["monthly"]: a 30-day pass, same idea
+Guests retain their daily free allowance and first-100-platform preview.
+Free accounts get five standard/full username scans per UTC day, shared
+with quick scans. Accounts that bought the INR 99 pack get unlimited
+standard scans, even after all ten Extended credits have been used.
+The only new purchase is an Extended Scan Pack: INR 99 for ten 3,000+
+platform scans, with no expiry or renewal. Packs add credits at
+/web/users/<uid>/extended/scans_left. Existing weekly/monthly passes keep
+their remaining Extended scans and original expiry in the legacy pro record.
 
-A "full" scan is the sweep ported from the Android app (its 560 platforms
-plus Google Play developer pages, which only the web checks). An "extended"
-scan runs that plus the imported tier, 3,166 in all; it is Pro-only and is
-paid from its own allowance, never from full scans or the free trial. Every
-other tool stays free for everyone; accounts change scan limits and how much
-of a full sweep is visible.
-
-Passes are one-time payments, not subscriptions: nothing renews, so nothing
-has to be cancelled. Buying while a pass is active stacks, extending the end
-date and adding the scans.
-
-An uncached signed-in full scan is charged when it starts and refunded if the
-pipeline fails, so a crashed scan never costs a Pro scan. A cached full result
-still requires an available allowance but does not spend it. Pro allowance is
-spent before the free trial scan, so an unused trial is still there once a pass
-runs out.
-
-Record at /web/users/<uid>:
-  {"email", "name", "created",
-   "pro":  {"plan", "until" (ms), "scans_left", "extended_left"},
-   "free": {"used_total"},
-   "payments": {<hashed order id>: true}}
-(Records from the weekly-allowance days carry "week"/"used"; they are
-ignored, so everyone starts the one-time trial fresh. A pass bought before
-Extended had its own allowance has no "extended_left" and is read as its
-plan's allowance.)
+Extended credits are spent transactionally when an uncached scan starts,
+and restored to the same allowance if its pipeline fails. A cached result
+requires a credit to be available but does not spend it. Paid order markers
+and credits are written in one transaction so verification and webhooks can
+arrive in either order without double grants. Only new order creation uses
+PLANS; settlement also accepts LEGACY_PLANS for previously created orders.
 """
 
 import datetime as _dt
@@ -51,9 +30,16 @@ from modules.username_checker import STANDARD_LIMIT as STANDARD_PLATFORMS  # noq
 from modules.sweep import TOTAL as FULL_PLATFORMS  # noqa: E402
 from modules.sweep import EXTENDED_TOTAL as EXTENDED_PLATFORMS  # noqa: E402
 GUEST_SCANS_PER_DAY = config.GUEST_SCANS_PER_DAY
-FREE_FULL_SCANS = config.FREE_FULL_SCANS
-
+FREE_STANDARD_SCANS_PER_DAY = 5
 PLANS = {
+    "extended": {"id": "extended", "label": "Extended Scan Pack", "price_inr": 99,
+                 "days": None, "full_scans": None, "extended_scans": 10,
+                 "standard_scans_unlimited": True},
+}
+
+# Previously sold passes remain valid, including orders paid during rollout.
+# They cannot be purchased again through the order endpoint.
+LEGACY_PLANS = {
     "weekly": {"id": "weekly", "label": "Pro Weekly", "price_inr": 99,
                "days": 7, "full_scans": 10, "extended_scans": 2},
     "monthly": {"id": "monthly", "label": "Pro Monthly", "price_inr": 299,
@@ -76,6 +62,14 @@ class GuestLimit(Exception):
     """A guest used today's scans."""
 
 
+class StandardLimit(Exception):
+    """A signed-in free account used its daily username allowance."""
+
+    def __init__(self, ent: dict):
+        super().__init__("standard daily limit reached")
+        self.entitlements = ent
+
+
 def _now_ms() -> int:
     return int(time.time() * 1000)
 
@@ -86,32 +80,58 @@ def _user_path(uid: str) -> str:
     return f"web/users/{uid}"
 
 
+def _standard_day(now_ms: int) -> str:
+    return _dt.datetime.fromtimestamp(now_ms / 1000, _dt.timezone.utc).strftime("%Y%m%d")
+
+
+def _standard_reset(now_ms: int) -> int:
+    now = _dt.datetime.fromtimestamp(now_ms / 1000, _dt.timezone.utc)
+    tomorrow = now.replace(hour=0, minute=0, second=0, microsecond=0) + _dt.timedelta(days=1)
+    return int(tomorrow.timestamp() * 1000)
+
+
 def entitlements(record, now_ms=None) -> dict:
     """What this account can do right now. Pure: no I/O."""
     now = now_ms if now_ms is not None else _now_ms()
     record = record or {}
     pro = record.get("pro") or {}
     pro_active = bool(pro) and pro.get("until", 0) > now
-    free_used = int((record.get("free") or {}).get("used_total", 0))
-    free_left = max(0, FREE_FULL_SCANS - free_used)
     pro_left = max(0, int(pro.get("scans_left", 0))) if pro_active else 0
-    extended_left = max(0, int(_extended_left(pro))) if pro_active else 0
+    legacy_left = max(0, int(_extended_left(pro))) if pro_active else 0
+    pack = record.get("extended") or {}
+    pack_left = max(0, int(pack.get("scans_left", 0)))
+    # Existing purchased packs already carry scans_left, including zero.
+    # The paid standard benefit is not tied to remaining Extended credits.
+    pack_purchased = "scans_left" in pack
+    unlimited = pack_purchased or pro_active
+    usage = record.get("standard_usage") or {}
+    used = int(usage.get("used", 0)) if usage.get("day") == _standard_day(now) else 0
+    free_left = max(0, FREE_STANDARD_SCANS_PER_DAY - used)
     return {
-        "tier": "pro" if pro_active else "free",
-        "plan": pro.get("plan") if pro_active else None,
+        "tier": "pro" if unlimited else "free",
+        "plan": "extended" if pack_purchased else pro.get("plan") if pro_active else None,
         "pro_until": pro.get("until") if pro_active else None,
         "pro_scans_left": pro_left,
+        # Null means unmetered, not an exhausted allowance.
         "free_scans_left": free_left,
-        "free_scans_total": FREE_FULL_SCANS,
-        "full_scans_left": pro_left + free_left,
-        "extended_scans_left": extended_left,
+        "free_scans_total": FREE_STANDARD_SCANS_PER_DAY,
+        "full_scans_left": None if unlimited else free_left,
+        "full_scans_unlimited": unlimited,
+        "standard_scans_unlimited": unlimited,
+        "standard_scans_left": None if unlimited else free_left,
+        "standard_scans_per_day": None if unlimited else FREE_STANDARD_SCANS_PER_DAY,
+        "standard_resets_at": None if unlimited else _standard_reset(now),
+        "extended_scans_left": pack_left + legacy_left,
+        "extended_pack_scans_left": pack_left,
+        "extended_legacy_scans_left": legacy_left,
+        "extended_legacy_until": pro.get("until") if legacy_left else None,
     }
 
 
 def _extended_left(pro: dict) -> int:
     if "extended_left" in pro:
         return int(pro["extended_left"])
-    return PLANS.get(pro.get("plan"), {}).get("extended_scans", 0)
+    return LEGACY_PLANS.get(pro.get("plan"), {}).get("extended_scans", 0)
 
 
 def get_account(uid: str, email: str = "", name: str = "") -> dict:
@@ -130,35 +150,37 @@ def get_account(uid: str, email: str = "", name: str = "") -> dict:
     return {"uid": uid, "email": record.get("email", ""), **entitlements(record)}
 
 
-def consume_full_scan(uid: str) -> str:
-    """Spend one full scan. Returns which allowance paid ("pro" / "free")."""
+def consume_standard_scan(uid: str):
+    """Reserve a daily free scan atomically, or nothing for a paid account."""
+    denied = {}
     spent = {}
 
     def fn(cur):
         cur = cur or {"created": _now_ms()}
-        ent = entitlements(cur)
-        if ent["pro_scans_left"] > 0:
-            cur["pro"]["scans_left"] = ent["pro_scans_left"] - 1
-            spent["source"] = "pro"
-        elif ent["free_scans_left"] > 0:
-            used = int((cur.get("free") or {}).get("used_total", 0))
-            cur["free"] = {"used_total": used + 1}
-            spent["source"] = "free"
-        else:
-            spent["denied"] = ent
+        now = _now_ms()
+        ent = entitlements(cur, now)
+        if ent["standard_scans_unlimited"]:
+            spent["source"] = None
+            return cur
+        if ent["standard_scans_left"] <= 0:
+            denied["ent"] = ent
             raise Abort()
+        day = _standard_day(now)
+        cur["standard_usage"] = {"day": day, "used": FREE_STANDARD_SCANS_PER_DAY - ent["standard_scans_left"] + 1}
+        spent["source"] = "standard:" + day
         return cur
 
     try:
         store.transaction(_user_path(uid), fn)
     except Abort:
-        raise NoAllowance(spent["denied"])
+        raise StandardLimit(denied["ent"])
     return spent["source"]
 
 
 def consume_extended_scan(uid: str) -> str:
-    """Spend one Extended scan from an active pass. Returns "extended"."""
+    """Spend expiring legacy scans first, then a non-expiring pack credit."""
     denied = {}
+    spent = {}
 
     def fn(cur):
         cur = cur or {"created": _now_ms()}
@@ -166,27 +188,39 @@ def consume_extended_scan(uid: str) -> str:
         if ent["extended_scans_left"] <= 0:
             denied["ent"] = ent
             raise Abort()
-        cur["pro"]["extended_left"] = ent["extended_scans_left"] - 1
+        if ent["extended_legacy_scans_left"] > 0:
+            cur["pro"]["extended_left"] = ent["extended_legacy_scans_left"] - 1
+            spent["source"] = "extended"
+        else:
+            cur["extended"]["scans_left"] = ent["extended_pack_scans_left"] - 1
+            spent["source"] = "extended_pack"
         return cur
 
     try:
         store.transaction(_user_path(uid), fn)
     except Abort:
         raise NoAllowance(denied["ent"], "extended")
-    return "extended"
+    return spent["source"]
 
 
 def refund_full_scan(uid: str, source: str) -> None:
     """Give back a scan whose pipeline failed. Best effort."""
+    if not uid or not source:
+        return
+
     def fn(cur):
         if not cur:
             raise Abort()
-        if source == "extended" and cur.get("pro"):
+        if source.startswith("standard:"):
+            usage = cur.get("standard_usage") or {}
+            if usage.get("day") == source.split(":", 1)[1]:
+                usage["used"] = max(0, int(usage.get("used", 0)) - 1)
+                cur["standard_usage"] = usage
+        elif source == "extended_pack":
+            pack = cur.setdefault("extended", {})
+            pack["scans_left"] = int(pack.get("scans_left", 0)) + 1
+        elif source == "extended" and cur.get("pro"):
             cur["pro"]["extended_left"] = _extended_left(cur["pro"]) + 1
-        elif source == "pro" and cur.get("pro"):
-            cur["pro"]["scans_left"] = int(cur["pro"].get("scans_left", 0)) + 1
-        elif source == "free" and cur.get("free"):
-            cur["free"]["used_total"] = max(0, int(cur["free"].get("used_total", 0)) - 1)
         return cur
 
     try:
@@ -204,7 +238,7 @@ def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
     marked as processed before its scans were granted. Returns True when the
     pass is active for this order, including a retry after a successful grant.
     """
-    plan = PLANS[plan_id]
+    plan = (PLANS | LEGACY_PLANS)[plan_id]
     ref_key = hashlib.sha256(payment_ref.encode()).hexdigest()[:40]
     payment_path = f"web/payments/{ref_key}"
     if store.get(payment_path) is not None:
@@ -223,15 +257,19 @@ def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
             return cur
 
         now = _now_ms()
-        pro = cur.get("pro") or {}
-        active = pro.get("until", 0) > now
-        start = pro["until"] if active else now
-        cur["pro"] = {
-            "plan": plan_id if not active else _longer(pro.get("plan"), plan_id),
-            "until": start + plan["days"] * _DAY_MS,
-            "scans_left": (int(pro.get("scans_left", 0)) if active else 0) + plan["full_scans"],
-            "extended_left": (_extended_left(pro) if active else 0) + plan["extended_scans"],
-        }
+        if plan_id in PLANS:
+            pack = cur.setdefault("extended", {})
+            pack["scans_left"] = int(pack.get("scans_left", 0)) + plan["extended_scans"]
+        else:
+            pro = cur.get("pro") or {}
+            active = pro.get("until", 0) > now
+            start = pro["until"] if active else now
+            cur["pro"] = {
+                "plan": plan_id if not active else _longer(pro.get("plan"), plan_id),
+                "until": start + plan["days"] * _DAY_MS,
+                "scans_left": (int(pro.get("scans_left", 0)) if active else 0) + plan["full_scans"],
+                "extended_left": (_extended_left(pro) if active else 0) + plan["extended_scans"],
+            }
         # RTDB transacts this marker and the allowance together, so concurrent
         # webhook and UI verification calls cannot grant this order twice.
         payments[ref_key] = True
@@ -252,7 +290,7 @@ def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
 
 
 def _longer(a, b):
-    return a if a and PLANS.get(a, {}).get("days", 0) >= PLANS[b]["days"] else b
+    return a if a and LEGACY_PLANS.get(a, {}).get("days", 0) >= LEGACY_PLANS[b]["days"] else b
 
 
 # ── Guests ───────────────────────────────────────────────────────

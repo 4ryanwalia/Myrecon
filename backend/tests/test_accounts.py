@@ -110,7 +110,8 @@ def test_guest_limit_is_per_address(client):
     assert _scan(client, ip="1.1.1.1").status_code == 200
 
 
-def test_signed_in_standard_scans_are_not_metered(client):
+def test_paid_standard_scans_are_not_metered(client):
+    plans.grant_pass("user-1", "extended", "order_paid")
     for _ in range(plans.GUEST_SCANS_PER_DAY + 3):
         assert _scan(client, token=_token()).status_code == 200
 
@@ -209,30 +210,38 @@ def test_guest_stream_redacts_a_cached_full_result(client, monkeypatch):
     assert json.loads(wire)["data"]["preview"]["hidden_findings"] == 1
 
 
-def test_full_scan_off_without_a_persistent_store(client, monkeypatch):
+def test_signed_in_daily_limit_requires_persistent_storage(client, monkeypatch):
     monkeypatch.setattr(store, "persistent", lambda: False)
     assert _scan(client, token=_token(), scope="full").get_json()["code"] == "accounts_unavailable"
+    assert _scan(client, token=_token(), scope="extended").get_json()["code"] == "accounts_unavailable"
 
 
 # ── free and pro allowances ─────────────────────────────────────
 
-def test_free_account_gets_one_pro_scan_ever(client):
+def test_free_account_gets_five_complete_standard_reports_daily(client):
     t = _token()
-    assert [_scan(client, t, "full").status_code for _ in range(2)] == [200, 402]
-    body = _scan(client, t, "full").get_json()
-    assert body["code"] == "upgrade_required"
-    assert body["account"]["full_scans_left"] == 0
+    # Old exhausted trial records must not restrict the newly free scans.
+    store.store.transaction("web/users/user-1", lambda _: {"free": {"used_total": 999}})
+    for _ in range(5):
+        r = _scan(client, t, "full")
+        assert r.status_code == 200 and "preview" not in r.get_json()
+    r = _scan(client, t, "full")
+    assert r.status_code == 429 and r.get_json()["code"] == "standard_daily_limit"
+    assert r.get_json()["account"]["standard_scans_left"] == 0
+    assert plans.get_account("user-1")["full_scans_unlimited"] is False
+    assert store.store.get("web/users/user-1")["free"]["used_total"] == 999
 
 
-def test_failed_full_scan_is_refunded(monkeypatch, client):
+def test_failed_free_full_scan_does_not_spend_extended_credits(monkeypatch, client):
     import services.search as search
 
     def boom(*a, **k):
         raise RuntimeError("sweep died")
     monkeypatch.setattr(search, "_run_full", boom)
+    plans.grant_pass("user-1", "extended", "order_A")
     app_module.app.config["PROPAGATE_EXCEPTIONS"] = False
     assert _scan(client, _token(), "full").status_code == 500
-    assert plans.get_account("user-1")["free_scans_left"] == plans.FREE_FULL_SCANS
+    assert plans.get_account("user-1")["extended_scans_left"] == 10
 
 
 def test_pass_is_applied_once_per_order():
@@ -294,11 +303,12 @@ def test_passes_stack():
     assert acct["plan"] == "monthly"
 
 
-def test_pro_scans_are_spent_before_free_ones():
+def test_free_full_scans_leave_legacy_paid_allowances_unchanged(client):
     plans.grant_pass("u", "weekly", "order_A")
-    assert plans.consume_full_scan("u") == "pro"
+    assert _scan(client, _token(uid="u"), "full").status_code == 200
     acct = plans.get_account("u")
-    assert acct["pro_scans_left"] == 9 and acct["free_scans_left"] == 1
+    assert acct["pro_scans_left"] == 10 and acct["extended_scans_left"] == 2
+    assert acct["full_scans_unlimited"] is True
 
 
 def test_expired_pass_falls_back_to_free():
@@ -307,16 +317,121 @@ def test_expired_pass_falls_back_to_free():
     rec["pro"]["until"] = 1
     store.store.transaction("web/users/u", lambda _: rec)
     acct = plans.get_account("u")
-    assert acct["tier"] == "free" and acct["full_scans_left"] == 1
+    assert acct["tier"] == "free" and acct["full_scans_unlimited"] is False
+    assert acct["standard_scans_left"] == 5
+    assert acct["extended_scans_left"] == 0
+
+
+def test_quick_and_full_cached_requests_share_one_daily_allowance(client, monkeypatch):
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    app_module._cache.set(app_module._cache_key("username_full", "octocat"), _full_result())
+    t = _token()
+    for scope in ("full", "standard", "full", "standard", "full"):
+        assert _scan(client, t, scope).status_code == 200
+    assert _scan(client, t, "standard").get_json()["code"] == "standard_daily_limit"
+    r = client.post("/api/username/stream", json={"username": "octocat", "scope": "full"},
+                    headers={"Authorization": f"Bearer {t}"})
+    assert r.status_code == 429 and r.get_json()["code"] == "standard_daily_limit"
+    # Reopening a saved report does not use or require a daily scan.
+    scans = client.get("/api/history", headers={"Authorization": f"Bearer {t}"}).get_json()["scans"]
+    assert client.get(f"/api/history/{scans[0]['id']}", headers={"Authorization": f"Bearer {t}"}).status_code == 200
+
+
+def test_standard_daily_allowance_is_per_uid_not_address(client):
+    for _ in range(5):
+        assert _scan(client, _token(uid="alice"), "full").status_code == 200
+    assert _scan(client, _token(uid="alice"), "full", ip="1.1.1.1").status_code == 429
+    assert _scan(client, _token(uid="bob"), "full").status_code == 200
+
+
+def test_standard_daily_allowance_resets_at_midnight_utc(monkeypatch):
+    # 2026-09-30 23:59 UTC and the next midnight.
+    now = {"ms": 1790812740000}
+    monkeypatch.setattr(plans, "_now_ms", lambda: now["ms"])
+    first_day = plans._standard_day(now["ms"])
+    for _ in range(5):
+        plans.consume_standard_scan("u")
+    acct = plans.get_account("u")
+    assert acct["standard_scans_left"] == 0
+    reset = acct["standard_resets_at"]
+    now["ms"] = reset - 1
+    with pytest.raises(plans.StandardLimit):
+        plans.consume_standard_scan("u")
+    now["ms"] = reset
+    assert plans.get_account("u")["standard_scans_left"] == 5
+    plans.consume_standard_scan("u")
+    assert plans._standard_day(now["ms"]) != first_day
+    assert plans.get_account("u")["standard_scans_left"] == 4
+
+
+def test_daily_allowance_is_atomic_under_concurrent_requests():
+    from concurrent.futures import ThreadPoolExecutor
+
+    def reserve(_):
+        try:
+            plans.consume_standard_scan("u")
+            return True
+        except plans.StandardLimit:
+            return False
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        accepted = list(pool.map(reserve, range(16)))
+    assert sum(accepted) == 5
+    assert plans.get_account("u")["standard_scans_left"] == 0
+
+
+def test_paid_standard_access_survives_spending_all_extended_credits(client):
+    plans.grant_pass("user-1", "extended", "order_pack")
+    for _ in range(10):
+        plans.consume_extended_scan("user-1")
+    acct = plans.get_account("user-1")
+    assert acct["tier"] == "pro" and acct["standard_scans_unlimited"] is True
+    assert acct["extended_scans_left"] == 0
+    for _ in range(12):
+        assert _scan(client, _token(), "full").status_code == 200
+    assert _scan(client, _token(), "extended").status_code == 402
+
+
+def test_buying_pack_removes_an_exhausted_daily_limit(client):
+    t = _token()
+    for _ in range(5):
+        _scan(client, t, "full")
+    assert _scan(client, t, "full").status_code == 429
+    plans.grant_pass("user-1", "extended", "order_pack")
+    for _ in range(7):
+        assert _scan(client, t, "full").status_code == 200
+    assert plans.get_account("user-1")["extended_scans_left"] == 10
+
+
+@pytest.mark.parametrize("scope", ["standard", "full"])
+def test_failed_free_username_scan_refunds_daily_allowance(client, monkeypatch, scope):
+    import services.search as search
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("failed pipeline")
+
+    monkeypatch.setattr(search, "_run_full" if scope == "full" else "_run_username", boom)
+    assert _scan(client, _token(), scope).status_code == 500
+    assert plans.get_account("user-1")["standard_scans_left"] == 5
+
+
+def test_refund_for_yesterday_cannot_increase_todays_allowance(monkeypatch):
+    now = {"ms": 1790812740000}
+    monkeypatch.setattr(plans, "_now_ms", lambda: now["ms"])
+    old_source = plans.consume_standard_scan("u")
+    now["ms"] = plans.get_account("u")["standard_resets_at"]
+    plans.consume_standard_scan("u")
+    plans.refund_full_scan("u", old_source)
+    assert plans.get_account("u")["standard_scans_left"] == 4
 
 
 # ── extended allowance ──────────────────────────────────────────
 
-def test_extended_is_pro_only_and_leaves_the_free_trial_alone(client):
+def test_extended_requires_paid_credits_and_standard_stays_free(client):
     t = _token()
     body = _scan(client, t, "extended").get_json()
     assert body["code"] == "upgrade_required" and body["scope"] == "extended"
-    assert plans.get_account("user-1")["free_scans_left"] == plans.FREE_FULL_SCANS
+    assert _scan(client, t, "full").status_code == 200
 
 
 def test_weekly_pass_gives_two_extended_scans_apart_from_full_ones(client):
@@ -356,9 +471,133 @@ def test_failed_extended_scan_is_refunded(monkeypatch, client):
     assert plans.get_account("user-1")["extended_scans_left"] == 2
 
 
+def test_pack_allows_ten_extended_scans_then_only_standard(client):
+    plans.grant_pass("user-1", "extended", "order_pack")
+    t = _token()
+    for remaining in range(9, -1, -1):
+        assert _scan(client, t, "extended").status_code == 200
+        assert plans.get_account("user-1")["extended_pack_scans_left"] == remaining
+    assert _scan(client, t, "extended").status_code == 402
+    for _ in range(3):
+        assert _scan(client, t, "full").status_code == 200
+
+
+def test_pack_credits_stack_and_never_expire(monkeypatch):
+    plans.grant_pass("u", "extended", "order_A")
+    assert plans.consume_extended_scan("u") == "extended_pack"
+    plans.grant_pass("u", "extended", "order_B")
+    monkeypatch.setattr(plans, "_now_ms", lambda: 9_999_999_999_999)
+    acct = plans.get_account("u")
+    assert acct["plan"] == "extended" and acct["extended_scans_left"] == 19
+    assert acct["pro_until"] is None
+
+
+def test_pack_is_not_double_granted_after_ledger_failure(monkeypatch):
+    ref = "order_pack_retry"
+    ref_key = hashlib.sha256(ref.encode()).hexdigest()[:40]
+    original = store.store.transaction
+    failed = {"value": False}
+
+    def fail_once(path, fn, retries=10):
+        if path == f"web/payments/{ref_key}" and not failed["value"]:
+            failed["value"] = True
+            raise RuntimeError("temporary ledger failure")
+        return original(path, fn)
+
+    monkeypatch.setattr(store.store, "transaction", fail_once)
+    with pytest.raises(RuntimeError):
+        plans.grant_pass("u", "extended", ref)
+    assert plans.grant_pass("u", "extended", ref) is True
+    assert plans.get_account("u")["extended_scans_left"] == 10
+
+
+def test_expiring_legacy_credits_are_spent_and_refunded_separately():
+    plans.grant_pass("u", "weekly", "order_legacy")
+    plans.grant_pass("u", "extended", "order_pack")
+    source = plans.consume_extended_scan("u")
+    assert source == "extended"
+    acct = plans.get_account("u")
+    assert acct["extended_legacy_scans_left"] == 1 and acct["extended_pack_scans_left"] == 10
+    plans.refund_full_scan("u", source)
+    assert plans.get_account("u")["extended_legacy_scans_left"] == 2
+    plans.consume_extended_scan("u")
+    plans.consume_extended_scan("u")
+    source = plans.consume_extended_scan("u")
+    assert source == "extended_pack"
+    plans.refund_full_scan("u", source)
+    assert plans.get_account("u")["extended_pack_scans_left"] == 10
+
+
+def test_expired_legacy_pass_does_not_expire_pack_credits():
+    plans.grant_pass("u", "weekly", "order_legacy")
+    plans.grant_pass("u", "extended", "order_pack")
+    rec = store.store.get("web/users/u")
+    rec["pro"]["until"] = 1
+    store.store.transaction("web/users/u", lambda _: rec)
+    assert plans.get_account("u")["extended_scans_left"] == 10
+    assert plans.consume_extended_scan("u") == "extended_pack"
+
+
+def test_cached_extended_result_requires_credit_but_does_not_spend(client, monkeypatch):
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    app_module._cache.set(app_module._cache_key("username_extended", "octocat"), _full_result())
+    t = _token()
+    assert _scan(client, t, "extended").status_code == 402
+    plans.grant_pass("user-1", "extended", "order_pack")
+    assert _scan(client, t, "extended").status_code == 200
+    assert plans.get_account("user-1")["extended_scans_left"] == 10
+    for _ in range(10):
+        plans.consume_extended_scan("user-1")
+    assert _scan(client, t, "extended").status_code == 402
+
+
+@pytest.mark.parametrize("stream", [False, True])
+def test_guest_extended_cannot_leak_a_cached_result(client, monkeypatch, stream):
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    app_module._cache.set(app_module._cache_key("username_extended", "octocat"), _full_result())
+    endpoint = "/api/username/stream" if stream else "/api/username"
+    r = client.post(endpoint, json={"username": "octocat", "scope": "extended"})
+    assert r.status_code == 401 and r.get_json()["code"] == "sign_in_required"
+    assert "hidden.example" not in r.get_data(as_text=True)
+
+
+def test_failed_extended_pack_scan_restores_one_credit(client, monkeypatch):
+    import services.search as search
+    plans.grant_pass("user-1", "extended", "order_pack")
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("pipeline failed")
+
+    monkeypatch.setattr(search, "_run_full", boom)
+    assert _scan(client, _token(), "extended").status_code == 500
+    assert plans.get_account("user-1")["extended_scans_left"] == 10
+
+
+@pytest.mark.parametrize("raises", [False, True])
+def test_failed_extended_stream_restores_one_credit(client, monkeypatch, raises):
+    import services.search as search
+    plans.grant_pass("user-1", "extended", "order_pack")
+
+    def events(*args, **kwargs):
+        if raises:
+            raise RuntimeError("stream failed")
+        yield {"type": "error", "message": "stream failed"}
+
+    monkeypatch.setattr(search, "stream_username", events)
+    if raises:
+        with pytest.raises(RuntimeError):
+            client.post("/api/username/stream", json={"username": "octocat", "scope": "extended"},
+                        headers={"Authorization": f"Bearer {_token()}"}, buffered=True)
+    else:
+        r = client.post("/api/username/stream", json={"username": "octocat", "scope": "extended"},
+                        headers={"Authorization": f"Bearer {_token()}"}, buffered=True)
+        assert '"type": "error"' in r.get_data(as_text=True)
+    assert plans.get_account("user-1")["extended_scans_left"] == 10
+
+
 # ── billing ─────────────────────────────────────────────────────
 
-def _paid_order(uid="user-1", plan="weekly", status="paid", paid=9900):
+def _paid_order(uid="user-1", plan="extended", status="paid", paid=9900):
     return {"id": "order_X", "status": status, "amount_paid": paid,
             "notes": {"uid": uid, "plan": plan}}
 
@@ -384,7 +623,41 @@ def _verify(client, token, sig=None):
 def test_verify_applies_the_pass(client, keys, monkeypatch):
     monkeypatch.setattr(razorpay, "fetch_order", lambda oid: _paid_order())
     r = _verify(client, _token()).get_json()
-    assert r["applied"] is True and r["account"]["pro_scans_left"] == 10
+    assert r["applied"] is True and r["account"]["extended_pack_scans_left"] == 10
+
+
+def test_only_one_pack_is_advertised_and_orders_cost_99_rupees(client, keys, monkeypatch):
+    info = client.get("/api/plans").get_json()
+    assert [p["id"] for p in info["plans"]] == ["extended"]
+    assert info["plans"][0]["price_inr"] == 99
+    assert info["plans"][0]["extended_scans"] == 10
+    assert info["limits"]["free_standard_scans_per_day"] == 5
+    assert info["limits"]["paid_standard_scans_unlimited"] is True
+    calls = []
+    monkeypatch.setattr(razorpay, "create_order", lambda amount, **kw: (
+        calls.append({"amount": amount, **kw}),
+        {"id": "order_new", "amount": amount, "currency": "INR"})[1])
+    r = client.post("/api/billing/order", json={"plan": "extended", "amount": 1, "extended_scans": 100},
+                    headers={"Authorization": f"Bearer {_token()}"})
+    assert r.status_code == 200 and r.get_json()["amount"] == 9900
+    assert calls[0]["amount"] == 9900
+    for old in ("weekly", "monthly"):
+        assert client.post("/api/billing/order", json={"plan": old},
+                           headers={"Authorization": f"Bearer {_token()}"}).status_code == 422
+    assert len(calls) == 1
+
+
+def test_previously_created_legacy_orders_still_settle(client, keys, monkeypatch):
+    monkeypatch.setattr(razorpay, "fetch_order", lambda oid: _paid_order(plan="monthly", paid=29900))
+    r = _verify(client, _token()).get_json()
+    assert r["applied"] is True and r["account"]["extended_legacy_scans_left"] == 6
+
+
+def test_verification_retry_does_not_double_grant_pack(client, keys, monkeypatch):
+    monkeypatch.setattr(razorpay, "fetch_order", lambda oid: _paid_order())
+    assert _verify(client, _token()).get_json()["applied"] is True
+    assert _verify(client, _token()).get_json()["applied"] is True
+    assert plans.get_account("user-1")["extended_scans_left"] == 10
 
 
 def test_verify_rejects_a_forged_signature(client, keys, monkeypatch):
@@ -418,7 +691,7 @@ def test_webhook_needs_a_valid_signature(client, keys, monkeypatch):
     assert good.status_code == 200 and plans.get_account("user-1")["tier"] == "pro"
     # ...and the browser's verify arriving afterwards does not apply it twice.
     _verify(client, _token())
-    assert plans.get_account("user-1")["pro_scans_left"] == 10
+    assert plans.get_account("user-1")["extended_pack_scans_left"] == 10
 
 
 def test_plans_endpoint_never_exposes_secrets(client, keys):
@@ -458,7 +731,7 @@ def test_bad_razorpay_keys_are_a_401_not_a_crash(client, keys, monkeypatch):
     def refuse(*a, **k):
         raise razorpay.RazorpayAuthError("authentication failed")
     monkeypatch.setattr(razorpay, "create_order", refuse)
-    r = client.post("/api/billing/order", data=json.dumps({"plan": "weekly"}),
+    r = client.post("/api/billing/order", data=json.dumps({"plan": "extended"}),
                     headers={"Content-Type": "application/json", "Authorization": f"Bearer {_token()}"})
     assert r.status_code == 401 and r.get_json()["code"] == "razorpay_auth_failed"
 

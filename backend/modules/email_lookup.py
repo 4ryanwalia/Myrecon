@@ -622,20 +622,48 @@ class EmailLookup:
 
     # ── Orchestration ────────────────────────────────────────────
     def scan(self, email: str) -> dict:
-        analysis = self.analyze(email)
-        gravatar = self.gravatar(email)
-        breaches = self.breaches(email)
-        darkweb = self.darkweb(email)
+        errors = []
+
+        def safely(name, method, defaults, nullable=False):
+            try:
+                value = method(email)
+                if nullable and value is None:
+                    return None
+                if not isinstance(value, dict):
+                    raise ValueError("Unreadable provider response")
+                for key, default in defaults.items():
+                    if key in value and isinstance(default, (dict, list)) and not isinstance(value[key], type(default)):
+                        raise ValueError("Unreadable provider field")
+                return {**defaults, **value}
+            except Exception:  # A malformed provider response must not end a scan.
+                message = f"{name} is currently unreachable or returned an unreadable reply. Displaying other results."
+                errors.append({"source": name, "code": "unavailable",
+                               "message": message, "retryable": True})
+                return {**defaults, "status": "unavailable", "checked": False, "error": message}
+
+        analysis = safely("Email analysis", self.analyze, {
+            "email": email, "domain": email.partition("@")[2],
+            "deliverable": None, "disposable": None,
+        })
+        gravatar = safely("Gravatar", self.gravatar, {"exists": False, "accounts": []})
+        breach_defaults = {"checked": False, "status": "unavailable", "breached": False,
+                           "count": 0, "fields": [], "sources": []}
+        breaches = safely("LeakCheck", self.breaches, breach_defaults)
+        darkweb = safely("XposedOrNot analytics", self.darkweb, {
+            "checked": False, "status": "unavailable", "breached": False, "count": 0,
+            "risk_label": "", "risk_score": 0, "records_exposed": 0,
+            "breaches": [], "timeline": [], "exposed_data": [], "password_strength": {},
+        })
         # The fallback, not a parallel call. It runs when LeakCheck could not
         # answer, rate-limited, unreachable, or erroring, which is exactly
         # when a second opinion is worth having. When LeakCheck answered there
         # is nothing to cover for, and the request is skipped.
-        fallback = (self.xposed_check_email(email)
+        fallback = (safely("XposedOrNot fallback", self.xposed_check_email, breach_defaults)
                     if breaches.get("status") != "ok"
                     else {"source": "XposedOrNot", "status": "skipped",
                           "breached": False, "count": 0, "sources": []})
-        github = self.github(email)
-        pgp = self.pgp(email)
+        github = safely("GitHub", self.github, {}, nullable=True)
+        pgp = safely("OpenPGP", self.pgp, {"exists": False})
         services = _linked_services(gravatar, github, pgp, breaches, darkweb, fallback)
 
         linked = []
@@ -675,8 +703,16 @@ class EmailLookup:
         breached = bool(breaches.get("breached") or darkweb["breached"] or fallback.get("breached"))
         outcome = ("found" if breached else "unavailable" if not completed
                    else "incomplete" if completed < attempted else "no_match")
+        for source in coverage:
+            if source["status"] not in ("ok", "skipped", "unconfigured") and not any(
+                    error["source"] == source["name"] for error in errors):
+                errors.append({"source": source["name"], "code": source["status"],
+                               "message": f"{source['name']} is currently unavailable. Displaying other results.",
+                               "retryable": True, "retry_after": source["retry_after"]})
 
         return {
+            "partial": bool(errors),
+            "errors": errors,
             "query": {"email": email},
             "analysis": analysis,
             "gravatar": gravatar,

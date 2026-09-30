@@ -311,6 +311,7 @@ def _live_view(result: dict, username: str) -> dict:
 def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     """Core username pipeline. `emit(event)` receives progress events."""
     all_results: list[dict] = []
+    errors: list[dict] = []
 
     # ── Phase 1: verified username enumeration ───────────────────
     emit({"type": "progress", "phase": "Checking platforms", "percent": 2,
@@ -338,11 +339,11 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
         all_results.extend(found)
         rejected = _rejections(checker)
         platform_checks = _standard_platform_checks(checker)
-    except Exception as e:  # noqa: BLE001 - surface as a soft error
-        all_results.append({
-            "source": "username_check", "error": True, "platform": "Error",
-            "url": "", "title": f"Username check error: {e}",
-        })
+    except Exception:  # noqa: BLE001 - preserve any already verified hits
+        if 'checker' in locals():
+            all_results.extend(r for r in getattr(checker, "all_results", []) if r.get("exists"))
+        errors.append({"source": "username_check", "code": "unavailable", "retryable": True,
+                       "message": "Some platform checks could not complete. Displaying completed results."})
 
     # ── Phase 2: enrichment (avatars, bios, follower counts) ─────
     emit({"type": "progress", "phase": "Enriching profiles", "percent": 70,
@@ -356,12 +357,14 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
         try:
             dork = GoogleDorkEngine(delay=0.2)
             dork_results = dork.scan_username(username, deep=deep)
+            errors.extend(getattr(dork, "errors", []))
             for r in dork_results:
                 r["category"] = categorise_result(r, username)
             _verify_dork_profiles(dork_results, username, emit)
             all_results.extend(dork_results)
         except Exception:
-            pass
+            errors.append({"source": "google_dork", "code": "unavailable", "retryable": True,
+                           "message": "Google web search is currently unreachable. Displaying other results."})
 
     # ── Phase 4: what the handle leaks, not just where it exists ─
     exposures = _code_exposure(all_results, username, emit)
@@ -383,6 +386,8 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
 
     return {
         "status": "ok",
+        "partial": bool(errors),
+        "errors": errors,
         "query": {"username": username, "deep": deep, "scope": "standard"},
         "summary": {
             "total": len(profiles) + len(documents) + len(mentions),
@@ -522,7 +527,7 @@ def stream_username(username: str, deep: bool = False, scope: str = "standard"):
             else:
                 holder["data"] = _run_username(username, deep, emit)
         except Exception as e:  # noqa: BLE001
-            holder["error"] = str(e)
+            holder["error"] = "The scan could not complete. Please try again."
         finally:
             q.put(None)  # sentinel
 
@@ -542,6 +547,7 @@ def stream_username(username: str, deep: bool = False, scope: str = "standard"):
 
 def search_fullname(full_name: str, deep: bool = False) -> dict:
     all_results: list[dict] = []
+    errors = []
 
     if not _has_google():
         return {
@@ -555,6 +561,7 @@ def search_fullname(full_name: str, deep: bool = False) -> dict:
     try:
         dork = GoogleDorkEngine(delay=0.2)
         dork_results = dork.scan_username(full_name, deep=deep)
+        errors.extend(getattr(dork, "errors", []))
         # No handle to match a full name against, so the URL shape is all the
         # cheap filtering there is; the HTTP verification below is what decides
         # whether a hit is a live profile.
@@ -562,11 +569,9 @@ def search_fullname(full_name: str, deep: bool = False) -> dict:
             r["category"] = categorise_result(r)
         _verify_dork_profiles(dork_results, full_name)
         all_results.extend(dork_results)
-    except Exception as e:  # noqa: BLE001
-        all_results.append({
-            "source": "google_dork", "error": True,
-            "title": f"Dork error: {e}", "url": "",
-        })
+    except Exception:  # noqa: BLE001
+        errors.append({"source": "google_dork", "code": "unavailable", "retryable": True,
+                       "message": "Google web search is currently unreachable. Displaying completed results."})
 
     _strip_binary(all_results)
     profiles, documents, mentions = _bucket(all_results)
@@ -574,6 +579,8 @@ def search_fullname(full_name: str, deep: bool = False) -> dict:
     return {
         "status": "ok",
         "query": {"full_name": full_name, "deep": deep},
+        "partial": bool(errors),
+        "errors": errors,
         "summary": {
             "total": len(all_results),
             "profiles": len(profiles),

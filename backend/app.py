@@ -22,7 +22,7 @@ from core.cache import TTLCache
 from core.ratelimit import RateLimiter
 from core import clientip, responses, validation
 from core.firebase_auth import AuthError, verify_id_token
-from core.plans import GuestLimit, NoAllowance
+from core.plans import GuestLimit, NoAllowance, StandardLimit
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("myrecon")
@@ -170,7 +170,7 @@ def cached(name: str):
                 return hit
             value = fn(*args)
             # Never cache soft errors.
-            if (isinstance(value, dict) and value.get("status") != "error"
+            if (isinstance(value, dict) and value.get("status") != "error" and not value.get("partial")
                     and (name != "email" or value.get("summary", {}).get("breach_status") == "ok")):
                 _cache.set(key, value)
             return value
@@ -298,27 +298,21 @@ def _admit_scan(scope: str, cached: bool):
             raise SignInRequired()
         plans.consume_guest_scan(_client_ip())
         return None, None
-    if scope == "standard":
-        return user["sub"], None
     if not store.persistent():
         raise AccountsUnavailable()
     uid = user["sub"]
     account = plans.get_account(uid, user.get("email", ""), user.get("name", ""))
+    if scope in ("standard", "full"):
+        # Quick and full scans share one daily allowance per free account.
+        # Cached requests count too; reopening saved reports does not.
+        return uid, None if account["standard_scans_unlimited"] else plans.consume_standard_scan(uid)
     if scope == "extended":
-        # Pro passes only, from their own small allowance (2 a week, 6 a
-        # month). Never paid from full scans or the free trial.
+        # Only Extended uses paid credits; cached results do not spend one.
         if cached:
             if account["extended_scans_left"] <= 0:
                 raise NoAllowance(account, "extended")
             return uid, None
         return uid, plans.consume_extended_scan(uid)
-    if cached:
-        # Serving a result already in the cache costs nobody anything, so it
-        # is not charged, but it is still a full-scan feature.
-        if account["full_scans_left"] <= 0:
-            raise NoAllowance(account)
-        return uid, None
-    return uid, plans.consume_full_scan(uid)
 
 
 def _remember(uid, data):
@@ -335,7 +329,7 @@ def _remember(uid, data):
     try:
         return history.save(uid, data)
     except Exception as exc:  # noqa: BLE001
-        log.warning("Could not save scan history: %s", exc)
+        log.warning("Could not save scan history (%s)", type(exc).__name__)
         return None
 
 
@@ -437,7 +431,6 @@ def _register_routes(app: Flask) -> None:
 
     cached_username = cached("username")(search_username)
     cached_fullname = cached("fullname")(search_fullname)
-    cached_email = cached("email")(scan_email)
     cached_image = cached("image")(scan_image)
     cached_domain = cached("domain")(scan_domain)
     cached_dns = cached("dns")(scan_dns)
@@ -493,12 +486,17 @@ def _register_routes(app: Flask) -> None:
                 except Exception:
                     plans.refund_full_scan(uid, charged)
                     raise
-            if config.CACHE_ENABLED:
+            if config.CACHE_ENABLED and not data.get("partial"):
                 _cache.set(key, data)
             shown = _guest_full_preview(data) if uid is None else data
             return responses.ok({**shown, "history_id": _remember(uid, data)})
-        uid, _ = _admit_scan("standard", False)
-        data = cached_username(username, deep)
+        uid, charged = _admit_scan("standard", False)
+        try:
+            data = cached_username(username, deep)
+        except Exception:
+            from core import plans
+            plans.refund_full_scan(uid, charged)
+            raise
         return responses.ok({**data, "history_id": _remember(uid, data)})
 
     @app.route("/api/username/stream", methods=["POST", "OPTIONS"])
@@ -549,13 +547,16 @@ def _register_routes(app: Flask) -> None:
                     if event.get("type") == "complete":
                         data = event.get("data")
                         if (config.CACHE_ENABLED and isinstance(data, dict)
-                                and data.get("status") != "error"):
+                                and data.get("status") != "error" and not data.get("partial")):
                             _cache.set(key, data)
                         event = {**event, "history_id": _remember(uid, data)}
                     if guest_full:
                         event = _guest_stream_event(event, visible)
                     if event is not None:
                         yield json.dumps(event) + "\n"
+            except Exception:
+                failed = True
+                raise
             finally:
                 if slot is not None:
                     slot.release()
@@ -591,8 +592,8 @@ def _register_routes(app: Flask) -> None:
         query = validation.username(body.get("query", ""))
         deep = validation.boolean(body.get("deep"))
         # Deep Search runs the standard username scan underneath, so it draws
-        # on the same guest allowance.
-        _admit_scan("standard", False)
+        # on the same guest or signed-in standard allowance.
+        uid, charged = _admit_scan("standard", False)
 
         def generate():
             # investigate() reports progress through a callback, but a
@@ -612,7 +613,9 @@ def _register_routes(app: Flask) -> None:
                     result = investigate(query, deep=deep, emit=q.put)
                     q.put({"type": "complete", "data": result})
                 except Exception as exc:  # noqa: BLE001 - surfaced to client
-                    q.put({"type": "error", "error": str(exc)})
+                    from core import plans
+                    plans.refund_full_scan(uid, charged)
+                    q.put({"type": "error", "error": "The investigation could not complete. Please try again."})
                 finally:
                     q.put(DONE)
 
@@ -643,7 +646,9 @@ def _register_routes(app: Flask) -> None:
             return ("", 204)
         body = _json_body()
         email = validation.email(body.get("email", ""))
-        return responses.ok(cached_email(email))
+        # Email/breach responses are processed live and never retained in the
+        # application cache or the account scan database.
+        return responses.ok(scan_email(email))
 
     @app.route("/api/domain", methods=["POST", "OPTIONS"])
     def api_domain():
@@ -749,7 +754,12 @@ def _register_routes(app: Flask) -> None:
                 "full_platforms": plans.FULL_PLATFORMS,
                 "extended_platforms": plans.EXTENDED_PLATFORMS,
                 "guest_scans_per_day": plans.GUEST_SCANS_PER_DAY,
-                "free_full_scans_total": plans.FREE_FULL_SCANS,
+                "free_full_scans_total": None,
+                "full_scans_unlimited": False,
+                "free_standard_scans_per_day": plans.FREE_STANDARD_SCANS_PER_DAY,
+                "paid_standard_scans_unlimited": True,
+                "daily_reset_timezone": "UTC",
+                "full_results_require_sign_in": True,
             },
             "plans": list(plans.PLANS.values()),
         })
@@ -842,11 +852,12 @@ def _register_routes(app: Flask) -> None:
         order = razorpay.fetch_order(order_id)
         notes = order.get("notes") or {}
         uid, plan_id = notes.get("uid"), notes.get("plan")
-        if order.get("status") != "paid" or plan_id not in plans.PLANS or not uid:
+        sold_plans = plans.PLANS | plans.LEGACY_PLANS
+        if order.get("status") != "paid" or plan_id not in sold_plans or not uid:
             return False
         if expect_uid is not None and uid != expect_uid:
             return False
-        if int(order.get("amount_paid", 0)) < plans.PLANS[plan_id]["price_inr"] * 100:
+        if int(order.get("amount_paid", 0)) < sold_plans[plan_id]["price_inr"] * 100:
             return False
         plans.grant_pass(uid, plan_id, order_id)
         return True
@@ -938,15 +949,22 @@ def _register_errors(app: Flask) -> None:
     @app.errorhandler(NoAllowance)
     def on_no_allowance(err):
         if err.scope == "extended":
-            message = ("Extended scans come with a Pro pass: 2 with Pro Weekly, "
-                       "6 with Pro Monthly.")
+            message = "Get 10 Extended scans across 3,000+ platforms for ₹99."
         else:
-            message = "You have used your free Pro scan. A Pro pass adds more."
+            message = "Standard 500+ platform scans are free after sign-in."
         return jsonify({
             "status": "error", "code": "upgrade_required", "scope": err.scope,
             "error": message,
             "account": err.entitlements,
         }), 402
+
+    @app.errorhandler(StandardLimit)
+    def on_standard_limit(err):
+        return jsonify({
+            "status": "error", "code": "standard_daily_limit", "scope": "full",
+            "error": "You have used today's 5 free standard scans. They reset at midnight UTC. The ₹99 plan includes unlimited standard scans.",
+            "account": err.entitlements,
+        }), 429
 
     @app.errorhandler(404)
     def on_404(_err):
@@ -977,7 +995,7 @@ def _register_errors(app: Flask) -> None:
 
     @app.errorhandler(Exception)
     def on_unexpected(err):
-        log.exception("Unhandled error: %s", err)
+        log.error("Unhandled API error (%s)", type(err).__name__)
         return responses.error(
             "An unexpected error occurred. Please try again.",
             status=500, code="server_error",

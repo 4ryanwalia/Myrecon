@@ -58,7 +58,7 @@ python myrecon.py --help
 | Capability | Website | CLI | Notes |
 | --- | :---: | :---: | --- |
 | Username sweep and profile evidence | Yes | Yes | The website currently has 561 standard catalogue entries. The CLI checks 50 or 100. |
-| Extended username sweep | Yes | No | Opt-in Pro scan across 3,166 catalogue entries, including the standard set. |
+| Extended username sweep | Yes | No | Opt-in paid Extended scan across 3,166 catalogue entries, including the standard set. |
 | Email and breach exposure | Yes | Yes | Checks supported public sources; source availability can vary. |
 | Domain, DNS, RDAP/WHOIS, IP, and certificate-transparency subdomains | Yes | Yes | Public infrastructure data. |
 | Investigation graph and profile enrichment | Yes | Yes | Relationships are leads to verify, not identity claims. |
@@ -67,7 +67,7 @@ python myrecon.py --help
 | Password exposure check | Yes | No | Hashes in the browser and sends only a hash prefix to Pwned Passwords. |
 | Full-name and reverse-image web search | Yes | Yes | Requires Google Programmable Search credentials. |
 
-**Website access:** Guests can run the standard 561-entry sweep but see the first 100 platform verdicts. A signed-in free account gets one full report; Pro passes add full and Extended scan allowances. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
+**Website access:** Guests can run the standard 561-entry sweep but see the first 100 platform verdicts. Sign in for 5 free standard 500+ platform scans per UTC day and complete results. The only paid plan is ₹99 for unlimited standard scans plus 10 Extended 3,000+ platform scans, with no expiry. Paid standard access remains unlimited after Extended credits are used. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
 
 The [Android app](https://myrecon.xyz/app.html) is maintained separately; its source is not in this repository.
 
@@ -128,7 +128,7 @@ Core CLI lookups need no API key. Optional integrations and hosted account featu
 | `GOOGLE_API_KEY`, `GOOGLE_CX_ID` | Full-name and reverse-image web search. |
 | `GITHUB_TOKEN` | Higher GitHub API rate limit for public-source lookups. |
 | `FIREBASE_SERVICE_ACCOUNT`, Firebase web configuration | Sign-in and persistent web account state. |
-| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Pro pass checkout and webhook handling. |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Extended scan pack checkout and webhook handling. |
 | `API_BASE_URL` | API origin for the hosted frontend build. |
 
 Keep credentials out of source control. To run the backend test suite:
