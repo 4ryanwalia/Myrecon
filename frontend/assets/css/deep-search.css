@@ -6,6 +6,53 @@
 
 .mono { font-family: var(--mono); }
 
+/* App-style evidence groups use the site's neutral surfaces in both themes. */
+#ds { max-width: 1040px; padding-bottom: 48px; }
+#ds .ds-head { padding-top: 32px; }
+#ds .ds-head h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); }
+.ds-intro { max-width: 760px; color: var(--text-dim); margin: 14px 0 24px; line-height: 1.65; }
+.ds-input-label { display: block; font-weight: 650; margin-bottom: 10px; }
+.ds-query #dsMode { margin-top: 12px; line-height: 1.5; }
+.ds-access { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px; margin: 18px 0; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.ds-access h2 { font-size: 1rem; margin-bottom: 7px; }
+.ds-access p { max-width: 650px; font-size: .9rem; line-height: 1.6; color: var(--text-dim); }
+.ds-access.is-paid { border-color: var(--ds-ok); }
+.ds-access-actions { display: flex; gap: 10px; flex-wrap: wrap; flex-shrink: 0; }
+.ds-access-actions .btn { white-space: nowrap; }
+.ds-export-row { display: flex; justify-content: flex-end; margin: 14px 0; }
+.ds-summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 0; }
+.ds-summary h2 { font-size: 1.4rem; margin-top: 8px; overflow-wrap: anywhere; }
+.ds-summary p { color: var(--text-dim); line-height: 1.6; }
+#dsOut .ds-panel { margin-bottom: 18px; }
+.ds-evidence { padding: 18px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
+.ds-evidence h3 { font-size: 1rem; line-height: 1.5; }
+.ds-evidence p { margin-top: 8px; line-height: 1.65; }
+.ds-evidence code { white-space: normal; overflow-wrap: anywhere; }
+.ds-links { display: flex; gap: 8px 14px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.ds-posts { list-style: none; padding-left: 16px; border-left: 2px solid var(--border); margin: 14px 0; }
+.ds-posts li + li { margin-top: 16px; }
+.ds-posts .hint { margin-right: 8px; }
+.ds-source-checks > div { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.ds-notes { padding-left: 20px; margin-top: 18px; line-height: 1.7; color: var(--text-dim); }
+.ds-plan summary, .ds-help summary { cursor: pointer; font-weight: 650; line-height: 1.6; }
+.ds-query-link { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; padding: 14px 0; border-top: 1px solid var(--border); }
+.ds-query-link > a { grid-column: 1 / -1; font-family: var(--mono); font-size: .86rem; overflow-wrap: anywhere; }
+.ds-help { margin-top: 32px; }
+.ds-help h2 { font-size: 1.2rem; }
+.ds-help ol { padding-left: 20px; line-height: 1.8; margin: 12px 0 20px; }
+.ds-help details { padding: 14px 0; border-top: 1px solid var(--border); }
+.ds-help p { line-height: 1.7; margin-top: 12px; color: var(--text-dim); }
+#ds [hidden] { display: none !important; }
+@media (max-width: 760px) {
+  .ds-access, .ds-summary { flex-direction: column; align-items: stretch; }
+  .ds-access-actions { flex-shrink: 1; }
+  .ds-access-actions .btn { flex: 1; }
+  #ds .field-row { flex-wrap: wrap; }
+  #ds .input-wrap { flex: 1 1 100%; min-width: 0; }
+  #ds .field-row .btn { flex: 1; }
+  .ds-summary { gap: 10px; }
+}
+
 /* Confidence colours.
    The base system retunes layout tokens for light mode but leaves the semantic
    ones (--ok/--warn/--danger) at their dark-theme values. Those are tuned for a

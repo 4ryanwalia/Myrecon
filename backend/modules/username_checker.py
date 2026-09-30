@@ -23,6 +23,7 @@ from urllib.parse import urlparse, urlsplit, urlunsplit
 import requests
 
 from core.netguard import BlockedRequest, safe_get
+from modules.profile_identity import profile_identity
 
 # ──────────────────────────────────────────────────────────────
 #  Platform database:  (name, url_template, expected_status)
@@ -570,6 +571,19 @@ class UsernameChecker:
 
             if resp.status_code == expected:
                 meta = parse_meta(resp.text[:20000])
+                if name == "Buymeacoffee":
+                    # Shared with the full sweep: require the exact active
+                    # creator object instead of scoring an echoed URL.
+                    from modules.sweep import CHALLENGE_MARKERS, AUTH_WALL_MARKERS
+                    raw = resp.text[:256000]
+                    page = raw.lower()
+                    if (not any(marker in page for marker in CHALLENGE_MARKERS + AUTH_WALL_MARKERS)
+                            and profile_identity(name, raw, resp.url, username)):
+                        result.update(exists=True, confidence="high", match_score=4)
+                        extract_metadata(result, meta)
+                    else:
+                        result.update(match_score=-1, reason="the exact creator profile could not be verified")
+                    return result
                 score = confidence_score(resp, username, meta)
                 # Recorded either way: the score is what the rejection panel
                 # explains itself with.

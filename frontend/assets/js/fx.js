@@ -5,10 +5,6 @@
  * element is missing, so the same file runs on all pages.
  *
  * Kept smooth by:
- *  - one rAF loop for the particle canvas, capped at ~40 fps and stopped
- *    entirely while the tab is hidden;
- *  - node count scaled to viewport area and capped, devicePixelRatio capped
- *    at 1.5 (the lines are soft anyway, 3x rendering buys nothing);
  *  - IntersectionObserver for reveals and counters, never scroll handlers
  *    doing layout reads.
  * Honours prefers-reduced-motion by doing almost nothing.
@@ -25,7 +21,6 @@
     n.setAttribute("aria-hidden", "true");
     return n;
   }
-  function css(name) { return getComputedStyle(doc).getPropertyValue(name).trim(); }
 
   /* ---------- Scroll progress ---------- */
   var progress = el("div", "fx-progress");
@@ -79,7 +74,7 @@
   }
 
   /* ---------- Bring results into view when a lookup starts ----------
-     The tool sits in the hero and results render below it, under the orbit
+     The tool sits in the hero and results render below it
      on narrow screens, so without this a phone user presses Investigate and
      sees nothing change. Watches the button app.js disables while a lookup
      runs, rather than hooking app.js itself. */
@@ -146,96 +141,52 @@
   }
   document.querySelectorAll("[data-scramble]").forEach(scramble);
 
-  if (reduce) return;
-
-  /* ---------- Hero orbit: random platforms get "found" ----------
-     Illustration only: it never claims a real result. */
+  /* Platform orbit is an illustration, independent of real scan results. */
   var orbit = document.getElementById("fxOrbit");
   if (orbit) {
-    var nodes0 = orbit.querySelectorAll(".node"), spokes0 = orbit.querySelectorAll(".spoke");
-    var hitsEl = document.getElementById("fxHits"), hits = 0, visible = true, busy = [];
+    var orbitButton = document.getElementById("orbitPause");
+    var orbitNodes = orbit.querySelectorAll(".node");
+    var orbitSpokes = orbit.querySelectorAll(".spoke");
+    var orbitVisible = true, orbitStopped = false, orbitBusy = [];
+
+    function syncOrbit() {
+      orbit.classList.toggle("paused", reduce || orbitStopped || !orbitVisible || document.hidden);
+    }
+    if (orbitButton) {
+      orbitButton.hidden = reduce;
+      orbitButton.addEventListener("click", function () {
+        orbitStopped = !orbitStopped;
+        orbitButton.setAttribute("aria-pressed", String(orbitStopped));
+        var label = orbitStopped ? "Resume platform animation" : "Pause platform animation";
+        orbitButton.setAttribute("aria-label", label);
+        orbitButton.title = label;
+        orbitButton.querySelector("path").setAttribute("d", orbitStopped ? "M8 5v14l11-7z" : "M7 5h3v14H7zm7 0h3v14h-3z");
+        syncOrbit();
+      });
+    }
     if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (e) {
-        visible = e[0].isIntersecting;
-        orbit.classList.toggle("paused", !visible);
+      new IntersectionObserver(function (entries) {
+        orbitVisible = entries[0].isIntersecting;
+        syncOrbit();
       }).observe(orbit);
     }
-    setInterval(function () {
-      if (!visible || document.hidden) return;
-      var i = (Math.random() * nodes0.length) | 0;
-      if (busy[i]) return;
-      busy[i] = true;
-      nodes0[i].classList.add("hit"); spokes0[i].classList.add("hit");
-      if (hitsEl) hitsEl.textContent = String(++hits % 100);
-      setTimeout(function () {
-        nodes0[i].classList.remove("hit"); spokes0[i].classList.remove("hit"); busy[i] = false;
-      }, 2400);
-    }, 850);
-  }
-
-  /* ---------- Particle network ---------- */
-  var canvas = el("canvas", "fx-net");
-  document.body.insertBefore(canvas, document.body.firstChild);
-  var ctx = canvas.getContext("2d");
-  if (!ctx) return;
-  var W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 1.5);
-  var nodes = [], LINK = 130, colA = "", colB = "";
-
-  function palette() { colA = colB = css("--accent") || "#7fd5a0"; }
-  function resize() {
-    W = window.innerWidth; H = window.innerHeight;
-    canvas.width = W * DPR; canvas.height = H * DPR;
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    var want = Math.max(18, Math.min(70, Math.round(W * H / 22000)));
-    while (nodes.length < want) nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35, r: Math.random() * 1.6 + .6 });
-    nodes.length = want;
-    LINK = W < 720 ? 95 : 130;
-  }
-  palette(); resize();
-  var rt;
-  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(resize, 150); }, { passive: true });
-  new MutationObserver(palette).observe(doc, { attributes: true, attributeFilter: ["data-theme"] });
-
-  var last = 0, running = true;
-  document.addEventListener("visibilitychange", function () {
-    running = !document.hidden;
-    if (running) requestAnimationFrame(draw);
-  });
-
-  function hexA(hex, a) {
-    if (hex[0] !== "#" || hex.length < 7) return hex;
-    var n = parseInt(hex.slice(1, 7), 16);
-    return "rgba(" + (n >> 16) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
-  }
-
-  function draw(t) {
-    if (!running) return;
-    requestAnimationFrame(draw);
-    if (t - last < 25) return; // ~40 fps is plenty for drifting dots
-    last = t;
-    ctx.clearRect(0, 0, W, H);
-    var n = nodes.length, L2 = LINK * LINK;
-    for (var a = 0; a < n; a++) {
-      var p = nodes[a];
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
-      if (p.y < -20) p.y = H + 20; else if (p.y > H + 20) p.y = -20;
-    }
-    ctx.lineWidth = 1;
-    for (a = 0; a < n; a++) {
-      var A = nodes[a];
-      for (var b = a + 1; b < n; b++) {
-        var B = nodes[b], dx = A.x - B.x, dy = A.y - B.y, d = dx * dx + dy * dy;
-        if (d < L2) {
-          ctx.strokeStyle = hexA(colB, (1 - d / L2) * 0.35);
-          ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
-        }
-      }
-    }
-    ctx.fillStyle = colA;
-    for (a = 0; a < n; a++) {
-      ctx.beginPath(); ctx.arc(nodes[a].x, nodes[a].y, nodes[a].r, 0, 6.2832); ctx.fill();
+    document.addEventListener("visibilitychange", syncOrbit);
+    syncOrbit();
+    if (!reduce) {
+      setInterval(function () {
+        if (orbitStopped || !orbitVisible || document.hidden || !orbitNodes.length) return;
+        var index = Math.floor(Math.random() * orbitNodes.length);
+        if (orbitBusy[index]) return;
+        orbitBusy[index] = true;
+        orbitNodes[index].classList.add("hit");
+        if (orbitSpokes[index]) orbitSpokes[index].classList.add("hit");
+        setTimeout(function () {
+          orbitNodes[index].classList.remove("hit");
+          if (orbitSpokes[index]) orbitSpokes[index].classList.remove("hit");
+          orbitBusy[index] = false;
+        }, 2400);
+      }, 850);
     }
   }
-  requestAnimationFrame(draw);
+
 })();

@@ -155,13 +155,14 @@ def test_email_unexpected_failure_keeps_other_provider_results(monkeypatch):
 
 def test_email_route_never_caches_even_successful_lookups(monkeypatch):
     calls = []
-    monkeypatch.setattr(email_service, "scan_email", lambda e: calls.append(e) or {"status": "ok", "summary": {"breach_status": "ok"}})
+    monkeypatch.setattr(email_service, "scan_email", lambda e, check_linked_accounts=True: calls.append((e, check_linked_accounts)) or {"status": "ok", "summary": {"breach_status": "ok"}})
     monkeypatch.setattr(config, "CACHE_ENABLED", True)
     monkeypatch.setattr(config, "RATE_LIMIT_ENABLED", False)
     client = appmod.create_app().test_client()
     for _ in range(2):
         assert client.post("/api/email", json={"email": "fixture@example.com"}).status_code == 200
     assert len(calls) == 2
+    assert all(option is True for _, option in calls)
 
 
 def test_username_soft_failure_survives_stream_completion(monkeypatch):

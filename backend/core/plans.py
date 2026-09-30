@@ -34,7 +34,7 @@ FREE_STANDARD_SCANS_PER_DAY = 5
 PLANS = {
     "extended": {"id": "extended", "label": "Extended Scan Pack", "price_inr": 99,
                  "days": None, "full_scans": None, "extended_scans": 10,
-                 "standard_scans_unlimited": True},
+                 "standard_scans_unlimited": True, "deep_search_enabled": True},
 }
 
 # Previously sold passes remain valid, including orders paid during rollout.
@@ -118,6 +118,7 @@ def entitlements(record, now_ms=None) -> dict:
         "full_scans_left": None if unlimited else free_left,
         "full_scans_unlimited": unlimited,
         "standard_scans_unlimited": unlimited,
+        "deep_search_enabled": unlimited,
         "standard_scans_left": None if unlimited else free_left,
         "standard_scans_per_day": None if unlimited else FREE_STANDARD_SCANS_PER_DAY,
         "standard_resets_at": None if unlimited else _standard_reset(now),

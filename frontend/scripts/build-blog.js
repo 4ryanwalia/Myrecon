@@ -100,7 +100,7 @@ function shellHead({ title, description, url, article, crumbs }) {
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#f7faf7">
+  <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${esc(url)}">
   <meta property="og:type" content="${ogType}">
   <meta property="og:site_name" content="MyRecon">

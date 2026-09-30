@@ -21,7 +21,7 @@
   <meta name="keywords" content="OSINT, username search, email intelligence, breach detection, password exposure check, pwned password, WHOIS lookup, DNS records, IP geolocation, reverse DNS, digital footprint">
   <meta name="author" content="MyRecon">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#101713">
+  <meta name="theme-color" content="#111111">
   <link rel="canonical" href="https://www.myrecon.xyz/">
   <!-- Search-engine verification slot.
        Prefer the DNS domain property in Search Console, it covers www, apex,
@@ -50,8 +50,8 @@
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
 
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=c285203a4c">
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=c285203a4c">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
   <link rel="manifest" href="/site.webmanifest">
 
   <style>/* Inlined so the first paint is already correct. Without it the
@@ -62,8 +62,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=ec18ed59d1">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
@@ -84,8 +84,9 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What can I check with MyRecon?","acceptedAnswer":{"@type":"Answer","text":"MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can MyRecon confirm that a profile belongs to a person?","acceptedAnswer":{"@type":"Answer","text":"No. A matching username is only a lead. Confirm important conclusions with independent public evidence and keep uncertain links unconfirmed. MyRecon does not access private accounts or restricted content."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630},"description":"An open-source intelligence platform for username search, email and breach intelligence, password exposure checks, WHOIS, DNS and IP investigation.","founder":{"@type":"Person","name":"Aryan Walia"},"email":"aryan@bugsnaps.in"},{"@type":"WebSite","@id":"https://www.myrecon.xyz/#website","url":"https://www.myrecon.xyz/","name":"MyRecon","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"inLanguage":"en","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.myrecon.xyz/#tool=username&q={search_term_string}"},"query-input":"required name=search_term_string"}}]}</script>
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
-  <link rel="stylesheet" href="/assets/css/trust.css?v=e13d7c3f49">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
+  <link rel="stylesheet" href="/assets/css/trust.css?v=e95563d693">
+  <link rel="stylesheet" href="/assets/css/username-benchmark.css?v=73ef0f7066">
 </head>
 <body class="home-page">
   <a class="skip-link" href="#tool">Skip to the tool</a>
@@ -95,7 +96,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon OSINT: home">
-        <img class="logo" src="/assets/img/logo.svg?v=6bbbea3ebc" alt="" width="32" height="32">
+        <img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32">
         MyRecon <small>OSINT</small>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
@@ -114,10 +115,38 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <span class="eyebrow"><span class="dot"></span> Public sources. Clear outcomes.</span>
-          <h1>Username search.<br><span>Public evidence.</span></h1>
+          <h1>Know your<br><span>digital footprint.</span></h1>
           <p class="lead">Check public profiles, email exposure, domains and IPs. Review each match at its source.</p>
+        </div>
+        <div class="orbit" id="fxOrbit" role="group" aria-label="Illustration: a radar sweeping social platforms such as Instagram, Snapchat, X, TikTok, YouTube, Reddit and GitHub for one username.">
+          <div class="orbit-sweep"></div>
+          <button class="orbit-control icon-btn" id="orbitPause" type="button" aria-label="Pause platform animation" aria-pressed="false" title="Pause platform animation"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 5h3v14H7zm7 0h3v14h-3z"/></svg></button>
+          <div class="orbit-ring r1"><div class="orbit-rot">
+            <span class="spoke" style="--a:15deg;--c:var(--text-dim)"></span><span class="node" style="--a:15deg;--c:var(--text-dim)" data-name="Instagram"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#instagram"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:105deg;--c:var(--text-dim)"></span><span class="node" style="--a:105deg;--c:var(--text-dim)" data-name="Snapchat"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#snapchat"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:195deg;--c:var(--text)"></span><span class="node" style="--a:195deg;--c:var(--text)" data-name="X"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#x"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:285deg;--c:var(--text-dim)"></span><span class="node" style="--a:285deg;--c:var(--text-dim)" data-name="TikTok"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#tiktok"/></svg><b class="tag">FOUND</b></span></span>
+          </div></div>
+          <div class="orbit-ring r2"><div class="orbit-rot">
+            <span class="spoke" style="--a:40deg;--c:var(--text-dim)"></span><span class="node" style="--a:40deg;--c:var(--text-dim)" data-name="Facebook"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#facebook"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:100deg;--c:var(--text-dim)"></span><span class="node" style="--a:100deg;--c:var(--text-dim)" data-name="YouTube"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#youtube"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:160deg;--c:var(--text-dim)"></span><span class="node" style="--a:160deg;--c:var(--text-dim)" data-name="Reddit"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#reddit"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:220deg;--c:var(--text-dim)"></span><span class="node" style="--a:220deg;--c:var(--text-dim)" data-name="Discord"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#discord"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:280deg;--c:var(--text-dim)"></span><span class="node" style="--a:280deg;--c:var(--text-dim)" data-name="Telegram"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#telegram"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:340deg;--c:var(--text)"></span><span class="node" style="--a:340deg;--c:var(--text)" data-name="Threads"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#threads"/></svg><b class="tag">FOUND</b></span></span>
+          </div></div>
+          <div class="orbit-ring r3"><div class="orbit-rot">
+            <span class="spoke" style="--a:5deg;--c:var(--text)"></span><span class="node" style="--a:5deg;--c:var(--text)" data-name="GitHub"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#github"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:65deg;--c:var(--text-dim)"></span><span class="node" style="--a:65deg;--c:var(--text-dim)" data-name="Twitch"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#twitch"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:125deg;--c:var(--text-dim)"></span><span class="node" style="--a:125deg;--c:var(--text-dim)" data-name="Spotify"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#spotify"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:185deg;--c:var(--text-dim)"></span><span class="node" style="--a:185deg;--c:var(--text-dim)" data-name="Pinterest"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#pinterest"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:245deg;--c:var(--text-dim)"></span><span class="node" style="--a:245deg;--c:var(--text-dim)" data-name="Steam"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#steam"/></svg><b class="tag">FOUND</b></span></span>
+            <span class="spoke" style="--a:305deg;--c:var(--text)"></span><span class="node" style="--a:305deg;--c:var(--text)" data-name="Medium"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#medium"/></svg><b class="tag">FOUND</b></span></span>
+          </div></div>
+          <div class="orbit-core"><img src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="40" height="40"><span class="core-handle">@yourhandle</span></div>
+        </div>
           <!-- The tool lives in the hero so it is the first thing a visitor sees.
-               IDs are unchanged; app.js finds everything by id. -->
+               Existing IDs keep the lookup behavior connected to app.js. -->
           <div class="tool hero-tool" id="tool" aria-label="OSINT tools">
             <div class="tool-tabs" id="toolTabs" role="tablist" aria-label="Choose a lookup"></div>
             <div class="panel" role="tabpanel" id="toolPanel" tabindex="0">
@@ -137,6 +166,12 @@
                 <button class="btn" id="runBtn" type="button">Investigate</button>
               </div>
               <div class="detect-hint" id="detectHint" role="status" hidden></div>
+              <div class="email-options" id="emailOptions" hidden>
+                <label class="email-toggle" for="linkedAccountsToggle">
+                  <span><strong>Check linked accounts</strong><span class="hint" id="linkedAccountsHelp">Also check public GitHub, Gravatar and OpenPGP evidence for this exact email.</span></span>
+                  <input id="linkedAccountsToggle" type="checkbox" role="switch" aria-describedby="linkedAccountsHelp">
+                </label>
+              </div>
               <div class="opt-row" id="deepWrap">
                 <div class="scope-picker" role="radiogroup" aria-label="Scan size">
                   <label class="scope-opt"><input type="radio" name="scope" value="standard"><span class="scope-copy"><strong>Quick</strong><span class="hint">100 platforms</span></span></label>
@@ -161,36 +196,8 @@
               </div>
             </details>
             <nav class="tool-support" aria-label="Product transparency"><a href="/#benchmarks">Benchmark evidence <span aria-hidden="true">↗</span></a><a href="/#changelog">What's new <span aria-hidden="true">↗</span></a></nav>
-            <p class="tool-foot"><span class="kbd">Enter</span> to run · results appear below · signed-in scans can be saved · <a href="/vs/">how we compare</a><span class="tool-exit"> · <a href="/" id="toolExit">back to overview</a></span></p>
+            <p class="tool-foot"><a href="/deep-search.html">Deep Search · Paid</a> · <span class="kbd">Enter</span> to run · results appear below · signed-in scans can be saved · <a href="/vs/">how we compare</a><span class="tool-exit"> · <a href="/" id="toolExit">back to overview</a></span></p>
           </div>
-        </div>
-        <div class="orbit" id="fxOrbit" role="img" aria-label="Illustration: a radar sweeping social platforms such as Instagram, Snapchat, X, TikTok, YouTube, Reddit and GitHub for one username.">
-          <div class="orbit-sweep"></div>
-          <div class="orbit-ring r1"><div class="orbit-rot">
-            <span class="spoke" style="--a:15deg;--c:#E4405F"></span><span class="node" style="--a:15deg;--c:#E4405F" data-name="Instagram"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#instagram"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:105deg;--c:#FFFC00"></span><span class="node" style="--a:105deg;--c:#FFFC00" data-name="Snapchat"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#snapchat"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:195deg;--c:var(--text)"></span><span class="node" style="--a:195deg;--c:var(--text)" data-name="X"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#x"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:285deg;--c:#25F4EE"></span><span class="node" style="--a:285deg;--c:#25F4EE" data-name="TikTok"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#tiktok"/></svg><b class="tag">FOUND</b></span></span>
-          </div></div>
-          <div class="orbit-ring r2"><div class="orbit-rot">
-            <span class="spoke" style="--a:40deg;--c:#0866FF"></span><span class="node" style="--a:40deg;--c:#0866FF" data-name="Facebook"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#facebook"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:100deg;--c:#FF0000"></span><span class="node" style="--a:100deg;--c:#FF0000" data-name="YouTube"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#youtube"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:160deg;--c:#FF4500"></span><span class="node" style="--a:160deg;--c:#FF4500" data-name="Reddit"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#reddit"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:220deg;--c:#5865F2"></span><span class="node" style="--a:220deg;--c:#5865F2" data-name="Discord"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#discord"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:280deg;--c:#26A5E4"></span><span class="node" style="--a:280deg;--c:#26A5E4" data-name="Telegram"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#telegram"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:340deg;--c:var(--text)"></span><span class="node" style="--a:340deg;--c:var(--text)" data-name="Threads"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#threads"/></svg><b class="tag">FOUND</b></span></span>
-          </div></div>
-          <div class="orbit-ring r3"><div class="orbit-rot">
-            <span class="spoke" style="--a:5deg;--c:var(--text)"></span><span class="node" style="--a:5deg;--c:var(--text)" data-name="GitHub"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#github"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:65deg;--c:#9146FF"></span><span class="node" style="--a:65deg;--c:#9146FF" data-name="Twitch"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#twitch"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:125deg;--c:#1DB954"></span><span class="node" style="--a:125deg;--c:#1DB954" data-name="Spotify"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#spotify"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:185deg;--c:#E60023"></span><span class="node" style="--a:185deg;--c:#E60023" data-name="Pinterest"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#pinterest"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:245deg;--c:#66C0F4"></span><span class="node" style="--a:245deg;--c:#66C0F4" data-name="Steam"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#steam"/></svg><b class="tag">FOUND</b></span></span>
-            <span class="spoke" style="--a:305deg;--c:var(--text)"></span><span class="node" style="--a:305deg;--c:var(--text)" data-name="Medium"><span class="node-in"><svg viewBox="0 0 24 24"><use href="/assets/img/platforms.svg#medium"/></svg><b class="tag">FOUND</b></span></span>
-          </div></div>
-          <div class="orbit-core"><img src="/assets/img/logo.svg?v=6bbbea3ebc" alt="" width="40" height="40"><span class="core-handle">@yourhandle</span><span class="core-count">example map</span></div>
-          <span class="orbit-caption" aria-hidden="true">Illustration · sample platform map</span>
-        </div>
       </div>
 
     </section>
@@ -228,9 +235,30 @@
     <section class="section alt trust-section" id="benchmarks" aria-labelledby="benchmarkHeading">
       <div class="container">
         <div class="trust-heading">
-          <div><span class="section-kicker">Public benchmark / Daily regression sample</span><h2 id="benchmarkHeading">The numbers, in context.</h2></div>
-          <p class="trust-intro">10 usernames × 3 platforms. A small regression sample, with unknowns visible. Results do not describe the full catalogue or prove identity.</p>
+          <div><span class="section-kicker">Public benchmark / Source evidence</span><h2 id="benchmarkHeading">The numbers, in context.</h2></div>
+          <p class="trust-intro">A full-catalogue username case study and a daily regression sample. See the reported leads, source checks and unknowns behind the numbers.</p>
         </div>
+        <article class="username-case" aria-labelledby="usernameCaseHeading">
+          <span class="section-kicker">Full-catalogue case study / 4ryanwalia</span>
+          <h3 id="usernameCaseHeading">Fewer leads only help when the evidence holds up.</h3>
+          <p id="usernameCaseTakeaway">Loading the recorded MyRecon, Sherlock, Maigret and OSINTsearch comparison...</p>
+          <div id="usernameCaseContent" hidden>
+            <p id="usernameCaseWhen"></p>
+            <div class="case-controls">
+              <label>Comparison scope<select id="usernameCaseScope"><option value="full">Full catalogues</option><option value="shared">Shared profile addresses</option></select></label>
+              <label>Inspect reported leads<select id="usernameCaseFilter"><option value="all">All reported leads</option><option value="found">Source-supported</option><option value="not_found">Source-contradicted</option><option value="unknown">Unverified</option></select></label>
+            </div>
+            <div class="benchmark-table-wrap" id="usernameCaseSummary"></div>
+            <p>MyRecon keeps blocked, ambiguous and unverified checks out of its found list. Contradicted leads are observed false-positive profile results; unverified leads are not counted as false positives. A smaller list can reduce review work, but it can also miss accounts.</p>
+            <details class="case-evidence"><summary>Inspect each reported profile and its evidence</summary><div class="benchmark-table-wrap" id="usernameCaseLeads"></div></details>
+            <details class="case-evidence"><summary>Why Sherlock's bundled and current results differ</summary><p id="usernameCaseDiagnostic"></p></details>
+            <details class="case-evidence"><summary>What we corrected in MyRecon</summary><p id="usernameCaseCorrection"></p></details>
+            <details class="case-evidence"><summary>OSINTsearch: what the free preview exposes</summary><p id="usernameCasePreview"></p><ul id="usernameCaseNamed"></ul><a href="/data/benchmark-evidence/osintsearch-4ryanwalia.jpg" target="_blank" rel="noopener">View the captured preview</a></details>
+            <p>One username is a case study, not an overall accuracy ranking or a zero-error guarantee. A matching public handle does not prove ownership. The shared view includes only exact profile addresses checked by all three local engines; OSINTsearch hides its URLs. Some local runs overlapped, so elapsed times do not establish a speed ranking.</p>
+            <div class="case-links"><a href="/data/username-benchmark.json">Open case-study data and methodology</a><a href="/data/benchmark-evidence/">Reproduction instructions</a></div>
+          </div>
+        </article>
+        <h3>Daily regression sample: 10 usernames × 3 platforms</h3>
         <div class="benchmark-status"><span id="benchmarkSchedule">Scheduled every 24 hours</span><span id="benchmarkUpdated">Loading latest measurements...</span></div>
         <div id="benchmarkContent" aria-busy="true">
           <div class="benchmark-grid">
@@ -264,7 +292,7 @@
             <details class="benchmark-graph-data"><summary>Read graph values as a table</summary><div class="benchmark-table-wrap" id="benchmarkGraphTable"></div></details>
           </div>
           <div id="benchmarkError" role="status" hidden></div>
-          <details class="benchmark-comparison" id="benchmarkLatest"><summary><span>Latest run: outcomes and username controls</span><span class="disclosure-arrow" aria-hidden="true">+</span></summary><div id="benchmarkRunDetails"></div></details>
+          <details class="benchmark-comparison" id="benchmarkLatest"><summary><span>Selected run: outcomes and username controls</span><span class="disclosure-arrow" aria-hidden="true">+</span></summary><div id="benchmarkRunDetails"></div></details>
         </div>
         <div class="benchmark-evidence">
           <span class="evidence-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3H5v18h14V8l-5-5Z"/><path d="M14 3v5h5M8 12h8M8 16h6"/></svg></span>
@@ -299,7 +327,7 @@
   <div class="site-footer__panel">
     <div class="site-footer__top">
       <div class="site-footer__identity">
-        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=6bbbea3ebc" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
         <p>Public-source research tools for personal audits and authorized work.</p>
         <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
       </div>
@@ -337,10 +365,11 @@
   <script src="/assets/js/email-outcome.js?v=1"></script>
   <script src="/assets/js/account.js?v=3"></script>
   <script src="/assets/js/partial-results.js?v=4fbe1f16f7"></script>
-  <script src="/assets/js/benchmarks.js?v=4789d73d05" defer></script>
+  <script src="/assets/js/username-benchmark.js?v=b244280050" defer></script>
+  <script src="/assets/js/benchmarks.js?v=774ff0e8fc" defer></script>
   <script src="/assets/js/trust.js?v=50b0508fdc" defer></script>
-  <script src="/assets/js/app.js?v=b5ced231e6"></script>
+  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
 </html>

@@ -57,7 +57,7 @@
     const pack = Number(acct.extended_pack_scans_left) || 0;
     const legacy = Number(acct.extended_legacy_scans_left) || 0;
     $("#acctUsage").textContent = (acct.standard_scans_unlimited
-      ? "Unlimited standard 500+ platform scans included with your paid plan. "
+      ? "Unlimited standard 500+ platform scans and Deep Search included with your paid plan. "
       : `${acct.standard_scans_left} of 5 free standard scans left today. Resets at midnight UTC (${new Date(acct.standard_resets_at).toLocaleString()}). `)
       + (pack ? `${pack} Extended pack scans left, no expiry. ` : "")
       + (legacy ? `${legacy} scans from a previous pass, until ${new Date(acct.extended_legacy_until).toLocaleDateString()}.` : "")
@@ -148,7 +148,7 @@
       amount: order.amount,
       currency: order.currency,
       name: "MyRecon",
-      description: `${order.plan.label}: unlimited standard scans + ${order.plan.extended_scans} Extended scans, no expiry`,
+      description: `${order.plan.label}: Deep Search + unlimited standard scans + ${order.plan.extended_scans} Extended scans, no expiry`,
       prefill: { email: order.email || "", name: order.name || "" },
       theme: { color: "#16633a" },
       handler: async (resp) => {
@@ -156,7 +156,7 @@
         try {
           const r = await post("/api/billing/verify", resp);
           note(r.applied
-            ? "Payment received. Your Extended scans are ready."
+            ? "Payment received. Deep Search and your Extended scans are ready."
             : "Payment received. It can take a minute to show here; refresh shortly.");
           await A.refreshAccount();
           renderAccount(A.state());

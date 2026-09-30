@@ -11,7 +11,7 @@
           label{font-weight:700}
           .row{display:flex;gap:10px;flex-wrap:wrap}
           input{flex:1 1 220px;min-width:0;padding:12px 14px;border:1px solid var(--border,#667085);border-radius:8px;background:var(--surface-2,#0b111b);color:inherit;font:inherit}
-          button{padding:12px 16px;border:0;border-radius:8px;background:var(--accent,#4f8cff);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+          button{padding:12px 16px;border:0;border-radius:8px;background:var(--accent-2,#252525);color:var(--on-accent,#fff);font:inherit;font-weight:700;cursor:pointer}
           p{margin:0;color:var(--text-dim,#a9b2c2);font-size:.9rem;line-height:1.5}
           @media(max-width:520px){.row{display:grid}button{width:100%}}
         </style>

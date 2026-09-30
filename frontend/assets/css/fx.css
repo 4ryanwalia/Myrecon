@@ -6,36 +6,13 @@
    Flat by rule (2026-09-25): no glows, no gradient lighting, no lit or
    animated outlines, no gradient text. Colour comes from the design tokens
    in styles.css as solid fills and 1px borders. Motion is kept to movement
-   that carries meaning: the orbit, reveals, progress.
+   that carries meaning: reveals and progress.
 
    Performance: only transform and opacity animate.
    ========================================================================== */
 
-:root {
-  --grid-line: rgba(127, 213, 160, 0.06);
-}
-:root[data-theme="light"] {
-  --grid-line: rgba(30, 117, 72, 0.055);
-}
-
-/* ---------- Backdrop: a faint grid, fading out down the page ---------- */
+/* Solid page surfaces keep attention on the lookup. */
 body { position: relative; isolation: isolate; }
-body::before {
-  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 44px 44px;
-  -webkit-mask-image: linear-gradient(#000 0, #000 40%, transparent 90%);
-          mask-image: linear-gradient(#000 0, #000 40%, transparent 90%);
-}
-
-/* Dot network canvas (drawn by fx.js). */
-#fx-net {
-  position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  width: 100vw; height: 100vh; opacity: 0.5;
-}
-:root[data-theme="light"] #fx-net { opacity: 0.35; }
 
 /* Scroll progress along the top edge. */
 #fx-progress {
@@ -69,7 +46,6 @@ body::before {
 /* Accent words in headings: solid colour, no gradient. */
 .fx-grad { color: var(--accent-text, var(--accent)); }
 
-@keyframes fx-spin { to { transform: rotate(360deg); } }
 @keyframes fx-blink { 50% { opacity: 0; } }
 
 /* ---------- Hero ---------- */
@@ -81,8 +57,6 @@ body::before {
 /* Source marquee */
 .fx-marquee {
   margin: 26px auto 0; max-width: 900px; overflow: hidden; position: relative;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 .fx-marquee-track { display: flex; gap: 10px; width: max-content; animation: fx-marquee 38s linear infinite; }
 .fx-marquee:hover .fx-marquee-track { animation-play-state: paused; }
@@ -136,7 +110,7 @@ body::before {
 .vs-side.us { border-color: var(--accent); }
 .vs-badge {
   width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
-  font-family: var(--mono); font-weight: 700; color: #fff; background: var(--accent-2);
+  font-family: var(--mono); font-weight: 700; color: var(--on-accent); background: var(--accent-2);
 }
 .vs-verdict {
   border: 1px solid var(--border-strong); border-left: 3px solid var(--accent); border-radius: var(--radius);
@@ -204,26 +178,13 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
   .fx-marquee-track { animation: none !important; flex-wrap: wrap; width: auto; justify-content: center; }
   .fx-marquee { -webkit-mask-image: none; mask-image: none; }
   .fx-reveal { opacity: 1; transform: none; transition: none; }
-  #fx-net { display: none; }
 }
 
 @media print {
-  body::before, #fx-net, #fx-progress { display: none !important; }
+  #fx-progress { display: none !important; }
 }
 
-/* ==========================================================================
-   Hero orbit: platforms circling a radar arm, marked as they are "found".
-   Rings rotate as whole layers (one composited transform each); every icon
-   counter-rotates by the same amount so it stays upright. Decorative, and
-   paused by fx.js whenever the hero is off-screen.
-   ========================================================================== */
-.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; align-items: center; }
-.hero-copy { min-width: 0; }
-
-@media (min-width: 1100px) {
-  .hero-grid { grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); gap: 34px; text-align: left; }
-  .hero-copy .lead { margin-left: 0; }
-}
+@keyframes fx-spin { to { transform: rotate(360deg); } }
 
 .orbit {
   /* Absolute on purpose: --s is substituted into nested elements, where a
@@ -273,7 +234,7 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 .node .tag {
   position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translate(-50%, 4px);
   font: 700 .6rem/1 var(--mono); letter-spacing: .08em; padding: 4px 6px; border-radius: 5px; white-space: nowrap;
-  color: #04121a; background: var(--ok);
+  color: var(--on-accent); background: var(--accent-2);
   opacity: 0; transition: opacity .25s, transform .25s ease; pointer-events: none;
 }
 .node.hit .node-in { border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
@@ -307,9 +268,19 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
   .orbit *, .orbit *::before, .orbit *::after { animation: none !important; }
 }
 
+
+/* Homepage layout */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; align-items: center; }
+.hero-copy { min-width: 0; }
+
+@media (min-width: 1100px) {
+  .hero-grid { grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); gap: 34px; text-align: left; }
+  .hero-copy .lead { margin-left: 0; }
+}
+
 /* ==========================================================================
    Tool in the hero. The lookup is the product, so it sits above the fold on
-   every screen size, beside the orbit on desktop and right under the
+   every screen size, beside the introduction on desktop and right under the
    headline on phones.
    ========================================================================== */
 .hero { padding: 34px 0 20px; }
@@ -331,8 +302,8 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 /* Tabs: a segmented control, the active segment filled. */
 .hero-tool .tool-tabs { display: flex; width: 100%; margin-bottom: 10px; }
 .hero-tool .tab { flex: 1 0 auto; justify-content: center; padding: 9px 13px; }
-.hero-tool .tab[aria-selected="true"] { color: #fff; background: var(--accent-2); box-shadow: none; }
-.hero-tool .tab[aria-selected="true"] .tab-ico { color: #fff; }
+.hero-tool .tab[aria-selected="true"] { color: var(--on-accent); background: var(--accent-2); box-shadow: none; }
+.hero-tool .tab[aria-selected="true"] .tab-ico { color: var(--on-accent); }
 
 /* Panel */
 .hero-tool .panel { padding: 20px 20px 18px; }
@@ -437,8 +408,7 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
   .unlock-action { margin-top: 18px; }
 }
 
-/* Real result map. The illustrated orbit in the hero is intentionally kept
-   separate from this evidence-based view. Mobile keeps the existing cards. */
+/* Real result map. Mobile keeps the existing cards. */
 .relationship-panel { display: none; }
 @media (min-width: 1100px) {
   .relationship-panel {
@@ -453,7 +423,6 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
   .relationship-body { display: grid; grid-template-columns: minmax(0, 1fr) 240px; }
   .relationship-visual { min-height: 380px; display: grid; place-items: center;
     background-color: var(--bg-soft);
-    background-image: radial-gradient(color-mix(in srgb, var(--border-strong) 75%, transparent) 1px, transparent 1px);
     background-size: 22px 22px; }
   .relationship-visual svg { display: block; width: min(100%, 760px); height: auto; }
   .relationship-ring { fill: none; stroke: var(--border-strong); stroke-width: 1;
@@ -484,7 +453,7 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 }
 
 /* The landing panel gains a broad console feel on laptop screens. All rules
-   below the breakpoint leave the phone's headline, tool and orbit order alone. */
+   below the breakpoint leave the phone's headline and tool order alone. */
 @media (min-width: 1100px) {
   .home-page .hero { padding-top: 55px; }
   .home-page .hero-grid, .home-page .results-section { max-width: 1390px; }
@@ -499,7 +468,6 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
   .home-page .hero-tool .tab { border-radius: 4px; font-family: var(--mono);
     font-size: .74rem; }
   .home-page .hero-tool .input, .home-page .hero-tool #runBtn { border-radius: 6px; }
-  .home-page .orbit { transform: translateY(22px); }
   .home-page .results .loading.scan { border-radius: 8px; }
 }
 
@@ -553,7 +521,6 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 /* Tool mode: once a lookup runs, the homepage becomes the tool. Everything
    below the results and the decorative half of the hero step aside. */
 body.tool-mode main > section:not(.hero):not(.results-section) { display: none !important; }
-body.tool-mode .hero .orbit,
 body.tool-mode .hero .fx-marquee,
 body.tool-mode .hero .eyebrow,
 body.tool-mode .hero h1,
@@ -568,7 +535,7 @@ body.tool-mode .tool-exit { display: inline; }
 /* Results view switch (signed-in): cards or account map, never both. */
 .view-switch { display: inline-flex; gap: 2px; padding: 3px; margin: 4px 0 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
 .view-switch button { border: 0; background: none; color: var(--text-dim); font: inherit; font-size: 0.84rem; padding: 6px 16px; border-radius: 999px; cursor: pointer; min-height: 34px; }
-.view-switch button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.view-switch button[aria-pressed="true"] { background: var(--accent-2); color: var(--on-accent); }
 .view-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* The map only exists at desktop width (see .relationship-panel), so below
    that the switch disappears and the cards always show. */

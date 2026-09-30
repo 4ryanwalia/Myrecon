@@ -98,7 +98,7 @@
   function applyTheme(t) {
     document.documentElement.setAttribute("data-theme", t);
     const browserTheme = document.querySelector('meta[name="theme-color"]');
-    if (browserTheme) browserTheme.content = t === "light" ? "#f7faf7" : "#101713";
+    if (browserTheme) browserTheme.content = t === "light" ? "#f7f7f4" : "#111111";
     const btn = $("#themeToggle");
     if (btn) btn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
   }
@@ -199,7 +199,7 @@
     email: {
       label: "Email", icon: "mail", placeholder: "e.g. name@example.com",
       endpoint: CFG.endpoints.email, field: "email",
-      sub: "Provider analysis, deliverability, linked accounts, and breach exposure.",
+      sub: "See which breaches name your email and what data was exposed. Optional public account checks.",
       examples: ["test@gmail.com", "contact@github.com"],
     },
     domain: {
@@ -733,8 +733,6 @@
     const outcome = window.MyReconEmailOutcome(data);
     const exp = outcome.partial ? null : computeExposure("email", data);
     lastExposure = exp;
-    if (exp) html += exposureGauge(exp);
-
     const dw = data.darkweb || {};
     const breached = outcome.found, count = s.breach_count || 0;
     html += `<div class="breach ${outcome.state === "no_match" ? "clean" : !breached ? "incomplete" : ""}" role="status">
@@ -761,11 +759,14 @@
       ${dw.error ? `<div class="hint" style="margin-top:10px">${esc(dw.error)}</div>` : ""}
     </div>`;
 
+    html += emailBreachList(data);
+    if (exp) html += exposureGauge(exp);
+
     // Straight under the verdict: it is what someone who just learned they
     // were breached needs next, and the evidence below can run to 30 cards.
     html += emailNextSteps(outcome, data);
     html += breachAlertCta(outcome);
-    html += linkedServices(data.linked_services);
+    html += linkedServices(data.linked_services, data.account_checks);
 
     if (dw.exposed_data && dw.exposed_data.length) {
       const top = dw.exposed_data.slice(0, 10), max = top[0].count || 1;
@@ -788,28 +789,6 @@
               <div class="tl-y">${String(t.year).slice(2)}</div>
             </div>`).join("")}
         </div>`;
-    }
-
-    if (dw.breaches && dw.breaches.length) {
-      html += `<div class="section-label">Breaches naming this address
-        <span class="hint">${dw.breaches.length} of ${count} shown, largest first</span></div>`;
-      html += `<div class="breach-list">${dw.breaches.map((b) => `
-        <details class="breach-card" data-bname="${esc(b.name)}" data-byear="${esc(String(b.date || "").slice(0, 4))}">
-          <summary>
-            <span class="bc-name">${esc(b.name)}</span>
-            ${b.verified ? `<span class="pill ok">verified</span>` : ""}
-            ${b.password_risk === "plaintext" ? `<span class="pill danger">plaintext passwords</span>` : ""}
-            <span class="bc-meta">${esc(b.date)}${b.records ? " · " + fmtNum(b.records) + " records" : ""}</span>
-          </summary>
-          <div class="bc-body">
-            ${b.details ? `<p>${esc(b.details)}</p>` : ""}
-            ${b.exposed && b.exposed.length ? `<div class="chips">${b.exposed.map((f) => {
-              const danger = /password|ssn|bank|card|phone|address|birth|token/i.test(f);
-              return `<span class="pill ${danger ? "danger" : ""}">${esc(f)}</span>`;
-            }).join("")}</div>` : ""}
-            ${b.industry ? `<div class="hint" style="margin-top:8px">Industry: ${esc(b.industry)}</div>` : ""}
-          </div>
-        </details>`).join("")}</div>`;
     }
 
     html += `<div class="section-label">Address analysis</div>`;
@@ -846,23 +825,66 @@
       html += `<div class="section-label">GitHub</div>`;
       html += `<div class="card"><div class="card-head">${avatarHTML({ avatar_url: data.github.avatar_url }, "GH")}
         <div style="min-width:0"><div class="card-title">${esc(data.github.username)}</div>
-        <div class="card-url"><a href="${esc(safeUrl(data.github.url))}" target="_blank" rel="noopener nofollow">github.com</a></div></div></div></div>`;
+        <div class="card-url"><a href="${esc(safeUrl(data.github.url))}" target="_blank" rel="noopener nofollow">github.com</a></div></div></div>
+        <p class="card-bio">${esc(data.github.evidence || "Public GitHub evidence for this email")}</p>
+        ${data.github.evidence_url ? `<p><a href="${esc(safeUrl(data.github.evidence_url))}" target="_blank" rel="noopener nofollow">View public commit evidence</a></p>` : ""}</div>`;
     }
     resultsEl().innerHTML = html;
     animateCountUps();
     linkBreachWriteups();
   }
 
+  // Keep every named breach visible, even when the detailed analytics fail.
+  function emailBreachRows(data) {
+    const rows = new Map();
+    const key = (name) => String(name || "").toLowerCase().replace(/\.(com|net|org|io|co|me|ru|de|fr|uk|in)$/, "").replace(/[^a-z0-9]/g, "");
+    const add = (record, source, detailed) => {
+      const id = key(record.name);
+      if (!id) return;
+      const existing = rows.get(id);
+      if (existing) {
+        if (!existing.sources.includes(source)) existing.sources.push(source);
+        if (!existing.date && record.date) existing.date = record.date;
+        return;
+      }
+      rows.set(id, { ...record, detailed, sources: [source] });
+    };
+    ((data.darkweb || {}).breaches || []).forEach((b) => add(b, "XposedOrNot analytics", true));
+    [data.breaches, data.fallback].forEach((source) => {
+      if (!source || source.status === "skipped") return;
+      (source.sources || []).forEach((b) => add(b, source.source || (source === data.breaches ? "LeakCheck" : "XposedOrNot fallback"), false));
+    });
+    return [...rows.values()].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || a.name.localeCompare(b.name));
+  }
+
+  function emailBreachList(data) {
+    const rows = emailBreachRows(data);
+    if (!rows.length) return window.MyReconEmailOutcome(data).found
+      ? `<p class="hint">Exposure was reported, but the responding sources supplied no breach names.</p>` : "";
+    const count = Math.max(rows.length, data.summary?.breach_count || 0);
+    return `<section class="email-breaches" aria-label="Breaches naming this email">
+      <div class="section-label">Which breaches included this email?<span class="hint">${rows.length} named${count > rows.length ? ` of ${count} reported` : ""}</span></div>
+      <p class="hint">Newest dated entries first. Exposed data describes the breach, not the exact values leaked about you. A historical entry does not confirm an account is still active.</p>
+      <div class="breach-list">${rows.map((b) => `<article class="breach-card" data-bname="${esc(b.name)}" data-byear="${esc(String(b.date || "").slice(0, 4))}">
+        <div class="bc-overview"><div class="bc-title"><h3 class="bc-name">${esc(b.name)}</h3><span class="bc-meta">${b.date ? `Breach date: ${esc(b.date)}` : "Date not provided"}</span></div>
+          <p class="bc-source">Reported by ${b.sources.map(esc).join(" · ")}</p>
+          ${b.password_risk === "plaintext" ? `<p class="pill danger">Plaintext passwords in this breach</p>` : ""}
+          <div class="bc-fields"><strong>Data exposed</strong>${b.exposed?.length ? `<div class="chips">${b.exposed.map((f) => `<span class="pill ${/password|ssn|bank|card|phone|address|birth|token/i.test(f) ? "danger" : ""}">${esc(f)}</span>`).join("")}</div>` : `<p class="hint">Per-breach data types not provided by this source.</p>`}</div>
+          ${b.details || b.records || b.industry ? `<details class="bc-details"><summary>More about this breach</summary><div class="bc-body">${b.details ? `<p>${esc(b.details)}</p>` : ""}${b.records ? `<p>${fmtNum(b.records)} records across the whole breach.</p>` : ""}${b.industry ? `<p>Industry: ${esc(b.industry)}</p>` : ""}</div></details>` : ""}
+        </div>
+      </article>`).join("")}</div></section>`;
+  }
+
   // Services this address is tied to, each with the evidence that ties it.
   // Built server-side from breach records and public profiles only; sign-up
   // forms are never probed, so a missing site means "no evidence", and the
   // footnote says so rather than letting absence read as "no account".
-  function linkedServices(ls) {
-    if (!ls) return "";
-    const rows = ls.services || [];
-    const skipped = ls.compilations_skipped || 0;
-    let html = `<div class="section-label">Services linked to this email
-      <span class="hint">${rows.length ? `${rows.length} found` : "none found"}</span></div>`;
+  function linkedServices(ls, checks) {
+    if (!ls && !checks) return "";
+    ls = ls || {};
+    const rows = (ls.services || []).filter((r) => r.kind === "profile");
+    let html = `<div class="section-label">Public accounts linked to this email
+      <span class="hint">${checks?.enabled === false ? "not checked" : rows.length ? `${rows.length} found` : "no public evidence"}</span></div>`;
     if (rows.length) {
       html += `<ul class="svc-list">${rows.map((r) => {
         const tag = r.kind === "profile"
@@ -874,8 +896,12 @@
         return `<li><span class="svc-name">${name}</span>${tag}<span class="svc-ev">${esc(r.evidence)}</span></li>`;
       }).join("")}</ul>`;
     }
-    html += `<p class="hint svc-note">Taken from breach records and public profiles. We don't test sign-up or login forms, so a site not listed here may still have an account.${
-      skipped ? ` ${skipped} combined leak list${skipped === 1 ? "" : "s"} left out because ${skipped === 1 ? "it doesn't" : "they don't"} show which site the address was used on.` : ""}</p>`;
+    if (checks?.enabled === false) {
+      html += `<p class="hint">Account checks are off. Turn on “Check linked accounts” above and run the lookup to check public sources.</p>`;
+    } else if (checks) {
+      html += `<ul class="source-coverage">${(checks.sources || []).map((source) => `<li><strong>${esc(source.name)}</strong>: ${esc(source.status === "no_match" ? "no public match" : source.status.replace(/_/g, " "))}</li>`).join("")}</ul>`;
+    }
+    html += `<p class="hint svc-note">Only public evidence is shown. Private account emails cannot be checked. Public evidence does not prove account ownership. No public match means no evidence, not no account. Historical breach entries are shown in the breach list above.</p>`;
     return html;
   }
 
@@ -977,9 +1003,9 @@
       const sameBreach = named && (!named.year || !year || Math.abs(Number(named.year) - Number(year)) <= 1);
       const hit = byNameYear.get(`${key}|${year}`) || (sameBreach ? named : null);
       if (!hit || card.querySelector(".bc-writeup")) return;
-      card.querySelector("summary .bc-name")?.insertAdjacentHTML("afterend",
+      card.querySelector(".bc-name")?.insertAdjacentHTML("afterend",
         `<span class="pill bc-writeup">${esc(hit.kind.toLowerCase())}</span>`);
-      card.querySelector(".bc-body")?.insertAdjacentHTML("beforeend",
+      (card.querySelector(".bc-body") || card.querySelector(".bc-overview"))?.insertAdjacentHTML("beforeend",
         `<p style="margin-top:10px"><a href="${esc(hit.path)}">Read our ${esc(hit.kind.toLowerCase())} on ${esc(card.dataset.bname)} →</a></p>`);
     });
   }
@@ -1437,6 +1463,7 @@
     }
 
     const body = { [tool.field]: value };
+    if (activeTool === "email") body.check_linked_accounts = !!$("#linkedAccountsToggle")?.checked;
     if (tool.deep) {
       const scope = currentScope();
       body.deep = scope !== "quick";
@@ -1818,6 +1845,12 @@
       L.push(`Coverage: ${outcome.coverage}${outcome.partial ? " (incomplete)" : ""}`, outcome.detail);
       outcome.sources.forEach((source) => L.push(`- ${source.name}: ${source.status}${source.error ? ", " + source.error : ""}`));
       if (outcome.partial) L.push("Exposure score: unavailable because coverage is incomplete.");
+      L.push("Named breaches:");
+      emailBreachRows(d).forEach((b) => L.push(`- ${b.name}: ${b.date || "date not provided"}; data exposed: ${(b.exposed || []).join(", ") || "not provided"}; source: ${b.sources.join(", ")}`));
+      if (d.account_checks) {
+        L.push(`Public account checks: ${d.account_checks.enabled ? "enabled" : "off"}`);
+        (d.account_checks.sources || []).forEach((source) => L.push(`- ${source.name}: ${source.status}`));
+      }
       const svc = (d.linked_services && d.linked_services.services) || [];
       if (svc.length) {
         L.push(`Linked services (${svc.length}):`);
@@ -2051,6 +2084,7 @@
     $("#revealBtn").hidden = !tool.secret;
     $("#panelSub").textContent = tool.sub;
     $("#deepWrap").style.display = tool.deep ? "" : "none";
+    $("#emailOptions")?.toggleAttribute("hidden", name !== "email");
     const ex = $("#examples");
     if (ex) {
       ex.innerHTML = (tool.examples || []).length

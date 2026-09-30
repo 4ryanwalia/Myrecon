@@ -64,10 +64,34 @@ function browser() {
     document: { addEventListener() {}, querySelector: () => results, querySelectorAll: () => [] },
   };
   const source = fs.readFileSync(path.join(__dirname, "../assets/js/app.js"), "utf8")
-    .replace(/\}\)\(\);\s*$/, "globalThis.adapter = { renderEmail, buildTextSummary, quickStat, toCSV, exportData };})();");
+    .replace(/\}\)\(\);\s*$/, "globalThis.adapter = { renderEmail, emailBreachRows, linkedServices, buildTextSummary, quickStat, toCSV, exportData };})();");
   vm.runInNewContext(source, context);
   return { api: context.adapter, results };
 }
+
+test("breach names from every source stay visible above advice and merge duplicates", () => {
+  const data = report({ ...checked, breached: true, sources: [{ name: "Canva.com", date: "2019" }, { name: "Adobe", date: "2013" }] });
+  data.darkweb = { ...checked, breaches: [{ name: "Canva", date: "2019", exposed: ["Passwords"] }] };
+  data.fallback = { status: "ok", source: "Fallback", sources: [{ name: "Dropbox" }] };
+  data.summary = { breached: true, breach_count: 3 };
+  const { api, results } = browser();
+  assert.equal(api.emailBreachRows(data).length, 3);
+  api.renderEmail(data);
+  assert.match(results.innerHTML, /Which breaches included this email/);
+  assert.match(results.innerHTML, /Date not provided/);
+  assert.match(results.innerHTML, /Per-breach data types not provided/);
+  assert.ok(results.innerHTML.indexOf("Which breaches included") < results.innerHTML.indexOf("What to do"));
+  assert.match(api.buildTextSummary({ tool: "email", query: "fixture@example.com", data }), /Dropbox/);
+});
+
+test("account checks show off and unavailable states without relabeling historical breaches", () => {
+  const { api } = browser();
+  const ls = { services: [{ service: "Adobe", kind: "breach", evidence: "Historical breach" }] };
+  assert.match(api.linkedServices(ls, { enabled: false }), /Account checks are off/);
+  const html = api.linkedServices(ls, { enabled: true, sources: [{ name: "GitHub", status: "rate_limited" }] });
+  assert.match(html, /rate limited/);
+  assert.doesNotMatch(html, /svc-name[^>]*>Adobe/);
+});
 
 for (const [name, data, label] of [
   ["partial", report(checked, unavailable), "Breach check incomplete"],

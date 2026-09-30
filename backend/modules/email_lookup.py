@@ -203,8 +203,8 @@ def _linked_services(gravatar: dict, github, pgp: dict, breaches: dict,
             if acc.get("name"):
                 add(acc["name"], "profile", "Listed on this address's Gravatar profile",
                     acc.get("url", ""))
-    if github:
-        add("GitHub", "profile", "GitHub account using this email",
+    if github and github.get("username", github.get("url")):
+        add("GitHub", "profile", github.get("evidence") or "Public GitHub evidence for this email",
             github.get("url", ""), "github.com")
     if (pgp or {}).get("exists"):
         add("OpenPGP key", "profile", "Published key; the owner confirmed this address",
@@ -313,12 +313,16 @@ class EmailLookup:
         profile_url = f"https://en.gravatar.com/{digest}.json"
         avatar_url = f"https://www.gravatar.com/avatar/{digest}?s=400&d=404"
         result = {"exists": False, "profile_url": "", "avatar_url": "",
-                  "display_name": "", "bio": "", "accounts": []}
+                  "display_name": "", "bio": "", "accounts": [], "status": "unavailable"}
         try:
             resp = requests.get(profile_url, headers=_HEADERS, timeout=_TIMEOUT)
             if resp.status_code == 200:
-                entry = (resp.json().get("entry") or [{}])[0]
+                entries = resp.json().get("entry")
+                if not isinstance(entries, list) or not entries or not isinstance(entries[0], dict) or not entries[0]:
+                    return result
+                entry = entries[0]
                 result["exists"] = True
+                result["status"] = "found"
                 result["display_name"] = entry.get("displayName", "")
                 result["bio"] = (entry.get("aboutMe") or "")[:280]
                 result["profile_url"] = entry.get("profileUrl", profile_url)
@@ -329,12 +333,11 @@ class EmailLookup:
                         "name": acc.get("name", acc.get("shortname", "")),
                         "url": acc.get("url", ""),
                     })
-            else:
-                av = requests.get(avatar_url, headers=_HEADERS, timeout=6)
-                if av.status_code == 200:
-                    result["exists"] = True
-                    result["avatar_url"] = avatar_url
-        except requests.RequestException:
+            elif resp.status_code == 404:
+                result["status"] = "no_match"
+            elif resp.status_code == 429:
+                result["status"] = "rate_limited"
+        except (requests.RequestException, ValueError, TypeError, AttributeError):
             pass
         return result
 
@@ -576,30 +579,61 @@ class EmailLookup:
         return result
 
     # ── GitHub commit-email search (official API) ────────────────
-    def github(self, email: str) -> Optional[dict]:
+    def github(self, email: str) -> dict:
+        """Exact public email evidence, with failures distinct from no match.
+
+        Commit attribution is historical evidence, not proof of a current
+        account email or ownership. Never infer a handle from the local part.
+        """
         try:
-            headers = {**_HEADERS, "Accept": "application/vnd.github+json"}
+            headers = {**_HEADERS, "Accept": "application/vnd.github+json",
+                       "X-GitHub-Api-Version": "2022-11-28"}
             token = os.environ.get("GITHUB_TOKEN", "")
             if token:
                 headers["Authorization"] = f"Bearer {token}"
             resp = requests.get(
                 "https://api.github.com/search/users",
-                params={"q": f"{email} in:email"},
+                params={"q": f'"{email}" in:email', "per_page": 5},
                 headers=headers,
                 timeout=_TIMEOUT,
             )
-            if resp.status_code == 200:
-                items = resp.json().get("items", [])
-                if items:
-                    u = items[0]
-                    return {
-                        "username": u.get("login", ""),
-                        "url": u.get("html_url", ""),
-                        "avatar_url": u.get("avatar_url", ""),
-                    }
-        except requests.RequestException:
-            pass
-        return None
+            if resp.status_code != 200:
+                return {"status": "rate_limited" if resp.status_code in (403, 429) else "unavailable"}
+            search = resp.json()
+            if not isinstance(search.get("items"), list) or search.get("incomplete_results"):
+                return {"status": "unavailable"}
+            for item in search["items"]:
+                login = item.get("login", "")
+                if not re.fullmatch(r"[A-Za-z0-9-]+", login):
+                    continue
+                profile = requests.get(f"https://api.github.com/users/{login}", headers=headers, timeout=_TIMEOUT)
+                if profile.status_code != 200:
+                    return {"status": "rate_limited" if profile.status_code in (403, 429) else "unavailable"}
+                user = profile.json()
+                if str(user.get("email") or "").lower() == email.lower():
+                    return {"status": "found", "username": login,
+                            "url": f"https://github.com/{login}", "avatar_url": user.get("avatar_url", ""),
+                            "evidence": "Exact email published on this GitHub profile"}
+            resp = requests.get("https://api.github.com/search/commits",
+                                params={"q": f'author-email:"{email}"', "per_page": 10},
+                                headers=headers, timeout=_TIMEOUT)
+            if resp.status_code != 200:
+                return {"status": "rate_limited" if resp.status_code in (403, 429) else "unavailable"}
+            search = resp.json()
+            if not isinstance(search.get("items"), list) or search.get("incomplete_results"):
+                return {"status": "unavailable"}
+            for item in search["items"]:
+                author = item.get("author") or {}
+                commit_author = (item.get("commit") or {}).get("author") or {}
+                login = author.get("login", "")
+                if str(commit_author.get("email") or "").lower() != email.lower() or not re.fullmatch(r"[A-Za-z0-9-]+", login):
+                    continue
+                return {"status": "found", "username": login, "url": f"https://github.com/{login}",
+                        "avatar_url": author.get("avatar_url", ""), "evidence_url": item.get("html_url", ""),
+                        "evidence": "Public commit with this exact author email, attributed by GitHub; current account email is unknown"}
+            return {"status": "no_match"}
+        except (requests.RequestException, ValueError, TypeError, AttributeError):
+            return {"status": "unavailable"}
 
     # ── keys.openpgp.org (verifying keyserver) ───────────────────
     def pgp(self, email: str) -> dict:
@@ -621,7 +655,7 @@ class EmailLookup:
         return {"exists": False, "status": "unavailable"}
 
     # ── Orchestration ────────────────────────────────────────────
-    def scan(self, email: str) -> dict:
+    def scan(self, email: str, check_linked_accounts: bool = True) -> dict:
         errors = []
 
         def safely(name, method, defaults, nullable=False):
@@ -645,7 +679,8 @@ class EmailLookup:
             "email": email, "domain": email.partition("@")[2],
             "deliverable": None, "disposable": None,
         })
-        gravatar = safely("Gravatar", self.gravatar, {"exists": False, "accounts": []})
+        gravatar = (safely("Gravatar", self.gravatar, {"exists": False, "accounts": []})
+                    if check_linked_accounts else {"exists": False, "accounts": [], "status": "skipped"})
         breach_defaults = {"checked": False, "status": "unavailable", "breached": False,
                            "count": 0, "fields": [], "sources": []}
         breaches = safely("LeakCheck", self.breaches, breach_defaults)
@@ -662,8 +697,11 @@ class EmailLookup:
                     if breaches.get("status") != "ok"
                     else {"source": "XposedOrNot", "status": "skipped",
                           "breached": False, "count": 0, "sources": []})
-        github = safely("GitHub", self.github, {}, nullable=True)
-        pgp = safely("OpenPGP", self.pgp, {"exists": False})
+        github_result = (safely("GitHub", self.github, {}, nullable=True)
+                         if check_linked_accounts else {"status": "skipped"})
+        github = github_result if github_result and github_result.get("username") else None
+        pgp = (safely("OpenPGP", self.pgp, {"exists": False})
+               if check_linked_accounts else {"exists": False, "status": "skipped"})
         services = _linked_services(gravatar, github, pgp, breaches, darkweb, fallback)
 
         linked = []
@@ -717,6 +755,12 @@ class EmailLookup:
             "analysis": analysis,
             "gravatar": gravatar,
             "github": github,
+            "account_checks": {"enabled": check_linked_accounts, "sources": [
+                {"name": "GitHub", "status": (github_result or {}).get("status", "found" if github else "no_match")},
+                {"name": "Gravatar", "status": gravatar.get("status", "found" if gravatar.get("exists") else "no_match")},
+                {"name": "OpenPGP", "status": ("found" if pgp.get("exists") else "no_match")
+                 if pgp.get("status", "ok") == "ok" else pgp["status"]},
+            ]},
             "pgp": pgp,
             "linked_services": services,
             "breaches": breaches,

@@ -93,6 +93,7 @@
     let selectedLine;
     const inspect = (i) => {
       inspectedRun = runs[i].started_at_utc;
+      renderDetails(runs[i]);
       picker.value = inspectedRun;
       const readout = document.getElementById("benchmarkReadout");
       const date = el("span", stamp(runs[i]), "readout-date");
@@ -206,7 +207,7 @@
     text("benchmarkSchedule", age > 30 * 3600000 ? "Update overdue: showing last successful run" : "Scheduled every 24 hours");
     document.getElementById("benchmarkSchedule").classList.toggle("benchmark-stale", age > 30 * 3600000);
     text("benchmarkUpdated", `Last run: ${run.finished_at_utc.replace("T", " ").replace("Z", " UTC")}`);
-    renderGraph(); renderDetails(run);
+    renderGraph();
   }
   async function load() {
     const target = document.getElementById("benchmarkContent");

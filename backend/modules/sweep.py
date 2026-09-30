@@ -27,6 +27,7 @@ coverage block, never rewritten into "no account".
 """
 
 import json
+import html
 import os
 import random
 import re
@@ -39,6 +40,7 @@ from urllib.parse import urljoin, urlsplit
 
 import requests
 from requests.adapters import HTTPAdapter
+from modules.profile_identity import profile_identity, reddit_identity
 
 _CATALOGUE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "platforms_full.json"
@@ -174,6 +176,8 @@ PEEK_LIMITS = {
     # Floor and ceiling both matter; see INSTAGRAM_PEEK_BYTES in the Kotlin.
     # Past ~300 KB Instagram echoes any handle and every search would "find" it.
     "Instagram": 160_000,
+    # Buy Me a Coffee's typed creator record starts after the 48 KB default.
+    "Buymeacoffee": 256_000,
 }
 
 TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.DOTALL)
@@ -416,6 +420,11 @@ class Sweep:
         if missing and missing in lower:
             return self._hit(p, NOT_FOUND, url, code, "none", "api_absent")
         if code == 200:
+            if p["name"] == "Reddit":
+                if not reddit_identity(body, handle):
+                    return None
+                return self._hit(p, FOUND, url, code, "high", "api_user",
+                                 avatar=_avatar_from_json(body, api), name=handle)
             empty = lower in ("", "[]", "{}", "null") or '"user": null' in lower or '"user":null' in lower
             required = (p.get("api_exists") or "").lower()
             if empty:
@@ -490,6 +499,7 @@ class Sweep:
             with resp:
                 code = resp.status_code
                 landed = _path(resp.url) or ""
+                final_url = resp.url
                 raw = _read_peek(resp, PEEK_LIMITS.get(p["name"], BODY_PEEK_BYTES)) \
                     if code == p["ok_status"] else ""
         except Exception:  # noqa: BLE001 - timeouts, DNS and TLS are unknown
@@ -520,6 +530,22 @@ class Sweep:
         asked = _path(url)
         if landed in ("/", "") and asked not in (None, "", "/"):
             return absent("landed_elsewhere", code)
+
+        if p["name"] in ("Buymeacoffee", "OpenStreetMap"):
+            if any(x in peek for x in AUTH_WALL_MARKERS):
+                return unknown("login_wall", code)
+            if profile_identity(p["name"], raw, final_url, handle):
+                return self._hit(p, FOUND, url, code, "high", "profile_markup",
+                                 avatar=_avatar_from(raw, url) or _avatar_from_json(raw, url),
+                                 name=_display_name_in(raw, p["name"]))
+            return unknown("ambiguous", code)
+
+        # RubyGems resolves some digit-prefixed paths to a numeric user ID.
+        # A real but different profile is not evidence for this exact handle.
+        if p["name"] == "RubyGems":
+            profile_title = re.match(r"profile of (.*?)\s*\|\s*rubygems\.org", html.unescape(title))
+            if not profile_title or profile_title.group(1).strip() != h:
+                return unknown("ambiguous", code)
 
         missing = (p.get("missing") or "").replace("{username}", handle).lower()
         if missing and missing in peek:

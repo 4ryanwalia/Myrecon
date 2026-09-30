@@ -53,13 +53,14 @@ test("a malformed result view offers recovery and JSON download", () => {
   assert.match(results.innerHTML, /data-export="json"/);
 });
 
-test("Deep Search profile rendering can access the URL validator and rejects script URLs", () => {
+test("Deep Search source links reject script URLs and escape provider content", () => {
   const context = { window: { MYRECON: {} }, URL,
     location: { href: "https://myrecon.xyz/deep-search.html" },
     document: { addEventListener() {} } };
   vm.runInNewContext(script("deep-search.js").replace(/\}\)\(\);\s*$/,
-    "globalThis.adapter = { profileCard };})();"), context);
-  const html = context.adapter.profileCard({ attrs: { platform: "Fixture", url: "javascript:alert(1)", avatar: "javascript:alert(2)" } });
+    "globalThis.adapter = { link };})();"), context);
+  const html = context.adapter.link("javascript:alert(1)", '<img src=x onerror="alert(2)">');
   assert.doesNotMatch(html, /(?:href|src)="javascript:/);
-  assert.match(html, /href="#"/);
+  assert.doesNotMatch(html, /<img/);
+  assert.match(html, /&lt;img/);
 });

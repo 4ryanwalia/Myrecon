@@ -460,7 +460,7 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <title>${esc(opts.title)}</title>
   <meta name="description" content="${esc(opts.description)}">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#f7faf7">
+  <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${esc(opts.url)}">
   <meta property="og:type" content="${opts.ogType || "website"}">
   <meta property="og:site_name" content="MyRecon">

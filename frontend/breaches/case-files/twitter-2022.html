@@ -19,7 +19,7 @@
   <title>Twitter Breach 2022: The API That Deanonymised Accounts</title>
   <meta name="description" content="A bug let anyone submit an email address or phone number and be told which Twitter account it belonged to.">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#f7faf7">
+  <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/twitter-2022.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
@@ -36,8 +36,8 @@
   <meta name="twitter:description" content="A bug let anyone submit an email address or phone number and be told which Twitter account it belonged to.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=c285203a4c">
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=c285203a4c">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
   <link rel="manifest" href="/site.webmanifest">
   <style>/* Inlined so the first paint is already correct. Without it the
      browser paints one frame using its own default body{margin:8px}, then
@@ -47,22 +47,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=ec18ed59d1">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=118641269b">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3211d1ae43">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Twitter, 2022: an API that confirmed which account owned which email","description":"A bug let anyone submit an email address or phone number and be told which Twitter account it belonged to. For pseudonymous users, that is the whole threat model.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/twitter-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Twitter API data exposure"},"wordCount":689}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Twitter API data exposure","item":"https://www.myrecon.xyz/breaches/case-files/twitter-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What was the actual bug?","acceptedAnswer":{"@type":"Answer","text":"A change introduced in 2021 meant that submitting an email address or phone number to a particular endpoint would return the associated account, if one existed. That is a feature in a contact-matching context and a deanonymisation tool in a platform where many users deliberately keep their identity separate from their handle."}},{"@type":"Question","name":"Why is this worse than a password leak?","acceptedAnswer":{"@type":"Answer","text":"Because you can change a password. You cannot unlink a real identity from a pseudonymous account once someone has published the mapping. For activists, journalists' sources, people writing under a pseudonym about their health or sexuality, and anyone in a country where their speech is criminalised, that link is the thing the account existed to protect."}},{"@type":"Question","name":"Was it reported responsibly first?","acceptedAnswer":{"@type":"Answer","text":"Yes. A researcher reported the flaw through Twitter's bug bounty programme in January 2022 and was paid for it, and the flaw was fixed. The data had already been extracted before the fix, and it was offered for sale that July and published later."}},{"@type":"Question","name":"What about the \"200 million\" dataset?","acceptedAnswer":{"@type":"Answer","text":"A larger compilation circulated in early 2023. Analyses indicated it was substantially derived from the same underlying extraction, deduplicated and combined with other scraped data, rather than being a new and separate breach. As with all aggregate claims, the unique-record count is the number that matters."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=6bbbea3ebc" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
       <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
@@ -198,7 +198,7 @@
   <div class="site-footer__panel">
     <div class="site-footer__top">
       <div class="site-footer__identity">
-        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=6bbbea3ebc" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
         <p>Public-source research tools for personal audits and authorized work.</p>
         <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
       </div>
@@ -232,9 +232,9 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=b5ced231e6"></script>
+  <script src="/assets/js/app.js?v=3d661167fd"></script>
   <script src="/assets/js/breach-check.js?v=2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
 </html>

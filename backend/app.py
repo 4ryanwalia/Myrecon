@@ -574,62 +574,70 @@ def _register_routes(app: Flask) -> None:
 
     @app.route("/api/investigate/stream", methods=["POST", "OPTIONS"])
     def api_investigate_stream():
-        """Deep search: a handle correlated into an investigation graph.
-
-        Streamed as NDJSON so the client sees per-platform progress rather than
-        a stalled request. Same event shape as /api/username/stream, so the
-        frontend reuses one renderer.
-
-        Handles only. Search by personal name was removed, deriving handles
-        from a name returned accounts belonging to whoever registered them,
-        which is usually not the person searched.
-        """
+        """Paid, app-compatible public activity and name research as NDJSON."""
         if request.method == "OPTIONS":
             return ("", 204)
-        from services.investigation import investigate
+        from core import plans, store
+        from modules.deep_search_plan import parse_input
+        from services.deep_search import search
+        import queue
 
         body = _json_body()
-        # validation.username rejects whitespace, so a pasted name is turned
-        # away here with a clear message instead of being quietly guessed at.
-        query = validation.username(body.get("query", ""))
-        deep = validation.boolean(body.get("deep"))
-        # Deep Search runs the standard username scan underneath, so it draws
-        # on the same guest or signed-in standard allowance.
-        uid, charged = _admit_scan("standard", False)
+        user = _require_user()
+        if not store.persistent():
+            raise AccountsUnavailable()
+        account = plans.get_account(user["sub"], user.get("email", ""), user.get("name", ""))
+        if not account["deep_search_enabled"]:
+            raise NoAllowance(account, "deep_search")
+        parsed = parse_input(body.get("query", ""))
+        # Paid access continues after pack credits are spent. This feature
+        # consumes neither the free daily allowance nor Extended credits.
+        if not _full_slots.acquire(blocking=False):
+            return responses.error("Deep Search is busy. Try again shortly.", status=429, code="scan_busy")
+        stop = threading.Event()
+        events = queue.Queue(maxsize=64)
+        done = object()
+
+        def emit(event):
+            # A slow reader cannot accumulate an unbounded queue of snapshots.
+            while not stop.is_set():
+                try:
+                    events.put(event, timeout=0.2)
+                    return
+                except queue.Full:
+                    continue
+
+        def work():
+            try:
+                result = search(parsed, emit, stop)
+                emit({"type": "complete", "data": result})
+            except Exception:
+                emit({"type": "error", "error": "Deep Search could not complete. Please try again."})
+            finally:
+                _full_slots.release()
+                emit(done)
 
         def generate():
-            # investigate() reports progress through a callback, but a
-            # generator cannot yield from inside one. Running it on a worker
-            # thread and draining a queue is what makes the progress actually
-            # live, collecting events into a list and yielding afterwards
-            # would deliver the whole scan in one burst at the end, which is
-            # indistinguishable from no streaming at all.
-            import queue
-            import threading
+            try:
+                while True:
+                    try:
+                        event = events.get(timeout=5)
+                    except queue.Empty:
+                        yield json.dumps({"type": "heartbeat"}) + "\n"
+                        continue
+                    if event is done:
+                        return
+                    yield json.dumps(event) + "\n"
+            finally:
+                stop.set()
 
-            q: "queue.Queue[dict]" = queue.Queue()
-            DONE = {"__done__": True}
-
-            def work():
-                try:
-                    result = investigate(query, deep=deep, emit=q.put)
-                    q.put({"type": "complete", "data": result})
-                except Exception as exc:  # noqa: BLE001 - surfaced to client
-                    from core import plans
-                    plans.refund_full_scan(uid, charged)
-                    q.put({"type": "error", "error": "The investigation could not complete. Please try again."})
-                finally:
-                    q.put(DONE)
-
+        try:
             threading.Thread(target=work, daemon=True).start()
-            while True:
-                ev = q.get()
-                if ev is DONE:
-                    return
-                yield json.dumps(ev) + "\n"
-
+        except Exception:
+            _full_slots.release()
+            raise
         resp = Response(stream_with_context(generate()), mimetype="application/x-ndjson")
-        resp.headers["Cache-Control"] = "no-cache"
+        resp.headers["Cache-Control"] = "no-store"
         resp.headers["X-Accel-Buffering"] = "no"
         return resp
 
@@ -650,7 +658,8 @@ def _register_routes(app: Flask) -> None:
         email = validation.email(body.get("email", ""))
         # Email/breach responses are processed live and never retained in the
         # application cache or the account scan database.
-        return responses.ok(scan_email(email))
+        check_linked = validation.boolean(body.get("check_linked_accounts"), default=True)
+        return responses.ok(scan_email(email, check_linked_accounts=check_linked))
 
     @app.route("/api/domain", methods=["POST", "OPTIONS"])
     def api_domain():
@@ -950,7 +959,9 @@ def _register_errors(app: Flask) -> None:
 
     @app.errorhandler(NoAllowance)
     def on_no_allowance(err):
-        if err.scope == "extended":
+        if err.scope == "deep_search":
+            message = "Deep Search is included in the ₹99 paid plan. Sign in with your paid account or upgrade."
+        elif err.scope == "extended":
             message = "Get 10 Extended scans across 3,000+ platforms for ₹99."
         else:
             message = "Standard 500+ platform scans are free after sign-in."
