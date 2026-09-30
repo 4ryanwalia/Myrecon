@@ -190,8 +190,8 @@ def investigate(handle: str, *, deep: bool = False,
 
     try:
         scan = _run_username(handle, deep, relay)
-    except Exception as exc:  # noqa: BLE001 - reported, not raised
-        return {"status": "error", "error": f"Scan failed: {exc}"}
+    except Exception:  # noqa: BLE001 - reported without provider exception details
+        return {"status": "error", "error": "The scan could not complete. Please try again."}
 
     ingest_username_scan(graph, scan)
 
@@ -203,6 +203,8 @@ def investigate(handle: str, *, deep: bool = False,
         "status": "ok",
         "query": {"value": handle, "deep": deep},
         "handle": handle,
+        "partial": bool(scan.get("errors")),
+        "errors": scan.get("errors", []),
         "graph": g,
         "assessment": assess(g, handle=handle),
         "scans": [{"handle": handle,

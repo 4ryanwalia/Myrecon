@@ -56,6 +56,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Deep Search: Username Lookup Across 100+ Platforms","description":"Check a username across 100+ public platforms. Each result says what was actually established, confirmed, probable or unconfirmed, with the evidence.","url":"https://www.myrecon.xyz/deep-search.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Deep Search","item":"https://www.myrecon.xyz/deep-search.html"}]}}</script>
   <script type="application/ld+json">{"@type":"WebApplication","name":"MyRecon Deep Search","applicationCategory":"SecurityApplication","operatingSystem":"Any","url":"https://www.myrecon.xyz/deep-search.html","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"description":"Checks a username across 100+ public platforms and correlates the matches into a confidence-scored graph, reporting unverifiable responses as unconfirmed rather than counting them.","@context":"https://schema.org"}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
+  <link rel="stylesheet" href="/assets/css/trust.css?v=6eccea8ecb">
 </head>
 <body>
   <a class="skip-link" href="#ds">Skip to the tool</a>
@@ -123,7 +124,20 @@
       </div>
     </div>
 
-    <div class="ds-console" id="dsConsole" hidden>
+    <details class="privacy-disclosure" id="data-handling">
+              <summary>
+                <span class="privacy-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4 6v6c0 4 4 7 8 9 4-2 8-5 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
+                <span class="privacy-summary"><strong>Privacy &amp; data handling</strong><span>What is processed, stored and shared</span></span>
+                <span class="disclosure-arrow" aria-hidden="true">+</span>
+              </summary>
+              <div class="privacy-content">
+                <div class="privacy-item"><span class="privacy-number" aria-hidden="true">01</span><div><h3>Search Data</h3><p>Live public-platform checks, with Google dorking on standard scans when configured. We do not create search-query logs or sell search data.</p><p class="privacy-detail">Results may be cached in memory for 10 minutes. Signed-in username reports and browser search history are retained. IP-based rate limits, daily keyed IP hashes and hosting request logs support abuse prevention.</p></div></div>
+                <div class="privacy-item"><span class="privacy-number" aria-hidden="true">02</span><div><h3>Account Data</h3><p>Sign-in keeps your account ID, email, display name, creation time, scan allowances, plan/payment references and saved username reports.</p><p class="privacy-detail">We never sell personal data or share it for another party's marketing. Authentication, hosting and payment providers process account data. Google Analytics and advertising may process IP addresses and cookies; our analytics configuration excludes search values.</p></div></div>
+                <div class="privacy-item"><span class="privacy-number" aria-hidden="true">03</span><div><h3>API Lookups</h3><p>LeakCheck email lookups run over HTTPS, on the fly, without application caching or account database retention.</p><p class="privacy-detail">Other email sources receive the identifiers needed to answer a lookup. Each provider has its own privacy policy. Recent searches and investigations you save can remain in this browser.</p></div></div>
+                <a class="privacy-policy-link" href="/privacy.html">Read the full privacy policy <span aria-hidden="true">↗</span></a>
+              </div>
+            </details>
+            <div class="ds-console" id="dsConsole" hidden>
       <div class="ds-chead">
         <span class="ds-pulse"></span>
         <span class="ds-status" id="dsStatus">Starting…</span>
@@ -256,7 +270,9 @@
 
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/deep-search.js?v=c57bc92a73"></script>
+  <script src="/assets/js/partial-results.js?v=4fbe1f16f7"></script>
+  <script src="/assets/js/trust.js?v=f4e2812f50" defer></script>
+  <script src="/assets/js/deep-search.js?v=fa024de250"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
 </body>

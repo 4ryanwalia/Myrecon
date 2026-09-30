@@ -249,7 +249,22 @@
   }
 
   function setError(msg) {
-    resultsEl().innerHTML = `<div class="error-box" role="alert">${esc(msg)}</div>`;
+    const live = $("#liveFound");
+    if (live && liveSeen.size) {
+      $(".loading.scan")?.remove();
+      resultsEl().insertAdjacentHTML("afterbegin", `<div class="partial-notice" role="alert"><strong>Scan interrupted</strong><p>${esc(msg)} Completed findings below are a preview; remaining checks are incomplete.</p></div>`);
+    } else {
+      resultsEl().innerHTML = `<div class="error-box" role="alert">${esc(msg)}</div>`;
+    }
+  }
+
+  // A result-view error must still leave a usable response and recovery path.
+  function renderSafely(renderer, data) {
+    try { renderer(data); }
+    catch {
+      lastExposure = null;
+      resultsEl().innerHTML = `<div class="error-box" role="alert">Results arrived, but this view could not be displayed. Download the response or try the search again.<p><button class="btn btn-ghost" data-export="json">Download JSON</button></p></div>`;
+    }
   }
 
   // What to show when the server refuses a scan for a reason the visitor can
@@ -456,12 +471,13 @@
     const s = data.summary || {};
     const preview = previewMeta(data);
     let html = resultsHeader(`Results for “${data.query.username}”`, `${s.total || 0} ${preview ? "visible findings" : "findings"}`);
+    html += window.MyReconPartial?.notice(data) || "";
 
     if (preview) html += previewNotice(preview);
 
     // A score calculated from 100 visible platforms would misstate a 561-
     // platform sweep. Signed-in reports still get the complete score.
-    const exp = preview ? null : computeExposure("username", data);
+    const exp = preview || data.partial ? null : computeExposure("username", data);
     lastExposure = exp;
     if (exp && (s.profiles || 0) > 0) html += exposureGauge(exp);
 
@@ -478,7 +494,7 @@
     html += exposuresPanel(data.exposures || []);
 
     if (!profiles.length && !documents.length && !mentions.length) {
-      html += emptyState("No public profiles were found for this username.");
+      html += emptyState(data.partial ? "No confirmed findings from the completed checks. Some sources could not be checked." : "No public profiles were found for this username.");
     } else {
       let cards = `<div class="card-grid">`;
       profiles.concat(documents, mentions).forEach((item) => { cards += profileCard(item); });
@@ -714,6 +730,7 @@
     const a = data.analysis || {}, g = data.gravatar || {}, s = data.summary || {};
     const breaches = data.breaches || {}, hibp = data.hibp;
     let html = resultsHeader(`Email intelligence: ${esc(data.query.email)}`, "");
+    html += window.MyReconPartial?.notice(data) || "";
 
     const outcome = window.MyReconEmailOutcome(data);
     const exp = outcome.partial ? null : computeExposure("email", data);
@@ -800,8 +817,8 @@
     html += `<div class="section-label">Address analysis</div>`;
     html += datalist([
       ["Provider", `${esc(a.provider)} (${esc(a.provider_type)})`],
-      ["Deliverable", a.deliverable ? "Yes, mail server present" : "No MX record found"],
-      ["Disposable", a.disposable ? "Yes (flagged)" : "No"],
+      ["Deliverable", a.deliverable == null ? "Unknown, check unavailable" : a.deliverable ? "Yes, mail server present" : "No MX record found"],
+      ["Disposable", a.disposable == null ? "Unknown, check unavailable" : a.disposable ? "Yes (flagged)" : "No"],
       ["Plus addressing", a.plus_addressing ? "Yes" : "No"],
       ["Format", esc(a.format)],
       ["MX hosts", (a.mx_hosts || []).map(esc).join("<br>") || "-"],
@@ -1429,6 +1446,7 @@
     }
 
     $("#runBtn").disabled = true;
+    lastResult = null;
     try {
       if (activeTool === "username") {
         await runUsernameStream(value, body);
@@ -1436,7 +1454,7 @@
         setLoading(activeTool);
         const data = await api(tool.endpoint, body);
         lastResult = { tool: activeTool, query: value, data };
-        (RENDERERS[activeTool] || renderIp)(data);
+        renderSafely(RENDERERS[activeTool] || renderIp, data);
         pushHistory(activeTool, value);
         bindActions();
       }
@@ -1571,6 +1589,17 @@
   }
 
   async function runUsernameStream(value, body) {
+    const controller = new AbortController();
+    const wait = { full: 180000, extended: 330000 };
+    const timer = setTimeout(() => controller.abort(), wait[body.scope] || 120000);
+    try { await consumeUsernameStream(value, body, controller.signal); }
+    catch (error) {
+      if (error.name === "AbortError") throw new Error("The scan reached its time limit. Try again later.");
+      throw error;
+    } finally { clearTimeout(timer); }
+  }
+
+  async function consumeUsernameStream(value, body, signal) {
     setScanning(body);
     let res;
     try {
@@ -1578,9 +1607,13 @@
         method: "POST",
         headers: { "Content-Type": "application/json", ...(await authHeaders()) },
         body: JSON.stringify(body),
+        signal,
       });
-    } catch {
-      return runUsernameFallback(value, body); // network hiccup → plain request
+    } catch (error) {
+      // The server may already have admitted/charged this request. Retrying
+      // automatically on a transport failure can spend a second allowance.
+      if (error.name === "AbortError") throw error;
+      throw new Error("Could not reach the MyRecon API. Check your connection or try later.");
     }
     if (res.status === 404) return runUsernameFallback(value, body); // older backend
     if (!res.ok || !res.body) {
@@ -1605,7 +1638,7 @@
       else if (ev.type === "error") throw new Error(ev.error || "Scan failed");
     };
 
-    while (true) {
+    try { while (true) {
       const { value: chunk, done } = await reader.read();
       if (done) break;
       buffer += decoder.decode(chunk, { stream: true });
@@ -1616,10 +1649,11 @@
       }
     }
     if (buffer) handleLine(buffer);
+    } finally { await reader.cancel().catch(() => {}); }
 
     if (!finalData) throw new Error("The scan did not complete. Please try again.");
     lastResult = { tool: "username", query: value, data: finalData };
-    renderUsername(finalData);
+    renderSafely(renderUsername, finalData);
     if (savedId) toast("Saved to your scans.");
     pushHistory("username", value);
     bindActions();
@@ -1645,7 +1679,7 @@
       if (radio) radio.checked = true;
       lastResult = { tool: "username", query: q.username || "", data: scan };
       enterToolMode();
-      renderUsername(scan);
+      renderSafely(renderUsername, scan);
       bindActions();
       refreshScopeNote(false);
       toast("Opened a saved scan. Nothing was rescanned.");
@@ -1658,7 +1692,7 @@
     setLoading("username");
     const data = await api(CFG.endpoints.username, body);
     lastResult = { tool: "username", query: value, data };
-    renderUsername(data);
+    renderSafely(renderUsername, data);
     pushHistory("username", value);
     bindActions();
   }
@@ -1757,7 +1791,13 @@
   function buildTextSummary(res) {
     const d = res.data;
     const L = [`MyRecon, ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
-    const exposure = (res.tool === "username" && !previewMeta(d)) || (res.tool === "email" && !window.MyReconEmailOutcome(d).partial)
+    if (d.partial) {
+      L.push("Search partially completed. Unavailable checks do not mean no match.");
+      [...new Set((d.errors || []).map((error) => error.message || `${error.source || "A source"} unavailable`))]
+        .forEach((message) => L.push(`- ${message}`));
+      L.push("");
+    }
+    const exposure = (res.tool === "username" && !previewMeta(d) && !d.partial) || (res.tool === "email" && !window.MyReconEmailOutcome(d).partial)
       ? computeExposure(res.tool, d) : null;
     if (exposure) {
       L.push(`Digital exposure score: ${exposure.score}/100 (${exposure.label})`, "");
@@ -1771,7 +1811,7 @@
     } else if (res.tool === "email") {
       const a = d.analysis || {}, s = d.summary || {};
       L.push(`Provider: ${a.provider || "-"} (${a.provider_type || "-"})`);
-      L.push(`Deliverable: ${a.deliverable ? "yes" : "no"} · Disposable: ${a.disposable ? "yes" : "no"}`);
+      L.push(`Deliverable: ${a.deliverable == null ? "unknown" : a.deliverable ? "yes" : "no"} · Disposable: ${a.disposable == null ? "unknown" : a.disposable ? "yes" : "no"}`);
       const outcome = window.MyReconEmailOutcome(d);
       L.push(`Breaches: ${outcome.label}${outcome.found && s.breach_count > 0 ? ` (${s.breach_count})` : ""}`);
       L.push(`Coverage: ${outcome.coverage}${outcome.partial ? " (incomplete)" : ""}`, outcome.detail);

@@ -85,6 +85,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What can I check with MyRecon?","acceptedAnswer":{"@type":"Answer","text":"MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can MyRecon confirm that a profile belongs to a person?","acceptedAnswer":{"@type":"Answer","text":"No. A matching username is only a lead. Confirm important conclusions with independent public evidence and keep uncertain links unconfirmed. MyRecon does not access private accounts or restricted content."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630},"description":"An open-source intelligence platform for username search, email and breach intelligence, password exposure checks, WHOIS, DNS and IP investigation.","founder":{"@type":"Person","name":"Aryan Walia"},"email":"aryan@bugsnaps.in"},{"@type":"WebSite","@id":"https://www.myrecon.xyz/#website","url":"https://www.myrecon.xyz/","name":"MyRecon","publisher":{"@id":"https://www.myrecon.xyz/#organization"},"inLanguage":"en","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.myrecon.xyz/#tool=username&q={search_term_string}"},"query-input":"required name=search_term_string"}}]}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=edb8af8eba">
+  <link rel="stylesheet" href="/assets/css/trust.css?v=6eccea8ecb">
 </head>
 <body class="home-page">
   <a class="skip-link" href="#tool">Skip to the tool</a>
@@ -112,9 +113,9 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow"><span class="dot"></span> Live public-source intelligence</span>
-          <h1>Investigate any <span class="hero-word" id="heroWord">digital footprint</span><br><span class="fx-grad">with MyRecon</span></h1>
-          <p class="lead">Scan a username across 500+ public platforms. Explore the first 100 as a guest, then sign in to request the full report. Email, password, domain, DNS and IP tools are here too.</p>
+          <span class="eyebrow"><span class="dot"></span> Public sources. Clear outcomes.</span>
+          <h1>Your public footprint.<br><span class="fx-grad">In focus.</span></h1>
+          <p class="lead">Explore public usernames, email exposure, domains and IPs. Start with a lookup, then inspect the evidence behind each finding.</p>
           <!-- The tool lives in the hero so it is the first thing a visitor sees.
                IDs are unchanged; app.js finds everything by id. -->
           <div class="tool hero-tool" id="tool" aria-label="OSINT tools">
@@ -138,14 +139,28 @@
               <div class="detect-hint" id="detectHint" role="status" hidden></div>
               <div class="opt-row" id="deepWrap">
                 <div class="scope-picker" role="radiogroup" aria-label="Scan size">
-                  <label class="scope-opt"><input type="radio" name="scope" value="standard"> Quick <span class="hint">100 platforms</span></label>
-                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="full" checked> Full sweep <span class="hint">500+ platforms</span></label>
-                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="extended"> Extended <span class="hint">3,000+ platforms</span></label>
+                  <label class="scope-opt"><input type="radio" name="scope" value="standard"><span class="scope-copy"><strong>Quick</strong><span class="hint">100 platforms</span></span></label>
+                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="full" checked><span class="scope-copy"><strong>Full sweep</strong><span class="hint">500+ platforms</span></span></label>
+                  <label class="scope-opt scope-full"><input type="radio" name="scope" value="extended"><span class="scope-copy"><strong>Extended</strong><span class="hint">3,000+ platforms</span></span></label>
                 </div>
                 <span class="hint scope-note" id="scopeNote"></span>
               </div>
               <div class="examples" id="examples"></div>
             </div>
+            <details class="privacy-disclosure" id="data-handling">
+              <summary>
+                <span class="privacy-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4 6v6c0 4 4 7 8 9 4-2 8-5 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
+                <span class="privacy-summary"><strong>Privacy &amp; data handling</strong><span>What is processed, stored and shared</span></span>
+                <span class="disclosure-arrow" aria-hidden="true">+</span>
+              </summary>
+              <div class="privacy-content">
+                <div class="privacy-item"><span class="privacy-number" aria-hidden="true">01</span><div><h3>Search Data</h3><p>Live public-platform checks, with Google dorking on standard scans when configured. We do not create search-query logs or sell search data.</p><p class="privacy-detail">Results may be cached in memory for 10 minutes. Signed-in username reports and browser search history are retained. IP-based rate limits, daily keyed IP hashes and hosting request logs support abuse prevention.</p></div></div>
+                <div class="privacy-item"><span class="privacy-number" aria-hidden="true">02</span><div><h3>Account Data</h3><p>Sign-in keeps your account ID, email, display name, creation time, scan allowances, plan/payment references and saved username reports.</p><p class="privacy-detail">We never sell personal data or share it for another party's marketing. Authentication, hosting and payment providers process account data. Google Analytics and advertising may process IP addresses and cookies; our analytics configuration excludes search values.</p></div></div>
+                <div class="privacy-item"><span class="privacy-number" aria-hidden="true">03</span><div><h3>API Lookups</h3><p>LeakCheck email lookups run over HTTPS, on the fly, without application caching or account database retention.</p><p class="privacy-detail">Other email sources receive the identifiers needed to answer a lookup. Each provider has its own privacy policy. Recent searches and investigations you save can remain in this browser.</p></div></div>
+                <a class="privacy-policy-link" href="/privacy.html">Read the full privacy policy <span aria-hidden="true">↗</span></a>
+              </div>
+            </details>
+            <nav class="tool-support" aria-label="Product transparency"><a href="/#benchmarks">Benchmark evidence <span aria-hidden="true">↗</span></a><a href="/#changelog">What's new <span aria-hidden="true">↗</span></a></nav>
             <p class="tool-foot"><span class="kbd">Enter</span> to run · results appear below · signed-in scans can be saved · <a href="/vs/">how we compare</a><span class="tool-exit"> · <a href="/" id="toolExit">back to overview</a></span></p>
           </div>
         </div>
@@ -359,6 +374,59 @@
       </div>
     </section>
 
+    <section class="section alt trust-section" id="benchmarks" aria-labelledby="benchmarkHeading">
+      <div class="container">
+        <div class="trust-heading">
+          <div><span class="section-kicker">01 / Daily public benchmark</span><h2 id="benchmarkHeading">Measured. Every day.</h2></div>
+          <p class="trust-intro">10 fixed usernames. 3 platforms. Real false-positive counts, with unknown checks kept visible. This controlled sample does not measure the full platform catalogue.</p>
+        </div>
+        <div class="benchmark-status"><span id="benchmarkSchedule">Scheduled every 24 hours</span><span id="benchmarkUpdated">Loading latest measurements...</span></div>
+        <div id="benchmarkContent" aria-busy="true">
+          <div class="benchmark-grid">
+            <article class="benchmark-metric">
+              <div class="metric-top"><span class="metric-index">01</span><span class="benchmark-state">False positives</span></div>
+              <div class="metric-symbol metric-word" id="benchmarkFP">Pending</div>
+              <h3>False positives in this sample</h3><p id="benchmarkFPCoverage">Measured against reference negatives with definitive outcomes. Blocked or unverified checks do not count as successful negatives.</p>
+              <div class="metric-foot">Sample false-positive rate <strong id="benchmarkFPRate">Pending</strong></div>
+            </article>
+            <article class="benchmark-metric">
+              <div class="metric-top"><span class="metric-index">02</span><span class="benchmark-state">Verification accuracy</span></div>
+              <div class="metric-symbol metric-word" id="benchmarkAccuracy">Pending</div>
+              <h3>Correct definitive outcomes</h3><p id="benchmarkCoverage">Accuracy must be read alongside coverage. Unknown predictions and unavailable reference checks are reported separately.</p>
+              <div class="metric-foot">Definitive coverage <strong id="benchmarkCoverageRate">Pending</strong></div>
+            </article>
+            <article class="benchmark-metric">
+              <div class="metric-top"><span class="metric-index">03</span><span class="benchmark-state">Execution timing</span></div>
+              <div class="metric-symbol metric-word" id="benchmarkSpeed">Pending</div>
+              <h3>Median username check</h3><p>Wall-clock time for three production platform probes per username. This sample excludes Google, enrichment and the rest of the catalogue.</p>
+              <div class="metric-foot">95th percentile <strong id="benchmarkP95">Pending</strong></div>
+            </article>
+          </div>
+          <div class="benchmark-chart-panel">
+            <div class="benchmark-chart-heading"><div><h3>Daily measurements</h3><p>Last 14 runs. Dates in UTC.</p></div><div class="benchmark-chart-tabs" role="group" aria-label="Choose benchmark graph"><button type="button" data-benchmark-chart="fp" aria-pressed="true">False positives</button><button type="button" data-benchmark-chart="accuracy" aria-pressed="false">Accuracy</button><button type="button" data-benchmark-chart="speed" aria-pressed="false">Time</button></div></div>
+            <div class="benchmark-legend"><span><i class="legend-my" aria-hidden="true"></i>MyRecon</span><span><i class="legend-base" aria-hidden="true"></i>HTTP 200 baseline</span></div>
+            <div id="benchmarkGraph" role="region" aria-label="Benchmark graph"><p class="benchmark-empty">Measurements are loading.</p></div>
+            <p class="benchmark-chart-note" id="benchmarkChartNote">The HTTP 200 baseline is a minimal status-only heuristic, not a named OSINT tool.</p>
+            <details class="benchmark-graph-data"><summary>Read graph values as a table</summary><div class="benchmark-table-wrap" id="benchmarkGraphTable"></div></details>
+          </div>
+          <div id="benchmarkError" role="status" hidden></div>
+          <details class="benchmark-comparison" id="benchmarkLatest"><summary><span>Latest run: outcomes and username controls</span><span class="disclosure-arrow" aria-hidden="true">+</span></summary><div id="benchmarkRunDetails"></div></details>
+        </div>
+        <div class="benchmark-evidence">
+          <span class="evidence-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3H5v18h14V8l-5-5Z"/><path d="M14 3v5h5M8 12h8M8 16h6"/></svg></span>
+          <div><h3>Inspect the evidence</h3><p>Every run includes UTC timestamps, code revision, public controls, reference verdicts and exclusions. The sample shares some API evidence with the engine and is not an independent accuracy audit.</p></div>
+          <a class="btn btn-ghost" href="/data/benchmarks.json">Raw Benchmark Data / Timestamps <span aria-hidden="true">↗</span></a>
+        </div>
+        <details class="benchmark-comparison"><summary><span>How this benchmark is measured</span><span class="disclosure-arrow" aria-hidden="true">+</span></summary><div class="benchmark-methodology"><p><strong>Scope:</strong> GitHub, GitLab and Hacker News. Five public usernames and five synthetic controls are checked every day. Reference labels require official API account objects or explicit absence. Unexpected or blocked API responses remain unscored.</p><p><strong>False-positive rate:</strong> FP / (FP + TN), using definitive reference negatives only. Accuracy is (TP + TN) / all definitive outcomes. Check the unknown and unscored counts before interpreting a high percentage.</p><p><strong>Comparison:</strong> The HTTP 200 baseline uses the same profile URLs and counts successful pages as matches. It does not represent Sherlock, Maigret or every conventional OSINT tool. Its requests run sequentially; MyRecon probes run in parallel and perform more validation. These timings are not an equal-configuration speed ranking.</p><p><strong>Schedule:</strong> Daily at 03:17 UTC (08:47 IST). Scheduled jobs may be delayed. The last successful timestamp and stale-data state are shown above. No customer search data is used.</p></div></details>
+      </div>
+    </section>
+    <section class="section trust-section" id="changelog" aria-labelledby="changelogHeading">
+      <div class="container changelog-layout">
+        <div class="changelog-heading"><span class="section-kicker">02 / Product updates</span><h2 id="changelogHeading">Always improving.<br>Always visible.</h2><p class="trust-intro">A public record of updates, fixes and reliability improvements. Newest first.</p><a class="changelog-source" href="/data/changelog.json">View changelog source <span aria-hidden="true">↗</span></a></div>
+        <div><div id="changelogEntries" aria-live="polite"><p>Loading updates...</p></div><noscript><p>Read the <a href="/data/changelog.json">public changelog JSON</a> for the latest updates.</p></noscript></div>
+      </div>
+    </section>
+
     <!-- FAQ -->
     <section class="section" id="faq">
       <div class="container prose">
@@ -366,13 +434,14 @@
         <div class="faq">
           <details><summary>What can I check with MyRecon?</summary><p>MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available.</p></details>
           <details><summary>Does a missing username result prove no account exists?</summary><p>No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason.</p></details>
+          <details><summary>Can MyRecon confirm that a profile belongs to a person?</summary><p>No. A matching username is only a lead. Confirm important conclusions with independent public evidence and keep uncertain links unconfirmed. MyRecon does not access private accounts or restricted content.</p></details>
           <details><summary>Can I run a username search across social media with MyRecon?</summary><p>MyRecon checks usernames against supported public profile sources across social, developer, and community platforms. Coverage varies by platform; a blocked or inconclusive check is not proof that a profile is absent.</p></details>
           <details><summary>Does an online username lookup confirm who owns an account?</summary><p>No. MyRecon’s per-platform validation helps keep false positives low, but no username search is 100% accurate or proves the same person controls multiple profiles. Treat a match as a lead and verify it with independent public evidence.</p></details>
           <details><summary>Can MyRecon find private or restricted profiles?</summary><p>Sometimes. MyRecon can find a profile and show limited details a platform makes publicly available, even when the profile is marked private. It cannot view private posts, messages, or other restricted content. Coverage varies by platform, so checks may be inconclusive.</p></details>
         </div>
       </div>
     </section>
-  <section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">What can I check with MyRecon?</summary><p style="margin-top:10px;line-height:1.65">MyRecon includes public username, email and breach, password exposure, domain registration, DNS, and IP checks. Coverage and access can vary by tool, so use the live interface and current plan page to confirm what is available.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Does a missing username result prove no account exists?</summary><p style="margin-top:10px;line-height:1.65">No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Can MyRecon confirm that a profile belongs to a person?</summary><p style="margin-top:10px;line-height:1.65">No. A matching username is only a lead. Confirm important conclusions with independent public evidence and keep uncertain links unconfirmed. MyRecon does not access private accounts or restricted content.</p></details></section></main>
+</main>
 
   <footer class="site-footer">
   <div class="site-footer__panel">
@@ -415,7 +484,10 @@
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/email-outcome.js?v=1"></script>
   <script src="/assets/js/account.js?v=3"></script>
-  <script src="/assets/js/app.js?v=7f1f90105e"></script>
+  <script src="/assets/js/partial-results.js?v=4fbe1f16f7"></script>
+  <script src="/assets/js/benchmarks.js?v=1452f084cb" defer></script>
+  <script src="/assets/js/trust.js?v=f4e2812f50" defer></script>
+  <script src="/assets/js/app.js?v=c35042530a"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
 </body>

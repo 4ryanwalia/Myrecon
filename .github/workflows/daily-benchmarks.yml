@@ -1,0 +1,56 @@
+name: Daily public benchmarks
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize with the existing generated-site publisher.
+concurrency:
+  group: breach-files
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          # Existing reviewed main-branch publisher identity. Governance rules
+          # stay unchanged; this workflow stages only the benchmark JSON.
+          ssh-key: ${{ secrets.BREACH_FILES_DEPLOY_KEY }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install benchmark dependencies
+        run: pip install requests pytest
+      - name: Check scoring and evidence rules
+        run: python -m pytest backend/tests/test_daily_benchmark.py -q
+      - name: Run ten public controls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python backend/tools/daily_benchmark.py
+      - name: Retain reproducible evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-benchmark-${{ github.run_id }}
+          path: frontend/data/benchmarks.json
+          retention-days: 90
+      - name: Publish only benchmark measurements
+        run: |
+          git add -- frontend/data/benchmarks.json
+          if git diff --cached --quiet; then exit 0; fi
+          test "$(git diff --cached --name-only)" = "frontend/data/benchmarks.json"
+          git config user.name "myrecon-bot"
+          git config user.email "bot@myrecon.xyz"
+          git commit -m "Benchmarks: daily ten-username measurements"
+          # Preserve other main-branch updates if they landed during probing.
+          git pull --rebase origin main
+          git push origin HEAD:main

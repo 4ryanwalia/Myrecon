@@ -210,7 +210,7 @@ def test_fallback_is_not_called_when_leakcheck_answered(monkeypatch):
     monkeypatch.setattr(intel, "github", lambda e: None)
     monkeypatch.setattr(
         intel, "darkweb",
-        lambda e: {"breached": False, "breaches": [], "count": 0, "records_exposed": 0,
+        lambda e: {"status": "ok", "checked": True, "breached": False, "breaches": [], "count": 0, "records_exposed": 0,
                    "risk_label": "", "risk_score": 0},
     )
     monkeypatch.setattr(intel, "breaches", lambda e: {"status": "ok", "breached": False,

@@ -76,6 +76,19 @@ import logging
 _ig_log = logging.getLogger("enrichment.instagram")
 
 
+class _PrivateDiagnostics(logging.Filter):
+    """Preserve diagnostic levels without retaining profile handles or URLs."""
+    def filter(self, record):
+        record.msg = "Instagram enrichment diagnostic (%s)"
+        record.args = (record.levelname,)
+        record.exc_info = None
+        record.exc_text = None
+        return True
+
+
+_ig_log.addFilter(_PrivateDiagnostics())
+
+
 def _validate_ig_username(username: str) -> bool:
     """Instagram usernames: 1-30 chars, alphanumeric + periods + underscores."""
     return bool(re.match(r'^[a-zA-Z0-9._]{1,30}$', username))

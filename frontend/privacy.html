@@ -137,13 +137,13 @@
               <td><strong>The identifier you look up</strong>: a username, email address, domain, IP address or name</td>
               <td>To run the lookup you asked for</td>
               <td>Our API, then on to the public sources needed to answer it</td>
-              <td>Not written to any database. Held in an in-memory cache for up to 10 minutes, then discarded</td>
+              <td>Email lookups are processed live without application caching or account database retention. Username reports are saved for signed-in users; other lookup results may be cached in memory for up to 10 minutes</td>
             </tr>
             <tr>
               <td><strong>Results of that lookup</strong></td>
               <td>To show you the answer and to make a repeated identical lookup fast</td>
-              <td>Returned to your browser; a copy sits in the same in-memory cache</td>
-              <td>Up to 10 minutes in cache. In your browser until you clear it</td>
+              <td>Returned to your browser; non-email results may also sit in the in-memory cache</td>
+              <td>Email results are not cached by the application. Other results may be cached for up to 10 minutes. Signed-in username reports remain until deleted; browser history and saved investigations remain until you clear them</td>
             </tr>
             <tr>
               <td><strong>Your IP address</strong></td>
@@ -456,7 +456,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=7f1f90105e"></script>
+  <script src="/assets/js/app.js?v=c35042530a"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=4cca2d6818" defer></script>
 </body>

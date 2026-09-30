@@ -8,18 +8,66 @@
       "destination": "/",
       "permanent": true
     },
-    { "source": "/find/roblox-profile", "destination": "/find/roblox-user", "permanent": true },
-    { "source": "/find/roblox-profile.html", "destination": "/find/roblox-user", "permanent": true },
-    { "source": "/privacy/opt-out-of-spokeo", "destination": "/privacy/opt-out-spokeo", "permanent": true },
-    { "source": "/privacy/opt-out-of-spokeo.html", "destination": "/privacy/opt-out-spokeo", "permanent": true },
-    { "source": "/privacy/opt-out-of-beenverified", "destination": "/privacy/remove-beenverified-record", "permanent": true },
-    { "source": "/privacy/opt-out-of-beenverified.html", "destination": "/privacy/remove-beenverified-record", "permanent": true },
-    { "source": "/privacy/opt-out-of-whitepages", "destination": "/privacy/delete-whitepages-info", "permanent": true },
-    { "source": "/privacy/opt-out-of-whitepages.html", "destination": "/privacy/delete-whitepages-info", "permanent": true },
-    { "source": "/privacy/remove-personal-info-from-google-audit", "destination": "/privacy/request-google-search-removal", "permanent": true },
-    { "source": "/privacy/remove-personal-info-from-google-audit.html", "destination": "/privacy/request-google-search-removal", "permanent": true },
-    { "source": "/privacy/data-broker-opt-out-checklist", "destination": "/privacy/remove-data-from-people-search-sites", "permanent": true },
-    { "source": "/privacy/data-broker-opt-out-checklist.html", "destination": "/privacy/remove-data-from-people-search-sites", "permanent": true },
+    {
+      "source": "/find/roblox-profile",
+      "destination": "/find/roblox-user",
+      "permanent": true
+    },
+    {
+      "source": "/find/roblox-profile.html",
+      "destination": "/find/roblox-user",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/opt-out-of-spokeo",
+      "destination": "/privacy/opt-out-spokeo",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/opt-out-of-spokeo.html",
+      "destination": "/privacy/opt-out-spokeo",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/opt-out-of-beenverified",
+      "destination": "/privacy/remove-beenverified-record",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/opt-out-of-beenverified.html",
+      "destination": "/privacy/remove-beenverified-record",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/opt-out-of-whitepages",
+      "destination": "/privacy/delete-whitepages-info",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/opt-out-of-whitepages.html",
+      "destination": "/privacy/delete-whitepages-info",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/remove-personal-info-from-google-audit",
+      "destination": "/privacy/request-google-search-removal",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/remove-personal-info-from-google-audit.html",
+      "destination": "/privacy/request-google-search-removal",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/data-broker-opt-out-checklist",
+      "destination": "/privacy/remove-data-from-people-search-sites",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/data-broker-opt-out-checklist.html",
+      "destination": "/privacy/remove-data-from-people-search-sites",
+      "permanent": true
+    },
     {
       "source": "/content/:path*",
       "destination": "/breaches/",
@@ -27,6 +75,15 @@
     }
   ],
   "headers": [
+    {
+      "source": "/data/benchmarks.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=60, must-revalidate"
+        }
+      ]
+    },
     {
       "source": "/data/(.*)",
       "headers": [

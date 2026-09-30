@@ -1,6 +1,19 @@
 <!doctype html>
 <html lang="en" data-theme="light">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  var analyticsPage = new URL(window.location.href);
+  var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+  gtag('config', 'G-3L8YYC6NKF', {
+    page_location: analyticsPage.origin + analyticsPage.pathname,
+    page_referrer: analyticsReferrer
+  });
+</script>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Track Public Username Changes | MyRecon</title><meta name="description" content="Track Public Username Changes. Check public sources, verify matches, and try a careful MyRecon username search.">
   <meta name="robots" content="index, follow"><meta name="theme-color" content="#f7faf7">

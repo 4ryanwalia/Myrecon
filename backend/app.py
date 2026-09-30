@@ -13,6 +13,7 @@ import functools
 import hashlib
 import json
 import logging
+import os
 import threading
 
 from flask import Flask, request, g, Response, jsonify, stream_with_context
@@ -170,7 +171,7 @@ def cached(name: str):
                 return hit
             value = fn(*args)
             # Never cache soft errors.
-            if (isinstance(value, dict) and value.get("status") != "error"
+            if (isinstance(value, dict) and value.get("status") != "error" and not value.get("partial")
                     and (name != "email" or value.get("summary", {}).get("breach_status") == "ok")):
                 _cache.set(key, value)
             return value
@@ -335,7 +336,7 @@ def _remember(uid, data):
     try:
         return history.save(uid, data)
     except Exception as exc:  # noqa: BLE001
-        log.warning("Could not save scan history: %s", exc)
+        log.warning("Could not save scan history (%s)", type(exc).__name__)
         return None
 
 
@@ -437,7 +438,6 @@ def _register_routes(app: Flask) -> None:
 
     cached_username = cached("username")(search_username)
     cached_fullname = cached("fullname")(search_fullname)
-    cached_email = cached("email")(scan_email)
     cached_image = cached("image")(scan_image)
     cached_domain = cached("domain")(scan_domain)
     cached_dns = cached("dns")(scan_dns)
@@ -459,6 +459,8 @@ def _register_routes(app: Flask) -> None:
     def health():
         return responses.ok({
             "service": config.public_config(),
+            # Public source revision lets release checks verify the running API.
+            "revision": os.environ.get("RENDER_GIT_COMMIT"),
             # How this caller is identified for rate limiting. It echoes only
             # the caller's own address back to them, which they already know,
             # and the hop count as a bare integer, enough to confirm after a
@@ -493,7 +495,7 @@ def _register_routes(app: Flask) -> None:
                 except Exception:
                     plans.refund_full_scan(uid, charged)
                     raise
-            if config.CACHE_ENABLED:
+            if config.CACHE_ENABLED and not data.get("partial"):
                 _cache.set(key, data)
             shown = _guest_full_preview(data) if uid is None else data
             return responses.ok({**shown, "history_id": _remember(uid, data)})
@@ -549,7 +551,7 @@ def _register_routes(app: Flask) -> None:
                     if event.get("type") == "complete":
                         data = event.get("data")
                         if (config.CACHE_ENABLED and isinstance(data, dict)
-                                and data.get("status") != "error"):
+                                and data.get("status") != "error" and not data.get("partial")):
                             _cache.set(key, data)
                         event = {**event, "history_id": _remember(uid, data)}
                     if guest_full:
@@ -612,7 +614,7 @@ def _register_routes(app: Flask) -> None:
                     result = investigate(query, deep=deep, emit=q.put)
                     q.put({"type": "complete", "data": result})
                 except Exception as exc:  # noqa: BLE001 - surfaced to client
-                    q.put({"type": "error", "error": str(exc)})
+                    q.put({"type": "error", "error": "The investigation could not complete. Please try again."})
                 finally:
                     q.put(DONE)
 
@@ -643,7 +645,9 @@ def _register_routes(app: Flask) -> None:
             return ("", 204)
         body = _json_body()
         email = validation.email(body.get("email", ""))
-        return responses.ok(cached_email(email))
+        # Email/breach responses are processed live and never retained in the
+        # application cache or the account scan database.
+        return responses.ok(scan_email(email))
 
     @app.route("/api/domain", methods=["POST", "OPTIONS"])
     def api_domain():
@@ -977,7 +981,7 @@ def _register_errors(app: Flask) -> None:
 
     @app.errorhandler(Exception)
     def on_unexpected(err):
-        log.exception("Unhandled error: %s", err)
+        log.error("Unhandled API error (%s)", type(err).__name__)
         return responses.error(
             "An unexpected error occurred. Please try again.",
             status=500, code="server_error",
