@@ -527,8 +527,62 @@ body.tool-mode .hero h1,
 body.tool-mode .hero .lead { display: none !important; }
 body.tool-mode .hero { padding-top: 22px; padding-bottom: 6px; min-height: 0; }
 body.tool-mode .hero-grid,
-body.tool-mode.home-page .hero-grid { grid-template-columns: minmax(0, 1fr) !important; max-width: 980px; margin-inline: auto; }
-body.tool-mode .results-section { max-width: 980px; }
+body.tool-mode.home-page .hero-grid { grid-template-columns: minmax(0, 1fr) !important; max-width: 1600px; margin-inline: auto; }
+body.tool-mode .results-section { max-width: 1600px; }
+body.home-page .hero-grid { max-width: 1600px; }
+body.home-page .hero-grid,
+body.tool-mode .results-section { padding-inline: clamp(20px, 3vw, 48px); }
+body.tool-mode .hero-copy:has(+ .hero-tool) { display: none; }
+body.home-page .hero-tool { width: 100%; max-width: none; margin: 0; }
+/* Keep the overview and tool on the same page grid. */
+@media screen {
+  body.home-page main > section.container,
+  body.home-page main > section > .container,
+  body.home-page #features > .container,
+  body.home-page #faq > .container,
+  body.home-page .nav-inner {
+    max-width: 1600px; padding-inline: clamp(20px, 3vw, 48px);
+  }
+  body.home-page #history-section,
+  body.home-page #saved-section { margin-top: 32px; padding-bottom: 32px; }
+}
+@media screen and (min-width: 1000px) {
+  body.home-page .hero-grid { grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr); column-gap: 24px; }
+  body.home-page .hero .orbit { justify-self: center; }
+  body.home-page .hero-tool {
+    display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+    gap: 12px 24px; align-items: start;
+  }
+  body.home-page .hero-tool .tool-tabs {
+    grid-column: 1; margin: 0; width: 100%; display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  body.home-page .hero-tool .tab { justify-content: center; padding-inline: 5px; }
+  body.home-page .hero-tool #toolPanel { grid-column: 1; grid-row: 2 / span 3; height: 100%; }
+  body.home-page .hero-tool .deep-search-entry,
+  body.home-page .hero-tool .privacy-disclosure,
+  body.home-page .hero-tool .tool-support { grid-column: 2; margin: 0; }
+  body.home-page .hero-tool .deep-search-entry { grid-row: 2; border-radius: 4px; }
+  body.home-page .hero-tool .privacy-disclosure { grid-row: 3; }
+  body.home-page .hero-tool .tool-support { grid-row: 4; align-self: end; }
+  body.home-page .hero-tool .tool-foot { grid-column: 1 / -1; margin: 0; }
+  body.tool-mode .email-overview {
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px;
+  }
+  body.tool-mode .email-overview-identity { border-left: 1px solid var(--border); padding-left: 28px; }
+  body.tool-mode .email-overview-identity > .section-label { margin-top: 0; }
+  body.tool-mode .results:has(> .email-overview) {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; align-items: start;
+  }
+  body.tool-mode .results:has(> .email-overview) > * { grid-column: 1 / -1; min-width: 0; }
+  body.tool-mode .results:has(> .email-overview) > .email-evidence-timeline { grid-column: 1; }
+  body.tool-mode .results:has(> .email-overview) > .email-breaches { grid-column: 2; }
+}
+.email-overview-evidence, .email-overview-identity { min-width: 0; overflow-wrap: anywhere; }
+.email-overview-evidence > .hint, .email-overview-identity > .hint { line-height: 1.6; margin: 12px 0; }
+@media screen and (max-width: 999px) {
+  .email-overview-identity { border-top: 1px solid var(--border); margin-top: 20px; padding-top: 4px; }
+}
 .tool-exit { display: none; }
 body.tool-mode .tool-exit { display: inline; }
 
