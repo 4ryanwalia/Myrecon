@@ -1,10 +1,8 @@
 /* MyRecon, pricing page: account status and Extended pack checkout.
  *
- * The server does everything that matters. It creates the Razorpay order
- * (with the buyer's account id in the order notes), checks the payment
- * signature, and applies the pack. This page only opens Checkout for an order
- * the server made and reports what the server said back, so nothing a
- * visitor edits in the browser can grant a pack.
+ * The server creates Razorpay orders or Buy Me a Coffee activation codes,
+ * verifies provider signatures and applies the pack. Browser actions alone
+ * cannot grant paid access.
  */
 (function () {
   "use strict";
@@ -14,6 +12,59 @@
   const $ = (s) => document.querySelector(s);
   const note = (msg) => { const n = $("#payNote"); if (n) n.textContent = msg || ""; };
   let plansInfo = null;
+  let internationalUid = null;
+
+  function closeInternational() {
+    internationalUid = null;
+    const box = $("#internationalCheckout");
+    if (box) box.hidden = true;
+    const code = $("#activationCode");
+    if (code) code.value = "";
+    $("#openInternational")?.removeAttribute("href");
+  }
+
+  function renderPayments() {
+    const b = $("[data-buy-international]");
+    if (!b) return;
+    b.disabled = !plansInfo?.international_payments?.enabled;
+    const status = $("#internationalStatus");
+    if (status) status.textContent = b.disabled
+      ? "International checkout opens soon."
+      : "Same pack, paid in USD through Buy Me a Coffee.";
+  }
+
+  async function buyInternational() {
+    if (!A?.enabled || !plansInfo?.international_payments?.enabled) {
+      note("International checkout is not available yet.");
+      return;
+    }
+    const button = $("[data-buy-international]");
+    button.disabled = true;
+    closeInternational();
+    try {
+      if (!A.state().user) await A.signIn();
+      const uid = A.state().user?.uid;
+      if (!uid) return;
+      note("Preparing international checkout…");
+      const result = await post("/api/billing/buymeacoffee/checkout", { plan: "extended" });
+      if (A.state().user?.uid !== uid) return;
+      const url = new URL(result.url);
+      if (url.protocol !== "https:" || !["buymeacoffee.com", "www.buymeacoffee.com"].includes(url.hostname)) {
+        throw new Error("The checkout link is unavailable. Please try later.");
+      }
+      internationalUid = uid;
+      $("#activationCode").value = result.activation_code;
+      $("#openInternational").href = url.href;
+      $("#internationalCheckout").hidden = false;
+      $("#internationalCheckout").scrollIntoView({ block: "start" });
+      $("#activationCode").focus({ preventScroll: true });
+      note("Copy your activation code, then paste it into the required question at checkout.");
+    } catch (e) {
+      note(A.friendly(e));
+    } finally {
+      renderPayments();
+    }
+  }
 
   async function post(path, body) {
     const res = await fetch(CFG.apiBase + path, {
@@ -171,6 +222,31 @@
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
+    $("[data-buy-international]")?.addEventListener("click", buyInternational);
+    $("#copyActivation")?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText($("#activationCode").value);
+        note("Activation code copied. Paste it into the required question on Buy Me a Coffee.");
+      } catch {
+        $("#activationCode").focus();
+        $("#activationCode").select();
+        note("Select and copy the activation code, then paste it into the required checkout question.");
+      }
+    });
+    $("#openInternational")?.addEventListener("click", (e) => {
+      if (!internationalUid || A.state().user?.uid !== internationalUid) {
+        e.preventDefault();
+        closeInternational();
+        note("Sign in and prepare international checkout again.");
+      }
+    });
+    $("#refreshInternational")?.addEventListener("click", async () => {
+      try {
+        await A.refreshAccount();
+        renderAccount(A.state());
+        note("Account refreshed. If your purchase is still missing, wait a minute and check again. Contact aryan@bugsnaps.in with your receipt if it has not appeared within an hour.");
+      } catch (e) { note(A.friendly(e)); }
+    });
     document.querySelectorAll("[data-buy]").forEach((b) =>
       b.addEventListener("click", () => buy(b.dataset.buy)));
     document.querySelectorAll("[data-signin]").forEach((b) =>
@@ -186,7 +262,7 @@
     const onState = (st) => {
       renderAccount(st);
       const uid = st && st.user ? st.user.uid : null;
-      if (uid !== lastUid) { lastUid = uid; loadScans(); }
+      if (uid !== lastUid) { closeInternational(); lastUid = uid; loadScans(); }
     };
     A.onChange(onState);
     onState(A.state());
@@ -206,7 +282,7 @@
     try {
       const res = await fetch(CFG.apiBase + "/api/plans");
       plansInfo = (await res.json()) || null;
-      if (plansInfo && !plansInfo.payments_enabled) note("Extended packs open soon. Free accounts get 5 standard scans a day.");
-    } catch {}
+      if (plansInfo && !plansInfo.payments_enabled && !plansInfo.international_payments?.enabled) note("Extended packs open soon. Free accounts get 5 standard scans a day.");
+    } catch {} finally { renderPayments(); }
   });
 })();

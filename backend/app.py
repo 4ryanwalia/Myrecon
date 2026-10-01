@@ -775,7 +775,7 @@ def _register_routes(app: Flask) -> None:
     @app.route("/api/plans")
     def api_plans():
         """Public: tiers, limits, and whether sign-in and payments are live."""
-        from core import plans, razorpay, store
+        from core import buymeacoffee, plans, razorpay, store
         return responses.ok({
             # Only ever true on a local development server; see config.py.
             "dev_test_account": config.DEV_TEST_ACCOUNT,
@@ -789,6 +789,9 @@ def _register_routes(app: Flask) -> None:
             } if config.FIREBASE_WEB_API_KEY and store.persistent() else None,
             "accounts_enabled": store.persistent(),
             "payments_enabled": razorpay.enabled() and store.persistent(),
+            "international_payments": {"enabled": buymeacoffee.enabled(),
+                                       "provider": "buymeacoffee", "amount": 399,
+                                       "currency": "USD", "plan": "extended"},
             "razorpay_key_id": config.RAZORPAY_KEY_ID if razorpay.enabled() else None,
             "limits": {
                 "standard_platforms": plans.STANDARD_PLATFORMS,
@@ -880,6 +883,40 @@ def _register_routes(app: Flask) -> None:
             "currency": order["currency"], "key_id": config.RAZORPAY_KEY_ID,
             "plan": plan, "email": user.get("email", ""), "name": user.get("name", ""),
         })
+
+    @app.route("/api/billing/buymeacoffee/checkout", methods=["POST", "OPTIONS"])
+    def api_bmc_checkout():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import buymeacoffee
+        user = _require_user()
+        if not buymeacoffee.enabled():
+            return responses.error("International payments are not open yet.", status=503,
+                                   code="payments_unavailable")
+        if _json_body().get("plan") != "extended":
+            raise validation.ValidationError("Unknown plan.")
+        return responses.ok(buymeacoffee.checkout(user["sub"]))
+
+    @app.route("/api/billing/buymeacoffee/webhook", methods=["POST"])
+    def api_bmc_webhook():
+        from core import buymeacoffee
+        if not buymeacoffee.enabled():
+            return responses.error("International payments are not open yet.", status=503,
+                                   code="payments_unavailable")
+        if request.content_length and request.content_length > config.MAX_BODY_BYTES:
+            raise PayloadTooLarge()
+        raw = request.get_data(cache=True)
+        if not buymeacoffee.signature_ok(raw, request.headers.get("x-signature-sha256", "")):
+            return responses.error("Bad signature.", status=400, code="bad_signature")
+        try:
+            event = json.loads(raw)
+        except ValueError:
+            return responses.error("Bad payload.", status=400, code="bad_payload")
+        applied = buymeacoffee.settle(event)
+        if not applied and isinstance(event, dict) and event.get("live_mode") is True:
+            log.warning("Buy Me a Coffee event was not applied: type=%s id=%s",
+                        event.get("type"), event.get("event_id"))
+        return responses.ok({"received": True, "applied": applied})
 
     def _grant_from_order(order_id: str, expect_uid=None) -> bool:
         """

@@ -155,6 +155,12 @@ RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
 RAZORPAY_WEBHOOK_SECRET = os.environ.get("RAZORPAY_WEBHOOK_SECRET", "")
 
+# International pack checkout. The Shop item must cost USD 3.99 and ask for
+# the activation code shown after MyRecon sign-in. Secrets stay server-side.
+BUYMEACOFFEE_SHOP_URL = os.environ.get("BUYMEACOFFEE_SHOP_URL", "").strip()
+BUYMEACOFFEE_ITEM_ID = os.environ.get("BUYMEACOFFEE_ITEM_ID", "").strip()
+BUYMEACOFFEE_WEBHOOK_SECRET = os.environ.get("BUYMEACOFFEE_WEBHOOK_SECRET", "")
+
 # Local testing only: treat requests with no Authorization header as one fixed
 # signed-in test user, with accounts held in memory, so checkout and the full
 # scan can be exercised before Firebase sign-in is configured. Forced off in

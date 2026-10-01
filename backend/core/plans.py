@@ -232,8 +232,8 @@ def refund_full_scan(uid: str, source: str) -> None:
 
 def grant_pass(uid: str, plan_id: str, payment_ref: str) -> bool:
     """
-    Apply a paid pass exactly once per payment reference (the Razorpay order
-    id). Both the browser's verify call and Razorpay's webhook land here, in
+    Apply a paid pass exactly once per payment reference (a Razorpay order
+    id or namespaced Buy Me a Coffee purchase id). Payment confirmations land here, in
     either order. The idempotency marker and entitlement update share one
     user-record transaction, so a failed database write cannot leave a payment
     marked as processed before its scans were granted. Returns True when the
