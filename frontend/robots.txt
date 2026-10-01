@@ -1,15 +1,25 @@
+# Public pages may be crawled for search, user-requested retrieval and AI training.
+# Specific groups do not inherit wildcard exclusions. All these agents share
+# the rules below. Google-Extended controls Gemini usage, not a separate
+# HTTP crawler; Googlebot handles Google Search crawling.
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: ClaudeBot
+User-agent: Googlebot
+User-agent: Google-Extended
 User-agent: *
-Allow: /
-
 # The API the front end calls. Nothing here renders, and every response is
 # JSON, so there is nothing for a crawler to index.
 Disallow: /api/
-
 # Editorial fragments that get inlined into the generated breach articles.
 # They have no <head>, no heading and no navigation, and their text already
 # appears in full on the article that includes them. These also 301 to
 # /breaches/ at the edge; the Disallow saves the crawl entirely.
 Disallow: /content/
+Allow: /
 
 # NOTE: deliberately no "Disallow: /*?" here. The stylesheets and scripts are
 # cache-busted with ?v=N, so a blanket query-string rule would stop Googlebot
