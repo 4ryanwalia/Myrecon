@@ -262,7 +262,12 @@
     const onState = (st) => {
       renderAccount(st);
       const uid = st && st.user ? st.user.uid : null;
-      if (uid !== lastUid) { closeInternational(); lastUid = uid; loadScans(); }
+      if (uid !== lastUid) {
+        // Google sign-in can resolve before the account notification arrives.
+        if (internationalUid !== uid) closeInternational();
+        lastUid = uid;
+        loadScans();
+      }
     };
     A.onChange(onState);
     onState(A.state());

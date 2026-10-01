@@ -13,10 +13,11 @@ const server = http.createServer((req, res) => {
   if (pathname === '/assets/js/account.js') {
     res.setHeader('Content-Type', 'application/javascript');
     return res.end(`let st={user:null,account:null}; let listeners=[];
+      window.emitFixtureAccountState=()=>listeners.forEach(fn=>fn(st));
       window.MyReconAccount={enabled:true,ready:Promise.resolve(),state:()=>st,
       onChange:fn=>listeners.push(fn),avatarHtml:()=>'',wireAvatar:()=>{},friendly:e=>e.message,
       authHeaders:async()=>({Authorization:'Bearer fixture-token'}),
-      signIn:async()=>{st={user:{uid:'fixture',email:'a@example.com'},account:{standard_scans_left:5}};listeners.forEach(fn=>fn(st));},
+      signIn:async()=>{st={user:{uid:'fixture',email:'a@example.com'},account:{standard_scans_left:5}};},
       signOut:async()=>{st={user:null,account:null};listeners.forEach(fn=>fn(st));},
       refreshAccount:async()=>{st.account={standard_scans_unlimited:true,extended_pack_scans_left:10,deep_search_enabled:true};listeners.forEach(fn=>fn(st));}};`);
   }
@@ -62,6 +63,11 @@ const server = http.createServer((req, res) => {
       await page.waitForFunction(() => !document.querySelector('[data-buy-international]').disabled);
       await button.click();
       await page.locator('#activationCode').waitFor({state:'visible'});
+      // Google sign-in resolves before its account refresh notifies subscribers.
+      // Deliver that same-UID notification after checkout to reproduce the race.
+      await page.evaluate(() => window.emitFixtureAccountState());
+      assert.equal(await page.locator('#internationalCheckout').isVisible(), true,
+        `Late sign-in notification must preserve checkout at width ${width}`);
       assert.equal(await page.locator('#activationCode').inputValue(), 'MR-'+'a'.repeat(32));
       assert.equal(await page.locator('#openInternational').getAttribute('href'), 'https://buymeacoffee.com/myrecon/e/12345');
       assert.match(await page.locator('#payNote').innerText(), /paste/);
@@ -72,6 +78,7 @@ const server = http.createServer((req, res) => {
       await page.locator('#signOutBtn').click();
       assert.equal(await page.locator('#internationalCheckout').isVisible(), false);
       assert.equal(await page.locator('#activationCode').inputValue(), '');
+      assert.equal(await page.locator('#openInternational').getAttribute('href'), null);
       assert.deepEqual(errors, []);
       await page.close();
     }
@@ -83,6 +90,6 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator('[data-buy-international]').isDisabled(), true);
     assert.equal(requests, 2);
     await page.close();
-    console.log('International checkout: desktop/mobile sign-in, activation, refresh, sign-out and disabled configuration passed.');
+    console.log('International checkout: desktop/mobile delayed sign-in notification, activation, refresh, sign-out and disabled configuration passed.');
   } finally { await browser.close(); server.close(); }
 })().catch(e => {console.error(e);server.close();process.exitCode=1;});
