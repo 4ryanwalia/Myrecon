@@ -215,7 +215,9 @@ function renderSections(record) {
   return record.sections.map((section, index) => `
     <section class="seo-section" id="section-${index + 1}">
       <h2>${esc(section.heading)}</h2>
-      <p>${esc(section.body)}</p>
+      <p>${esc(section.body)}</p>${section.table ? `
+      <div class="editorial-table-wrap"><table><caption>${esc(section.table.caption)}</caption><thead><tr>${section.table.headers.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${section.table.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}${section.download ? `
+      <p><a href="${esc(section.download.href)}" download>${esc(section.download.label)}</a></p>` : ''}
     </section>`).join("");
 }
 function renderSpecific(record) {
@@ -300,7 +302,7 @@ ${jsonLd(record, route)}
       ${record.evidence ? `<figure class="seo-guide-figure"><img src="${esc(record.evidence.image)}" alt="${esc(record.evidence.alt)}" width="1280" height="800" loading="lazy" style="max-width:100%;height:auto"><figcaption>${esc(record.evidence.caption)} <a href="${esc(record.evidence.source)}" target="_blank" rel="noopener noreferrer">Original source</a>.</figcaption></figure>` : ''}
       ${record.slug === 'protect-researcher-notes' || record.slug === 'discord-user' ? '' : `<section class="seo-cta"><h2>Check a public username</h2><p>Guest previews and account limits apply. See <a href="/pricing">current pricing</a>. Verify each candidate at its source.</p><username-search-input></username-search-input></section>`}
       <section class="seo-faq"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details><summary>${esc(item.question)}</summary><p>${esc(item.answer)}</p></details>`).join("")}</section>
-      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a></nav>
+      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a><a href="/about.html#editorial-method">Editorial method and corrections</a></nav>
       ${sourceList.length ? `<section class="seo-section seo-sources"><h2>Sources and method</h2><p>${esc(record.method)}</p><ul>${sourceList.map((source) => `<li><a href="${esc(source)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a></li>`).join("")}</ul></section>` : ""}
     </article>
   </main>

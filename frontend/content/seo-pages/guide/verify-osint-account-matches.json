@@ -22,7 +22,41 @@
     },
     {
       "heading": "Use a decision log rather than a numerical confidence score",
-      "body": "Make columns for claim, candidate URL, observation, supporting source, conflicting evidence and conclusion. Useful conclusions are candidate only, public association corroborated, conflicting evidence and unable to verify. Do not turn a percentage generated without a validated model into evidence. When details conflict, write the conflict directly: the official project links to a different handle, or the candidate advertises an unrelated organization. Absence of a backlink is not by itself a disproof."
+      "body": "Make columns for claim, candidate URL, observation, supporting source, conflicting evidence and conclusion. Useful conclusions are candidate only, public association corroborated, conflicting evidence and unable to verify. Do not turn a percentage generated without a validated model into evidence. When details conflict, write the conflict directly: the official project links to a different handle, or the candidate advertises an unrelated organization. Absence of a backlink is not by itself a disproof.",
+      "download": {
+        "href": "/assets/downloads/account-match-decision-log.csv",
+        "label": "Download the blank register with one illustrative example (CSV)"
+      },
+      "table": {
+        "caption": "Decision rules for a reviewer",
+        "headers": [
+          "Evidence available",
+          "Conclusion",
+          "Follow-up"
+        ],
+        "rows": [
+          [
+            "Matching handle or copied avatar only",
+            "Candidate only",
+            "Look for an independent official link"
+          ],
+          [
+            "Official project page links to exact profile",
+            "Public association corroborated",
+            "Record source URL, date and current-control limit"
+          ],
+          [
+            "Official link points to a different profile",
+            "Conflicting evidence",
+            "Preserve both sources; avoid merging identities"
+          ],
+          [
+            "Login wall, challenge or timeout",
+            "Unable to verify",
+            "Record access context; do not infer absence"
+          ]
+        ]
+      }
     },
     {
       "heading": "Worked example: a reused handle",

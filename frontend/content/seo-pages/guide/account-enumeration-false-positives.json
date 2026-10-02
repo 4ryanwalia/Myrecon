@@ -25,17 +25,57 @@
       "body": "Illustrative case: /user/known-handle and /user/verified-missing-handle both return status 200 and the same generic sign-in screen. A detector that checks only HTTP status labels both found. Your evidence supports unknown under that access context because neither response contains profile-specific information. If the official service displays an explicit missing-user message for the negative control, that may support not found. The distinction is the content observed, not the successful network request."
     },
     {
+      "heading": "Observed case: a successful GitLab request with no matching user",
+      "body": "The recorded October 2, 2026 regression run checked torvalds on GitLab. The official user-search API returned HTTP 200, while the recorded reference classified the exact handle as not found. The optional HTTP-200-only detector labeled it found. This is one observed false positive caused by treating request success as account evidence. The API result is about that GitLab handle at that time; it says nothing about the person associated with the same handle on GitHub. MyRecon and the reference share some API evidence, so their agreement is not an independent accuracy audit. The frozen raw run below includes source URLs, observation timestamps, versions and all 30 checks.",
+      "table": {
+        "caption": "Historical run completed 2026-10-02 09:54:59 UTC: 10 handles, three platforms",
+        "headers": [
+          "Detector",
+          "False positives",
+          "Verified negatives scored",
+          "Unknown checks",
+          "Interpretation"
+        ],
+        "rows": [
+          [
+            "HTTP 200 baseline",
+            "1",
+            "6",
+            "16",
+            "One false positive out of six scored negatives; 13 more negatives unavailable"
+          ],
+          [
+            "MyRecon",
+            "0",
+            "19",
+            "0",
+            "Agreement within this small sample; reference shares API evidence"
+          ]
+        ]
+      },
+      "download": {
+        "href": "/assets/data/benchmark-observation-2026-10-02.json",
+        "label": "Download the frozen October 2 raw run and methodology (JSON)"
+      }
+    },
+    {
       "heading": "Read benchmark evidence with its scope",
       "body": "MyRecon links recorded comparison evidence from the homepage. The published case is useful for inspecting result definitions and source review; a single handle is not an estimate of overall precision, recall or success rate across the catalogue. Provider failures and unsupported services should remain visible. A large platform count measures attempted scope, not confirmed accounts or reliable identity resolution."
     },
     {
       "heading": "Report a suspected detector problem",
       "body": "Record the platform, candidate URL, result status, time and the relevant public response. Redact your private identifiers and session information. Send a minimal report through the site contact channel. Recheck the original page before acting on the candidate; do not repeatedly hammer a blocked service. An unavailable check should remain unavailable until there is new evidence."
+    },
+    {
+      "heading": "Reproduce the reasoning before trusting the label",
+      "body": "Open the reference source URL in the frozen record and check the exact username field in any returned user objects. An empty array can be a successful user-search response without a matching account. Compare that observation with the detector label, then record found, not found or unknown according to the evidence. A later response may differ from the dated run. If the endpoint now blocks you, retain unknown rather than claiming the historical result was reproduced. The same reasoning applies to HTML login shells, but this API observation does not demonstrate every platform uses the same failure mode."
     }
   ],
   "sources": [
     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200",
-    "/#benchmarks"
+    "/#benchmarks",
+    "/assets/data/benchmark-observation-2026-10-02.json",
+    "https://docs.gitlab.com/api/users/#list-users"
   ],
   "reviewed_at": "2026-10-03",
   "modified_at": "2026-10-03",

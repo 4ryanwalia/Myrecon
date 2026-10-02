@@ -6,7 +6,7 @@ const { chromium } = require('playwright');
 const root = path.resolve(__dirname, '..');
 const output = path.resolve(root, '../output/editorial');
 fs.mkdirSync(output, { recursive: true });
-const routes = ['/guides/protect-researcher-notes', '/guides/brand-impersonation-monitoring', '/find/github-profile', '/find/instagram-account', '/find/discord-user', '/vs/sherlock', '/privacy/', '/find/', '/guides/', '/vs/'];
+const routes = ['/guides/protect-researcher-notes', '/guides/public-profile-evidence-logging', '/guides/verify-osint-account-matches', '/guides/account-enumeration-false-positives', '/about.html', '/guides/brand-impersonation-monitoring', '/find/github-profile', '/find/instagram-account', '/find/discord-user', '/vs/sherlock', '/privacy/', '/find/', '/guides/', '/vs/'];
 const server = http.createServer((req, res) => {
   const route = new URL(req.url, 'http://localhost').pathname;
   let file = path.join(root, route.slice(1));

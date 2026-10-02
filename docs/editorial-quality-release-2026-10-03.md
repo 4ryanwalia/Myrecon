@@ -35,3 +35,31 @@ sitemap and internal page-link checks; ten representative editorial routes at
 AdSense approval is determined by Google. This release does not certify approval,
 traffic authenticity, completed indexing, or the exact cause of an earlier review.
 Policy reference: https://support.google.com/adsense/answer/10015918?hl=en
+
+## Follow-up: discovery and reproducible evidence
+
+The exact production sitemap passed Google's Search Console live inspection on
+October 3: crawl allowed Yes, page fetch Successful. The separate Sitemaps report
+still showed Couldn't fetch and zero discovered pages. No manual actions were
+reported. A successful live inspection does not establish sitemap processing or
+indexing; no server-side block was found that would justify changing the sitemap
+address merely to reset the report.
+
+Navigation auditing found two sitemap pages with no reachable incoming links:
+the Standard/Extended explainer and the original Have I Been Pwned comparison.
+The comparison hub now links both. All 179 sitemap pages can be reached by
+following links from the homepage.
+
+Four guides now include review tables, three include downloadable local CSV
+worksheets, and the false-positive guide explains an observed GitLab HTTP-200
+false positive from the October 2 regression run. A frozen JSON snapshot retains
+the method, source URLs, dates and version evidence. It is a historical example,
+not an independent accuracy audit or a current account-status claim.
+
+Further builds exposed a notice duplication bug: the article enhancer removed
+old section notices but did not remove paragraph notices. It now removes either
+form before appending one end-of-content notice. Existing duplicated paragraphs
+are cleaned from original articles. Checks prevent a recurrence.
+
+Validation: 46 Node tests and 14 editorial routes at 390px and 1280px. This is
+evidence of implemented quality and discovery improvements, not an approval score.

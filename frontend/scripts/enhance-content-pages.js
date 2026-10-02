@@ -8,9 +8,10 @@ for (const dir of ['find', 'guides', 'privacy', 'vs']) {
     let html = fs.readFileSync(file, 'utf8');
     html = html.replace(/<aside\b[^>]*data-content-app-promo[^>]*>[\s\S]*?<\/aside>/gi, '');
     html = html.replace(/<section\b[^>]*data-content-app-context[^>]*>[\s\S]*?<\/section>/gi, '');
+    html = html.replace(/\s*<p\b[^>]*data-content-app-context[^>]*>[\s\S]*?<\/p>/gi, '');
     html = html.replace(/<script\b[^>]*src="[^"]*content-app-promo\.js[^"]*"[^>]*><\/script>/gi, '');
     const notice = '<p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>';
-    html = html.replace(/<\/main>/i, `${notice}\n</main>`);
+    html = html.replace(/\s*<\/main>/i, `\n${notice}\n</main>`);
     fs.writeFileSync(file, html.replace(/[ \t]+$/gm, ''));
     count++;
   }

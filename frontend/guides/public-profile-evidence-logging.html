@@ -57,6 +57,7 @@
     <section class="seo-section" id="section-1">
       <h2>Use a small evidence register</h2>
       <p>Assign an observation ID and record the exact source URL, final destination after redirects, timestamp with timezone, page type and research question. Write the access context: signed out, an authorized account or unavailable. A page that requires login may present different information to different viewers. Keep a field for result status and a separate field for interpretation so later reasoning does not overwrite what was actually visible.</p>
+      <p><a href="/assets/downloads/public-evidence-register.csv" download>Download the blank register with one illustrative example (CSV)</a></p>
     </section>
     <section class="seo-section" id="section-2">
       <h2>Capture only the relevant context</h2>
@@ -69,6 +70,7 @@
     <section class="seo-section" id="section-4">
       <h2>Worked log entry</h2>
       <p>Illustrative entry: E-003; URL github.com/example-studio; observed 2026-10-03 14:00 IST; signed-out profile; biography links to the project website; screenshot E-003.png in restricted storage; interpretation public project association, current controller not verified. Example-studio is a placeholder, not a tested account. If the URL later redirects, create E-004 with the new observation and preserve E-003 as historical context.</p>
+      <div class="editorial-table-wrap"><table><caption>Keep the observation separate from its interpretation</caption><thead><tr><th scope="col">Field</th><th scope="col">Illustrative value</th><th scope="col">What it does not prove</th></tr></thead><tbody><tr><td>Access context</td><td>Signed out, desktop browser</td><td>What a signed-in viewer could see</td></tr><tr><td>Observation</td><td>Biography links to a project website</td><td>Who currently controls the account</td></tr><tr><td>Interpretation</td><td>Public association, pending corroboration</td><td>Legal identity or current employment</td></tr><tr><td>Integrity</td><td>Hash of the retained original screenshot</td><td>Authenticity of the underlying page or timestamp</td></tr></tbody></table></div>
     </section>
     <section class="seo-section" id="section-5">
       <h2>Handle negative and unavailable checks differently</h2>
@@ -81,10 +83,10 @@
 
       <section class="seo-cta"><h2>Check a public username</h2><p>Guest previews and account limits apply. See <a href="/pricing">current pricing</a>. Verify each candidate at its source.</p><username-search-input></username-search-input></section>
       <section class="seo-faq"><h2>Frequently asked questions</h2><details><summary>Does a file hash prove a screenshot is authentic?</summary><p>No. It records byte integrity. Provenance, timing and truthful interpretation require other evidence.</p></details><details><summary>Should I retain whole profiles?</summary><p>Only if necessary for the authorized purpose. Usually a focused observation with source context is enough.</p></details><details><summary>How should a timeout appear in my log?</summary><p>As unable to verify, with the URL, timestamp and observed failure. Keep it separate from a source-confirmed missing page.</p></details></section>
-      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a></nav>
+      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a><a href="/about.html#editorial-method">Editorial method and corrections</a></nav>
       <section class="seo-section seo-sources"><h2>Sources and method</h2><p>Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested.</p><ul><li><a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash" target="_blank" rel="noopener noreferrer">https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash</a></li><li><a href="/guides/protect-researcher-notes" target="_blank" rel="noopener noreferrer">/guides/protect-researcher-notes</a></li></ul></section>
     </article>
-  <p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>
+<p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>
 </main>
   <footer class="site-footer">
   <div class="site-footer__panel">

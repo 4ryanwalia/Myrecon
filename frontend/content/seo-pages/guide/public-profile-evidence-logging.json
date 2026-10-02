@@ -10,7 +10,11 @@
   "sections": [
     {
       "heading": "Use a small evidence register",
-      "body": "Assign an observation ID and record the exact source URL, final destination after redirects, timestamp with timezone, page type and research question. Write the access context: signed out, an authorized account or unavailable. A page that requires login may present different information to different viewers. Keep a field for result status and a separate field for interpretation so later reasoning does not overwrite what was actually visible."
+      "body": "Assign an observation ID and record the exact source URL, final destination after redirects, timestamp with timezone, page type and research question. Write the access context: signed out, an authorized account or unavailable. A page that requires login may present different information to different viewers. Keep a field for result status and a separate field for interpretation so later reasoning does not overwrite what was actually visible.",
+      "download": {
+        "href": "/assets/downloads/public-evidence-register.csv",
+        "label": "Download the blank register with one illustrative example (CSV)"
+      }
     },
     {
       "heading": "Capture only the relevant context",
@@ -22,7 +26,37 @@
     },
     {
       "heading": "Worked log entry",
-      "body": "Illustrative entry: E-003; URL github.com/example-studio; observed 2026-10-03 14:00 IST; signed-out profile; biography links to the project website; screenshot E-003.png in restricted storage; interpretation public project association, current controller not verified. Example-studio is a placeholder, not a tested account. If the URL later redirects, create E-004 with the new observation and preserve E-003 as historical context."
+      "body": "Illustrative entry: E-003; URL github.com/example-studio; observed 2026-10-03 14:00 IST; signed-out profile; biography links to the project website; screenshot E-003.png in restricted storage; interpretation public project association, current controller not verified. Example-studio is a placeholder, not a tested account. If the URL later redirects, create E-004 with the new observation and preserve E-003 as historical context.",
+      "table": {
+        "caption": "Keep the observation separate from its interpretation",
+        "headers": [
+          "Field",
+          "Illustrative value",
+          "What it does not prove"
+        ],
+        "rows": [
+          [
+            "Access context",
+            "Signed out, desktop browser",
+            "What a signed-in viewer could see"
+          ],
+          [
+            "Observation",
+            "Biography links to a project website",
+            "Who currently controls the account"
+          ],
+          [
+            "Interpretation",
+            "Public association, pending corroboration",
+            "Legal identity or current employment"
+          ],
+          [
+            "Integrity",
+            "Hash of the retained original screenshot",
+            "Authenticity of the underlying page or timestamp"
+          ]
+        ]
+      }
     },
     {
       "heading": "Handle negative and unavailable checks differently",
