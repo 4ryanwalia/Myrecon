@@ -23,6 +23,7 @@ const ASSETS = [
   '/assets/js/deep-search.js',
   '/assets/js/fx.js',
   '/assets/js/pricing.js',
+  '/assets/js/paypal-checkout.js',
   '/assets/js/username-search-input.js',
   '/assets/img/logo.svg',
   '/assets/img/favicon.svg',

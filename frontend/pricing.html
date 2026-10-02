@@ -69,7 +69,7 @@
     <h1 style="font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em">Pricing</h1>
     <p style="color:var(--text-dim);font-size:1.05rem;margin-top:12px;line-height:1.65;max-width:720px">
       Every tool on MyRecon is free to start. A guest username sweep checks 500+ platforms and shows
-      results from the first 100 without signing in. Signed-in free accounts get 5 standard 500+ platform scans a day with complete results. The paid pack is ₹99 through Indian checkout, or US$3.99 through Buy Me a Coffee when international checkout is enabled, for unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms.
+      results from the first 100 without signing in. Signed-in free accounts get 5 standard 500+ platform scans a day with complete results. The paid pack is ₹99 through Indian checkout, or US$3.99 through PayPal or Buy Me a Coffee when the chosen checkout is enabled, for unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms.
       Email and breach checks, password leaks, domains, DNS and IP remain available without sign-in.
     </p>
 
@@ -129,7 +129,10 @@
           <li>Credits never expire; buy again to add 10 more</li>
           <li>One-time payment, no auto-renew</li>
         </ul>
-        <button type="button" class="btn btn-primary" data-buy-international disabled>Get the pack for US$3.99</button>
+        <button type="button" class="btn btn-primary" data-buy-paypal disabled>Pay with PayPal: US$3.99</button>
+        <p class="hint" id="paypalStatus" role="status" aria-live="polite">Checking PayPal availability…</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="checkPayPal" disabled>Check PayPal payment</button>
+        <button type="button" class="btn btn-ghost" data-buy-international disabled>Buy Me a Coffee: US$3.99</button>
         <p class="hint" id="internationalStatus" aria-live="polite">Checking payment availability…</p>
         <button type="button" class="btn btn-ghost" data-buy="extended" disabled>Indian checkout: ₹99</button>
         <p class="hint" id="indianStatus">Checking Indian checkout availability…</p>
@@ -188,7 +191,7 @@
       Blocked, timed-out or inconclusive checks stay unknown; a scan does not guarantee a match.
     </p>
 
-  <section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">What does MyRecon provide for OSINT lookup pricing?</summary><p style="margin-top:10px;line-height:1.65">Guests get 5 free scans daily without sign-in and see the first 100 platform verdicts. Signed-in free accounts get 5 standard 500+ platform scans per day with complete results. The paid pack is ₹99 through Indian checkout, or US$3.99 through Buy Me a Coffee when international checkout is enabled: unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms each. Paid standard and Deep Search access continue after the Extended credits are used. Credits never expire and nothing auto-renews. Daily allowances reset at midnight UTC.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Does a missing username result prove no account exists?</summary><p style="margin-top:10px;line-height:1.65">No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Can MyRecon see private accounts?</summary><p style="margin-top:10px;line-height:1.65">No. Public username checks do not grant access to private accounts or restricted content. Use service-approved access and consent, and do not bypass login walls or platform controls to complete a search.</p></details></section><section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Search a public username</h2><p>Use usernames you own or are authorized to review; a match is not proof of identity.</p><username-search-input></username-search-input></section></main>
+  <section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">What does MyRecon provide for OSINT lookup pricing?</summary><p style="margin-top:10px;line-height:1.65">Guests get 5 free scans daily without sign-in and see the first 100 platform verdicts. Signed-in free accounts get 5 standard 500+ platform scans per day with complete results. The paid pack is ₹99 through Indian checkout, or US$3.99 through PayPal or Buy Me a Coffee when the chosen checkout is enabled: unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms each. Paid standard and Deep Search access continue after the Extended credits are used. Credits never expire and nothing auto-renews. Daily allowances reset at midnight UTC.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Does a missing username result prove no account exists?</summary><p style="margin-top:10px;line-height:1.65">No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Can MyRecon see private accounts?</summary><p style="margin-top:10px;line-height:1.65">No. Public username checks do not grant access to private accounts or restricted content. Use service-approved access and consent, and do not bypass login walls or platform controls to complete a search.</p></details></section><section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Search a public username</h2><p>Use usernames you own or are authorized to review; a match is not proof of identity.</p><username-search-input></username-search-input></section></main>
 
   <footer class="site-footer">
   <div class="site-footer__panel">
@@ -230,7 +233,8 @@
   <script src="/assets/js/config.js?v=78156bad7a"></script>
   <script src="/assets/js/account.js?v=6ab750b6bb"></script>
   <script src="/assets/js/app.js?v=66930ea4e5"></script>
-  <script src="/assets/js/pricing.js?v=c98ba7a98b"></script>
+  <script src="/assets/js/pricing.js?v=0df8f40298"></script>
+  <script src="/assets/js/paypal-checkout.js?v=f4239e0601"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

@@ -775,7 +775,7 @@ def _register_routes(app: Flask) -> None:
     @app.route("/api/plans")
     def api_plans():
         """Public: tiers, limits, and whether sign-in and payments are live."""
-        from core import buymeacoffee, plans, razorpay, store
+        from core import buymeacoffee, paypal, plans, razorpay, store
         return responses.ok({
             # Only ever true on a local development server; see config.py.
             "dev_test_account": config.DEV_TEST_ACCOUNT,
@@ -792,6 +792,9 @@ def _register_routes(app: Flask) -> None:
             "international_payments": {"enabled": buymeacoffee.enabled(),
                                        "provider": "buymeacoffee", "amount": 399,
                                        "currency": "USD", "plan": "extended"},
+            "paypal_payments": {"enabled": paypal.enabled(), "amount": 399,
+                                "currency": "USD", "plan": "extended",
+                                "environment": config.PAYPAL_ENV},
             "razorpay_key_id": config.RAZORPAY_KEY_ID if razorpay.enabled() else None,
             "limits": {
                 "standard_platforms": plans.STANDARD_PLATFORMS,
@@ -883,6 +886,43 @@ def _register_routes(app: Flask) -> None:
             "currency": order["currency"], "key_id": config.RAZORPAY_KEY_ID,
             "plan": plan, "email": user.get("email", ""), "name": user.get("name", ""),
         })
+
+    @app.route("/api/billing/paypal/order", methods=["POST", "OPTIONS"])
+    @app.route("/api/billing/paypal/capture", methods=["POST", "OPTIONS"])
+    def api_paypal_checkout():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import paypal, plans
+        user = _require_user()
+        if not paypal.configured() or (request.path.endswith("/order") and not paypal.enabled()):
+            return responses.error("PayPal checkout is unavailable.", status=503,
+                                   code="payments_unavailable")
+        body = _json_body()
+        try:
+            if request.path.endswith("/order"):
+                if body.get("plan") != "extended":
+                    raise ValueError("Unknown plan.")
+                return responses.ok(paypal.checkout(user["sub"]))
+            result = paypal.settle(body.get("order_id"), uid=user["sub"], capture=True)
+            return responses.ok({**result, "account": plans.get_account(user["sub"])})
+        except ValueError as exc:
+            raise validation.ValidationError(str(exc)) from exc
+        except paypal.PayPalError:
+            return responses.error("Could not confirm PayPal payment. Try again; do not pay twice.",
+                                   status=502, code="paypal_unavailable")
+
+    @app.route("/api/billing/paypal/webhook", methods=["POST"])
+    def api_paypal_webhook():
+        from core import paypal
+        if not paypal.configured():
+            return responses.error("PayPal is unavailable.", status=503)
+        try:
+            result = paypal.webhook(_json_body(), request.headers)
+            return responses.ok(result)
+        except ValueError:
+            return responses.error("Invalid PayPal webhook.", status=400)
+        except paypal.PayPalError:
+            return responses.error("PayPal confirmation unavailable. Retry later.", status=502)
 
     @app.route("/api/billing/buymeacoffee/checkout", methods=["POST", "OPTIONS"])
     def api_bmc_checkout():

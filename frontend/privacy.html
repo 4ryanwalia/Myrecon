@@ -71,7 +71,7 @@
     <div class="legal-summary">
       <h2>The short version</h2>
       <ul>
-        <li><strong>Accounts are optional.</strong> Guests can see a 100-platform preview from a 500+ platform username sweep. If you sign in with Google, we hold your email, name, scan counts and saved username scans, which you can delete. We never see card, UPI or bank details: Razorpay handles Indian payments and Buy Me a Coffee handles international payments when enabled.</li>
+        <li><strong>Accounts are optional.</strong> Guests can see a 100-platform preview from a 500+ platform username sweep. If you sign in with Google, we hold your email, name, scan counts and saved username scans, which you can delete. We never see card, UPI or bank details: Razorpay handles Indian payments and PayPal or Buy Me a Coffee handles international payments when enabled.</li>
         <li><strong>Guest scans are not saved to an account.</strong> Results can sit in a short-lived server memory cache for up to ten minutes. Completed username scans while signed in are saved to your account history.</li>
         <li><strong>Recent lookup history also lives in your browser</strong>, where you can wipe it in one click.</li>
         <li><strong>Passwords never leave your device.</strong> The password checker hashes locally and sends five characters of that hash.</li>
@@ -176,9 +176,9 @@
               <td>Your newest 50 scans. Delete any of them, or all, from your account page at any time; all of it goes when your account is deleted</td>
             </tr>
             <tr>
-              <td><strong>If you buy a scan pack</strong>: payment references and the purchased entitlement. International checkout also stores a hash of your activation code, account ID, creation and expiry times, and the account linked to the Buy Me a Coffee purchase</td>
+              <td><strong>If you buy a scan pack</strong>: payment references and the purchased entitlement. Buy Me a Coffee checkout also stores a hash of your activation code, account ID, creation and expiry times, and the account linked to the purchase. PayPal checkout stores the order ID, account ID, a random order binding, environment and grant status</td>
               <td>To apply the pass, sort out payment problems, and keep the records tax law requires</td>
-              <td>Razorpay or Buy Me a Coffee processes payment; account links and purchase references are stored in our server-managed Firebase database</td>
+              <td>Razorpay, PayPal or Buy Me a Coffee processes payment; account links and purchase references are stored in our server-managed Firebase database</td>
               <td>As long as Indian tax and accounting law requires, currently up to 8 years</td>
             </tr>
             <tr>
@@ -267,6 +267,7 @@
             <tr><td><strong>Google</strong> (Firebase, website accounts)</td><td>Google sign-in and the store of account allowances</td><td>If you sign in: your Google email address, name and user ID, and your scan counts. For visitors who are not signed in: a daily-rotating keyed hash used for the guest scan limit</td></tr>
             <tr><td><strong>Razorpay</strong></td><td>Processes Pro pass payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
             <tr><td><strong>Buy Me a Coffee</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in its Shop checkout, including the MyRecon activation code you submit after payment to link the purchase to your account. Its signed purchase notification is processed by our server; we retain purchase references and account links, without copying its customer names or emails into our account database. Handled under Buy Me a Coffee's own privacy policy</td></tr>
+            <tr><td><strong>PayPal</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in PayPal checkout. We send the pack description, USD price and a random order binding; we retain order references and account links. We verify payment through PayPal and do not copy PayPal customer names or emails into our account database. Handled under PayPal's own privacy policy</td></tr>
             <tr><td><strong>Google Fonts</strong></td><td>Serves the typeface</td><td>IP address and browser details when a font loads</td></tr>
             <tr><td><strong>Have I Been Pwned</strong></td><td>The breach catalogue, breach logos, and the Pwned Passwords API</td><td>Your IP address, and a five-character hash prefix when you check a password. The address itself only where a breach lookup is configured to use HIBP directly</td></tr>
             <tr><td><strong>XposedOrNot</strong>, <strong>LeakCheck</strong></td><td>Answer &ldquo;has this address been breached&rdquo;</td><td>The email address you queried</td></tr>

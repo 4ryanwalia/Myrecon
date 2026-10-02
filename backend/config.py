@@ -161,6 +161,12 @@ BUYMEACOFFEE_SHOP_URL = os.environ.get("BUYMEACOFFEE_SHOP_URL", "").strip()
 BUYMEACOFFEE_ITEM_ID = os.environ.get("BUYMEACOFFEE_ITEM_ID", "").strip()
 BUYMEACOFFEE_WEBHOOK_SECRET = os.environ.get("BUYMEACOFFEE_WEBHOOK_SECRET", "")
 
+# PayPal secrets stay on the backend. Sandbox never opens public sales.
+PAYPAL_CLIENT_ID = os.environ.get("PAYPAL_CLIENT_ID", "").strip()
+PAYPAL_CLIENT_SECRET = os.environ.get("PAYPAL_CLIENT_SECRET", "").strip()
+PAYPAL_WEBHOOK_ID = os.environ.get("PAYPAL_WEBHOOK_ID", "").strip()
+PAYPAL_ENV = os.environ.get("PAYPAL_ENV", "sandbox").strip().lower()
+
 # Local testing only: treat requests with no Authorization header as one fixed
 # signed-in test user, with accounts held in memory, so checkout and the full
 # scan can be exercised before Firebase sign-in is configured. Forced off in

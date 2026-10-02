@@ -38,7 +38,7 @@
     const b = $("[data-buy-international]");
     if (!b) return;
     b.disabled = !A?.enabled || !plansInfo?.international_payments?.enabled || !!busy;
-    b.textContent = busy === "signin" ? "Finish Google sign-in…" : busy ? "Preparing your checkout…" : "Get the pack for US$3.99";
+    b.textContent = busy === "signin" ? "Finish Google sign-in…" : busy ? "Preparing your checkout…" : "Buy Me a Coffee: US$3.99";
     const status = $("#internationalStatus");
     if (status) status.textContent = !plansInfo?.international_payments?.enabled
       ? "US dollar checkout is temporarily unavailable. Please try again later."
@@ -48,7 +48,7 @@
     });
     if ($("#indianStatus")) $("#indianStatus").textContent = plansInfo?.payments_enabled
       ? "Pay in INR through Indian checkout."
-      : "Indian checkout is unavailable. Use the US dollar option above.";
+      : "Indian checkout is temporarily unavailable.";
   }
 
   function checkoutUrl(value) {
@@ -445,7 +445,7 @@
     try {
       const res = await fetch(CFG.apiBase + "/api/plans");
       plansInfo = (await res.json()) || null;
-      if (plansInfo && !plansInfo.payments_enabled && !plansInfo.international_payments?.enabled) note("Extended packs open soon. Free accounts get 5 standard scans a day.");
+      if (plansInfo && !plansInfo.payments_enabled && !plansInfo.international_payments?.enabled && !plansInfo.paypal_payments?.enabled) note("Extended packs open soon. Free accounts get 5 standard scans a day.");
     } catch {} finally { renderPayments(); resumeCheckout(); }
   });
 })();
