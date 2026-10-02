@@ -7,9 +7,10 @@
 .editorial-table-wrap table { border-collapse: collapse; width: 100%; font-size: .9rem; }
 .editorial-table-wrap caption { text-align: left; padding: 10px 0; font-weight: 700; }
 .editorial-table-wrap th, .editorial-table-wrap td { padding: 12px; border: 1px solid var(--border); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
-@media (max-width: 840px) {
+@media (max-width: 1000px) {
   .editorial-nav { height: auto; }
   .editorial-nav .nav-inner { flex-wrap: wrap; gap: 12px; padding-top: 12px; padding-bottom: 12px; }
   .editorial-nav .brand { flex-basis: 100%; }
-  .editorial-nav .nav-links { font-size: .85rem; gap: 8px 14px; }
+  .editorial-nav .nav-links { position: static; flex-direction: row; width: 100%; margin-left: 0; padding: 0; border: 0; background: transparent; font-size: .85rem; gap: 8px 14px; }
+  .editorial-nav .nav-links a { padding: 5px 0; }
 }

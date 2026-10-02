@@ -29,6 +29,11 @@ const server = http.createServer((req, res) => {
         assert.equal(response.status(), 200, route);
         await page.evaluate(() => document.fonts.ready);
         assert.equal(await page.locator('h1').count(), 1, route);
+        if (await page.locator('.editorial-nav').count()) {
+          const layout = await page.evaluate(() => ({nav: document.querySelector('.editorial-nav').getBoundingClientRect().bottom, title: document.querySelector('h1').getBoundingClientRect().top}));
+          assert.ok(layout.title >= layout.nav, `navigation covers heading ${width} ${route}`);
+          assert.ok(layout.nav < 180, `oversized navigation ${width} ${route}`);
+        }
         assert.equal(await page.locator('[data-content-app-promo]').count(), 0, route);
         const overflow = await page.evaluate(() => [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > innerWidth + 2).slice(0,5).map(e => `${e.tagName}.${e.className}: ${e.getBoundingClientRect().right}`));
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), `horizontal overflow ${width} ${route}: ${overflow}`);
