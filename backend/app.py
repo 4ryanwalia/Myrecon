@@ -897,6 +897,24 @@ def _register_routes(app: Flask) -> None:
             raise validation.ValidationError("Unknown plan.")
         return responses.ok(buymeacoffee.checkout(user["sub"]))
 
+    @app.route("/api/billing/buymeacoffee/status", methods=["POST", "OPTIONS"])
+    def api_bmc_status():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import buymeacoffee
+        user = _require_user()
+        body = _json_body()
+        if not isinstance(body, dict):
+            raise validation.ValidationError("Invalid activation code.")
+        try:
+            result = buymeacoffee.payment_status(user["sub"], body.get("activation_code"))
+        except ValueError as exc:
+            raise validation.ValidationError(str(exc)) from exc
+        if result is None:
+            return responses.error("Checkout not found. Start international checkout again.",
+                                   status=404, code="checkout_not_found")
+        return responses.ok(result)
+
     @app.route("/api/billing/buymeacoffee/webhook", methods=["POST"])
     def api_bmc_webhook():
         from core import buymeacoffee

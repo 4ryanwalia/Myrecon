@@ -266,7 +266,7 @@
             <tr><td><strong>Google</strong> (Firebase)</td><td>Counts invites in the Android app</td><td>An invite code, a one-way hash derived from the phone&rsquo;s app-specific Android ID, the time, and the IP address the request comes from, only when an install came from an invite link, or while someone is looking at their own invite count</td></tr>
             <tr><td><strong>Google</strong> (Firebase, website accounts)</td><td>Google sign-in and the store of account allowances</td><td>If you sign in: your Google email address, name and user ID, and your scan counts. For visitors who are not signed in: a daily-rotating keyed hash used for the guest scan limit</td></tr>
             <tr><td><strong>Razorpay</strong></td><td>Processes Pro pass payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
-            <tr><td><strong>Buy Me a Coffee</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in its Shop checkout, including the MyRecon activation code you paste to link the purchase to your account. Its signed purchase notification is processed by our server; we retain purchase references and account links, without copying its customer names or emails into our account database. Handled under Buy Me a Coffee's own privacy policy</td></tr>
+            <tr><td><strong>Buy Me a Coffee</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in its Shop checkout, including the MyRecon activation code you submit after payment to link the purchase to your account. Its signed purchase notification is processed by our server; we retain purchase references and account links, without copying its customer names or emails into our account database. Handled under Buy Me a Coffee's own privacy policy</td></tr>
             <tr><td><strong>Google Fonts</strong></td><td>Serves the typeface</td><td>IP address and browser details when a font loads</td></tr>
             <tr><td><strong>Have I Been Pwned</strong></td><td>The breach catalogue, breach logos, and the Pwned Passwords API</td><td>Your IP address, and a five-character hash prefix when you check a password. The address itself only where a breach lookup is configured to use HIBP directly</td></tr>
             <tr><td><strong>XposedOrNot</strong>, <strong>LeakCheck</strong></td><td>Answer &ldquo;has this address been breached&rdquo;</td><td>The email address you queried</td></tr>
@@ -303,6 +303,7 @@
     </section>
 
     <section id="cookies">
+      <p>To resume international checkout, we keep your activation code, account ID, checkout URL and expiry in this tab's session storage. Signing out clears this record, and the browser removes it when the tab session ends. Checking payment sends the code to our server for your signed-in account.</p>
       <h2>9. Cookies and advertising</h2>
       <p><strong>MyRecon’s own code sets no cookies.</strong> Google Analytics uses first-party analytics cookies to measure site visits, and Google advertising may use additional cookies. The full detail and ways to refuse or delete them are in our <a href="/cookies.html">cookie policy</a>.</p>
       <p>In short:</p>

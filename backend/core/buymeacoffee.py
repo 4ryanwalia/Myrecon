@@ -44,6 +44,18 @@ def checkout(uid):
             "amount": 399, "currency": "USD", "expires_at": now + _LIFETIME}
 
 
+def payment_status(uid, code):
+    """Read only this account's checkout, never infer payment from its tier."""
+    if not isinstance(code, str) or not _CODE.fullmatch(code.strip()):
+        raise ValueError("Invalid activation code.")
+    intent = store.store.get(_path(code.strip()))
+    if not isinstance(intent, dict) or intent.get("uid") != uid:
+        return None
+    state = "applied" if intent.get("applied") is True else (
+        "expired" if int(time.time()) > intent["expires"] else "pending")
+    return {"payment_status": state, "expires_at": intent["expires"]}
+
+
 def signature_ok(raw, signature):
     secret = config.BUYMEACOFFEE_WEBHOOK_SECRET
     if not secret or not re.fullmatch(r"[0-9a-f]{64}", signature):
@@ -102,9 +114,35 @@ def settle(event):
         return False
     ref = "buymeacoffee:" + str(purchase)
     # A malformed retry with another user's code cannot redirect a purchase.
-    owner = store.store.transaction("web/bmc_purchases/" + str(purchase),
-                                    lambda cur: cur or {"uid": intent["uid"], "ref": ref})
-    if owner["uid"] != intent["uid"]:
+    checkout_path = _path(code)
+
+    def bind(cur):
+        if not cur:
+            return {"uid": intent["uid"], "ref": ref, "checkout": checkout_path}
+        # Older purchase records predate checkout status. Bind them when a
+        # valid signed retry arrives, preserving their original owner.
+        if cur.get("uid") == intent["uid"] and not cur.get("checkout"):
+            return {**cur, "checkout": checkout_path}
+        return cur
+
+    owner = store.store.transaction("web/bmc_purchases/" + str(purchase), bind)
+    if owner["uid"] != intent["uid"] or owner["checkout"] != checkout_path:
         return False
-    plans.grant_pass(owner["uid"], "extended", ref)
+    granted = plans.grant_pass(owner["uid"], "extended", ref)
+    if not granted:
+        # A retry can arrive after the grant committed but before the checkout
+        # marker did. Prove this exact payment was granted to this UID before
+        # repairing status; an existing paid tier is not payment confirmation.
+        ref_key = hashlib.sha256(ref.encode()).hexdigest()[:40]
+        ledger = store.store.get("web/payments/" + ref_key)
+        if not isinstance(ledger, dict) or ledger.get("uid") != owner["uid"] or (
+                ledger.get("ref") != ref or ledger.get("plan") != "extended"):
+            return False
+
+    def mark_applied(cur):
+        if not isinstance(cur, dict) or cur.get("uid") != owner["uid"]:
+            raise RuntimeError("Checkout changed before payment confirmation.")
+        return {**cur, "applied": True}
+
+    store.store.transaction(checkout_path, mark_applied)
     return True

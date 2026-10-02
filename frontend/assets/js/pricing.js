@@ -13,9 +13,20 @@
   const note = (msg) => { const n = $("#payNote"); if (n) n.textContent = msg || ""; };
   let plansInfo = null;
   let internationalUid = null;
+  let internationalExpires = 0;
+  let paymentState = "pending";
+  let busy = "";
+  let attempt = 0;
+  const CHECKOUT = "mr_bmc_checkout";
+  const SIGNIN_INTENT = "mr_bmc_signin_intent";
+  const save = (key, value) => { try { value ? sessionStorage.setItem(key, JSON.stringify(value)) : sessionStorage.removeItem(key); } catch {} };
+  const read = (key) => { try { return JSON.parse(sessionStorage.getItem(key)); } catch { return null; } };
 
-  function closeInternational() {
+  function closeInternational(clearSaved = true) {
     internationalUid = null;
+    internationalExpires = 0;
+    paymentState = "pending";
+    if (clearSaved) save(CHECKOUT, null);
     const box = $("#internationalCheckout");
     if (box) box.hidden = true;
     const code = $("#activationCode");
@@ -26,55 +37,168 @@
   function renderPayments() {
     const b = $("[data-buy-international]");
     if (!b) return;
-    b.disabled = !plansInfo?.international_payments?.enabled;
+    b.disabled = !A?.enabled || !plansInfo?.international_payments?.enabled || !!busy;
+    b.textContent = busy === "signin" ? "Finish Google sign-in…" : busy ? "Preparing your checkout…" : "Get the pack for US$3.99";
     const status = $("#internationalStatus");
-    if (status) status.textContent = b.disabled
-      ? "International checkout opens soon."
-      : "Same pack, paid in USD through Buy Me a Coffee.";
+    if (status) status.textContent = !plansInfo?.international_payments?.enabled
+      ? "US dollar checkout is temporarily unavailable. Please try again later."
+      : "One-time payment through Buy Me a Coffee. Sign in to connect your pack.";
+    document.querySelectorAll("[data-buy]").forEach((button) => {
+      button.disabled = !A?.enabled || !plansInfo?.payments_enabled;
+    });
+    if ($("#indianStatus")) $("#indianStatus").textContent = plansInfo?.payments_enabled
+      ? "Pay in INR through Indian checkout."
+      : "Indian checkout is unavailable. Use the US dollar option above.";
+  }
+
+  function checkoutUrl(value) {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || !["buymeacoffee.com", "www.buymeacoffee.com"].includes(url.hostname)
+        || url.username || url.password || (url.port && url.port !== "443")) {
+      throw new Error("The checkout link is unavailable. Please try later.");
+    }
+    return url.href;
+  }
+
+  function showCheckout(result, uid, scroll = true) {
+    const url = checkoutUrl(result.url);
+    if (!/^MR-[a-f0-9]{32}$/.test(result.activation_code) || !Number.isFinite(result.expires_at)) {
+      throw new Error("Could not prepare your account code. Please try again.");
+    }
+    internationalUid = uid;
+    internationalExpires = result.expires_at;
+    paymentState = "pending";
+    save(CHECKOUT, { uid, url, activation_code: result.activation_code, expires_at: result.expires_at });
+    $("#activationCode").value = result.activation_code;
+    $("#openInternational").href = url;
+    $("#openInternational").removeAttribute("aria-disabled");
+    $("#internationalCheckout").hidden = false;
+    $("#internationalCheckout").dataset.payment = "pending";
+    $("#copyActivation").textContent = "Copy code";
+    $("#copyStatus").textContent = "";
+    $("#activationExpiry").textContent = `Use this code before ${new Date(internationalExpires * 1000).toLocaleString()}.`;
+    $("#paymentStatus").textContent = "Waiting for payment. This code alone does not unlock the pack.";
+    if (internationalExpires <= Date.now() / 1000) {
+      $("#openInternational").removeAttribute("href");
+      $("#openInternational").setAttribute("aria-disabled", "true");
+      $("#paymentStatus").textContent = "This code has expired. If you have not paid, use Get the pack above to create a new code. If you already paid, check payment below.";
+    }
+    if (scroll) $("#internationalCheckout").scrollIntoView({ block: "start" });
+  }
+
+  function restoreCheckout(uid) {
+    const saved = read(CHECKOUT);
+    if (!uid || !saved || internationalUid) return false;
+    if (saved.uid !== uid) { save(CHECKOUT, null); return false; }
+    try { showCheckout(saved, uid, false); return true; }
+    catch { save(CHECKOUT, null); return false; }
+  }
+
+  function resumeCheckout() {
+    const intent = read(SIGNIN_INTENT);
+    if (!intent) return;
+    if (!Number.isFinite(intent.at) || Date.now() - intent.at > 15 * 60 * 1000) { save(SIGNIN_INTENT, null); return; }
+    if (!busy && !internationalUid && A.state().user && plansInfo?.international_payments?.enabled) {
+      save(SIGNIN_INTENT, null);
+      buyInternational();
+    }
   }
 
   async function buyInternational() {
+    if (busy) return;
     if (!A?.enabled || !plansInfo?.international_payments?.enabled) {
       note("International checkout is not available yet.");
       return;
     }
-    const button = $("[data-buy-international]");
-    button.disabled = true;
+    const thisAttempt = ++attempt;
     closeInternational();
     try {
-      if (!A.state().user) await A.signIn();
+      if (!A.state().user) {
+        busy = "signin";
+        save(SIGNIN_INTENT, { at: Date.now() });
+        $("#signinRecovery").hidden = false;
+        note("Finish Google sign-in. If no window opens, select Sign in in this tab below.");
+        renderPayments();
+        await A.signIn();
+      }
+      if (thisAttempt !== attempt) return;
       const uid = A.state().user?.uid;
       if (!uid) return;
-      note("Preparing international checkout…");
-      const result = await post("/api/billing/buymeacoffee/checkout", { plan: "extended" });
-      if (A.state().user?.uid !== uid) return;
-      const url = new URL(result.url);
-      if (url.protocol !== "https:" || !["buymeacoffee.com", "www.buymeacoffee.com"].includes(url.hostname)) {
-        throw new Error("The checkout link is unavailable. Please try later.");
-      }
-      internationalUid = uid;
-      $("#activationCode").value = result.activation_code;
-      $("#openInternational").href = url.href;
-      $("#internationalCheckout").hidden = false;
-      $("#internationalCheckout").scrollIntoView({ block: "start" });
-      $("#activationCode").focus({ preventScroll: true });
-      note("Copy your activation code, then paste it into the required question at checkout.");
-    } catch (e) {
-      note(A.friendly(e));
-    } finally {
+      save(SIGNIN_INTENT, null);
+      $("#signinRecovery").hidden = true;
+      busy = "checkout";
       renderPayments();
+      note("Preparing your account code…");
+      const result = await post("/api/billing/buymeacoffee/checkout", { plan: "extended" });
+      if (thisAttempt !== attempt || A.state().user?.uid !== uid) return;
+      showCheckout(result, uid);
+      note("Your checkout is ready. Follow the three steps below.");
+    } catch (e) {
+      if (thisAttempt === attempt) note(A.friendly(e) || "Sign-in was cancelled. You can try again.");
+    } finally {
+      if (thisAttempt === attempt) {
+        busy = "";
+        save(SIGNIN_INTENT, null);
+        $("#signinRecovery").hidden = true;
+        renderPayments();
+      }
     }
   }
 
   async function post(path, body) {
-    const res = await fetch(CFG.apiBase + path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...(await A.authHeaders()) },
-      body: JSON.stringify(body),
+    const controller = new AbortController();
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => { controller.abort(); reject(new Error("This is taking too long. Check your connection and try again.")); }, 30000);
     });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.status === "error") throw new Error(data.error || `Request failed (${res.status})`);
-    return data;
+    try {
+      return await Promise.race([(async () => {
+        const headers = await A.authHeaders();
+        controller.signal.throwIfAborted();
+        const res = await fetch(CFG.apiBase + path, {
+          method: "POST", signal: controller.signal,
+          headers: { "Content-Type": "application/json", ...headers },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.status === "error") throw new Error(data.error || `Request failed (${res.status})`);
+        return data;
+      })(), timeout]);
+    } finally { clearTimeout(timer); }
+  }
+
+  async function checkPayment() {
+    const uid = internationalUid;
+    const code = $("#activationCode").value;
+    if (!uid || A.state().user?.uid !== uid || !code) return;
+    const button = $("#refreshInternational");
+    button.disabled = true;
+    button.textContent = "Checking payment…";
+    $("#paymentStatus").textContent = "Checking Buy Me a Coffee's payment confirmation…";
+    try {
+      const result = await post("/api/billing/buymeacoffee/status", { activation_code: code });
+      if (internationalUid !== uid || A.state().user?.uid !== uid || $("#activationCode").value !== code) return;
+      paymentState = result.payment_status;
+      $("#internationalCheckout").dataset.payment = paymentState;
+      if (paymentState === "applied") {
+        $("#paymentStatus").textContent = "Payment confirmed. Your pack is unlocked: unlimited standard scans, Deep Search and 10 added Extended credits.";
+        $("#openInternational").removeAttribute("href");
+        $("#openInternational").setAttribute("aria-disabled", "true");
+        // Payment status comes from this code's verified grant, even for repeat buyers.
+        A.refreshAccount().then(() => { if (A.state().user?.uid === uid) renderAccount(A.state()); });
+      } else if (paymentState === "expired") {
+        $("#openInternational").removeAttribute("href");
+        $("#openInternational").setAttribute("aria-disabled", "true");
+        $("#paymentStatus").textContent = "This code has expired. If you have not paid, create a new code using Get the pack above. If you already paid, contact support with your receipt.";
+      } else {
+        $("#paymentStatus").textContent = "Payment has not been linked yet. If you already paid, submit your activation code in Buy Me a Coffee's purchase question, then wait a minute and check again. You do not need to pay again.";
+      }
+    } catch (e) {
+      if (internationalUid === uid && $("#activationCode").value === code) $("#paymentStatus").textContent = `${A.friendly(e)} If you already paid, keep your receipt and try checking again.`;
+    } finally {
+      button.disabled = false;
+      button.textContent = "Check payment";
+    }
   }
 
   function loadCheckout() {
@@ -112,7 +236,7 @@
       : `${acct.standard_scans_left} of 5 free standard scans left today. Resets at midnight UTC (${new Date(acct.standard_resets_at).toLocaleString()}). `)
       + (pack ? `${pack} Extended pack scans left, no expiry. ` : "")
       + (legacy ? `${legacy} scans from a previous pass, until ${new Date(acct.extended_legacy_until).toLocaleDateString()}.` : "")
-      + (!pack && !legacy ? "Get 10 Extended scans for ₹99 when you need wider coverage." : "");
+      + (!pack && !legacy ? "Get 10 Extended scans for ₹99 or US$3.99 when you need wider coverage." : "");
   }
 
   // The Free account card: a sign-in button for visitors, and a status once
@@ -226,11 +350,12 @@
     $("#copyActivation")?.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText($("#activationCode").value);
-        note("Activation code copied. Paste it into the required question on Buy Me a Coffee.");
+        $("#copyActivation").textContent = "Copied!";
+        $("#copyStatus").textContent = "Code copied. Select Pay US$3.99, then paste it into the purchase question after payment.";
       } catch {
         $("#activationCode").focus();
         $("#activationCode").select();
-        note("Select and copy the activation code, then paste it into the required checkout question.");
+        $("#copyStatus").textContent = "Automatic copy is unavailable. The code is selected: copy it manually, then paste it at checkout.";
       }
     });
     $("#openInternational")?.addEventListener("click", (e) => {
@@ -238,20 +363,44 @@
         e.preventDefault();
         closeInternational();
         note("Sign in and prepare international checkout again.");
+      } else if (paymentState === "applied" || internationalExpires <= Date.now() / 1000) {
+        e.preventDefault();
+        $("#paymentStatus").textContent = paymentState === "applied"
+          ? "This purchase is confirmed. Use Get the pack above if you want to buy 10 more credits."
+          : "This code has expired. Create a new code before paying, or check payment if you already paid.";
       }
     });
-    $("#refreshInternational")?.addEventListener("click", async () => {
+    $("#refreshInternational")?.addEventListener("click", checkPayment);
+    $("#signinRedirect")?.addEventListener("click", async () => {
+      // Abandon the popup attempt; its late completion must not open an old checkout.
+      ++attempt;
+      busy = "signin";
+      save(SIGNIN_INTENT, { at: Date.now() });
+      const button = $("#signinRedirect");
+      button.disabled = true;
+      note("Opening Google sign-in in this tab…");
       try {
-        await A.refreshAccount();
-        renderAccount(A.state());
-        note("Account refreshed. If your purchase is still missing, wait a minute and check again. Contact aryan@bugsnaps.in with your receipt if it has not appeared within an hour.");
-      } catch (e) { note(A.friendly(e)); }
+        await A.signInRedirect();
+      } catch (e) {
+        busy = "";
+        save(SIGNIN_INTENT, null);
+        note(A.friendly(e));
+        renderPayments();
+      } finally { button.disabled = false; }
     });
     document.querySelectorAll("[data-buy]").forEach((b) =>
       b.addEventListener("click", () => buy(b.dataset.buy)));
     document.querySelectorAll("[data-signin]").forEach((b) =>
       b.addEventListener("click", () => A && A.signIn().catch((e) => note(A.friendly(e)))));
-    $("#signOutBtn")?.addEventListener("click", () => A && A.signOut());
+    $("#signOutBtn")?.addEventListener("click", () => {
+      ++attempt;
+      busy = "";
+      save(SIGNIN_INTENT, null);
+      closeInternational();
+      $("#signinRecovery").hidden = true;
+      renderPayments();
+      A && A.signOut();
+    });
 
     if (A) await A.ready;
     if (!A || !A.enabled) {
@@ -264,10 +413,19 @@
       const uid = st && st.user ? st.user.uid : null;
       if (uid !== lastUid) {
         // Google sign-in can resolve before the account notification arrives.
-        if (internationalUid !== uid) closeInternational();
+        if (internationalUid && internationalUid !== uid) closeInternational();
+        if (lastUid) {
+          ++attempt;
+          busy = "";
+          save(SIGNIN_INTENT, null);
+          $("#signinRecovery").hidden = true;
+          renderPayments();
+        }
         lastUid = uid;
         loadScans();
       }
+      if (restoreCheckout(uid)) checkPayment();
+      resumeCheckout();
     };
     A.onChange(onState);
     onState(A.state());
@@ -288,6 +446,6 @@
       const res = await fetch(CFG.apiBase + "/api/plans");
       plansInfo = (await res.json()) || null;
       if (plansInfo && !plansInfo.payments_enabled && !plansInfo.international_payments?.enabled) note("Extended packs open soon. Free accounts get 5 standard scans a day.");
-    } catch {} finally { renderPayments(); }
+    } catch {} finally { renderPayments(); resumeCheckout(); }
   });
 })();
