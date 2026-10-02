@@ -2,54 +2,72 @@
   "kind": "guide",
   "slug": "account-enumeration-false-positives",
   "status": "published",
-  "title": "Account Enumeration False Positives | MyRecon",
-  "description": "Account Enumeration False Positives: a response code, generic placeholder, or blocked request is not enough to confirm an account; distinguish unknown from…",
-  "h1": "Account Enumeration False Positives",
+  "title": "Username Checker False Positives: A Review Workflow",
+  "description": "Recognize soft errors, generic login pages and ambiguous responses. Use verified controls and distinguish found, not found and unknown.",
+  "h1": "Username Checker False Positives: A Review Workflow",
   "focus_keyword": "account enumeration false positives",
-  "intro": "Account Enumeration False Positives is best handled as a narrow, documented question rather than a hunt for every possible connection. A response code, generic placeholder, or blocked request is not enough to confirm an account; distinguish unknown from a verified match. This guide gives a repeatable way to check public information, note uncertainty, and stop when the available evidence is not enough.",
+  "intro": "A username checker can find a URL that answers successfully without finding an account. Some websites serve their application shell, login form or error page with HTTP 200. Review the response evidence and uncertainty before treating a tool result as a confirmed public profile.",
   "sections": [
     {
-      "heading": "Define the question and permission",
-      "body": "Before searching, state what account enumeration false positives needs to answer and which public sources are relevant. A response code, generic placeholder, or blocked request is not enough to confirm an account; distinguish unknown from a verified match. Use identifiers supplied by the account owner or covered by your authorization, and set a stopping point so a narrow review does not expand into unnecessary data collection."
+      "heading": "Understand the three outcomes",
+      "body": "Found means a supported check observed evidence consistent with a public profile; it still needs source review. Not found means the check observed the expected negative pattern for that service. Unknown means it could not make a reliable decision, for example because of a challenge, timeout or ambiguous response. These describe a specific check at a time, not all accounts belonging to a person. Public presence also differs from whether a handle is available to register."
     },
     {
-      "heading": "Check original public sources",
-      "body": "Start with an official platform search or canonical page, then open each candidate instead of relying on snippets or copied directories. Record the source URL, date, visible context, and any login wall, block, or ambiguity that limits what you could confirm about account enumeration false positives."
+      "heading": "Inspect false-positive causes",
+      "body": "Open the returned URL. Watch for a generic login page, search page, redirect to the platform home, suspended-account notice or a profile type different from the expected user page. Compare the page title and visible handle with the candidate. A tool may be using a status-code heuristic that does not understand these cases. Platform templates can change and invalidate a previously working detector."
     },
     {
-      "heading": "Keep conclusions proportional to the evidence",
-      "body": "Separate confirmed public observations from possibilities and unknowns. A shared handle, name, image, or search result is not identity proof. For account enumeration false positives, use independent, voluntarily published context, minimize retained details, and remove notes when the authorized purpose ends."
+      "heading": "Use controls without inventing ground truth",
+      "body": "For an authorized evaluation, use a public account you control as a positive control and a second handle verified missing at the original service as a negative control. A random-looking string is not guaranteed to be unused. Record service, expected outcome, source evidence, observed result and date. Do not call an empty set of results a clean audit, and do not turn a tool's own output into its ground truth."
+    },
+    {
+      "heading": "Worked example: application shell",
+      "body": "Illustrative case: /user/known-handle and /user/verified-missing-handle both return status 200 and the same generic sign-in screen. A detector that checks only HTTP status labels both found. Your evidence supports unknown under that access context because neither response contains profile-specific information. If the official service displays an explicit missing-user message for the negative control, that may support not found. The distinction is the content observed, not the successful network request."
+    },
+    {
+      "heading": "Read benchmark evidence with its scope",
+      "body": "MyRecon links recorded comparison evidence from the homepage. The published case is useful for inspecting result definitions and source review; a single handle is not an estimate of overall precision, recall or success rate across the catalogue. Provider failures and unsupported services should remain visible. A large platform count measures attempted scope, not confirmed accounts or reliable identity resolution."
+    },
+    {
+      "heading": "Report a suspected detector problem",
+      "body": "Record the platform, candidate URL, result status, time and the relevant public response. Redact your private identifiers and session information. Send a minimal report through the site contact channel. Recheck the original page before acting on the candidate; do not repeatedly hammer a blocked service. An unavailable check should remain unavailable until there is new evidence."
     }
   ],
   "sources": [
-    "https://www.ftc.gov/business-guidance/privacy-security",
-    "https://www.myrecon.xyz/"
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200",
+    "/#benchmarks"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-03",
+  "modified_at": "2026-10-03",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Can account enumeration false positives establish a person's identity?",
-      "answer": "No. Public search results can suggest a lead but cannot establish identity by themselves. Confirm the original page and seek independent, voluntarily published evidence; if the evidence does not support a clear link, report it as uncertain."
+      "question": "Does HTTP 200 mean an account exists?",
+      "answer": "No. Generic shells and soft-error pages can return 200. Check profile-specific evidence."
     },
     {
-      "question": "What is a privacy-aware way to account enumeration false positives?",
-      "answer": "Use only sources and identifiers that fit a lawful, authorized purpose, check the platform's own public pages, and avoid access controls or account-recovery endpoints. A response code, generic placeholder, or blocked request is not enough to confirm an account; distinguish unknown from a verified match. Keep only the minimum notes needed for the task."
+      "question": "Can not found establish username availability?",
+      "answer": "No. Reserved, suspended or otherwise unavailable handles may have no public profile. Check official signup settings."
     },
     {
-      "question": "What if the public evidence is incomplete?",
-      "answer": "Mark the result unknown, record which page or check could not be verified, and do not turn a timeout or absence of indexed material into a conclusion. Recheck later only if the task remains authorized and useful."
+      "question": "Can one benchmark prove overall accuracy?",
+      "answer": "No. It only supports conclusions about its recorded sample and conditions."
     }
   ],
   "takeaways": [
-    "Write down the narrow question behind account enumeration false positives and use only public information that is relevant to answering it.",
-    "Open original sources, record dates and URLs, and distinguish direct observations from assumptions when working on account enumeration false positives.",
-    "Treat blocked, deleted, private, or ambiguous material as unknown; do not bypass a service control to fill the gap."
+    "Understand the three outcomes",
+    "Inspect false-positive causes",
+    "Use controls without inventing ground truth"
   ],
-  "method": "This method favors official public pages and reproducible notes. For account enumeration false positives, record the search terms you were authorized to use, the source URL, the time checked, and the reason for each conclusion. Keep negative or unavailable checks separate from confirmed findings, minimize personal data in notes, and stop when further searching would exceed the original purpose."
+  "method": "Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested.",
+  "diagram_steps": [
+    "Inspect response",
+    "Use verified controls",
+    "Keep uncertainty"
+  ],
+  "editorial_review": true
 }

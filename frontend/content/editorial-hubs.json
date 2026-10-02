@@ -1,0 +1,146 @@
+{
+  "guide": {
+    "heading": "Practical privacy and public-source guides",
+    "description": "Use focused workflows for account audits, research note protection, brand impersonation review and evidence logging.",
+    "intro": "Choose the task you need to finish. These guides provide action steps and worked examples; examples are labeled so they are not confused with observed research. The breach, password and account-security explainers below complement the public-source workflows.",
+    "sections": [
+      {
+        "heading": "Choose an outcome before collecting data",
+        "body": "For your own accounts, start with the digital-footprint checklist and username workflow. For a public-source report, use account-match verification and evidence logging. For a team, protect research notes before sharing screenshots, and use the brand-impersonation workflow when a lookalike makes a misleading claim. A larger collection of profile links is not a substitute for a verified account action or a supportable finding."
+      }
+    ]
+  },
+  "target": {
+    "heading": "Find public profiles: choose the right lookup method",
+    "description": "Use specific GitHub, Instagram and Discord workflows, and distinguish exact handles, display names, login restrictions and unsupported checks.",
+    "intro": "A platform lookup needs a method that fits the service. GitHub exposes a public user-search syntax. Instagram often limits signed-out access. Discord uses usernames, display names and IDs within its client and has no direct MyRecon check. Start with the guide for that workflow.",
+    "sections": [
+      {
+        "heading": "Other platforms: begin at the original service",
+        "body": "If there is no detailed guide here, use the service's official search or an account link published by the owner. Search the exact handle first. A display name can return unrelated accounts, and search-engine results can remain after a rename. Do not guess undocumented URL patterns and interpret their HTTP status as a profile. A login page or challenge is an access limitation. An account type such as shop, organization or forum member may need a different interpretation from a personal profile."
+      },
+      {
+        "heading": "Use a public sweep as a candidate list",
+        "body": "MyRecon's standard catalogue covers 500+ platforms, with guest previews and signed-in account allowances. Paid Extended scans have a separate catalogue. A catalogue entry does not guarantee a reliable response on every run. Open each found URL and keep unknown outcomes separate from not found. A username seen on another site does not prove common ownership, and not found does not establish registration availability."
+      },
+      {
+        "heading": "Worked example: the same handle on two services",
+        "body": "Illustrative case: your saved signup email confirms an old forum account under example_handle, while an unrelated photo profile uses the same handle. The forum is a confirmed self-audit entry. The photo account remains unresolved. Retain the original URLs and the basis for each conclusion, then act only on the account you control. Avoid recovery probes or messages to the unrelated candidate."
+      },
+      {
+        "heading": "A stopping rule saves unnecessary collection",
+        "body": "Stop when the required account has been confirmed or when no authorized source can answer the question. Write down an unavailable source rather than filling the gap with a guessed link. For account security, a saved login and official recovery process can matter more than a public scan. For a public association, an owner-published website link can be more useful than dozens of same-name results."
+      }
+    ]
+  },
+  "comparison": {
+    "heading": "Choose an OSINT workflow by task and evidence",
+    "description": "Compare browser username checks, local command-line tools and breach lookups by input, access, output evidence and practical limits.",
+    "intro": "The useful comparison is the question a tool can answer, the evidence it returns and the work needed to verify that evidence. A tool directory or the largest site count cannot settle whether a workflow meets your task. Start with the detailed Sherlock comparison, then use the decision criteria below.",
+    "sections": [
+      {
+        "heading": "Username discovery: browser or local command line",
+        "body": "MyRecon offers a browser username workflow with free guest previews, five signed-in standard scans per day and an optional paid pack. Its standard catalogue has 500+ platforms; Extended is a separate paid scope. Sherlock, Maigret and WhatsMyName have official project repositories and different interfaces or data models. Review each project's current documentation before installation. Prefer a local tool when scripted integration and local output control matter; prefer browser access when installation is impractical. Both require opening original sources and interpreting unavailable checks."
+      },
+      {
+        "heading": "Breach exposure is a different question",
+        "body": "Have I Been Pwned documents searches against its breach dataset. A breach entry can indicate exposure in that dataset; it does not prove that an account remains active, identify every service using an address or establish that a current password is compromised. A public username sweep cannot substitute for breach review. Choose the input and result type you need first, then follow the data source's response guidance."
+      },
+      {
+        "heading": "Specialist tools and data providers",
+        "body": "Graph tools, business-data APIs and search aggregators can have different inputs, data rights and subscription terms. Do not assume that they provide the same service as a username checker. Check what a returned relationship actually means and whether the data is suitable for your authorized purpose. This page does not claim to have tested commercial providers or compare their current subscription prices. Use their official documentation and terms before purchasing or sharing personal identifiers."
+      },
+      {
+        "heading": "A reproducible comparison sheet",
+        "body": "Use an account or identifier you control. Record the version, date, input, scan scope, expected positive and negative controls, returned URLs, unavailable checks, and manually verified outcomes. Separate setup effort from request duration. A successful HTTP response is not proof of a profile, and a random-looking username is not a verified negative control. Keep results that cannot be checked in the denominator as unavailable rather than silently excluding them."
+      },
+      {
+        "heading": "Worked decision and published limits",
+        "body": "Illustrative task: find and close your own old accounts from two remembered usernames. A browser sweep plus saved signup emails can be enough; a graph platform may add setup without resolving ownership. A task requiring repeatable local exports may favor a CLI. The homepage includes a recorded MyRecon username case with captured evidence, but its small scope is not a general accuracy score and is not a same-scope benchmark of every tool named here."
+      }
+    ],
+    "links": [
+      [
+        "Sherlock official project",
+        "https://github.com/sherlock-project/sherlock"
+      ],
+      [
+        "Maigret official project",
+        "https://github.com/soxoj/maigret"
+      ],
+      [
+        "WhatsMyName official project",
+        "https://github.com/WebBreacher/WhatsMyName"
+      ],
+      [
+        "Have I Been Pwned documentation",
+        "https://haveibeenpwned.com/FAQs"
+      ]
+    ]
+  },
+  "deletion": {
+    "heading": "Remove or reduce your public information",
+    "description": "Separate account deletion, broker opt-outs and search-result removal. Prepare exports, use official channels and verify each request outcome.",
+    "intro": "There are three different actions: delete an account you control, suppress a broker listing, or remove a search result pointing to a source page. Each has a different owner and verification step. Use this decision guide to avoid submitting the wrong request or losing access to data you wanted to keep.",
+    "sections": [
+      {
+        "heading": "1. Decide who controls the source",
+        "body": "Open the original page and record its exact URL, date and the fields you want removed. If it is your social account, change the profile or use the provider's deletion settings. If a broker published the record, use that broker's privacy request. If the original page is already gone or changed but a search snippet remains, consider the search engine's refresh or removal route. Removing a Google result does not delete the original information. Where the source belongs to another person or organization, contact its owner or the appropriate official reporting channel."
+      },
+      {
+        "heading": "2. Prepare account deletion before confirming it",
+        "body": "Sign in through the official app or website. Export content you want, transfer ownership of shared repositories, pages or workspaces, and update any other accounts using this account for sign-in or recovery. Review active subscriptions in their own billing channel; deleting a profile may not cancel an app-store subscription. Read the provider's current distinction between deactivation and deletion, its waiting period and what logging in during that period does. Do not assume the same menu path or waiting period applies across Instagram, Discord, GitHub and other services."
+      },
+      {
+        "heading": "3. Submit a broker request using the exact record",
+        "body": "Locate your matching record before entering an opt-out flow. Compare enough fields to select it without collecting unrelated people's information. Use the broker's official privacy or opt-out channel and a verification email you control. Share only the information the form requires. If a document is requested, check the destination and permitted redactions before providing it; MyRecon does not collect documents or submit these requests for you. Keep the request reference and stated processing period. A broker suppression usually does not erase the public records or other data sources from which the listing was assembled."
+      },
+      {
+        "heading": "4. Use Google removal for the correct condition",
+        "body": "Google documents removing certain personal information from search and refreshing outdated content. Choose the route that matches the current source: outdated snippets after a source change differ from a live page containing personal information. Read the eligibility criteria and provide the exact result and source URLs. Save the decision; submission alone is not evidence of removal. A delisted result can remain accessible directly or through another search engine."
+      },
+      {
+        "heading": "5. Verify each outcome and record what remains",
+        "body": "After the provider's stated processing period, reopen the exact original URL in a signed-out window, inspect the search result separately and record removed, changed, still visible or unable to verify. Do not claim success from an email acknowledging the request. Recheck broker pages after a refresh cycle because data can reappear. Retain the minimum request log needed for follow-up; delete redundant screenshots and identity documents from your own working folder when no longer required."
+      },
+      {
+        "heading": "Worked example: address on a broker page",
+        "body": "Illustrative case: a broker page displays your old home address and Google indexes that URL. First request suppression at the broker and retain its case number. If the broker page disappears but the search snippet still shows the address, request an outdated-content refresh through Google. Record those as two different outcomes. If the source remains live, use the applicable personal-information removal criteria rather than describing it as outdated. No single request removes the address from every website, archive or public record."
+      }
+    ],
+    "links": [
+      [
+        "Google: remove personal information from Search",
+        "https://support.google.com/websearch/answer/9673730"
+      ],
+      [
+        "Google: refresh outdated content",
+        "https://support.google.com/websearch/answer/6349986"
+      ],
+      [
+        "Instagram official Help Center",
+        "https://help.instagram.com/"
+      ],
+      [
+        "Discord: deleting an account",
+        "https://support.discord.com/hc/en-us/articles/212500837-How-do-I-permanently-delete-my-account"
+      ],
+      [
+        "GitHub: deleting a personal account",
+        "https://docs.github.com/en/account-and-profile/how-tos/account-management/deleting-your-personal-account"
+      ],
+      [
+        "Spokeo official opt-out",
+        "https://www.spokeo.com/optout"
+      ],
+      [
+        "BeenVerified official opt-out",
+        "https://www.beenverified.com/app/optout/search"
+      ],
+      [
+        "TruePeopleSearch official removal",
+        "https://www.truepeoplesearch.com/removal"
+      ]
+    ]
+  }
+}

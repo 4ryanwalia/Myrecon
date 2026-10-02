@@ -16,9 +16,8 @@ const GROUPS = [
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [
-    ["MyRecon vs Sherlock", "/vs/sherlock"], ["MyRecon vs Maigret", "/vs/maigret"],
-    ["MyRecon vs WhatsMyName", "/vs/whatsmyname"], ["MyRecon vs HIBP", "/vs/have-i-been-pwned"],
-    ["All comparisons", "/vs/"],
+    ["MyRecon vs Sherlock", "/vs/sherlock"],
+    ["Choose a research workflow", "/vs/"],
   ]],
   ["Company", [
     ["About MyRecon", "/about.html"], ["Founder", "/founder.html"],

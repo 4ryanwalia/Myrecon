@@ -3,53 +3,71 @@
   "slug": "verify-osint-account-matches",
   "status": "published",
   "title": "Verify OSINT Account Matches | MyRecon",
-  "description": "Verify OSINT Account Matches: verification means opening each candidate source, recording observable details, and checking whether independent evidence…",
+  "description": "Verify username leads with original URLs, independent public links, conflicts and an illustrative decision log. Keep unresolved matches explicit.",
   "h1": "Verify OSINT Account Matches",
   "focus_keyword": "verify osint account matches",
-  "intro": "Verify OSINT Account Matches is best handled as a narrow, documented question rather than a hunt for every possible connection. Verification means opening each candidate source, recording observable details, and checking whether independent evidence supports the proposed link. This guide gives a repeatable way to check public information, note uncertainty, and stop when the available evidence is not enough.",
+  "intro": "A username match answers whether a page may exist under a handle. It does not answer who controls the page. Use this decision process to distinguish a candidate, a corroborated public link and a claim you cannot support. It works for self-audits and research with a defined authorization.",
   "sections": [
     {
-      "heading": "Define the question and permission",
-      "body": "Before searching, state what verify osint account matches needs to answer and which public sources are relevant. Verification means opening each candidate source, recording observable details, and checking whether independent evidence supports the proposed link. Use identifiers supplied by the account owner or covered by your authorization, and set a stopping point so a narrow review does not expand into unnecessary data collection."
+      "heading": "Start with a known reference",
+      "body": "Write the claim you are checking before opening results. For example: does this profile belong to the maintainer of the official project? Use a reference controlled by that project, such as its website account-links page. A search snippet, scraped directory or another username checker is not an independent reference if it repeats the same source. For your own old account, saved signup emails and a recognized login can be useful private confirmation, but do not publish those records as evidence."
     },
     {
-      "heading": "Check original public sources",
-      "body": "Start with an official platform search or canonical page, then open each candidate instead of relying on snippets or copied directories. Record the source URL, date, visible context, and any login wall, block, or ambiguity that limits what you could confirm about verify osint account matches."
+      "heading": "Check that the result is actually a profile",
+      "body": "Open the exact candidate URL. Note the current handle, page type and final destination. A platform may return a login page, generic application shell or soft error with a successful HTTP status. A username embedded in a URL is therefore insufficient. A user page can also redirect to an organization or a renamed account. In MyRecon, keep found, not found and unknown distinct; a check that was blocked or timed out cannot be promoted to either a confirmed account or a confirmed absence."
     },
     {
-      "heading": "Keep conclusions proportional to the evidence",
-      "body": "Separate confirmed public observations from possibilities and unknowns. A shared handle, name, image, or search result is not identity proof. For verify osint account matches, use independent, voluntarily published context, minimize retained details, and remove notes when the authorized purpose ends."
+      "heading": "Rank evidence by independence",
+      "body": "An official website linking directly to an account is stronger for a public association than a similar display name. Two profiles using the same avatar are not necessarily two independent clues: images are copied. A reciprocal link can help, but note that compromised accounts can also publish misleading links. Record each source and explain why it is independent. Stop short of establishing a legal identity or current control unless your task has a separate authorized verification process."
+    },
+    {
+      "heading": "Use a decision log rather than a numerical confidence score",
+      "body": "Make columns for claim, candidate URL, observation, supporting source, conflicting evidence and conclusion. Useful conclusions are candidate only, public association corroborated, conflicting evidence and unable to verify. Do not turn a percentage generated without a validated model into evidence. When details conflict, write the conflict directly: the official project links to a different handle, or the candidate advertises an unrelated organization. Absence of a backlink is not by itself a disproof."
+    },
+    {
+      "heading": "Worked example: a reused handle",
+      "body": "Illustrative case: a project website links to github.com/example-studio, while a social profile named example_studio uses a similar avatar but has no project link. The GitHub association is supported by the project source. The social profile remains a candidate because the matching handle and avatar could have been copied. Add a follow-up only if the research purpose requires it; do not infer that the accounts share a person, email address or location. Record the observation date because links and handles can change."
+    },
+    {
+      "heading": "Write a report another reviewer can challenge",
+      "body": "Include the claim, original URLs, observation time, positive evidence, conflicts and unavailable sources. Distinguish what was visible while signed out from anything shown under an authorized login. Leave irrelevant personal details out. If you cannot reproduce a page later, preserve the prior observation as dated evidence rather than quietly changing the conclusion. A defensible result may be unresolved; the goal is a supportable answer, not the largest connected-account graph."
     }
   ],
   "sources": [
-    "https://www.ftc.gov/business-guidance/privacy-security",
-    "https://www.myrecon.xyz/"
+    "https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/about-your-profile",
+    "/#benchmarks"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-03",
+  "modified_at": "2026-10-03",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Can verify osint account matches establish a person's identity?",
-      "answer": "No. Public search results can suggest a lead but cannot establish identity by themselves. Confirm the original page and seek independent, voluntarily published evidence; if the evidence does not support a clear link, report it as uncertain."
+      "question": "Does the same avatar prove two accounts are linked?",
+      "answer": "No. Images can be copied. Look for independent, source-controlled links and record conflicts."
     },
     {
-      "question": "What is a privacy-aware way to verify osint account matches?",
-      "answer": "Use only sources and identifiers that fit a lawful, authorized purpose, check the platform's own public pages, and avoid access controls or account-recovery endpoints. Verification means opening each candidate source, recording observable details, and checking whether independent evidence supports the proposed link. Keep only the minimum notes needed for the task."
+      "question": "What should I do with a blocked profile?",
+      "answer": "Record unable to verify, including the blocked source and date. Do not treat a block as proof of existence or absence."
     },
     {
-      "question": "What if the public evidence is incomplete?",
-      "answer": "Mark the result unknown, record which page or check could not be verified, and do not turn a timeout or absence of indexed material into a conclusion. Recheck later only if the task remains authorized and useful."
+      "question": "Can public links verify a legal identity?",
+      "answer": "They can support a public association. Legal identity and current account control require a separate verification process."
     }
   ],
   "takeaways": [
-    "Write down the narrow question behind verify osint account matches and use only public information that is relevant to answering it.",
-    "Open original sources, record dates and URLs, and distinguish direct observations from assumptions when working on verify osint account matches.",
-    "Treat blocked, deleted, private, or ambiguous material as unknown; do not bypass a service control to fill the gap."
+    "Start with a known reference",
+    "Check that the result is actually a profile",
+    "Rank evidence by independence"
   ],
-  "method": "This method favors official public pages and reproducible notes. For verify osint account matches, record the search terms you were authorized to use, the source URL, the time checked, and the reason for each conclusion. Keep negative or unavailable checks separate from confirmed findings, minimize personal data in notes, and stop when further searching would exceed the original purpose."
+  "method": "Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested.",
+  "diagram_steps": [
+    "Open candidate",
+    "Check independent link",
+    "Record conclusion"
+  ],
+  "editorial_review": true
 }

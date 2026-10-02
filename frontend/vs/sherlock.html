@@ -1,161 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    var analyticsPage = new URL(window.location.href);
-    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
-    gtag('config', 'G-3L8YYC6NKF', {
-      page_location: analyticsPage.origin + analyticsPage.pathname,
-      page_referrer: analyticsReferrer
-    });
-  </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyRecon vs Sherlock: OSINT Tools Compared</title>
-  <meta name="description" content="Compare MyRecon and Sherlock: search inputs, public-source workflows and verification limits. Choose an OSINT tool for your authorized research.">
-  <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#f7f7f4">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  var analyticsPage = new URL(window.location.href);
+  var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+  gtag('config', 'G-3L8YYC6NKF', {
+    page_location: analyticsPage.origin + analyticsPage.pathname,
+    page_referrer: analyticsReferrer
+  });
+</script>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyRecon vs Sherlock: Workflow, Cost &amp; Limits</title><meta name="description" content="Compare Sherlock local CLI research with MyRecon browser access, current scan limits, paid features and public-source verification requirements.">
+  <meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/vs/sherlock">
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="MyRecon">
-  <meta property="og:title" content="MyRecon vs Sherlock: OSINT Tools Compared">
-  <meta property="og:description" content="Compare MyRecon and Sherlock: search inputs, public-source workflows and verification limits. Choose an OSINT tool for your authorized research.">
-  <meta property="og:url" content="https://www.myrecon.xyz/vs/sherlock">
-  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MyRecon vs Sherlock: OSINT Tools Compared">
-  <meta name="twitter:description" content="Compare MyRecon and Sherlock: search inputs, public-source workflows and verification limits. Choose an OSINT tool for your authorized research.">
-  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
-  <link rel="manifest" href="/site.webmanifest">
-  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=b0d1b172c9">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=e3935bfe0c">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"MyRecon vs Sherlock","description":"Sherlock checks 400+ sites from the command line. MyRecon checks 100+ in the browser and scores every match. Where each one wins, and when to use both.","url":"https://www.myrecon.xyz/vs/sherlock","dateModified":"2026-09-27","datePublished":"2026-09-25","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"mainEntityOfPage":"https://www.myrecon.xyz/vs/sherlock","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Comparisons","item":"https://www.myrecon.xyz/vs/"},{"@type":"ListItem","position":3,"name":"MyRecon vs Sherlock","item":"https://www.myrecon.xyz/vs/sherlock"}]}},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is MyRecon a direct replacement for Sherlock?","acceptedAnswer":{"@type":"Answer","text":"Not for every task. Sherlock is documented as an open-source command-line username search project. MyRecon focuses on a browser-based public username workflow. Choose based on required inputs, access model, source coverage, and the current official documentation."}},{"@type":"Question","name":"Does MyRecon check more sites than Sherlock?","acceptedAnswer":{"@type":"Answer","text":"No measured, same-scope benchmark is published here, so this page makes no coverage or speed superiority claim. Compare the current source lists, methods, and result definitions under the same authorized test conditions."}},{"@type":"Question","name":"Can either tool prove two profiles belong to one person?","acceptedAnswer":{"@type":"Answer","text":"A matching username alone cannot establish identity. Open the underlying public profiles and corroborate any proposed connection with independent, voluntarily published context; keep uncertain outcomes clearly labeled."}}]}]}</script>
-  <link rel="stylesheet" href="/assets/css/content-app-promo.css?v=804d909ebd">
-  <link rel="stylesheet" href="/assets/css/content-app-context.css">
+  <meta property="og:type" content="article"><meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="MyRecon vs Sherlock: Workflow, Cost &amp; Limits"><meta property="og:description" content="Compare Sherlock local CLI research with MyRecon browser access, current scan limits, paid features and public-source verification requirements.">
+  <meta property="og:url" content="https://www.myrecon.xyz/vs/sherlock"><meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="MyRecon vs Sherlock: Workflow, Cost &amp; Limits">
+  <meta name="twitter:description" content="Compare Sherlock local CLI research with MyRecon browser access, current scan limits, paid features and public-source verification requirements."><meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/css/editorial.css">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=b0d1b172c9"><link rel="stylesheet" href="/assets/css/fx.css?v=e3935bfe0c">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","name":"MyRecon vs Sherlock: Workflow, Cost & Limits","headline":"MyRecon vs Sherlock: Workflow, Cost & Limits","description":"Compare Sherlock local CLI research with MyRecon browser access, current scan limits, paid features and public-source verification requirements.","url":"https://www.myrecon.xyz/vs/sherlock","dateModified":"2026-10-03","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"mainEntityOfPage":"https://www.myrecon.xyz/vs/sherlock"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Comparisons","item":"https://www.myrecon.xyz/vs/"},{"@type":"ListItem","position":3,"name":"MyRecon vs Sherlock: Workflow, Cost & Limits","item":"https://www.myrecon.xyz/vs/sherlock"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is MyRecon entirely free and ad-supported?","acceptedAnswer":{"@type":"Answer","text":"No. It has free guest previews and a signed-in daily standard allowance, plus optional paid features. See current pricing for the ₹99 scan pack."}},{"@type":"Question","name":"Does this comparison prove one tool finds more accounts?","acceptedAnswer":{"@type":"Answer","text":"No. No same-scope Sherlock benchmark is published here. Counts, methods and source availability differ."}},{"@type":"Question","name":"When is Sherlock a better fit?","acceptedAnswer":{"@type":"Answer","text":"Consider it when you need a local command-line workflow or script integration and can manage installation, dependencies and source review."}}]}</script>
+  <style>
+    .seo-page{max-width:900px;padding-top:42px;padding-bottom:56px}.seo-breadcrumb{font-size:.9rem;margin-bottom:18px;color:var(--text-dim)}
+    .seo-page h1{line-height:1.14;margin:0 0 16px}.seo-page .seo-intro{font-size:1.1rem;line-height:1.7;max-width:72ch}
+    .seo-section{margin:34px 0}.seo-section h2{margin:0 0 12px}.seo-section p,.seo-section li{line-height:1.75}.seo-section li{margin:8px 0}
+    .seo-cta{margin:32px 0;padding:24px;border:1px solid var(--border,#394252);border-radius:14px;background:var(--surface,#101722)}
+    .seo-cta h2{margin:0 0 8px}.seo-faq{margin-top:42px}.seo-faq details{padding:14px 0;border-bottom:1px solid var(--border,#394252)}
+    .seo-faq summary{font-weight:700;cursor:pointer}.seo-faq details p{margin-top:10px;line-height:1.7}.seo-sources{font-size:.92rem}
+    .seo-table-wrap{overflow-x:auto}.seo-table-wrap table{width:100%;border-collapse:collapse}.seo-table-wrap th,.seo-table-wrap td{padding:10px;border:1px solid var(--border,#394252);text-align:left;vertical-align:top}
+    .seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}
+    .seo-library-link{margin-top:32px}.seo-library-link a{margin-right:12px}
+  </style>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/" class="active">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
-      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
-      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
-    </div>
-  </header>
-  <main id="main">
-    <section class="vs-hero container">
-      <nav aria-label="Breadcrumb" style="font-size:.85rem;color:var(--text-mute);margin-bottom:18px">
-        <a href="/" style="color:var(--text-mute)">Home</a> › <a href="/vs/" style="color:var(--text-mute)">Comparisons</a> › <span>Sherlock</span>
-      </nav>
-      <h1><span data-scramble>MyRecon vs</span> <span class="fx-grad">Sherlock</span></h1>
-<aside class="content-app-promo" data-content-app-promo aria-label="MyRecon Android app">
-  <button type="button" data-app-promo-dismiss aria-label="Dismiss app invitation">×</button>
-  <h2>MyRecon on Android</h2>
-  <p>Check public usernames on your phone. Free, with no signup. Closed testing is open to eligible testers; public release is coming soon.</p>
-  <a class="content-app-promo__link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View on Google Play</a>
-</aside>
-      <p class="lead">Sherlock is the tool most people meet first when they look up a username. It is fast, free and famous. Here is how it differs from MyRecon, including the places it is simply better.</p>
-      <div class="vs-duel" aria-hidden="true">
-        <div class="vs-side us">MyRecon<small>browser, no install</small></div>
-        <div class="vs-badge"><span>VS</span></div>
-        <div class="vs-side">Sherlock<small>Python CLI, MIT</small></div>
-      </div>
-      <p class="vs-date" style="margin-top:18px">Checked against Sherlock's own documentation on 25 September 2026</p>
+  <header class="nav editorial-nav"><div class="container nav-inner">
+    <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+    <nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
+  </div></header>
+  <main id="main" class="container prose seo-page">
+    <nav class="seo-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="/vs/">Comparisons</a></nav>
+    <article><span class="kicker">Comparisons</span><h1>MyRecon vs Sherlock: Workflow, Cost &amp; Limits</h1><p class="seo-intro">Sherlock and MyRecon both help with public username research, but their access models differ. Sherlock is an open-source command-line project you run in your own environment. MyRecon offers a browser workflow with guest previews, account limits and optional paid features. Neither tool establishes who owns a matching profile.</p><p class="seo-sources">MyRecon editorial · Updated 2026-10-03</p>
+
+    <section class="seo-section"><h2>Compare the workflows</h2>
+      <div class="seo-table-wrap"><table><thead><tr><th>Task</th><th>MyRecon</th><th>Sherlock</th></tr></thead><tbody><tr><th scope="row">Access</th><td>Browser; guest preview and account plans</td><td>Local CLI; installation required</td></tr><tr><th scope="row">Cost</th><td>Free allowance; optional ₹99 one-time pack</td><td>Free open-source software</td></tr><tr><th scope="row">Scope</th><td>500+ standard catalogue; separate paid Extended scope</td><td>Current checks listed in the official project</td></tr><tr><th scope="row">Verification</th><td>Open candidate sources; keep unknown outcomes</td><td>Open candidate sources; inspect output and request limits</td></tr></tbody></table></div>
+      <p>No directly comparable benchmark is published for this page.</p>
+      <h3>MyRecon may suit you when</h3><ul><li>Browser access without local dependencies</li><li>Visible result uncertainty and separate scan scopes</li></ul>
+      <h3>Consider the trade-offs</h3><ul><li>Account and plan limits apply</li><li>No same-scope Sherlock benchmark on this page</li><li>Public leads do not verify ownership</li></ul>
+      <p>Keep a local Sherlock workflow if its script integration matters. Evaluate MyRecon on an authorized handle with source review before changing your process.</p>
+      <p>Competitor details: <a href="https://github.com/sherlock-project/sherlock" target="_blank" rel="noopener noreferrer">Sherlock official source</a></p>
     </section>
-    <article class="vs-article container">
-    <div class="vs-verdict">
-      <h2>Short answer</h2>
-      <p style="margin:0">Pick <strong>Sherlock</strong> if you live in a terminal, want the widest reach of the two, and are happy to open each hit and confirm it yourself. Pick <strong>MyRecon</strong> if you want an answer in a browser tab with no install, a confidence label on every match, and a list of what was checked but not reported. Plenty of investigators run both.</p>
-    </div>
-    <div class="vs-table-wrap"><table class="vs-table">
-      <caption class="visually-hidden">MyRecon compared with Sherlock</caption>
-      <thead><tr><th scope="col">Feature</th><th scope="col">MyRecon</th><th scope="col">Sherlock</th></tr></thead>
-      <tbody>
-        <tr><th scope="row">Where it runs</th><td>Browser, Android app, or our CLI</td><td>Your terminal (pipx, Docker, distro packages)</td></tr>
-        <tr><th scope="row">Setup</th><td>None</td><td>Python environment or Docker</td></tr>
-        <tr><th scope="row">Sites checked</th><td>100+ on the web, 560 in the Android app</td><td>400+, per its README</td></tr>
-        <tr><th scope="row">How a hit is decided</th><td>Status, page content and redirects scored into high / medium / low</td><td>One detection rule per site: status code, error message or redirect</td></tr>
-        <tr><th scope="row">Shows what it rejected, and why</th><td class="vs-yes">Yes, with the status code and reason</td><td>Optional (--print-all lists misses), no reason given</td></tr>
-        <tr><th scope="row">Email, breach, domain, DNS, IP</th><td class="vs-yes">Yes, same page</td><td class="vs-no">No, usernames only</td></tr>
-        <tr><th scope="row">Export</th><td>JSON, CSV</td><td>TXT, CSV, XLSX, JSON</td></tr>
-        <tr><th scope="row">Proxy / Tor routing</th><td class="vs-no">No</td><td class="vs-yes">Yes, --proxy</td></tr>
-        <tr><th scope="row">Open source</th><td class="vs-yes">Yes, MIT</td><td class="vs-yes">Yes, MIT</td></tr>
-        <tr><th scope="row">Cost</th><td>Free, ad-supported</td><td>Free</td></tr>
-      </tbody></table></div>
-    <h2>What Sherlock is</h2>
-    <p>Sherlock is an open-source Python program, MIT licensed, that takes a username and asks a long list of websites whether a profile with that name exists. Its README describes coverage of more than 400 social networks. You install it with <code>pipx</code>, Docker, or a package from Kali, BlackArch, Homebrew and several Linux distributions, then run it from a terminal. Hits print as a list of URLs and can be written to text, CSV, XLSX or JSON. It supports a proxy, a configurable timeout, an opt-in flag for adult sites, and a mode that opens every hit in your browser.</p>
-    <p>For a lot of people Sherlock is where username OSINT starts, and it earned that. The site list is maintained in the open, anyone can add a site with a pull request, and it runs anywhere Python runs.</p>
+    <section class="seo-section" id="section-1">
+      <h2>Sherlock: local installation and command-line output</h2>
+      <p>Sherlock&#39;s official repository documents installation with pipx install sherlock-project and a search with sherlock followed by a username. Check that repository before installation for current supported environments and options. Local execution is useful when you need repeatable commands, script integration or output files under your own control. You are responsible for dependency updates, request behavior and reviewing results. The project is free open-source software; that does not guarantee reliable responses from every third-party platform.</p>
+    </section>
+    <section class="seo-section" id="section-2">
+      <h2>MyRecon: browser access and explicit plan limits</h2>
+      <p>The MyRecon standard release catalogue has 500+ platforms. Guests see a limited preview; signed-in free accounts get five standard scans per day. The optional one-time pack (₹99 via Indian checkout, or US$3.99 via enabled international checkout) adds unlimited standard scans, Deep Search access and ten Extended scans over a separate 3,000+ catalogue. Credits do not expire and the pack has no automatic renewal. The Android listing is in closed testing for eligible testers. Browser and Android availability should therefore not be presented as identical. The pricing page describes the current offer.</p>
+    </section>
+    <section class="seo-section" id="section-3">
+      <h2>Compare the same question and inspect the sources</h2>
+      <p>Use the same handle you control and record the date, each tool&#39;s version or release, chosen scope, result status and original profile URL. Keep unsupported, blocked and unknown checks separate from negatives. A catalogue count describes scope, not successful checks or confirmed accounts. This page does not publish a same-scope Sherlock benchmark and makes no speed, coverage superiority or accuracy claim. The homepage&#39;s recorded username case has a different scope and cannot settle this comparison.</p>
+    </section>
+    <section class="seo-section" id="section-4">
+      <h2>Worked decision: a one-off self-audit or scripted review</h2>
+      <p>For a one-off self-audit on a browser-only device, MyRecon can surface candidates without a local installation. Open each result and confirm your own accounts through saved records. For a repeatable local command pipeline, Sherlock may fit better if you can maintain its environment. If the key requirement is private-profile access or identity verification, neither username workflow satisfies it. Keep that missing requirement visible rather than choosing by the largest advertised site count.</p>
+    </section>
+    <section class="seo-section" id="section-5">
+      <h2>Data handling and operational limits</h2>
+      <p>A local Sherlock search still sends requests to third-party sites. A browser-based MyRecon search uses its hosted services and the data handling described in the privacy policy. Do not describe either workflow as anonymous merely because it has no local signup step. Platform rate limits, login walls and changing templates affect both. Use bounded authorized searches, and keep your exports and screenshots under the same access and retention controls as other research notes.</p>
+    </section>
 
-    <h2>Where Sherlock beats MyRecon</h2>
-    <ul>
-      <li><strong>Reach.</strong> 400+ sites against our 100+ on the web. If a handle lives on a niche forum, Sherlock has a better chance of knowing that forum exists.</li>
-      <li><strong>Scriptability.</strong> It is a command you can put in a loop, a cron job or a pipeline. Our web tool is a page; our own CLI exists, but Sherlock's has years of community tooling around it.</li>
-      <li><strong>Network control.</strong> A proxy flag means you choose where the requests come from. MyRecon's web requests come from our server, which some sites block outright.</li>
-      <li><strong>No ads, no rate limit.</strong> It runs on your machine, so the only limit is how politely you choose to query.</li>
-    </ul>
-
-    <h2>Where MyRecon beats Sherlock</h2>
-    <ul>
-      <li><strong>Nothing to install.</strong> Open a tab, type a handle. That matters more than it sounds: most people who need a username check once will never set up Python to do it.</li>
-      <li><strong>A confidence label on every match.</strong> Sherlock's per-site rule is a yes or no. MyRecon scores status, page content, profile metadata and redirects together and labels each match high, medium or low, so you know which ones to open first.</li>
-      <li><strong>It explains its rejects.</strong> Under every result is a panel listing the platforms that answered but were not reported, with the status code and the reason. Sherlock can print its misses with <code>--print-all</code>, but a blocked site and a missing account look the same there. We print the difference.</li>
-      <li><strong>One page for the whole case.</strong> A handle leads to an email, the email to a domain, the domain to an IP. MyRecon runs all of those lookups on the same page and turns each finding into a one-click pivot. Sherlock does one job and leaves the rest to you.</li>
-    </ul>
-
-    <h2>The false-positive question</h2>
-    <p>Every username checker is guessing, in a disciplined way. A site that answers "200 OK" for any name you type, real or not, will produce a hit for every search. Sites change their pages, add login walls and start blocking datacentres, and a rule that was correct last month quietly starts lying. Sherlock's maintainers fix these as reports come in, and its issue tracker is full of exactly this work. That is not a knock on Sherlock; it is the nature of the job.</p>
-    <p>We measured the scale of the problem ourselves. When we tested 1,015 candidate sites from public lists against a real handle and an invented one, 66 answered 200 to both, which makes status-code-only detection a permanent false-positive source for those sites. The method is written up in our guide on <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report fake accounts</a>. Our Android app goes a step further and requests an impossible control handle alongside the real one on every platform, so a site that answers both the same way cannot produce a match at all.</p>
-    <p>Whichever tool you use, run the control test yourself: search a handle that cannot exist. Every result it returns is a false positive, and it tells you how much to trust the rest.</p>
-
-    <h2>Privacy and where the requests come from</h2>
-    <p>Sherlock sends its requests from your own IP address unless you give it a proxy. That is good for control and bad if you do not want the target's platforms seeing your address. MyRecon's web search sends them from our server, so the sites see us, not you. We do not store searches in a database; history lives in your browser. The Android app is the reverse again: requests go from your handset, which is why it reaches more platforms, since phones are blocked far less often than servers.</p>
-
-    <h2>Which one should you use?</h2>
-    <p>If you are a researcher who already has a terminal open, install Sherlock, and use MyRecon when you want a second opinion with confidence labels, or when you need to move from the handle to an email or a domain without switching tools. If you are checking your own footprint, or verifying one person once, MyRecon gets you there with less friction. Both are free and both are open source, so the cost of trying the other is a few minutes.</p>
-    <h2>Questions people ask</h2>
-    <div class="faq">
-      <details><summary>Is MyRecon a Sherlock clone?</summary><p>No. MyRecon does not use Sherlock's site list or code. Its web platform list and scoring were built separately, and it adds email, breach, domain, DNS and IP lookups that Sherlock does not attempt.</p></details>
-      <details><summary>Why does Sherlock find more accounts than MyRecon?</summary><p>It checks more sites, over 400 against our 100+ on the web. Some of those extra hits will be real and some will be false positives from sites that answer every request the same way. Open each one before you rely on it.</p></details>
-      <details><summary>Can I use Sherlock without installing Python?</summary><p>Its README lists a Docker image as an alternative. If you want no install at all, a browser tool such as MyRecon or the WhatsMyName web app is the practical option.</p></details>
-    </div>
-    <h2>Other comparisons</h2>
-    <div class="vs-grid">
-      <a class="vs-card" href="/vs/maigret.html"><span class="kind">CLI scanner</span><h3>MyRecon vs Maigret</h3><p>The largest site list in open source, and what a bigger list does and does not buy you.</p><span class="go">Compare</span></a>
-      <a class="vs-card" href="/vs/whatsmyname.html"><span class="kind">Web + dataset</span><h3>MyRecon vs WhatsMyName</h3><p>The community dataset built to kill false positives, next to ours.</p><span class="go">Compare</span></a>
-      <a class="vs-card" href="/vs/have-i-been-pwned.html"><span class="kind">Breach search</span><h3>MyRecon vs Have I Been Pwned</h3><p>The breach authority, which we build on, and what we add around it.</p><span class="go">Compare</span></a>
-    </div>
-    <div class="vs-cta">
-      <h2>Run the test yourself</h2>
-      <p>Search a handle you own, then one that cannot exist, like <code>zq-no-such-user-8841</code>. A tool worth trusting reports nothing for the second.</p>
-      <a class="btn" href="/#tool=username">Open the username search</a>
-      <a class="btn btn-ghost" href="/is-myrecon-legit.html" style="margin-left:8px">Six tests for any tool</a>
-    </div>
-    <section class="content-app-context" data-content-app-context aria-label="MyRecon Android app">
-  <h2>Review your public footprint with MyRecon</h2>
-  <p>MyRecon helps you review public username leads from supported sites. Compare each tool's current coverage and verify candidate profiles at their source. The Android app runs a username sweep from your phone and labels uncertain checks as unknown.</p>
-  <p>Core app tools are free and need no signup. The Google Play listing is in closed testing, so only eligible testers can access it until public release. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint" target="_blank" rel="noopener noreferrer">View MyRecon on Google Play</a>.</p>
-</section>
-</article>
-  <section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Is MyRecon a direct replacement for Sherlock?</summary><p style="margin-top:10px;line-height:1.65">Not for every task. Sherlock is documented as an open-source command-line username search project. MyRecon focuses on a browser-based public username workflow. Choose based on required inputs, access model, source coverage, and the current official documentation.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Does MyRecon check more sites than Sherlock?</summary><p style="margin-top:10px;line-height:1.65">No measured, same-scope benchmark is published here, so this page makes no coverage or speed superiority claim. Compare the current source lists, methods, and result definitions under the same authorized test conditions.</p></details><details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">Can either tool prove two profiles belong to one person?</summary><p style="margin-top:10px;line-height:1.65">A matching username alone cannot establish identity. Open the underlying public profiles and corroborate any proposed connection with independent, voluntarily published context; keep uncertain outcomes clearly labeled.</p></details></section><section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Search a public username</h2><p>Use usernames you own or are authorized to review; a match is not proof of identity.</p><username-search-input></username-search-input></section></main>
+      <section class="seo-cta"><h2>Check a public username</h2><p>Guest previews and account limits apply. See <a href="/pricing">current pricing</a>. Verify each candidate at its source.</p><username-search-input></username-search-input></section>
+      <section class="seo-faq"><h2>Frequently asked questions</h2><details><summary>Is MyRecon entirely free and ad-supported?</summary><p>No. It has free guest previews and a signed-in daily standard allowance, plus optional paid features. See current pricing for the ₹99 scan pack.</p></details><details><summary>Does this comparison prove one tool finds more accounts?</summary><p>No. No same-scope Sherlock benchmark is published here. Counts, methods and source availability differ.</p></details><details><summary>When is Sherlock a better fit?</summary><p>Consider it when you need a local command-line workflow or script integration and can manage installation, dependencies and source review.</p></details></section>
+      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a></nav>
+      <section class="seo-section seo-sources"><h2>Sources and method</h2><p>Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested.</p><ul><li><a href="https://github.com/sherlock-project/sherlock" target="_blank" rel="noopener noreferrer">https://github.com/sherlock-project/sherlock</a></li><li><a href="/pricing" target="_blank" rel="noopener noreferrer">/pricing</a></li><li><a href="/privacy.html" target="_blank" rel="noopener noreferrer">/privacy.html</a></li></ul></section>
+    </article>
+  <p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>
+</main>
   <footer class="site-footer">
   <div class="site-footer__panel">
     <div class="site-footer__top">
@@ -174,7 +105,7 @@
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -192,10 +123,5 @@
     </div>
   </div>
 </footer>
-  <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=66930ea4e5"></script>
-  <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
-  <script src="/assets/js/content-app-promo.js" defer></script>
-</body>
-</html>
+  <script src="/assets/js/username-search-input.js?v=e015053a6f" defer></script>
+</body></html>

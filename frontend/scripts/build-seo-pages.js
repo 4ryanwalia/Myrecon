@@ -17,9 +17,6 @@ const LABELS = { target: "Platform lookups", comparison: "Comparisons", guide: "
 const PRESERVED = new Map([
   ["/", "index.html"],
   ["/pricing", "pricing.html"],
-  ["/vs/maigret", "vs/maigret.html"],
-  ["/vs/sherlock", "vs/sherlock.html"],
-  ["/vs/whatsmyname", "vs/whatsmyname.html"],
 ]);
 
 function fail(message) { throw new Error(message); }
@@ -33,6 +30,7 @@ function safeJson(value) { return JSON.stringify(value).replace(/</g, "\\u003c")
 function guideImagePath(record) { return `/assets/img/guides/${record.slug}.svg`; }
 function guideMobileImagePath(record) { return `/assets/img/guides/${record.slug}-mobile.svg`; }
 function guideTheme(record) {
+  if (record.diagram_steps) return { color: "#a8cfaa", steps: record.diagram_steps };
   const slug = record.slug.toLowerCase();
   const platformPrivacy = {
     "steam-profile-privacy-checklist": ["Steam settings", "Signed-out view", "Recheck exposure"],
@@ -77,7 +75,7 @@ function guideDiagram(record) {
 ${titleLines.map((line, index) => `<text x="84" y="${132 + index * 48}" fill="#f3f6fb" font-size="38" font-weight="700">${esc(line)}</text>`).join("")}
 <path d="M396 326h42m332 0h42" stroke="${theme.color}" stroke-width="4" stroke-linecap="round"/>
 ${cards}
-<text x="54" y="430" fill="#a8b3c7" font-size="17">Use public sources · Verify each lead · Record uncertainty</text>
+<text x="54" y="430" fill="#a8b3c7" font-size="17">Follow the workflow · Keep a minimal action log</text>
 </svg>\n`;
 }
 function guideMobileDiagram(record) {
@@ -173,7 +171,12 @@ function allRecords(contentRoot) {
     if (routes.has(route)) fail(`Duplicate published route: ${route}`);
     routes.add(route);
   }
-  if (records.length < 200) fail(`Expected 200+ published records; found ${records.length}`);
+  if (!records.length) fail("No published records found");
+  for (const record of records.filter((item) => item.kind !== "core")) {
+    if (!record.editorial_review) fail(`${record.slug}: topic-specific editorial review required`);
+    if (record.sections.length < 4) fail(`${record.slug}: incomplete workflow`);
+    if (record.intro.includes("best handled as a narrow, documented question")) fail(`${record.slug}: generic template intro`);
+  }
   return records;
 }
 function faqSchema(record) {
@@ -219,9 +222,7 @@ function renderSpecific(record) {
   if (record.kind === "target") {
     return `
     <section class="seo-section"><h2>Check it manually</h2><ol>${record.manual_steps.map((step) => `<li>${esc(step)}</li>`).join("")}</ol>
-      <p>${esc(record.platform.limitations)}</p></section>
-    <section class="seo-section"><h2>Privacy and result limits</h2><p>${esc(record.platform.privacy_overview)}</p>
-      <p>${esc(record.platform.false_positive_note)}</p></section>`;
+      </section>`;
   }
   if (record.kind === "deletion") {
     return `
@@ -269,7 +270,7 @@ function renderPage(record) {
   <meta property="og:url" content="${SITE}${route}"><meta property="og:image" content="${SITE}/assets/img/og-image.png">
   <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(record.title)}">
   <meta name="twitter:description" content="${esc(record.description)}"><meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg"><link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/css/editorial.css">
   <link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7">
 ${jsonLd(record, route)}
   <style>
@@ -287,20 +288,20 @@ ${jsonLd(record, route)}
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="nav"><div class="container nav-inner">
+  <header class="nav editorial-nav"><div class="container nav-inner">
     <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
     <nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
   </div></header>
   <main id="main" class="container prose seo-page">
     <nav class="seo-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="${categoryRoute}">${esc(label)}</a></nav>
-    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p>${record.kind === "guide" ? `
-      <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>A practical overview of the public-source review described below.</figcaption></figure>` : ""}
+    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p><p class="seo-sources">MyRecon editorial · Updated ${esc(record.modified_at)}</p>${record.kind === "guide" ? `
+      <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>Workflow illustration, not a screenshot or a recorded test.</figcaption></figure>` : ""}
       ${renderSpecific(record)}${renderSections(record)}
-      <section class="seo-cta"><h2>Check a public username</h2><p>Use accounts and identifiers you own or are authorized to review. A matching username is a lead, not proof of identity.</p>
-        <username-search-input></username-search-input></section>
+      ${record.evidence ? `<figure class="seo-guide-figure"><img src="${esc(record.evidence.image)}" alt="${esc(record.evidence.alt)}" width="1280" height="800" loading="lazy" style="max-width:100%;height:auto"><figcaption>${esc(record.evidence.caption)} <a href="${esc(record.evidence.source)}" target="_blank" rel="noopener noreferrer">Original source</a>.</figcaption></figure>` : ''}
+      ${record.slug === 'protect-researcher-notes' || record.slug === 'discord-user' ? '' : `<section class="seo-cta"><h2>Check a public username</h2><p>Guest previews and account limits apply. See <a href="/pricing">current pricing</a>. Verify each candidate at its source.</p><username-search-input></username-search-input></section>`}
       <section class="seo-faq"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details><summary>${esc(item.question)}</summary><p>${esc(item.answer)}</p></details>`).join("")}</section>
       <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a></nav>
-      ${sourceList.length ? `<section class="seo-section seo-sources"><h2>Sources</h2><ul>${sourceList.map((source) => `<li><a href="${esc(source)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a></li>`).join("")}</ul></section>` : ""}
+      ${sourceList.length ? `<section class="seo-section seo-sources"><h2>Sources and method</h2><p>${esc(record.method)}</p><ul>${sourceList.map((source) => `<li><a href="${esc(source)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a></li>`).join("")}</ul></section>` : ""}
     </article>
   </main>
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a></span></div></div></footer>
@@ -309,14 +310,27 @@ ${jsonLd(record, route)}
 `;
 }
 function renderHub(kind, records) {
+  const editorial = JSON.parse(fs.readFileSync(path.join(FRONTEND, "content", "editorial-hubs.json"), "utf8"))[kind];
   const section = CLUSTERS[kind];
   const title = ({ target: "Username Search by Platform | MyRecon", comparison: "OSINT Tool Comparisons | MyRecon", guide: "OSINT & Digital Footprint Guides | MyRecon", deletion: "Account Deletion & Online Privacy Guides | MyRecon" })[kind];
-  const description = `Browse ${records.length} ${LABELS[kind].toLowerCase()} from MyRecon. Review public information, official sources, and the limits of each workflow.`;
+  const description = editorial.description;
   const route = `/${section}/`;
+  if (kind === 'guide') {
+    const publishedSlugs = new Set(records.map(r => r.slug));
+    const retired = JSON.parse(fs.readFileSync(path.join(FRONTEND, 'content', 'editorial-redirects.json'), 'utf8'));
+    const legacy = fs.readdirSync(path.join(FRONTEND, 'guides')).filter(name => name.endsWith('.html') && name !== 'index.html').map(name => {
+      const slug = name.slice(0, -5);
+      const html = fs.readFileSync(path.join(FRONTEND, 'guides', name), 'utf8');
+      const heading = (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || slug).replace(/<[^>]+>/g, '');
+      const description = html.match(/<meta name="description" content="([^"]*)"/i)?.[1] || 'Read the practical steps and source limitations.';
+      return [slug, heading, description];
+    }).filter(([slug]) => !publishedSlugs.has(slug) && !retired[`/guides/${slug}`]);
+    records = [...records, ...legacy.map(([slug, h1, description]) => ({ kind: 'guide', slug, h1, description }))];
+  }
   const list = records.map((record) => `      <a href="${esc(routeFor(record))}"><strong>${esc(record.h1)}</strong><br><span>${esc(record.description)}</span></a>`).join("\n");
-  const pageRecord = { title, h1: title, description, intro: `Browse the MyRecon ${LABELS[kind].toLowerCase()} library. Each page explains a specific task, its evidence limits, and appropriate public-source steps.`, kind, modified_at: new Date().toISOString().slice(0, 10), faq: [] };
+  const pageRecord = { title, h1: editorial.heading, description, intro: editorial.intro, kind, modified_at: '2026-10-03', faq: [] };
   const hubSchema = safeJson({ "@context": "https://schema.org", "@type": "CollectionPage", name: title, description, url: `${SITE}${route}`, mainEntity: { "@type": "ItemList", itemListElement: records.map((record, index) => ({ "@type": "ListItem", position: index + 1, name: record.h1, url: `${SITE}${routeFor(record)}` })) } });
-  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4"><link rel="canonical" href="${SITE}${route}"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/">MyRecon <small>OSINT</small></a><nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(title)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4"><link rel="canonical" href="${SITE}${route}"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}.seo-section{margin:32px 0;max-width:78ch}.seo-section p{line-height:1.75}.seo-page h1{line-height:1.2;margin-bottom:18px}.seo-page>p{margin:18px 0;line-height:1.7}@media(max-width:700px){.seo-page{padding:28px 20px}.nav-links{flex-wrap:wrap;gap:10px}}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/">MyRecon <small>OSINT</small></a><nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(pageRecord.h1)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div>${renderSections(editorial)}${editorial.links ? `<section class="seo-section"><h2>Official instructions and sources</h2><ul>${editorial.links.map(([label, url]) => `<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a></li>`).join('')}</ul></section>` : ''}<p>Updated October 3, 2026. Worked examples are illustrative; external account flows were not tested on personal accounts.</p></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer></body></html>`;
 }
 function setAttr(tag, attr, value) {
   const escaped = esc(value);
@@ -345,7 +359,10 @@ function syncPreservedPage(record) {
   } else html = html.replace(/<\/head>/i, `  ${canonical}\n</head>`);
   html = html.replaceAll(`${SITE}${relative.replace(/\\/g, "/")}`, `${SITE}${route}`);
   html = html.replaceAll(`/${relative.replace(/\\/g, "/")}`, route);
-  const faqBlock = `<section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">${esc(item.question)}</summary><p style="margin-top:10px;line-height:1.65">${esc(item.answer)}</p></details>`).join("")}</section>`;
+  // Replace our block each build so updated answers also reach visible content.
+  html = html.replace(/<section\b[^>]*data-editorial-faq[^>]*>[\s\S]*?<\/section>/gi, '');
+  html = html.replace(/<section class="container" style="margin:30px auto;padding:20px;[^\"]*"><h2>Frequently asked questions<\/h2>[\s\S]*?<\/section>/gi, '');
+  const faqBlock = `<section data-editorial-faq class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">${esc(item.question)}</summary><p style="margin-top:10px;line-height:1.65">${esc(item.answer)}</p></details>`).join("")}</section>`;
   if (!record.faq.every((item) => html.includes(esc(item.question)))) {
     if (!/<\/main>/i.test(html)) fail(`${relative}: cannot place visible FAQs because main is missing`);
     html = html.replace(/<\/main>/i, `${faqBlock}</main>`);
@@ -404,30 +421,31 @@ function main() {
     if (preserved) { syncPreservedPage(record); continue; }
     const file = fileFor(record);
     const relative = path.relative(FRONTEND, file).split(path.sep).join("/");
-    if (fs.existsSync(file) && !previousFiles.has(relative)) fail(`Refusing to overwrite an existing page not owned by this generator: ${relative}`);
+    if (fs.existsSync(file) && !previousFiles.has(relative) && route !== "/vs/sherlock") fail(`Refusing to overwrite an existing page not owned by this generator: ${relative}`);
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, cleanHtml(renderPage(record)), "utf8");
     generated.add(relative);
     byKind.set(record.kind, [...(byKind.get(record.kind) || []), record]);
     rendered++;
   }
-  for (const kind of ["target", "deletion"]) {
+  for (const kind of ["target", "deletion", "guide", "comparison"]) {
     const relative = `${CLUSTERS[kind]}/index.html`;
     const file = safeGeneratedFile(relative);
-    if (fs.existsSync(file) && !previousFiles.has(relative)) fail(`Refusing to overwrite an existing library index: ${relative}`);
+    // Library hubs are explicitly owned by this renderer.
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, cleanHtml(renderHub(kind, byKind.get(kind) || [])), "utf8");
     generated.add(relative);
-  }
-  for (const [kind, relative] of [["guide", "guides/index.html"], ["comparison", "vs/index.html"]]) {
-    const file = safeGeneratedFile(relative);
-    const html = fs.readFileSync(file, "utf8");
-    fs.writeFileSync(file, addLibraryLinks(kind, html), "utf8");
   }
   for (const stale of previousFiles) {
     if (generated.has(stale)) continue;
     const file = safeGeneratedFile(stale);
     if (fs.existsSync(file)) fs.unlinkSync(file);
+  }
+  // Remove retired source pages, including older hand-written comparisons.
+  const redirects = JSON.parse(fs.readFileSync(path.join(FRONTEND, 'content', 'editorial-redirects.json'), 'utf8'));
+  for (const route of Object.keys(redirects)) {
+    const retired = safeGeneratedFile(route.endsWith('.html') ? route.slice(1) : `${route.slice(1)}.html`);
+    if (fs.existsSync(retired)) fs.unlinkSync(retired);
   }
   fs.writeFileSync(MANIFEST, JSON.stringify({ generated_by: "frontend/scripts/build-seo-pages.js", files: [...generated].sort() }, null, 2) + "\n", "utf8");
   console.log(`[seo-pages] ${records.length} published records; rendered ${rendered} pages plus 2 hubs; reused ${records.length - rendered} existing canonical pages`);

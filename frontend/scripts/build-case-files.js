@@ -354,9 +354,9 @@ ${c.faq.map((f) => `        <h3>${esc(f.q)}</h3>\n        <p>${f.a}</p>`).join("
            the per-address one sends anything. -->
       <aside class="bx-offer">
         <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
         <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">View closed-testing listing →</a></p>
       </aside>
 
 ${(c.sources || []).length ? `      <h2>Sources</h2>

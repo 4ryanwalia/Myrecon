@@ -2,48 +2,61 @@
   "kind": "target",
   "slug": "instagram-account",
   "status": "published",
-  "title": "Instagram account Search by Username | MyRecon",
-  "description": "Look up a public Instagram account by username. Check the official source, spot ambiguous matches and understand what MyRecon can verify.",
-  "h1": "Find a public Instagram account by username",
+  "title": "Find an Instagram Account: Handles & Visibility",
+  "description": "Find an Instagram profile from a known handle, review signed-out visibility, handle name collisions and use official privacy or reporting steps.",
+  "h1": "Find an Instagram Account: Handles & Visibility",
   "focus_keyword": "instagram account username lookup",
-  "intro": "Search for a public Instagram account using an exact username, then review the candidate at its official source. This guide covers public profile lookup, verification steps and the limits of a matching handle.",
+  "intro": "Instagram usernames, display names and account privacy have different roles. Start with a known handle or a link published by the account owner. A public lookup cannot unlock private posts, identify a hidden account from an email address or prove who controls a profile.",
   "sections": [
     {
-      "heading": "What a public Instagram account can show",
-      "body": "Use the official page to confirm the account type, current handle, and information the owner chose to publish. The Instagram account is a distinct public page type; confirm that the resolved URL actually belongs to that page rather than a similarly named post, group, or search result. A username result is a starting point for a self-audit or authorized review, not a complete record of the person behind an account."
+      "heading": "Use the username, not just the display name",
+      "body": "Open https://www.instagram.com/HANDLE/ using the exact handle you know, or use Instagram search within your own account. Remove an initial @ when constructing the URL. Display names can be repeated across many accounts. If you only know a name, compare the candidate with an account link from the person or organization's own website; do not choose the first search result as an identity match. A search-engine snippet can describe a handle that has since changed."
     },
     {
-      "heading": "Coverage and limits for Instagram",
-      "body": "The checked-in MyRecon standard catalogue lists Instagram. This is a username-level check, not a guarantee that every request will resolve: service changes, rate limits, privacy controls, or temporary blocks can leave a result unknown. A missing or blocked result cannot establish that no account exists. Do not work around login walls, access controls, rate limits, or service restrictions to force a response."
+      "heading": "Record what is visible in your access context",
+      "body": "For your own profile, open its URL while signed out and compare that view with the profile in the app. Note visible biography, links and any public posts. Instagram can require login or limit browsing even when an account exists. Record that observation as unavailable in the signed-out view. A private account can still expose identifying profile information, while private posts remain access-controlled. Do not interpret a login wall as proof that the account is private."
     },
     {
-      "heading": "Verify a candidate before you rely on it",
-      "body": "Open the canonical Instagram page, note the URL and observation date, and compare one or more independent details that are voluntarily public. A reused or renamed handle, a similarly named account, a redirect, or a stale search snippet can create a false lead on Instagram. Open the official destination and compare independent public context before attributing it to anyone. Keep uncertain and unavailable outcomes marked as unknown."
+      "heading": "Work through an old or renamed handle",
+      "body": "For your own missing account, start with saved signup emails, recognized login sessions and Instagram's official recovery flow. A previously used handle may no longer point to your account. A profile now using that handle is not automatically yours. If an old website link is wrong, update it after confirming the current profile through your account. Avoid third-party services promising hidden profile access, and do not enter Instagram credentials into a username-search page."
+    },
+    {
+      "heading": "Worked example: name collision",
+      "body": "Illustrative case: two accounts display Example Studio. One is linked from the studio's official website and the other has only the same name. The website-linked account has supporting evidence of a public brand association. The other is unresolved until there is more evidence. A copied logo plus a misleading official-support claim may justify an impersonation review, but a shared name alone does not. Save the exact handle and relevant claim before reporting through Instagram."
+    },
+    {
+      "heading": "Review privacy and impersonation through official settings",
+      "body": "For your own account, follow Instagram's private-account instructions, review biography contact details and inspect older posts or comments separately. If an account impersonates you or a brand you represent, use the official reporting route and retain the report reference. MyRecon cannot make an Instagram account private, submit the report for you or guarantee removal. Recheck the original profile after a response rather than treating report submission as completion."
+    },
+    {
+      "heading": "MyRecon coverage and limitations",
+      "body": "The standard release catalogue includes an Instagram username check. Automated checks can be blocked, rate-limited or ambiguous; unknown is the appropriate outcome when the source does not support a conclusion. A lead remains subject to manual review. Free previews, signed-in daily allowances and paid features are described on the current pricing page. Public absence does not establish that the handle is free to register."
     }
   ],
   "sources": [
-    "https://www.instagram.com/",
-    "https://www.myrecon.xyz/"
+    "https://help.instagram.com/116024195217477",
+    "https://help.instagram.com/370054663112398",
+    "https://help.instagram.com/"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-03",
+  "modified_at": "2026-10-03",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Can a Instagram username match prove who owns it?",
-      "answer": "No. Handles can be shared, changed, or reassigned. Open the public account and look for independent, voluntarily published context before making an attribution; if evidence is inconclusive, leave the match unresolved."
+      "question": "Can I see private Instagram posts with MyRecon?",
+      "answer": "No. A public username check does not bypass account privacy or login restrictions."
     },
     {
-      "question": "Does this find private Instagram profiles?",
-      "answer": "No. This workflow is limited to supported checks and information available on public pages. Private accounts, login-only material, blocked requests, and hidden membership data are not exposed by a username lookup."
+      "question": "Is a display name enough to identify an account?",
+      "answer": "No. Use the exact handle and independent, owner-published links. Display names can repeat."
     },
     {
-      "question": "What should I do if a Instagram result is unavailable?",
-      "answer": "Record the check as unavailable or unknown, then use Instagram's official search directly if appropriate. A timeout, redirect, or access block is not proof that the profile is absent."
+      "question": "Does an unavailable page mean the account was deleted?",
+      "answer": "No. Renames, login restrictions and temporary blocks can all affect access. Record the observed limitation."
     }
   ],
   "platform": {
@@ -55,9 +68,11 @@
     "false_positive_note": "A reused or renamed handle, a similarly named account, a redirect, or a stale search snippet can create a false lead on Instagram. Open the official destination and compare independent public context before attributing it to anyone."
   },
   "manual_steps": [
-    "Open https://www.instagram.com/ and use its own public profile search or the exact handle URL when the service documents one. Search only a username you own or are authorized to review; this guide does not cover private-account discovery.",
-    "Open the candidate account page and confirm the destination is a current Instagram account, not a generic error, unrelated result, or search-engine snippet. Save the canonical URL and the date if you need a reproducible self-audit.",
-    "Compare a separate, voluntarily public clue such as a self-linked site or matching biography before drawing a conclusion. A handle alone can be shared or reassigned, and blocked checks should stay unknown rather than being recorded as a negative."
+    "Open instagram.com/HANDLE/ for a known username, or use Instagram search within your own account.",
+    "Confirm the exact handle and access context; record login restrictions as unavailable.",
+    "Use an owner-published website link or your own login records before attributing the account."
   ],
-  "scan_trigger": "username"
+  "scan_trigger": "username",
+  "editorial_review": true,
+  "method": "Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested."
 }

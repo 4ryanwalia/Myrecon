@@ -2,54 +2,72 @@
   "kind": "guide",
   "slug": "public-profile-evidence-logging",
   "status": "published",
-  "title": "Public Profile Evidence Logging | MyRecon",
-  "description": "Public Profile Evidence Logging: a compact evidence log records the canonical page, observation time, visible fields, and limits without collecting…",
-  "h1": "Public Profile Evidence Logging",
+  "title": "Log Public Web Evidence: URLs, Context & Integrity",
+  "description": "Create a reproducible public-source evidence register with timestamps, access context, restricted screenshots and honest hash limitations.",
+  "h1": "Log Public Web Evidence: URLs, Context & Integrity",
   "focus_keyword": "public profile evidence logging",
-  "intro": "Public Profile Evidence Logging is best handled as a narrow, documented question rather than a hunt for every possible connection. A compact evidence log records the canonical page, observation time, visible fields, and limits without collecting unrelated personal details. This guide gives a repeatable way to check public information, note uncertainty, and stop when the available evidence is not enough.",
+  "intro": "Evidence logging makes a public-web observation reproducible without copying every detail on a page. A useful log records what you saw, where and when you saw it, the context of access and which conclusion it supports. Keep the original observation separate from later interpretation.",
   "sections": [
     {
-      "heading": "Define the question and permission",
-      "body": "Before searching, state what public profile evidence logging needs to answer and which public sources are relevant. A compact evidence log records the canonical page, observation time, visible fields, and limits without collecting unrelated personal details. Use identifiers supplied by the account owner or covered by your authorization, and set a stopping point so a narrow review does not expand into unnecessary data collection."
+      "heading": "Use a small evidence register",
+      "body": "Assign an observation ID and record the exact source URL, final destination after redirects, timestamp with timezone, page type and research question. Write the access context: signed out, an authorized account or unavailable. A page that requires login may present different information to different viewers. Keep a field for result status and a separate field for interpretation so later reasoning does not overwrite what was actually visible."
     },
     {
-      "heading": "Check original public sources",
-      "body": "Start with an official platform search or canonical page, then open each candidate instead of relying on snippets or copied directories. Record the source URL, date, visible context, and any login wall, block, or ambiguity that limits what you could confirm about public profile evidence logging."
+      "heading": "Capture only the relevant context",
+      "body": "If a screenshot is necessary, include enough context to show the account handle, specific statement and relevant surrounding material. Avoid unrelated messages, personal browser tabs or notifications. Store the original in restricted evidence and produce a separate redacted report copy. Record any crop or redaction. Do not label a reconstructed illustration as a screenshot of a real page. A screenshot with no URL or date is less useful to another reviewer."
     },
     {
-      "heading": "Keep conclusions proportional to the evidence",
-      "body": "Separate confirmed public observations from possibilities and unknowns. A shared handle, name, image, or search result is not identity proof. For public profile evidence logging, use independent, voluntarily published context, minimize retained details, and remove notes when the authorized purpose ends."
+      "heading": "Preserve integrity without overstating it",
+      "body": "For a file you retain, record its filename and, when useful, a SHA-256 hash. On Windows you can calculate it with Get-FileHash -Algorithm SHA256 -LiteralPath followed by the file path. A matching hash shows that two byte sequences match; it does not prove the page was truthful, identify its author or establish when the screenshot was made. Hashing should support an observation log rather than replacing one."
+    },
+    {
+      "heading": "Worked log entry",
+      "body": "Illustrative entry: E-003; URL github.com/example-studio; observed 2026-10-03 14:00 IST; signed-out profile; biography links to the project website; screenshot E-003.png in restricted storage; interpretation public project association, current controller not verified. Example-studio is a placeholder, not a tested account. If the URL later redirects, create E-004 with the new observation and preserve E-003 as historical context."
+    },
+    {
+      "heading": "Handle negative and unavailable checks differently",
+      "body": "If the source displays a missing-account message, write that exact observation and date. If the request times out or shows a challenge, write unable to verify. Do not translate either into never existed. For search engines, retain the query and search date, and open the original page before quoting a snippet. The absence of an indexed result does not establish the absence of an account."
+    },
+    {
+      "heading": "Review and retire the evidence",
+      "body": "Before delivery, check that every important conclusion cites an observation and that contradictory sources are included. Give readers a report copy rather than access to the full case directory. Set a retention review date and delete unnecessary copies when the purpose ends. For regulated or legal evidence, use your organization's approved procedure; this practical log is not a certification of admissibility or a substitute for an evidence-handling policy."
     }
   ],
   "sources": [
-    "https://www.ftc.gov/business-guidance/privacy-security",
-    "https://www.myrecon.xyz/"
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash",
+    "/guides/protect-researcher-notes"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-03",
+  "modified_at": "2026-10-03",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Can public profile evidence logging establish a person's identity?",
-      "answer": "No. Public search results can suggest a lead but cannot establish identity by themselves. Confirm the original page and seek independent, voluntarily published evidence; if the evidence does not support a clear link, report it as uncertain."
+      "question": "Does a file hash prove a screenshot is authentic?",
+      "answer": "No. It records byte integrity. Provenance, timing and truthful interpretation require other evidence."
     },
     {
-      "question": "What is a privacy-aware way to public profile evidence logging?",
-      "answer": "Use only sources and identifiers that fit a lawful, authorized purpose, check the platform's own public pages, and avoid access controls or account-recovery endpoints. A compact evidence log records the canonical page, observation time, visible fields, and limits without collecting unrelated personal details. Keep only the minimum notes needed for the task."
+      "question": "Should I retain whole profiles?",
+      "answer": "Only if necessary for the authorized purpose. Usually a focused observation with source context is enough."
     },
     {
-      "question": "What if the public evidence is incomplete?",
-      "answer": "Mark the result unknown, record which page or check could not be verified, and do not turn a timeout or absence of indexed material into a conclusion. Recheck later only if the task remains authorized and useful."
+      "question": "How should a timeout appear in my log?",
+      "answer": "As unable to verify, with the URL, timestamp and observed failure. Keep it separate from a source-confirmed missing page."
     }
   ],
   "takeaways": [
-    "Write down the narrow question behind public profile evidence logging and use only public information that is relevant to answering it.",
-    "Open original sources, record dates and URLs, and distinguish direct observations from assumptions when working on public profile evidence logging.",
-    "Treat blocked, deleted, private, or ambiguous material as unknown; do not bypass a service control to fill the gap."
+    "Use a small evidence register",
+    "Capture only the relevant context",
+    "Preserve integrity without overstating it"
   ],
-  "method": "This method favors official public pages and reproducible notes. For public profile evidence logging, record the search terms you were authorized to use, the source URL, the time checked, and the reason for each conclusion. Keep negative or unavailable checks separate from confirmed findings, minimize personal data in notes, and stop when further searching would exceed the original purpose."
+  "method": "Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested.",
+  "diagram_steps": [
+    "Record source",
+    "Preserve context",
+    "Review evidence"
+  ],
+  "editorial_review": true
 }

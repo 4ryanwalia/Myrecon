@@ -2,48 +2,61 @@
   "kind": "target",
   "slug": "discord-user",
   "status": "published",
-  "title": "Discord user profile Search by Username | MyRecon",
-  "description": "Look up a public Discord user profile by username. Check the official source, spot ambiguous matches and understand what MyRecon can verify.",
-  "h1": "Find a public Discord user profile by username",
+  "title": "Discord Users: Names, IDs & Verification Limits",
+  "description": "Distinguish Discord usernames, display names and user IDs using official client workflows. MyRecon has no direct Discord account check.",
+  "h1": "Discord Users: Names, IDs & Verification Limits",
   "focus_keyword": "find a public Discord username profile",
-  "intro": "Search for a public Discord user profile using an exact username, then review the candidate at its official source. This guide covers public profile lookup, verification steps and the limits of a matching handle.",
+  "intro": "Discord does not offer a universal public profile directory like GitHub. MyRecon has no direct Discord account check. For an account you already interact with, distinguish the unique username, display name, server nickname and numerical user ID. This page is a manual verification guide, not a way to discover hidden accounts.",
   "sections": [
     {
-      "heading": "What a public Discord user profile can show",
-      "body": "Use the official page to confirm the account type, current handle, and information the owner chose to publish. Discord does not provide a general public people directory. A username search cannot reveal private accounts, server membership, or a person's identity. A username result is a starting point for a self-audit or authorized review, not a complete record of the person behind an account."
+      "heading": "Start from a conversation you can already access",
+      "body": "Open the profile from an existing direct message or a server you belong to. Do not join private servers or send requests solely to collect information outside your authorization. Note whether the visible label is a server nickname, display name or username. Nicknames can differ across servers and display names are not unique. A screenshot showing only a name cannot uniquely specify an account."
     },
     {
-      "heading": "Coverage and limits for Discord",
-      "body": "The checked-in MyRecon standard catalogue does not list a direct Discord check. Use Discord's official search or profile pages manually and treat MyRecon results on other sites as unrelated leads, not confirmation of a Discord account. A missing or blocked result cannot establish that no account exists. Do not work around login walls, access controls, rate limits, or service restrictions to force a response."
+      "heading": "Copy an ID through Discord's documented workflow",
+      "body": "Discord documents Developer Mode under its Advanced settings. Enable it in your own client, then use the relevant profile or user context menu to copy the user ID. Menu placement can differ between desktop and mobile; follow the official guide linked below. Record the numerical ID alongside the current visible name when you need to distinguish two accounts. Developer Mode does not grant additional account access or reveal private messages."
     },
     {
-      "heading": "Verify a candidate before you rely on it",
-      "body": "Open the canonical Discord page, note the URL and observation date, and compare one or more independent details that are voluntarily public. A reused or renamed handle, a similarly named user profile, a redirect, or a stale search snippet can create a false lead on Discord. Open the official destination and compare independent public context before attributing it to anyone. Keep uncertain and unavailable outcomes marked as unknown."
+      "heading": "Preserve message context when reporting",
+      "body": "For a message you are authorized to review, Discord's guide explains copying a message link or ID. Keep the relevant server or conversation context and date. A user ID identifies a Discord account within the platform; it does not establish the human operating it. Avoid publishing IDs together with unrelated private conversation content. For a harmful message or impersonation concern, use Discord's official reporting features."
+    },
+    {
+      "heading": "Worked example: duplicate display names",
+      "body": "Illustrative case: two members display Example Helper in a server. One has user ID A and the other user ID B; these are placeholder labels, not real Discord IDs. A moderator can distinguish the accounts using their actual copied IDs even if one changes its nickname. The log should say account A sent the observed message in this server at this time, not that a named person sent it. If you cannot access the original message, record that limitation rather than relying on an isolated screenshot."
+    },
+    {
+      "heading": "What cross-platform searches can and cannot add",
+      "body": "Searching a Discord username on other supported sites may surface similar handles. Those are separate candidates, not Discord verification or proof of common ownership. Discord usernames may change and display names may be shared. MyRecon cannot search private servers, enumerate accounts by email, inspect friend lists or turn an ID into a verified personal identity. If your task is verifying a community role, confirm it with the community's official channel or moderators."
+    },
+    {
+      "heading": "Secure your own Discord presence",
+      "body": "Review the profile fields and connected accounts visible to people who can see your profile. Inspect friend-request, message and privacy settings in your own account using Discord's current help center. Keep account-recovery information private and enable available account protections. An ID is not a password, but storing it together with extensive conversation records still creates personal-data risk. Retain only what is needed for the report or moderation task."
     }
   ],
   "sources": [
-    "https://discord.com/",
-    "https://www.myrecon.xyz/"
+    "https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID",
+    "https://support.discord.com/hc/en-us/articles/12620128861463-New-Usernames-Display-Names",
+    "https://discord.com/safety"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-03",
+  "modified_at": "2026-10-03",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Can a Discord username match prove who owns it?",
-      "answer": "No. Handles can be shared, changed, or reassigned. Open the public user profile and look for independent, voluntarily published context before making an attribution; if evidence is inconclusive, leave the match unresolved."
+      "question": "Does MyRecon directly check Discord accounts?",
+      "answer": "No. Discord is not a direct check in the standard release catalogue. This guide uses the Discord client and official documentation."
     },
     {
-      "question": "Does this find private Discord profiles?",
-      "answer": "No. This workflow is limited to supported checks and information available on public pages. Private accounts, login-only material, blocked requests, and hidden membership data are not exposed by a username lookup."
+      "question": "Is a Discord display name unique?",
+      "answer": "No. Display names and server nicknames can repeat. Use the current username and, where appropriate, the copied user ID."
     },
     {
-      "question": "What should I do if a Discord result is unavailable?",
-      "answer": "Record the check as unavailable or unknown, then use Discord's official search directly if appropriate. A timeout, redirect, or access block is not proof that the profile is absent."
+      "question": "Does a user ID reveal a person's legal identity?",
+      "answer": "No. It distinguishes a platform account, not the person controlling it."
     }
   ],
   "platform": {
@@ -55,9 +68,11 @@
     "false_positive_note": "A reused or renamed handle, a similarly named user profile, a redirect, or a stale search snippet can create a false lead on Discord. Open the official destination and compare independent public context before attributing it to anyone."
   },
   "manual_steps": [
-    "Open https://discord.com/ and use its own public profile search or the exact handle URL when the service documents one. Search only a username you own or are authorized to review; this guide does not cover private-account discovery.",
-    "Open the candidate user profile page and confirm the destination is a current Discord account, not a generic error, unrelated result, or search-engine snippet. Save the canonical URL and the date if you need a reproducible self-audit.",
-    "Compare a separate, voluntarily public clue such as a self-linked site or matching biography before drawing a conclusion. A handle alone can be shared or reassigned, and blocked checks should stay unknown rather than being recorded as a negative."
+    "Open a profile from an existing authorized conversation or server.",
+    "Distinguish the username from display name and server nickname.",
+    "Use Discord Developer Mode and Copy User ID when an account-specific report requires it."
   ],
-  "scan_trigger": "username"
+  "scan_trigger": "username",
+  "editorial_review": true,
+  "method": "Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested."
 }
