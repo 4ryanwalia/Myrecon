@@ -27,9 +27,13 @@ rdap.org), where the host is a literal in our source.
 
 import ipaddress
 import socket
+import time
 from urllib.parse import urlsplit
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.connection import HTTPConnection, HTTPSConnection
+from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
 
 _ALLOWED_SCHEMES = ("http", "https")
 _MAX_REDIRECTS = 3
@@ -53,7 +57,7 @@ def _addresses_for(host: str) -> list[str]:
     return [entry[4][0] for entry in info]
 
 
-def _refuse_internal(url: str) -> None:
+def _refuse_internal(url: str) -> list[str]:
     """Raise unless `url` is http(s) pointing at a public address."""
     parts = urlsplit(url)
     if parts.scheme.lower() not in _ALLOWED_SCHEMES:
@@ -62,7 +66,12 @@ def _refuse_internal(url: str) -> None:
     if not host:
         raise BlockedRequest("no host in URL")
 
-    for address in _addresses_for(host):
+    if parts.username is not None or parts.password is not None:
+        raise BlockedRequest("URL credentials are not allowed")
+    addresses = _addresses_for(host)
+    if not addresses:
+        raise BlockedRequest("no destination addresses")
+    for address in addresses:
         # getaddrinfo hands back scoped IPv6 like fe80::1%eth0; the scope is
         # not part of the address and ip_address rejects it.
         parsed = ipaddress.ip_address(address.split("%")[0])
@@ -80,6 +89,46 @@ def _refuse_internal(url: str) -> None:
             or parsed.is_unspecified
         ):
             raise BlockedRequest(f"refusing internal address {parsed} for host {host}")
+    return addresses
+
+
+class _PinnedAdapter(HTTPAdapter):
+    """Keep the original HTTP/TLS hostname, but connect only to a checked IP."""
+
+    def __init__(self, address: str):
+        class PinnedSocket:
+            def _new_conn(self):
+                sock = socket.create_connection(
+                    (address, self.port), timeout=self.timeout,
+                    source_address=self.source_address,
+                )
+                try:
+                    for option in self.socket_options or []:
+                        sock.setsockopt(*option)
+                    return sock
+                except BaseException:
+                    sock.close()
+                    raise
+
+        class PinnedHTTP(PinnedSocket, HTTPConnection):
+            pass
+
+        class PinnedHTTPS(PinnedSocket, HTTPSConnection):
+            pass
+
+        class HTTPPool(HTTPConnectionPool):
+            ConnectionCls = PinnedHTTP
+
+        class HTTPSPool(HTTPSConnectionPool):
+            ConnectionCls = PinnedHTTPS
+
+        self._pool_classes = {"http": HTTPPool, "https": HTTPSPool}
+        super().__init__(max_retries=0)
+
+    def init_poolmanager(self, *args, **kwargs):
+        super().init_poolmanager(*args, **kwargs)
+        # Copy rather than change urllib3's shared class mapping.
+        self.poolmanager.pool_classes_by_scheme = dict(self._pool_classes)
 
 
 def safe_get(url: str, **kwargs) -> requests.Response:
@@ -91,16 +140,49 @@ def safe_get(url: str, **kwargs) -> requests.Response:
     points anywhere internal, and lets `requests` exceptions through unchanged.
     """
     kwargs.pop("allow_redirects", None)
+    streaming = kwargs.pop("stream", False)
+    deadline = time.monotonic() + 20
+    if kwargs.get("verify") is False or kwargs.get("proxies"):
+        raise BlockedRequest("unverified TLS and proxy overrides are not allowed")
     current = url
 
     for _ in range(_MAX_REDIRECTS + 1):
-        _refuse_internal(current)
-        resp = requests.get(current, allow_redirects=False, **kwargs)
-        if resp.status_code not in (301, 302, 303, 307, 308):
-            return resp
+        addresses = _refuse_internal(current)
+        session = requests.Session()
+        session.trust_env = False  # no environment proxies, cookies or .netrc
+        adapter = _PinnedAdapter(addresses[0])
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        try:
+            resp = session.get(current, allow_redirects=False, stream=True, **kwargs)
+        except BaseException:
+            session.close()
+            raise
+        original_close = resp.close
+        def close_response(close=original_close, owner=session):
+            try:
+                close()
+            finally:
+                owner.close()
+        resp.close = close_response
         location = resp.headers.get("Location")
-        if not location:
+        if resp.status_code not in (301, 302, 303, 307, 308) or not location:
+            if not streaming:
+                try:
+                    chunks, size = [], 0
+                    for chunk in resp.iter_content(16_384):
+                        size += len(chunk)
+                        if size > 2_000_000 or time.monotonic() > deadline:
+                            raise BlockedRequest("upstream response limit exceeded")
+                        chunks.append(chunk)
+                    resp._content = b"".join(chunks)
+                    resp._content_consumed = True
+                finally:
+                    resp.close()
             return resp
         current = requests.compat.urljoin(current, location)
+        resp.close()
+        # Query parameters belong only to the initial request, not redirects.
+        kwargs.pop("params", None)
 
     raise BlockedRequest("too many redirects")

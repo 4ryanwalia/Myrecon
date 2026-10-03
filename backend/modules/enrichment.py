@@ -39,6 +39,19 @@ MOBILE_HEADERS = {
 TIMEOUT = 8
 
 
+def _bounded_body(response, limit: int, seconds: float) -> bytes:
+    """Enforce the cap while reading, including decoded/compressed bodies."""
+    deadline = time.monotonic() + seconds
+    size = 0
+    chunks = []
+    for chunk in response.iter_content(16_384):
+        size += len(chunk)
+        if size > limit or time.monotonic() > deadline:
+            raise ValueError("upstream response limit exceeded")
+        chunks.append(chunk)
+    return b"".join(chunks)
+
+
 # ──────────────────────────────────────────────────────────────
 #  Image Downloader
 # ──────────────────────────────────────────────────────────────
@@ -60,9 +73,9 @@ def _download_image(url: str, timeout: int = 6) -> bytes:
         if "cdninstagram" in url or "scontent" in url:
             return b""
 
-        resp = safe_get(url, headers=HEADERS, timeout=timeout, stream=True)
-        if resp.status_code == 200 and len(resp.content) < 5_000_000:
-            return resp.content
+        with safe_get(url, headers=HEADERS, timeout=timeout, stream=True) as resp:
+            if resp.status_code == 200:
+                return _bounded_body(resp, 5_000_000, timeout)
     except Exception:
         pass
     return b""
@@ -450,11 +463,12 @@ def _enrich_from_og_tags(url: str) -> dict:
     """Extract bio and profile pic from OpenGraph/Twitter meta tags."""
     data = {}
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
-        if resp.status_code != 200:
-            return data
-
-        html = resp.text  # scan full page, Pinterest puts OG tags 700KB+ deep
+        with safe_get(url, headers=HEADERS, timeout=TIMEOUT, stream=True) as resp:
+            if resp.status_code != 200:
+                return data
+            html = _bounded_body(resp, 2_000_000, TIMEOUT).decode(
+                resp.encoding or "utf-8", errors="replace"
+            )
 
         # Step 1: Find ALL <meta ...> tags
         meta_tags = re.findall(r'<meta\s+([^>]+?)/?>', html, re.IGNORECASE)

@@ -7,11 +7,13 @@ services:
     runtime: python
     rootDir: backend
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: python -m pip install --upgrade pip==26.2.1 && python -m pip install -r requirements.txt
     startCommand: gunicorn wsgi:app --workers 2 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.14"
       - key: FLASK_ENV
         value: production
       - key: ALLOWED_ORIGINS
