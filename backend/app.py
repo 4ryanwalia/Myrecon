@@ -424,6 +424,8 @@ def _guest_stream_event(event: dict, visible: set[str]):
 # ── Routes ───────────────────────────────────────────────────────
 
 def _register_routes(app: Flask) -> None:
+    from core.android_referrals import register_routes as register_android_referrals
+    register_android_referrals(app, _json_body, responses)
     from services.search import search_username, search_fullname
     from services.email import scan_email
     from services.image import scan_image
