@@ -179,6 +179,14 @@ function main() {
   // whole file as changed on every build.
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), xml.replace(/\r\n/g, "\n"), "utf8");
 
+  // A stable index can accommodate additional sitemaps as the library grows.
+  // Omit lastmod here: a build does not necessarily change the child sitemap.
+  fs.writeFileSync(path.join(ROOT, "sitemap-index.xml"),
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    `  <sitemap><loc>${SITE}/sitemap.xml</loc></sitemap>\n` +
+    `</sitemapindex>\n`, "utf8");
+
   console.log(`[sitemap] ${unique.length} URLs written`);
   if (skipped.length) console.log(`[sitemap] skipped ${skipped.length}: ${skipped.join(", ")}`);
 

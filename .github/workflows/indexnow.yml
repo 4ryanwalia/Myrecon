@@ -1,4 +1,4 @@
-# Notify IndexNow after article changes reach main, including updates pushed
+# Notify IndexNow after public page changes are deployed, including updates pushed
 # by the scheduled Breach Files job with its repository deploy key.
 name: IndexNow
 
@@ -6,15 +6,22 @@ on:
   push:
     branches: [main]
     paths:
-      - "frontend/breaches/**"
-      - "frontend/blog/**"
+      - "frontend/**"
+
+  workflow_dispatch:
+    inputs:
+      before:
+        description: "Commit before the public page changes to submit"
+        required: true
 
 permissions:
   contents: read
+  deployments: read
 
 jobs:
   notify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
         with:
@@ -24,22 +31,31 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Submit changed article URLs
+      - name: Wait for this commit's successful production deployment
         env:
-          BEFORE: ${{ github.event.before }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in {1..40}; do
+            mapfile -t ids < <(gh api "repos/$GITHUB_REPOSITORY/deployments?sha=$GITHUB_SHA&per_page=100" --jq '.[] | select((.environment | ascii_downcase) == "production") | .id')
+            for id in "${ids[@]}"; do
+              state=$(gh api "repos/$GITHUB_REPOSITORY/deployments/$id/statuses" --jq '.[0].state')
+              if [[ "$state" == "success" ]]; then
+                echo "Production deployment succeeded for $GITHUB_SHA."
+                exit 0
+              fi
+              if [[ "$state" == "failure" || "$state" == "error" ]]; then
+                echo "Production deployment failed. Skipping crawler notification."
+                exit 1
+              fi
+            done
+            sleep 15
+          done
+          echo "Production deployment was not confirmed. Skipping crawler notification."
+          exit 1
+
+      - name: Submit changed canonical public URLs
+        env:
+          BEFORE: ${{ inputs.before || github.event.before }}
           AFTER: ${{ github.sha }}
         run: |
-          mapfile -t pages < <(
-            git diff --name-only "$BEFORE" "$AFTER" -- frontend/breaches frontend/blog |
-              grep -E '^frontend/(breaches|blog)/.*[.]html$' || true
-          )
-          if (( ${#pages[@]} == 0 )); then
-            echo "No article URLs changed."
-            exit 0
-          fi
-
-          urls=()
-          for page in "${pages[@]}"; do
-            urls+=("https://www.myrecon.xyz/${page#frontend/}")
-          done
-          node frontend/scripts/indexnow.js "${urls[@]}"
+          node frontend/scripts/indexnow.js --changed "$BEFORE" "$AFTER"
