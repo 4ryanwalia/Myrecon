@@ -545,9 +545,8 @@
   // clean result means little if a third of the platforms never answered.
   function coverageLine(c) {
     const decided = (c.found || 0) + (c.not_found || 0);
-    return `<p class="coverage-line hint">Pro scan: ${c.total} platforms, ${decided} gave a definite answer,
-      ${c.undetermined || 0} could not tell, ${c.unreachable || 0} blocked or timed out from our server
-      (the <a href="/app.html">Android app</a> checks from your phone and gets through more of them).</p>`;
+    return `<p class="coverage-line hint">Full scan: ${c.total} platforms, ${decided} gave a definite answer,
+      ${c.undetermined || 0} could not tell, ${c.unreachable || 0} blocked or timed out from our server.</p>`;
   }
 
   // One row for every platform the selected scan actually reached. This is a
@@ -923,7 +922,7 @@
     if (data.profile_enrichment?.sources?.length) html += `<details class="registration-coverage"><summary>Profile source coverage</summary><ul class="source-coverage">${data.profile_enrichment.sources.map(r => `<li><strong>${esc(r.name)}${r.provider ? " · " + esc(r.provider) : ""}</strong>: ${esc(r.status.replace(/_/g, " "))}${r.message || r.reason ? `<p class="hint">${esc(r.message || r.reason)}</p>` : ""}${Number.isFinite(r.returned) ? `<p class="hint">${esc(r.returned)} items returned${r.limit ? " · retrieval limit " + esc(r.limit) : ""}</p>` : ""}</li>`).join("")}</ul></details>`;
     html += linkedServices(data.linked_services, data.account_checks, data.registration_checks);
     if (exp) html += exposureGauge(exp);
-    else if (data.partial && !outcome.partial) html += `<p class="hint">Exposure score unavailable while profile-source coverage is incomplete.</p>`;
+    else if (data.partial && !outcome.partial) html += `<p class="hint">Exposure score unavailable while linked-account source coverage is incomplete.</p>`;
 
     // Straight under the verdict: it is what someone who just learned they
     // were breached needs next, and the evidence below can run to 30 cards.

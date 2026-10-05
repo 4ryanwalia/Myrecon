@@ -131,3 +131,21 @@ def test_email_api_defaults_to_live_account_checks_off(monkeypatch):
     response = appmod.create_app().test_client().post("/api/email", json={"email": EMAIL})
     assert response.status_code == 200
     assert calls == [False]
+
+
+def test_registration_outage_marks_email_partial_without_losing_breach_matches(monkeypatch):
+    lookup = EmailLookup()
+    monkeypatch.setattr(lookup, "analyze", lambda e: {"deliverable": True, "disposable": False})
+    monkeypatch.setattr(lookup, "breaches", lambda e: {"status": "ok", "checked": True,
+        "sources": [{"name": "Canva"}], "breached": True})
+    monkeypatch.setattr(lookup, "darkweb", lambda e: {"status": "ok", "checked": True})
+    monkeypatch.setattr(lookup, "github", lambda e: {"status": "no_match"})
+    monkeypatch.setattr(lookup, "gravatar", lambda e: {"status": "no_match", "exists": False})
+    monkeypatch.setattr(lookup, "pgp", lambda e: {"status": "ok", "exists": False})
+    monkeypatch.setattr("modules.registered_accounts.scan_registered_accounts", lambda e:
+        {"status": "unavailable", "partial": True, "services": [], "checked": 0, "attempted": 111})
+    out = lookup.scan(EMAIL, check_linked_accounts=True)
+    assert out["partial"]
+    assert any(error["source"] == "Registration checks" for error in out["errors"])
+    assert out["summary"]["breached"] and out["summary"]["breach_status"] == "ok"
+    assert out["linked_services"]["count"] == 1

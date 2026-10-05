@@ -1,4 +1,5 @@
 import json
+import subprocess
 from types import SimpleNamespace
 
 import httpx
@@ -101,3 +102,50 @@ def test_malformed_worker_outputs_preserve_unavailable(monkeypatch, payload):
     monkeypatch.setattr(adapter.subprocess, "run", lambda *a, **k: SimpleNamespace(returncode=0, stdout=json.dumps(payload)))
     out = adapter.scan_registered_accounts("x@example.com")
     assert out["status"] == "unavailable" and out["checked"] == 0
+
+
+def test_process_timeout_preserves_last_complete_checkpoint(monkeypatch):
+    rows = adapter.baseline("timeout")
+    rows[0].update(status="found", reason="registration signal")
+    output = (json.dumps({"status": "partial", "services": rows}) + '\n{"services":').encode()
+    def timeout(*args, **kwargs):
+        raise subprocess.TimeoutExpired(args[0], 42, output=output)
+    monkeypatch.setattr(adapter.subprocess, "run", timeout)
+    out = adapter.scan_registered_accounts("x@example.com")
+    assert out["status"] == "partial" and out["partial"]
+    assert out["checked"] == out["found"] == 1
+    assert out["counts"]["timeout"] == 110
+
+
+def test_completed_worker_with_no_answers_is_unavailable(monkeypatch):
+    monkeypatch.setattr(adapter.subprocess, "run", lambda *a, **k: SimpleNamespace(
+        returncode=0, stdout=json.dumps({"status": "ok", "services": adapter.baseline("timeout")})))
+    out = adapter.scan_registered_accounts("x@example.com")
+    assert out["status"] == "unavailable" and out["partial"]
+
+
+def test_worker_reuses_tls_context_without_sharing_clients(monkeypatch, tmp_path):
+    import hashlib
+    import trio
+    source = tmp_path / "provider.py"
+    source.write_text("reviewed fixture", encoding="utf-8")
+    rows = [{**ROW, "id": f"fixture{i}", "module": f"fixture{i}", "enabled": True,
+             "sha256": hashlib.sha256(source.read_bytes()).hexdigest()} for i in range(2)]
+    monkeypatch.setattr(worker, "CATALOG", {"services": rows})
+    context = object()
+    calls, clients = [], []
+    monkeypatch.setattr(worker.ssl, "create_default_context", lambda: calls.append(True) or context)
+    async def check(email, client, out):
+        out.append({"exists": True})
+    monkeypatch.setattr(worker.importlib, "import_module", lambda name: SimpleNamespace(
+        __file__=str(source), **{name: check}))
+    class Client:
+        def __init__(self, **kwargs):
+            assert kwargs["verify"] is context
+            assert kwargs["follow_redirects"] is False
+            clients.append(self)
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+    out = trio.run(worker.run, "x@example.com", SimpleNamespace(AsyncClient=Client), trio)
+    assert len(calls) == 1 and len(clients) == 2
+    assert all(row["status"] == "found" for row in out)

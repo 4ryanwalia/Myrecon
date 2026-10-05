@@ -366,6 +366,10 @@ def _guest_full_preview(data: dict) -> dict:
     platform_checks = [
         r for r in (data.get("platform_checks") or []) if r.get("platform") in visible
     ]
+    if platform_checks:
+        # Also repair older cached reports at the guest response boundary.
+        rejected = [r for r in platform_checks if r.get("verdict") == "not_found"]
+        unverified = [r for r in platform_checks if r.get("verdict") not in ("found", "not_found")]
     total = len(CATALOGUE)
     shown_count = min(STANDARD_LIMIT, total)
     return {

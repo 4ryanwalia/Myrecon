@@ -723,6 +723,14 @@ class EmailLookup:
         registration = (scan_registered_accounts(email) if check_linked_accounts
                         else {"status": "skipped", "services": [], "checked": 0, "attempted": 0})
         services = _merge_registration_services(services, registration)
+        if check_linked_accounts:
+            for name, source in (("GitHub", github_result or {}), ("Gravatar", gravatar),
+                                 ("OpenPGP", pgp), ("Registration checks", registration)):
+                state = source.get("status", "ok")
+                if source.get("partial") or state not in ("ok", "found", "no_match", "skipped"):
+                    errors.append({"source": name, "code": state if state != "ok" else "partial",
+                                   "message": f"{name} coverage is incomplete. Displaying completed findings.",
+                                   "retryable": True})
 
         linked = []
         if gravatar["exists"]:

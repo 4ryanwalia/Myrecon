@@ -430,7 +430,7 @@ def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
             "type": "progress", "phase": "Checking platforms",
             "percent": max(2, int(checked / total * 68)),
             "detail": f"[{checked}/{total}] {hit['platform']}, "
-                      f"{'found' if hit['exists'] else 'no match'}",
+                      f"{hit['verdict'].replace('_', ' ')}",
         })
         if hit["exists"]:
             emit({"type": "found", "result": _live_view(hit, username)})
@@ -449,13 +449,13 @@ def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
         r["category"] = categorise_result(r, username)
     unverified = sorted(
         ({"platform": h["platform"], "url": h["url"], "reason": h["reason"]}
-         for h in hits if h["verdict"] not in (FOUND, NOT_FOUND) and not h["unreachable"]),
+         for h in hits if h["verdict"] not in (FOUND, NOT_FOUND)),
         key=lambda r: r["platform"].lower(),
     )
     rejected = sorted(
         ({"platform": h["platform"], "url": h["url"], "status_code": h["status_code"],
           "reason": h["reason"]}
-         for h in hits if h["verdict"] == NOT_FOUND or h["unreachable"]),
+         for h in hits if h["verdict"] == NOT_FOUND),
         key=lambda r: r["platform"].lower(),
     )
 

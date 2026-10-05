@@ -167,3 +167,31 @@ def test_signed_in_full_response_preserves_every_platform_check(monkeypatch):
     assert len(checks) == len(CATALOGUE)
     assert {row["platform"] for row in checks} == {platform["name"] for platform in CATALOGUE}
     assert hidden_name in {row["platform"] for row in checks}
+
+
+def test_guest_counts_use_verdicts_even_for_legacy_cached_reports():
+    full = _full_result_with_every_check()
+    full["platform_checks"][0].update(verdict="unknown", status_code=403, unreachable=True)
+    full["rejected"] = list(full["platform_checks"])
+    body = app_module._guest_full_preview(full)
+    assert body["summary"]["rejected"] == 99
+    assert body["summary"]["unverified"] == 1
+    assert body["summary"]["checked"] == 100
+    assert all(row["verdict"] == "not_found" for row in body["rejected"])
+
+
+def test_full_scan_keeps_blocked_platforms_out_of_rejected(monkeypatch):
+    import modules.sweep as sweep
+    hits = [dict(platform=name, platform_category="Social", url="https://example.com/"+name,
+                 verdict=verdict, exists=False, status_code=code, reason="fixture", unreachable=unreachable)
+            for name, verdict, code, unreachable in
+            [("Absent", "not_found", 404, False), ("Blocked", "unknown", 403, True),
+             ("Ambiguous", "unknown", 200, False)]]
+    monkeypatch.setattr(sweep.Sweep, "run", lambda *a, **k: (hits, {}))
+    monkeypatch.setattr(search, "_enrich_profiles", lambda *a, **k: None)
+    monkeypatch.setattr(search, "_code_exposure", lambda *a, **k: [])
+    monkeypatch.setattr(search, "IdentityCorrelator", lambda: _NoClusters())
+    out = search._run_full("fixture")
+    assert out["summary"]["rejected"] == 1
+    assert out["summary"]["unverified"] == 2
+    assert {r["platform"] for r in out["rejected"]} == {"Absent"}

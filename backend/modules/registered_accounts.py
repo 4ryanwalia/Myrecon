@@ -19,6 +19,8 @@ def result(rows, status="ok"):
               ("found", "no_signal", "unavailable", "rate_limited", "skipped", "timeout")}
     checked = counts["found"] + counts["no_signal"]
     attempted = len(rows) - counts["skipped"]
+    if status == "ok":
+        status = "ok" if checked == attempted else "partial" if checked else "unavailable"
     return {"status": status, "engine": "Holehe", "source": CATALOG["source"],
             "revision": CATALOG["revision"], "catalogue_count": len(rows),
             "checked": checked, "attempted": attempted, "found": counts["found"],
@@ -36,13 +38,34 @@ def scan_registered_accounts(email: str) -> dict:
     if not _SLOTS.acquire(blocking=False):
         return result(baseline(), "busy")
     try:
-        proc = subprocess.run([sys.executable, str(Path(__file__).with_name("holehe_worker.py"))],
-                              input=json.dumps({"email": email}), text=True,
-                              stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                              timeout=42, check=False)
-        if proc.returncode != 0:
-            return result(baseline(), "unavailable")
-        data = json.loads(proc.stdout)
+        interrupted = False
+        timed_out = False
+        try:
+            proc = subprocess.run([sys.executable, str(Path(__file__).with_name("holehe_worker.py"))],
+                                  input=json.dumps({"email": email}), text=True,
+                                  stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                  timeout=42, check=False)
+            output = proc.stdout
+            interrupted = proc.returncode != 0
+        except subprocess.TimeoutExpired as exc:
+            output = exc.stdout or ""
+            interrupted = True
+            timed_out = True
+        if isinstance(output, bytes):
+            output = output.decode("utf-8", errors="replace")
+        # Recover the latest complete checkpoint, even if termination cut off
+        # the last line. Never discard already answered services on timeout.
+        data = None
+        for line in reversed(output.splitlines()):
+            try:
+                candidate = json.loads(line)
+                if isinstance(candidate, dict) and isinstance(candidate.get("services"), list):
+                    data = candidate
+                    break
+            except ValueError:
+                continue
+        if data is None:
+            return result(baseline("timeout" if timed_out else "unavailable"), "unavailable")
         rows = data.get("services") if isinstance(data, dict) else None
         if not isinstance(rows, list) or len(rows) != len(CATALOG["services"]):
             return result(baseline(), "unavailable")
@@ -57,7 +80,8 @@ def scan_registered_accounts(email: str) -> dict:
                           "status": row["status"], "reason": row["reason"]})
         # The worker returns only the fixed public service schema, never
         # recovery phone numbers, names, email fragments or provider bodies.
-        return result(clean, "ok" if data.get("status", "ok") == "ok" else "unavailable")
+        return result(clean, "ok" if data.get("status", "ok") == "ok" and not interrupted else
+                      "partial" if any(r["status"] in ("found", "no_signal") for r in clean) else "unavailable")
     except (subprocess.TimeoutExpired, OSError, ValueError, TypeError):
         return result(baseline("timeout"), "unavailable")
     finally:

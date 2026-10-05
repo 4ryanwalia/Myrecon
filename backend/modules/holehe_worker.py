@@ -6,6 +6,7 @@ import io
 import json
 from pathlib import Path
 import re
+import ssl
 import sys
 from urllib.parse import parse_qsl, urlsplit
 
@@ -62,12 +63,22 @@ def request_allowed(request):
     return request.method in ("GET", "POST", "HEAD")
 
 
-async def run(email, httpx, trio):
+async def run(email, httpx, trio, checkpoint=None):
     rows = [{"service": r["name"], "id": r["id"], "domain": r["domain"], "method": r["method"],
              "status": "timeout" if r["enabled"] else "skipped",
              "reason": "Scan time budget reached" if r["enabled"] else r["skip_reason"]}
             for r in CATALOG["services"]]
     limiter = trio.CapacityLimiter(12)
+    # Loading the CA store for every client monopolises CPU on small hosts.
+    # Keep cookies/sessions isolated, but reuse the immutable TLS trust setup.
+    tls_context = ssl.create_default_context()
+    finished = 0
+
+    def save_progress():
+        nonlocal finished
+        finished += 1
+        if checkpoint and finished % 12 == 0:
+            checkpoint(rows)
 
     async def check(index, row):
         if not row["enabled"]: return
@@ -92,7 +103,7 @@ async def run(email, httpx, trio):
                     rows[index]["reason"] = "Module differs from reviewed version"
                     return
                 with trio.move_on_after(7) as timeout:
-                    async with httpx.AsyncClient(timeout=4, follow_redirects=False, verify=True,
+                    async with httpx.AsyncClient(timeout=4, follow_redirects=False, verify=tls_context,
                                                   event_hooks={"request": [before], "response": [after]}) as client:
                         await getattr(module, row["id"])(email, client, out)
                 if timeout.cancelled_caught:
@@ -103,6 +114,8 @@ async def run(email, httpx, trio):
                 rows[index] = normalize(raw, row, blocked=blocked, failed=failed)
             except Exception:
                 rows[index] = normalize(None, row, blocked=blocked)
+            finally:
+                save_progress()
 
     with trio.move_on_after(35):
         async with trio.open_nursery() as nursery:
@@ -121,8 +134,11 @@ def main():
     try:
         import httpx
         import trio
+        output = sys.stdout
+        def checkpoint(rows):
+            print(json.dumps({"status": "partial", "services": rows}), file=output, flush=True)
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-            rows = trio.run(run, email, httpx, trio)
+            rows = trio.run(run, email, httpx, trio, checkpoint)
         print(json.dumps({"status": "ok", "services": rows}))
     except ImportError:
         print(json.dumps({"status": "unavailable", "services": [
