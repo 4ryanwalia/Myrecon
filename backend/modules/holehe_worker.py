@@ -119,10 +119,16 @@ async def run(email, httpx, trio, checkpoint=None):
 
     with trio.move_on_after(35):
         async with trio.open_nursery() as nursery:
-            # Prioritise requested mainstream services within the scan budget.
+            # Nursery scheduling is not FIFO. Consumers take from this ordered
+            # queue so mainstream checks really start before the long tail.
             order = sorted(enumerate(CATALOG["services"]), key=lambda pair:
                            pair[1]["id"] not in {"spotify", "github", "instagram", "twitter", "pinterest", "soundcloud", "amazon", "patreon"})
-            for index, row in order: nursery.start_soon(check, index, row)
+            pending = iter(order)
+            async def consume():
+                for index, row in pending:
+                    await check(index, row)
+            for _ in range(min(12, len(order))):
+                nursery.start_soon(consume)
     return rows
 
 

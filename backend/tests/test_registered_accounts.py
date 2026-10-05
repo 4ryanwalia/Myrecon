@@ -130,15 +130,19 @@ def test_worker_reuses_tls_context_without_sharing_clients(monkeypatch, tmp_path
     source = tmp_path / "provider.py"
     source.write_text("reviewed fixture", encoding="utf-8")
     rows = [{**ROW, "id": f"fixture{i}", "module": f"fixture{i}", "enabled": True,
-             "sha256": hashlib.sha256(source.read_bytes()).hexdigest()} for i in range(2)]
+             "sha256": hashlib.sha256(source.read_bytes()).hexdigest()} for i in range(14)]
+    rows.append({**rows[0], "id": "spotify", "module": "spotify"})
     monkeypatch.setattr(worker, "CATALOG", {"services": rows})
     context = object()
-    calls, clients = [], []
+    calls, clients, started = [], [], []
     monkeypatch.setattr(worker.ssl, "create_default_context", lambda: calls.append(True) or context)
-    async def check(email, client, out):
-        out.append({"exists": True})
-    monkeypatch.setattr(worker.importlib, "import_module", lambda name: SimpleNamespace(
-        __file__=str(source), **{name: check}))
+    def module(name):
+        async def check(email, client, out):
+            started.append(name)
+            await trio.lowlevel.checkpoint()
+            out.append({"exists": True})
+        return SimpleNamespace(__file__=str(source), **{name: check})
+    monkeypatch.setattr(worker.importlib, "import_module", module)
     class Client:
         def __init__(self, **kwargs):
             assert kwargs["verify"] is context
@@ -147,5 +151,6 @@ def test_worker_reuses_tls_context_without_sharing_clients(monkeypatch, tmp_path
         async def __aenter__(self): return self
         async def __aexit__(self, *args): pass
     out = trio.run(worker.run, "x@example.com", SimpleNamespace(AsyncClient=Client), trio)
-    assert len(calls) == 1 and len(clients) == 2
+    assert len(calls) == 1 and len(clients) == 15
+    assert started[0] == "spotify"
     assert all(row["status"] == "found" for row in out)
