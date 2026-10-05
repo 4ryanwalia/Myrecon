@@ -152,5 +152,7 @@ def test_worker_reuses_tls_context_without_sharing_clients(monkeypatch, tmp_path
         async def __aexit__(self, *args): pass
     out = trio.run(worker.run, "x@example.com", SimpleNamespace(AsyncClient=Client), trio)
     assert len(calls) == 1 and len(clients) == 15
-    assert started[0] == "spotify"
+    # The first twelve clients run concurrently, so their relative start
+    # order varies. Priority services must be in that first batch.
+    assert "spotify" in started[:12]
     assert all(row["status"] == "found" for row in out)
