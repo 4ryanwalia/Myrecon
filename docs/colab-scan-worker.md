@@ -102,7 +102,8 @@ server use the same fingerprint despite Windows/Linux line-ending differences.
 1. Upload/open the notebook in your existing signed-in Colab account.
 2. Select **Runtime > Change runtime type > CPU**. No GPU is useful here.
 3. Run the dependency cell and the CPU/RAM diagnostics.
-4. Run the upload cell and select the matching worker ZIP.
+4. Open the Files sidebar, use **Upload to session storage** to upload the
+   matching worker ZIP, then run the bundle verification cell.
 5. In the worker cell enter your Render API origin, for example
    `https://myrecon.onrender.com`. No path, token or query string belongs in it.
 6. Enter the dedicated worker token in the hidden prompt. The token is held in
