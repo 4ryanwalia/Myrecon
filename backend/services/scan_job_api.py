@@ -2,6 +2,7 @@
 import hashlib
 import hmac
 import json
+import logging
 import re
 import secrets
 import threading
@@ -10,12 +11,13 @@ import time
 from flask import Response, request, stream_with_context
 
 import config
-from core import plans, responses, scan_jobs as jobs, validation
+from core import plans, responses, scan_jobs as jobs, scan_workers as workers, validation
 from services import scan_engine, scan_job_runner
 
 _ID = re.compile(r"^[a-f0-9]{32}$")
 _REQUEST_ID = re.compile(r"^[A-Za-z0-9_-]{16,80}$")
 _wait_slots = threading.BoundedSemaphore(8)
+log = logging.getLogger("myrecon.scan_workers")
 
 
 def _waiting_response(response, release):
@@ -34,6 +36,19 @@ def worker_authenticated():
     scheme, _, value = request.headers.get("Authorization", "").partition(" ")
     return (jobs.available() and scheme.lower() == "bearer" and bool(value)
             and hmac.compare_digest(value, config.SCAN_WORKER_TOKEN))
+
+
+def worker_status_authenticated():
+    scheme, _, value = request.headers.get("Authorization", "").partition(" ")
+    return scheme.lower() == "bearer" and bool(value) and workers.status_authenticated(value)
+
+
+def _note_worker(callback, *args):
+    """Presence telemetry must never discard an already valid job transition."""
+    try:
+        callback(*args)
+    except Exception as exc:
+        log.warning("Could not record scan-worker presence (%s)", type(exc).__name__)
 
 
 def _owner(api):
@@ -241,12 +256,13 @@ def register(app, api):
         try:
             if action == "claim":
                 worker_id = body.get("worker_id", "")
-                if not isinstance(worker_id, str) or not _REQUEST_ID.fullmatch(worker_id):
-                    raise ValueError("Invalid worker id")
+                workers.validate_worker_id(worker_id)
+                worker_label = workers.validate_label(body.get("worker_label"))
                 versions = body.get("catalogues")
                 if not isinstance(versions, dict) or body.get("protocol") != scan_engine.PROTOCOL:
                     raise ValueError("Worker protocol mismatch")
                 job = jobs.claim("colab:" + worker_id, versions)
+                _note_worker(workers.seen_claim, worker_id, worker_label, job)
                 if not job:
                     return responses.ok({"job": None})
                 # Deliberately excludes uid, owner, billing receipts and RTDB paths.
@@ -256,17 +272,33 @@ def register(app, api):
                 payload["names"] = job.get("names", [])
                 payload["lease_seconds"] = config.SCAN_LEASE_SECONDS
                 return responses.ok({"job": payload})
+            if action == "stopped":
+                worker_id = workers.validate_worker_id(body.get("worker_id", ""))
+                _note_worker(workers.stopped, worker_id)
+                return responses.ok({"accepted": True})
             job_id, token = body.get("job_id", ""), body.get("lease_token", "")
             if not isinstance(job_id, str) or not _ID.fullmatch(job_id) or not isinstance(token, str):
                 raise ValueError("Invalid lease")
             if action == "heartbeat":
-                jobs.heartbeat(job_id, token)
+                job = jobs.heartbeat(job_id, token)
+                worker_id = workers.worker_id_for(job)
+                if worker_id:
+                    _note_worker(workers.seen_busy, worker_id)
             elif action == "checkpoint":
-                jobs.checkpoint(job_id, token, body.get("sequence"), body.get("rows"))
+                job = jobs.checkpoint(job_id, token, body.get("sequence"), body.get("rows"))
+                worker_id = workers.worker_id_for(job)
+                if worker_id:
+                    _note_worker(workers.seen_busy, worker_id)
             elif action == "complete":
-                jobs.raw_done(job_id, token)
+                job = jobs.raw_done(job_id, token)
+                worker_id = workers.worker_id_for(job)
+                if worker_id:
+                    _note_worker(workers.seen_recovering, worker_id)
             elif action == "release":
-                jobs.release(job_id, token)
+                job = jobs.release(job_id, token)
+                worker_id = workers.worker_id_for(job)
+                if worker_id:
+                    _note_worker(workers.seen_recovering, worker_id)
             else:
                 return responses.error("Worker endpoint not found.", 404)
             return responses.ok({"accepted": True})
@@ -274,3 +306,22 @@ def register(app, api):
             return responses.error("This scan lease has expired or was cancelled.", 409, "lost_lease")
         except (ValueError, TypeError):
             return responses.error("Invalid worker payload or catalogue version.", 422)
+
+    @app.route("/api/operator/scan-workers")
+    def worker_status():
+        """Token-only status for the owner Apps Script health monitor."""
+        if not worker_status_authenticated():
+            return responses.error("Operator authentication failed.", 401)
+        response, status = responses.ok(workers.status())
+        response.headers["Cache-Control"] = "no-store"
+        return response, status
+
+    @app.route("/api/operator/worker-console")
+    def worker_console():
+        """Firebase-authenticated snapshot for the installed owner PWA."""
+        user = api._require_user()
+        if not workers.operator_allowed(user):
+            return responses.error("This private worker console is unavailable for this account.", 403)
+        response, status = responses.ok({**workers.status(), "launcher_url": workers.launcher_url()})
+        response.headers["Cache-Control"] = "no-store"
+        return response, status
