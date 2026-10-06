@@ -1,0 +1,97 @@
+"""Build a reviewed source-only worker ZIP and ready-to-upload CPU notebook."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import zipfile
+
+FILES = (
+    "services/scan_engine.py", "tools/colab_worker.py", "modules/sweep.py",
+    "modules/username_checker.py", "modules/profile_identity.py", "core/netguard.py",
+    "data/platforms_full.json", "data/platforms_extra.json",
+)
+
+
+def build(destination):
+    root = Path(__file__).resolve().parents[1]
+    destination = Path(destination)
+    destination.mkdir(parents=True, exist_ok=True)
+    archive = destination / "myrecon-colab-worker.zip"
+    with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as bundle:
+        for name in FILES:
+            bundle.writestr(name, (root / name).read_bytes().replace(b"\r\n", b"\n"))
+        for package in ("services", "tools", "modules", "core"):
+            bundle.writestr(package + "/__init__.py", "")
+    digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+    cells = []
+
+    def markdown(text):
+        cells.append({"id": f"cell-{len(cells)}", "cell_type": "markdown", "metadata": {}, "source": text.splitlines(True)})
+
+    def code(text):
+        cells.append({"id": f"cell-{len(cells)}", "cell_type": "code", "metadata": {}, "source": text.splitlines(True),
+                      "execution_count": None, "outputs": []})
+
+    markdown("# MyRecon CPU scan worker\n\n"
+        "Run this notebook manually while Colab compute is available. Render owns login, billing, "
+        "storage and the fallback. This notebook does not host a public server or bypass session limits.\n\n"
+        "Choose **Runtime > Change runtime type > CPU**. Keep this notebook private. "
+        "The ZIP contains scanner source and catalogue data, no account or payment secrets. "
+        "An interrupted session leaves committed checkpoints on Render's persistent store.\n\n"
+        "First deploy the matching backend and follow `docs/colab-scan-worker.md`. "
+        "Use only the dedicated worker token; never enter Firebase or payment keys here.")
+    code("%pip install -q requests==2.34.2 urllib3==2.8.0\n")
+    code("import os, platform\n"
+         "print('Logical CPUs:', os.cpu_count())\n"
+         "print('Architecture:', platform.machine())\n"
+         "import psutil\n"
+         "print('RAM GiB:', round(psutil.virtual_memory().total / 1024**3, 1))\n")
+    markdown("## Load the matching worker bundle\n"
+        "Upload `myrecon-colab-worker.zip` when prompted. The hash check binds this notebook "
+        "to the reviewed bundle. For later sessions you can keep the ZIP in a private Drive folder "
+        "and load it manually; Drive stores files and Colab runs them.")
+    code("from google.colab import files\n"
+         "from pathlib import Path\n"
+         "import hashlib, zipfile\n"
+         "uploaded = files.upload()\n"
+         "name = 'myrecon-colab-worker.zip'\n"
+         "assert name in uploaded, 'Upload the worker ZIP provided with this notebook'\n"
+         f"assert hashlib.sha256(uploaded[name]).hexdigest() == '{digest}', 'Wrong worker bundle'\n"
+         "worker_root = Path('/content/myrecon-worker')\n"
+         "worker_root.mkdir(exist_ok=True)\n"
+         "with zipfile.ZipFile(name) as bundle:\n"
+         "    for entry in bundle.infolist():\n"
+         "        target = (worker_root / entry.filename).resolve()\n"
+         "        assert target.is_relative_to(worker_root.resolve()), 'Invalid ZIP path'\n"
+         "    bundle.extractall(worker_root)\n"
+         "del uploaded\n")
+    code("import sys, getpass\n"
+         "sys.path.insert(0, str(worker_root))\n"
+         "from tools.colab_worker import Worker\n"
+         "api_origin = input('Your Render API origin (https://...): ').strip()\n"
+         "worker_token = getpass.getpass('Dedicated SCAN_WORKER_TOKEN (hidden, not saved): ').strip()\n"
+         "worker = Worker(api_origin, worker_token, concurrency=16)\n"
+         "worker_token = ''\n"
+         "try:\n"
+         "    worker.run(duration_minutes=60)\n"
+         "finally:\n"
+         "    del worker\n")
+    markdown("## Verification\n"
+        "Start one scan in MyRecon, check progress and completion, then stop this worker during "
+        "a second scan and confirm Render resumes it after lease expiry. Compare checked platforms "
+        "and results, verify one allowance was spent, and watch Render CPU/memory. "
+        "A notebook connection alone does not establish production reliability. "
+        "Colab sessions and available resources are limited; restart manually when necessary.")
+    notebook = {"nbformat": 4, "nbformat_minor": 5,
+                "metadata": {"colab": {"name": "MyRecon CPU Scan Worker.ipynb"},
+                             "kernelspec": {"name": "python3", "display_name": "Python 3"}},
+                "cells": cells}
+    (destination / "MyRecon CPU Scan Worker.ipynb").write_text(json.dumps(notebook, indent=2), encoding="utf-8")
+    (destination / "SHA256.txt").write_text(digest + "  " + archive.name + "\n", encoding="utf-8")
+    return archive
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", default=str(Path(__file__).resolve().parents[2] / "output" / "colab-worker"))
+    print(build(parser.parse_args().output))

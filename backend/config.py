@@ -148,7 +148,18 @@ GUEST_SCANS_PER_DAY = _get_int("GUEST_SCANS_PER_DAY", 5)
 # Free accounts get five username scans per day; paid packs unlock unlimited standard scans.
 # Concurrent 560-platform sweeps per worker. Each one holds 24 sockets; more
 # than this on a 512 MB instance starves every other lookup.
-FULL_SCAN_SLOTS = _get_int("FULL_SCAN_SLOTS", 2)
+FULL_SCAN_SLOTS = _get_int("FULL_SCAN_SLOTS", 1)
+
+# External workers are opt-in. Production requires RTDB and a dedicated token.
+SCAN_OFFLOAD_ENABLED = _get_bool("SCAN_OFFLOAD_ENABLED", False)
+SCAN_WORKER_TOKEN = os.environ.get("SCAN_WORKER_TOKEN", "")
+SCAN_JOB_LIMIT = max(1, min(8, _get_int("SCAN_JOB_LIMIT", 4)))
+SCAN_LEASE_SECONDS = max(30, _get_int("SCAN_LEASE_SECONDS", 90))
+SCAN_WORKER_WAIT_SECONDS = max(0, _get_int("SCAN_WORKER_WAIT_SECONDS", 20))
+SCAN_JOB_TTL_SECONDS = max(3600, _get_int("SCAN_JOB_TTL_SECONDS", 86400))
+SWEEP_CONCURRENCY = max(1, min(16, _get_int("SWEEP_CONCURRENCY", 8)))
+SWEEP_FULL_DEADLINE_SECONDS = max(30, _get_int("SWEEP_FULL_DEADLINE_SECONDS", 300))
+SWEEP_EXTENDED_DEADLINE_SECONDS = max(60, _get_int("SWEEP_EXTENDED_DEADLINE_SECONDS", 1800))
 
 # Razorpay (Extended scan packs). Key id is public; the two secrets are not.
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")

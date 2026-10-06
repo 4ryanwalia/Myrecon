@@ -308,7 +308,7 @@ def _live_view(result: dict, username: str) -> dict:
     return view
 
 
-def _run_username(username: str, deep: bool, emit=_noop) -> dict:
+def _run_username(username: str, deep: bool, emit=_noop, platform_results=None) -> dict:
     """Core username pipeline. `emit(event)` receives progress events."""
     all_results: list[dict] = []
     errors: list[dict] = []
@@ -332,13 +332,20 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     rejected: list[dict] = []
     platform_checks: list[dict] = []
     try:
-        checker = UsernameChecker(max_workers=20 if deep else 12, delay=0)
-        found = checker.scan(username, callback=_checker_cb, deep=deep)
+        checker = UsernameChecker(max_workers=8, delay=0)
+        if platform_results is None:
+            found = checker.scan(username, callback=_checker_cb, deep=deep)
+        else:
+            checker.all_results = platform_results
+            found = [r for r in platform_results if r.get("exists")]
         for r in found:
             r["category"] = categorise_result(r, username)
         all_results.extend(found)
         rejected = _rejections(checker)
         platform_checks = _standard_platform_checks(checker)
+        if any(r.get("reason") == "not checked before the scan deadline" for r in platform_results or []):
+            errors.append({"source": "username_check", "code": "out_of_time", "retryable": True,
+                           "message": "Some platforms were not checked before the scan deadline."})
     except Exception:  # noqa: BLE001 - preserve any already verified hits
         if 'checker' in locals():
             all_results.extend(r for r in getattr(checker, "all_results", []) if r.get("exists"))
@@ -407,7 +414,7 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     }
 
 
-def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
+def _run_full(username: str, emit=_noop, extended: bool = False, sweep_results=None) -> dict:
     """
     The Android app's platform sweep (561 on the web), run here for guests and accounts.
 
@@ -435,13 +442,19 @@ def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
         if hit["exists"]:
             emit({"type": "found", "result": _live_view(hit, username)})
 
-    if extended:
+    if sweep_results is not None:
+        hits, coverage = sweep_results
+    elif extended:
         # Most of the extra tier is API-backed forums and instances, one light
         # request each, so it runs wider and gets a longer clock.
-        sweep = Sweep(username, deadline_seconds=270, concurrency=96)
+        import config
+        sweep = Sweep(username, deadline_seconds=config.SWEEP_EXTENDED_DEADLINE_SECONDS,
+                      concurrency=config.SWEEP_CONCURRENCY)
         hits, coverage = sweep.run(on_result=on_result, platforms=EXTENDED)
     else:
-        hits, coverage = Sweep(username).run(on_result=on_result)
+        import config
+        hits, coverage = Sweep(username, deadline_seconds=config.SWEEP_FULL_DEADLINE_SECONDS,
+                               concurrency=config.SWEEP_CONCURRENCY).run(on_result=on_result)
     platform_checks = _full_platform_checks(hits)
 
     found = [h for h in hits if h["verdict"] == FOUND]
@@ -492,6 +505,7 @@ def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
             "exposures": len(exposures),
         },
         "coverage": coverage,
+        "partial": bool(coverage.get("unchecked")),
         "results": {"profiles": profiles, "documents": documents, "mentions": mentions},
         "identity_clusters": clusters,
         "exposures": exposures,
@@ -534,7 +548,12 @@ def stream_username(username: str, deep: bool = False, scope: str = "standard"):
     threading.Thread(target=worker, daemon=True).start()
 
     while True:
-        event = q.get()
+        try:
+            event = q.get(timeout=15)
+        except queue.Empty:
+            yield {"type": "progress", "phase": "Scanning", "percent": 1,
+                   "detail": "The scan is still running."}
+            continue
         if event is None:
             break
         yield event

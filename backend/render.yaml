@@ -8,7 +8,7 @@ services:
     rootDir: backend
     plan: free
     buildCommand: python -m pip install --upgrade pip==26.2.1 && python -m pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app --workers 2 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT
+    startCommand: gunicorn wsgi:app --workers 1 --threads 16 --timeout 120 --bind 0.0.0.0:$PORT
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
@@ -26,6 +26,13 @@ services:
         value: "60"
       - key: CACHE_TTL
         value: "600"
+      - key: FULL_SCAN_SLOTS
+        value: "1"
+      - key: SWEEP_CONCURRENCY
+        value: "8"
+      # Enable only after configuring the dedicated token and testing Colab.
+      - key: SCAN_OFFLOAD_ENABLED
+        value: "false"
       # Optional integrations, set these in the Render dashboard, not here.
       - key: GOOGLE_API_KEY
         sync: false

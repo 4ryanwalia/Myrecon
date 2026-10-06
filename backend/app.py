@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import re
+import sys
 import threading
 
 from flask import Flask, request, g, Response, jsonify, stream_with_context
@@ -31,6 +32,7 @@ log = logging.getLogger("myrecon")
 
 _cache = TTLCache(ttl=config.CACHE_TTL)
 _limiter = RateLimiter(config.RATE_LIMIT_REQUESTS, config.RATE_LIMIT_WINDOW)
+_worker_limiter = RateLimiter(120, 60)
 
 
 def create_app() -> Flask:
@@ -135,6 +137,19 @@ def _client_ip() -> str:
 def _register_hooks(app: Flask) -> None:
     @app.before_request
     def rate_limit():
+        if config.SCAN_OFFLOAD_ENABLED and request.path.startswith("/api/"):
+            from services.scan_job_api import worker_authenticated
+            from services import scan_job_runner
+            from core.scan_jobs import available
+            if available():
+                scan_job_runner.ensure_started()
+            if request.path.startswith("/api/scan-worker/") and worker_authenticated():
+                allowed, retry_after = _worker_limiter.check("scan-worker")
+                if not allowed:
+                    resp = responses.error("Worker rate limit exceeded.", 429, "rate_limited")
+                    resp[0].headers["Retry-After"] = str(retry_after)
+                    return resp
+                return None
         if not config.RATE_LIMIT_ENABLED:
             return None
         if request.method == "OPTIONS" or request.path == "/api/health":
@@ -282,7 +297,7 @@ def _scope(body: dict) -> str:
     return scope
 
 
-def _admit_scan(scope: str, cached: bool):
+def _admit_scan(scope: str, cached: bool, job_id=None):
     """
     Decide whether this scan may run, charging the allowance it uses.
 
@@ -298,7 +313,10 @@ def _admit_scan(scope: str, cached: bool):
             # No guest preview of the extended tier: its first 100 platforms
             # are the same 100 a guest full scan already shows.
             raise SignInRequired()
-        plans.consume_guest_scan(_client_ip())
+        if job_id:
+            plans.consume_guest_scan(_client_ip(), job_id=job_id)
+        else:
+            plans.consume_guest_scan(_client_ip())
         return None, None
     if not store.persistent():
         raise AccountsUnavailable()
@@ -307,6 +325,8 @@ def _admit_scan(scope: str, cached: bool):
     if scope in ("standard", "full"):
         # Quick and full scans share one daily allowance per free account.
         # Cached requests count too; reopening saved reports does not.
+        if job_id:
+            return uid, plans.consume_standard_scan(uid, job_id=job_id)
         return uid, None if account["standard_scans_unlimited"] else plans.consume_standard_scan(uid)
     if scope == "extended":
         # Only Extended uses paid credits; cached results do not spend one.
@@ -314,7 +334,8 @@ def _admit_scan(scope: str, cached: bool):
             if account["extended_scans_left"] <= 0:
                 raise NoAllowance(account, "extended")
             return uid, None
-        return uid, plans.consume_extended_scan(uid)
+        return uid, (plans.consume_extended_scan(uid, job_id=job_id) if job_id
+                     else plans.consume_extended_scan(uid))
 
 
 def _remember(uid, data):
@@ -336,7 +357,7 @@ def _remember(uid, data):
 
 
 # Concurrent full and extended sweeps in this worker. Each holds 24 sockets.
-_full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
+_full_slots = threading.BoundedSemaphore(1 if config.SCAN_OFFLOAD_ENABLED else max(1, config.FULL_SCAN_SLOTS))
 
 
 def _guest_full_preview(data: dict) -> dict:
@@ -428,6 +449,8 @@ def _guest_stream_event(event: dict, visible: set[str]):
 # ── Routes ───────────────────────────────────────────────────────
 
 def _register_routes(app: Flask) -> None:
+    from services import scan_job_api
+    scan_job_api.register(app, sys.modules[__name__])
     from core.android_referrals import register_routes as register_android_referrals
     register_android_referrals(app, _json_body, responses)
     from services.search import search_username, search_fullname
@@ -498,6 +521,8 @@ def _register_routes(app: Flask) -> None:
         if request.method == "OPTIONS":
             return ("", 204)
         body = _json_body()
+        if config.SCAN_OFFLOAD_ENABLED:
+            return scan_job_api.handle(sys.modules[__name__], body, streaming=False)
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
         scope = _scope(body)
@@ -542,6 +567,8 @@ def _register_routes(app: Flask) -> None:
         from services.search import stream_username
 
         body = _json_body()
+        if config.SCAN_OFFLOAD_ENABLED:
+            return scan_job_api.handle(sys.modules[__name__], body, streaming=True)
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
         scope = _scope(body)
