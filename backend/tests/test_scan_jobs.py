@@ -168,6 +168,22 @@ def test_provider_999_and_firebase_null_removal_round_trip(setup, monkeypatch):
     assert "profile_pic_url" not in stored[0]
 
 
+def test_worker_claim_after_firebase_removes_empty_lists(setup):
+    memory, client = setup
+    job = queued()
+    stored = memory.get(jobs.ROOT)
+    for field in ("names", "refs", "charged", "guest_receipt_path"):
+        stored[job["id"]].pop(field, None)
+    memory.set(jobs.ROOT, stored)
+    response = client.post('/api/scan-worker/claim', json={
+        'worker_id': 'worker-fixture-123', 'catalogues': versions(),
+        'protocol': scan_engine.PROTOCOL},
+        headers={'Authorization': 'Bearer ' + config.SCAN_WORKER_TOKEN})
+    assert response.status_code == 200
+    assert response.json['job']['id'] == job['id']
+    assert response.json['job']['names'] == []
+
+
 def test_global_render_capacity_and_queue_bound(setup, monkeypatch):
     queued()
     queued("b" * 32)
