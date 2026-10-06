@@ -165,7 +165,7 @@
     const ctrl = new AbortController();
     // The full sweep checks 561 platforms and can take well over a minute;
     // the extended one checks several times that.
-    const scopeWait = { full: 180000, extended: 330000 };
+    const scopeWait = { full: 720000, extended: 2400000 };
     const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || (endpoint === CFG.endpoints.email ? 140000 : 90000));
     try {
       const res = await fetch(url, {
@@ -1771,24 +1771,36 @@
   }
 
   async function runUsernameStream(value, body) {
+    body = { ...body, request_id: body.request_id || crypto.randomUUID() };
+    let jobId = null;
     const controller = new AbortController();
-    const wait = { full: 180000, extended: 330000 };
-    const timer = setTimeout(() => controller.abort(), wait[body.scope] || 120000);
-    try { await consumeUsernameStream(value, body, controller.signal); }
+    const wait = { full: 720000, extended: 2400000 };
+    const timer = setTimeout(() => controller.abort(), wait[body.scope] || 240000);
+    try {
+      try {
+        await consumeUsernameStream(value, body, controller.signal, null, id => { jobId = id; });
+      } catch (error) {
+        // Only a durable-job acknowledgement permits a safe reconnect.
+        // GET resumes the same job and never admits or charges a new scan.
+        if (!jobId || error.name === "AbortError" || error instanceof GateError) throw error;
+        await consumeUsernameStream(value, body, controller.signal, jobId);
+      }
+    }
     catch (error) {
       if (error.name === "AbortError") throw new Error("The scan reached its time limit. Try again later.");
       throw error;
     } finally { clearTimeout(timer); }
   }
 
-  async function consumeUsernameStream(value, body, signal) {
+  async function consumeUsernameStream(value, body, signal, resumeJob = null, onJob = () => {}) {
     setScanning(body);
     let res;
     try {
-      res = await fetch(CFG.apiBase + CFG.endpoints.usernameStream, {
-        method: "POST",
+      const endpoint = resumeJob ? "/api/username/jobs/" + encodeURIComponent(resumeJob) + "/stream" : CFG.endpoints.usernameStream;
+      res = await fetch(CFG.apiBase + endpoint, {
+        method: resumeJob ? "GET" : "POST",
         headers: { "Content-Type": "application/json", ...(await authHeaders()) },
-        body: JSON.stringify(body),
+        body: resumeJob ? undefined : JSON.stringify(body),
         signal,
       });
     } catch (error) {
@@ -1797,7 +1809,7 @@
       if (error.name === "AbortError") throw error;
       throw new Error("Could not reach the MyRecon API. Check your connection or try later.");
     }
-    if (res.status === 404) return runUsernameFallback(value, body); // older backend
+    if (res.status === 404 && !resumeJob) return runUsernameFallback(value, body); // older backend
     if (!res.ok || !res.body) {
       let data = {};
       try { data = await res.json(); } catch {}
@@ -1814,7 +1826,8 @@
       line = line.trim();
       if (!line) return;
       let ev; try { ev = JSON.parse(line); } catch { return; }
-      if (ev.type === "progress") updateScanUI(ev);
+      if (ev.type === "job" && /^[a-f0-9]{32}$/.test(ev.job_id || "")) onJob(ev.job_id);
+      else if (ev.type === "progress") updateScanUI(ev);
       else if (ev.type === "found") addLiveCard(ev.result);
       else if (ev.type === "complete") { finalData = ev.data; savedId = ev.history_id; }
       else if (ev.type === "error") throw new Error(ev.error || "Scan failed");

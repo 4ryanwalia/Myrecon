@@ -151,17 +151,46 @@ def get_account(uid: str, email: str = "", name: str = "") -> dict:
     return {"uid": uid, "email": record.get("email", ""), **entitlements(record)}
 
 
-def consume_standard_scan(uid: str):
+def _job_receipt(cur, job_id):
+    if not job_id:
+        return None
+    return (cur.get("scan_job_receipts") or {}).get(job_id)
+
+
+def job_receipt(uid, job_id):
+    return _job_receipt(store.get(_user_path(uid)) or {}, job_id) if uid else None
+
+
+def guest_job_path(ip):
+    day = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d")
+    return f"web/guest/{day}/{_guest_key(ip, day)}"
+
+
+def _record_job(cur, job_id, source):
+    if job_id:
+        cutoff = _now_ms() - 2 * _DAY_MS
+        receipts = {key: value for key, value in (cur.get("scan_job_receipts") or {}).items()
+                    if value.get("at", 0) >= cutoff}
+        receipts[job_id] = {"source": source, "at": _now_ms(), "refunded": False}
+        cur["scan_job_receipts"] = receipts
+
+
+def consume_standard_scan(uid: str, job_id=None):
     """Reserve a daily free scan atomically, or nothing for a paid account."""
     denied = {}
     spent = {}
 
     def fn(cur):
         cur = cur or {"created": _now_ms()}
+        receipt = _job_receipt(cur, job_id)
+        if receipt is not None:
+            spent["source"] = receipt["source"]
+            return cur
         now = _now_ms()
         ent = entitlements(cur, now)
         if ent["standard_scans_unlimited"]:
             spent["source"] = None
+            _record_job(cur, job_id, None)
             return cur
         if ent["standard_scans_left"] <= 0:
             denied["ent"] = ent
@@ -169,6 +198,7 @@ def consume_standard_scan(uid: str):
         day = _standard_day(now)
         cur["standard_usage"] = {"day": day, "used": FREE_STANDARD_SCANS_PER_DAY - ent["standard_scans_left"] + 1}
         spent["source"] = "standard:" + day
+        _record_job(cur, job_id, spent["source"])
         return cur
 
     try:
@@ -178,13 +208,17 @@ def consume_standard_scan(uid: str):
     return spent["source"]
 
 
-def consume_extended_scan(uid: str) -> str:
+def consume_extended_scan(uid: str, job_id=None) -> str:
     """Spend expiring legacy scans first, then a non-expiring pack credit."""
     denied = {}
     spent = {}
 
     def fn(cur):
         cur = cur or {"created": _now_ms()}
+        receipt = _job_receipt(cur, job_id)
+        if receipt is not None:
+            spent["source"] = receipt["source"]
+            return cur
         ent = entitlements(cur)
         if ent["extended_scans_left"] <= 0:
             denied["ent"] = ent
@@ -195,6 +229,7 @@ def consume_extended_scan(uid: str) -> str:
         else:
             cur["extended"]["scans_left"] = ent["extended_pack_scans_left"] - 1
             spent["source"] = "extended_pack"
+        _record_job(cur, job_id, spent["source"])
         return cur
 
     try:
@@ -204,7 +239,7 @@ def consume_extended_scan(uid: str) -> str:
     return spent["source"]
 
 
-def refund_full_scan(uid: str, source: str) -> None:
+def refund_full_scan(uid: str, source: str, job_id=None) -> None:
     """Give back a scan whose pipeline failed. Best effort."""
     if not uid or not source:
         return
@@ -212,6 +247,11 @@ def refund_full_scan(uid: str, source: str) -> None:
     def fn(cur):
         if not cur:
             raise Abort()
+        if job_id:
+            receipt = _job_receipt(cur, job_id)
+            if not receipt or receipt.get("refunded") or receipt.get("source") != source:
+                raise Abort()
+            receipt["refunded"] = True
         if source.startswith("standard:"):
             usage = cur.get("standard_usage") or {}
             if usage.get("day") == source.split(":", 1)[1]:
@@ -307,17 +347,25 @@ def _guest_key(ip: str, day: str) -> str:
                     hashlib.sha256).hexdigest()[:32]
 
 
-def consume_guest_scan(ip: str) -> int:
+def consume_guest_scan(ip: str, job_id=None) -> int:
     """Count a guest scan. Returns scans left today; raises GuestLimit."""
     day = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d")
     _forget_old_days(day)
     left = {}
 
     def fn(cur):
-        used = int(cur or 0)
+        receipts = (cur.get("jobs") or {}) if isinstance(cur, dict) else {}
+        used = int(cur.get("used", 0)) if isinstance(cur, dict) else int(cur or 0)
+        if job_id in receipts:
+            left["n"] = GUEST_SCANS_PER_DAY - used
+            return cur
         if used >= GUEST_SCANS_PER_DAY:
             raise Abort()
         left["n"] = GUEST_SCANS_PER_DAY - used - 1
+        if job_id or isinstance(cur, dict):
+            if job_id:
+                receipts[job_id] = True
+            return {"used": used + 1, "jobs": receipts}
         return used + 1
 
     try:

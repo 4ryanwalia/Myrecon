@@ -45,6 +45,8 @@ def _trim(result: dict) -> dict:
         "query": result.get("query") or {},
         "summary": result.get("summary") or {},
         "coverage": result.get("coverage"),
+        "partial": bool(result.get("partial")),
+        "errors": result.get("errors") or [],
         "results": {
             "profiles": [{k: p[k] for k in _PROFILE_FIELDS if p.get(k) is not None}
                          for p in (results.get("profiles") or [])][:300],
@@ -58,11 +60,16 @@ def _trim(result: dict) -> dict:
     }
 
 
-def save(uid: str, result: dict) -> str:
+def save(uid: str, result: dict, scan_id=None) -> str:
     """Record a finished scan. Returns its id."""
     query = result.get("query") or {}
     summary = result.get("summary") or {}
-    scan_id = _store.store.push(f"web/scans/{uid}", _trim(result))
+    if scan_id is None:
+        scan_id = _store.store.push(f"web/scans/{uid}", _trim(result))
+    else:
+        if not valid_id(scan_id):
+            raise ValueError("Invalid scan id")
+        _store.store.set(f"web/scans/{uid}/{scan_id}", _trim(result))
     _store.store.set(f"web/history/{uid}/{scan_id}", {
         "handle": str(query.get("username", ""))[:64],
         "scope": query.get("scope") if query.get("scope") in ("full", "extended") else "standard",
@@ -76,7 +83,7 @@ def save(uid: str, result: dict) -> str:
 
 def _prune(uid: str) -> None:
     index = _store.store.get(f"web/history/{uid}") or {}
-    for old in sorted(index)[:-MAX_SCANS]:
+    for old in sorted(index, key=lambda key: (index[key] or {}).get("at", 0))[:-MAX_SCANS]:
         delete(uid, old)
 
 
@@ -101,8 +108,12 @@ def delete(uid: str, scan_id: str) -> None:
         raise NotFound()
     _store.store.delete(f"web/scans/{uid}/{scan_id}")
     _store.store.delete(f"web/history/{uid}/{scan_id}")
+    from core import scan_jobs
+    scan_jobs.erase_history(uid, scan_id)
 
 
 def clear(uid: str) -> None:
     _store.store.delete(f"web/scans/{uid}")
     _store.store.delete(f"web/history/{uid}")
+    from core import scan_jobs
+    scan_jobs.erase_history(uid)

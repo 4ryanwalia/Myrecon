@@ -72,7 +72,7 @@
       <h2>The short version</h2>
       <ul>
         <li><strong>Accounts are optional.</strong> Guests can see a 100-platform preview from a 500+ platform username sweep. If you sign in with Google, we hold your email, name, scan counts and saved username scans, which you can delete. We never see card, UPI or bank details: Razorpay handles Indian payments and PayPal or Buy Me a Coffee handles international payments when enabled.</li>
-        <li><strong>Guest scans are not saved to an account.</strong> Results can sit in a short-lived server memory cache for up to ten minutes. Completed username scans while signed in are saved to your account history.</li>
+        <li><strong>Guest scans are not saved to an account.</strong> Results can sit in a short-lived server memory cache for up to ten minutes. When recoverable username jobs are enabled, temporary job inputs, progress and results are scheduled for removal after 24 hours. Completed username scans while signed in are saved to your account history.</li>
         <li><strong>Recent lookup history also lives in your browser</strong>, where you can wipe it in one click.</li>
         <li><strong>Passwords never leave your device.</strong> The password checker hashes locally and sends five characters of that hash.</li>
         <li><strong>We never sell data or use it to build profiles.</strong> Google Analytics measures site visits. Search values are not sent to analytics or advertising systems.</li>
@@ -111,6 +111,12 @@
           <caption>Operator and contact details.</caption>
           <thead><tr><th scope="col">Detail</th><th scope="col">Value</th></tr></thead>
           <tbody>
+            <tr>
+              <td><strong>Recoverable username scan jobs, when enabled</strong>: username, scan settings, platform results, progress and a job identifier</td>
+              <td>To continue an interrupted scan and reduce load on our API</td>
+              <td>Our server-managed Firebase database; platform checks may run in Google Colab before returning to Render. Account, login and payment credentials stay on our API</td>
+              <td>Temporary jobs and results are scheduled for removal after 24 hours, on the next coordinator run after downtime. Account allowance receipts are retained for two days and cleaned during subsequent admission; completed account history follows the separate history policy below</td>
+            </tr>
             <tr><td>Operator</td><td>Aryan Walia, sole proprietor, trading as MyRecon</td></tr>
             <tr><td>Principal place of business</td><td>Gurugram, India</td></tr>
             <tr><td>Website</td><td>https://www.myrecon.xyz/</td></tr>

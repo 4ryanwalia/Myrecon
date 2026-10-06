@@ -35,7 +35,7 @@ import string
 import threading
 import time
 from http.cookiejar import DefaultCookiePolicy
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from urllib.parse import urljoin, urlsplit
 
 import requests
@@ -621,20 +621,41 @@ class Sweep:
 
         try:
             with ThreadPoolExecutor(max_workers=self.concurrency) as pool:
-                futures = [pool.submit(guarded, p) for p in platforms]
-                for fut in as_completed(futures):
-                    hit = fut.result()
-                    with lock:
+                pending = {}
+                remaining = iter(platforms)
+                exhausted = False
+                while pending or not exhausted:
+                    if self._stop.is_set() or time.monotonic() >= self.deadline:
+                        break
+                    while not exhausted and len(pending) < self.concurrency:
+                        p = next(remaining, None)
+                        if p is None:
+                            exhausted = True
+                        else:
+                            pending[pool.submit(guarded, p)] = p
+                    if not pending:
+                        break
+                    done, _ = wait(pending, timeout=0.5, return_when=FIRST_COMPLETED)
+                    for fut in done:
+                        pending.pop(fut)
+                        hit = fut.result()
                         hits.append(hit)
                         checked += 1
-                        n = checked
-                    if on_result:
-                        on_result(hit, n, total)
+                        if on_result:
+                            on_result(hit, checked, total)
+                for future in pending:
+                    future.cancel()
+                recorded = {h["platform"] for h in hits}
+                for p in platforms:
+                    if p["name"] not in recorded:
+                        hits.append(self._hit(p, UNKNOWN, self._url_for(p, self.handle), 0,
+                                              "unverified", "out_of_time"))
         finally:
             self.session.close()
 
         coverage = {
             "total": total,
+            "unchecked": sum(1 for h in hits if h.get("reason_code") == "out_of_time"),
             "found": sum(1 for h in hits if h["verdict"] == FOUND),
             "not_found": sum(1 for h in hits if h["verdict"] == NOT_FOUND),
             "undetermined": sum(1 for h in hits if h["verdict"] == UNKNOWN and not h["unreachable"]),
