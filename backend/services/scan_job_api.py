@@ -251,7 +251,9 @@ def register(app, api):
                     return responses.ok({"job": None})
                 # Deliberately excludes uid, owner, billing receipts and RTDB paths.
                 payload = {key: job[key] for key in ("id", "username", "scope", "deep",
-                           "token", "fingerprint", "names")}
+                           "token", "fingerprint")}
+                # Firebase removes empty lists from stored objects.
+                payload["names"] = job.get("names", [])
                 payload["lease_seconds"] = config.SCAN_LEASE_SECONDS
                 return responses.ok({"job": payload})
             job_id, token = body.get("job_id", ""), body.get("lease_token", "")
