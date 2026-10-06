@@ -4,7 +4,7 @@ import threading
 import time
 
 import config
-from core import history, plans, scan_jobs as jobs, store as storage
+from core import history, plans, scan_jobs as jobs, scan_workers, store as storage
 from services import scan_engine
 
 log = logging.getLogger("myrecon.scan_jobs")
@@ -120,6 +120,12 @@ def maintenance():
             history.save(job["uid"], jobs.result(job), scan_id=job["id"])
             jobs.remember_history(job["id"], job["result_token"])
     jobs.prune()
+    try:
+        scan_workers.prune()
+    except Exception as exc:
+        # Presence is operator telemetry. A transient cleanup failure must not
+        # prevent the scan coordinator from maintaining or running jobs.
+        log.warning("Could not prune scan-worker presence (%s)", type(exc).__name__)
 
 
 def ensure_started():

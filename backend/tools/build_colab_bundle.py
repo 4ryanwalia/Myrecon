@@ -12,7 +12,7 @@ FILES = (
 )
 
 
-def build(destination):
+def build(destination, worker_label="Colab worker", notebook_name="MyRecon CPU Scan Worker.ipynb"):
     root = Path(__file__).resolve().parents[1]
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
@@ -34,7 +34,9 @@ def build(destination):
                       "execution_count": None, "outputs": []})
 
     markdown("# MyRecon CPU scan worker\n\n"
-        "Run this notebook manually while Colab compute is available. Render owns login, billing, "
+        "Use **Runtime > Run all** after uploading the matching ZIP. Enter the hidden token prompt "
+        "once and the worker starts automatically for up to **10 hours**. Google can end the runtime earlier. "
+        "Render owns login, billing, "
         "storage and the fallback. This notebook does not host a public server or bypass session limits.\n\n"
         "Choose **Runtime > Change runtime type > CPU**. Keep this notebook private. "
         "The ZIP contains scanner source and catalogue data, no account or payment secrets. "
@@ -72,13 +74,15 @@ def build(destination):
          "print('Worker bundle verified and extracted')\n")
     code("import sys, getpass\n"
          "sys.path.insert(0, str(worker_root))\n"
-         "from tools.colab_worker import Worker\n"
-         "api_origin = input('Your Render API origin (https://...): ').strip()\n"
+         "import importlib\n"
+         "from tools import colab_worker\n"
+         "Worker = importlib.reload(colab_worker).Worker\n"
+         "api_origin = 'https://myrecon.onrender.com'\n"
          "worker_token = getpass.getpass('Dedicated SCAN_WORKER_TOKEN (hidden, not saved): ').strip()\n"
-         "worker = Worker(api_origin, worker_token, concurrency=16)\n"
+         f"worker = Worker(api_origin, worker_token, concurrency=16, worker_label={worker_label!r})\n"
          "worker_token = ''\n"
          "try:\n"
-         "    worker.run(duration_minutes=60)\n"
+         "    worker.run(duration_minutes=600)\n"
          "finally:\n"
          "    del worker\n")
     markdown("## Verification\n"
@@ -91,7 +95,7 @@ def build(destination):
                 "metadata": {"colab": {"name": "MyRecon CPU Scan Worker.ipynb"},
                              "kernelspec": {"name": "python3", "display_name": "Python 3"}},
                 "cells": cells}
-    (destination / "MyRecon CPU Scan Worker.ipynb").write_text(json.dumps(notebook, indent=2), encoding="utf-8")
+    (destination / notebook_name).write_text(json.dumps(notebook, indent=2), encoding="utf-8")
     (destination / "SHA256.txt").write_text(digest + "  " + archive.name + "\n", encoding="utf-8")
     return archive
 
@@ -99,4 +103,7 @@ def build(destination):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default=str(Path(__file__).resolve().parents[2] / "output" / "colab-worker"))
-    print(build(parser.parse_args().output))
+    parser.add_argument("--worker-label", default="Colab worker")
+    parser.add_argument("--notebook-name", default="MyRecon CPU Scan Worker.ipynb")
+    args = parser.parse_args()
+    print(build(args.output, worker_label=args.worker_label, notebook_name=args.notebook_name))
