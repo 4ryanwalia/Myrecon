@@ -27,6 +27,14 @@ from unrelated web-service hosting. Confirm the intended workload fits your
 account's current terms before enabling public traffic:
 [Colab FAQ](https://research.google.com/colaboratory/faq.html).
 
+After uploading the matching worker ZIP, use **Runtime > Run all** and enter the
+dedicated token in the hidden prompt. The worker starts as part of that flow and
+runs for up to 600 minutes (10 hours). This is the worker's own duration, not a
+guarantee of Colab availability. Temporary failures to reach Render while polling
+the queue are retried within that same duration; invalid credentials still stop
+the worker. No dummy workload, automatic Colab reconnection or idle-limit bypass
+is used. A new Google runtime still requires setup and manual startup.
+
 ## 1. Prepare Render
 
 Deploy the matching backend code with this effective start command:
@@ -183,3 +191,61 @@ To roll back, set `SCAN_OFFLOAD_ENABLED=false` on Render and stop the notebook.
 New requests use the original API paths with the reduced Render concurrency.
 Existing offloaded jobs are retained but stop progressing until the coordinator
 is re-enabled, so finish/cancel them before rollback where possible.
+
+## Worker health alerts and phone app
+
+The queue sees an idle worker every time its notebook polls for a job. Each
+numbered notebook sends its label and a random runtime instance ID, so the
+server can distinguish a ready worker from one that has stopped reporting. A
+worker is shown as `unreachable` after 30 seconds without contact and `offline`
+after 180 seconds. `Offline` means Render has not heard from that notebook; it
+does not claim why Google ended or disconnected the runtime.
+
+When rebuilding a numbered notebook, preserve its label. For example:
+
+```text
+python backend/tools/build_colab_bundle.py --output output/colab-worker/five-worker-pool --worker-label "Worker 01" --notebook-name "MyRecon CPU Worker 01.ipynb"
+```
+
+Rebuild the shared ZIP once and replace the matching notebook files before
+uploading them to Drive. Do not run two active notebooks with the same label.
+
+Set the following additional Render settings after deploying this version:
+
+```dotenv
+# Generate separately from SCAN_WORKER_TOKEN. It may read only redacted worker status.
+SCAN_WORKER_STATUS_TOKEN=<new random value with at least 32 characters>
+SCAN_WORKER_OPERATOR_EMAIL=<the Google email allowed to use the console>
+SCAN_WORKER_LAUNCHER_URL=<the private Apps Script launcher https URL>
+SCAN_WORKER_FRESH_SECONDS=30
+SCAN_WORKER_OFFLINE_SECONDS=180
+```
+
+Do not put `SCAN_WORKER_STATUS_TOKEN` in a notebook, browser JavaScript, or
+chat. It is intentionally different from the token that lets a Colab worker
+claim jobs.
+
+For an alert while the phone app is closed, add
+[`worker-health-monitor.gs`](worker-health-monitor.gs) to the existing private
+Apps Script project. In **Project Settings → Script properties**, add:
+
+```text
+MYRECON_SCAN_STATUS_TOKEN  = the same separate Render status token
+MYRECON_ALERT_EMAIL        = the inbox that should receive the alert
+```
+
+Run `installWorkerHealthMonitor()` once and approve Apps Script's Mail and
+external-request permissions. It polls every five minutes, emails once when a
+previously live worker becomes `offline` or `stopped`, and emails once when it
+recovers. Enable notifications for that inbox on the phone. Run
+`sendWorkerHealthTest()` to verify delivery. The first health check records the
+baseline without sending false alerts for replacement notebooks you have never
+started.
+
+The installable private console is served at `/worker-console/` on the MyRecon
+site. Sign in with the configured Google account; Render verifies that Firebase
+identity before it returns any worker status or the private launcher URL. On
+Android Chrome, use **Install app** when it appears. On iPhone, use Safari's
+**Share → Add to Home Screen**. The PWA shell is public static code, but it
+contains no worker token, notebook URL, status data, or private Drive content;
+those are returned only after the configured owner account is verified.

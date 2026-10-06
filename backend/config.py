@@ -153,6 +153,21 @@ FULL_SCAN_SLOTS = _get_int("FULL_SCAN_SLOTS", 1)
 # External workers are opt-in. Production requires RTDB and a dedicated token.
 SCAN_OFFLOAD_ENABLED = _get_bool("SCAN_OFFLOAD_ENABLED", False)
 SCAN_WORKER_TOKEN = os.environ.get("SCAN_WORKER_TOKEN", "")
+# This token is deliberately separate from the token that can claim scan jobs.
+# It only reads a redacted worker-presence snapshot for the owner-run alert
+# script.  Never put either token in frontend JavaScript or a notebook file.
+SCAN_WORKER_STATUS_TOKEN = os.environ.get("SCAN_WORKER_STATUS_TOKEN", "")
+SCAN_WORKER_OPERATOR_EMAIL = os.environ.get("SCAN_WORKER_OPERATOR_EMAIL", "")
+SCAN_WORKER_LAUNCHER_URL = os.environ.get("SCAN_WORKER_LAUNCHER_URL", "")
+SCAN_WORKER_FRESH_SECONDS = max(15, min(120, _get_int("SCAN_WORKER_FRESH_SECONDS", 30)))
+SCAN_WORKER_OFFLINE_SECONDS = max(
+    SCAN_WORKER_FRESH_SECONDS + 30,
+    min(900, _get_int("SCAN_WORKER_OFFLINE_SECONDS", 180)),
+)
+SCAN_WORKER_RETENTION_SECONDS = max(
+    SCAN_WORKER_OFFLINE_SECONDS,
+    _get_int("SCAN_WORKER_RETENTION_SECONDS", 7 * 24 * 60 * 60),
+)
 SCAN_JOB_LIMIT = max(1, min(8, _get_int("SCAN_JOB_LIMIT", 4)))
 SCAN_LEASE_SECONDS = max(30, _get_int("SCAN_LEASE_SECONDS", 90))
 SCAN_WORKER_WAIT_SECONDS = max(0, _get_int("SCAN_WORKER_WAIT_SECONDS", 20))

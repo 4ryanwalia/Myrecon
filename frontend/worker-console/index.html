@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>MyRecon Worker Console</title>
+  <link rel="icon" href="/worker-console/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/worker-console/icon-192.png">
+  <link rel="manifest" href="/worker-console/manifest.webmanifest">
+  <link rel="stylesheet" href="/worker-console/styles.css">
+  <script src="/assets/js/env.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/account.js"></script>
+  <script defer src="/worker-console/app.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="identity"><img src="/worker-console/icon.svg" alt=""><span>MyRecon</span><small>Worker Console</small></div>
+      <button id="install" class="quiet" hidden>Install app</button>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Private operator view</p>
+      <h1>Colab worker health</h1>
+      <p id="summary">Sign in with the owner Google account to see live worker status.</p>
+      <div class="actions">
+        <button id="sign-in" class="primary">Sign in with Google</button>
+        <button id="refresh" class="quiet" hidden>Refresh</button>
+        <a id="launcher" class="quiet link" hidden target="_blank" rel="noopener noreferrer">Open notebook launcher</a>
+      </div>
+    </section>
+
+    <section id="notice" class="notice" hidden></section>
+    <section id="workers" class="grid" aria-live="polite"></section>
+
+    <section class="how-it-works">
+      <h2>Alerts</h2>
+      <p>The page refreshes while it is open. The owner alert script sends one email when a previously live worker becomes offline, so your phone can notify you even when this app is closed.</p>
+      <p class="small">“Offline” means Render has not heard from the notebook for three minutes. It does not claim why the Colab runtime stopped.</p>
+    </section>
+  </main>
+</body>
+</html>

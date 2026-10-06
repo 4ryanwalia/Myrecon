@@ -5,6 +5,7 @@ Google search or payment credentials. Stop the notebook cell to shut it down.
 """
 import getpass
 import os
+import re
 import secrets
 import sys
 import threading
@@ -22,16 +23,21 @@ class LeaseLost(Exception):
 
 
 class Worker:
-    def __init__(self, api_url, token, concurrency=16, http=None):
+    _LABEL = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 ._-]{0,39}$")
+
+    def __init__(self, api_url, token, concurrency=16, worker_label="Colab worker", http=None):
         parts = urlsplit(api_url)
         if (parts.scheme != "https" or not parts.hostname or parts.username or parts.password
                 or parts.query or parts.fragment or parts.path not in ("", "/")):
             raise ValueError("Use the HTTPS origin of your Render API")
         if len(token) < 32:
             raise ValueError("Use a dedicated worker token of at least 32 characters")
+        if not isinstance(worker_label, str) or not self._LABEL.fullmatch(worker_label.strip()):
+            raise ValueError("Use a short worker label such as 'Worker 01'")
         self.url = api_url.rstrip("/")
         self.token = token
         self.concurrency = max(1, min(32, concurrency))
+        self.worker_label = worker_label.strip()
         self.worker_id = secrets.token_hex(16)
         self.http = http or requests.Session()
         self.catalogues = {scope: scan_engine.fingerprint(scope) for scope in ("standard", "full", "extended")}
@@ -122,20 +128,32 @@ class Worker:
             stop.set()
             monitor.join(timeout=1)
 
-    def run(self, duration_minutes=60):
-        end = time.monotonic() + max(1, min(240, duration_minutes)) * 60
-        print("CPU worker started for this session. Stop the cell to disconnect.")
+    def run(self, duration_minutes=600):
+        duration = max(1, min(600, duration_minutes))
+        end = time.monotonic() + duration * 60
+        print("CPU worker started for up to " + str(duration) + " minutes. "
+              "Colab may end the runtime earlier. Stop the cell to disconnect.")
         try:
             while time.monotonic() < end:
-                response = self.call("claim", {"worker_id": self.worker_id,
-                    "catalogues": self.catalogues, "protocol": scan_engine.PROTOCOL})
+                try:
+                    response = self.call("claim", {"worker_id": self.worker_id,
+                        "worker_label": self.worker_label, "catalogues": self.catalogues,
+                        "protocol": scan_engine.PROTOCOL})
+                except RuntimeError:
+                    print("Render is temporarily unavailable; retrying while this session remains active.")
+                    time.sleep(min(10, max(0, end - time.monotonic())))
+                    continue
                 job = response.get("job")
                 if job:
                     print("Running a " + job["scope"] + " scan.")
                     self.execute(job)
                 else:
-                    time.sleep(10)
+                    time.sleep(min(10, max(0, end - time.monotonic())))
         finally:
+            try:
+                self.call("stopped", {"worker_id": self.worker_id})
+            except Exception:
+                pass
             self.http.close()
             self.token = ""
             print("Worker stopped. New scans use Render's bounded fallback.")
