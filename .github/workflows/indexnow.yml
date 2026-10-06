@@ -53,9 +53,17 @@ jobs:
           echo "Production deployment was not confirmed. Skipping crawler notification."
           exit 1
 
-      - name: Submit changed canonical public URLs
+      - name: Rebuild both revisions and submit changed canonical public URLs
         env:
           BEFORE: ${{ inputs.before || github.event.before }}
           AFTER: ${{ github.sha }}
         run: |
-          node frontend/scripts/indexnow.js --changed "$BEFORE" "$AFTER"
+          before_dir="$RUNNER_TEMP/myrecon-before-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          git worktree add --detach "$before_dir" "$BEFORE"
+          pushd "$before_dir/frontend"
+          node scripts/build-site.js
+          popd
+          pushd frontend
+          node scripts/build-site.js
+          popd
+          node frontend/scripts/indexnow.js --rendered-changes "$before_dir/frontend" "$GITHUB_WORKSPACE/frontend"

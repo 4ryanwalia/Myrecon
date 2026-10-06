@@ -12,14 +12,16 @@
  * keep in step because there is no list.
  *
  * WHERE <lastmod> COMES FROM, in order of preference:
- *   1. JSON-LD dateModified / datePublished on the page itself. The breach
+ *   1. The source commit date when this build changed a rendered page. This
+ *      covers generated pages whose HTML is not separately committed.
+ *   2. JSON-LD dateModified / datePublished on the page itself. The breach
  *      articles carry HIBP's ModifiedDate here, which is the real date the
  *      underlying record changed, better than anything the filesystem knows,
  *      since these files are regenerated on every build and their mtime is
  *      always "now".
- *   2. The last commit that touched the file. For hand-written pages this is
+ *   3. The last commit that touched the file. For hand-written pages this is
  *      the honest answer: it is the date the content actually changed.
- *   3. File mtime, for a file git has never seen (a fresh, uncommitted page).
+ *   4. File mtime, for a file git has never seen (a fresh, uncommitted page).
  *
  * Stamping today's date on everything would be the easy version and is worse
  * than useless: a sitemap where all 40 pages changed today is a sitemap a
@@ -119,7 +121,24 @@ function gitDate(file) {
   }
 }
 
-function lastmod(file, html) {
+function renderedChangeDates() {
+  const date = process.env.MYRECON_SITEMAP_CHANGED_DATE || '';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return new Map();
+  try {
+    const files = JSON.parse(process.env.MYRECON_SITEMAP_CHANGED_FILES || '[]');
+    if (!Array.isArray(files)) return new Map();
+    return new Map(files.filter(file => typeof file === 'string').map(file => [file, date]));
+  } catch {
+    return new Map();
+  }
+}
+
+function lastmod(file, html, changedDates) {
+  const relative = path.relative(ROOT, file).split(path.sep).join('/');
+  // Generated HTML can change because its tracked source changed. In that
+  // case the build supplies the source commit date, which is more truthful
+  // than the older Git date of the generated file.
+  if (changedDates.has(relative)) return changedDates.get(relative);
   const ld = html.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})/) || html.match(/"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})/);
   if (ld) return ld[1];
   return gitDate(file) || fs.statSync(file).mtime.toISOString().slice(0, 10);
@@ -128,6 +147,7 @@ function lastmod(file, html) {
 function main() {
   const entries = [];
   const skipped = [];
+  const changedDates = renderedChangeDates();
 
   for (const file of walk(ROOT)) {
     const html = fs.readFileSync(file, "utf8");
@@ -145,7 +165,7 @@ function main() {
     }
 
     const section = SECTIONS.find((s) => s.test(url));
-    entries.push({ url, lastmod: lastmod(file, html), ...section });
+    entries.push({ url, lastmod: lastmod(file, html, changedDates), ...section });
   }
 
   // Homepage first, then alphabetically, deterministic output, so a rebuild

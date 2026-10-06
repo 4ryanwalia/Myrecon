@@ -18,6 +18,7 @@
  * gets its submissions throttled or ignored.
  *
  *   node scripts/indexnow.js <url> [<url> ...]
+ *   node scripts/indexnow.js --rendered-changes <before-frontend-dir> <after-frontend-dir>
  *
  * Run after deployment. Failure is reported to the notification workflow;
  * the production deployment and sitemap remain available independently.
@@ -74,9 +75,45 @@ function changedUrls(before, after) {
   return [...urls];
 }
 
+function renderedHtml(root) {
+  const files = new Map();
+  const excluded = new Set([".git", ".vercel", "content", "data", "node_modules", "scripts"]);
+  function walk(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name.startsWith('.') || excluded.has(entry.name)) continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.html')) {
+        const relative = path.relative(root, full).split(path.sep).join('/');
+        files.set(relative, fs.readFileSync(full, 'utf8'));
+      }
+    }
+  }
+  walk(root);
+  return files;
+}
+
+/** Find public canonical URLs whose rendered HTML changed between two builds. */
+function renderedChangedUrls(beforeRoot, afterRoot) {
+  const before = renderedHtml(path.resolve(beforeRoot));
+  const after = renderedHtml(path.resolve(afterRoot));
+  const urls = new Set();
+  for (const file of new Set([...before.keys(), ...after.keys()])) {
+    if (before.get(file) === after.get(file)) continue;
+    for (const html of [before.get(file), after.get(file)]) {
+      if (!html) continue;
+      const url = publicUrl(`frontend/${file}`, html);
+      if (url) urls.add(url);
+    }
+  }
+  return [...urls].sort();
+}
+
 async function main() {
   const args = process.argv.slice(2);
-  const candidates = args[0] === "--changed" ? changedUrls(args[1], args[2]) : args;
+  const candidates = args[0] === "--changed" ? changedUrls(args[1], args[2])
+    : args[0] === "--rendered-changes" ? renderedChangedUrls(args[1], args[2])
+      : args;
   const urls = [...new Set(candidates)].filter(value => {
     try { const u = new URL(value); return u.protocol === "https:" && u.host === HOST &&
       !u.username && !u.password && !/^\/(?:api|content)\//.test(u.pathname); }
@@ -128,7 +165,7 @@ async function main() {
   }
 }
 
-module.exports = { publicUrl, changedUrls };
+module.exports = { publicUrl, changedUrls, renderedChangedUrls };
 if (require.main === module) main().catch(err => {
   console.error(`[indexnow] ${err.message}`);
   process.exitCode = 1;
