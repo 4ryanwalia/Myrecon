@@ -37,7 +37,10 @@ def fingerprint(scope, deep=False):
 def _safe_image(value):
     if not isinstance(value, str) or len(value) > 2048:
         return None
-    parts = urlsplit(value)
+    try:
+        parts = urlsplit(value)
+    except ValueError:
+        return None
     return value if parts.scheme in ("http", "https") and parts.hostname else None
 
 
@@ -55,7 +58,8 @@ def normalise(rows, username, scope, deep=False):
         seen.add(name)
         p = specs[name]
         code = row.get("status_code", 0)
-        if type(code) is not int or not -10 <= code <= 599:
+        # Some providers use nonstandard three-digit responses (LinkedIn 999).
+        if type(code) is not int or not -10 <= code <= 999:
             raise ValueError("Invalid HTTP status")
         url = p["url"].replace("{username}", username)
         if scope == "standard":
@@ -88,7 +92,9 @@ def normalise(rows, username, scope, deep=False):
                      "source": "username_sweep", "username": username,
                      "display_name": str(row.get("display_name") or "")[:100] or None}
         clean["profile_pic_url"] = _safe_image(row.get("profile_pic_url"))
-        out.append(clean)
+        # RTDB treats null object fields as deletion. Hash and persist the same
+        # representation so optional metadata cannot invalidate checkpoints.
+        out.append({key: value for key, value in clean.items() if value is not None})
     return out
 
 
