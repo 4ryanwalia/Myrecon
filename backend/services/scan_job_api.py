@@ -38,17 +38,25 @@ def worker_authenticated():
             and hmac.compare_digest(value, config.SCAN_WORKER_TOKEN))
 
 
-def worker_status_authenticated():
+def worker_status_access():
     scheme, _, value = request.headers.get("Authorization", "").partition(" ")
-    return scheme.lower() == "bearer" and bool(value) and workers.status_authenticated(value)
+    if scheme.lower() != "bearer" or not value:
+        return "denied"
+    return workers.status_access(value)
+
+
+def worker_status_authenticated():
+    return worker_status_access() == "allowed"
 
 
 def _note_worker(callback, *args):
     """Presence telemetry must never discard an already valid job transition."""
     try:
         callback(*args)
+        return True
     except Exception as exc:
         log.warning("Could not record scan-worker presence (%s)", type(exc).__name__)
+        return False
 
 
 def _owner(api):
@@ -262,46 +270,47 @@ def register(app, api):
                 if not isinstance(versions, dict) or body.get("protocol") != scan_engine.PROTOCOL:
                     raise ValueError("Worker protocol mismatch")
                 job = jobs.claim("colab:" + worker_id, versions)
-                _note_worker(workers.seen_claim, worker_id, worker_label, job)
+                presence_recorded = _note_worker(workers.seen_claim, worker_id, worker_label, job)
                 if not job:
-                    return responses.ok({"job": None})
+                    return responses.ok({"job": None, "presence_recorded": presence_recorded})
                 # Deliberately excludes uid, owner, billing receipts and RTDB paths.
                 payload = {key: job[key] for key in ("id", "username", "scope", "deep",
                            "token", "fingerprint")}
                 # Firebase removes empty lists from stored objects.
                 payload["names"] = job.get("names", [])
                 payload["lease_seconds"] = config.SCAN_LEASE_SECONDS
-                return responses.ok({"job": payload})
+                return responses.ok({"job": payload, "presence_recorded": presence_recorded})
             if action == "stopped":
                 worker_id = workers.validate_worker_id(body.get("worker_id", ""))
-                _note_worker(workers.stopped, worker_id)
-                return responses.ok({"accepted": True})
+                return responses.ok({"accepted": True,
+                                     "presence_recorded": _note_worker(workers.stopped, worker_id)})
             job_id, token = body.get("job_id", ""), body.get("lease_token", "")
             if not isinstance(job_id, str) or not _ID.fullmatch(job_id) or not isinstance(token, str):
                 raise ValueError("Invalid lease")
+            presence_recorded = True
             if action == "heartbeat":
                 job = jobs.heartbeat(job_id, token)
                 worker_id = workers.worker_id_for(job)
                 if worker_id:
-                    _note_worker(workers.seen_busy, worker_id)
+                    presence_recorded = _note_worker(workers.seen_busy, worker_id)
             elif action == "checkpoint":
                 job = jobs.checkpoint(job_id, token, body.get("sequence"), body.get("rows"))
                 worker_id = workers.worker_id_for(job)
                 if worker_id:
-                    _note_worker(workers.seen_busy, worker_id)
+                    presence_recorded = _note_worker(workers.seen_busy, worker_id)
             elif action == "complete":
                 job = jobs.raw_done(job_id, token)
                 worker_id = workers.worker_id_for(job)
                 if worker_id:
-                    _note_worker(workers.seen_recovering, worker_id)
+                    presence_recorded = _note_worker(workers.seen_recovering, worker_id)
             elif action == "release":
                 job = jobs.release(job_id, token)
                 worker_id = workers.worker_id_for(job)
                 if worker_id:
-                    _note_worker(workers.seen_recovering, worker_id)
+                    presence_recorded = _note_worker(workers.seen_recovering, worker_id)
             else:
                 return responses.error("Worker endpoint not found.", 404)
-            return responses.ok({"accepted": True})
+            return responses.ok({"accepted": True, "presence_recorded": presence_recorded})
         except jobs.LostLease:
             return responses.error("This scan lease has expired or was cancelled.", 409, "lost_lease")
         except (ValueError, TypeError):
@@ -310,7 +319,11 @@ def register(app, api):
     @app.route("/api/operator/scan-workers")
     def worker_status():
         """Token-only status for the owner Apps Script health monitor."""
-        if not worker_status_authenticated():
+        access = worker_status_access()
+        if access == "unconfigured":
+            return responses.error("Worker status monitoring is not configured.", 503,
+                                   "worker_status_unconfigured")
+        if access != "allowed":
             return responses.error("Operator authentication failed.", 401)
         response, status = responses.ok(workers.status())
         response.headers["Cache-Control"] = "no-store"
@@ -320,8 +333,13 @@ def register(app, api):
     def worker_console():
         """Firebase-authenticated snapshot for the installed owner PWA."""
         user = api._require_user()
-        if not workers.operator_allowed(user):
-            return responses.error("This private worker console is unavailable for this account.", 403)
+        access = workers.operator_access(user)
+        if access == "unconfigured":
+            return responses.error("Worker console access is not configured on Render.", 503,
+                                   "worker_console_unconfigured")
+        if access != "allowed":
+            return responses.error("This Google account is not allowed to use the private worker console.", 403,
+                                   "worker_console_not_owner")
         response, status = responses.ok({**workers.status(), "launcher_url": workers.launcher_url()})
         response.headers["Cache-Control"] = "no-store"
         return response, status

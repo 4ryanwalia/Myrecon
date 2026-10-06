@@ -152,17 +152,31 @@ def status():
     }
 
 
-def status_authenticated(token):
+def status_access(token):
     expected = config.SCAN_WORKER_STATUS_TOKEN
-    return (len(expected) >= 32 and isinstance(token, str)
-            and hmac.compare_digest(token, expected))
+    if len(expected) < 32:
+        return "unconfigured"
+    if isinstance(token, str) and hmac.compare_digest(token, expected):
+        return "allowed"
+    return "denied"
+
+
+def status_authenticated(token):
+    return status_access(token) == "allowed"
+
+
+def operator_access(user):
+    expected = config.SCAN_WORKER_OPERATOR_EMAIL.strip().casefold()
+    if not expected:
+        return "unconfigured"
+    actual = (user or {}).get("email", "")
+    if not isinstance(actual, str):
+        return "denied"
+    return "allowed" if hmac.compare_digest(actual.strip().casefold(), expected) else "denied"
 
 
 def operator_allowed(user):
-    expected = config.SCAN_WORKER_OPERATOR_EMAIL.strip().casefold()
-    actual = (user or {}).get("email", "")
-    return (bool(expected) and isinstance(actual, str)
-            and hmac.compare_digest(actual.strip().casefold(), expected))
+    return operator_access(user) == "allowed"
 
 
 def launcher_url():

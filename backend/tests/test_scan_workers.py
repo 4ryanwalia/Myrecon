@@ -61,6 +61,7 @@ def test_idle_claim_records_liveness_with_a_stable_label(setup):
     response = _claim(client)
     assert response.status_code == 200
     assert response.json["job"] is None
+    assert response.json["presence_recorded"] is True
     status = workers.status()
     assert status["workers"] == [{
         "label": "Worker 01", "state": "idle", "available": True,
@@ -118,6 +119,16 @@ def test_status_token_is_distinct_and_never_returns_job_or_instance_data(setup):
     assert config.SCAN_WORKER_TOKEN not in response.get_data(as_text=True)
 
 
+def test_status_endpoint_explains_when_its_separate_token_is_not_configured(setup, monkeypatch):
+    _, client = setup
+    monkeypatch.setattr(config, "SCAN_WORKER_STATUS_TOKEN", "")
+    response = client.get("/api/operator/scan-workers", headers={
+        "Authorization": "Bearer any-value",
+    })
+    assert response.status_code == 503
+    assert response.json["code"] == "worker_status_unconfigured"
+
+
 def test_owner_console_requires_the_configured_firebase_email(setup, monkeypatch):
     _, client = setup
     _claim(client)
@@ -130,6 +141,15 @@ def test_owner_console_requires_the_configured_firebase_email(setup, monkeypatch
     assert "email" not in response.json
 
 
+def test_owner_console_explains_missing_owner_configuration(setup, monkeypatch):
+    _, client = setup
+    monkeypatch.setattr(config, "SCAN_WORKER_OPERATOR_EMAIL", "")
+    monkeypatch.setattr(api, "_signed_in_user", lambda: {"sub": "owner", "email": "owner@example.test"})
+    response = client.get("/api/operator/worker-console")
+    assert response.status_code == 503
+    assert response.json["code"] == "worker_console_unconfigured"
+
+
 def test_presence_write_failure_cannot_abandon_a_claim(setup, monkeypatch):
     _, client = setup
     _queue()
@@ -137,6 +157,7 @@ def test_presence_write_failure_cannot_abandon_a_claim(setup, monkeypatch):
     response = _claim(client)
     assert response.status_code == 200
     assert response.json["job"]["id"] == "a" * 32
+    assert response.json["presence_recorded"] is False
 
 
 def test_prune_removes_long_stale_records(setup):

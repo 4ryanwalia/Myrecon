@@ -35,6 +35,14 @@ the queue are retried within that same duration; invalid credentials still stop
 the worker. No dummy workload, automatic Colab reconnection or idle-limit bypass
 is used. A new Google runtime still requires setup and manual startup.
 
+Closing the Colab tab can make its UI show **Connect** when you return. That
+button attaches the browser to a Colab runtime; it is not MyRecon's live-status
+signal. If the final worker cell is still running after reconnecting, it continues
+to poll Render. If Colab ended the runtime, choose **Connect** and run all cells
+again. A successful poll prints `Live status confirmed for Worker 01.` in a
+current numbered notebook. The Worker Console should show that label as
+`idle`, `busy` or `recovering` within about 10 seconds.
+
 ## 1. Prepare Render
 
 Deploy the matching backend code with this effective start command:
@@ -117,7 +125,8 @@ server use the same fingerprint despite Windows/Linux line-ending differences.
 6. Enter the dedicated worker token in the hidden prompt. The token is held in
    runtime memory and is not inserted into the notebook source or outputs.
 7. Leave the worker cell executing during this manually started session. It
-   runs one scan at a time and defaults to 16 concurrent platform probes.
+   runs one scan at a time and defaults to 16 concurrent platform probes. Its
+   `Live status confirmed` line means Render recorded the health check-in.
 8. Stop the cell to disconnect; interrupted work is released when possible and
    otherwise recovered after lease expiry. Restart manually for another session.
 
