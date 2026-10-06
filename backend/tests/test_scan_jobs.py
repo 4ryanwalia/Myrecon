@@ -141,6 +141,33 @@ def test_corrupt_checkpoint_cannot_be_finalized(setup):
         jobs.rows(jobs.get(job["id"]))
 
 
+def test_provider_999_and_firebase_null_removal_round_trip(setup, monkeypatch):
+    memory, _ = setup
+    original = memory.transaction
+
+    def firebase_write(path, callback):
+        def without_nulls(value):
+            if isinstance(value, dict):
+                return {k: without_nulls(v) for k, v in value.items() if v is not None}
+            if isinstance(value, list):
+                return [without_nulls(v) for v in value]
+            return value
+        return original(path, lambda old: without_nulls(callback(old)))
+
+    monkeypatch.setattr(memory, "transaction", firebase_write)
+    queued(scope="standard")
+    job = jobs.claim("colab:worker", versions())
+    rows = [{"platform": "GitHub", "exists": False, "status_code": 999,
+             "match_score": None, "profile_pic_url": "https://[invalid"}]
+    jobs.checkpoint(job["id"], job["token"], 0, rows)
+    jobs.checkpoint(job["id"], job["token"], 0, rows)
+    stored = jobs.rows(jobs.get(job["id"]))
+    assert stored[0]["status_code"] == 999
+    assert stored[0]["exists"] is False
+    assert "match_score" not in stored[0]
+    assert "profile_pic_url" not in stored[0]
+
+
 def test_global_render_capacity_and_queue_bound(setup, monkeypatch):
     queued()
     queued("b" * 32)
