@@ -112,6 +112,8 @@ def _register_cors(app: Flask) -> None:
         # Stop another origin from pulling API responses into its own process
         # via <img>/<script> side channels (Spectre-style cross-origin reads).
         resp.headers["Cross-Origin-Resource-Policy"] = "same-site"
+        if request.path.rstrip("/") == "/api/email/public-profiles":
+            resp.headers["Cache-Control"] = "no-store"
         return resp
 
 
@@ -715,6 +717,14 @@ def _register_routes(app: Flask) -> None:
         # application cache or the account scan database.
         check_linked = validation.boolean(body.get("check_linked_accounts"), default=False)
         return responses.ok(scan_email(email, check_linked_accounts=check_linked))
+
+    @app.route("/api/email/public-profiles", methods=["POST", "OPTIONS"])
+    def api_email_public_profiles():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from services.email_public_profiles import lookup_public_profiles
+        email = validation.email(_json_body().get("email", ""))
+        return responses.ok(lookup_public_profiles(email))
 
     @app.route("/api/email/accounts", methods=["POST", "OPTIONS"])
     def api_email_accounts():

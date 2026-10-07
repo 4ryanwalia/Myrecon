@@ -7,7 +7,7 @@ services:
     runtime: python
     rootDir: backend
     plan: free
-    buildCommand: python -m pip install --upgrade pip==26.2.1 && python -m pip install -r requirements.txt
+    buildCommand: bash tools/build-render.sh
     startCommand: gunicorn wsgi:app --workers 1 --threads 16 --timeout 120 --bind 0.0.0.0:$PORT
     healthCheckPath: /api/health
     autoDeploy: true
@@ -33,6 +33,14 @@ services:
       # Enable only after configuring the dedicated token and testing Colab.
       - key: SCAN_OFFLOAD_ENABLED
         value: "false"
+      # Exact-email Google identity with bounded anonymous public Maps reviews.
+      # The operator-authenticated GHunt session belongs only in hosting secrets.
+      - key: EMAIL_GHUNT_ENABLED
+        value: "true"
+      - key: EMAIL_GOOGLE_PUBLIC_REVIEWS_ENABLED
+        value: "true"
+      - key: GHUNT_SESSION_B64
+        sync: false
       # Optional integrations, set these in the Render dashboard, not here.
       - key: GOOGLE_API_KEY
         sync: false
