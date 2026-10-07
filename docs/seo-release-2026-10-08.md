@@ -12,6 +12,8 @@ Crawler discovery improvements include documented search and AI agents, public-r
 - Twenty focused publication, crawler, sitemap, IndexNow, editorial and full internal-link discovery tests pass.
 - Fifteen affected routes pass browser checks at 375px and 1280px for visible headings, schema parsing, answer placement, contents links, table accessibility and horizontal overflow.
 - Source metadata and references were reviewed on 8 October 2026. Candidate keywords are recorded in `seo-osint-keywords-2026-10-08.md`; no measured search-volume data was available.
+- Production deployment for `da41b15573b4d72f35fa4040596aaaa4724eb969` is Ready at `www.myrecon.xyz`. The live browser audit passed the same fifteen routes at both widths, and IndexNow accepted 194 URLs with HTTP 200.
+- The repository secret scan passed. Its separate backend CI suite reported 20 failures and 507 passes. Backend code, backend tests, CI configuration and platform catalogue fixtures are unchanged by this release; the failures remain unresolved and are not represented as successful validation.
 
 ## Provider limits
 
