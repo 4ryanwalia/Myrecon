@@ -69,7 +69,7 @@ Set these non-secret values:
 SCAN_OFFLOAD_ENABLED=true
 FULL_SCAN_SLOTS=1
 SWEEP_CONCURRENCY=8
-SCAN_JOB_LIMIT=4
+SCAN_JOB_LIMIT=8
 SCAN_LEASE_SECONDS=90
 SCAN_WORKER_WAIT_SECONDS=20
 SCAN_JOB_TTL_SECONDS=86400
@@ -83,6 +83,17 @@ If temporary job data has expired but its billing receipt remains, replaying
 that request returns 410; it cannot reuse the receipt for another execution.
 An interrupted database write after charging retains the admitting job for
 recovery by a retry or coordinator maintenance.
+The eight-job bound counts all unfinished jobs, including reports awaiting
+Render enrichment. Five idle workers do not guarantee eight free admission
+slots. The private Worker Console reports the separate queue phases and
+remaining capacity. Render prepares completed worker reports before starting
+fallback enumeration, while keeping one heavy-work slot.
+Queued jobs from an older engine revision are restarted under the same job
+identity and admission receipt after any old lease expires. Incompatible
+checkpoints are discarded; the restart does not charge another scan credit.
+Healthy leases survive periodic maintenance. Unleased work with no update for
+an hour expires, and a failure to save one report or refund cannot block the
+other jobs from advancing.
 Final failed/cancelled jobs refund an account's reservation once. Guests retain
 the existing daily-counter behavior. Cached Extended reports retain the existing
 policy: require an available credit without consuming it.
@@ -185,11 +196,11 @@ a new charged scan automatically when a reconnect fails.
 
 ## Limits and rollback
 
-- Four admitted jobs at once by default; excess requests receive 429 before
+- Eight admitted jobs at once by default; excess requests receive 429 before
   admission. Configure no more than eight so HTTP worker requests retain room.
 - At most 256 retained jobs in the dispatcher; cleanup removes terminal jobs
   after the configured 24-hour retention when the coordinator next runs.
-- Unfinished jobs expire after one hour and failed account reservations are
+- Unleased unfinished jobs with no update for one hour expire; failed account reservations are
   refunded. Render fallback may queue or produce a partial report under load.
 - Full/Extended deadline omissions remain `unknown`, with `coverage.unchecked`
   and `partial=true`; they are never cached as a complete scan.

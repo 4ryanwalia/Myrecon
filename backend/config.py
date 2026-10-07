@@ -168,7 +168,9 @@ SCAN_WORKER_RETENTION_SECONDS = max(
     SCAN_WORKER_OFFLINE_SECONDS,
     _get_int("SCAN_WORKER_RETENTION_SECONDS", 7 * 24 * 60 * 60),
 )
-SCAN_JOB_LIMIT = max(1, min(8, _get_int("SCAN_JOB_LIMIT", 4)))
+# Five external workers, one bounded Render finalizer and two waiting jobs.
+# This admission bound does not increase Render's heavy-work concurrency.
+SCAN_JOB_LIMIT = max(1, min(8, _get_int("SCAN_JOB_LIMIT", 8)))
 SCAN_LEASE_SECONDS = max(30, _get_int("SCAN_LEASE_SECONDS", 90))
 SCAN_WORKER_WAIT_SECONDS = max(0, _get_int("SCAN_WORKER_WAIT_SECONDS", 20))
 SCAN_JOB_TTL_SECONDS = max(3600, _get_int("SCAN_JOB_TTL_SECONDS", 86400))

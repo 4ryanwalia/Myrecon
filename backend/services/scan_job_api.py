@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import json
 import logging
+import math
 import re
 import secrets
 import threading
@@ -11,7 +12,7 @@ import time
 from flask import Response, request, stream_with_context
 
 import config
-from core import plans, responses, scan_jobs as jobs, scan_workers as workers, validation
+from core import plans, responses, scan_jobs as jobs, scan_workers as workers, validation, store as storage
 from services import scan_engine, scan_job_runner
 
 _ID = re.compile(r"^[a-f0-9]{32}$")
@@ -57,6 +58,38 @@ def _note_worker(callback, *args):
     except Exception as exc:
         log.warning("Could not record scan-worker presence (%s)", type(exc).__name__)
         return False
+
+
+def _operator_snapshot():
+    """Aggregate queue health; never include job identities or finding data."""
+    now = time.time()
+    records = storage.store.get(jobs.ROOT) or {}
+    active = [job for job in records.values() if isinstance(job, dict)
+              and (not isinstance(job.get("status"), str) or job["status"] not in jobs.TERMINAL)]
+    active_count = len(active) + sum(not isinstance(job, dict) for job in records.values())
+    queued = [job for job in active if job.get("status") == "queued"]
+    outdated = 0
+    for job in queued:
+        scope, deep = job.get("scope"), job.get("deep", False)
+        if isinstance(scope, str) and scope in ("standard", "full", "extended") and type(deep) is bool:
+            outdated += job.get("fingerprint") != jobs.engine_fingerprint(scope, deep)
+    created = [job.get("created") for job in queued
+               if type(job.get("created")) in (int, float) and math.isfinite(job["created"])]
+    retained_limit = 256
+    queue = {
+        "capacity": config.SCAN_JOB_LIMIT,
+        "active": active_count,
+        "queued": len(queued),
+        "scanning": sum(job.get("status") == "scanning" for job in active),
+        "awaiting_finalization": sum(job.get("status") == "raw_done" for job in active),
+        "finalizing": sum(job.get("status") == "finalizing" for job in active),
+        "available_slots": max(0, min(config.SCAN_JOB_LIMIT - active_count, retained_limit - len(records))),
+        "outdated_queued": outdated,
+        "oldest_wait_seconds": max(0, int(now - min(created))) if created else 0,
+        "retained_jobs": len(records),
+        "retained_limit": retained_limit,
+    }
+    return {**workers.status(), "queue": queue}
 
 
 def _owner(api):
@@ -271,7 +304,7 @@ def register(app, api):
                 if not isinstance(versions, dict) or body.get("protocol") != scan_engine.PROTOCOL:
                     raise ValueError("Worker protocol mismatch")
                 job = jobs.claim("colab:" + worker_id, versions)
-                presence_recorded = _note_worker(workers.seen_claim, worker_id, worker_label, job)
+                presence_recorded = _note_worker(workers.seen_claim, worker_id, worker_label, job, versions)
                 if not job:
                     return responses.ok({"job": None, "presence_recorded": presence_recorded})
                 # Deliberately excludes uid, owner, billing receipts and RTDB paths.
@@ -326,7 +359,7 @@ def register(app, api):
                                    "worker_status_unconfigured")
         if access != "allowed":
             return responses.error("Operator authentication failed.", 401)
-        response, status = responses.ok(workers.status())
+        response, status = responses.ok(_operator_snapshot())
         response.headers["Cache-Control"] = "no-store"
         return response, status
 
@@ -341,6 +374,6 @@ def register(app, api):
         if access != "allowed":
             return responses.error("This Google account is not allowed to use the private worker console.", 403,
                                    "worker_console_not_owner")
-        response, status = responses.ok({**workers.status(), "launcher_url": workers.launcher_url()})
+        response, status = responses.ok({**_operator_snapshot(), "launcher_url": workers.launcher_url()})
         response.headers["Cache-Control"] = "no-store"
         return response, status

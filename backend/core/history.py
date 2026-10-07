@@ -20,6 +20,7 @@ database rules deny it, and the API only ever returns a user's own scans.
 """
 
 import re
+import threading
 import time
 
 from core import store as _store
@@ -28,6 +29,7 @@ MAX_SCANS = 50
 _ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 _PROFILE_FIELDS = ("platform", "url", "confidence", "display_name", "bio",
                    "profile_pic_url", "platform_category", "category", "exists")
+_USER_LOCKS = tuple(threading.RLock() for _ in range(64))
 
 
 class NotFound(Exception):
@@ -36,6 +38,18 @@ class NotFound(Exception):
 
 def valid_id(scan_id: str) -> bool:
     return bool(_ID_RE.match(scan_id or ""))
+
+
+def _user_lock(uid):
+    # A fixed number of stripes avoids retaining a lock for every past user.
+    return _USER_LOCKS[hash(uid) % len(_USER_LOCKS)]
+
+
+def _current_job_report(uid, scan_id, result_token):
+    from core import scan_jobs
+    job = scan_jobs.get(scan_id)
+    return (isinstance(job, dict) and job.get("status") == "complete"
+            and job.get("uid") == uid and job.get("result_token") == result_token)
 
 
 def _trim(result: dict) -> dict:
@@ -60,25 +74,35 @@ def _trim(result: dict) -> dict:
     }
 
 
-def save(uid: str, result: dict, scan_id=None) -> str:
-    """Record a finished scan. Returns its id."""
-    query = result.get("query") or {}
-    summary = result.get("summary") or {}
-    if scan_id is None:
-        scan_id = _store.store.push(f"web/scans/{uid}", _trim(result))
-    else:
-        if not valid_id(scan_id):
+def save(uid: str, result: dict, scan_id=None, job_token=None) -> str | None:
+    """Record a scan, or skip a deterministic job report already deleted."""
+    with _user_lock(uid):
+        if scan_id is not None and not valid_id(scan_id):
             raise ValueError("Invalid scan id")
-        _store.store.set(f"web/scans/{uid}/{scan_id}", _trim(result))
-    _store.store.set(f"web/history/{uid}/{scan_id}", {
-        "handle": str(query.get("username", ""))[:64],
-        "scope": query.get("scope") if query.get("scope") in ("full", "extended") else "standard",
-        "at": int(time.time() * 1000),
-        "profiles": int(summary.get("profiles", 0) or 0),
-        "checked": int(summary.get("checked", 0) or 0),
-    })
-    _prune(uid)
-    return scan_id
+        if job_token is not None:
+            if scan_id is None or not _current_job_report(uid, scan_id, job_token):
+                return None
+        query = result.get("query") or {}
+        summary = result.get("summary") or {}
+        if scan_id is None:
+            scan_id = _store.store.push(f"web/scans/{uid}", _trim(result))
+        else:
+            _store.store.set(f"web/scans/{uid}/{scan_id}", _trim(result))
+        _store.store.set(f"web/history/{uid}/{scan_id}", {
+            "handle": str(query.get("username", ""))[:64],
+            "scope": query.get("scope") if query.get("scope") in ("full", "extended") else "standard",
+            "at": int(time.time() * 1000),
+            "profiles": int(summary.get("profiles", 0) or 0),
+            "checked": int(summary.get("checked", 0) or 0),
+        })
+        if job_token is not None and not _current_job_report(uid, scan_id, job_token):
+            # Cover deletion from another server process too: it publishes the
+            # tombstone before deleting nodes, so either it or this guard wins.
+            _store.store.delete(f"web/scans/{uid}/{scan_id}")
+            _store.store.delete(f"web/history/{uid}/{scan_id}")
+            return None
+        _prune(uid)
+        return scan_id
 
 
 def _prune(uid: str) -> None:
@@ -106,14 +130,16 @@ def get(uid: str, scan_id: str) -> dict:
 def delete(uid: str, scan_id: str) -> None:
     if not valid_id(scan_id):
         raise NotFound()
-    _store.store.delete(f"web/scans/{uid}/{scan_id}")
-    _store.store.delete(f"web/history/{uid}/{scan_id}")
-    from core import scan_jobs
-    scan_jobs.erase_history(uid, scan_id)
+    with _user_lock(uid):
+        from core import scan_jobs
+        scan_jobs.erase_history(uid, scan_id)
+        _store.store.delete(f"web/scans/{uid}/{scan_id}")
+        _store.store.delete(f"web/history/{uid}/{scan_id}")
 
 
 def clear(uid: str) -> None:
-    _store.store.delete(f"web/scans/{uid}")
-    _store.store.delete(f"web/history/{uid}")
-    from core import scan_jobs
-    scan_jobs.erase_history(uid)
+    with _user_lock(uid):
+        from core import scan_jobs
+        scan_jobs.erase_history(uid)
+        _store.store.delete(f"web/scans/{uid}")
+        _store.store.delete(f"web/history/{uid}")

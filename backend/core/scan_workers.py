@@ -11,12 +11,15 @@ import time
 
 import config
 from core import store as storage
+from core import scan_jobs
 
 
 ROOT = "web/scan_workers"
 _INSTANCE_ID = re.compile(r"^[A-Za-z0-9_-]{16,80}$")
 _LABEL = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 ._-]{0,39}$")
 _LIVE_STATES = {"idle", "busy", "recovering"}
+_CATALOGUES = {"standard": ("standard", False), "standard:deep": ("standard", True),
+               "full": ("full", False), "extended": ("extended", False)}
 
 
 def validate_worker_id(worker_id):
@@ -38,7 +41,7 @@ def validate_label(label):
     return label
 
 
-def _touch(worker_id, state, label=None):
+def _touch(worker_id, state, label=None, versions=None):
     worker_id = validate_worker_id(worker_id)
     if state not in _LIVE_STATES | {"stopped"}:
         raise ValueError("Invalid worker state")
@@ -53,6 +56,14 @@ def _touch(worker_id, state, label=None):
             "last_seen_at": now,
             "state": state,
         }
+        # Keep only validated catalogue hashes, never arbitrary worker data.
+        catalogues = versions if versions is not None else prior.get("catalogues")
+        if isinstance(catalogues, dict):
+            current[worker_id]["catalogues"] = {
+                key: value for key, value in catalogues.items()
+                if key in _CATALOGUES and isinstance(value, str)
+                and re.fullmatch(r"[a-f0-9]{64}", value)
+            }
         if state == "stopped":
             current[worker_id]["stopped_at"] = now
         return current
@@ -60,8 +71,8 @@ def _touch(worker_id, state, label=None):
     storage.store.transaction(ROOT, change)
 
 
-def seen_claim(worker_id, label, job):
-    _touch(worker_id, "busy" if job else "idle", label)
+def seen_claim(worker_id, label, job, versions=None):
+    _touch(worker_id, "busy" if job else "idle", label, versions)
 
 
 def seen_busy(worker_id):
@@ -135,14 +146,27 @@ def status():
 
         record, current, age = max(entries, key=rank)
         fresh_instances = sum(state in _LIVE_STATES for _, state, _ in entries)
-        workers.append({
+        catalogue_hashes = record.get("catalogues")
+        compatibility = {}
+        if isinstance(catalogue_hashes, dict):
+            compatibility = {
+                key.replace(":", "_"): catalogue_hashes.get(key) == scan_jobs.engine_fingerprint(*settings)
+                for key, settings in _CATALOGUES.items()
+            }
+        compatible = all(compatibility.values()) if compatibility else None
+        if current == "idle" and compatibility and not any(compatibility.values()):
+            current = "incompatible"
+        worker = {
             "label": label,
             "state": current,
-            "available": current in _LIVE_STATES,
+            "available": current in _LIVE_STATES and compatible is not False,
             "last_seen_at": int(record.get("last_seen_at", 0) or 0),
             "age_seconds": age if age is not None else 0,
             "duplicate": fresh_instances > 1,
-        })
+        }
+        if compatible is not None:
+            worker.update(compatible=compatible, compatible_scopes=compatibility)
+        workers.append(worker)
     workers.sort(key=lambda worker: worker["label"].casefold())
     return {
         "observed_at": int(now),

@@ -160,7 +160,16 @@ class Worker:
                 job = response.get("job")
                 if job:
                     print("Running a " + job["scope"] + " scan.")
-                    self.execute(job)
+                    try:
+                        self.execute(job)
+                    except RuntimeError:
+                        # execute() has already attempted to release the lease.
+                        # Keep the same worker/session alive after a transient
+                        # Render outage; auth/protocol ValueErrors still stop it.
+                        print("Render is temporarily unavailable during this scan; "
+                              "the coordinator retains its checkpoints. Retrying "
+                              "while this session remains active.")
+                        time.sleep(min(10, max(0, end - time.monotonic())))
                 else:
                     time.sleep(min(10, max(0, end - time.monotonic())))
         finally:

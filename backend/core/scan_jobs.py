@@ -6,8 +6,10 @@ An expired worker cannot overwrite a replacement's progress or results.
 """
 import hashlib
 import json
+import math
 import secrets
 import time
+from functools import lru_cache
 
 import config
 from core import store as storage
@@ -17,6 +19,7 @@ from services import scan_engine
 ROOT = "web/scan_dispatch"
 DATA = "web/scan_job_data"
 TERMINAL = {"complete", "failed", "cancelled", "deleted"}
+_ACTIVE = {"admitting", "queued", "scanning", "raw_done", "finalizing"}
 
 
 class Busy(Exception):
@@ -30,6 +33,30 @@ class LostLease(Exception):
 def available():
     return (config.SCAN_OFFLOAD_ENABLED and len(config.SCAN_WORKER_TOKEN) >= 32
             and (storage.store.backend == "rtdb" or not config.IS_PRODUCTION))
+
+
+@lru_cache(maxsize=8)
+def engine_fingerprint(scope, deep=False):
+    """The immutable deployed engine revision, shared by queue/status calls."""
+    return scan_engine.fingerprint(scope, deep)
+
+
+def _timestamp(value):
+    return type(value) in (int, float) and 0 <= value < 1e20 and math.isfinite(value)
+
+
+def _dispatchable(job):
+    # Retained terminal records need no dispatcher schema. A malformed old
+    # record must not prevent healthy jobs from being claimed.
+    return (isinstance(job, dict) and isinstance(job.get("status"), str)
+            and job["status"] in _ACTIVE
+            and job.get("scope") in ("standard", "full", "extended")
+            and type(job.get("deep")) is bool
+            and isinstance(job.get("id"), str) and isinstance(job.get("username"), str)
+            and _timestamp(job.get("created"))
+            and _timestamp(job.get("updated", job["created"]))
+            and _timestamp(job.get("expires", 0))
+            and type(job.get("attempts", 0)) is int and job.get("attempts", 0) >= 0)
 
 
 def get(job_id):
@@ -49,14 +76,16 @@ def reserve(job_id, username, scope, deep, owner, uid, guest_receipt_path=None):
             return current
         # Retain receipts separately from scan payloads. Expired jobs must not
         # execute again merely because a client replays an old request id.
-        active = sum(j.get("status") not in TERMINAL for j in current.values())
+        active = sum(not isinstance(j, dict) or not isinstance(j.get("status"), str)
+                     or j["status"] not in TERMINAL
+                     for j in current.values())
         if active >= config.SCAN_JOB_LIMIT or len(current) >= 256:
             raise Busy()
         current[job_id] = {"id": job_id, "username": username, "scope": scope,
                            "deep": deep, "owner": owner, "uid": uid,
                            "guest_receipt_path": guest_receipt_path,
                            "created": now, "updated": now, "status": "admitting",
-                           "fingerprint": scan_engine.fingerprint(scope, deep),
+                           "fingerprint": engine_fingerprint(scope, deep),
                            "checked": 0, "names": [], "refs": [], "attempts": 0}
         return current
 
@@ -92,22 +121,62 @@ def claim(executor, versions=None):
     token = secrets.token_hex(24)
     selected = {}
     is_render = executor == "render"
+    fingerprints = {}
+
+    def current_fingerprint(job):
+        key = job["scope"] + (":deep" if job["scope"] == "standard" and job["deep"] else "")
+        if key not in fingerprints:
+            fingerprints[key] = engine_fingerprint(job["scope"], job["deep"])
+        return key, fingerprints[key]
 
     def change(current):
         selected.clear()
         current = current or {}
+        entries = [job for job in current.values() if _dispatchable(job)]
+        refreshed = False
+        for job in entries:
+            status = job.get("status")
+            expired_scan = status == "scanning" and job.get("expires", 0) <= now
+            if status != "queued" and not expired_scan:
+                continue
+            _, fingerprint = current_fingerprint(job)
+            if job.get("fingerprint") == fingerprint:
+                continue
+            # An old catalogue/validator cannot safely share checkpoints with
+            # the new implementation. Restart the already-admitted job only
+            # after its old lease ends, preserving its billing receipt/owner.
+            # Dropping the token fences any delayed writes from that worker.
+            job.update(status="queued", fingerprint=fingerprint, checked=0,
+                       names=[], refs=[], expires=0, updated=now,
+                       revision_restarts=job.get("revision_restarts", 0) + 1,
+                       worker_wait_until=now + config.SCAN_WORKER_WAIT_SECONDS)
+            job.pop("token", None)
+            job.pop("executor", None)
+            refreshed = True
         # Only one Render job, including enrichment, regardless of HTTP
         # request count or how many processes accidentally start supervisors.
         if is_render and any(j.get("executor") == "render" and
                 j.get("status") in ("scanning", "finalizing") and
-                j.get("expires", 0) > now for j in current.values()):
+                j.get("expires", 0) > now for j in entries):
+            if refreshed:
+                return current
             raise Abort()
         # Each external notebook runs at most one job at a time.
         if not is_render and any(j.get("executor") == executor and
                 j.get("status") == "scanning" and j.get("expires", 0) > now
-                for j in current.values()):
+                for j in entries):
+            if refreshed:
+                return current
             raise Abort()
-        for job in sorted(current.values(), key=lambda j: j["created"]):
+        # Completed worker batches free admission capacity only after Render
+        # publishes their reports. Finish those before starting a potentially
+        # long fallback scan, while preserving creation order within a phase.
+        def priority(job):
+            finalizable = job.get("status") == "raw_done" or (
+                job.get("status") == "finalizing" and job.get("expires", 0) <= now)
+            return (0 if is_render and finalizable else 1, job["created"])
+
+        for job in sorted(entries, key=priority):
             status = job["status"]
             expired = status in ("scanning", "finalizing") and job.get("expires", 0) <= now
             finalize = status == "raw_done" or (expired and status == "finalizing")
@@ -116,17 +185,23 @@ def claim(executor, versions=None):
             if not finalize and status != "queued" and not (expired and status == "scanning"):
                 continue
             if not finalize and is_render and status == "queued" and (
+                    now < job.get("worker_wait_until", 0) or (
                     now - job["updated"] < config.SCAN_WORKER_WAIT_SECONDS
-                    and job.get("attempts", 0) < 2):
+                    and job.get("attempts", 0) < 2)):
                 continue
             if not is_render:
-                key = job["scope"] + (":deep" if job["scope"] == "standard" and job["deep"] else "")
-                if not versions or versions.get(key) != job["fingerprint"]:
+                key, fingerprint = current_fingerprint(job)
+                if (not versions or versions.get(key) != fingerprint
+                        or job["fingerprint"] != fingerprint):
                     continue
             job.update(status="finalizing" if finalize else "scanning", executor=executor,
                        token=token, expires=now + config.SCAN_LEASE_SECONDS, updated=now,
                        attempts=job.get("attempts", 0) + 1)
             selected.update(job)
+            return current
+        # Persist revision reconciliation even when this particular notebook
+        # has an obsolete bundle and therefore cannot claim any refreshed job.
+        if refreshed:
             return current
         raise Abort()
 
@@ -245,6 +320,29 @@ def fail(job_id, token=None, cancelled=False):
         return get(job_id)
 
 
+def expire(job_id, limit=3600, admitting=False):
+    """Fail stale work only after rechecking its state/lease transactionally."""
+    now = time.time()
+
+    def change(current):
+        job = (current or {}).get(job_id)
+        if not job or job.get("status") in TERMINAL:
+            raise Abort()
+        if (job.get("status") == "admitting") != admitting:
+            raise Abort()
+        if job.get("status") in ("scanning", "finalizing") and job.get("expires", 0) > now:
+            raise Abort()
+        if now - job.get("updated", job["created"]) < limit:
+            raise Abort()
+        job.update(status="failed", updated=now, expires=0)
+        return current
+
+    try:
+        return storage.store.transaction(ROOT, change)[job_id]
+    except Abort:
+        return get(job_id)
+
+
 def release(job_id, token):
     """An external exception hands the same job to the bounded fallback."""
     def change(current):
@@ -277,12 +375,15 @@ def erase_history(uid, job_id=None):
     def change(current):
         removed.clear()
         for key, job in (current or {}).items():
-            if job.get("uid") == uid and job["status"] in TERMINAL and (job_id is None or key == job_id):
+            if (isinstance(job, dict) and job.get("uid") == uid
+                    and isinstance(job.get("status"), str) and job["status"] in TERMINAL
+                    and (job_id is None or key == job_id)):
                 # Keep a small tombstone so replay cannot recreate a deleted
                 # report using an already-spent admission receipt.
-                current[key] = {"id": key, "uid": uid, "owner": job["owner"],
-                    "created": job["created"], "updated": time.time(), "status": "deleted",
-                    "checked": 0, "scope": job["scope"], "deep": job["deep"], "username": ""}
+                current[key] = {"id": key, "uid": uid, "owner": job.get("owner", ""),
+                    "created": job.get("created", time.time()), "updated": time.time(), "status": "deleted",
+                    "checked": 0, "scope": job.get("scope", "standard"),
+                    "deep": job.get("deep", False), "username": ""}
                 removed.append(key)
         return current
     storage.store.transaction(ROOT, change)
@@ -297,7 +398,9 @@ def prune():
     def change(current):
         removed.clear()
         for key, job in list((current or {}).items()):
-            if now - job["created"] > config.SCAN_JOB_TTL_SECONDS and job["status"] in TERMINAL:
+            if (isinstance(job, dict) and _timestamp(job.get("created"))
+                    and now - job["created"] > config.SCAN_JOB_TTL_SECONDS
+                    and isinstance(job.get("status"), str) and job["status"] in TERMINAL):
                 current.pop(key)
                 removed.append(key)
         return current

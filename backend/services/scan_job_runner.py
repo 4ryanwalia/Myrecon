@@ -10,6 +10,7 @@ from services import scan_engine
 log = logging.getLogger("myrecon.scan_jobs")
 _lock = threading.Lock()
 _thread = None
+_maintenance_thread = None
 
 
 def refund(job):
@@ -66,12 +67,24 @@ def execute(job):
 
         from services.search import _run_full, _run_username
         rows = jobs.rows(job)
+        expected = {platform["name"] for platform in scan_engine.catalogue(job["scope"], job["deep"])}
+        recorded = {row["platform"] for row in rows}
+        missing = expected - recorded
         if job["scope"] == "standard":
             data = _run_username(job["username"], job["deep"], platform_results=rows)
         else:
-            cov = scan_engine.coverage(rows, len(scan_engine.catalogue(job["scope"], job["deep"])))
+            # A fully collected report from the prior release remains useful.
+            # Account for current platforms it never checked and historical
+            # platforms still represented by its committed rows.
+            cov = scan_engine.coverage(rows, len(expected | recorded))
+            cov["unchecked"] += len(missing)
             data = _run_full(job["username"], extended=job["scope"] == "extended",
                              sweep_results=(rows, cov))
+        if missing:
+            data["partial"] = True
+            data.setdefault("errors", []).append({
+                "source": "username_check", "code": "catalogue_changed", "retryable": True,
+                "message": "The platform catalogue changed while this scan was running. Some platforms were not checked."})
         if lost.is_set():
             return
         data["execution"] = {"job_id": job_id, "resumed": job["attempts"] > 2}
@@ -85,8 +98,8 @@ def execute(job):
             api._cache.set(key, data)
         if job.get("uid") and storage.persistent():
             try:
-                history.save(job["uid"], data, scan_id=job_id)
-                jobs.remember_history(job_id, token)
+                if history.save(job["uid"], data, scan_id=job_id, job_token=token):
+                    jobs.remember_history(job_id, token)
             except Exception as exc:
                 log.warning("Could not save job history (%s)", type(exc).__name__)
     except jobs.LostLease:
@@ -104,22 +117,37 @@ def execute(job):
 
 def maintenance():
     for job in (storage.store.get(jobs.ROOT) or {}).values():
-        if job["status"] not in jobs.TERMINAL:
-            # An interrupted admission/finalization must not clog the queue.
-            limit = 60 if job["status"] == "admitting" else 3600
-            if time.time() - job["created"] > limit:
-                receipt = plans.job_receipt(job.get("uid"), job["id"])
-                guest = storage.store.get(job["guest_receipt_path"]) if job.get("guest_receipt_path") else None
-                guest_admitted = isinstance(guest, dict) and job["id"] in (guest.get("jobs") or {})
-                if job["status"] == "admitting" and (receipt or guest_admitted):
-                    job = jobs.admit(job["id"], (receipt or {}).get("source"))
-                else:
-                    job = jobs.fail(job["id"])
-        refund(job)
-        if job["status"] == "complete" and job.get("uid") and not job.get("history_id") and storage.persistent():
-            history.save(job["uid"], jobs.result(job), scan_id=job["id"])
-            jobs.remember_history(job["id"], job["result_token"])
-    jobs.prune()
+        try:
+            if job["status"] not in jobs.TERMINAL:
+                # An interrupted admission/finalization must not clog the queue.
+                limit = 60 if job["status"] == "admitting" else 3600
+                if time.time() - job.get("updated", job["created"]) > limit:
+                    if job["status"] == "admitting":
+                        receipt = plans.job_receipt(job.get("uid"), job["id"])
+                        guest = storage.store.get(job["guest_receipt_path"]) if job.get("guest_receipt_path") else None
+                        guest_admitted = isinstance(guest, dict) and job["id"] in (guest.get("jobs") or {})
+                        if receipt or guest_admitted:
+                            job = jobs.admit(job["id"], (receipt or {}).get("source"))
+                        else:
+                            job = jobs.expire(job["id"], limit=limit, admitting=True)
+                    else:
+                        # Free the expired slot even if its separate billing
+                        # receipt cannot currently be read. Refund retries are
+                        # isolated below and remain idempotent.
+                        job = jobs.expire(job["id"], limit=limit)
+            refund(job)
+            if job["status"] == "complete" and job.get("uid") and not job.get("history_id") and storage.persistent():
+                if history.save(job["uid"], jobs.result(job), scan_id=job["id"],
+                                job_token=job["result_token"]):
+                    jobs.remember_history(job["id"], job["result_token"])
+        except Exception as exc:
+            # A damaged result or transient history/refund write for one job
+            # must not block every other scan from being reclaimed or run.
+            log.warning("Could not maintain one scan job (%s)", type(exc).__name__)
+    try:
+        jobs.prune()
+    except Exception as exc:
+        log.warning("Could not prune scan jobs (%s)", type(exc).__name__)
     try:
         scan_workers.prune()
     except Exception as exc:
@@ -129,18 +157,28 @@ def maintenance():
 
 
 def ensure_started():
-    global _thread
+    global _thread, _maintenance_thread
     with _lock:
+        if not _maintenance_thread or not _maintenance_thread.is_alive():
+            def maintenance_loop():
+                while jobs.available():
+                    try:
+                        maintenance()
+                    except Exception as exc:
+                        log.warning("Could not read scan-job maintenance state (%s)", type(exc).__name__)
+                    time.sleep(60)
+
+            # Keep stale admissions/refund retries moving while the sole
+            # Render executor spends a long time on a scan or finalization.
+            _maintenance_thread = threading.Thread(
+                target=maintenance_loop, daemon=True, name="scan-job-maintenance")
+            _maintenance_thread.start()
         if _thread and _thread.is_alive():
             return
 
         def loop():
-            last_maintenance = 0
             while jobs.available():
                 try:
-                    if time.monotonic() - last_maintenance > 60:
-                        maintenance()
-                        last_maintenance = time.monotonic()
                     from app import _full_slots
                     if _full_slots.acquire(blocking=False):
                         try:
