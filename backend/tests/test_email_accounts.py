@@ -45,11 +45,12 @@ def test_commit_fallback_requires_exact_email_and_attributed_author(monkeypatch)
             "html_url": "https://github.com/dev/repo/commit/abc"}
     calls = replies(monkeypatch, Response({"items": []}), Response({"items": [
         {**item, "commit": {"author": {"email": "other@gmail.com"}}},
-        {**item, "author": None}, item]}))
+        {**item, "author": None}, item]}), Response(status=503))
     account = EmailLookup().github(EMAIL)
     assert account["username"] == "dev"
     assert "current account email is unknown" in account["evidence"]
-    assert calls[-1][1]["params"]["q"] == f'author-email:"{EMAIL}"'
+    assert calls[-2][1]["params"]["q"] == f'author-email:"{EMAIL}"'
+    assert account["profile_status"] == "unavailable"
 
 
 def test_unverified_user_search_result_is_not_account_proof(monkeypatch):
@@ -103,6 +104,7 @@ def test_switch_off_skips_all_public_account_network_calls(monkeypatch):
     assert result["summary"]["breached"]
     assert result["github"] is None
     assert result["summary"]["linked_accounts"] == []
+    assert result["registration_checks"]["status"] == "skipped"
     assert result["account_checks"]["enabled"] is False
     assert all(s["status"] == "skipped" for s in result["account_checks"]["sources"])
 
@@ -120,3 +122,13 @@ def test_route_passes_account_choice(monkeypatch, option):
     response = appmod.create_app().test_client().post("/api/email", json={"email": EMAIL, "check_linked_accounts": option})
     assert response.status_code == 200
     assert calls == [option]
+
+
+def test_email_api_defaults_to_live_account_checks_off(monkeypatch):
+    import services.email as service
+    calls = []
+    monkeypatch.setattr(config, "RATE_LIMIT_ENABLED", False)
+    monkeypatch.setattr(service, "scan_email", lambda email, check_linked_accounts: calls.append(check_linked_accounts) or {})
+    response = appmod.create_app().test_client().post("/api/email", json={"email": EMAIL})
+    assert response.status_code == 200
+    assert calls == [False]

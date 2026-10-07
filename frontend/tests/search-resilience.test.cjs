@@ -53,6 +53,25 @@ test("a malformed result view offers recovery and JSON download", () => {
   assert.match(results.innerHTML, /data-export="json"/);
 });
 
+test("guest report keeps two card details, locked placeholders and an honest copied preview", () => {
+  const { api, results } = appRenderer();
+  const data = { query: { username: "guest-fixture", scope: "standard", deep: true },
+    summary: { total: 5, profiles: 5, checked: 100 },
+    results: { profiles: [
+      { platform: "First", url: "https://first.example/fixture", confidence: "high" },
+      { platform: "Second", url: "https://second.example/fixture", confidence: "high" },
+    ] }, guest_preview: { visible_cards: 2, hidden_cards: 3, requires_sign_in: true } };
+  api.renderUsername(data);
+  assert.equal((results.innerHTML.match(/class="card card-link"/g) || []).length, 2);
+  assert.equal((results.innerHTML.match(/class="card card-locked"/g) || []).length, 3);
+  assert.match(results.innerHTML, /Only the first 2 result cards are visible/);
+  assert.match(results.innerHTML, /https:\/\/first.example/);
+  assert.match(results.innerHTML, /https:\/\/second.example/);
+  const copied = api.buildTextSummary({ tool: "username", query: "guest-fixture", data });
+  assert.match(copied, /2 card details visible; 3 cards locked/);
+  assert.doesNotMatch(copied, /Digital exposure score/);
+});
+
 test("Deep Search source links reject script URLs and escape provider content", () => {
   const context = { window: { MYRECON: {} }, URL,
     location: { href: "https://myrecon.xyz/deep-search.html" },

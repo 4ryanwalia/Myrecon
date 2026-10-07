@@ -35,6 +35,31 @@
     "band": "Severe",
     "data_provider": null,
     "summary": "In July 2022, the Chinese adult website Hjedd was found to be leaking more than 13M customer records which subsequently appeared on a popular hacking forum. The exposed data included email and IP addresses, usernames and passwords stored as bcrypt hashes.",
+    "story": {
+      "background": [
+        "In July 2022, the Chinese adult website Hjedd was found to be leaking more than 13M customer records which subsequently appeared on a popular hacking forum . The exposed data included email and IP addresses, usernames and passwords stored as bcrypt hashes."
+      ],
+      "how": [
+        "The published account does not explain the exact way the data was obtained."
+      ],
+      "motive": [],
+      "outcome": [
+        "13,204,029 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, IP addresses, Passwords, Usernames."
+      ],
+      "editorial": [
+        "The passwords here were stored as bcrypt hashes, which is the right answer, slow by design, salted per record, still holding up. It makes almost no difference to the people in this file, because the password was never the damaging part. The damaging part is an email address appearing next to the name of an adult website.",
+        "That is what the sensitive flag on this entry means, and why those entries behave unlike the rest of the archive. Everywhere else, exposure creates a task you can complete: change this, freeze that, watch a statement. Here the harm is the disclosure itself, and disclosure has no undo. A password can be rotated.",
+        "Membership of a site cannot be un-leaked, and the IP addresses alongside it narrow down where the account was used. The predictable consequence is extortion mail, and knowing where the accurate details came from is what defuses it. A message quoting the real site name, sometimes a real old password, is designed to make the rest of the claim credible, and the rest of the claim is invented.",
+        "There are no recordings; there is a breach file with your address in it, bought for a few dollars. Replying or paying proves the mailbox is live, and that is the only thing the sender learns."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "Hjedd",
+        "breach_date": "2022-07-18"
+      }
+    ],
     "fields": [
       {
         "name": "Passwords",

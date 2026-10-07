@@ -39,6 +39,31 @@
     "band": "Severe",
     "data_provider": null,
     "summary": "In October 2025, retailer Canadian Tire was the victim of a data breach that exposed almost 42M records. The data contained 38M unique email addresses along with names, phone numbers and physical addresses. Passwords were stored as PBKDF2 hashes and for a subset of records, dates of birth and partial credit card data were also included (card type, expiry and masked card number). In its disclosure…",
+    "story": {
+      "background": [
+        "In October 2025, retailer Canadian Tire was the victim of a data breach that exposed almost 42M records. The data contained 38M unique email addresses along with names, phone numbers and physical addresses. Passwords were stored as PBKDF2 hashes and for a subset of records, dates of birth and partial credit card data were also included (card type, expiry and masked card number).",
+        "In its disclosure notice , Canadian Tire advised that the incident did not impact bank account information or loyalty program data."
+      ],
+      "how": [
+        "The published account does not explain the exact way the data was obtained."
+      ],
+      "motive": [],
+      "outcome": [
+        "38,306,562 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Dates of birth, Email addresses, Genders, Names, Partial credit card data, Passwords, Phone numbers, Physical addresses."
+      ],
+      "editorial": [
+        "The passwords in this one were stored as PBKDF2 hashes, which is the thing most companies in this archive got wrong and Canadian Tire got right. It is worth saying plainly, because breach coverage rarely does: a strong, slow hash means the password field is the part of this file least likely to hurt you. The part that will is the combination underneath it.",
+        "Name, date of birth, address, phone number and the card type, expiry and last four digits, all in one row. The disclosure notes that bank account information was not affected, which is true and beside the point, nobody defrauds a retail customer by knowing their account number.",
+        "They do it by calling with the last four digits of the card, the correct expiry, and the customer's own date of birth, which is a script this file writes for them. Masked card data is classified as low sensitivity because it cannot be used to transact. It can be used to be believed, and that is the attack that follows a retail breach."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "CanadianTire",
+        "breach_date": "2025-10-02"
+      }
+    ],
     "fields": [
       {
         "name": "Passwords",

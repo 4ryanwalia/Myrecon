@@ -5,8 +5,8 @@ The catalogue (data/platforms_full.json) is exported from the app's
 PlatformCatalogue by CatalogueExportTest, not re-typed, so the two lists
 cannot drift by hand. One web-only exception is appended at the end:
 GooglePlayStore, promoted from the extra tier (it passed the same import
-test). Re-exporting drops it, so re-append it, at the end, after the 100
-the guest preview shows. The verdict logic below is a line-by-line port of
+test). Re-exporting drops it, so re-append it at the end of the catalogue.
+The verdict logic below is a line-by-line port of
 UsernameSweep.probe(); the Kotlin carries the long-form reasoning for every
 rule, and the comments here only mark where Python had to differ.
 
@@ -35,7 +35,7 @@ import string
 import threading
 import time
 from http.cookiejar import DefaultCookiePolicy
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from urllib.parse import urljoin, urlsplit
 
 import requests
@@ -49,8 +49,6 @@ _CATALOGUE_PATH = os.path.join(
 with open(_CATALOGUE_PATH, encoding="utf-8") as _fh:
     CATALOGUE: list = json.load(_fh)
 
-TOTAL = len(CATALOGUE)
-
 # The Extended scan's extra tier: sites from the Maigret list that passed this
 # engine's own test (a known-real handle FOUND, two impossible ones not). Built
 # by tools/maigret_web_import.py, never hand-edited. Kept apart from CATALOGUE
@@ -62,6 +60,12 @@ try:
 except FileNotFoundError:
     EXTRA = []
 
+from modules.username_integrations import append_missing
+
+# Reviewed additions share the same full and extended scan. Do not edit the
+# Android-exported catalogue to add web adapters.
+CATALOGUE = append_missing(CATALOGUE, EXTRA)
+TOTAL = len(CATALOGUE)
 EXTENDED = CATALOGUE + EXTRA
 EXTENDED_TOTAL = len(EXTENDED)
 
@@ -343,9 +347,10 @@ def _differs(a, b):
 class Sweep:
     """One sweep: a pooled session, one control handle, a shared deadline."""
 
-    def __init__(self, handle, deadline_seconds=DEADLINE_SECONDS, concurrency=CONCURRENCY):
+    def __init__(self, handle, deadline_seconds=DEADLINE_SECONDS, concurrency=CONCURRENCY,
+                 stop_event=None):
         self.handle = handle.strip().lstrip("@")
-        self.concurrency = concurrency
+        self.concurrency = max(1, concurrency)
         self.control = _control_handle()
         self.deadline = time.monotonic() + deadline_seconds
         self.session = requests.Session()
@@ -357,12 +362,18 @@ class Sweep:
         # the two responses being compared are no longer the same kind of
         # visit.
         self.session.cookies.set_policy(DefaultCookiePolicy(allowed_domains=[]))
-        self._stop = threading.Event()
+        self._stop = stop_event if stop_event is not None else threading.Event()
 
     def stop(self):
         self._stop.set()
 
     # ── requests ─────────────────────────────────────────────────
+
+    def _request_timeout(self):
+        remaining = self.deadline - time.monotonic()
+        if self._stop.is_set() or remaining <= 0:
+            raise requests.Timeout("Sweep stopped")
+        return (min(CONNECT_TIMEOUT, remaining), min(READ_TIMEOUT, remaining))
 
     def _html_get(self, p, url):
         headers = {
@@ -372,7 +383,7 @@ class Sweep:
             **(p.get("html_headers") or {}),
         }
         return self.session.get(url, headers=headers, stream=True,
-                                timeout=(CONNECT_TIMEOUT, READ_TIMEOUT), allow_redirects=True)
+                                timeout=self._request_timeout(), allow_redirects=True)
 
     def _url_for(self, p, handle, key="url"):
         return p[key].replace("{username}", handle)
@@ -406,7 +417,7 @@ class Sweep:
         headers = {"User-Agent": UA, "Accept": "application/json", **(p.get("api_headers") or {})}
         try:
             resp = self.session.get(api, headers=headers, stream=True,
-                                    timeout=(CONNECT_TIMEOUT, READ_TIMEOUT))
+                                    timeout=self._request_timeout())
             with resp:
                 code = resp.status_code
                 limit = 128_000 if p["name"] == "Instagram" else 64_000
@@ -484,6 +495,10 @@ class Sweep:
                 pass
         if time.monotonic() > self.deadline or self._stop.is_set():
             return self._hit(p, UNKNOWN, url, 0, "unverified", "out_of_time")
+
+        if p.get("integration"):
+            from modules.username_integrations import probe
+            return probe(self, p)
 
         api = self._probe_api(p, handle)
         if api is not None:
@@ -610,7 +625,6 @@ class Sweep:
         total = len(platforms)
         hits = []
         checked = 0
-        lock = threading.Lock()
 
         def guarded(p):
             try:
@@ -621,15 +635,39 @@ class Sweep:
 
         try:
             with ThreadPoolExecutor(max_workers=self.concurrency) as pool:
-                futures = [pool.submit(guarded, p) for p in platforms]
-                for fut in as_completed(futures):
-                    hit = fut.result()
-                    with lock:
+                # Keep only the active window in memory. Submitting the whole
+                # extended catalogue creates thousands of futures and leaves
+                # work queued after a client disconnects or the budget expires.
+                remaining = iter(platforms)
+                pending = {}
+
+                def fill():
+                    while (len(pending) < self.concurrency and not self._stop.is_set()
+                           and time.monotonic() < self.deadline):
+                        p = next(remaining, None)
+                        if p is None:
+                            break
+                        pending[pool.submit(guarded, p)] = p
+
+                fill()
+                while pending:
+                    done, _ = wait(pending, timeout=0.5, return_when=FIRST_COMPLETED)
+                    for fut in done:
+                        pending.pop(fut)
+                        hit = fut.result()
                         hits.append(hit)
                         checked += 1
-                        n = checked
+                        if on_result:
+                            on_result(hit, checked, total)
+                    fill()
+                # Budget/cancellation omissions are unknown, never absent.
+                for p in remaining:
+                    hit = self._hit(p, UNKNOWN, self._url_for(p, self.handle), 0,
+                                    "unverified", "out_of_time")
+                    hits.append(hit)
+                    checked += 1
                     if on_result:
-                        on_result(hit, n, total)
+                        on_result(hit, checked, total)
         finally:
             self.session.close()
 
@@ -639,5 +677,6 @@ class Sweep:
             "not_found": sum(1 for h in hits if h["verdict"] == NOT_FOUND),
             "undetermined": sum(1 for h in hits if h["verdict"] == UNKNOWN and not h["unreachable"]),
             "unreachable": sum(1 for h in hits if h["verdict"] == UNKNOWN and h["unreachable"]),
+            "unchecked": sum(1 for h in hits if h["reason_code"] == "out_of_time"),
         }
         return hits, coverage

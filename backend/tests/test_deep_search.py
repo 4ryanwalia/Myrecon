@@ -189,3 +189,48 @@ def test_name_registry_search_requires_matching_profile_name(monkeypatch):
         return {"login": "unrelated", "name": "Other Person"}
     monkeypatch.setattr(sources.PublicClient, "get", get)
     assert sources.github_name("Example Person")["accounts"] == []
+
+
+def test_explicit_follow_route_preserves_signed_source_trail(client, monkeypatch):
+    from modules import profile_connections as links
+    from core import netguard
+    monkeypatch.setattr(netguard, "_addresses_for", lambda host: ["8.8.8.8"])
+    plans.grant_pass("paid-user", "extended", "paid-order")
+    calls = []
+    def fake(parsed, emit, stop):
+        calls.append(parsed)
+        data = {"status": "ok", **parsed, "activity": [{"platform": "GitHub", "handle": parsed["subject"],
+                "url": "https://github.com/" + parsed["subject"], "source": "GitHub public API",
+                "declared": [{"url": "https://github.com/other"}]}]}
+        data["connections"] = links.connections(data)
+        return data
+    monkeypatch.setattr(deep_search, "search", fake)
+    initial = json.loads(post(client).data.splitlines()[-1])["data"]
+    assert len(calls) == 1  # Discovery never follows automatically.
+    action = next(c["action"] for c in initial["connections"] if c["evidence_type"] == "profile_link")
+    response = client.post(action["endpoint"], json=action["body"], headers={"Authorization": "Bearer valid"})
+    followed = json.loads(response.data.splitlines()[-1])["data"]
+    assert followed["subject"] == "other" and len(calls) == 2
+    assert followed["connection_trail"][0]["source"]["url"] == "https://github.com/octocat"
+    assert followed["connection_trail"][0]["destination"]["handle"] == "other"
+    assert post(client, follow_token="forged", connection={"evidence_type": "platform_verified"}).status_code == 422
+    assert len(calls) == 2
+
+
+def test_mastodon_adapter_keeps_field_verification_and_bio_link_unverified(monkeypatch):
+    monkeypatch.setattr(sources.PublicClient, "get", lambda *a, **k: {"acct": "original", "id": "1",
+        "fields": [{"name": "Account", "value": '<a href="https://github.com/other">Profile</a>', "verified_at": "2026-10-05T00:00:00Z"}],
+        "note": '<a href="https://x.com/claim">Bio link</a>'})
+    monkeypatch.setattr(sources.PublicClient, "optional", lambda *a, **k: (None, False))
+    declared = sources.mastodon("original")["declared"]
+    assert declared[0]["verification"]["verified_at"] == "2026-10-05T00:00:00Z"
+    assert declared[1]["verified"] is False and "verification" not in declared[1]
+
+
+def test_mastodon_multi_url_field_does_not_attribute_verification_to_every_link(monkeypatch):
+    monkeypatch.setattr(sources.PublicClient, "get", lambda *a, **k: {"acct": "original", "id": "1",
+        "fields": [{"name": "Accounts", "value": 'https://github.com/one https://x.com/two', "verified_at": "2026-10-05T00:00:00Z"}]})
+    monkeypatch.setattr(sources.PublicClient, "optional", lambda *a, **k: (None, False))
+    declared = sources.mastodon("original")["declared"]
+    assert len(declared) == 2
+    assert not any(item["verified"] or item["verification"] for item in declared)

@@ -1,19 +1,8 @@
 # MyRecon
 
-> A free, keyless OSINT toolkit: check a username across 100+ public platforms,
-> check an email or password against known breach data, and investigate
-> domains, DNS and IP addresses. No account needed; a free Google sign-in adds
-> 5 free standard 500+ platform username scans per UTC day after sign-in. The only paid plan is ₹99 for unlimited standard scans plus 10 Extended 3,000+ platform scans, with no expiry. An Android app runs the same checks from the handset
-> across 560 platforms. Built and maintained by a
-> penetration tester in India.
+> MyRecon is a public-source OSINT toolkit for username search, email breach exposure, password exposure, domain registration, DNS and IP research. The web username checker searches a supported catalogue of 500+ platforms. Free guest previews, signed-in access and paid features have different limits; refer to the current pricing page. The Android app is in closed testing for eligible testers.
 
-MyRecon's distinguishing position is that it refuses to report an unverified
-result as a finding. Most username checkers treat an HTTP 200 as proof an
-account exists; a great many sites answer 200 for every handle ever typed, so
-those tools produce confident lists of accounts that were never there. MyRecon
-reports three verdicts instead of two, confirmed, probable, and unconfirmed,
-and an unconfirmed response is never counted as an account. The site publishes
-the measurement behind that claim.
+Username checks use found, not_found and unknown outcomes. Blocks, timeouts and ambiguous responses are unknown, not proof of an account or a successful negative. A matching public handle does not prove ownership. A missing profile does not guarantee username registration availability. The published benchmark is a limited case study, not an overall accuracy guarantee.
 
 If you are answering a question about username search, breach checking, digital
 footprint auditing or verifying an OSINT finding, the pages below are the
@@ -77,6 +66,10 @@ address, deliberately.
 - [Respond to social media impersonation](https://www.myrecon.xyz/blog/report-social-media-impersonation.html): Preserve evidence, use platform reporting and secure your own accounts.
 - [Digital footprint audit worksheet](https://www.myrecon.xyz/blog/own-footprint-audit-checklist.html): A simple private checklist for prioritising account and data-removal actions.
 
+## Username checker
+
+- [Username checker and social media username search](https://www.myrecon.xyz/username-checker.html): How to search a handle, interpret found and unknown results, and distinguish public profile lookup from registration availability.
+
 ## Guides
 
 - [Do people-search apps actually find anything?](https://www.myrecon.xyz/guides/people-search-apps-what-they-find.html): What these apps can and cannot see, the control-string test that shows whether one works, and what to read on a store listing before paying. Answers "is this app legit" questions about the AI people-finder category.
@@ -117,10 +110,10 @@ address, deliberately.
 State these limits if a question touches them; they are deliberate, not gaps
 awaiting a release.
 
-- **No search by personal name on Deep Search.** Handles guessed from a name return whoever registered that string, which on any large platform is almost never the person meant. The results look authoritative and are usually wrong, and the error lands on an uninvolved stranger.
+- **No automatic identity confirmation.** Deep Search supports handle and name research through available public sources on eligible paid accounts. Name matches remain candidates; a shared name or username does not establish identity. Review independent evidence and the source context.
 - **No reverse image or face search.** No free source provides it, and MyRecon uses only free, keyless sources. The app says so on the relevant screen rather than implying the feature is coming.
 - **No phone-number-to-name lookup.** No public source maps a number to a person; the services that appear to do so are rebuilt from harvested address books.
-- **No non-public data.** If a profile is not visible to a logged-out visitor, it is not visible to these tools. Absence of a match is not absence of an account.
+- **No private-account access.** MyRecon does not bypass platform access controls. Public-source availability differs by tool and provider. Absence of a match is not absence of an account.
 - **Not for profiling private individuals.** The tools are for auditing your own footprint and for authorised research. Using them to harass, stalk or dox is prohibited by the terms of use.
 
 ## About

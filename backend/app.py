@@ -14,6 +14,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 import threading
 
 from flask import Flask, request, g, Response, jsonify, stream_with_context
@@ -108,7 +109,11 @@ def _register_cors(app: Flask) -> None:
         resp.headers["X-Robots-Tag"] = "noindex, nofollow"
         # Stop another origin from pulling API responses into its own process
         # via <img>/<script> side channels (Spectre-style cross-origin reads).
-        resp.headers["Cross-Origin-Resource-Policy"] = "same-site"
+        # This one route serves checked public raster photos to the separate
+        # frontend host. JSON responses retain the same-site protection.
+        resp.headers["Cross-Origin-Resource-Policy"] = (
+            "cross-origin" if request.path == "/api/email/photo" else "same-site"
+        )
         return resp
 
 
@@ -286,16 +291,14 @@ def _admit_scan(scope: str, cached: bool):
     Decide whether this scan may run, charging the allowance it uses.
 
     Returns (uid, charged) where `charged` names the allowance to refund if
-    the scan fails, or None when nothing was charged. A guest full scan runs
-    the same sweep but only receives the first 100 platform verdicts.
+    the scan fails, or None when nothing was charged. Guests may only run
+    Quick scans (`standard` scope); full and extended scans require sign-in.
     """
     from core import plans, store
 
     user = _signed_in_user()
     if user is None:
-        if scope == "extended":
-            # No guest preview of the extended tier: its first 100 platforms
-            # are the same 100 a guest full scan already shows.
+        if scope in ("full", "extended"):
             raise SignInRequired()
         plans.consume_guest_scan(_client_ip())
         return None, None
@@ -334,95 +337,75 @@ def _remember(uid, data):
         return None
 
 
-# Concurrent full and extended sweeps in this worker. Each holds 24 sockets.
-_full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
+def _card_key(result: dict) -> tuple:
+    return (result.get("platform") or result.get("source"), result.get("url"))
 
 
-def _guest_full_preview(data: dict) -> dict:
-    """Project a full sweep onto the public catalogue window.
-
-    This runs at the response boundary, including for cache hits. The cached
-    object remains complete for a signed-in caller, while every guest response
-    derives its details and headline counts only from the public 100 sites.
-    `checked` is the number of catalogue verdicts, including unknown and
-    out-of-time verdicts; it is not a count of successful network responses.
-    """
-    from modules.sweep import CATALOGUE
-    from modules.username_checker import STANDARD_LIMIT
-
-    visible = {platform["name"] for platform in CATALOGUE[:STANDARD_LIMIT]}
-    results = data.get("results") or {}
-    shown = {
-        key: [r for r in (results.get(key) or []) if r.get("platform") in visible]
-        for key in ("profiles", "documents", "mentions")
-    }
-    hidden_findings = sum(
-        1 for key in ("profiles", "documents", "mentions")
-        for r in (results.get(key) or []) if r.get("platform") not in visible
-    )
-    unverified = [r for r in (data.get("unverified") or []) if r.get("platform") in visible]
-    rejected = [r for r in (data.get("rejected") or []) if r.get("platform") in visible]
-    platform_checks = [
-        r for r in (data.get("platform_checks") or []) if r.get("platform") in visible
-    ]
-    total = len(CATALOGUE)
-    shown_count = min(STANDARD_LIMIT, total)
+def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
+    """Return two guest cards and counts, without hidden details or cache mutation."""
+    groups = data.get("results") or {}
+    cards = [(kind, card) for kind in ("profiles", "documents", "mentions")
+             for card in groups.get(kind, [])]
+    selected = []
+    if visible_keys:
+        for key in visible_keys:
+            selected.extend((kind, card) for kind, card in cards if _card_key(card) == key)
+    for entry in cards:
+        if len(selected) >= 2:
+            break
+        if entry not in selected:
+            selected.append(entry)
+    selected = selected[:2]
+    results = {kind: [card for group, card in selected if group == kind]
+               for kind in ("profiles", "documents", "mentions")}
+    summary = {key: value for key, value in (data.get("summary") or {}).items()
+               if key in ("total", "profiles", "documents", "mentions", "checked", "rejected")}
+    summary.update(total=len(cards), clusters=0, exposures=0)
     return {
-        "status": data.get("status", "ok"),
-        "query": data.get("query") or {},
-        "summary": {
-            "total": sum(map(len, shown.values())),
-            "profiles": len(shown["profiles"]),
-            "documents": len(shown["documents"]),
-            "mentions": len(shown["mentions"]),
-            "clusters": 0,
-            "checked": shown_count,
-            "rejected": len(rejected),
-            "unverified": len(unverified),
-            "exposures": 0,
-        },
-        "results": shown,
-        "identity_clusters": [],
-        "exposures": [],
-        "rejected": rejected,
-        "unverified": unverified,
-        "platform_checks": platform_checks,
-        "preview": {
-            "checked": total,
-            "visible": shown_count,
-            "hidden": total - shown_count,
-            "hidden_findings": hidden_findings,
-            "requires_sign_in": True,
-        },
+        "status": data.get("status", "ok"), "query": data.get("query") or {},
+        "summary": summary, "results": results,
+        "partial": bool(data.get("partial")),
+        "errors": [{"source": error.get("source", "username_check"),
+                    "code": error.get("code", "unavailable"), "retryable": True,
+                    "message": "Some checks could not complete. Displaying completed guest results."}
+                   for error in data.get("errors", [])],
+        "guest_preview": {"visible_cards": len(selected),
+                          "hidden_cards": max(0, len(cards) - len(selected)),
+                          "requires_sign_in": True},
     }
 
 
-def _guest_stream_event(event: dict, visible: set[str]):
-    """Remove locked platform data before an NDJSON event leaves the server."""
+def _guest_quick_event(event: dict, seen: set, visible: list):
+    """Never send hidden card fields in live events or progress text."""
     kind = event.get("type")
     if kind == "found":
-        return event if (event.get("result") or {}).get("platform") in visible else None
-    if kind == "progress":
-        # Full-sweep progress names the site that just responded. Keep progress
-        # live while withholding the 460 locked platform names and verdicts.
-        if event.get("phase") == "Queued":
-            phase, detail = "Queued", "Waiting for a scan slot…"
-        elif event.get("phase") == "Checking platforms":
-            phase, detail = "Checking platforms", "Sweeping all public platforms…"
-        else:
-            phase, detail = "Preparing results", "Preparing the visible report…"
-        return {"type": "progress", "phase": phase,
-                "percent": event.get("percent", 0), "detail": detail}
+        result = event.get("result") or {}
+        key = _card_key(result)
+        if key in seen:
+            return None
+        seen.add(key)
+        if len(visible) < 2:
+            visible.append(key)
+            return event
+        return {"type": "found_locked", "count": len(seen) - len(visible)}
     if kind == "complete":
-        return {**event, "data": _guest_full_preview(event.get("data") or {})}
-    if kind == "error":
-        return {"type": "error", "error": "The scan failed. Please try again."}
-    return None
+        return {**event, "data": _guest_quick_preview(event.get("data") or {}, visible)}
+    if kind == "progress":
+        return {"type": "progress", "percent": event.get("percent", 0),
+                "phase": event.get("phase", "Checking platforms"),
+                "detail": "Quick scan in progress…"}
+    return event if kind in ("error", "heartbeat") else None
+
+
+# Concurrent full and extended sweeps in this worker. Each holds 24 sockets.
+_full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
 
 
 # ── Routes ───────────────────────────────────────────────────────
 
 def _register_routes(app: Flask) -> None:
+    from core.android_referrals import register_routes as register_android_referrals
+    register_android_referrals(app, _json_body, responses)
     from services.search import search_username, search_fullname
     from services.email import scan_email
     from services.image import scan_image
@@ -465,6 +448,27 @@ def _register_routes(app: Flask) -> None:
             },
         })
 
+    @app.route("/api/breach-check", methods=["POST", "OPTIONS"])
+    def api_breach_check():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from services.breach_check import check_incident
+        body = _json_body()
+        email = validation.email(body.get("email", ""))
+        targets = body.get("targets", [])
+        if not isinstance(targets, list) or len(targets) > 3:
+            raise validation.ValidationError("Invalid breach selection.")
+        for target in targets:
+            if (not isinstance(target, dict) or not isinstance(target.get("name"), str)
+                    or not 1 <= len(target["name"]) <= 120
+                    or not isinstance(target.get("breach_date"), str)
+                    or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", target["breach_date"])
+                    or not isinstance(target.get("match_year", False), bool)):
+                raise validation.ValidationError("Invalid breach selection.")
+        resp, status = responses.ok(check_incident(email, targets))
+        resp.headers["Cache-Control"] = "no-store"
+        return resp, status
+
     @app.route("/api/username", methods=["POST", "OPTIONS"])
     def api_username():
         if request.method == "OPTIONS":
@@ -480,8 +484,7 @@ def _register_routes(app: Flask) -> None:
             hit = _cache.get(key) if config.CACHE_ENABLED else None
             uid, charged = _admit_scan(scope, hit is not None)
             if hit is not None:
-                shown = _guest_full_preview(hit) if uid is None else hit
-                return responses.ok({**shown, "history_id": _remember(uid, hit)})
+                return responses.ok({**hit, "history_id": _remember(uid, hit)})
             with _full_slots:
                 try:
                     data = _run_full(username, extended=scope == "extended")
@@ -490,8 +493,7 @@ def _register_routes(app: Flask) -> None:
                     raise
             if config.CACHE_ENABLED and not data.get("partial"):
                 _cache.set(key, data)
-            shown = _guest_full_preview(data) if uid is None else data
-            return responses.ok({**shown, "history_id": _remember(uid, data)})
+            return responses.ok({**data, "history_id": _remember(uid, data)})
         uid, charged = _admit_scan("standard", False)
         try:
             data = cached_username(username, deep)
@@ -499,7 +501,8 @@ def _register_routes(app: Flask) -> None:
             from core import plans
             plans.refund_full_scan(uid, charged)
             raise
-        return responses.ok({**data, "history_id": _remember(uid, data)})
+        shown = _guest_quick_preview(data) if uid is None else data
+        return responses.ok({**shown, "history_id": _remember(uid, data)})
 
     @app.route("/api/username/stream", methods=["POST", "OPTIONS"])
     def api_username_stream():
@@ -523,27 +526,27 @@ def _register_routes(app: Flask) -> None:
         # Admitted before the response starts, so a refusal is a real
         # 401/402/429 the page can act on, not an error halfway down a stream.
         uid, charged = _admit_scan(scope, cached_hit is not None)
-        guest_full = scope == "full" and uid is None
-        if guest_full:
-            from modules.sweep import CATALOGUE
-            from modules.username_checker import STANDARD_LIMIT
-            visible = {p["name"] for p in CATALOGUE[:STANDARD_LIMIT]}
-
         def generate():
             from core import plans
+            guest_seen, guest_visible = set(), []
             if cached_hit is not None:
-                shown = _guest_full_preview(cached_hit) if guest_full else cached_hit
+                shown = _guest_quick_preview(cached_hit) if uid is None else cached_hit
                 yield json.dumps({"type": "complete", "data": shown,
                                   "history_id": _remember(uid, cached_hit)}) + "\n"
                 return
             slot = _full_slots if scope in ("full", "extended") else None
-            if slot is not None and not slot.acquire(blocking=False):
-                yield json.dumps({"type": "progress", "phase": "Queued", "percent": 1,
-                                  "detail": "Waiting for a free scan slot…"}) + "\n"
-                slot.acquire()
+            acquired = False
+            events = None
             failed = False
             try:
-                for event in stream_username(username, deep, scope):
+                if slot is not None:
+                    acquired = slot.acquire(blocking=False)
+                    while not acquired:
+                        yield json.dumps({"type": "progress", "phase": "Queued", "percent": 1,
+                                          "detail": "Waiting for a free scan slot…"}) + "\n"
+                        acquired = slot.acquire(timeout=5)
+                events = stream_username(username, deep, scope)
+                for event in events:
                     if event.get("type") == "error":
                         failed = True
                     if event.get("type") == "complete":
@@ -552,20 +555,26 @@ def _register_routes(app: Flask) -> None:
                                 and data.get("status") != "error" and not data.get("partial")):
                             _cache.set(key, data)
                         event = {**event, "history_id": _remember(uid, data)}
-                    if guest_full:
-                        event = _guest_stream_event(event, visible)
+                    if uid is None:
+                        event = _guest_quick_event(event, guest_seen, guest_visible)
                     if event is not None:
                         yield json.dumps(event) + "\n"
             except Exception:
                 failed = True
                 raise
             finally:
-                if slot is not None:
-                    slot.release()
-                # A scan that failed is given back. A closed tab is not a
-                # failure: the sweep was already running and still counts.
-                if charged and failed:
-                    plans.refund_full_scan(uid, charged)
+                # Explicitly close the inner generator before releasing its
+                # slot, so disconnect cancellation drains the active probes.
+                try:
+                    if events is not None:
+                        events.close()
+                finally:
+                    if acquired:
+                        slot.release()
+                    # Running scans still count on disconnect; scans closed
+                    # before obtaining a slot have done no work and are refunded.
+                    if charged and (failed or (slot is not None and not acquired)):
+                        plans.refund_full_scan(uid, charged)
 
         resp = Response(stream_with_context(generate()), mimetype="application/x-ndjson")
         resp.headers["Cache-Control"] = "no-cache"
@@ -579,6 +588,7 @@ def _register_routes(app: Flask) -> None:
             return ("", 204)
         from core import plans, store
         from modules.deep_search_plan import parse_input
+        from modules.profile_connections import attach_actions, parse_follow
         from services.deep_search import search
         import queue
 
@@ -589,7 +599,7 @@ def _register_routes(app: Flask) -> None:
         account = plans.get_account(user["sub"], user.get("email", ""), user.get("name", ""))
         if not account["deep_search_enabled"]:
             raise NoAllowance(account, "deep_search")
-        parsed = parse_input(body.get("query", ""))
+        parsed = parse_follow(body["follow_token"], user["sub"]) if "follow_token" in body else parse_input(body.get("query", ""))
         # Paid access continues after pack credits are spent. This feature
         # consumes neither the free daily allowance nor Extended credits.
         if not _full_slots.acquire(blocking=False):
@@ -599,6 +609,8 @@ def _register_routes(app: Flask) -> None:
         done = object()
 
         def emit(event):
+            if isinstance(event, dict) and event.get("type") in ("partial", "complete"):
+                event = {**event, "data": attach_actions(event["data"], user["sub"])}
             # A slow reader cannot accumulate an unbounded queue of snapshots.
             while not stop.is_set():
                 try:
@@ -658,8 +670,52 @@ def _register_routes(app: Flask) -> None:
         email = validation.email(body.get("email", ""))
         # Email/breach responses are processed live and never retained in the
         # application cache or the account scan database.
-        check_linked = validation.boolean(body.get("check_linked_accounts"), default=True)
+        check_linked = validation.boolean(body.get("check_linked_accounts"), default=False)
         return responses.ok(scan_email(email, check_linked_accounts=check_linked))
+
+    @app.route("/api/email/public-profiles", methods=["POST", "OPTIONS"])
+    def api_email_public_profiles():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from services.email_public_profiles import lookup_public_profiles
+        email = validation.email(_json_body().get("email", ""))
+        response, status = responses.ok(lookup_public_profiles(email))
+        response.headers["Cache-Control"] = "no-store"
+        return response, status
+
+    @app.route("/api/email/linkedin-public", methods=["POST", "OPTIONS"])
+    def api_email_linkedin_public():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from services.email_linkedin_public import lookup_linkedin_public
+        email = validation.email(_json_body().get("email", ""))
+        response, status = responses.ok(lookup_linkedin_public(email))
+        response.headers["Cache-Control"] = "no-store"
+        return response, status
+
+    @app.route("/api/email/photo", methods=["GET", "OPTIONS"])
+    def api_email_photo():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from modules.email_photos import PhotoError, fetch_public_photo
+        try:
+            photo = fetch_public_photo(request.args.get("url", ""))
+        except PhotoError as exc:
+            resp, status = responses.error("Public profile photo unavailable.", exc.status, exc.code)
+            resp.headers["Cache-Control"] = "no-store"
+            return resp, status
+        return Response(photo.body, content_type=photo.content_type, headers={
+            "Cache-Control": "private, max-age=300",
+            "Content-Disposition": "inline",
+        })
+
+    @app.route("/api/email/accounts", methods=["POST", "OPTIONS"])
+    def api_email_accounts():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from modules.registered_accounts import scan_registered_accounts
+        email = validation.email(_json_body().get("email", ""))
+        return responses.ok({"registration_checks": scan_registered_accounts(email)})
 
     @app.route("/api/domain", methods=["POST", "OPTIONS"])
     def api_domain():
@@ -745,7 +801,7 @@ def _register_routes(app: Flask) -> None:
     @app.route("/api/plans")
     def api_plans():
         """Public: tiers, limits, and whether sign-in and payments are live."""
-        from core import plans, razorpay, store
+        from core import buymeacoffee, paypal, plans, razorpay, store
         return responses.ok({
             # Only ever true on a local development server; see config.py.
             "dev_test_account": config.DEV_TEST_ACCOUNT,
@@ -759,6 +815,12 @@ def _register_routes(app: Flask) -> None:
             } if config.FIREBASE_WEB_API_KEY and store.persistent() else None,
             "accounts_enabled": store.persistent(),
             "payments_enabled": razorpay.enabled() and store.persistent(),
+            "international_payments": {"enabled": buymeacoffee.enabled(),
+                                       "provider": "buymeacoffee", "amount": 399,
+                                       "currency": "USD", "plan": "extended"},
+            "paypal_payments": {"enabled": paypal.enabled(), "amount": 399,
+                                "currency": "USD", "plan": "extended",
+                                "environment": config.PAYPAL_ENV},
             "razorpay_key_id": config.RAZORPAY_KEY_ID if razorpay.enabled() else None,
             "limits": {
                 "standard_platforms": plans.STANDARD_PLATFORMS,
@@ -851,6 +913,95 @@ def _register_routes(app: Flask) -> None:
             "plan": plan, "email": user.get("email", ""), "name": user.get("name", ""),
         })
 
+    @app.route("/api/billing/paypal/order", methods=["POST", "OPTIONS"])
+    @app.route("/api/billing/paypal/capture", methods=["POST", "OPTIONS"])
+    def api_paypal_checkout():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import paypal, plans
+        user = _require_user()
+        if not paypal.configured() or (request.path.endswith("/order") and not paypal.enabled()):
+            return responses.error("PayPal checkout is unavailable.", status=503,
+                                   code="payments_unavailable")
+        body = _json_body()
+        try:
+            if request.path.endswith("/order"):
+                if body.get("plan") != "extended":
+                    raise ValueError("Unknown plan.")
+                return responses.ok(paypal.checkout(user["sub"]))
+            result = paypal.settle(body.get("order_id"), uid=user["sub"], capture=True)
+            return responses.ok({**result, "account": plans.get_account(user["sub"])})
+        except ValueError as exc:
+            raise validation.ValidationError(str(exc)) from exc
+        except paypal.PayPalError:
+            return responses.error("Could not confirm PayPal payment. Try again; do not pay twice.",
+                                   status=502, code="paypal_unavailable")
+
+    @app.route("/api/billing/paypal/webhook", methods=["POST"])
+    def api_paypal_webhook():
+        from core import paypal
+        if not paypal.configured():
+            return responses.error("PayPal is unavailable.", status=503)
+        try:
+            result = paypal.webhook(_json_body(), request.headers)
+            return responses.ok(result)
+        except ValueError:
+            return responses.error("Invalid PayPal webhook.", status=400)
+        except paypal.PayPalError:
+            return responses.error("PayPal confirmation unavailable. Retry later.", status=502)
+
+    @app.route("/api/billing/buymeacoffee/checkout", methods=["POST", "OPTIONS"])
+    def api_bmc_checkout():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import buymeacoffee
+        user = _require_user()
+        if not buymeacoffee.enabled():
+            return responses.error("International payments are not open yet.", status=503,
+                                   code="payments_unavailable")
+        if _json_body().get("plan") != "extended":
+            raise validation.ValidationError("Unknown plan.")
+        return responses.ok(buymeacoffee.checkout(user["sub"]))
+
+    @app.route("/api/billing/buymeacoffee/status", methods=["POST", "OPTIONS"])
+    def api_bmc_status():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import buymeacoffee
+        user = _require_user()
+        body = _json_body()
+        if not isinstance(body, dict):
+            raise validation.ValidationError("Invalid activation code.")
+        try:
+            result = buymeacoffee.payment_status(user["sub"], body.get("activation_code"))
+        except ValueError as exc:
+            raise validation.ValidationError(str(exc)) from exc
+        if result is None:
+            return responses.error("Checkout not found. Start international checkout again.",
+                                   status=404, code="checkout_not_found")
+        return responses.ok(result)
+
+    @app.route("/api/billing/buymeacoffee/webhook", methods=["POST"])
+    def api_bmc_webhook():
+        from core import buymeacoffee
+        if not buymeacoffee.enabled():
+            return responses.error("International payments are not open yet.", status=503,
+                                   code="payments_unavailable")
+        if request.content_length and request.content_length > config.MAX_BODY_BYTES:
+            raise PayloadTooLarge()
+        raw = request.get_data(cache=True)
+        if not buymeacoffee.signature_ok(raw, request.headers.get("x-signature-sha256", "")):
+            return responses.error("Bad signature.", status=400, code="bad_signature")
+        try:
+            event = json.loads(raw)
+        except ValueError:
+            return responses.error("Bad payload.", status=400, code="bad_payload")
+        applied = buymeacoffee.settle(event)
+        if not applied and isinstance(event, dict) and event.get("live_mode") is True:
+            log.warning("Buy Me a Coffee event was not applied: type=%s id=%s",
+                        event.get("type"), event.get("event_id"))
+        return responses.ok({"received": True, "applied": applied})
+
     def _grant_from_order(order_id: str, expect_uid=None) -> bool:
         """
         Apply the pass an order paid for. Who gets it and which plan are read
@@ -938,14 +1089,14 @@ def _register_errors(app: Flask) -> None:
     @app.errorhandler(SignInRequired)
     def on_sign_in_required(_err):
         return responses.error(
-            "Sign in to unlock the full report and use account features.",
+            "Sign in to run Standard and Extended scans and use account features.",
             status=401, code="sign_in_required",
         )
 
     @app.errorhandler(AccountsUnavailable)
     def on_accounts_unavailable(_err):
         return responses.error(
-            "Account features are not switched on yet. Guest preview scans still work.",
+            "Account features are not switched on yet. Guest Quick scans still work.",
             status=503, code="accounts_unavailable",
         )
 

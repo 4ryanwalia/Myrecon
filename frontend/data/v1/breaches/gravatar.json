@@ -34,6 +34,32 @@
     "band": "Serious",
     "data_provider": null,
     "summary": "In October 2020, a security researcher published a technique for scraping large volumes of data from Gravatar, the service for providing globally unique avatars . 167 million names, usernames and MD5 hashes of email addresses used to reference users' avatars were subsequently scraped and distributed within the hacking community. 114 million of the MD5 hashes were cracked and distributed alongside…",
+    "story": {
+      "background": [
+        "In October 2020, a security researcher published a technique for scraping large volumes of data from Gravatar, the service for providing globally unique avatars . 167 million names, usernames and MD5 hashes of email addresses used to reference users' avatars were subsequently scraped and distributed within the hacking community.",
+        "114 million of the MD5 hashes were cracked and distributed alongside the source hash, thus disclosing the original email address and accompanying data. Following the impacted email addresses being searchable in HIBP, Gravatar release an FAQ detailing the incident ."
+      ],
+      "how": [
+        "In October 2020, a security researcher published a technique for scraping large volumes of data from Gravatar, the service for providing globally unique avatars .",
+        "167 million names, usernames and MD5 hashes of email addresses used to reference users' avatars were subsequently scraped and distributed within the hacking community."
+      ],
+      "motive": [],
+      "outcome": [
+        "113,990,759 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, Names, Usernames."
+      ],
+      "editorial": [
+        "There is a design lesson buried in this record that outlives the incident. Gravatar identified users by the MD5 hash of their email address, published in the page source of every site that showed an avatar. The reasoning was reasonable at the time: a hash is not the address, so the address is not being disclosed. It does not hold.",
+        "MD5 is fast, email addresses follow predictable patterns, and the total space of plausible addresses is small enough to work through. Of 167 million scraped hashes, 114 million were reversed to the original address. Hashing an identifier that an attacker can guess is not anonymisation; it is a lookup table waiting to be built.",
+        "Nothing sensitive was stored and nothing was stolen in the conventional sense, this was scraping a service that was answering exactly as designed. The exposure is the mapping itself: a name, a username and the email address behind it, for a hundred million people who had only ever wanted a profile picture to follow them between websites."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "Gravatar",
+        "breach_date": "2020-10-03"
+      }
+    ],
     "fields": [
       {
         "name": "Names",

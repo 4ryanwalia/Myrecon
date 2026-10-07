@@ -20,6 +20,7 @@ import os
 import queue
 import threading
 from concurrent.futures import ThreadPoolExecutor
+import config
 
 from modules.username_checker import UsernameChecker, extract_metadata, verify_profile_url
 from modules.google_dork import GoogleDorkEngine
@@ -28,6 +29,7 @@ from modules.enrichment import ProfileEnricher
 from modules.code_exposure import github_commit_emails
 from data.profile_urls import profile_handle
 from utils.parser import categorise_result
+from modules.user_scanner import scan_selected
 
 _ENRICH_LIMIT = 18  # cap enrichment fan-out to keep latency predictable
 _VERIFY_LIMIT = 24  # cap dork-hit verification fan-out for the same reason
@@ -56,7 +58,7 @@ def _enrich_profiles(found: list[dict], emit=_noop) -> None:
     answered nineteenth.
     """
     targets = sorted(
-        (r for r in found if r.get("exists")), key=_profile_rank
+        (r for r in found if r.get("exists") and not r.get("metadata_complete")), key=_profile_rank
     )[:_ENRICH_LIMIT]
     if not targets:
         return
@@ -299,7 +301,8 @@ def _bucket(results: list[dict]) -> tuple:
 
 # Only what a live card shows. Status codes, match scores and anything
 # binary stay out of the stream.
-_LIVE_FIELDS = ("platform", "url", "confidence", "display_name", "bio", "profile_pic_url")
+_LIVE_FIELDS = ("platform", "url", "confidence", "display_name", "bio", "profile_pic_url",
+                "followers", "following", "public_links", "statistics", "metadata_source")
 
 
 def _live_view(result: dict, username: str) -> dict:
@@ -389,6 +392,7 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
         "partial": bool(errors),
         "errors": errors,
         "query": {"username": username, "deep": deep, "scope": "standard"},
+        "user_scanner": scan_selected(username, "username", permitted=False),
         "summary": {
             "total": len(profiles) + len(documents) + len(mentions),
             "profiles": len(profiles),
@@ -407,12 +411,10 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     }
 
 
-def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
+def _run_full(username: str, emit=_noop, extended: bool = False, stop_event=None) -> dict:
     """
-    The Android app's platform sweep (561 on the web), run here for guests and accounts.
-
-    Guest responses are projected to a 100-platform preview by the API layer;
-    this function always builds the complete result for authorized unlocks.
+    The Android app's platform sweep (561 on the web), run here for signed-in accounts.
+    Guests use the separate Quick pipeline; this builds the complete Standard report.
 
     Same envelope as _run_username so the page renders it with the same code,
     plus two things only this engine can say: `coverage` (how much of the map
@@ -435,13 +437,13 @@ def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
         if hit["exists"]:
             emit({"type": "found", "result": _live_view(hit, username)})
 
-    if extended:
-        # Most of the extra tier is API-backed forums and instances, one light
-        # request each, so it runs wider and gets a longer clock.
-        sweep = Sweep(username, deadline_seconds=270, concurrency=96)
-        hits, coverage = sweep.run(on_result=on_result, platforms=EXTENDED)
-    else:
-        hits, coverage = Sweep(username).run(on_result=on_result)
+    sweep = Sweep(username, concurrency=config.SWEEP_CONCURRENCY,
+                  deadline_seconds=(config.EXTENDED_SCAN_DEADLINE_SECONDS if extended
+                                    else config.FULL_SCAN_DEADLINE_SECONDS),
+                  stop_event=stop_event)
+    hits, coverage = sweep.run(on_result=on_result, platforms=EXTENDED if extended else None)
+    if stop_event is not None and stop_event.is_set():
+        raise RuntimeError("Scan cancelled")
     platform_checks = _full_platform_checks(hits)
 
     found = [h for h in hits if h["verdict"] == FOUND]
@@ -480,6 +482,10 @@ def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
         "status": "ok",
         "query": {"username": username, "deep": True,
                   "scope": "extended" if extended else "full"},
+        "partial": bool(coverage.get("unchecked")),
+        "errors": ([{"source": "username_sweep", "code": "timeout", "retryable": True,
+                     "message": "The scan reached its time budget. Unchecked platforms remain unknown."}]
+                   if coverage.get("unchecked") else []),
         "summary": {
             "total": len(profiles) + len(documents) + len(mentions),
             "profiles": len(profiles),
@@ -492,6 +498,7 @@ def _run_full(username: str, emit=_noop, extended: bool = False) -> dict:
             "exposures": len(exposures),
         },
         "coverage": coverage,
+        "user_scanner": scan_selected(username, "username", permitted=False),
         "results": {"profiles": profiles, "documents": documents, "mentions": mentions},
         "identity_clusters": clusters,
         "exposures": exposures,
@@ -514,30 +521,46 @@ def stream_username(username: str, deep: bool = False, scope: str = "standard"):
     The pipeline runs on a worker thread and pushes events through a queue
     so they can be streamed to the client as they happen.
     """
-    q: "queue.Queue" = queue.Queue()
+    q: "queue.Queue" = queue.Queue(maxsize=64)
+    stop = threading.Event()
     holder: dict = {}
 
     def emit(event: dict) -> None:
-        q.put(event)
+        while not stop.is_set():
+            try:
+                q.put(event, timeout=0.2)
+                return
+            except queue.Full:
+                continue
 
     def worker():
         try:
             if scope in ("full", "extended"):
-                holder["data"] = _run_full(username, emit, extended=scope == "extended")
+                holder["data"] = _run_full(username, emit, extended=scope == "extended", stop_event=stop)
             else:
                 holder["data"] = _run_username(username, deep, emit)
         except Exception as e:  # noqa: BLE001
             holder["error"] = "The scan could not complete. Please try again."
         finally:
-            q.put(None)  # sentinel
+            emit(None)  # sentinel
 
-    threading.Thread(target=worker, daemon=True).start()
-
-    while True:
-        event = q.get()
-        if event is None:
-            break
-        yield event
+    thread = threading.Thread(target=worker, daemon=True)
+    thread.start()
+    try:
+        while True:
+            try:
+                event = q.get(timeout=5)
+            except queue.Empty:
+                yield {"type": "heartbeat"}
+                continue
+            if event is None:
+                break
+            yield event
+    finally:
+        stop.set()
+        # The API must retain the resource slot until active probes finish.
+        # emit() stops writing immediately, even if the client left mid-scan.
+        thread.join()
 
     if "error" in holder:
         yield {"type": "error", "error": holder["error"]}

@@ -146,14 +146,29 @@ FIREBASE_WEB_APP_ID = os.environ.get(
 )
 GUEST_SCANS_PER_DAY = _get_int("GUEST_SCANS_PER_DAY", 5)
 # Free accounts get five username scans per day; paid packs unlock unlimited standard scans.
-# Concurrent 560-platform sweeps per worker. Each one holds 24 sockets; more
-# than this on a 512 MB instance starves every other lookup.
-FULL_SCAN_SLOTS = _get_int("FULL_SCAN_SLOTS", 2)
+# Process-local limits: run one Gunicorn worker on small Render instances so
+# the scan slot is shared by all HTTP threads, rather than multiplied by workers.
+FULL_SCAN_SLOTS = max(1, _get_int("FULL_SCAN_SLOTS", 1))
+SWEEP_CONCURRENCY = max(1, min(96, _get_int("SWEEP_CONCURRENCY", 8)))
+FULL_SCAN_DEADLINE_SECONDS = max(30, _get_int("FULL_SCAN_DEADLINE_SECONDS", 300))
+EXTENDED_SCAN_DEADLINE_SECONDS = max(30, _get_int("EXTENDED_SCAN_DEADLINE_SECONDS", 1800))
 
 # Razorpay (Extended scan packs). Key id is public; the two secrets are not.
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
 RAZORPAY_WEBHOOK_SECRET = os.environ.get("RAZORPAY_WEBHOOK_SECRET", "")
+
+# International pack checkout. The Shop item must cost USD 3.99 and ask for
+# the activation code shown after MyRecon sign-in. Secrets stay server-side.
+BUYMEACOFFEE_SHOP_URL = os.environ.get("BUYMEACOFFEE_SHOP_URL", "").strip()
+BUYMEACOFFEE_ITEM_ID = os.environ.get("BUYMEACOFFEE_ITEM_ID", "").strip()
+BUYMEACOFFEE_WEBHOOK_SECRET = os.environ.get("BUYMEACOFFEE_WEBHOOK_SECRET", "")
+
+# PayPal secrets stay on the backend. Sandbox never opens public sales.
+PAYPAL_CLIENT_ID = os.environ.get("PAYPAL_CLIENT_ID", "").strip()
+PAYPAL_CLIENT_SECRET = os.environ.get("PAYPAL_CLIENT_SECRET", "").strip()
+PAYPAL_WEBHOOK_ID = os.environ.get("PAYPAL_WEBHOOK_ID", "").strip()
+PAYPAL_ENV = os.environ.get("PAYPAL_ENV", "sandbox").strip().lower()
 
 # Local testing only: treat requests with no Authorization header as one fixed
 # signed-in test user, with accounts held in memory, so checkout and the full

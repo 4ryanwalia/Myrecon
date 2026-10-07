@@ -50,8 +50,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=b0d1b172c9">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=e3935bfe0c">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Privacy Policy: Guest Scans and Optional Accounts","description":"How MyRecon handles guest scans, optional Google accounts, saved username reports, browser history and short-lived result caches.","url":"https://www.myrecon.xyz/privacy.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Privacy policy","item":"https://www.myrecon.xyz/privacy.html"}]}}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
@@ -66,12 +66,12 @@
 
   <main class="container legal" id="main">
     <h1>Privacy Policy</h1>
-    <p class="legal-meta">Last updated: 25 September 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
+    <p class="legal-meta">Last updated: 3 October 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
 
     <div class="legal-summary">
       <h2>The short version</h2>
       <ul>
-        <li><strong>Accounts are optional.</strong> Guests can see a 100-platform preview from a 500+ platform username sweep. If you sign in with Google, we hold your email, name, scan counts and saved username scans, which you can delete. We never see card, UPI or bank details: Razorpay handles payment.</li>
+        <li><strong>Accounts are optional.</strong> Guests can run Quick username scans across 100 platforms with no sign-up required. Only the first 2 result cards are visible; remaining cards are blurred. Standard scans require sign-in. If you sign in with Google, we hold your email, name, scan counts and saved username scans, which you can delete. We never see card, UPI or bank details: Razorpay handles Indian payments and PayPal or Buy Me a Coffee handles international payments when enabled.</li>
         <li><strong>Guest scans are not saved to an account.</strong> Results can sit in a short-lived server memory cache for up to ten minutes. Completed username scans while signed in are saved to your account history.</li>
         <li><strong>Recent lookup history also lives in your browser</strong>, where you can wipe it in one click.</li>
         <li><strong>Passwords never leave your device.</strong> The password checker hashes locally and sends five characters of that hash.</li>
@@ -143,7 +143,7 @@
               <td><strong>Results of that lookup</strong></td>
               <td>To show you the answer and to make a repeated identical lookup fast</td>
               <td>Returned to your browser; non-email results may also sit in the in-memory cache</td>
-              <td>Email results are not cached by the application. Other results may be cached for up to 10 minutes. Signed-in username reports remain until deleted; browser history and saved investigations remain until you clear them</td>
+              <td>Email reports are not cached by the application. Public profile photos requested through our API may be cached in memory and in your browser for up to 5 minutes. Other results may be cached for up to 10 minutes. Signed-in username reports remain until deleted; browser history and saved investigations remain until you clear them</td>
             </tr>
             <tr>
               <td><strong>Your IP address</strong></td>
@@ -176,9 +176,9 @@
               <td>Your newest 50 scans. Delete any of them, or all, from your account page at any time; all of it goes when your account is deleted</td>
             </tr>
             <tr>
-              <td><strong>If you buy a Pro pass</strong>: the Razorpay order and payment ID, the pass, the amount and the time</td>
+              <td><strong>If you buy a scan pack</strong>: payment references and the purchased entitlement. Buy Me a Coffee checkout also stores a hash of your activation code, account ID, creation and expiry times, and the account linked to the purchase. PayPal checkout stores the order ID, account ID, a random order binding, environment and grant status</td>
               <td>To apply the pass, sort out payment problems, and keep the records tax law requires</td>
-              <td>Razorpay processes the payment itself; we keep the reference only</td>
+              <td>Razorpay, PayPal or Buy Me a Coffee processes payment; account links and purchase references are stored in our server-managed Firebase database</td>
               <td>As long as Indian tax and accounting law requires, currently up to 8 years</td>
             </tr>
             <tr>
@@ -266,10 +266,19 @@
             <tr><td><strong>Google</strong> (Firebase)</td><td>Counts invites in the Android app</td><td>An invite code, a one-way hash derived from the phone&rsquo;s app-specific Android ID, the time, and the IP address the request comes from, only when an install came from an invite link, or while someone is looking at their own invite count</td></tr>
             <tr><td><strong>Google</strong> (Firebase, website accounts)</td><td>Google sign-in and the store of account allowances</td><td>If you sign in: your Google email address, name and user ID, and your scan counts. For visitors who are not signed in: a daily-rotating keyed hash used for the guest scan limit</td></tr>
             <tr><td><strong>Razorpay</strong></td><td>Processes Pro pass payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
+            <tr><td><strong>Buy Me a Coffee</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in its Shop checkout, including the MyRecon activation code you submit after payment to link the purchase to your account. Its signed purchase notification is processed by our server; we retain purchase references and account links, without copying its customer names or emails into our account database. Handled under Buy Me a Coffee's own privacy policy</td></tr>
+            <tr><td><strong>PayPal</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in PayPal checkout. We send the pack description, USD price and a random order binding; we retain order references and account links. We verify payment through PayPal and do not copy PayPal customer names or emails into our account database. Handled under PayPal's own privacy policy</td></tr>
             <tr><td><strong>Google Fonts</strong></td><td>Serves the typeface</td><td>IP address and browser details when a font loads</td></tr>
             <tr><td><strong>Have I Been Pwned</strong></td><td>The breach catalogue, breach logos, and the Pwned Passwords API</td><td>Your IP address, and a five-character hash prefix when you check a password. The address itself only where a breach lookup is configured to use HIBP directly</td></tr>
             <tr><td><strong>XposedOrNot</strong>, <strong>LeakCheck</strong></td><td>Answer &ldquo;has this address been breached&rdquo;</td><td>The email address you queried</td></tr>
             <tr><td><strong>GitHub</strong></td><td>Finds a public GitHub account for an address or username</td><td>The identifier you queried</td></tr>
+            <tr><td><strong>OSINT Industries</strong> (optional, when configured)</td><td>Returns source-reported linked profiles, registration signals and available public profile details, including Google review venues and LinkedIn history. Runs when linked-account checks are enabled.</td><td>The email address you queried, sent by our backend. This provider has its own data-handling policies.</td></tr>
+            <tr><td><strong>People Data Labs</strong> (optional, when configured)</td><td>Returns LinkedIn profile details from its dataset when the returned email matches the query. Runs when linked-account checks are enabled.</td><td>The queried email, sent by our backend. Dataset associations can be historical; this provider has its own data-handling policies.</td></tr>
+            <tr><td><strong>SerpApi</strong> (optional, when configured)</td><td>Retrieves public Google Maps contributor reviews for an account already linked by an identity source.</td><td>The source-reported Google contributor ID, sent by our backend.</td></tr>
+            <tr><td><strong>Google Maps public contributions</strong> (when linked-account checks are enabled)</td><td>Attempts to retrieve publicly visible reviews and ratings for a Google account already linked by an identity source. Private, blocked or unrecognized responses remain unknown.</td><td>The source-reported Google contributor ID is sent by our backend. No Google sign-in cookies or session credentials are sent by this review lookup.</td></tr>
+            <tr><td><strong>GHunt / Google</strong> (optional, when configured)</td><td>Reads public Google profile fields and available Maps contribution counts. It does not collect Calendar events or private account data.</td><td>The queried email is sent to Google using a separately authenticated backend session. Session credentials remain on the backend.</td></tr>
+            <tr><td><strong>LinkedIn public pages</strong> (optional)</td><td>Reads public structured profile details for an already source-linked profile URL when robots rules allow access. Login walls remain unavailable.</td><td>The public profile URL is requested by the backend without LinkedIn login credentials.</td></tr>
+            <tr><td><strong>Public photo CDNs</strong>: GitHub, Google, LinkedIn and Gravatar</td><td>Display available profile photos. If direct loading fails, our API can retry a public image from supported hosts.</td><td>The photo URL is requested by your browser and, for a retry, by our backend. No account cookies or login credentials are forwarded. Photo bytes may be cached for 5 minutes.</td></tr>
             <tr><td><strong>Gravatar</strong> (Automattic)</td><td>Finds a public avatar and profile for an address</td><td>An MD5 hash of the email address, not the address itself. Be aware that a hash of a common address can still be matched back to it</td></tr>
             <tr><td><strong>RDAP and WHOIS registries, public DNS resolvers, certificate transparency logs</strong></td><td>Answer domain, DNS and IP lookups</td><td>The domain or IP you queried</td></tr>
             <tr><td><strong>Public platform pages</strong>: social networks, forums, code hosts and similar</td><td>Check whether a username exists there</td><td>The username you queried, as an ordinary page request</td></tr>
@@ -302,6 +311,7 @@
     </section>
 
     <section id="cookies">
+      <p>To resume international checkout, we keep your activation code, account ID, checkout URL and expiry in this tab's session storage. Signing out clears this record, and the browser removes it when the tab session ends. Checking payment sends the code to our server for your signed-in account.</p>
       <h2>9. Cookies and advertising</h2>
       <p><strong>MyRecon’s own code sets no cookies.</strong> Google Analytics uses first-party analytics cookies to measure site visits, and Google advertising may use additional cookies. The full detail and ways to refuse or delete them are in our <a href="/cookies.html">cookie policy</a>.</p>
       <p>In short:</p>
@@ -391,7 +401,7 @@
         <li><strong>Deep Search queries public search engines.</strong> Searches run from your handset against <code>lite.duckduckgo.com</code> and <code>www.bing.com</code>, and against the open registries <code>wikidata.org</code>, <code>orcid.org</code> and <code>api.github.com</code>. Each sees the query and your device&rsquo;s IP address. None of it passes through us.</li>
         <li><strong>Other lookups reach the services they need.</strong> Domain and certificate work uses <code>rdap.org</code> and <code>api.certspotter.com</code>; GitHub lookups use <code>api.github.com</code>. Each receives the identifier you asked about and your device&rsquo;s IP address.</li>
         <li><strong>Notification permission</strong> is used to tell you when a breach matches something you are watching.</li>
-        <li><strong>Invites are counted with Google Firebase.</strong> Deep Search unlocks once three people install the app from your invite link. The link carries an invite code worked out from your phone&rsquo;s app-specific Android ID; whoever you send it to can use it to see how many people have joined through it, and nothing more. If you install from someone else&rsquo;s link, the app records in a Firebase Realtime Database, run by Google in Singapore, their invite code, a one-way hash derived from your phone&rsquo;s app-specific Android ID, so the same phone cannot be counted twice, even after a reinstall, and the time. While the invite card is on screen, the app reads your own count from the same database. No name, email address, account or anything you look up is involved, and if you install without an invite link, nothing about your install is recorded.</li>
+        <li><strong>Invites are verified through MyRecon and Google.</strong> Deep Search unlocks after one invited friend completes a standard username scan. That invited install sends the completed username, invite codes, a hash of its app-specific Android ID and a Play Integrity token to the MyRecon API. Google verifies the app, licence and device; MyRecon runs a qualifying public username scan before granting access. Firebase in Singapore stores the inviter code, claim hash and time; the referral record does not retain the username. These checks do not prove identity or account ownership. Anyone holding an invite code can read its unlock flag. Public Play reviews are optional and do not earn access.</li>
         <li><strong>What the app stores</strong>: your watch list, settings and results, is kept on your device in Android&rsquo;s own app storage, and is removed when you uninstall the app. There is no account and no sync.</li>
       </ul>
       <h3>Advertising in the app</h3>
@@ -428,7 +438,7 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
@@ -455,8 +465,8 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=090587edad"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
