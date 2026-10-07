@@ -52,7 +52,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=b0d1b172c9">
   <link rel="stylesheet" href="/assets/css/fx.css?v=e3935bfe0c">
-  <link rel="stylesheet" href="/assets/css/deep-search.css?v=f5080a39a1">
+  <link rel="stylesheet" href="/assets/css/deep-search.css?v=google-reviews-20261007">
   <link rel="stylesheet" href="/assets/css/deep-search-preview.css?v=bd7c7cdb1d">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Deep Search: Public Activity & Name Research | MyRecon", "description": "Deep Search on the ₹99 paid plan: public comments, indexed mentions, owner-declared links and name records. Review sources; matches do not confirm identity.", "url": "https://www.myrecon.xyz/deep-search.html", "isPartOf": {"@id": "https://www.myrecon.xyz/#website"}, "publisher": {"@id": "https://www.myrecon.xyz/#organization"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MyRecon", "item": "https://www.myrecon.xyz/"}, {"@type": "ListItem", "position": 2, "name": "Deep Search", "item": "https://www.myrecon.xyz/deep-search.html"}]}, "dateModified": "2026-09-30"}</script>
   <script type="application/ld+json">{"@type": "WebApplication", "name": "MyRecon Deep Search", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "url": "https://www.myrecon.xyz/deep-search.html", "publisher": {"@id": "https://www.myrecon.xyz/#organization"}, "description": "Paid public-source research by name or handle, including recent public activity, declared links, candidate records and indexed mentions. Source limits stay visible.", "@context": "https://schema.org"}</script>
@@ -80,7 +80,7 @@
 
   <main class="container" id="ds">
     <div class="ds-head"><h1>Deep Search</h1><span class="ds-kicker">Paid plan</span></div>
-    <p class="ds-intro">Go beyond a username scan. Explore public comments, indexed mentions and links published by account owners, or search a full name in public records.</p>
+    <p class="ds-intro">Go beyond a username scan. Explore public comments, indexed mentions and links published by account owners, search a full name in public records, or check an exact email for a public Google contributor profile and available Maps reviews.</p>
     <section class="deep-search-preview" id="dsPreview" aria-labelledby="dsPreviewTitle">
       <div class="deep-search-preview-heading"><span class="deep-search-plan-tag">Discover more with Deep Search</span><h2 id="dsPreviewTitle">Go deeper than usernames and profiles.</h2><p>A username scan helps you find public accounts. Deep Search adds the activity, mentions and connections around them, with links to the original sources.</p></div>
       <dl class="deep-search-preview-list">
@@ -93,13 +93,13 @@
       <p class="deep-search-preview-limit">What appears depends on public-source availability. Instagram comments, likes and private content are unavailable. Matches are leads to review, not confirmed identities.</p>
     </section>
     <div class="panel ds-query">
-      <label class="ds-input-label" for="dsInput">Name or handle</label>
+      <label class="ds-input-label" for="dsInput">Name, handle or email</label>
       <div class="field-row">
-        <div class="input-wrap"><input class="input" id="dsInput" type="text" maxlength="164" autocomplete="off" spellcheck="false" placeholder="@torvalds or Satya Nadella, Microsoft" aria-describedby="dsMode"></div>
+        <div class="input-wrap"><input class="input" id="dsInput" type="text" maxlength="254" autocomplete="off" spellcheck="false" placeholder="@torvalds, a full name or name@example.com" aria-describedby="dsMode"></div>
         <button class="btn" id="dsRun" type="button" disabled>Search</button>
         <button class="btn btn-ghost" id="dsStop" type="button" hidden>Stop</button>
       </div>
-      <p class="hint" id="dsMode">Enter a name or handle. Add a city, employer or topic after a comma.</p>
+      <p class="hint" id="dsMode">Enter a name, handle or exact email. Add context after a comma for names and handles.</p>
     </div>
     <section class="ds-access" id="dsAccess" aria-label="Deep Search access">
       <div><h2 id="dsAccessTitle">Checking Deep Search access</h2><p id="dsAccessNote">Sign in with your paid account to start.</p></div>
@@ -118,9 +118,10 @@
     <div id="dsOut" aria-label="Deep Search results" aria-busy="false"></div>
     <section class="ds-panel ds-help" aria-labelledby="dsHelp">
       <h2 id="dsHelp">How to use it</h2>
-      <ol><li>Enter a handle or full name. Add context after a comma to improve relevance.</li><li>Review the public accounts, comments and indexed pages as they arrive.</li><li>Open each source before making a connection. Continue with the search query links if a source is unavailable.</li></ol>
+      <ol><li>Enter a handle, full name or exact email you own or have permission to investigate. For names and handles, add context after a comma to improve relevance.</li><li>Review the returned public accounts, indexed pages or Google contributor profile and available reviews.</li><li>Open each source before making a connection. Check unavailable and partial-source notices; empty results do not establish absence.</li></ol>
       <details><summary>What Deep Search can find</summary><p>Handle searches ask GitHub, Hacker News, Reddit, Bluesky, mastodon.social and DEV for public accounts and recent activity, and Keybase for published account proofs. Name searches ask Wikidata, GitHub's full-name index and ORCID for candidates. Indexed-web queries cover professional pages, social profiles, public discussions, news, research, records and documents.</p></details>
       <details><summary>Instagram and other source limits</summary><p>Instagram results are indexed profiles, captions, tagged or mentioned pages and external links. Instagram comment bodies, likes and private content are unavailable. Search engines and platforms may block or rate-limit this server; unavailable sources never count as absent.</p></details>
+      <details><summary>Google contributor profiles and reviews</summary><p>Email searches use the exact email to ask the configured public Google source for a contributor profile, then collect available public Maps reviews for that contributor. Review cards can include the place, address, rating, date, text and an owner reply when returned. Coverage counts describe what the source returned and may be partial or capped. Profile edits do not establish online activity, and no returned profile or reviews does not prove that a Google account or activity does not exist.</p></details>
       <details><summary>Privacy and data handling</summary><p>Your query is processed by the website server and sent to public platforms, registries and search providers. Deep Search results are not saved to your account or cached by this feature. Downloaded reports stay on your device. Sign-in and abuse-prevention data follow our <a href="/privacy.html">privacy policy</a>. Opening a browser query link sends that query to Google.</p></details>
       <p class="hint">Deep Search is included in the paid plan and does not spend your Extended credits. Existing active paid passes qualify too. Source availability can vary.</p>
     </section>
@@ -168,7 +169,7 @@
   <script src="/assets/js/partial-results.js?v=4fbe1f16f7"></script>
   <script src="/assets/js/trust.js?v=50b0508fdc" defer></script>
   <script src="/assets/js/account.js?v=8441725357"></script>
-  <script src="/assets/js/deep-search.js?v=566144a0fe"></script>
+  <script src="/assets/js/deep-search.js?v=google-reviews-20261007"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

@@ -1,10 +1,10 @@
-"""App-compatible name/handle query plans, with no guessed identities."""
+"""Public name/handle query plans and exact-email routing, without guesses."""
 import json
 import re
 from pathlib import Path
 from urllib.parse import unquote, urlencode, urlsplit
 
-from core.validation import ValidationError, _strip, full_name
+from core.validation import ValidationError, _strip, email, full_name
 
 CATALOGUE = json.loads((Path(__file__).resolve().parents[1] / "data/deep_search_queries.json").read_text(encoding="utf-8"))
 LABELS = {
@@ -21,11 +21,16 @@ def parse_input(raw):
     subject, _, context = raw.partition(",")
     explicit_handle = subject.strip().startswith("@")
     subject = subject.strip().removeprefix("@").strip()
+    if not explicit_handle and "@" in subject:
+        subject = email(subject)
+        if context.strip():
+            raise ValidationError("Enter the email address without extra context.")
+        return {"subject": subject, "mode": "email", "context": None}
     mode = "name" if not explicit_handle and any(c.isspace() for c in subject) else "handle"
     if mode == "name":
         subject = " ".join(full_name(subject).split())
     elif not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,62}", subject):
-        raise ValidationError("Enter a full name or a handle using letters, numbers, . _ and -.")
+        raise ValidationError("Enter an email, full name or a handle using letters, numbers, . _ and -.")
     context = context.strip()
     if context and (len(context) > 80 or not re.fullmatch(r"[\w .,'-]+", context)):
         raise ValidationError("Context must be a short city, employer or topic.")
@@ -33,6 +38,8 @@ def parse_input(raw):
 
 
 def build_plan(subject, mode, context=None):
+    if mode == "email":
+        return []
     values = {"h": subject, "q": '"' + subject + '"', "at": '"@' + subject + '"'}
     plan = []
     for item in CATALOGUE[mode]:

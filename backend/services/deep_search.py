@@ -9,9 +9,54 @@ from modules.deep_search_sources import ACTIVITY_SOURCES, NAME_SOURCES, Missing,
 from modules.deep_search_web import run_plan
 
 
+def _search_email(parsed, emit, stop):
+    """Exact-email Google lookup only, with the public endpoint's projection."""
+    from services.email_public_profiles import lookup_public_profiles
+
+    subject = parsed["subject"]
+    result = {"status": "pending", **parsed, "activity": [], "accounts": [], "people": [],
+              "identity": None, "owner_links": [], "sections": [], "source_checks": [],
+              "plan": [], "notes": [], "queries_run": 0, "partial": False,
+              "google_public_profiles": {"query": {"email": subject}, "status": "pending",
+                                         "profiles": [], "sources": []}}
+    if stop.is_set():
+        return result
+    emit({"type": "progress", "phase": "Google public profile",
+          "detail": "Resolving the exact email and checking public contributor reviews.", "percent": 5})
+    emit({"type": "partial", "data": copy.deepcopy(result)})
+    if stop.is_set():
+        return result
+    try:
+        public = lookup_public_profiles(subject)
+        if (not isinstance(public, dict) or not isinstance(public.get("profiles"), list)
+                or not isinstance(public.get("sources"), list) or not isinstance(public.get("status"), str)):
+            raise ValueError("Invalid public-profile result")
+    except Exception:
+        public = {"query": {"email": subject}, "status": "unavailable", "profiles": [],
+                  "sources": [{"name": "Google public profile", "provider": "GHunt", "status": "unavailable",
+                               "reason": "The public Google source could not complete this lookup."}]}
+    result["google_public_profiles"] = public
+    result["status"] = public["status"]
+    result["partial"] = public["status"] not in ("ok", "no_match")
+    result["source_checks"] = [{"source": source.get("name", "Google public source"),
+                                "state": source.get("status", "unavailable")} for source in public["sources"]]
+    result["notes"] = [
+        "Only an exact-email public Google identity and its public contributor reviews are checked.",
+        "Unavailable, private or incomplete review collections do not prove that no reviews exist.",
+        "Profile edit dates describe profile changes and do not establish online or login activity.",
+    ]
+    if not stop.is_set():
+        emit({"type": "progress", "phase": "Google public reviews",
+              "detail": "Public Google lookup finished; source status and coverage are shown.", "percent": 98})
+        emit({"type": "partial", "data": copy.deepcopy(result)})
+    return result
+
+
 def search(parsed, emit, stop=None):
     stop = stop or threading.Event()
     subject, mode, context = parsed["subject"], parsed["mode"], parsed["context"]
+    if mode == "email":
+        return _search_email(parsed, emit, stop)
     plan = build_plan(subject, mode, context)
     result = {"status": "ok", **parsed, "activity": [], "accounts": [], "people": [], "identity": None,
               "owner_links": [], "sections": [], "source_checks": [], "plan": plan, "notes": [], "queries_run": 0}
