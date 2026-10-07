@@ -1,0 +1,67 @@
+<!--
+{
+  "title": "OSINT Tools for Journalists: Sources, Media and Verification | MyRecon",
+  "headline": "OSINT Tools for Journalists: Sources, Media and Verification",
+  "description": "A newsroom OSINT workflow for public profiles, archived pages and visual claims. Choose tools, retain sources and separate verified observations from inference.",
+  "category": "Research workflows",
+  "datePublished": "2026-10-08",
+  "dateModified": "2026-10-08",
+  "editorial_review": "2026-10-08",
+  "keywords": ["osint tools for journalists", "journalism osint", "social media verification", "public source investigation", "image verification tools"],
+  "faq": [
+    {"question": "Can a journalist identify a source from a username match?", "answer": "A username match supplies a lead, not a verified identity. Seek independent corroboration and suitable source confirmation before attribution, and keep unsupported connections out of published conclusions."},
+    {"question": "Does an archived page prove when an event happened?", "answer": "No. An archive capture records a page observed at a particular time. A displayed post date, the capture date and the date of the event are different facts that require separate verification."},
+    {"question": "Can AI replace source verification in OSINT reporting?", "answer": "No. An AI summary can organize notes, but the reporter must inspect original evidence, preserve uncertainty and check every material claim. Keep sensitive source details out of services that your newsroom has not approved."}
+  ]
+}
+-->
+<p class="lead"><strong>Quick answer:</strong> choose OSINT tools around the claim you need to verify. Public-profile search generates leads, archives provide historical observations, and image or video tools help test context. A publishable conclusion still needs original sources, corroboration and a clear record of what remains unknown.</p>
+
+<h2>Turn the story idea into verifiable questions</h2>
+<p>“Investigate this social account” is too broad to guide a newsroom check. Break it into questions such as “Did this account publish the quoted statement?”, “Was the video online before the claimed incident?” and “What independently supports the attribution?” Each requires different evidence and may have a different answer.</p>
+<p>Write the public-interest reason and the minimum information required. A public profile may expose personal details that add nothing to the story. Keep those out of the working collection unless they are necessary, and limit circulation of source identities or contact information. Use your newsroom's editorial and source-protection processes before any sensitive follow-up.</p>
+
+<h2>Tool choices for newsroom questions</h2>
+<table>
+  <caption>Match an OSINT tool to a specific reporting question</caption>
+  <thead><tr><th scope="col">Reporting question</th><th scope="col">Useful tool</th><th scope="col">Evidence to retain</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Where does this public handle appear?</th><td>MyRecon, Sherlock or Maigret.</td><td>Exact source URLs, observed handle and unresolved sources.</td></tr>
+    <tr><th scope="row">Where was this statement indexed?</th><td>Web search and direct source review.</td><td>The original page or post, rather than only its search snippet.</td></tr>
+    <tr><th scope="row">What did this website display earlier?</th><td>Wayback Machine.</td><td>Capture URL, capture time and any missing elements.</td></tr>
+    <tr><th scope="row">Is this image or clip reused?</th><td>Reverse image search and InVID-WeVerify.</td><td>Matching appearances, video frames and contextual differences.</td></tr>
+    <tr><th scope="row">What metadata exists in an original file?</th><td>ExifTool on a working copy.</td><td>Original provenance, read output and limitations.</td></tr>
+    <tr><th scope="row">Which sources support a relationship?</th><td>A source log or Maltego Graph.</td><td>Each connection's source, date and confidence basis.</td></tr>
+  </tbody>
+</table>
+<p>The official <a href="https://weverify.eu/verification-plugin/">InVID-WeVerify project page</a> describes its verification toolkit and access conditions for advanced features. <a href="https://exiftool.org/ExifTool.html">ExifTool's documentation</a> explains file metadata inspection. Neither an image match nor a metadata field is sufficient on its own to authenticate a story.</p>
+
+<h2>Use public profile search as a lead stage</h2>
+<p><a href="https://github.com/sherlock-project/sherlock">Sherlock</a> and <a href="https://github.com/soxoj/maigret">Maigret</a> provide local username research workflows. <a href="/#tool">MyRecon</a> provides browser-based public profile checks with source links and coverage context. MyRecon publishes this article; mentioning our product is a publisher recommendation, and <a href="/pricing.html">access limits</a> apply.</p>
+<p>When a handle appears on two websites, the observation is that both pages use the string. It is not yet evidence that the same person operates them. An explicit public cross-link can support a relationship, while copied photos and common names can mislead. Document the independent support for any attribution and test plausible alternatives before publication.</p>
+<p>If a source is blocked, private or login-restricted, record that boundary. Do not describe unavailable evidence as confirming your preferred theory. MyRecon does not unlock private profiles, messages or restricted content. The <a href="/guides/verify-osint-account-matches.html">account-match verification guide</a> provides a practical review sequence.</p>
+
+<h2>Verify a visual claim without guessing</h2>
+<ol>
+  <li><strong>Save the public starting address.</strong> Record the claim, uploader handle and the time you observed it.</li>
+  <li><strong>Separate the caption from the media.</strong> List what the image visibly shows and what the accompanying text asserts.</li>
+  <li><strong>Look for earlier appearances.</strong> Use reverse-image search or representative video frames to locate comparable public material.</li>
+  <li><strong>Inspect each match.</strong> Compare the scene, crop, sequence and source context. Similarity is a lead, not a final verdict.</li>
+  <li><strong>Seek corroboration.</strong> Identify independent source material that supports the relevant date, location or event.</li>
+  <li><strong>Write the supported conclusion.</strong> Explain what you verified and what the available evidence cannot resolve.</li>
+</ol>
+<p>For example, locating an earlier appearance of the same clip can contradict a claim that it was filmed today. It does not automatically establish the original filming location, author or date. Keep those as separate questions rather than expanding one finding into several unsupported ones.</p>
+
+<h2>Keep observation, inference and attribution separate</h2>
+<p>A useful source log records the URL, check time and time zone, observed text, relevant capture or file, verification action and limitation. Preserve a clear difference between “the page displayed this handle” and “the account is operated by this person.” Give an editor enough context to reproduce the material check without a large unfiltered data dump.</p>
+<p>The <a href="https://help.archive.org/help/using-the-wayback-machine/">Internet Archive's help</a> explains that captures can be incomplete. Record both the captured page's displayed date and the archive capture time. If a page changes after you inspect it, state which version your finding describes. See <a href="/guides/public-profile-evidence-logging.html">evidence logging</a> and <a href="/guides/protect-researcher-notes.html">protecting research notes</a> for practical record habits.</p>
+
+<h2>Frequently asked questions</h2>
+<h3>Can a journalist identify a source from a username match?</h3>
+<p>A username match supplies a lead, not a verified identity. Seek independent corroboration and suitable source confirmation before attribution, and keep unsupported connections out of published conclusions.</p>
+<h3>Does an archived page prove when an event happened?</h3>
+<p>No. An archive capture records a page observed at a particular time. A displayed post date, the capture date and the date of the event are different facts that require separate verification.</p>
+<h3>Can AI replace source verification in OSINT reporting?</h3>
+<p>No. An AI summary can organize notes, but the reporter must inspect original evidence, preserve uncertainty and check every material claim. Keep sensitive source details out of services that your newsroom has not approved.</p>
+
+<p>Official sources were reviewed on 8 October 2026. <a href="/#tool">Explore public username leads in MyRecon</a> or read the <a href="/blog/social-media-osint-tools.html">social media research workflow</a> before starting a defined review.</p>

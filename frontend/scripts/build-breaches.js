@@ -33,6 +33,7 @@
 const fs = require("fs");
 const path = require("path");
 const { breachStory, unknownMotive } = require('./breach-story');
+const { attribute, toUrlPath, fileForUrl } = require('./build-sitemap');
 
 const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "breaches");
@@ -739,7 +740,33 @@ ${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${
   );
 }
 
-function index(items) {
+function earlierArchiveEntries(items, directory = OUT_DIR, root = ROOT) {
+  if (!fs.existsSync(directory)) return [];
+  const current = new Set(items.map(item => `/breaches/${slug(item.Name)}.html`));
+  const earlier = new Map();
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.html') || entry.name === 'index.html' || entry.name.startsWith('.')) continue;
+    const file = path.join(directory, entry.name);
+    const html = fs.readFileSync(file, 'utf8');
+    // Only full public articles belong here; source fragments and case-file
+    // subdirectories have their own discovery paths.
+    if (!/<!doctype\s+html\b/i.test(html) || !/<title\b[^>]*>[^<]+<\/title\s*>/i.test(html) || !/<article\b/i.test(html)) continue;
+    const blocked = [...html.matchAll(/<meta\b[^>]*>/gi)].some(([tag]) =>
+      (/^(?:robots|googlebot|bingbot|applebot)$/i.test(attribute(tag, 'name') || '') && /\b(?:noindex|none)\b/i.test(attribute(tag, 'content') || '')) ||
+      /^refresh$/i.test(attribute(tag, 'http-equiv') || ''));
+    if (blocked) continue;
+    const url = toUrlPath(file, html, root);
+    if (!url || !/^\/breaches\/[a-z0-9-]+\.html$/.test(url) || current.has(url) || fileForUrl(url, root) !== file) continue;
+    const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/i)?.[1];
+    if (!heading) continue;
+    const entities = { '&amp;': '&', '&quot;': '"', '&#39;': "'", '&apos;': "'", '&lt;': '<', '&gt;': '>' };
+    const title = heading.replace(/<[^>]+>/g, '').replace(/&(?:amp|quot|apos|lt|gt|#39);/gi, entity => entities[entity.toLowerCase()]).replace(/\s+/g, ' ').trim();
+    if (title) earlier.set(url, { url, title });
+  }
+  return [...earlier.values()].sort((a, b) => a.title.localeCompare(b.title) || a.url.localeCompare(b.url));
+}
+
+function index(items, earlier = earlierArchiveEntries(items)) {
   const total = items.reduce((s, b) => s + (b.PwnCount || 0), 0);
   const byYear = new Map();
   items.forEach((b) => {
@@ -779,7 +806,7 @@ function index(items) {
 
       <div class="bx-summary">
         <div class="bx-stat"><b>${num(total)}</b><span>Accounts exposed</span></div>
-        <div class="bx-stat"><b>${items.length}</b><span>Breaches in the archive</span></div>
+        <div class="bx-stat"><b>${items.length}</b><span>Breaches in the current feed</span></div>
         <div class="bx-stat"><b>${years.length}</b><span>Years covered</span></div>
       </div>
 
@@ -838,6 +865,15 @@ ${items
   .join("\n")}
       </div>
 
+${earlier.length ? `      <section aria-labelledby="earlierArchiveHeading">
+        <h2 class="bx-h2" id="earlierArchiveHeading">Earlier archive entries</h2>
+        <p>These articles were published in earlier versions of the archive and remain available for context. They are outside the current feed and are not included in the totals above.</p>
+        <ul>
+${earlier.map(entry => `          <li><a href="${esc(entry.url)}">${esc(entry.title)}</a></li>`).join('\n')}
+        </ul>
+      </section>
+
+` : ''}
       <p class="bx-method">Breach records come from <a href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a> and are used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>. Severity scoring and the analysis of what each exposed field means are MyRecon's own, computed from the record so that every claim traces back to a value in it. Editorial commentary is marked as such on each article, and the long-form reporting lives in the <a href="/breaches/case-files/">case files</a>, where every page cites its sources.</p>
     </div>
   </main>` +
@@ -1011,9 +1047,11 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+if (require.main === module) main().catch((err) => {
   console.error(`[breaches] ${err.message}`);
   // A failed fetch must not take the whole site build down, the previously
   // generated pages are still on disk and still correct.
   process.exit(fs.existsSync(path.join(OUT_DIR, "index.html")) ? 0 : 1);
 });
+
+module.exports = { earlierArchiveEntries, index };

@@ -1,0 +1,65 @@
+<!--
+{
+  "title": "Best Username Search Tools: Choose by Evidence and Workflow | MyRecon",
+  "headline": "Best Username Search Tools: Choose by Evidence and Workflow",
+  "description": "Choose a username search tool for browser checks, local workflows or enriched reports. Learn how to compare coverage, false positives and unresolved results.",
+  "category": "Username search",
+  "datePublished": "2026-10-08",
+  "dateModified": "2026-10-08",
+  "editorial_review": "2026-10-08",
+  "keywords": ["best username search tools", "username search", "username lookup", "social media username search", "find accounts by username"],
+  "faq": [
+    {"question": "Does a username search prove that two profiles belong to one person?", "answer": "No. A handle may be reused by unrelated people, copied by an impersonator or reassigned. Confirm relationships with independent public evidence, and confirm your own account ownership through the platform."},
+    {"question": "Is a username availability checker the same as an OSINT search?", "answer": "No. An availability checker asks whether a name can be registered on a service. An OSINT username search looks for public profile evidence. A reserved or unavailable name does not necessarily represent an existing public account."},
+    {"question": "Why do username search tools disagree?", "answer": "They may check different sites, use different detection rules or encounter different blocks and timeouts. Compare exact profile addresses and original source evidence before treating a difference as an accuracy result."}
+  ]
+}
+-->
+<p class="lead"><strong>Quick answer:</strong> choose a username search tool by the evidence it exposes and the workflow you can maintain. MyRecon is a browser option, Sherlock fits local handle checks, and Maigret supports enriched research reports. No single result count determines which is best for your task.</p>
+
+<h2>Define what you mean by username search</h2>
+<p>A username lookup starts with a handle, such as one you use on a community forum, and searches for public pages using the same string. A social media username search may return candidate profiles, unrelated name collisions, outdated pages or inaccessible sources. It cannot tell you who controls each account without additional evidence.</p>
+<p>First decide whether you want to find your own old accounts, review a brand's public handles or investigate a specific public-source question. A name availability checker answers a different question: whether registration is allowed. Services may reserve names, suspend accounts or restrict registration without displaying a public profile. Do not count all those outcomes as found accounts.</p>
+
+<h2>Match the tool to the work</h2>
+<p><strong>Disclosure:</strong> MyRecon publishes this comparison. We reviewed the official documentation linked here on 8 October 2026; these are workflow choices, not independent performance awards.</p>
+<table>
+  <caption>Username tool choices and the tradeoffs to inspect</caption>
+  <thead><tr><th scope="col">Option</th><th scope="col">Useful when</th><th scope="col">Check before relying on it</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>You want public profile leads in a browser, with coverage context and available CSV/JSON exports.</td><td>Guest/sign-in/plan limits, unresolved sources and the actual profile pages.</td></tr>
+    <tr><th scope="row">Sherlock</th><td>You can run a local command-line workflow and need supported-site handle checks.</td><td>Your installed version, site rules, output settings and returned source URLs.</td></tr>
+    <tr><th scope="row">Maigret</th><td>You need page enrichment and configurable reporting for an authorized task.</td><td>The selected site scope, recursive searches and the provenance of extracted fields.</td></tr>
+    <tr><th scope="row">Manual source search</th><td>You have a few priority platforms or want to verify an automated lead.</td><td>Whether the page is a real profile, a login screen or a generic placeholder.</td></tr>
+  </tbody>
+</table>
+<p><a href="https://github.com/sherlock-project/sherlock">Sherlock's repository</a> documents its local checks and output options. <a href="https://maigret.readthedocs.io/en/latest/usage-examples.html">Maigret's examples</a> describe its research and report workflows. MyRecon's <a href="/pricing.html">access page</a> explains current allowances. Choose the option that lets you retain source links and revisit doubtful findings.</p>
+
+<h2>Use a small evaluation set you understand</h2>
+<p>Before a larger self-audit, make a private checklist of a few accounts you control and can currently open. Note exact handle spelling, the canonical profile address and what a logged-out visitor can see. Include an authorized case with a renamed or deleted profile if you have one. Do not assume a random string is definitely unused: a real person may already use it.</p>
+<p>Run the same input under comparable conditions. Record tool version or report date, sites selected, timeouts, account access and network conditions. Deduplicate the same account namespace and canonical address before counting. Two links to the same account are not two findings, and one tool's larger catalogue does not demonstrate better accuracy.</p>
+<p>Use your source checklist to inspect disagreements individually. If you cannot obtain a definitive reference answer, leave that case unscored. A useful evaluation reports unknowns along with supported and contradicted leads, rather than quietly dropping difficult platforms.</p>
+
+<h2>Read the result page before drawing a conclusion</h2>
+<ol>
+  <li><strong>Open the linked source.</strong> Confirm the address leads to a profile for the requested handle, rather than a homepage or search screen.</li>
+  <li><strong>Identify positive evidence.</strong> Record the account-specific page or official source response that supports existence.</li>
+  <li><strong>Separate existence from ownership.</strong> A profile can exist while belonging to someone else. For your accounts, confirm control through the service itself.</li>
+  <li><strong>Keep unresolved checks.</strong> A timeout, challenge, private page or login requirement limits what the tool observed.</li>
+  <li><strong>Choose the next action.</strong> Secure or clean up an account only after confirming it is yours.</li>
+</ol>
+<p>MyRecon's full username workflow exposes an unverified group when responses do not establish a real account or an explicit absence. Treat that as work left to assess, not a hidden success. The <a href="/guides/why-username-checkers-report-fake-accounts.html">false-positive guide</a> explains why a generic success response can mislead automated tools.</p>
+
+<h2>Example: an old personal handle</h2>
+<p>Suppose your old handle appears on a code-hosting profile, a music page and a social platform that requires sign-in. You recognize the code profile and can sign in, so it becomes a confirmed account you control. The music page has the same handle but no independent connection, so ownership remains unconfirmed. The social platform's login screen stays unresolved. Your cleanup list contains one confirmed account, not three.</p>
+<p>Keep the query, source URL, check time, observation and chosen action in a private record. Exported reports can contain personal information, so share only what a collaborator needs. See <a href="/guides/public-profile-evidence-logging.html">public profile evidence logging</a> for a fuller record format.</p>
+
+<h2>Frequently asked questions</h2>
+<h3>Does a username search prove that two profiles belong to one person?</h3>
+<p>No. A handle may be reused by unrelated people, copied by an impersonator or reassigned. Confirm relationships with independent public evidence, and confirm your own account ownership through the platform.</p>
+<h3>Is a username availability checker the same as an OSINT search?</h3>
+<p>No. An availability checker asks whether a name can be registered on a service. An OSINT username search looks for public profile evidence. A reserved or unavailable name does not necessarily represent an existing public account.</p>
+<h3>Why do username search tools disagree?</h3>
+<p>They may check different sites, use different detection rules or encounter different blocks and timeouts. Compare exact profile addresses and original source evidence before treating a difference as an accuracy result.</p>
+
+<p><a href="/#tool">Check a username you control with MyRecon</a>, compare the <a href="/blog/sherlock-vs-maigret-vs-myrecon.html">three workflows in detail</a>, or follow the <a href="/blog/find-your-own-old-accounts.html">old-account discovery checklist</a>.</p>

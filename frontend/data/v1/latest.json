@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-10-02",
+  "generated": "2026-10-07",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,6 +14,163 @@
   },
   "count": 10,
   "breaches": [
+    {
+      "name": "DoubleCounter",
+      "title": "Double Counter",
+      "slug": "doublecounter",
+      "url": "https://www.myrecon.xyz/breaches/doublecounter.html",
+      "domain": "doublecounter.gg",
+      "breach_date": "2026-10-04",
+      "added_date": "2026-10-07T05:42:24Z",
+      "accounts": 274922,
+      "data_classes": [
+        "Email addresses",
+        "Geographic locations",
+        "Names",
+        "Usernames"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/DoubleCounter.png",
+      "severity": 39,
+      "band": "Moderate",
+      "data_provider": null,
+      "summary": "In October 2026, the Discord server protection service Double Counter suffered a data breach attributed to a vulnerability in the Metabase analytics tool. In its disclosure notice, Double Counter advised that attackers gained access to a subset of its data. A corpus of data was subsequently published publicly and contained 275k unique email addresses and Discord usernames. A small number of…",
+      "story": {
+        "background": [
+          "In October 2026, the Discord server protection service Double Counter suffered a data breach attributed to a vulnerability in the Metabase analytics tool . In its disclosure notice, Double Counter advised that attackers gained access to a subset of its data. A corpus of data was subsequently published publicly and contained 275k unique email addresses and Discord usernames.",
+          "A small number of records belonging to paying subscribers whose purchases were processed via Stripe were also present and included names, countries and postcodes."
+        ],
+        "how": [
+          "In October 2026, the Discord server protection service Double Counter suffered a data breach attributed to a vulnerability in the Metabase analytics tool ."
+        ],
+        "motive": [],
+        "outcome": [
+          "274,922 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Geographic locations, Names, Usernames."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "DoubleCounter",
+          "breach_date": "2026-10-04"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Geographic locations",
+          "why": "Where the account was used, which narrows a person down further than most people expect."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Usernames",
+          "why": "A handle links this account to every other place the same handle is used."
+        }
+      ],
+      "actions": [
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
+    },
+    {
+      "name": "AngelOne",
+      "title": "Angel One",
+      "slug": "angelone",
+      "url": "https://www.myrecon.xyz/breaches/angelone.html",
+      "domain": "angelone.in",
+      "breach_date": "2023-04-01",
+      "added_date": "2026-10-07T03:45:31Z",
+      "accounts": 6765054,
+      "data_classes": [
+        "Bank account numbers",
+        "Dates of birth",
+        "Email addresses",
+        "Financial investments",
+        "Government issued IDs",
+        "Names",
+        "Phone numbers",
+        "Physical addresses"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/AngelOne.png",
+      "severity": 70,
+      "band": "Severe",
+      "data_provider": null,
+      "summary": "In July 2024, the Indian stock brokerage firm Angel One confirmed that data leaked online related to a breach that occurred in April 2023. The leaked data included 7.9M user records containing 6.8M unique email addresses, along with names, physical addresses, phone numbers, bank account numbers, Permanent Account Numbers (PANs) and portfolio holdings. Angel One emphasised that the breach \"has no…",
+      "story": {
+        "background": [
+          "In July 2024, the Indian stock brokerage firm Angel One confirmed that data leaked online related to a breach that occurred in April 2023 . The leaked data included 7.9M user records containing 6.8M unique email addresses, along with names, physical addresses, phone numbers, bank account numbers, Permanent Account Numbers (PANs) and portfolio holdings. Angel One emphasised that the breach \"has no impact on client securities, funds, or credentials\"."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "6,765,054 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Bank account numbers, Dates of birth, Email addresses, Financial investments, Government issued IDs, Names, Phone numbers, Physical addresses."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "AngelOne",
+          "breach_date": "2023-04-01"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Government issued IDs",
+          "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+        },
+        {
+          "name": "Bank account numbers",
+          "why": "Enables direct-debit fraud and gives a caller the detail needed to sound like the bank."
+        },
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Financial investments",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Check statements for the months after the breach date and ask your bank for a replacement card if the number was full.",
+        "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": "That is about 25% of the population of Australia."
+    },
     {
       "name": "Medela",
       "title": "Medela",
@@ -760,175 +917,6 @@
       "actions": [
         "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
         "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": "That is roughly everyone in Australia."
-    },
-    {
-      "name": "McGrawHill",
-      "title": "McGraw Hill",
-      "slug": "mcgrawhill",
-      "url": "https://www.myrecon.xyz/breaches/mcgrawhill.html",
-      "domain": "mheducation.com",
-      "breach_date": "2026-04-10",
-      "added_date": "2026-04-16T01:31:14Z",
-      "accounts": 13500136,
-      "data_classes": [
-        "Email addresses",
-        "Names",
-        "Phone numbers",
-        "Physical addresses"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/McGrawHill.png",
-      "severity": 67,
-      "band": "Severe",
-      "data_provider": null,
-      "summary": "In April 2026, education company McGraw Hill confirmed a data breach following an extortion attempt. Attributed to a Salesforce misconfiguration, the company stated the incident exposed \"a limited set of data from a webpage hosted by Salesforce on its platform\". More than 100GB of data was later publicly distributed, containing 13.5M unique email addresses across multiple files, with additional…",
-      "story": {
-        "background": [
-          "In April 2026, education company McGraw Hill confirmed a data breach following an extortion attempt . Attributed to a Salesforce misconfiguration, the company stated the incident exposed \"a limited set of data from a webpage hosted by Salesforce on its platform\".",
-          "More than 100GB of data was later publicly distributed, containing 13.5M unique email addresses across multiple files, with additional fields such as name, physical address and phone number appearing inconsistently across some records."
-        ],
-        "how": [
-          "Attributed to a Salesforce misconfiguration, the company stated the incident exposed \"a limited set of data from a webpage hosted by Salesforce on its platform\"."
-        ],
-        "motive": [
-          "In April 2026, education company McGraw Hill confirmed a data breach following an extortion attempt ."
-        ],
-        "outcome": [
-          "13,500,136 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Names, Phone numbers, Physical addresses."
-        ],
-        "editorial": [
-          "Read the disclosure language and the outcome side by side. The company described \"a limited set of data from a webpage hosted by Salesforce on its platform\". More than 100GB was subsequently published, carrying 13.5 million distinct email addresses.",
-          "Both statements can be technically accurate at the same time, one describes the surface that was exposed, the other describes what came through it, and that is exactly why a description of the entry point is not a measure of the damage. The other thing worth noticing is whose data this is.",
-          "Students and instructors did not choose McGraw Hill; an institution chose it for them, and the record that ended up in a 100GB archive was created as a condition of taking a course. That pattern runs through most education technology breaches, and it is why \"stop using the service\" is advice that does not apply here."
-        ]
-      },
-      "check_targets": [
-        {
-          "name": "McGrawHill",
-          "breach_date": "2026-04-10"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": "That is about 50% of the population of Australia."
-    },
-    {
-      "name": "CanadianTire",
-      "title": "Canadian Tire",
-      "slug": "canadiantire",
-      "url": "https://www.myrecon.xyz/breaches/canadiantire.html",
-      "domain": "canadiantire.ca",
-      "breach_date": "2025-10-02",
-      "added_date": "2026-02-25T06:53:25Z",
-      "accounts": 38306562,
-      "data_classes": [
-        "Dates of birth",
-        "Email addresses",
-        "Genders",
-        "Names",
-        "Partial credit card data",
-        "Passwords",
-        "Phone numbers",
-        "Physical addresses"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/CanadianTire.png",
-      "severity": 77,
-      "band": "Severe",
-      "data_provider": null,
-      "summary": "In October 2025, retailer Canadian Tire was the victim of a data breach that exposed almost 42M records. The data contained 38M unique email addresses along with names, phone numbers and physical addresses. Passwords were stored as PBKDF2 hashes and for a subset of records, dates of birth and partial credit card data were also included (card type, expiry and masked card number). In its disclosure…",
-      "story": {
-        "background": [
-          "In October 2025, retailer Canadian Tire was the victim of a data breach that exposed almost 42M records. The data contained 38M unique email addresses along with names, phone numbers and physical addresses. Passwords were stored as PBKDF2 hashes and for a subset of records, dates of birth and partial credit card data were also included (card type, expiry and masked card number).",
-          "In its disclosure notice , Canadian Tire advised that the incident did not impact bank account information or loyalty program data."
-        ],
-        "how": [
-          "The published account does not explain the exact way the data was obtained."
-        ],
-        "motive": [],
-        "outcome": [
-          "38,306,562 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Dates of birth, Email addresses, Genders, Names, Partial credit card data, Passwords, Phone numbers, Physical addresses."
-        ],
-        "editorial": [
-          "The passwords in this one were stored as PBKDF2 hashes, which is the thing most companies in this archive got wrong and Canadian Tire got right. It is worth saying plainly, because breach coverage rarely does: a strong, slow hash means the password field is the part of this file least likely to hurt you. The part that will is the combination underneath it.",
-          "Name, date of birth, address, phone number and the card type, expiry and last four digits, all in one row. The disclosure notes that bank account information was not affected, which is true and beside the point, nobody defrauds a retail customer by knowing their account number.",
-          "They do it by calling with the last four digits of the card, the correct expiry, and the customer's own date of birth, which is a script this file writes for them. Masked card data is classified as low sensitivity because it cannot be used to transact. It can be used to be believed, and that is the attack that follows a retail breach."
-        ]
-      },
-      "check_targets": [
-        {
-          "name": "CanadianTire",
-          "breach_date": "2025-10-02"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Passwords",
-          "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
-        },
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Dates of birth",
-          "why": "One of the three things call centres ask to verify identity, and it never changes."
-        },
-        {
-          "name": "Partial credit card data",
-          "why": "Not enough to spend, but enough to convince a victim that a caller is genuinely from their bank."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        },
-        {
-          "name": "Genders",
-          "why": "Small on its own; useful to anyone assembling a fuller profile."
-        }
-      ],
-      "actions": [
-        "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
         "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],

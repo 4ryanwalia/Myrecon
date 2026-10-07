@@ -1,0 +1,66 @@
+<!--
+{
+  "title": "Free OSINT Tools for Beginners: A Practical First Workflow | MyRecon",
+  "headline": "Free OSINT Tools for Beginners: A Practical First Workflow",
+  "description": "Build a free beginner OSINT workflow with public web search, username checks, archives and file metadata. Learn what free access includes and how to verify leads.",
+  "category": "OSINT beginners",
+  "datePublished": "2026-10-08",
+  "dateModified": "2026-10-08",
+  "editorial_review": "2026-10-08",
+  "keywords": ["free osint tools", "osint tools for beginners", "free username search", "osint tutorial", "open source intelligence tools"],
+  "faq": [
+    {"question": "Can I learn OSINT without paying for tools?", "answer": "Yes. Practice with your own public accounts, ordinary web search, available web archives and files you own. Local open-source tools can add automation, but you still need to review source evidence."},
+    {"question": "Is every MyRecon result free to view?", "answer": "No. MyRecon offers guest previews, while fuller results and other access depend on sign-in, allowances and the current plan. Check the live interface and pricing page before choosing a workflow."},
+    {"question": "What should I record when a free tool finds nothing?", "answer": "Record the tool, query, source, check time and any block or error. No returned lead is not proof of absence, especially when the source was inaccessible or the platform was outside the tool's scope."}
+  ]
+}
+-->
+<p class="lead"><strong>Quick answer:</strong> a beginner can start OSINT with a browser, a private source log and a question about their own public footprint. Add free local tools only when they solve a specific gap. Free software, free previews and free external data are different things.</p>
+
+<h2>Choose a first exercise with a known answer</h2>
+<p>Audit one handle you currently use. List two or three public profiles you control, then write the question: “Which of my known profiles can a public visitor discover from this handle?” This gives you something to check against. Avoid starting with a stranger's name or gathering a large collection that you cannot validate.</p>
+<p>Create a private note with columns for the query, profile URL, check time, observation and next action. Keep passwords, recovery codes and session cookies out of it. Your first goal is to make a small, accurate record, not to maximize the number of rows. The <a href="/guides/what-is-osint.html">OSINT introduction</a> explains how public information becomes a supported finding.</p>
+
+<h2>A free starter toolkit</h2>
+<table>
+  <caption>What each beginner option provides and where free access stops</caption>
+  <thead><tr><th scope="col">Option</th><th scope="col">First use</th><th scope="col">Access or setup limit</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Browser and web search</th><td>Open known pages and discover indexed mentions.</td><td>Results are incomplete; sites may restrict viewing.</td></tr>
+    <tr><th scope="row">OSINT Framework</th><td>Find a resource for a specific question.</td><td>Linked services have their own registration and cost rules.</td></tr>
+    <tr><th scope="row">MyRecon guest preview</th><td>Try a public username check in a browser.</td><td>Fuller access depends on sign-in, allowances and plan.</td></tr>
+    <tr><th scope="row">Sherlock</th><td>Run local username checks.</td><td>Install and maintain the software; supported sites can block responses.</td></tr>
+    <tr><th scope="row">Maigret</th><td>Organize a local username research report.</td><td>Check scope and report settings before adding follow-up searches.</td></tr>
+    <tr><th scope="row">Wayback Machine</th><td>Inspect an available historical page capture.</td><td>A page or its assets may never have been archived.</td></tr>
+    <tr><th scope="row">ExifTool</th><td>Read metadata from a file you own.</td><td>Installation is required; the file may contain no useful metadata.</td></tr>
+  </tbody>
+</table>
+<p>The <a href="https://osintframework.com/">OSINT Framework notes</a> distinguish free resources from registration or paid extras. The official <a href="https://github.com/sherlock-project/sherlock">Sherlock</a> and <a href="https://github.com/soxoj/maigret">Maigret</a> repositories describe local software, not guaranteed access to third-party platforms. MyRecon publishes this guide and provides a <a href="/#tool">guest preview</a>; read the <a href="/pricing.html">current access conditions</a>.</p>
+
+<h2>Complete one exercise in five steps</h2>
+<ol>
+  <li><strong>Inspect known profiles first.</strong> Open the exact public URLs of the accounts you control. Note what a visitor can actually see.</li>
+  <li><strong>Search the handle.</strong> Use web search and, if useful, one username tool. Do not run many tools merely to accumulate repeated links.</li>
+  <li><strong>Review candidates.</strong> Open each result, compare its exact handle and distinguish the profile from an indexed mention.</li>
+  <li><strong>Label the outcome.</strong> Use supported, contradicted or unresolved for account existence. Track ownership separately.</li>
+  <li><strong>Take a useful action.</strong> Update an old bio, remove a public link or secure an account only after confirming control.</li>
+</ol>
+<p>A possible result is that your forum profile is visible, your portfolio appears in search and another platform presents a login prompt. That is two accessible observations plus one unresolved check. It is not evidence that the restricted account disappeared. This distinction is the main skill to learn before automating larger searches.</p>
+
+<h2>Add archives and metadata only when relevant</h2>
+<p>If your question concerns an old version of a page, consult the <a href="https://help.archive.org/help/using-the-wayback-machine/">Wayback Machine help</a> and look for an available capture. Record the archive address and capture date separately from the current page. Missing captures are gaps; they cannot tell you that a page never existed.</p>
+<p>For an original image you own, <a href="https://exiftool.org/exiftool_pod.html">ExifTool's read workflow</a> can reveal embedded metadata. Work on a copy and preserve the original. If a timestamp or coordinate appears, compare it with information you already know. If metadata is absent, do not invent it from a screenshot or assume that absence proves editing.</p>
+
+<h2>Avoid three expensive beginner mistakes</h2>
+<p><strong>Buying reach before learning validation.</strong> More data sources increase review work. Find out which gap a paid tool would fill before spending money. <strong>Treating output as identity.</strong> The same string on multiple websites can belong to unrelated people. <strong>Ignoring unknowns.</strong> A tool can return a clean-looking report while important sources remain inaccessible.</p>
+<p>When a check times out or shows a challenge, record the reason and use an ordinary permitted source view if one is available. Do not try repeated automated requests to force a result. You can still finish the exercise with a precise limitation and a short list of accounts you confirmed. Our <a href="/guides/verify-an-osint-finding.html">verification guide</a> shows how to state that boundary clearly.</p>
+
+<h2>Frequently asked questions</h2>
+<h3>Can I learn OSINT without paying for tools?</h3>
+<p>Yes. Practice with your own public accounts, ordinary web search, available web archives and files you own. Local open-source tools can add automation, but you still need to review source evidence.</p>
+<h3>Is every MyRecon result free to view?</h3>
+<p>No. MyRecon offers guest previews, while fuller results and other access depend on sign-in, allowances and the current plan. Check the live interface and pricing page before choosing a workflow.</p>
+<h3>What should I record when a free tool finds nothing?</h3>
+<p>Record the tool, query, source, check time and any block or error. No returned lead is not proof of absence, especially when the source was inaccessible or the platform was outside the tool's scope.</p>
+
+<p>Official sources were reviewed on 8 October 2026. <a href="/#tool">Try a username self-audit</a>, then turn confirmed findings into actions with the <a href="/blog/own-footprint-audit-checklist.html">personal footprint checklist</a>.</p>

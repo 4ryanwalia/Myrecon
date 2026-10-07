@@ -12,6 +12,7 @@ const questions = [
   ['Is the username checker free?', 'MyRecon offers free guest previews. Sign in to access the results available to your account. Paid plans add features such as Deep Search and Extended scans; check the current pricing page for limits.'],
   ['Can I search every social media platform?', 'No. MyRecon checks a supported catalogue of more than 500 platforms, not every website. Login walls, anti-bot controls, timeouts and platform changes can leave a check unknown.'],
   ['How do I find my old accounts by username?', 'Search handles you remember using, then open each candidate profile and compare it with your own records. Use saved passwords, signup emails and the official account recovery process to confirm ownership.'],
+  ['Can I use MyRecon for Instagram username search?', 'The supported catalogue includes Instagram public-profile checks. Login walls and platform restrictions can leave a result unknown. MyRecon cannot access private Instagram posts or messages; inspect the official profile before relying on a match.'],
 ];
 const body = `<main id="main" class="container prose discovery-page">
   <nav aria-label="Breadcrumb"><a href="/">MyRecon</a> / Username checker</nav>
@@ -30,9 +31,9 @@ const body = `<main id="main" class="container prose discovery-page">
   <p>Platform rules and public visibility differ. Use the relevant guide to understand what can be checked.</p>
   <ul><li><a href="/find/instagram-account">Instagram username lookup</a></li><li><a href="/find/tiktok-profile">TikTok username lookup</a></li><li><a href="/find/github-profile">GitHub profile lookup</a></li><li><a href="/find/reddit-activity">Reddit username lookup</a></li><li><a href="/find/">All platform lookup guides</a></li></ul></section>
   <section><h2>Review your digital footprint</h2><p>Start with usernames you own, record the public profiles you recognize and review what each profile exposes. A username scan is one part of an audit: breach exposure, old accounts and profile visibility need separate checks.</p>
-  <ul><li><a href="/blog/find-your-own-old-accounts.html">Find your own old social media accounts</a></li><li><a href="/guides/check-email-data-breach.html">Check whether your email appeared in a data breach</a></li><li><a href="/blog/own-footprint-audit-checklist.html">Use a digital footprint audit checklist</a></li><li><a href="/username-sweep-vs-deep-search.html">Compare a username sweep with Deep Search</a></li><li><a href="/vs/">Compare MyRecon with other OSINT tools</a></li></ul></section>
+  <ul><li><a href="/blog/instagram-username-search.html">Search an Instagram username and review the public profile</a></li><li><a href="/blog/social-media-username-search.html">Search social media usernames across platforms</a></li><li><a href="/blog/reverse-username-search.html">Understand reverse username search and evidence limits</a></li><li><a href="/blog/find-your-own-old-accounts.html">Find your own old social media accounts</a></li><li><a href="/guides/check-email-data-breach.html">Check whether your email appeared in a data breach</a></li><li><a href="/blog/digital-footprint-checker.html">Use a digital footprint checker for your own accounts</a></li><li><a href="/username-sweep-vs-deep-search.html">Compare a username sweep with Deep Search</a></li><li><a href="/blog/best-username-search-tools.html">Compare username search tools</a></li></ul></section>
   <section><h2>Username checker questions</h2><div class="faq">${questions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div><p><a href="/pricing">Current plans and limits</a> · <a href="/privacy.html">Privacy and data handling</a></p></section>
-  <section><h2>Evidence and responsible use</h2><p>MyRecon publishes a <a href="/#benchmarks">recorded username comparison</a> with methodology and uncertainty. A single case study does not establish overall accuracy. Use public-source checks for your own accounts and authorized research, following the <a href="/terms.html">terms of use</a>.</p><p>Reviewed for this release: October 1, 2026.</p></section>
+  <section><h2>Evidence and responsible use</h2><p>MyRecon publishes a <a href="/#benchmarks">recorded username comparison</a> with methodology and uncertainty. A single case study does not establish overall accuracy. Use public-source checks for your own accounts and authorized research, following the <a href="/terms.html">terms of use</a>.</p><p>Reviewed for this release: October 8, 2026.</p></section>
 </main>`;
 let html = fs.readFileSync(path.join(root, 'about.html'), 'utf8');
 html = html.replace(/<title>.*?<\/title>/s, `<title>${title.replace(/&/g, '&amp;')}</title>`);
@@ -41,11 +42,12 @@ html = html.replace(/(<meta\b[^>]*(?:name="twitter:title"|property="og:title")[^
 html = html.replace(/https:\/\/www\.myrecon\.xyz\/about\.html/g, url);
 html = html.replace(/<script\b[^>]*type="application\/ld\+json"[^>]*>.*?<\/script>/gs, '');
 const graph = { '@context': 'https://schema.org', '@graph': [
-  { '@type': 'WebPage', '@id': `${url}#page`, url, name: title, description, dateModified: '2026-10-01', inLanguage: 'en', isPartOf: { '@id': `${site}/#website` }, publisher: { '@id': `${site}/#organization` } },
+  { '@type': 'WebPage', '@id': `${url}#page`, url, name: title, description, dateModified: '2026-10-08', inLanguage: 'en', isPartOf: { '@id': `${site}/#website` }, publisher: { '@id': `${site}/#organization` } },
   { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'MyRecon', item: `${site}/` }, { '@type': 'ListItem', position: 2, name: 'Username checker', item: url }] },
   { '@type': 'FAQPage', mainEntity: questions.map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
 ] };
 html = html.replace('</head>', `<link rel="stylesheet" href="/assets/css/discovery.css">\n<script type="application/ld+json">${JSON.stringify(graph).replace(/</g, '\\u003c')}</script>\n</head>`);
 html = html.replace(/<main\b[^>]*>.*?<\/main>/s, body);
+html = html.replace(/(<meta name="robots" content=")[^"]+/, '$1index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
 fs.writeFileSync(path.join(root, 'username-checker.html'), html);
 console.log('[discovery] Built username-checker.html');

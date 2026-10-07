@@ -9,6 +9,7 @@ const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(
 const GROUPS = [
   ["Products", [
     ["Username search", "/#tool"], ["Features", "/features.html"], ["Android app", "/app.html"],
+    ["Username checker", "/username-checker.html"],
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [
@@ -16,6 +17,7 @@ const GROUPS = [
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [
+    ["Top 10 OSINT tools", "/blog/top-10-osint-tools.html"],
     ["MyRecon vs Sherlock", "/vs/sherlock"],
     ["Choose a research workflow", "/vs/"],
   ]],

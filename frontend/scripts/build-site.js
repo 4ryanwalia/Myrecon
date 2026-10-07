@@ -32,10 +32,13 @@ function changedHtmlPaths(before, after) {
 
 function latestFrontendCommitDate() {
   try {
-    const date = execFileSync('git', ['log', '-1', '--format=%cs', '--', 'frontend'], {
+    const timestamp = execFileSync('git', ['log', '-1', '--format=%ct', '--', 'frontend'], {
       cwd: path.resolve(ROOT, '..'), encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
     }).trim();
-    return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : '';
+    if (!/^\d+$/.test(timestamp)) return '';
+    const parts = new Intl.DateTimeFormat('en', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' })
+      .formatToParts(new Date(Number(timestamp) * 1000));
+    return ['year', 'month', 'day'].map(type => parts.find(part => part.type === type).value).join('-');
   } catch {
     return '';
   }
@@ -48,6 +51,7 @@ const scripts = [
   'build-data-api.js',
   'build-seo-pages.js',
   'build-blog.js',
+  'build-llms.js',
   'enhance-content-pages.js',
   'enhance-site-footer.js',
   'build-discovery-pages.js',

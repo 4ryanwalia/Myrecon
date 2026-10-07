@@ -23,6 +23,61 @@ const esc = (value) => String(value == null ? "" : value)
   .replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;");
 
+const json = (value) => JSON.stringify(value).replace(/</g, "\\u003c");
+const textOnly = (value) => String(value).replace(/<[^>]*>/g, " ")
+  .replace(/&(?:amp|quot|apos|lt|gt|nbsp);/g, entity => ({'&amp;':'&', '&quot;':'"', '&apos;':"'", '&lt;':'<', '&gt;':'>', '&nbsp;':' '})[entity])
+  .replace(/\s+/g, " ").trim();
+
+function validateArticle(meta, body, file) {
+  for (const field of ["title", "headline", "description", "category", "datePublished", "dateModified"]) {
+    if (typeof meta[field] !== 'string' || !meta[field].trim()) throw new Error(`${file}: missing ${field}`);
+  }
+  for (const field of ['datePublished', 'dateModified']) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(meta[field]) || new Date(`${meta[field]}T00:00:00Z`).toISOString().slice(0, 10) !== meta[field]) {
+      throw new Error(`${file}: invalid ${field}`);
+    }
+  }
+  if (meta.dateModified < meta.datePublished) throw new Error(`${file}: modification precedes publication`);
+  if (!body || !/<h2\b/i.test(body) || /<h1\b/i.test(body)) throw new Error(`${file}: article needs section headings and no extra h1`);
+  const visible = textOnly(body);
+  if (meta.faq !== undefined) {
+    if (!Array.isArray(meta.faq) || !meta.faq.length) throw new Error(`${file}: faq must be a nonempty array`);
+    for (const item of meta.faq) {
+      if (!item.question || !item.answer || !visible.includes(textOnly(item.question)) || !visible.includes(textOnly(item.answer))) {
+        throw new Error(`${file}: FAQ metadata must match visible questions and answers`);
+      }
+    }
+  }
+  if (meta.tools !== undefined) {
+    if (!Array.isArray(meta.tools) || !meta.tools.length) throw new Error(`${file}: tools must be a nonempty array`);
+    for (const tool of meta.tools) {
+      const url = new URL(tool.url);
+      if (url.protocol !== 'https:' || !tool.name || !tool.description || !visible.includes(textOnly(tool.name)) || !body.includes(tool.url)) {
+        throw new Error(`${file}: tool metadata must match visible linked tools`);
+      }
+    }
+  }
+}
+
+function articleContent(body) {
+  const headings = [];
+  const ids = new Set([...body.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]));
+  const content = body.replace(/<h2\b([^>]*)>([\s\S]*?)<\/h2>/gi, (all, attributes, title) => {
+    const existing = attributes.match(/\bid=["']([^"']+)["']/i);
+    let id = existing?.[1];
+    if (!id) {
+      const base = textOnly(title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+      id = base;
+      for (let suffix = 2; ids.has(id); suffix++) id = `${base}-${suffix}`;
+      ids.add(id);
+    }
+    headings.push({ id, title: textOnly(title) });
+    return `<h2${attributes}${existing ? '' : ` id="${id}"`}>${title}</h2>`;
+  }).replace(/<table\b[\s\S]*?<\/table>/gi, table => `<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table">${table}</div>`);
+  const toc = headings.length < 3 ? '' : `<nav class="blog-toc" aria-label="On this page"><strong>On this page</strong><ul>${headings.map(heading => `<li><a href="#${esc(heading.id)}">${esc(heading.title)}</a></li>`).join('')}</ul></nav>`;
+  return { content, toc };
+}
+
 function readArticles() {
   if (!fs.existsSync(SOURCE)) return [];
   return fs.readdirSync(SOURCE)
@@ -36,13 +91,10 @@ function readArticles() {
       try { meta = JSON.parse(match[1]); }
       catch (error) { throw new Error(`${file}: invalid metadata JSON (${error.message})`); }
       const body = raw.slice(match[0].length).trim();
-      for (const field of ["title", "headline", "description", "category", "datePublished", "dateModified"]) {
-        if (!meta[field]) throw new Error(`${file}: missing ${field}`);
-      }
-      if (!body || !/<h2\b/i.test(body)) throw new Error(`${file}: article needs body text and section headings`);
+      validateArticle(meta, body, file);
       return { ...meta, slug, body, url: `${SITE}/blog/${slug}.html` };
     })
-    .sort((a, b) => a.headline.localeCompare(b.headline));
+    .sort((a, b) => b.datePublished.localeCompare(a.datePublished) || a.headline.localeCompare(b.headline));
 }
 
 function schema(article) {
@@ -55,12 +107,27 @@ function schema(article) {
     dateModified: article.dateModified,
     articleSection: article.category,
     inLanguage: "en",
-    author: { "@type": "Organization", name: "MyRecon" },
-    publisher: { "@id": `${SITE}/#organization` },
+    author: { "@type": "Organization", name: "MyRecon", url: `${SITE}/about.html` },
+    publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/` },
     isPartOf: { "@id": `${SITE}/#website` },
     mainEntityOfPage: article.url,
   };
-  return JSON.stringify(value).replace(/</g, "\\u003c");
+  return json(value);
+}
+
+function additionalSchema(article) {
+  const values = [];
+  if (article.faq?.length) values.push({
+    '@context': 'https://schema.org', '@type': 'FAQPage', '@id': `${article.url}#faq`,
+    mainEntity: article.faq.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })),
+  });
+  if (article.tools?.length) values.push({
+    '@context': 'https://schema.org', '@type': 'ItemList', name: article.headline,
+    description: 'Publisher-selected editorial list by MyRecon. The order is not an independent accuracy or performance ranking.',
+    numberOfItems: article.tools.length, itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    itemListElement: article.tools.map((tool, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Thing', name: tool.name, url: tool.url, description: tool.description } })),
+  });
+  return values.map(value => `  <script type="application/ld+json">${json(value)}</script>\n`).join('');
 }
 
 function breadcrumb(article) {
@@ -99,7 +166,7 @@ function shellHead({ title, description, url, article, crumbs }) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${esc(url)}">
   <meta property="og:type" content="${ogType}">
@@ -124,9 +191,10 @@ function shellHead({ title, description, url, article, crumbs }) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=16">
   <link rel="stylesheet" href="/assets/css/fx.css?v=10">
+  <link rel="stylesheet" href="/assets/css/blog.css">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-${article ? `  <script type="application/ld+json">${schema(article)}</script>\n  <script type="application/ld+json">${breadcrumb(article)}</script>\n` : `  <script type="application/ld+json">${crumbs}</script>\n`}</head>
+${article ? `  <meta property="article:published_time" content="${esc(article.datePublished)}T00:00:00Z">\n  <meta property="article:modified_time" content="${esc(article.dateModified)}T00:00:00Z">\n  <meta property="article:section" content="${esc(article.category)}">\n  <script type="application/ld+json">${schema(article)}</script>\n  <script type="application/ld+json">${breadcrumb(article)}</script>\n${additionalSchema(article)}` : `  <script type="application/ld+json">${crumbs}</script>\n`}</head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
@@ -155,20 +223,28 @@ function shellFoot() {
 `;
 }
 
-function articlePage(article) {
-  const displayDate = new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
+function articlePage(article, articles = []) {
+  const displayDate = new Date(`${article.dateModified}T00:00:00Z`).toLocaleDateString("en-GB", {
     day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
   });
+  const {content, toc} = articleContent(article.body);
+  const firstHeading = content.search(/<h2\b/i);
+  const firstIsQuickAnswer = firstHeading >= 0 && /^<h2\b[^>]*id="quick-answer"/i.test(content.slice(firstHeading));
+  const tocPosition = firstIsQuickAnswer ? content.indexOf('<h2', firstHeading + 4) : firstHeading;
+  const navigableContent = tocPosition >= 0 ? `${content.slice(0, tocPosition)}${toc}\n${content.slice(tocPosition)}` : content;
+  const related = articles.filter(item => item.slug !== article.slug).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 3);
   return `${shellHead({ title: article.title, description: article.description, url: article.url, article })}
   <main id="main" class="container">
     <article class="article">
+      <nav class="blog-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="/blog/">OSINT and privacy articles</a></nav>
       <span class="kicker">${esc(article.category)}</span>
       <h1>${esc(article.headline)}</h1>
-      <p class="meta"><time datetime="${esc(article.datePublished)}">${displayDate}</time> · MyRecon editorial</p>
-      ${article.body}
+      <p class="meta">Updated <time datetime="${esc(article.dateModified)}">${displayDate}</time> · <a href="/about.html">MyRecon editorial</a></p>
+      ${navigableContent}
       <div class="callout">
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
       </div>
+      ${related.length ? `<aside class="blog-related" aria-label="Related articles"><h2>Continue your research</h2><ul>${related.map(item => `<li><a href="/blog/${item.slug}.html">${esc(item.headline)}</a></li>`).join('')}</ul></aside>` : ''}
       <p><a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
     </article>
   </main>
@@ -177,28 +253,29 @@ ${shellFoot()}`;
 
 function indexPage(articles) {
   const url = `${SITE}/blog/`;
-  const description = "Practical MyRecon articles on online privacy, public-profile self-audits, account deletion and safer username habits. Written for people managing their own digital footprint.";
+  const description = "Compare OSINT tools, search social media usernames, understand Instagram public profiles and check your digital footprint with sourced MyRecon articles.";
   const collection = JSON.stringify({
-    "@context": "https://schema.org", "@type": "CollectionPage", name: "MyRecon Blog: Privacy and Account Cleanup",
+    "@context": "https://schema.org", "@type": "CollectionPage", name: "MyRecon Blog: OSINT Tools, Username Search and Privacy",
     description, url, isPartOf: { "@id": `${SITE}/#website` }, publisher: { "@id": `${SITE}/#organization` },
   }).replace(/</g, "\\u003c");
   const list = JSON.stringify({
-    "@context": "https://schema.org", "@type": "ItemList", name: "MyRecon privacy and account cleanup articles",
+    "@context": "https://schema.org", "@type": "ItemList", name: "MyRecon OSINT and privacy articles",
     itemListElement: articles.map((article, i) => ({ "@type": "ListItem", position: i + 1, name: article.headline, url: article.url })),
   }).replace(/</g, "\\u003c");
-  const html = `${shellHead({ title: "MyRecon Blog: Privacy, Instagram and Account Cleanup", description, url, crumbs: collection })}
+  const categories = [...new Set(articles.map(article => article.category))];
+  const categoryId = category => `topic-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  const html = `${shellHead({ title: "OSINT Tools, Username Search and Privacy Blog | MyRecon", description, url, crumbs: collection })}
   <main id="main" class="container prose" style="padding-top:44px;padding-bottom:56px">
     <span class="kicker" style="color:var(--accent);font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase">MyRecon Blog</span>
-    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin:8px 0 10px">Privacy, public profiles and account cleanup</h1>
-    <p class="sub" style="max-width:70ch">Practical guides for understanding your own public footprint, protecting accounts you control, and closing profiles you no longer need. These articles focus on consent-based self-audits and verifiable public information.</p>
+    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin:8px 0 10px">OSINT tools, username search and online privacy</h1>
+    <p class="sub" style="max-width:70ch">Choose a research workflow, compare public-source tools, search social media usernames and reduce your own digital footprint. Our articles explain what a result supports, what remains unknown and how to check the original source.</p>
     <section class="guide-card" style="margin:24px 0">
       <p><strong>Start with your own footprint.</strong> MyRecon's username search checks public profile pages; it does not reveal private content or prove identity. For cleanup help, our service works only on your own footprint or one you are formally authorised to manage.</p>
       <p><a href="/#tool">Run a username self-audit</a> · <a href="/services.html">Learn about footprint removal support</a> · <a href="/vs/">Compare MyRecon with other tools</a></p>
     </section>
     <script type="application/ld+json">${list}</script>
-    <div class="guide-grid">
-${articles.map((article) => `      <a class="guide-card" href="/blog/${article.slug}.html"><span class="kicker">${esc(article.category)}</span><h2>${esc(article.headline)}</h2><p>${esc(article.description)}</p><span class="read">Read article →</span></a>`).join("\n")}
-    </div>
+    <nav class="blog-topics" aria-label="Article topics">${categories.map(category => `<a href="#${categoryId(category)}">${esc(category)}</a>`).join('')}</nav>
+${categories.map(category => `<section class="blog-category" aria-labelledby="${categoryId(category)}"><h2 id="${categoryId(category)}">${esc(category)}</h2><div class="guide-grid">${articles.filter(article => article.category === category).map(article => `<a class="guide-card" href="/blog/${article.slug}.html"><h3>${esc(article.headline)}</h3><p>${esc(article.description)}</p><span class="read">Read article →</span></a>`).join('\n')}</div></section>`).join('\n')}
     <h2 style="font-size:1.2rem;font-weight:700;margin:40px 0 10px">Explore MyRecon</h2>
     <p><a href="/guides/">Privacy and security guides</a> · <a href="/vs/">Tool comparisons</a> · <a href="/breaches/">Breach archive</a> · <a href="/services.html">Removal service</a></p>
   </main>
@@ -216,9 +293,10 @@ function main() {
   for (const file of fs.readdirSync(OUT)) {
     if (file.endsWith(".html") && !expected.has(file)) fs.unlinkSync(path.join(OUT, file));
   }
-  for (const article of articles) fs.writeFileSync(path.join(OUT, `${article.slug}.html`), articlePage(article), "utf8");
+  for (const article of articles) fs.writeFileSync(path.join(OUT, `${article.slug}.html`), articlePage(article, articles), "utf8");
   fs.writeFileSync(path.join(OUT, "index.html"), indexPage(articles), "utf8");
   console.log(`[blog] ${articles.length} original articles and /blog/ index written`);
 }
 
-main();
+if (require.main === module) main();
+module.exports = { validateArticle, articleContent, additionalSchema, readArticles };
