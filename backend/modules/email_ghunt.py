@@ -99,19 +99,24 @@ def _enrich_ghunt_email(email):
     try:
         with tempfile.TemporaryDirectory(prefix="myrecon-ghunt-") as directory:
             output = Path(directory) / "public.json"
-            if session_secret:
-                # Render secrets contain the existing creds.m file contents.
-                # GHunt refreshes this file; isolate writes to this lookup and
-                # remove all session material when the temporary directory exits.
-                if len(session_secret) > MAX_BYTES:
+            # GHunt writes refreshed credentials even when the login is valid.
+            # Copy mounted secrets as well as env secrets to a writable private
+            # file; hosting secret mounts must never be modified by the worker.
+            if not session_secret:
+                with session.open("rb") as handle:
+                    raw_session = handle.read(MAX_BYTES + 1)
+                if len(raw_session) > MAX_BYTES:
                     raise ValueError("Session limit")
-                decoded = json.loads(base64.b64decode(session_secret, validate=True))
-                if not isinstance(decoded, dict):
-                    raise ValueError("Session format")
-                session = Path(directory) / "session.m"
-                with session.open("x", encoding="utf-8") as handle:
-                    session.chmod(0o600)
-                    handle.write(session_secret)
+                session_secret = raw_session.decode("utf-8").strip()
+            if len(session_secret) > MAX_BYTES:
+                raise ValueError("Session limit")
+            decoded = json.loads(base64.b64decode(session_secret, validate=True))
+            if not isinstance(decoded, dict):
+                raise ValueError("Session format")
+            session = Path(directory) / "session.m"
+            with session.open("x", encoding="utf-8") as handle:
+                session.chmod(0o600)
+                handle.write(session_secret)
             env = dict(os.environ)
             # No application/provider tokens are needed by the isolated worker.
             for name in list(env):
