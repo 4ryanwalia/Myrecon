@@ -309,14 +309,14 @@ def _admit_scan(scope: str, cached: bool, job_id=None):
     Decide whether this scan may run, charging the allowance it uses.
 
     Returns (uid, charged) where `charged` names the allowance to refund if
-    the scan fails, or None when nothing was charged. A guest full scan runs
-    the same sweep and only receives the first two actual finding cards.
+    the scan fails, or None when nothing was charged. Guests may only run
+    Quick scans; Standard and Extended require sign-in before admission.
     """
     from core import plans, store
 
     user = _signed_in_user()
     if user is None:
-        if scope == "extended":
+        if scope in ("full", "extended"):
             # The Extended tier retains its signed-in credit requirement.
             raise SignInRequired()
         if job_id:
@@ -366,9 +366,71 @@ def _remember(uid, data):
 _full_slots = threading.BoundedSemaphore(1 if config.SCAN_OFFLOAD_ENABLED else max(1, config.FULL_SCAN_SLOTS))
 
 
+def _card_key(result: dict) -> tuple:
+    return (result.get("platform") or result.get("source"), result.get("url"))
+
+def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
+    """Return two guest cards and counts, without hidden details or cache mutation."""
+    groups = data.get("results") or {}
+    cards = [(kind, card) for kind in ("profiles", "documents", "mentions")
+             for card in groups.get(kind, [])]
+    selected = []
+    if visible_keys:
+        for key in visible_keys:
+            selected.extend((kind, card) for kind, card in cards if _card_key(card) == key)
+    for entry in ([] if visible_keys else cards):
+        if len(selected) >= 2:
+            break
+        if entry not in selected:
+            selected.append(entry)
+    selected = selected[:2]
+    results = {kind: [card for group, card in selected if group == kind]
+               for kind in ("profiles", "documents", "mentions")}
+    summary = {key: value for key, value in (data.get("summary") or {}).items()
+               if key in ("total", "profiles", "documents", "mentions", "checked", "rejected")}
+    summary.update(total=len(cards), clusters=0, exposures=0)
+    return {
+        "status": data.get("status", "ok"), "query": data.get("query") or {},
+        "summary": summary, "results": results,
+        "partial": bool(data.get("partial")),
+        "errors": [{"source": error.get("source", "username_check"),
+                    "code": error.get("code", "unavailable"), "retryable": True,
+                    "message": "Some checks could not complete. Displaying completed guest results."}
+                   for error in data.get("errors", [])],
+        "guest_preview": {"visible_cards": len(selected),
+                          "hidden_cards": max(0, len(cards) - len(selected)),
+                          "requires_sign_in": True},
+    }
+
+def _guest_quick_event(event: dict, seen: set, visible: list):
+    """Never send hidden card fields in live events or progress text."""
+    kind = event.get("type")
+    if kind == "found":
+        result = event.get("result") or {}
+        key = _card_key(result)
+        if key in seen:
+            return None
+        seen.add(key)
+        if len(visible) < 2:
+            visible.append(key)
+            return event
+        return {"type": "found_locked", "count": len(seen) - len(visible)}
+    if kind == "complete":
+        return {**event, "data": _guest_quick_preview(event.get("data") or {}, visible)}
+    if kind == "progress":
+        return {"type": "progress", "percent": event.get("percent", 0),
+                "phase": event.get("phase", "Checking platforms"),
+                "detail": "Quick scan in progress…"}
+    if kind == "error":
+        return {"type": "error", "error": "The scan could not complete. Please try again."}
+    return event if kind == "heartbeat" else None
+
+
 def _standard_response(tool, data, user=None):
     """Never mutate the full cached report when projecting it for a guest."""
-    return data if user else guest_reports.standard(tool, data)
+    if user:
+        return data
+    return _guest_quick_preview(data) if tool == "username" else guest_reports.standard(tool, data)
 
 
 def _guest_username_event(event):
@@ -518,6 +580,7 @@ def _register_routes(app: Flask) -> None:
         # 401/402/429 the page can act on, not an error halfway down a stream.
         uid, charged = _admit_scan(scope, cached_hit is not None)
         guest = uid is None
+        guest_seen, guest_visible = set(), []
 
         def generate():
             from core import plans
@@ -543,7 +606,7 @@ def _register_routes(app: Flask) -> None:
                             _cache.set(key, data)
                         event = {**event, "history_id": _remember(uid, data)}
                     if guest:
-                        event = _guest_username_event(event)
+                        event = _guest_quick_event(event, guest_seen, guest_visible)
                     if event is not None:
                         yield json.dumps(event) + "\n"
             except Exception:
@@ -711,41 +774,25 @@ def _register_routes(app: Flask) -> None:
         if request.method == "OPTIONS":
             return ("", 204)
         body = _json_body()
-        user = _signed_in_user()
         email = validation.email(body.get("email", ""))
-        # Processed live and excluded from the shared application cache and
-        # account history. Guest reveal receipts expire from memory in 30min.
+        # Email results are free for every visitor, including callers with a
+        # stale sign-in token. Process live without guest reveal retention,
+        # shared application caching, account history or scan allowances.
         check_linked = validation.boolean(body.get("check_linked_accounts"), default=False)
-        return responses.ok(_standard_response("email", scan_email(email, check_linked_accounts=check_linked), user))
+        return responses.ok(scan_email(email, check_linked_accounts=check_linked))
 
     @app.route("/api/email/public-profiles", methods=["POST", "OPTIONS"])
     def api_email_public_profiles():
         if request.method == "OPTIONS":
             return ("", 204)
         from services.email_public_profiles import lookup_public_profiles
-        user = _signed_in_user()
         email = validation.email(_json_body().get("email", ""))
-        if user is None:
-            from core import plans
-            plans.consume_guest_scan(_client_ip())
-        result = lookup_public_profiles(email)
-        if user:
-            return responses.ok(result)
-        # This standalone Google endpoint must not bypass the guest Deep
-        # Search lock. Reuse the same real backend and the same paid reveal.
-        report = {"status": result["status"], "subject": email, "mode": "email", "context": None,
-                  "partial": result["status"] not in ("ok", "no_match"),
-                  "google_public_profiles": result, "activity": [], "accounts": [], "people": [],
-                  "sections": [], "owner_links": [], "identity": None, "plan": [], "notes": [],
-                  "source_checks": [{"source": row.get("name"), "state": row.get("status")}
-                                    for row in result.get("sources", [])]}
-        return responses.ok(guest_reports.deep(report, complete=True))
+        return responses.ok(lookup_public_profiles(email))
 
     @app.route("/api/email/linkedin-public", methods=["POST", "OPTIONS"])
     def api_email_linkedin_public():
         if request.method == "OPTIONS":
             return ("", 204)
-        _require_user()
         from services.email_linkedin_public import lookup_linkedin_public
         email = validation.email(_json_body().get("email", ""))
         return responses.ok(lookup_linkedin_public(email))
@@ -754,7 +801,6 @@ def _register_routes(app: Flask) -> None:
     def api_email_photo():
         if request.method == "OPTIONS":
             return ("", 204)
-        _require_user()
         from modules.email_photos import PhotoError, fetch_public_photo
         try:
             photo = fetch_public_photo(request.args.get("url", ""))
@@ -768,7 +814,6 @@ def _register_routes(app: Flask) -> None:
     def api_email_accounts():
         if request.method == "OPTIONS":
             return ("", 204)
-        _require_user()
         from modules.registered_accounts import scan_registered_accounts
         email = validation.email(_json_body().get("email", ""))
         return responses.ok({"registration_checks": scan_registered_accounts(email)})

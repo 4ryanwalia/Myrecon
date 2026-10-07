@@ -16,9 +16,9 @@ ROW = {"name": "Spotify", "id": "spotify", "domain": "spotify.com", "method": "r
 
 def test_catalogue_has_123_pinned_modules_and_spotify_is_eligible():
     rows = adapter.CATALOG["services"]
-    assert len(rows) == 123
+    assert len(rows) == 125
     assert len({r["id"] for r in rows}) == len(rows)
-    assert sum(r["enabled"] for r in rows) == 111
+    assert sum(r["enabled"] for r in rows) == 113
     assert next(r for r in rows if r["id"] == "spotify")["enabled"]
     assert all(not r["enabled"] for r in rows if r["method"] == "password recovery")
 
@@ -57,8 +57,8 @@ def test_worker_failure_preserves_unknown_for_every_service(monkeypatch):
     monkeypatch.setattr(adapter.subprocess, "run", lambda *a, **k: SimpleNamespace(returncode=1, stdout=""))
     out = adapter.scan_registered_accounts("x@example.com")
     assert out["status"] == "unavailable" and out["checked"] == 0
-    assert len(out["services"]) == 123
-    assert out["counts"]["unavailable"] == 111
+    assert len(out["services"]) == 125
+    assert out["counts"]["unavailable"] == 113
 
 
 def test_worker_receives_email_over_stdin_and_coverage_is_not_catalogue_size(monkeypatch):
@@ -114,7 +114,7 @@ def test_process_timeout_preserves_last_complete_checkpoint(monkeypatch):
     out = adapter.scan_registered_accounts("x@example.com")
     assert out["status"] == "partial" and out["partial"]
     assert out["checked"] == out["found"] == 1
-    assert out["counts"]["timeout"] == 110
+    assert out["counts"]["timeout"] == 112
 
 
 def test_completed_worker_with_no_answers_is_unavailable(monkeypatch):

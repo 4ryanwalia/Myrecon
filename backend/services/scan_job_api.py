@@ -100,7 +100,20 @@ def _owner(api):
 
 
 def _visible(api, job, data):
-    return api._standard_response("username", data, job.get("uid"))
+    if job.get("uid"):
+        return data
+    # Reconstruct the same two arrival-order cards for streams and job polls.
+    from services.search import _live_view
+    visible = []
+    for ref in job.get("refs", []):
+        for row in jobs.chunk(job["id"], ref):
+            if row.get("exists"):
+                key = api._card_key(_live_view(row, job["username"]))
+                if key not in visible:
+                    visible.append(key)
+                if len(visible) == 2:
+                    return api._guest_quick_preview(data, visible)
+    return api._guest_quick_preview(data, visible)
 
 
 def handle(api, body, streaming):
@@ -138,6 +151,8 @@ def _handle(api, body, streaming):
     if not isinstance(request_id, str) or not _REQUEST_ID.fullmatch(request_id):
         raise validation.ValidationError("Invalid scan request id.")
     owner, uid = _owner(api)
+    if uid is None and scope in ("full", "extended"):
+        raise api.SignInRequired()
     # Parameters are bound into the id: changing scope/user cannot reuse a
     # receipt to bypass payment or obtain another person's report.
     raw = json.dumps([owner, request_id, username, scope, deep])
@@ -201,6 +216,7 @@ def _handle(api, body, streaming):
 def events(api, job_id):
     yield json.dumps({"type": "job", "job_id": job_id, "resumable": True}) + "\n"
     seen = set()
+    guest_seen, guest_visible = set(), []
     while True:
         job = jobs.get(job_id)
         if not job:
@@ -232,11 +248,12 @@ def events(api, job_id):
                 continue
             seen.add(ref["path"])
             for row in jobs.chunk(job_id, ref):
-                # Guest finding details are withheld until final card order is
-                # known. Arrival-order rows would expose additional locked
-                # cards after the final report sorts its first two findings.
-                if row.get("exists") and job.get("uid"):
-                    yield json.dumps({"type": "found", "result": _live_view(row, job["username"])}) + "\n"
+                if row.get("exists"):
+                    event = {"type": "found", "result": _live_view(row, job["username"])}
+                    if not job.get("uid"):
+                        event = api._guest_quick_event(event, guest_seen, guest_visible)
+                    if event is not None:
+                        yield json.dumps(event) + "\n"
         time.sleep(3)
 
 

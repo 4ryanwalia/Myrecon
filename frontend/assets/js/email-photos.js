@@ -12,8 +12,6 @@
   const wired = new WeakSet();
   const retries = new Set();
   const MAX_BYTES = 2 * 1024 * 1024;
-  const account = () => scope.MyReconAccount;
-  const uid = () => account()?.state?.().user?.uid || null;
 
   function revoke(entry) {
     if (entry?.objectUrl) {
@@ -83,26 +81,23 @@
       let entry = null;
       const loaded = () => {
         if (!img.naturalWidth) return;
-        if (entry && uid() !== entry.uid) { discard(entry, true); return; }
         revoke(entry);
         const parent = img.parentElement;
         if (parent) { parent.classList.add("loaded"); parent.removeAttribute("title"); }
       };
       const error = async () => {
         const retry = source(original, apiBase);
-        const requestUid = uid();
-        if (!retried && retry && retry !== original && requestUid && account()) {
+        if (!retried && retry && retry !== original) {
           retried = true;
-          entry = { img, uid: requestUid, controller: new AbortController(), objectUrl: null };
+          entry = { img, controller: new AbortController(), objectUrl: null };
           retries.add(entry);
           const timer = setTimeout(() => entry.controller?.abort(), 12000);
           try {
-            const headers = await account().authHeaders();
-            if (uid() !== requestUid || !img.isConnected) { discard(entry, true); return; }
-            const response = await fetch(retry, { headers, signal: entry.controller.signal,
+            if (!img.isConnected) { discard(entry); return; }
+            const response = await fetch(retry, { signal: entry.controller.signal,
               cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", redirect: "error" });
             const blob = await imageBlob(response);
-            if (uid() !== requestUid || !img.isConnected) { discard(entry, true); return; }
+            if (!img.isConnected) { discard(entry); return; }
             entry.objectUrl = URL.createObjectURL(blob);
             img.removeAttribute("crossorigin");
             img.src = entry.objectUrl;
@@ -123,14 +118,6 @@
       if (img.complete) { if (img.naturalWidth) loaded(); else error(); }
     });
   }
-
-  account()?.onChange?.((state) => {
-    const currentUid = state.user?.uid || null;
-    for (const entry of retries) {
-      if (!entry.img.isConnected) discard(entry);
-      else if (entry.uid !== currentUid) discard(entry, true);
-    }
-  });
 
   scope.EmailPhotos = Object.freeze({ source, failed, wire });
 })(window);

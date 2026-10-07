@@ -65,6 +65,7 @@ def test_admission_write_failure_preserves_committed_allowance(setup, monkeypatc
     assert job["status"] == "admitting"
     assert plans.job_receipt("u", job["id"]) is not None
     job["created"] -= 61
+    job["updated"] -= 61
     memory.set(jobs.ROOT, {job["id"]: job})
     monkeypatch.setattr(jobs, "admit", original)
     scan_job_runner.maintenance()
@@ -323,7 +324,7 @@ def test_finalizer_uses_saved_checks_preserves_server_optional_features(setup, m
 def test_guest_stream_and_result_do_not_leak_locked_platforms(setup, monkeypatch):
     _, client = setup
     monkeypatch.setattr(api, "_signed_in_user", lambda: None)
-    body = {"username": "fixture", "scope": "full", "request_id": "guest-request-long-enough"}
+    body = {"username": "fixture", "scope": "standard", "request_id": "guest-request-long-enough"}
     response = client.post("/api/username/stream", json=body, buffered=False)
     job_id = json.loads(next(response.response))["job_id"]
     response.close()
@@ -335,8 +336,10 @@ def test_guest_stream_and_result_do_not_leak_locked_platforms(setup, monkeypatch
         "exposures": [{"email": "private@example.com"}], "platform_checks": []}
     jobs.finish(job_id, finalizer["token"], full)
     result = client.get(f"/api/username/jobs/{job_id}").json["data"]
-    assert result["results"]["profiles"] == []
-    assert result["exposures"] == []
+    assert len(result["results"]["profiles"]) == 0
+    assert "exposures" not in result
+    assert "private@example.com" not in json.dumps(result)
+    assert result["guest_preview"]["visible_cards"] == 0
 
 
 def test_render_fallback_skips_completed_checkpoints(setup, monkeypatch):

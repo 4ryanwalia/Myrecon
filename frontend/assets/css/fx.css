@@ -129,7 +129,7 @@ a.vs-card:hover { transform: translateY(-3px); border-color: var(--border-strong
 .vs-card p { color: var(--text-dim); font-size: 0.9rem; }
 .vs-card .kind { font-family: var(--mono); font-size: 0.72rem; color: var(--accent-text, var(--accent)); text-transform: uppercase; letter-spacing: .08em; }
 .vs-card .go { display: inline-block; margin-top: 12px; color: var(--accent-text, var(--accent)); font-weight: 600; font-size: 0.88rem; }
-.vs-card .go::after { content: " →"; display: inline-block; transition: transform 0.2s; }
+.vs-card .go::after { content: " â†’"; display: inline-block; transition: transform 0.2s; }
 a.vs-card:hover .go::after { transform: translateX(4px); }
 
 .vs-article { max-width: 880px; margin: 0 auto; padding-bottom: 40px; }
@@ -320,7 +320,7 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 .hero-tool .input { font-family: var(--mono); font-size: 1rem; padding-top: 16px; padding-bottom: 16px; }
 .hero-tool .input::placeholder { font-family: var(--font); }
 .hero-tool #runBtn { padding-left: 26px; padding-right: 26px; }
-.hero-tool #runBtn::after { content: "→"; font-weight: 700; transition: transform .2s; }
+.hero-tool #runBtn::after { content: "â†’"; font-weight: 700; transition: transform .2s; }
 .hero-tool #runBtn:hover::after { transform: translateX(3px); }
 
 /* While a lookup runs, a solid bar slides along the bottom of the input. */
@@ -602,3 +602,26 @@ body.tool-mode .tool-exit { display: inline; }
 .relationship-favicon { opacity: 0; pointer-events: none; transition: opacity .2s ease; }
 .relationship-favicon.ok { opacity: 1; }
 .relationship-initials.covered { visibility: hidden; }
+
+/* Running scan window and log, with cards arriving below it. */
+.results .loading.retro { padding: 0; text-align: left; border-radius: 0; border: 2px solid var(--border-strong); background: var(--surface-2); }
+.retro-title { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; background: var(--text); color: var(--bg); font: 700 .78rem/1.4 var(--mono); }
+.retro-screen { margin: 6px; padding: 14px; background: var(--bg); color: var(--accent); font: .8rem/1.7 var(--mono); }
+.retro-line { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.retro-log { min-height: 10em; max-height: 14em; margin: 10px 0; overflow: auto; color: var(--text-dim); }
+.retro-log > div { overflow-wrap: anywhere; }
+.retro-log .hit { color: var(--accent); }
+.retro-status { display: flex; justify-content: space-between; gap: 12px; margin: 6px 0; }
+.results .retro .progress { height: 15px; border-radius: 0; background: var(--surface-2); }
+.results .retro .progress > i { border-radius: 0; background: var(--accent); }
+.retro-caret::after { content: "_"; animation: fx-blink 1s steps(1) infinite; }
+
+/* Hidden guest cards use blurred shapes, never hidden account fields or links. */
+.card-locked { min-height: 168px; }
+.card-locked:hover { transform: none; }
+.locked-card-shape { filter: blur(5px); opacity: .55; user-select: none; pointer-events: none; }
+.locked-lines { flex: 1; margin-top: 12px; }
+.locked-lines i { display: block; height: 10px; margin: 12px 0; width: 80%; background: var(--text-mute); }
+.locked-lines i:nth-child(even) { width: 55%; }
+.locked-card-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: color-mix(in srgb, var(--surface) 35%, transparent); }
+@media (prefers-reduced-motion: reduce) { .retro-caret::after { animation: none; } }

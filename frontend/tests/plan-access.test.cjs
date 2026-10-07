@@ -23,8 +23,9 @@ function app(state, scope) {
 test("guest and signed-in standard scope notes state the free result boundary", async () => {
   const guest = app({ user: null }, "full");
   await guest.api.refreshScopeNote(false);
-  assert.match(guest.note.textContent, /Guests see 100/);
-  assert.match(guest.note.textContent, /sign in for 5/);
+  assert.match(guest.note.textContent, /Standard scans require sign-in/);
+  assert.match(guest.note.textContent, /Sign in with Google/);
+  assert.match(guest.note.textContent, /5 free scans a day/);
   const signed = app({ user: { uid: "u" }, account: { standard_scans_unlimited: true } }, "full");
   await signed.api.refreshScopeNote(false);
   assert.match(signed.note.textContent, /unlimited with your paid plan/);

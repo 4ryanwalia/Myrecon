@@ -31,7 +31,8 @@ def setup(monkeypatch):
     monkeypatch.setattr(config, "RATE_LIMIT_ENABLED", False)
     monkeypatch.setattr(config, "CACHE_ENABLED", False)
     monkeypatch.setattr(scan_engine, "catalogue", lambda *a, **k: [])
-    monkeypatch.setattr(scan_engine, "fingerprint", lambda *a, **k: "version-one")
+    monkeypatch.setattr(scan_engine, "fingerprint", lambda *a, **k: "a" * 64)
+    monkeypatch.setattr(jobs, "engine_fingerprint", lambda *a, **k: "a" * 64)
     monkeypatch.setattr(scan_job_runner, "ensure_started", lambda: None)
     monkeypatch.setattr(api, "_full_slots", threading.BoundedSemaphore(1))
     return memory, api.create_app().test_client()
@@ -45,7 +46,7 @@ def _claim(client, worker_id="worker-presence-123456", label="Worker 01"):
     return client.post("/api/scan-worker/claim", json={
         "worker_id": worker_id,
         "worker_label": label,
-        "catalogues": {"full": "version-one"},
+        "catalogues": {scope: "a" * 64 for scope in ("standard", "standard:deep", "full", "extended")},
         "protocol": scan_engine.PROTOCOL,
     }, headers=_auth())
 
@@ -65,7 +66,8 @@ def test_idle_claim_records_liveness_with_a_stable_label(setup):
     assert status["workers"] == [{
         "label": "Worker 01", "state": "idle", "available": True,
         "last_seen_at": status["workers"][0]["last_seen_at"], "age_seconds": 0,
-        "duplicate": False,
+        "duplicate": False, "compatible": True,
+        "compatible_scopes": {scope: True for scope in ("standard", "standard_deep", "full", "extended")},
     }]
 
 
@@ -113,7 +115,7 @@ def test_status_token_is_distinct_and_never_returns_job_or_instance_data(setup):
     })
     assert response.status_code == 200
     worker = response.json["workers"][0]
-    assert set(worker) == {"label", "state", "available", "last_seen_at", "age_seconds", "duplicate"}
+    assert set(worker) == {"label", "state", "available", "last_seen_at", "age_seconds", "duplicate", "compatible", "compatible_scopes"}
     assert "job" not in response.json
     assert config.SCAN_WORKER_TOKEN not in response.get_data(as_text=True)
 

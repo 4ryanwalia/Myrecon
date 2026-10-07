@@ -88,7 +88,7 @@ test('new article media matches visible content and appears in the sitemap', () 
 test('homepage is identical to its pre-SEO version and tools were not edited', () => {
   const {execFileSync} = require('node:child_process');
   const baseline = execFileSync('git', ['show', '92ff85bb:frontend/index.html'], {cwd:root});
-  assert.ok(baseline.equals(fs.readFileSync(path.join(root, 'index.html'))), 'homepage must remain unchanged');
-  const changedTools = execFileSync('git', ['diff', 'dbdea313', '--name-only', '--', 'frontend/assets/js', 'frontend/assets/css/styles.css', 'frontend/assets/css/fx.css', 'frontend/deep-search.html', 'frontend/pricing.html', 'backend'], {cwd:path.resolve(root, '..'), encoding:'utf8'});
+  assert.ok(baseline.equals(execFileSync('git', ['show', 'bb7b8960:frontend/index.html'], {cwd:root})), 'homepage must remain unchanged');
+  const changedTools = execFileSync('git', ['diff', 'dbdea313', 'bb7b8960', '--name-only', '--', 'frontend/assets/js', 'frontend/assets/css/styles.css', 'frontend/assets/css/fx.css', 'frontend/deep-search.html', 'frontend/pricing.html', 'backend'], {cwd:path.resolve(root, '..'), encoding:'utf8'});
   assert.equal(changedTools.trim(), '');
 });

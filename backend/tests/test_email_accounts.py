@@ -45,11 +45,11 @@ def test_commit_fallback_requires_exact_email_and_attributed_author(monkeypatch)
             "html_url": "https://github.com/dev/repo/commit/abc"}
     calls = replies(monkeypatch, Response({"items": []}), Response({"items": [
         {**item, "commit": {"author": {"email": "other@gmail.com"}}},
-        {**item, "author": None}, item]}))
+        {**item, "author": None}, item]}), Response({"login": "dev"}))
     account = EmailLookup().github(EMAIL)
     assert account["username"] == "dev"
     assert "current account email is unknown" in account["evidence"]
-    assert calls[-1][1]["params"]["q"] == f'author-email:"{EMAIL}"'
+    assert calls[-2][1]["params"]["q"] == f'author-email:"{EMAIL}"'
 
 
 def test_unverified_user_search_result_is_not_account_proof(monkeypatch):

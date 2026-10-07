@@ -130,7 +130,7 @@ test("registration coverage exposes Spotify signals and unknown services separat
     { service: "<unsafe>", status: "timeout", reason: "Timed out" }] };
   const html = api.linkedServices({ services: [{ service: "Spotify", kind: "registration", evidence: "Registration signal" }] }, { enabled: true }, data);
   assert.match(html, /1 answered of 111 eligible/);
-  assert.match(html, /123 service modules/);
+  assert.match(html, /123 service checks/);
   assert.match(html, /Blocked or rate limited/);
   assert.match(html, /&lt;unsafe&gt;/);
   assert.doesNotMatch(html, /<unsafe>/);
