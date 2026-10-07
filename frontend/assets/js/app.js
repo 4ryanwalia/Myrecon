@@ -5,6 +5,7 @@
   const CFG = window.MYRECON;
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const RESPONSE_UID = Symbol("responseUid");
 
   // ---------------------------------------------------------------- helpers
   const esc = (s) =>
@@ -168,9 +169,12 @@
     const scopeWait = { full: 720000, extended: 2400000 };
     const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || (endpoint === CFG.endpoints.email ? 140000 : 90000));
     try {
+      const requestUid = window.MyReconAccount?.state()?.user?.uid || null;
+      const headers = requestUid ? await authHeaders() : {};
+      if (requestUid && window.MyReconAccount?.state()?.user?.uid !== requestUid) throw new Error("Your account changed. Start this action again.");
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(await authHeaders()) },
+        headers: { "Content-Type": "application/json", ...headers },
         body: JSON.stringify(body),
         signal: ctrl.signal,
       });
@@ -178,6 +182,8 @@
       if (!res.ok || data.status === "error") {
         throw errorFrom(res, data);
       }
+      if (!data.guest_access && (window.MyReconAccount?.state()?.user?.uid || null) !== requestUid) throw new Error("Your account changed before the report arrived. Start this action again.");
+      Object.defineProperty(data, RESPONSE_UID, { value: requestUid });
       return data;
     } catch (e) {
       if (e.name === "AbortError") throw new Error("The scan took too long and was cancelled. Try again.");
@@ -201,6 +207,11 @@
       endpoint: CFG.endpoints.email, field: "email",
       sub: "See which breaches name your email and what data was exposed. Optional public account checks.",
       examples: ["test@gmail.com", "contact@github.com"],
+    },
+    deepsearch: {
+      label: "Deep Search", icon: "search", placeholder: "Name, @handle or exact email",
+      sub: "Investigate public profiles, indexed mentions and Google reviews. Guests can run an investigation; sign in with an eligible plan to view findings.",
+      examples: [], route: "/deep-search.html",
     },
     domain: {
       label: "Domain", icon: "globe", placeholder: "e.g. example.com",
@@ -234,6 +245,101 @@
   let activeTool = "username";
   let lastResult = null;
   let lastExposure = null;
+  let guestSnapshot = null, resultUid = null, activeScanUid = null, revealingGuest = false;
+  const GUEST_REPORT_KEY = "myrecon.guest-report";
+
+  function rememberGuestReport(tool, query, data) {
+    if (!data?.guest_access && data?.[RESPONSE_UID] !== undefined && (window.MyReconAccount?.state()?.user?.uid || null) !== data[RESPONSE_UID]) {
+      lastResult = null;
+      throw new Error("Your account changed before the report could be displayed.");
+    }
+    resultUid = data?.guest_access ? null : window.MyReconAccount?.state()?.user?.uid || null;
+    if (!data?.guest_access) return;
+    guestSnapshot = { tool, query, data };
+    try { sessionStorage.setItem(GUEST_REPORT_KEY, JSON.stringify(guestSnapshot)); } catch {}
+    if (signedIn() && data.guest_access.locked_count) Promise.resolve().then(revealGuestReport);
+  }
+
+  function lockedResults() {
+    return !!lastResult?.data?.guest_access?.locked_count;
+  }
+
+  function guestPlaceholder() {
+    return `<div class="card guest-placeholder" aria-hidden="true" inert><div class="guest-placeholder-line"></div><div class="guest-placeholder-line short"></div><div class="guest-placeholder-line"></div></div>`;
+  }
+
+  function renderGuestResults(data) {
+    lastExposure = null;
+    const access = data.guest_access;
+    const cards = Array.isArray(data.cards) ? data.cards : [];
+    const title = `${TOOLS[lastResult?.tool || activeTool].label} results`;
+    let html = resultsHeader(title, `${Number(access.total_cards) || 0} result cards`);
+    html += (data.notices || []).map(n => `<p class="partial-notice" role="status">${esc(n)}</p>`).join("");
+    if (data.partial) html += `<p class="partial-notice" role="status">Some checks did not complete. Returned results are shown below; missing results remain inconclusive.</p>`;
+    if (!cards.length) html += `<div class="empty"><p>No result cards were returned. An empty response does not establish absence; some sources may be unavailable.</p></div>`;
+    html += `<div class="guest-visible-results">${cards.filter(c => !c.locked).map(guestCard).join("")}</div>`;
+    if (access.locked_count > 0) html += `<section class="guest-locked-results" aria-label="Locked results"><div class="card-grid">${cards.filter(c => c.locked).map(guestPlaceholder).join("")}</div><div class="guest-results-overlay"><strong>Sign in to view all results</strong><p>${Number(access.locked_count)} more result ${access.locked_count === 1 ? "card is" : "cards are"} available.</p><p>${access.report_token ? "Your scan is retained for up to 30 minutes. A restart or capacity limit can end retention sooner." : "This report could not be retained. Sign in, then run the lookup again to view all results."}</p>${access.report_token ? `<button type="button" class="btn" data-guest-reveal>${signedIn() ? "View all results" : "Sign in to view all results"}</button>` : `<button type="button" class="btn" data-gate="signin">Sign in and run again</button>`}<p class="hint" data-guest-reveal-status role="status"></p></div></section>`;
+    resultsEl().innerHTML = html;
+    if (access.locked_count > 0) $$(".results-actions button", resultsEl()).forEach(b => { b.disabled = true; b.title = "Sign in to view all results before exporting or sharing."; });
+  }
+
+  function guestCard(card) {
+    const d = card.data || {};
+    if (card.kind === "profile") return `<div class="guest-visible-card">${profileCard(d, true)}</div>`;
+    if (card.kind === "email_profile") return emailProfileCards({ evidence_report: { profiles: [d] } });
+    if (card.kind === "email_review") return emailProfileCollections({ platform: "Google", reviews: [d] });
+    if (card.kind === "email_position") return emailProfileCollections({ platform: "LinkedIn", positions: [d] });
+    if (card.kind === "email_education") return emailProfileCollections({ platform: "LinkedIn", education: [d] });
+    if (card.kind === "breach") return emailBreachList({ darkweb: { breaches: [d] } });
+    if (card.kind === "mail_security") return `<div class="guest-visible-card">${mailSecurityBlock(d)}</div>`;
+    if (card.kind === "dns") return `<div class="guest-visible-card">${renderDnsBlock(d)}</div>`;
+    if (card.kind === "ip") return `<div class="guest-visible-card"><div class="section-label">${esc(card.title || "IP intelligence")}</div>${ipDetails(d)}</div>`;
+    if (card.kind === "whois") return `<div class="guest-visible-card"><div class="section-label">Registration</div>${datalist([
+      ["Domain", esc(d.domain) || "-"], ["Registrar", esc(d.registrar) || "-"],
+      ["Created", esc(d.created) || "-"], ["Expires", esc(d.expires) || "-"],
+      ["Updated", esc(d.updated) || "-"], ["Registrant", esc(d.registrant) || "-"],
+      ["Country", esc(d.country) || "-"], ["Nameservers", (d.nameservers || []).map(esc).join("<br>") || "-"],
+      ["DNSSEC", d.dnssec == null ? "-" : d.dnssec ? "Enabled" : "Disabled"],
+      ["Status", (d.statuses || []).map(esc).join("<br>") || "-"],
+    ])}</div>`;
+    if (card.kind === "gravatar") return `<div class="card guest-visible-card"><div class="card-head">${avatarHTML(d, "G")}<div><div class="card-title">${esc(d.display_name || "Gravatar")}</div>${safeUrl(d.profile_url) ? `<a href="${esc(safeUrl(d.profile_url))}" target="_blank" rel="noopener nofollow">Open Gravatar profile ↗</a>` : ""}</div></div>${d.bio ? `<p class="card-bio">${esc(d.bio)}</p>` : ""}</div>`;
+    if (card.kind === "service") return linkedServices({ services: [d] });
+    if (card.kind === "github") return `<div class="card guest-visible-card"><div class="card-head">${avatarHTML(d, "GH")}<div><div class="card-title">${esc(d.username || "GitHub")}</div>${safeUrl(d.url) ? `<a href="${esc(safeUrl(d.url))}" target="_blank" rel="noopener nofollow">Open GitHub profile ↗</a>` : ""}</div></div><p class="card-bio">${esc(d.evidence || "Public GitHub evidence for this email")}</p>${safeUrl(d.evidence_url) ? `<p><a href="${esc(safeUrl(d.evidence_url))}" target="_blank" rel="noopener nofollow">View public commit evidence</a></p>` : ""}</div>`;
+    return `<article class="card guest-visible-card"><h3>${esc(card.title || "Result")}</h3>${guestCardDetails(d)}</article>`;
+  }
+
+  function guestCardDetails(value) {
+    if (value === null || value === undefined) return "";
+    if (Array.isArray(value)) return `<ul>${value.map(v => `<li>${guestCardDetails(v)}</li>`).join("")}</ul>`;
+    if (typeof value !== "object") return esc(value);
+    return `<dl class="guest-card-fields">${Object.entries(value).filter(([, v]) => v !== null && v !== undefined && v !== "").map(([k, v]) => `<div><dt>${esc(k.replace(/_/g, " "))}</dt><dd>${guestCardDetails(v)}</dd></div>`).join("")}</dl>`;
+  }
+
+  async function revealGuestReport() {
+    const snapshot = lastResult?.data?.guest_access ? lastResult : guestSnapshot;
+    const token = snapshot?.data?.guest_access?.report_token;
+    if (!token || revealingGuest) return;
+    revealingGuest = true;
+    const revealUid = window.MyReconAccount?.state()?.user?.uid;
+    const status = $("[data-guest-reveal-status]");
+    if (status) status.textContent = "Opening your existing scan…";
+    try {
+      const response = await api("/api/guest-reports/reveal", { report_token: token });
+      if (!revealUid || window.MyReconAccount?.state()?.user?.uid !== revealUid || lastResult?.data?.guest_access?.report_token !== token) return;
+      const tool = response.tool;
+      if (!RENDERERS[tool] || !response.data) throw new Error("This report could not be opened.");
+      lastResult = { tool, query: snapshot.query, data: response.data };
+      resultUid = window.MyReconAccount.state().user.uid;
+      renderSafely(RENDERERS[tool], response.data);
+      bindActions();
+      toast("All results revealed. Nothing was rescanned.");
+    } catch (error) {
+      const message = error.code === "guest_report_expired" ? "This retained report has expired. Run a new lookup to continue." : error.message;
+      const current = $("[data-guest-reveal-status]");
+      if (current) current.textContent = message;
+      else toast(message, "err");
+    } finally { revealingGuest = false; }
+  }
 
   // ---------------------------------------------------------------- rendering
   const resultsEl = () => $("#results");
@@ -260,7 +366,7 @@
 
   // A result-view error must still leave a usable response and recovery path.
   function renderSafely(renderer, data) {
-    try { renderer(data); }
+    try { data?.guest_access ? renderGuestResults(data) : renderer(data); }
     catch {
       lastExposure = null;
       resultsEl().innerHTML = `<div class="error-box" role="alert">Results arrived, but this view could not be displayed. Download the response or try the search again.<p><button class="btn btn-ghost" data-export="json">Download JSON</button></p></div>`;
@@ -277,7 +383,7 @@
       case "guest_limit":
         title = "That's today's free scans";
         if (!canSignIn) {
-          body = "Guests get 5 username scans a day. Each full sweep checks 500+ platforms and shows a 100-platform preview. The allowance resets at midnight UTC.";
+          body = "Guests get 5 username scans a day. Real scans show the first two result cards; sign in to view all results. The allowance resets at midnight UTC.";
           break;
         }
         body = "Guests get 5 username scans a day. Sign in with Google for 5 free standard 500+ platform scans a day and complete results.";
@@ -703,11 +809,17 @@
     if (r.confidence === "low") meta += `<span class="meta-tag conf-low" title="This platform returns the same page whether or not the account exists">Unconfirmed</span>`;
     else if (r.confidence === "medium") meta += `<span class="meta-tag conf-medium">Possible match</span>`;
     else if (r.confidence === "high") meta += `<span class="meta-tag conf-high">Confirmed</span>`;
-    if (r.followers) meta += `<span class="meta-tag">${fmtNum(r.followers)} followers</span>`;
+    if (r.followers || r.followers === 0) meta += `<span class="meta-tag">${fmtNum(r.followers)} followers</span>`;
+    Object.entries(r.statistics || {}).filter(([key, value]) => key !== "followers" && Number.isFinite(value))
+      .forEach(([key, value]) => { meta += `<span class="meta-tag">${fmtNum(value)} ${esc(key.replace(/_/g, " "))}</span>`; });
     if (r.is_verified) meta += `<span class="meta-tag">Verified</span>`;
     if (r.is_private) meta += `<span class="meta-tag">Private</span>`;
     if (r.repos) meta += `<span class="meta-tag">${fmtNum(r.repos)} repos</span>`;
     const href = r.url && /^https?:\/\//.test(r.url) ? r.url : null;
+    // Sourced adapter metadata carries its own links, so such a card is not an
+    // <a>: nested anchors are invalid and would swallow the link clicks.
+    const publicLinks = (Array.isArray(r.public_links) ? r.public_links : []).filter(u => /^https?:\/\//i.test(u) && safeUrl(u));
+    const hasDetails = publicLinks.length > 0 || Boolean(r.metadata_source);
     // On demand, never during the scan: archive.org needs ~10s per cold key
     // and throttles under fan-out. A span, not a button, the card is an <a>.
     // Left off live cards: its handler is bound only when the final result
@@ -719,14 +831,16 @@
         ${avatarHTML(r, fallback)}
         <div style="min-width:0">
           <div class="card-title">${esc(platform)}</div>
-          <div class="card-url">${esc(hostOf(r.url))}${href ? ` <span class="open-ico">${icon("external", 12)}</span>` : ""}</div>
+          <div class="card-url">${hasDetails && href ? `<a href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow">Open profile ${icon("external", 12)}</a>` : `${esc(hostOf(r.url))}${href ? ` <span class="open-ico">${icon("external", 12)}</span>` : ""}`}</div>
         </div>
         <span class="tag ${esc(cat)}">${esc(cat)}</span>
       </div>
       ${r.display_name && r.display_name !== platform ? `<div class="card-bio" style="font-weight:600;color:var(--text)">${esc(r.display_name)}</div>` : ""}
       ${r.bio ? `<div class="card-bio">${esc(r.bio.slice(0, 150))}</div>` : ""}
+      ${r.metadata_source ? `<div class="hint">Source: ${safeUrl(r.metadata_source.url) ? `<a href="${esc(safeUrl(r.metadata_source.url))}" target="_blank" rel="noopener nofollow">${esc(r.metadata_source.platform || platform)} public account data</a>` : esc(r.metadata_source.platform || platform)}</div>` : ""}
+      ${publicLinks.length ? `<div class="card-bio">Public links: ${publicLinks.map(u => `<a href="${esc(safeUrl(u))}" target="_blank" rel="noopener nofollow">${esc(hostOf(u))}</a>`).join(" · ")}</div>` : ""}
       ${meta ? `<div class="card-meta">${meta}</div>` : ""}`;
-    if (href) {
+    if (href && !hasDetails) {
       return `<a class="card card-link" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow"
         aria-label="Open ${esc(platform)} profile in a new tab">${inner}</a>`;
     }
@@ -815,6 +929,7 @@
   }
 
   function emailProfileCollections(p, data = {}) {
+    if (p._guest_collections_locked) return `<p class="hint">Additional finding cards are listed separately below.</p>`;
     const reviews = p.reviews || [];
     const reviewState = window.MyReconEmailOutcome.reviews?.(p, data);
     const link = (label, value) => safeUrl(value) ? `<a href="${esc(safeUrl(value))}" target="_blank" rel="noopener nofollow">${label} ↗</a>` : "";
@@ -1051,9 +1166,9 @@
     }
     if (registration && registration.status !== "skipped") {
       const statuses = { found: "Registration signal", no_signal: "No registration signal", unavailable: "Unavailable", rate_limited: "Blocked or rate limited", timeout: "Timed out", skipped: "Skipped" };
-      html += `<details class="registration-coverage"><summary>Holehe checks: ${registration.checked || 0} answered of ${registration.attempted || 0} eligible · ${registration.catalogue_count || 0} service modules</summary>
+      html += `<details class="registration-coverage"><summary>Email registration checks: ${registration.checked || 0} answered of ${registration.attempted || 0} eligible · ${registration.catalogue_count || 0} service checks</summary>
         <p class="hint">Every service has its own outcome. Skipped or blocked checks are not negative results.</p>
-        <ul class="svc-list">${(registration.services || []).map((r) => `<li><span class="svc-name">${esc(r.service)}</span><span class="pill">${esc(statuses[r.status] || r.status)}</span><span class="svc-ev">${esc(r.reason)}</span></li>`).join("")}</ul></details>`;
+        <ul class="svc-list">${(registration.services || []).map((r) => `<li><span class="svc-name">${esc(r.service)}</span><span class="pill">${esc(statuses[r.status] || r.status)}</span><span class="svc-ev">${esc(r.engine || "Holehe")} · ${esc(r.reason)}</span></li>`).join("")}</ul></details>`;
     }
     html += `<p class="hint svc-note">Breach records show historical service associations. Registration signals are service responses, not verified profiles or proof of ownership. No signal does not prove no account. Combined leak lists are excluded from account evidence. <a href="https://github.com/megadose/holehe" target="_blank" rel="noopener">Holehe source</a></p>`;
     return html;
@@ -1585,11 +1700,17 @@
 
   // ---------------------------------------------------------------- run
   async function run() {
+    await window.MyReconAccount?.ready;
     const tool = TOOLS[activeTool];
     const input = $("#queryInput");
     // Never trim a secret, leading and trailing spaces are part of a password.
     const value = tool.secret ? input.value : input.value.trim();
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
+    if (tool.route) {
+      try { sessionStorage.setItem("myrecon.deep-search.launch", JSON.stringify({ query: value })); } catch {}
+      location.assign(tool.route);
+      return;
+    }
     enterToolMode();
 
     // Local-only tools resolve in the browser. They deliberately clear
@@ -1626,6 +1747,8 @@
 
     $("#runBtn").disabled = true;
     lastResult = null;
+    guestSnapshot = null;
+    try { sessionStorage.removeItem(GUEST_REPORT_KEY); } catch {}
     try {
       if (activeTool === "username") {
         await runUsernameStream(value, body);
@@ -1633,6 +1756,7 @@
         setLoading(activeTool);
         const data = await api(tool.endpoint, body);
         lastResult = { tool: activeTool, query: value, data };
+        rememberGuestReport(activeTool, value, data);
         renderSafely(RENDERERS[activeTool] || renderIp, data);
         pushHistory(activeTool, value);
         bindActions();
@@ -1640,6 +1764,7 @@
     } catch (e) {
       if (e instanceof GateError) setGate(e); else setError(e.message);
     } finally {
+      activeScanUid = null;
       $("#runBtn").disabled = false;
       refreshScopeNote(true);
     }
@@ -1700,7 +1825,7 @@
       return;
     }
     if (!st || !st.user) {
-      note.textContent = "Free standard scan across 500+ platforms. Guests see 100; sign in for 5 complete standard scans a day.";
+      note.textContent = "Real standard scan across 500+ platforms. Guests see the first two result cards; sign in to view all results. Free accounts get 5 standard scans a day.";
       return;
     }
     if (scope === "extended") {
@@ -1741,7 +1866,7 @@
         </div>
         <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
         <div class="scan-facts"><span>${size} platforms in sweep</span>
-          <span>${preview ? "Guest preview: first 100 platform verdicts visible" : "Confirmed matches appear as platforms answer"}</span></div>
+          <span>${!signedIn() ? "Real scan: first two result cards visible, then sign in to view all" : "Confirmed matches appear as platforms answer"}</span></div>
       </div>
       <div class="live-found" id="liveFound" hidden>
         <div class="section-label">${preview ? "Visible matches so far" : "Found so far"}: <span id="liveCount">0</span></div>
@@ -1795,11 +1920,15 @@
   async function consumeUsernameStream(value, body, signal, resumeJob = null, onJob = () => {}) {
     setScanning(body);
     let res;
+    const requestUid = window.MyReconAccount?.state()?.user?.uid || null;
+    activeScanUid = requestUid;
     try {
       const endpoint = resumeJob ? "/api/username/jobs/" + encodeURIComponent(resumeJob) + "/stream" : CFG.endpoints.usernameStream;
+      const headers = requestUid ? await authHeaders() : {};
+      if (requestUid && window.MyReconAccount?.state()?.user?.uid !== requestUid) throw new Error("Your account changed. Start this lookup again.");
       res = await fetch(CFG.apiBase + endpoint, {
         method: resumeJob ? "GET" : "POST",
-        headers: { "Content-Type": "application/json", ...(await authHeaders()) },
+        headers: { "Content-Type": "application/json", ...headers },
         body: resumeJob ? undefined : JSON.stringify(body),
         signal,
       });
@@ -1823,6 +1952,7 @@
     let savedId = null;
 
     const handleLine = (line) => {
+      if (requestUid && window.MyReconAccount?.state()?.user?.uid !== requestUid) throw new Error("Your account changed before the scan finished. Start this lookup again.");
       line = line.trim();
       if (!line) return;
       let ev; try { ev = JSON.parse(line); } catch { return; }
@@ -1847,7 +1977,9 @@
     } finally { await reader.cancel().catch(() => {}); }
 
     if (!finalData) throw new Error("The scan did not complete. Please try again.");
+    if (!finalData.guest_access && (window.MyReconAccount?.state()?.user?.uid || null) !== requestUid) throw new Error("Your account changed before the report could be displayed.");
     lastResult = { tool: "username", query: value, data: finalData };
+    rememberGuestReport("username", value, finalData);
     renderSafely(renderUsername, finalData);
     if (savedId) toast("Saved to your scans.");
     pushHistory("username", value);
@@ -1863,16 +1995,21 @@
       if (!signedIn()) {
         throw new GateError("Sign in to open your saved scans.", "sign_in_required");
       }
+      const requestUid = window.MyReconAccount.state().user.uid;
+      const headers = await authHeaders();
+      if (window.MyReconAccount.state().user?.uid !== requestUid) throw new Error("Your account changed. Open this scan again.");
       const res = await fetch(CFG.apiBase + "/api/history/" + encodeURIComponent(id),
-        { headers: await authHeaders() });
+        { headers });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.status === "error") throw errorFrom(res, data);
+      if (window.MyReconAccount.state().user?.uid !== requestUid) throw new Error("Your account changed before the saved scan arrived.");
       const scan = data.scan;
       const q = scan.query || {};
       $("#queryInput").value = q.username || "";
       const radio = document.querySelector(`input[name="scope"][value="${q.scope === "full" || q.scope === "extended" ? q.scope : "standard"}"]`);
       if (radio) radio.checked = true;
       lastResult = { tool: "username", query: q.username || "", data: scan };
+      resultUid = window.MyReconAccount.state().user.uid;
       enterToolMode();
       renderSafely(renderUsername, scan);
       bindActions();
@@ -1887,6 +2024,7 @@
     setLoading("username");
     const data = await api(CFG.endpoints.username, body);
     lastResult = { tool: "username", query: value, data };
+    rememberGuestReport("username", value, data);
     renderSafely(renderUsername, data);
     pushHistory("username", value);
     bindActions();
@@ -1946,19 +2084,19 @@
   }
 
   function shareLink() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     copyText(shareUrl(), "Shareable link copied to clipboard.");
   }
 
   // Native share sheet (mobile + supported desktop browsers). Falls back to
   // copying the link when the Web Share API isn't available.
   async function shareNative() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     // lastExposure is only computed for username/email and is not cleared by the
     // other renderers, so gate on the tool or a stale score leaks into the text.
     const scored = lastResult.tool === "username" || lastResult.tool === "email";
     const scoreBit = scored && lastExposure ? `, exposure score ${lastExposure.score}/100 (${lastExposure.label})`
-      : lastResult.tool === "email" ? `, ${window.MyReconEmailOutcome(lastResult.data).label}` : "";
+      : lastResult.tool === "email" && !lastResult.data.guest_access ? `, ${window.MyReconEmailOutcome(lastResult.data).label}` : "";
     const preview = lastResult.tool === "username" ? previewMeta(lastResult.data) : null;
     const previewBit = preview
       ? `, guest preview: ${preview.visible} of ${preview.checked} platform verdicts visible` : "";
@@ -1975,12 +2113,12 @@
   }
 
   function copySummary() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     copyText(buildTextSummary(lastResult), "Summary copied to clipboard.");
   }
 
   function printReport() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     const meta = $("#printMeta");
     const preview = lastResult.tool === "username" ? previewMeta(lastResult.data) : null;
     if (meta) meta.textContent = `${TOOLS[lastResult.tool].label} report · Target: ${lastResult.query} · ${new Date().toLocaleString()}`
@@ -1997,6 +2135,10 @@
   function buildTextSummary(res) {
     const d = res.data;
     const L = [`MyRecon, ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
+    if (d.guest_access) {
+      for (const card of d.cards || []) if (!card.locked) L.push(card.title || "Result", JSON.stringify(card.data), "");
+      return L.join("\n");
+    }
     if (d.partial) {
       L.push("Search partially completed. Unavailable checks do not mean no match.");
       [...new Set((d.errors || []).map((error) => error.message || `${error.source || "A source"} unavailable`))]
@@ -2013,7 +2155,15 @@
       if (preview) L.push(`Guest preview: ${preview.visible} of ${preview.checked} platforms shown; ${preview.hidden} platform verdicts require sign-in.`, "");
       const all = [].concat(d.results?.profiles || [], d.results?.documents || [], d.results?.mentions || []);
       L.push(`${all.length} ${preview ? "visible results" : "results"} found:`);
-      all.forEach((r) => L.push(`- ${r.platform || hostOf(r.url)}, ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`));
+      all.forEach((r) => {
+        L.push(`- ${r.platform || hostOf(r.url)}, ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`);
+        if (r.display_name) L.push(`  Name: ${r.display_name}`);
+        if (r.bio) L.push(`  Bio: ${r.bio}`);
+        if (r.profile_pic_url) L.push(`  Avatar: ${r.profile_pic_url}`);
+        if (r.public_links?.length) L.push(`  Public links: ${r.public_links.join(", ")}`);
+        Object.entries(r.statistics || {}).forEach(([key, value]) => L.push(`  ${key.replace(/_/g, " ")}: ${value}`));
+        if (r.metadata_source) L.push(`  Source: ${r.metadata_source.platform}; ${r.metadata_source.url}; ${r.metadata_source.basis}`);
+      });
     } else if (res.tool === "email") {
       const a = d.analysis || {}, s = d.summary || {};
       L.push(`Provider: ${a.provider || "-"} (${a.provider_type || "-"})`);
@@ -2037,7 +2187,7 @@
       }
       if (d.registration_checks && d.registration_checks.status !== "skipped") {
         L.push(`Registration checks: ${d.registration_checks.checked || 0} answered of ${d.registration_checks.attempted || 0} eligible`);
-        (d.registration_checks.services || []).forEach((r) => L.push(`- ${r.service}: ${r.status}; ${r.reason}`));
+        (d.registration_checks.services || []).forEach((r) => L.push(`- ${r.service} (${r.engine || "Holehe"}): ${r.status}; ${r.reason}`));
       }
       const svc = (d.linked_services && d.linked_services.services) || [];
       const evidence = d.evidence_report;
@@ -2122,7 +2272,7 @@
     } catch { return []; }
   }
   function saveCurrent(btn) {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     let s = getSaved().filter((x) => !(x.tool === lastResult.tool && x.query === lastResult.query));
     s.unshift({ tool: lastResult.tool, query: lastResult.query, at: Date.now(), note: quickStat(lastResult) });
     if (!storageSet(SKEY, JSON.stringify(s.slice(0, 50)))) {
@@ -2135,6 +2285,7 @@
   }
   function quickStat(res) {
     const d = res.data;
+    if (d.guest_access) return `${d.guest_access.total_cards} result cards`;
     if (res.tool === "username") return `${(d.summary || {}).profiles || 0} profiles`;
     if (res.tool === "email") {
       const outcome = window.MyReconEmailOutcome(d);
@@ -2187,7 +2338,7 @@
   }
 
   function exportResult(kind) {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     const base = `myrecon-${lastResult.tool}-${Date.now()}`;
     if (kind === "json") {
       download(base + ".json", JSON.stringify(exportData(lastResult), null, 2), "application/json");
@@ -2198,6 +2349,8 @@
   }
 
   function exportData(res) {
+    if (res.data.guest_access) return { status: res.data.status, query: res.data.query, partial: res.data.partial,
+      notices: res.data.notices, cards: (res.data.cards || []).filter(c => !c.locked) };
     if (res.tool !== "email") return res.data;
     const outcome = window.MyReconEmailOutcome(res.data);
     const platforms = window.MyReconEmailOutcome.platforms?.(res.data);
@@ -2296,6 +2449,8 @@
   function switchTool(name) {
     if (!TOOLS[name]) return;
     activeTool = name;
+    lastResult = null;
+    lastExposure = null;
     $$(".tab").forEach((t) => {
       const on = t.dataset.tool === name;
       t.setAttribute("aria-selected", String(on));
@@ -2491,6 +2646,15 @@
       // Sign-in / upgrade prompts. Unlock uses the query from the rendered
       // preview so editing the input cannot silently unlock a different scan.
       resultsEl().addEventListener("click", async (e) => {
+        const unlock = e.target.closest("[data-guest-reveal]");
+        if (unlock) {
+          if (!signedIn()) {
+            try { await window.MyReconAccount.signIn(); }
+            catch (error) { toast(error.message || "Sign-in could not complete.", "err"); return; }
+          }
+          if (signedIn()) await revealGuestReport();
+          return;
+        }
         const el = e.target.closest("[data-gate]");
         if (!el) return;
         const want = el.dataset.gate;
@@ -2514,7 +2678,27 @@
         if (b) setResultsView(b.dataset.view);
       });
       $$('input[name="scope"]').forEach((el) => el.addEventListener("change", () => refreshScopeNote(false)));
-      if (window.MyReconAccount) window.MyReconAccount.onChange(() => refreshScopeNote(false));
+      if (window.MyReconAccount) window.MyReconAccount.onChange((state) => {
+        refreshScopeNote(false);
+        const uid = state.user?.uid || null;
+        if (activeScanUid && activeScanUid !== uid) {
+          liveSeen = new Set();
+          lastResult = null;
+          lastExposure = null;
+          resultsEl().innerHTML = defaultEmpty();
+        }
+        if (lastResult && resultUid && resultUid !== uid) {
+          lastResult = null;
+          lastExposure = null;
+          resultUid = null;
+          if (guestSnapshot && guestSnapshot.tool === activeTool) {
+            lastResult = guestSnapshot;
+            renderSafely(RENDERERS[activeTool], guestSnapshot.data);
+            bindActions();
+          } else resultsEl().innerHTML = defaultEmpty();
+        }
+        if (uid && lastResult?.data?.guest_access?.locked_count) revealGuestReport();
+      });
       refreshScopeNote(false);
       $("#revealBtn")?.addEventListener("click", () => {
         setReveal($("#queryInput").type === "password");
@@ -2524,6 +2708,20 @@
       // so a crafted link can never pre-fill, or auto-submit, a password.
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
       const linked = params.get("tool");
+      if (!linked) {
+        try {
+          const saved = JSON.parse(sessionStorage.getItem(GUEST_REPORT_KEY) || "null");
+          if (saved && RENDERERS[saved.tool] && Array.isArray(saved.data?.cards) && saved.data?.guest_access?.report_token) {
+            switchTool(saved.tool);
+            $("#queryInput").value = saved.query || "";
+            guestSnapshot = lastResult = saved;
+            enterToolMode();
+            renderSafely(RENDERERS[saved.tool], saved.data);
+            bindActions();
+            window.MyReconAccount?.ready.then(() => { if (signedIn()) revealGuestReport(); });
+          }
+        } catch {}
+      }
       if (linked && TOOLS[linked] && !TOOLS[linked].secret) {
         switchTool(linked);
         if (params.get("scan")) openSavedScan(params.get("scan"));

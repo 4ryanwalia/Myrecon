@@ -9,8 +9,13 @@ import re
 import ssl
 import sys
 from urllib.parse import parse_qsl, urlsplit
+if __package__:
+    from modules import selected_email_checks as selected
+else:
+    import selected_email_checks as selected
 
 CATALOG = json.loads((Path(__file__).resolve().parents[1] / "data" / "email-account-services.json").read_text(encoding="utf-8"))
+CATALOG["services"] += selected.SERVICES
 
 
 def normalize(raw, row, blocked=False, failed=False):
@@ -89,7 +94,8 @@ async def run(email, httpx, trio, checkpoint=None):
             async def before(request):
                 nonlocal blocked, calls
                 calls += 1
-                if calls > 5 or not request_allowed(request):
+                if (calls > 5 or not request_allowed(request)
+                        or (row.get("engine") and not selected.permitted(request, row))):
                     blocked = True
                     raise httpx.RequestError("Request excluded", request=request)
             async def after(response):
@@ -97,15 +103,18 @@ async def run(email, httpx, trio, checkpoint=None):
                 if response.status_code in (403, 429): throttled = True
                 elif response.status_code >= 500: failed = True
             try:
-                module = importlib.import_module(row["module"])
-                if hashlib.sha256(Path(module.__file__).read_text(encoding="utf-8").encode("utf-8")).hexdigest() != row["sha256"]:
+                module = None if row.get("engine") else importlib.import_module(row["module"])
+                if module and hashlib.sha256(Path(module.__file__).read_text(encoding="utf-8").encode("utf-8")).hexdigest() != row["sha256"]:
                     rows[index] = normalize(None, row)
                     rows[index]["reason"] = "Module differs from reviewed version"
                     return
                 with trio.move_on_after(7) as timeout:
                     async with httpx.AsyncClient(timeout=4, follow_redirects=False, verify=tls_context,
                                                   event_hooks={"request": [before], "response": [after]}) as client:
-                        await getattr(module, row["id"])(email, client, out)
+                        if module:
+                            await getattr(module, row["id"])(email, client, out)
+                        else:
+                            out.append(await selected.check(email, client, row))
                 if timeout.cancelled_caught:
                     rows[index]["reason"] = "Service time budget reached"
                     return
@@ -122,7 +131,7 @@ async def run(email, httpx, trio, checkpoint=None):
             # Nursery scheduling is not FIFO. Consumers take from this ordered
             # queue so mainstream checks really start before the long tail.
             order = sorted(enumerate(CATALOG["services"]), key=lambda pair:
-                           pair[1]["id"] not in {"spotify", "github", "instagram", "twitter", "pinterest", "soundcloud", "amazon", "patreon"})
+                           pair[1]["id"] not in {"huggingface", "hackerrank", "spotify", "github", "instagram", "twitter", "pinterest", "soundcloud", "amazon", "patreon"})
             pending = iter(order)
             async def consume():
                 for index, row in pending:

@@ -1,4 +1,4 @@
-const CACHE = "myrecon-worker-console-v2";
+const CACHE = "myrecon-worker-console-v3";
 const SHELL = [
   "/worker-console/",
   "/worker-console/index.html",
@@ -24,5 +24,16 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET" || new URL(event.request.url).origin !== self.location.origin) return;
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    try {
+      const response = await fetch(event.request);
+      if (response.ok) await cache.put(event.request, response.clone());
+      return response;
+    } catch (_) {
+      const cached = await cache.match(event.request);
+      if (cached) return cached;
+      throw _;
+    }
+  })());
 });

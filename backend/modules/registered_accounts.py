@@ -8,9 +8,11 @@ from pathlib import Path
 import subprocess
 import sys
 import threading
+from modules.selected_email_checks import SERVICES as SELECTED_SERVICES
 
 CATALOG_PATH = Path(__file__).resolve().parents[1] / "data" / "email-account-services.json"
 CATALOG = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+CATALOG["services"] += SELECTED_SERVICES
 _SLOTS = threading.BoundedSemaphore(2)
 
 
@@ -21,7 +23,7 @@ def result(rows, status="ok"):
     attempted = len(rows) - counts["skipped"]
     if status == "ok":
         status = "ok" if checked == attempted else "partial" if checked else "unavailable"
-    return {"status": status, "engine": "Holehe", "source": CATALOG["source"],
+    return {"status": status, "engine": "Holehe + MyRecon selected checks", "source": CATALOG["source"],
             "revision": CATALOG["revision"], "catalogue_count": len(rows),
             "checked": checked, "attempted": attempted, "found": counts["found"],
             "partial": checked < attempted, "counts": counts, "services": rows}
@@ -30,6 +32,7 @@ def result(rows, status="ok"):
 def baseline(status="unavailable"):
     return [{"service": r["name"], "id": r["id"], "domain": r["domain"],
              "method": r["method"], "status": status if r["enabled"] else "skipped",
+             "engine": r.get("engine", "Holehe"),
              "reason": "Registration check unavailable" if r["enabled"] else r["skip_reason"]}
             for r in CATALOG["services"]]
 
@@ -77,6 +80,7 @@ def scan_registered_accounts(email: str) -> dict:
                 return result(baseline(), "unavailable")
             clean.append({"service": expected["name"], "id": expected["id"],
                           "domain": expected["domain"], "method": expected["method"],
+                          "engine": expected.get("engine", "Holehe"),
                           "status": row["status"], "reason": row["reason"]})
         # The worker returns only the fixed public service schema, never
         # recovery phone numbers, names, email fragments or provider bodies.

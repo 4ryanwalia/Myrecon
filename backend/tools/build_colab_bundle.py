@@ -1,5 +1,6 @@
 """Build a reviewed source-only worker ZIP and ready-to-upload CPU notebook."""
 import argparse
+import base64
 import hashlib
 import json
 from pathlib import Path
@@ -7,7 +8,7 @@ import zipfile
 
 FILES = (
     "services/scan_engine.py", "tools/colab_worker.py", "modules/sweep.py",
-    "modules/username_checker.py", "modules/profile_identity.py", "core/netguard.py",
+    "modules/username_checker.py", "modules/profile_identity.py", "modules/username_integrations.py", "core/netguard.py",
     "data/platforms_full.json", "data/platforms_extra.json",
 )
 
@@ -24,6 +25,7 @@ def build(destination, worker_label="Colab worker", notebook_name="MyRecon CPU S
         for package in ("services", "tools", "modules", "core"):
             bundle.writestr(zipfile.ZipInfo(package + "/__init__.py"), "", compress_type=zipfile.ZIP_DEFLATED)
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+    embedded_bundle = base64.b64encode(archive.read_bytes()).decode("ascii")
     cells = []
 
     def markdown(text):
@@ -34,10 +36,13 @@ def build(destination, worker_label="Colab worker", notebook_name="MyRecon CPU S
                       "execution_count": None, "outputs": []})
 
     markdown("# MyRecon CPU scan worker\n\n"
-        "Use **Runtime > Run all** after uploading the matching ZIP. Enter the hidden token prompt "
+        "Use **Runtime > Run all**. The worker files are included in this notebook and load automatically. Enter the hidden token prompt "
         "once and the worker starts automatically for up to **10 hours**. Google can end the runtime earlier. "
         "Render owns login, billing, "
         "storage and the fallback. This notebook does not host a public server or bypass session limits.\n\n"
+        "Keep the final worker cell running. Closing the Colab tab can make Colab show **Connect** again. "
+        "If the runtime is still running, connecting reattaches the page; if it ended, choose **Connect** and "
+        "use **Runtime > Run all** again. MyRecon does not bypass Colab session limits or reconnect a stopped runtime.\n\n"
         "Choose **Runtime > Change runtime type > CPU**. Keep this notebook private. "
         "The ZIP contains scanner source and catalogue data, no account or payment secrets. "
         "An interrupted session leaves committed checkpoints on Render's persistent store.\n\n"
@@ -55,18 +60,17 @@ def build(destination, worker_label="Colab worker", notebook_name="MyRecon CPU S
          "import psutil\n"
          "print('RAM GiB:', round(psutil.virtual_memory().total / 1024**3, 1))\n")
     markdown("## Load the matching worker bundle\n"
-        "Open the Files sidebar and use **Upload to session storage** to upload "
-        "`myrecon-colab-worker.zip` before running the next cell. The hash check binds this notebook "
-        "to the reviewed bundle. For later sessions you can keep the ZIP in a private Drive folder "
-        "and load it manually; Drive stores files and Colab runs them.")
+        "The next cell loads the bundled scanner automatically. No ZIP upload or Drive access is needed. "
+        "The hash check binds this notebook to the reviewed worker files.")
     code("from pathlib import Path\n"
-         "import hashlib, zipfile\n"
+         "import base64, hashlib, io, zipfile\n"
+         f"bundle_bytes = base64.b64decode({embedded_bundle!r}, validate=True)\n"
+         f"assert hashlib.sha256(bundle_bytes).hexdigest() == '{digest}', 'Wrong worker bundle'\n"
          "name = Path('/content/myrecon-colab-worker.zip')\n"
-         "assert name.is_file(), 'Upload the worker ZIP using Files > Upload to session storage'\n"
-         f"assert hashlib.sha256(name.read_bytes()).hexdigest() == '{digest}', 'Wrong worker bundle'\n"
+         "name.write_bytes(bundle_bytes)\n"
          "worker_root = Path('/content/myrecon-worker')\n"
          "worker_root.mkdir(exist_ok=True)\n"
-         "with zipfile.ZipFile(name) as bundle:\n"
+         "with zipfile.ZipFile(io.BytesIO(bundle_bytes)) as bundle:\n"
          "    for entry in bundle.infolist():\n"
          "        target = (worker_root / entry.filename).resolve()\n"
          "        assert target.is_relative_to(worker_root.resolve()), 'Invalid ZIP path'\n"
@@ -86,13 +90,14 @@ def build(destination, worker_label="Colab worker", notebook_name="MyRecon CPU S
          "finally:\n"
          "    del worker\n")
     markdown("## Verification\n"
-        "Start one scan in MyRecon, check progress and completion, then stop this worker during "
+        "After the first poll, the worker cell prints **Live status confirmed**. Open the Worker Console and expect "
+        "the matching label within about 10 seconds. Start one scan in MyRecon, check progress and completion, then stop this worker during "
         "a second scan and confirm Render resumes it after lease expiry. Compare checked platforms "
         "and results, verify one allowance was spent, and watch Render CPU/memory. "
         "A notebook connection alone does not establish production reliability. "
         "Colab sessions and available resources are limited; restart manually when necessary.")
     notebook = {"nbformat": 4, "nbformat_minor": 5,
-                "metadata": {"colab": {"name": "MyRecon CPU Scan Worker.ipynb"},
+                "metadata": {"colab": {"name": notebook_name},
                              "kernelspec": {"name": "python3", "display_name": "Python 3"}},
                 "cells": cells}
     (destination / notebook_name).write_text(json.dumps(notebook, indent=2), encoding="utf-8")

@@ -43,7 +43,7 @@ const ROOT = path.join(__dirname, "..");
 const SITE = "https://www.myrecon.xyz";
 
 /** Directories that never contain indexable pages. */
-const EXCLUDE_DIRS = new Set(["node_modules", ".git", ".vercel", "content", "data", "scripts"]);
+const EXCLUDE_DIRS = new Set(["node_modules", ".git", ".vercel", "content", "data", "scripts", "tests"]);
 
 /** Individual files that are real pages but must not be indexed. */
 const EXCLUDE_FILES = new Set(["404.html"]);
@@ -97,9 +97,11 @@ function toUrlPath(file, html) {
   if (canonicalHref) {
     try {
       const canonical = new URL(canonicalHref, SITE);
-      if (["myrecon.xyz", "www.myrecon.xyz"].includes(canonical.hostname)) {
+      if (["myrecon.xyz", "www.myrecon.xyz"].includes(canonical.hostname) && canonical.protocol === "https:") {
+        if (canonical.search || canonical.hash) return null;
         return canonical.pathname || "/";
       }
+      return null;
     } catch {
       // Fall through to the path on disk when a page has a malformed canonical.
     }
@@ -153,8 +155,14 @@ function main() {
     const html = fs.readFileSync(file, "utf8");
     const url = toUrlPath(file, html);
 
-    const robots = html.match(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
-    if (robots && /noindex|none/i.test(robots[1])) {
+    if (url === null) {
+      skipped.push(`${path.relative(ROOT, file)} (external canonical)`);
+      continue;
+    }
+    const noindex = [...html.matchAll(/<meta\b[^>]*>/gi)].some(([tag]) =>
+      /\bname\s*=\s*["'](?:robots|googlebot)["']/i.test(tag) &&
+      /\bcontent\s*=\s*["'][^"']*\b(?:noindex|none)\b/i.test(tag));
+    if (noindex || /<meta\b[^>]*http-equiv=["']refresh["']/i.test(html)) {
       skipped.push(`${url} (noindex)`);
       continue;
     }

@@ -5,6 +5,7 @@ bounded and reconstructed against the server's catalogue before enrichment.
 """
 import hashlib
 import json
+import math
 import time
 from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from pathlib import Path
@@ -29,7 +30,7 @@ def fingerprint(scope, deep=False):
     digest = hashlib.sha256(json.dumps(catalogue(scope, deep), sort_keys=True).encode())
     root = Path(__file__).resolve().parents[1]
     for name in ("services/scan_engine.py", "modules/sweep.py", "modules/username_checker.py",
-                 "modules/profile_identity.py", "core/netguard.py"):
+                 "modules/profile_identity.py", "modules/username_integrations.py", "core/netguard.py"):
         digest.update((root / name).read_bytes().replace(b"\r\n", b"\n"))
     return digest.hexdigest()
 
@@ -41,7 +42,8 @@ def _safe_image(value):
         parts = urlsplit(value)
     except ValueError:
         return None
-    return value if parts.scheme in ("http", "https") and parts.hostname else None
+    return value if (parts.scheme in ("http", "https") and parts.hostname
+                     and parts.username is None and parts.password is None) else None
 
 
 def normalise(rows, username, scope, deep=False):
@@ -92,6 +94,30 @@ def normalise(rows, username, scope, deep=False):
                      "source": "username_sweep", "username": username,
                      "display_name": str(row.get("display_name") or "")[:100] or None}
         clean["profile_pic_url"] = _safe_image(row.get("profile_pic_url"))
+        if scope != "standard" and p.get("integration") and row.get("verdict") == FOUND:
+            from modules.username_integrations import endpoint_url
+            # Preserve reviewed adapter metadata through the worker boundary,
+            # with bounded fields and attribution reconstructed by the server.
+            for field, limit in (("bio", 2000), ("display_name", 200)):
+                if isinstance(row.get(field), str):
+                    clean[field] = row[field][:limit]
+            for field in ("followers", "following"):
+                value = row.get(field)
+                if type(value) in (int, float) and math.isfinite(value) and value >= 0:
+                    clean[field] = value
+            links = row.get("public_links")
+            if isinstance(links, list):
+                clean["public_links"] = list(dict.fromkeys(
+                    url for item in links[:30] if (url := _safe_image(item))))
+            statistics = row.get("statistics")
+            if isinstance(statistics, dict):
+                clean["statistics"] = {key[:60]: value for key, value in list(statistics.items())[:20]
+                                       if isinstance(key, str) and type(value) in (int, float)
+                                       and math.isfinite(value) and value >= 0}
+            clean["metadata_source"] = {"platform": name,
+                                        "url": endpoint_url(p, username),
+                                        "basis": "public account object"}
+            clean["metadata_complete"] = True
         # RTDB treats null object fields as deletion. Hash and persist the same
         # representation so optional metadata cannot invalidate checkpoints.
         out.append({key: value for key, value in clean.items() if value is not None})

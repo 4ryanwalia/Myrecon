@@ -61,6 +61,9 @@ def email(value: str) -> str:
     value = _strip(value, "email").lower()
     if not _EMAIL_RE.match(value) or len(value) > 254:
         raise ValidationError("Please enter a valid email address.")
+    local, host = value.rsplit("@", 1)
+    if len(local) > 64 or local.startswith(".") or local.endswith(".") or ".." in local or not _DOMAIN_RE.fullmatch(host):
+        raise ValidationError("Please enter a valid email address.")
     return value
 
 

@@ -2,11 +2,11 @@
 import copy
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import unquote, urlsplit
 
 from modules.deep_search_plan import LABELS, build_plan, dedupe_key, is_profile, matches_context, section_for
 from modules.deep_search_sources import ACTIVITY_SOURCES, NAME_SOURCES, Missing, keybase
 from modules.deep_search_web import run_plan
+from modules.profile_connections import connections
 
 
 def _search_email(parsed, emit, stop):
@@ -59,12 +59,16 @@ def search(parsed, emit, stop=None):
         return _search_email(parsed, emit, stop)
     plan = build_plan(subject, mode, context)
     result = {"status": "ok", **parsed, "activity": [], "accounts": [], "people": [], "identity": None,
-              "owner_links": [], "sections": [], "source_checks": [], "plan": plan, "notes": [], "queries_run": 0}
+              "owner_links": [], "connections": [], "connection_trail": parsed.get("connection_trail", []),
+              "connection_limits": {"suggestions": 30, "follow_depth": 3},
+              "sections": [], "source_checks": [], "plan": plan, "notes": [], "queries_run": 0}
     lock = threading.Lock()
     seen = set()
+    network_checks = {}
 
     def publish():
         if not stop.is_set():
+            result["connections"] = connections(result, network_checks)
             emit({"type": "partial", "data": copy.deepcopy(result)})
 
     def web_hits(query, hits):
@@ -115,17 +119,8 @@ def search(parsed, emit, stop=None):
                     if data and label in ACTIVITY_SOURCES and mode == "handle":
                         result["activity"].append(data)
                         for link in data["declared"]:
-                            parts = urlsplit(link["url"])
-                            host = (parts.hostname or "").removeprefix("www.")
-                            segments = [unquote(s).removeprefix("@") for s in parts.path.split("/") if s]
-                            if segments and segments[0] in {"in", "user", "users", "profile"}:
-                                segments = segments[1:]
-                            alias = segments[0] if segments and host in {"github.com", "x.com", "twitter.com", "instagram.com", "linkedin.com", "reddit.com", "bsky.app", "dev.to"} else None
-                            if alias and alias.casefold() == subject.casefold():
-                                alias = None
-                            if alias and not is_profile(link["url"], alias):
-                                alias = None
-                            result["owner_links"].append({**link, "alias": alias, "declared_on": data["platform"] + " · " + data["handle"]})
+                            result["owner_links"].append({**link, "declared_on": data["platform"] + " · " + data["handle"],
+                                                          "source_url": data["url"]})
                     elif data:
                         result["accounts"].extend(data.get("accounts", []))
                         result["people"].extend(data.get("people", []))
@@ -145,5 +140,7 @@ def search(parsed, emit, stop=None):
         "Accounts sharing a handle can belong to unrelated people. Name records are candidates, not confirmed identities.",
         "Instagram results are indexed profiles, captions and mentions. Private content, likes and Instagram comment bodies are not available.",
         "Mastodon checks cover mastodon.social only. Public posts and comments are limited to the recent items each source returns.",
+        "Linked handles are checked only when you choose Follow. Emails are never swept automatically. Suggestions and follow depth are bounded.",
     ])
+    result["connections"] = connections(result, network_checks)
     return result

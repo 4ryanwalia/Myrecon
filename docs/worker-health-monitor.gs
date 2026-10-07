@@ -41,14 +41,18 @@ function runWorkerHealthCheck() {
       headers: { Authorization: "Bearer " + token },
       muteHttpExceptions: true,
     });
-    if (response.getResponseCode() !== 200) throw new Error("status endpoint returned " + response.getResponseCode());
+    if (response.getResponseCode() !== 200) throw statusFailure(response);
     body = JSON.parse(response.getContentText());
-    if (body.status !== "ok" || !Array.isArray(body.workers)) throw new Error("unexpected status response");
+    if (body.status !== "ok" || !Array.isArray(body.workers)) {
+      throw { reason: "malformed_response", message: "Render returned an unexpected worker-status response. It will retry automatically." };
+    }
   } catch (error) {
-    const next = { api: "unavailable", workers: prior.workers || {} };
+    const reason = error && error.reason || "unavailable";
+    const detail = error && error.message || "The health monitor could not read the worker status. It will retry automatically.";
+    const next = { api: "unavailable", reason: reason, workers: prior.workers || {} };
     properties.setProperty(MYRECON_WORKER_STATE_PROPERTY, JSON.stringify(next));
-    if (prior.api !== "unavailable") {
-      send(recipient, "MyRecon worker monitor cannot reach Render", "The health monitor could not read the worker status. Render or the monitor endpoint may be unavailable. It will retry automatically.");
+    if (prior.api !== "unavailable" || prior.reason !== reason) {
+      send(recipient, "MyRecon worker monitor cannot read live status", detail);
     }
     return;
   }
@@ -72,7 +76,7 @@ function runWorkerHealthCheck() {
       if (!isDown(prior.workers[label])) alerts.push(label + " is no longer reporting and is treated as offline.");
     }
   }
-  properties.setProperty(MYRECON_WORKER_STATE_PROPERTY, JSON.stringify({ api: "ok", workers: nextWorkers }));
+  properties.setProperty(MYRECON_WORKER_STATE_PROPERTY, JSON.stringify({ api: "ok", reason: "", workers: nextWorkers }));
   if (prior.api === "unavailable") alerts.unshift("Render worker monitoring is reachable again.");
   if (alerts.length) send(recipient, "MyRecon worker health update", alerts.join("\n\n"));
 }
@@ -86,10 +90,32 @@ function sendWorkerHealthTest() {
 function readState(properties) {
   try {
     const state = JSON.parse(properties.getProperty(MYRECON_WORKER_STATE_PROPERTY) || "{}");
-    return { api: state.api || "new", workers: state.workers || {} };
+    return { api: state.api || "new", reason: state.reason || "", workers: state.workers || {} };
   } catch (_) {
-    return { api: "new", workers: {} };
+    return { api: "new", reason: "", workers: {} };
   }
+}
+
+function statusFailure(response) {
+  const status = response.getResponseCode();
+  let code = "";
+  try { code = String(JSON.parse(response.getContentText()).code || ""); } catch (_) {}
+  if (status === 503 && code === "worker_status_unconfigured") {
+    return {
+      reason: "status_token_unconfigured",
+      message: "Render has no SCAN_WORKER_STATUS_TOKEN yet. Set a separate random value of at least 32 characters on Render, then copy that exact value into MYRECON_SCAN_STATUS_TOKEN in this Apps Script project.",
+    };
+  }
+  if (status === 401) {
+    return {
+      reason: "status_token_rejected",
+      message: "Render rejected MYRECON_SCAN_STATUS_TOKEN. Keep it separate from SCAN_WORKER_TOKEN and make it exactly match SCAN_WORKER_STATUS_TOKEN on Render.",
+    };
+  }
+  return {
+    reason: "status_http_" + status,
+    message: "Render returned HTTP " + status + " while reading worker status. It will retry automatically.",
+  };
 }
 
 function isDown(state) {

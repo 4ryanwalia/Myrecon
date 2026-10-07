@@ -27,13 +27,21 @@ from unrelated web-service hosting. Confirm the intended workload fits your
 account's current terms before enabling public traffic:
 [Colab FAQ](https://research.google.com/colaboratory/faq.html).
 
-After uploading the matching worker ZIP, use **Runtime > Run all** and enter the
+Open the current notebook, use **Runtime > Run all** and enter the
 dedicated token in the hidden prompt. The worker starts as part of that flow and
 runs for up to 600 minutes (10 hours). This is the worker's own duration, not a
 guarantee of Colab availability. Temporary failures to reach Render while polling
 the queue are retried within that same duration; invalid credentials still stop
 the worker. No dummy workload, automatic Colab reconnection or idle-limit bypass
 is used. A new Google runtime still requires setup and manual startup.
+
+Closing the Colab tab can make its UI show **Connect** when you return. That
+button attaches the browser to a Colab runtime; it is not MyRecon's live-status
+signal. If the final worker cell is still running after reconnecting, it continues
+to poll Render. If Colab ended the runtime, choose **Connect** and run all cells
+again. A successful poll prints `Live status confirmed for Worker 01.` in a
+current numbered notebook. The Worker Console should show that label as
+`idle`, `busy` or `recovering` within about 10 seconds.
 
 ## 1. Prepare Render
 
@@ -98,7 +106,9 @@ The output is in `output/colab-worker/`:
 - `myrecon-colab-worker.zip`
 - `SHA256.txt`
 
-The allowlisted ZIP includes only the scanner engine, fixed platform catalogues,
+The generated notebook embeds that ZIP and verifies its hash before extraction.
+The separate ZIP remains available for inspection; uploading it to Colab is no
+longer required. The allowlisted ZIP includes only the scanner engine, fixed platform catalogues,
 network guard and worker client. It excludes `.env`, service accounts, repository
 history, payments and server configuration. The notebook checks the ZIP's hash
 before extracting it. Rebuild both files whenever the scanner changes; a worker
@@ -110,18 +120,22 @@ server use the same fingerprint despite Windows/Linux line-ending differences.
 1. Upload/open the notebook in your existing signed-in Colab account.
 2. Select **Runtime > Change runtime type > CPU**. No GPU is useful here.
 3. Run the dependency cell and the CPU/RAM diagnostics.
-4. Open the Files sidebar, use **Upload to session storage** to upload the
-   matching worker ZIP, then run the bundle verification cell.
+4. Run the bundle verification cell. The matching worker ZIP is embedded in
+   the notebook and extracted automatically, including in a fresh runtime.
 5. In the worker cell enter your Render API origin, for example
    `https://myrecon.onrender.com`. No path, token or query string belongs in it.
 6. Enter the dedicated worker token in the hidden prompt. The token is held in
    runtime memory and is not inserted into the notebook source or outputs.
 7. Leave the worker cell executing during this manually started session. It
-   runs one scan at a time and defaults to 16 concurrent platform probes.
+   runs one scan at a time and defaults to 16 concurrent platform probes. Its
+   `Live status confirmed` line means Render recorded the health check-in.
 8. Stop the cell to disconnect; interrupted work is released when possible and
    otherwise recovered after lease expiry. Restart manually for another session.
 
 You may save the notebook and ZIP in a private Drive folder for later reuse.
+Current generated notebooks include the ZIP, so starting on a phone requires
+no session-storage upload. Older notebooks still require a manual upload until
+replaced with the current generated version.
 The notebook does not require granting access to your entire Drive. Drive
 stores the files; the Colab VM performs the work. Data transfer and Firebase
 usage still have quotas even when your Colab compute is included in AI Pro.
@@ -207,8 +221,9 @@ When rebuilding a numbered notebook, preserve its label. For example:
 python backend/tools/build_colab_bundle.py --output output/colab-worker/five-worker-pool --worker-label "Worker 01" --notebook-name "MyRecon CPU Worker 01.ipynb"
 ```
 
-Rebuild the shared ZIP once and replace the matching notebook files before
-uploading them to Drive. Do not run two active notebooks with the same label.
+Rebuild and replace each numbered notebook in Drive when the scanner changes;
+each notebook contains the matching shared ZIP. Do not run two active notebooks
+with the same label.
 
 Set the following additional Render settings after deploying this version:
 

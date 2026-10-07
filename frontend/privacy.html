@@ -66,13 +66,13 @@
 
   <main class="container legal" id="main">
     <h1>Privacy Policy</h1>
-    <p class="legal-meta">Last updated: 25 September 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
+    <p class="legal-meta">Last updated: 7 October 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
 
     <div class="legal-summary">
       <h2>The short version</h2>
       <ul>
-        <li><strong>Accounts are optional.</strong> Guests can see a 100-platform preview from a 500+ platform username sweep. If you sign in with Google, we hold your email, name, scan counts and saved username scans, which you can delete. We never see card, UPI or bank details: Razorpay handles Indian payments and PayPal or Buy Me a Coffee handles international payments when enabled.</li>
-        <li><strong>Guest scans are not saved to an account.</strong> Results can sit in a short-lived server memory cache for up to ten minutes. When recoverable username jobs are enabled, temporary job inputs, progress and results are scheduled for removal after 24 hours. Completed username scans while signed in are saved to your account history.</li>
+        <li><strong>Accounts are optional.</strong> Guests can run real lookups and see the first two result cards. Deep Search shows section headings with findings locked. Sign-in reveals standard results; Deep Search also requires an eligible plan. If you sign in with Google, we hold your email, name, scan counts and saved username scans, which you can delete. We never see card, UPI or bank details: Razorpay handles Indian payments and PayPal or Buy Me a Coffee handles international payments when enabled.</li>
+        <li><strong>Guest scans are not saved to an account.</strong> Complete guest reports, including email and Deep Search results, may remain in server memory for up to 30 minutes so sign-in can reveal the same scan. Hidden details are withheld from guest responses. Reports can expire earlier after a restart or capacity limit. A temporary report token and visible preview stay in this browser tab's session storage to support sign-in redirects. Other non-email results may use a ten-minute server memory cache. When recoverable username jobs are enabled, temporary job inputs, progress and results are scheduled for removal after 24 hours. Completed username scans while signed in are saved to your account history.</li>
         <li><strong>Recent lookup history also lives in your browser</strong>, where you can wipe it in one click.</li>
         <li><strong>Passwords never leave your device.</strong> The password checker hashes locally and sends five characters of that hash.</li>
         <li><strong>We never sell data or use it to build profiles.</strong> Google Analytics measures site visits. Search values are not sent to analytics or advertising systems.</li>
@@ -143,13 +143,13 @@
               <td><strong>The identifier you look up</strong>: a username, email address, domain, IP address or name</td>
               <td>To run the lookup you asked for</td>
               <td>Our API, then on to the public sources needed to answer it</td>
-              <td>Email lookups are processed live without application caching or account database retention. Username reports are saved for signed-in users; other lookup results may be cached in memory for up to 10 minutes</td>
+              <td>Email lookups are processed live without shared result caching or account database retention. Guest reports, including email and Deep Search, may be retained in memory for up to 30 minutes for authenticated reveal. Username reports are saved for signed-in users; other lookup results may be cached in memory for up to 10 minutes</td>
             </tr>
             <tr>
               <td><strong>Results of that lookup</strong></td>
               <td>To show you the answer and to make a repeated identical lookup fast</td>
-              <td>Returned to your browser; non-email results may also sit in the in-memory cache</td>
-              <td>Email results are not cached by the application. Other results may be cached for up to 10 minutes. Signed-in username reports remain until deleted; browser history and saved investigations remain until you clear them</td>
+              <td>Only unlocked details return to your browser. Complete guest reports may remain temporarily in server memory for authenticated reveal; non-email results may also use the lookup cache</td>
+              <td>Guest reveal reports expire within 30 minutes and can expire earlier. Email results do not enter a shared lookup cache or account history. Other results may be cached for up to 10 minutes. Signed-in username reports remain until deleted; browser history and saved investigations remain until you clear them</td>
             </tr>
             <tr>
               <td><strong>Your IP address</strong></td>
@@ -239,7 +239,7 @@
     <section id="forms">
       <h2>4. Forms and the email links</h2>
       <h3>The breach-check box</h3>
-      <p>Breach articles carry a box asking for an email address. Submitting it does not send the address to us as a form: the page hands it to the lookup tool on the home page, in your browser, and the tool then runs an ordinary email lookup, processed exactly as <a href="#what">section 2</a> describes and not stored. Because it is passed in the address bar, the address may appear in your browser history. Clear your history if that matters to you, or use the tool on the home page directly.</p>
+      <p>Breach articles carry a box asking for an email address. Submitting it does not send the address to us as a form: the page hands it to the lookup tool on the home page, in your browser, and the tool then runs an ordinary email lookup, processed exactly as <a href="#what">section 2</a> describes. Guest reports may remain in server memory for up to 30 minutes to support sign-in reveal; they are not saved to account history. Because the address is passed in the address bar, it may appear in your browser history. Clear your history if that matters to you, or use the tool on the home page directly.</p>
       <p>These boxes ask for an address and nothing else. We recommend you only check addresses that are yours.</p>
       <h3>The email links</h3>
       <p>There is no contact form anywhere on this site. Every &ldquo;contact&rdquo; control is a plain <code>mailto:</code> link that opens your own mail application with the subject and questions pre-filled. Nothing is transmitted until you press send in your own mail client, and what you send travels through your mail provider to our mailbox. You control exactly what goes in it.</p>
@@ -296,7 +296,7 @@
     <section id="retention">
       <h2>8. How long anything is kept</h2>
       <ul>
-        <li><strong>Guest search queries and results:</strong> up to 10 minutes in an in-memory cache, then discarded; no saved guest scan history.</li>
+        <li><strong>Guest search queries and results:</strong> up to 30 minutes in server memory for authenticated reveal, with earlier expiry possible after restarts or capacity eviction; no saved guest account history. Non-email lookup caches may retain results for up to 10 minutes. A visible preview and opaque reveal token remain in this browser tab's session storage until replaced, cleared or the tab is closed. The token alone cannot reveal hidden details without sign-in and any required Deep Search entitlement.</li>
         <li><strong>Signed-in username scans:</strong> saved to your account until you delete individual scans, clear your scan history or request account deletion.</li>
         <li><strong>IP address for rate limiting:</strong> 60 seconds.</li>
         <li><strong>Server logs:</strong> the standard short retention of our hosting providers, used for security and diagnostics and not to profile visitors.</li>

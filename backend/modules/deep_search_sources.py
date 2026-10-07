@@ -113,6 +113,7 @@ def github(h):
     u = c.get("https://api.github.com/users/" + quote(h, safe=""))
     same_handle(u.get("login"), h)
     events, available = c.optional("https://api.github.com/users/" + quote(h, safe="") + "/events/public", {"per_page": 30})
+    socials, _ = c.optional("https://api.github.com/users/" + quote(h, safe="") + "/social_accounts")
     posts = []
     for ev in events if isinstance(events, list) else []:
         payload = ev.get("payload") or {}
@@ -123,7 +124,8 @@ def github(h):
     return presence("GitHub", u["login"], "https://github.com/" + quote(u["login"]), "GitHub public API",
                     display_name=u.get("name"), bio=plain(" · ".join(str(u[k]) for k in ("bio", "company", "location") if u.get(k))),
                     since=day(u.get("created_at")), stats={"Repos": u.get("public_repos"), "Followers": u.get("followers")},
-                    declared=declared(link(u.get("blog")), link("https://x.com/" + quote(u["twitter_username"], safe=""), "X") if u.get("twitter_username") else None, *bio_links(u.get("bio"))),
+                    declared=declared(link(u.get("blog")), link("https://x.com/" + quote(u["twitter_username"], safe=""), "X") if u.get("twitter_username") else None, *bio_links(u.get("bio")),
+                                      *(link(s.get("url")) for s in (socials if isinstance(socials, list) else []) if isinstance(s, dict))),
                     posts=posts[:5], activity_available=available)
 
 
@@ -158,6 +160,7 @@ def reddit(h):
                 posts.append(p)
     return presence("Reddit", h, "https://www.reddit.com/user/" + quote(h), "Reddit public JSON",
                     bio=plain((u.get("subreddit") or {}).get("public_description")), since=day(u.get("created_utc")),
+                    declared=declared(*bio_links((u.get("subreddit") or {}).get("public_description"))),
                     stats={"Comment karma": u.get("comment_karma")}, posts=posts[:5], activity_available=available)
 
 
@@ -199,8 +202,14 @@ def mastodon(h):
     fields = []
     for f in u.get("fields") or []:
         urls = bio_links(html.unescape(f.get("value") or ""))
-        if urls and urls[0]:
-            fields.append({**urls[0], "label": plain(f.get("name")), "verified": bool(f.get("verified_at"))})
+        # A timestamp does not identify which URL was verified in a field
+        # containing several URLs. Those links remain unverified.
+        verified_at = f.get("verified_at") if len([item for item in urls if item]) == 1 else None
+        for item in urls:
+            if item:
+                fields.append({**item, "label": plain(f.get("name")), "verified": bool(verified_at),
+                               "verification": {"provider": "Mastodon", "verified_at": verified_at,
+                                                "field": plain(f.get("name")), "source": "mastodon.social public API"} if verified_at else None})
     return presence("Mastodon (mastodon.social)", h + "@mastodon.social", safe_url(u.get("url")) or "https://mastodon.social/@" + quote(h), "mastodon.social public API",
                     display_name=u.get("display_name"), bio=plain(u.get("note")), since=day(u.get("created_at")),
                     stats={"Posts": u.get("statuses_count"), "Followers": u.get("followers_count")},
@@ -239,6 +248,8 @@ def github_name(name):
         if normalise(u.get("name") or "") != normalise(name):
             continue
         accounts.append({"platform": "GitHub", "handle": u["login"], "url": "https://github.com/" + quote(u["login"]),
+                         "declared": declared(link(u.get("blog")), *bio_links(u.get("bio")),
+                                              link("https://x.com/" + quote(u["twitter_username"], safe="")) if u.get("twitter_username") else None),
                          "detail": plain(" · ".join(str(u[k]) for k in ("name", "company", "location", "bio") if u.get(k))),
                          "source": "GitHub full-name search", "candidate": True})
     return {"accounts": accounts}
@@ -325,6 +336,9 @@ def keybase(h):
         url = safe_url(p.get("service_url") or p.get("proof_url"))
         if url and p.get("nametag"):
             proofs.append({"platform": plain(p.get("proof_type")), "handle": plain(p["nametag"]), "url": url,
+                           "verification": {"provider": "Keybase", "state": p.get("state"),
+                                            "proof_url": safe_url(p.get("proof_url")), "proof_type": plain(p.get("proof_type")),
+                                            "source": "Keybase published proofs"},
                            "is_alias": p["nametag"].casefold() != h.casefold()})
     return {"identity": {"username": h, "proofs": proofs, "url": "https://keybase.io/" + quote(h), "source": "Keybase published proofs"}}
 

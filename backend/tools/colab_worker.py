@@ -42,6 +42,19 @@ class Worker:
         self.http = http or requests.Session()
         self.catalogues = {scope: scan_engine.fingerprint(scope) for scope in ("standard", "full", "extended")}
         self.catalogues["standard:deep"] = scan_engine.fingerprint("standard", True)
+        self._presence_recorded = None
+
+    def note_presence(self, response):
+        """Tell the notebook whether Render recorded the operator health check-in."""
+        recorded = response.get("presence_recorded") if isinstance(response, dict) else None
+        if recorded is None or recorded == self._presence_recorded:
+            return
+        self._presence_recorded = recorded
+        if recorded:
+            print("Live status confirmed for " + self.worker_label + ".")
+        else:
+            print("Worker connected, but Render could not save its live status. "
+                  "Check the Render Firebase configuration and logs.")
 
     def call(self, action, payload):
         # Redirects are refused so a worker credential never follows another
@@ -78,7 +91,7 @@ class Worker:
         def renew():
             while not stop.wait(10):
                 try:
-                    self.call("heartbeat", lease)
+                    self.note_presence(self.call("heartbeat", lease))
                 except Exception:
                     lost.set()
                     return
@@ -139,6 +152,7 @@ class Worker:
                     response = self.call("claim", {"worker_id": self.worker_id,
                         "worker_label": self.worker_label, "catalogues": self.catalogues,
                         "protocol": scan_engine.PROTOCOL})
+                    self.note_presence(response)
                 except RuntimeError:
                     print("Render is temporarily unavailable; retrying while this session remains active.")
                     time.sleep(min(10, max(0, end - time.monotonic())))

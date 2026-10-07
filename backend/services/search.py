@@ -56,7 +56,7 @@ def _enrich_profiles(found: list[dict], emit=_noop) -> None:
     answered nineteenth.
     """
     targets = sorted(
-        (r for r in found if r.get("exists")), key=_profile_rank
+        (r for r in found if r.get("exists") and not r.get("metadata_complete")), key=_profile_rank
     )[:_ENRICH_LIMIT]
     if not targets:
         return
@@ -299,7 +299,8 @@ def _bucket(results: list[dict]) -> tuple:
 
 # Only what a live card shows. Status codes, match scores and anything
 # binary stay out of the stream.
-_LIVE_FIELDS = ("platform", "url", "confidence", "display_name", "bio", "profile_pic_url")
+_LIVE_FIELDS = ("platform", "url", "confidence", "display_name", "bio", "profile_pic_url",
+                "followers", "following", "public_links", "statistics", "metadata_source")
 
 
 def _live_view(result: dict, username: str) -> dict:

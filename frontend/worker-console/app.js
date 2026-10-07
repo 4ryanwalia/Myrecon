@@ -6,6 +6,8 @@
   let deferredInstall = null;
   let previousStates = new Map();
   let timer = null;
+  let hasSnapshot = false;
+  let activeUserId = null;
 
   function message(text, error = false) {
     const notice = byId("notice");
@@ -29,7 +31,7 @@
     if (!workers.length) {
       const card = document.createElement("article");
       card.className = "card";
-      card.innerHTML = "<h2>No worker has checked in</h2><p>Open the private notebook launcher, connect a Colab runtime, and run all cells.</p>";
+      card.innerHTML = "<h2>No live check-in yet</h2><p>Open the private notebook launcher, run all cells, and keep the final worker cell running until it prints Live status confirmed.</p>";
       root.append(card);
       return;
     }
@@ -65,14 +67,33 @@
     }
   }
 
+  function responseMessage(data, status) {
+    if (data.code === "worker_console_unconfigured") {
+      return "Set SCAN_WORKER_OPERATOR_EMAIL on Render to the Google address used here, then refresh.";
+    }
+    if (data.code === "worker_console_not_owner") {
+      return "This Google account is not the configured worker-console owner. Use the configured account or update SCAN_WORKER_OPERATOR_EMAIL on Render.";
+    }
+    if (status === 401 || data.code === "sign_in_required") {
+      return "Your sign-in could not be verified. Sign in again, then refresh.";
+    }
+    return data.error || "Could not load live worker status.";
+  }
+
   async function loadStatus() {
     const state = account().state();
+    const userId = state.user && state.user.uid;
+    if (activeUserId !== userId) {
+      activeUserId = userId;
+      hasSnapshot = false;
+      previousStates = new Map();
+      byId("workers").replaceChildren();
+    }
     if (!state.user) {
       byId("summary").textContent = "Sign in with the owner Google account to see live worker status.";
       byId("sign-in").hidden = false;
       byId("refresh").hidden = true;
       byId("launcher").hidden = true;
-      byId("workers").replaceChildren();
       return;
     }
     byId("sign-in").hidden = true;
@@ -83,7 +104,12 @@
         headers: await account().authHeaders(), cache: "no-store",
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "Could not load worker status.");
+      if (!response.ok) {
+        const error = new Error(data.error || "Could not load worker status.");
+        error.status = response.status;
+        error.data = data;
+        throw error;
+      }
       byId("summary").textContent = `Last checked ${new Date(data.observed_at * 1000).toLocaleTimeString()}.`;
       const launcher = byId("launcher");
       launcher.hidden = !data.launcher_url;
@@ -91,15 +117,22 @@
       renderWorkers(data.workers || []);
       for (const worker of data.workers || []) foregroundNotification(worker);
       previousStates = new Map((data.workers || []).map((worker) => [worker.label, worker.state]));
+      hasSnapshot = true;
     } catch (error) {
-      byId("summary").textContent = "The console could not refresh.";
-      message(error.message, true);
+      byId("summary").textContent = hasSnapshot
+        ? "Showing the last successful status. Live refresh is unavailable."
+        : "Live worker status is unavailable.";
+      message(responseMessage(error.data || {}, error.status || 0) || error.message, true);
     }
   }
 
   function schedule() {
     clearInterval(timer);
     timer = setInterval(() => { if (!document.hidden) loadStatus(); }, 30_000);
+  }
+
+  function refreshWhenVisible() {
+    if (!document.hidden) loadStatus();
   }
 
   window.addEventListener("beforeinstallprompt", (event) => {
@@ -122,6 +155,8 @@
     });
     await account().ready;
     account().onChange(loadStatus);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    window.addEventListener("focus", refreshWhenVisible);
     await loadStatus();
     schedule();
   });

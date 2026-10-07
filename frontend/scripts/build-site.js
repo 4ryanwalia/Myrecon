@@ -50,6 +50,7 @@ const scripts = [
   'build-blog.js',
   'enhance-content-pages.js',
   'enhance-site-footer.js',
+  'build-discovery-pages.js',
   'finalize-editorial.js',
   'version-site-assets.js',
   'install-google-tag.js',

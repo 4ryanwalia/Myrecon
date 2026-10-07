@@ -49,7 +49,6 @@ _CATALOGUE_PATH = os.path.join(
 with open(_CATALOGUE_PATH, encoding="utf-8") as _fh:
     CATALOGUE: list = json.load(_fh)
 
-TOTAL = len(CATALOGUE)
 
 # The Extended scan's extra tier: sites from the Maigret list that passed this
 # engine's own test (a known-real handle FOUND, two impossible ones not). Built
@@ -62,6 +61,11 @@ try:
 except FileNotFoundError:
     EXTRA = []
 
+from modules.username_integrations import append_missing
+
+# Reviewed web account adapters stay separate from the Android-exported data.
+CATALOGUE = append_missing(CATALOGUE, EXTRA)
+TOTAL = len(CATALOGUE)
 EXTENDED = CATALOGUE + EXTRA
 EXTENDED_TOTAL = len(EXTENDED)
 
@@ -484,6 +488,10 @@ class Sweep:
                 pass
         if time.monotonic() > self.deadline or self._stop.is_set():
             return self._hit(p, UNKNOWN, url, 0, "unverified", "out_of_time")
+
+        if p.get("integration"):
+            from modules.username_integrations import probe
+            return probe(self, p)
 
         api = self._probe_api(p, handle)
         if api is not None:

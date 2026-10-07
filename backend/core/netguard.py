@@ -131,22 +131,29 @@ class _PinnedAdapter(HTTPAdapter):
         self.poolmanager.pool_classes_by_scheme = dict(self._pool_classes)
 
 
-def safe_get(url: str, **kwargs) -> requests.Response:
+def safe_get(url: str, *, allowed_hosts=None, redirect_limit=_MAX_REDIRECTS, **kwargs) -> requests.Response:
     """
     `requests.get` for URLs we did not choose.
 
     Redirects are followed manually so every hop is checked; `allow_redirects`
     in kwargs is ignored for that reason. Raises `BlockedRequest` when a hop
     points anywhere internal, and lets `requests` exceptions through unchanged.
+    `allowed_hosts` narrows destinations; `redirect_limit=0` refuses redirects.
     """
     kwargs.pop("allow_redirects", None)
+    if type(redirect_limit) is not int or not 0 <= redirect_limit <= _MAX_REDIRECTS:
+        raise BlockedRequest("invalid redirect limit")
     streaming = kwargs.pop("stream", False)
     deadline = time.monotonic() + 20
     if kwargs.get("verify") is False or kwargs.get("proxies"):
         raise BlockedRequest("unverified TLS and proxy overrides are not allowed")
     current = url
 
-    for _ in range(_MAX_REDIRECTS + 1):
+    for _ in range(redirect_limit + 1):
+        # Optional adapters can narrow the destination policy further. Check
+        # every hop before DNS or connection, not only the final response URL.
+        if allowed_hosts is not None and urlsplit(current).hostname not in allowed_hosts:
+            raise BlockedRequest("destination is outside the allowed hosts")
         addresses = _refuse_internal(current)
         session = requests.Session()
         session.trust_env = False  # no environment proxies, cookies or .netrc
