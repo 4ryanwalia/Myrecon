@@ -58,6 +58,7 @@ function renderFooter() {
 }
 
 function enhance(file) {
+  if (file === path.join(ROOT, 'index.html')) return false;
   let html = fs.readFileSync(file, "utf8");
   const before = html;
   if (!/<html\b/i.test(html) || !/<\/body>/i.test(html)) return false;

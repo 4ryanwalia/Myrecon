@@ -219,7 +219,7 @@ function collectEntries({ root = ROOT, environment = process.env, today, gitDate
     }
 
     const section = SECTIONS.find((s) => s.test(url));
-    entries.push({ url, lastmod: lastmod(file, html, changedDates, { root, today, gitDateFor }), ...section });
+    entries.push({ url, lastmod: lastmod(file, html, changedDates, { root, today, gitDateFor }), ...section, ...articleMedia(html, root) });
   }
 
   // Homepage first, then alphabetically, deterministic output, so a rebuild
@@ -242,15 +242,41 @@ function collectEntries({ root = ROOT, environment = process.env, today, gitDate
 
 const xmlEscape = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
+function articleMedia(html, root) {
+  const schemas = [];
+  function collect(value) {
+    if (!value || typeof value !== 'object') return;
+    if (value['@type']) schemas.push(value);
+    for (const child of Object.values(value)) if (typeof child === 'object') collect(child);
+  }
+  for (const [, attributes, text] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
+    if (attribute(`<script ${attributes}>`, 'type') !== 'application/ld+json') continue;
+    try { collect(JSON.parse(text)); } catch { /* Invalid data is not discovery metadata. */ }
+  }
+  function localAsset(href) {
+    try {
+      const url = new URL(href);
+      if (url.origin !== SITE || url.search || url.hash) return false;
+      const target = path.resolve(root, `.${decodeURIComponent(url.pathname)}`);
+      return target.startsWith(root + path.sep) && fs.existsSync(target) && fs.statSync(target).isFile();
+    } catch { return false; }
+  }
+  const image = schemas.find(item => item['@type'] === 'Article' && typeof item.image === 'string' && localAsset(item.image))?.image;
+  const video = schemas.find(item => item['@type'] === 'VideoObject' && item.name && item.description && localAsset(item.thumbnailUrl) && localAsset(item.contentUrl) && validDate(item.uploadDate));
+  return { ...(image ? {image} : {}), ...(video ? {video} : {}) };
+}
+
 function renderSitemap(entries) {
   return (
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">\n` +
     entries
       .map(
         (e) =>
           `  <url><loc>${xmlEscape(SITE + e.url)}</loc>${e.lastmod ? `<lastmod>${e.lastmod}</lastmod>` : ''}` +
-          `<changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`,
+          `<changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority>` +
+          (e.image ? `<image:image><image:loc>${xmlEscape(e.image)}</image:loc></image:image>` : '') +
+          (e.video ? `<video:video><video:thumbnail_loc>${xmlEscape(e.video.thumbnailUrl)}</video:thumbnail_loc><video:title>${xmlEscape(e.video.name)}</video:title><video:description>${xmlEscape(e.video.description)}</video:description><video:content_loc>${xmlEscape(e.video.contentUrl)}</video:content_loc>${/^PT\d+S$/.test(e.video.duration || '') ? `<video:duration>${Number(e.video.duration.slice(2, -1))}</video:duration>` : ''}<video:publication_date>${xmlEscape(e.video.uploadDate)}</video:publication_date></video:video>` : '') + '</url>',
       )
       .join("\n") +
     `\n</urlset>\n`);

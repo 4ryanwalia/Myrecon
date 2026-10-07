@@ -61,6 +61,10 @@ const scripts = [
 ];
 
 const before = publicHtmlHashes();
+// The homepage and its embedded tool are hand-authored. Keep their exact
+// checked-in contents when global article/footer/asset generators run.
+const homepagePath = path.join(ROOT, 'index.html');
+const homepageContents = fs.readFileSync(homepagePath);
 for (const script of scripts) {
   const result = spawnSync(process.execPath, [`scripts/${script}`], {
     cwd: ROOT,
@@ -69,6 +73,7 @@ for (const script of scripts) {
   if (result.error) throw result.error;
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
+fs.writeFileSync(homepagePath, homepageContents);
 
 const changed = changedHtmlPaths(before, publicHtmlHashes());
 const date = changed.length ? latestFrontendCommitDate() : '';

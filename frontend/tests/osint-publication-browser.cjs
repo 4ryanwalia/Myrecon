@@ -16,8 +16,18 @@ const server = http.createServer((req, res) => {
   if (route.endsWith('/')) file = path.join(file, 'index.html');
   else if (!path.extname(file)) file += '.html';
   if (!file.startsWith(root + path.sep) || !fs.existsSync(file)) {res.writeHead(404).end(); return;}
-  const type = {'.html':'text/html', '.js':'application/javascript', '.css':'text/css', '.svg':'image/svg+xml', '.png':'image/png', '.json':'application/json'}[path.extname(file)];
+  const type = {'.html':'text/html', '.js':'application/javascript', '.css':'text/css', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp', '.mp4':'video/mp4', '.vtt':'text/vtt', '.json':'application/json'}[path.extname(file)];
   if (type) res.setHeader('Content-Type', type);
+  const range = req.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
+  if (range) {
+    const size = fs.statSync(file).size;
+    const start = Number(range[1]);
+    const end = Math.min(range[2] ? Number(range[2]) : size - 1, size - 1);
+    if (start >= size || end < start) { res.writeHead(416, {'Content-Range':`bytes */${size}`}).end(); return; }
+    res.writeHead(206, {'Content-Range':`bytes ${start}-${end}/${size}`, 'Accept-Ranges':'bytes', 'Content-Length':end - start + 1});
+    fs.createReadStream(file, {start,end}).pipe(res);
+    return;
+  }
   res.end(fs.readFileSync(file));
 });
 (async () => {
@@ -47,6 +57,28 @@ const server = http.createServer((req, res) => {
             assert.equal(await table.locator('caption').count(), 1, `${route}: accessible table caption`);
             assert.ok(await table.locator('th').count() > 0, `${route}: table headers`);
           }
+          const photo = page.locator('.blog-photo img');
+          await photo.scrollIntoViewIfNeeded();
+          await photo.evaluate(image => image.complete ? null : new Promise(resolve => { image.onload=resolve; image.onerror=resolve; }));
+          assert.equal(await photo.evaluate(image => image.naturalWidth), 1600, `${route}: photo loaded`);
+          const video = page.locator('.blog-explainer video');
+          assert.equal(await video.getAttribute('preload'), 'none', route);
+          assert.equal(await video.getAttribute('autoplay'), null, route);
+          assert.equal(await video.getAttribute('controls'), '', route);
+          await video.scrollIntoViewIfNeeded();
+          await video.evaluate(element => {element.muted=true; return element.play();});
+          await page.waitForFunction(() => document.querySelector('video')?.currentTime > .15);
+          const playback = await video.evaluate(element => {element.pause(); return {duration:element.duration,width:element.videoWidth,height:element.videoHeight,error:element.error?.code};});
+          assert.deepEqual(playback, {duration:32,width:1280,height:720,error:undefined}, `${route}: real MP4 playback`);
+          assert.equal(await video.locator('track[kind="captions"][srclang="en"]').count(), 1, route);
+          const transcript = page.locator('.blog-transcript');
+          await transcript.locator('summary').click();
+          assert.equal(await transcript.locator('li').count(), 4, route);
+          assert.ok(await transcript.locator('ol').isVisible(), `${route}: accessible transcript`);
+          if (route === '/blog/instagram-username-search.html') {
+            await page.locator('.blog-explainer').screenshot({path:path.join(output, `article-video-${base ? 'live' : 'local'}-${width}.png`)});
+            await photo.screenshot({path:path.join(output, `article-photo-${base ? 'live' : 'local'}-${width}.png`)});
+          }
         }
         if (route === '/blog/top-10-osint-tools.html') {
           assert.ok((await page.locator('main').innerText()).includes('3. MyRecon'));
@@ -56,6 +88,6 @@ const server = http.createServer((req, res) => {
       }
       await page.close();
     }
-    console.log(`Verified ${routes.length} public routes at 375px and 1280px: headings, schema, answer order, contents links, tables and overflow`);
+    console.log(`Verified ${routes.length} routes at 375px and 1280px, including twelve loaded photos, real 32s MP4 playback, captions, transcripts, headings and overflow`);
   } finally {await browser.close(); if (!base) server.close();}
 })().catch(error => {console.error(error); server.close(); process.exitCode=1;});

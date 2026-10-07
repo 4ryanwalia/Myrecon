@@ -60,3 +60,35 @@ test('top ten editorial ordering and publisher disclosure are visible and consis
   assert.match(html, /not an independent|not.*performance ranking|not.*benchmark/i);
   assert.ok(html.indexOf('3. MyRecon') !== -1 || /<h[23][^>]*>3[.)].*?MyRecon/.test(html));
 });
+
+test('new article media matches visible content and appears in the sitemap', () => {
+  const media = JSON.parse(fs.readFileSync(path.join(root, 'content/blog-media.json')));
+  assert.equal(Object.keys(media).length, 12);
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  assert.equal([...sitemap.matchAll(/<video:video>/g)].length, 12);
+  assert.equal([...sitemap.matchAll(/<image:image>/g)].length, 12);
+  for (const [slug, item] of Object.entries(media)) {
+    const html = fs.readFileSync(path.join(root, 'blog', `${slug}.html`), 'utf8');
+    const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+    const video = schemas.find(value => value['@type'] === 'VideoObject');
+    assert.equal(video.name, item.title);
+    assert.equal(video.contentUrl, `${site}/assets/media/blog/${slug}.mp4`);
+    assert.ok(sitemap.includes(`<video:content_loc>${video.contentUrl}</video:content_loc>`));
+    assert.equal(video.duration, 'PT32S');
+    assert.ok(html.includes('preload="none"'));
+    assert.ok(!/<video[^>]*\bautoplay\b/.test(html));
+    const captions = fs.readFileSync(path.join(root, 'assets/media/blog', `${slug}.vtt`), 'utf8');
+    for (const [heading, text] of item.steps) {
+      assert.ok(video.transcript.includes(heading) && captions.includes(heading));
+      assert.ok(video.transcript.includes(text) && captions.includes(text));
+    }
+  }
+});
+
+test('homepage is identical to its pre-SEO version and tools were not edited', () => {
+  const {execFileSync} = require('node:child_process');
+  const baseline = execFileSync('git', ['show', '92ff85bb:frontend/index.html'], {cwd:root});
+  assert.ok(baseline.equals(fs.readFileSync(path.join(root, 'index.html'))), 'homepage must remain unchanged');
+  const changedTools = execFileSync('git', ['diff', 'dbdea313', '--name-only', '--', 'frontend/assets/js', 'frontend/assets/css/styles.css', 'frontend/assets/css/fx.css', 'frontend/deep-search.html', 'frontend/pricing.html', 'backend'], {cwd:path.resolve(root, '..'), encoding:'utf8'});
+  assert.equal(changedTools.trim(), '');
+});

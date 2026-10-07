@@ -16,6 +16,13 @@ const ROOT = path.join(__dirname, "..");
 const SOURCE = path.join(ROOT, "content", "blog");
 const OUT = path.join(ROOT, "blog");
 const SITE = "https://www.myrecon.xyz";
+const MEDIA = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/blog-media.json'), 'utf8'));
+const PHOTO_ALT = {
+  'research-workspace': 'Illustrative research desk with a laptop, phone, camera and notebook.',
+  'social-profile-research': 'Illustrative smartphone with a generic public-profile layout beside a laptop and notes.',
+  'privacy-workspace': 'Illustrative privacy workspace with a face-down phone, closed laptop and notebook.',
+};
+const BLOG_CSS_VERSION = require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(ROOT, 'assets/css/blog.css'))).digest('hex').slice(0, 10);
 
 const esc = (value) => String(value == null ? "" : value)
   .replace(/&/g, "&amp;")
@@ -92,7 +99,14 @@ function readArticles() {
       catch (error) { throw new Error(`${file}: invalid metadata JSON (${error.message})`); }
       const body = raw.slice(match[0].length).trim();
       validateArticle(meta, body, file);
-      return { ...meta, slug, body, url: `${SITE}/blog/${slug}.html` };
+      if (MEDIA[slug]) {
+        const media = MEDIA[slug];
+        if (!PHOTO_ALT[media.photo] || !media.title || !media.description || !Array.isArray(media.steps) || media.steps.length !== 4 || !Number.isFinite(new Date(media.uploadDate).getTime())) throw new Error(`${file}: invalid article media metadata`);
+        for (const asset of [`assets/img/blog/${media.photo}.webp`, `assets/media/blog/${slug}.mp4`, `assets/media/blog/${slug}-poster.jpg`, `assets/media/blog/${slug}.vtt`]) {
+          if (!fs.existsSync(path.join(ROOT, asset))) throw new Error(`${file}: missing media asset ${asset}`);
+        }
+      }
+      return { ...meta, slug, body, media: MEDIA[slug], url: `${SITE}/blog/${slug}.html` };
     })
     .sort((a, b) => b.datePublished.localeCompare(a.datePublished) || a.headline.localeCompare(b.headline));
 }
@@ -111,12 +125,21 @@ function schema(article) {
     publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/` },
     isPartOf: { "@id": `${SITE}/#website` },
     mainEntityOfPage: article.url,
+    ...(article.media ? { image: `${SITE}/assets/img/blog/${article.media.photo}.webp`, video: {'@id': `${article.url}#explainer`} } : {}),
   };
   return json(value);
 }
 
 function additionalSchema(article) {
   const values = [];
+  if (article.media) values.push({
+    '@context': 'https://schema.org', '@type': 'VideoObject', '@id': `${article.url}#explainer`,
+    name: article.media.title, description: article.media.description, uploadDate: article.media.uploadDate,
+    thumbnailUrl: `${SITE}/assets/media/blog/${article.slug}-poster.jpg`, contentUrl: `${SITE}/assets/media/blog/${article.slug}.mp4`,
+    duration: 'PT32S', inLanguage: 'en', isFamilyFriendly: true, isPartOf: {'@id': `${article.url}`},
+    transcript: article.media.steps.map(([heading, text]) => `${heading}. ${text}`).join(' '),
+    publisher: {'@type': 'Organization', name: 'MyRecon', url: `${SITE}/`},
+  });
   if (article.faq?.length) values.push({
     '@context': 'https://schema.org', '@type': 'FAQPage', '@id': `${article.url}#faq`,
     mainEntity: article.faq.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })),
@@ -174,14 +197,14 @@ function shellHead({ title, description, url, article, crumbs }) {
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:url" content="${esc(url)}">
-  <meta property="og:image" content="${SITE}/assets/img/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="MyRecon: public-source research and online privacy">
+  <meta property="og:image" content="${SITE}/assets/img/${article?.media ? `blog/${article.media.photo}.webp` : 'og-image.png'}">
+  <meta property="og:image:width" content="${article?.media ? 1600 : 1200}">
+  <meta property="og:image:height" content="${article?.media ? 900 : 630}">
+  <meta property="og:image:alt" content="${article?.media ? PHOTO_ALT[article.media.photo] : 'MyRecon: public-source research and online privacy'}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(title)}">
   <meta name="twitter:description" content="${esc(description)}">
-  <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
+  <meta name="twitter:image" content="${SITE}/assets/img/${article?.media ? `blog/${article.media.photo}.webp` : 'og-image.png'}">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=2">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=2">
   <link rel="manifest" href="/site.webmanifest">
@@ -191,7 +214,7 @@ function shellHead({ title, description, url, article, crumbs }) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=16">
   <link rel="stylesheet" href="/assets/css/fx.css?v=10">
-  <link rel="stylesheet" href="/assets/css/blog.css">
+  <link rel="stylesheet" href="/assets/css/blog.css${article?.media ? `?v=${BLOG_CSS_VERSION}` : ''}">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
 ${article ? `  <meta property="article:published_time" content="${esc(article.datePublished)}T00:00:00Z">\n  <meta property="article:modified_time" content="${esc(article.dateModified)}T00:00:00Z">\n  <meta property="article:section" content="${esc(article.category)}">\n  <script type="application/ld+json">${schema(article)}</script>\n  <script type="application/ld+json">${breadcrumb(article)}</script>\n${additionalSchema(article)}` : `  <script type="application/ld+json">${crumbs}</script>\n`}</head>
@@ -231,7 +254,9 @@ function articlePage(article, articles = []) {
   const firstHeading = content.search(/<h2\b/i);
   const firstIsQuickAnswer = firstHeading >= 0 && /^<h2\b[^>]*id="quick-answer"/i.test(content.slice(firstHeading));
   const tocPosition = firstIsQuickAnswer ? content.indexOf('<h2', firstHeading + 4) : firstHeading;
-  const navigableContent = tocPosition >= 0 ? `${content.slice(0, tocPosition)}${toc}\n${content.slice(tocPosition)}` : content;
+  const photo = article.media ? `<figure class="blog-photo"><img src="/assets/img/blog/${article.media.photo}.webp" alt="${PHOTO_ALT[article.media.photo]}" width="1600" height="900" loading="lazy" decoding="async"><figcaption>AI-created editorial image. The devices and profile layout are illustrative.</figcaption></figure>` : '';
+  const navigableContent = tocPosition >= 0 ? `${content.slice(0, tocPosition)}${photo}${toc}\n${content.slice(tocPosition)}` : content;
+  const explainer = article.media ? `<section class="blog-explainer" aria-labelledby="videoHeading"><span class="kicker">Watch the workflow</span><h2 id="videoHeading">${esc(article.media.title)}</h2><p>${esc(article.media.description)}</p><video controls playsinline preload="none" width="1280" height="720" poster="/assets/media/blog/${article.slug}-poster.jpg" aria-label="${esc(article.media.title)}"><source src="/assets/media/blog/${article.slug}.mp4" type="video/mp4"><track kind="captions" src="/assets/media/blog/${article.slug}.vtt" srclang="en" label="English" default><p><a href="/assets/media/blog/${article.slug}.mp4">Download the explainer video</a>.</p></video><p class="blog-media-note">32 seconds · Silent video with on-screen text and English captions.</p><details class="blog-transcript"><summary>Read the video transcript</summary><ol>${article.media.steps.map(([heading, text]) => `<li><strong>${esc(heading)}.</strong> ${esc(text)}</li>`).join('')}</ol></details></section>` : '';
   const related = articles.filter(item => item.slug !== article.slug).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 3);
   return `${shellHead({ title: article.title, description: article.description, url: article.url, article })}
   <main id="main" class="container">
@@ -240,7 +265,7 @@ function articlePage(article, articles = []) {
       <span class="kicker">${esc(article.category)}</span>
       <h1>${esc(article.headline)}</h1>
       <p class="meta">Updated <time datetime="${esc(article.dateModified)}">${displayDate}</time> · <a href="/about.html">MyRecon editorial</a></p>
-      ${navigableContent}
+      ${navigableContent}${explainer ? `\n      ${explainer}` : ''}
       <div class="callout">
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
       </div>
