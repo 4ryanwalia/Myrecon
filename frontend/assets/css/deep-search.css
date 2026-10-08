@@ -39,21 +39,43 @@
 .ds-summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 0; }
 .ds-summary h2 { font-size: 1.4rem; margin-top: 8px; overflow-wrap: anywhere; }
 .ds-summary p { color: var(--text-dim); line-height: 1.6; }
+#dsOut { min-width: 0; }
 #dsOut .ds-panel { margin-bottom: 18px; }
-.ds-evidence { padding: 18px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
-.ds-evidence h3 { font-size: 1rem; line-height: 1.5; }
-.ds-evidence p { margin-top: 8px; line-height: 1.65; }
-.ds-evidence code { white-space: normal; overflow-wrap: anywhere; }
+#dsOut .ds-psub { font-size: .85rem; line-height: 1.6; }
+#dsOut .ds-evidence {
+  min-width: 0; margin-top: 12px; padding: 16px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--bg-soft); overflow-wrap: anywhere;
+}
+#dsOut .ds-evidence h3 { font-size: 1.05rem; line-height: 1.5; }
+#dsOut .ds-evidence p { margin-top: 8px; line-height: 1.65; }
+#dsOut .ds-evidence code { white-space: normal; overflow-wrap: anywhere; }
+#dsOut .ds-chip { font-size: .75rem; line-height: 1.5; padding: 4px 8px; }
+#dsOut .ds-google-profile > h3 { font-size: 1.15rem; }
+#dsOut .ds-google-profile > .ds-links { gap: 8px; }
 .ds-links { display: flex; gap: 8px 14px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
 .ds-posts { list-style: none; padding-left: 16px; border-left: 2px solid var(--border); margin: 14px 0; }
 .ds-posts li + li { margin-top: 16px; }
 .ds-posts .hint { margin-right: 8px; }
+#dsOut .ds-posts { display: grid; gap: 10px; padding: 0; border-left: 0; }
+#dsOut .ds-posts li {
+  min-width: 0; margin-top: 0; padding: 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
+}
+#dsOut .ds-posts li > p:first-child { margin-top: 0; }
 .ds-google-status { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; line-height: 1.65; margin-bottom: 14px; }
 .ds-google-coverage { margin: 16px 0; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-soft); }
 .ds-google-coverage p { font-size: .86rem; }
 .ds-google-reviews { list-style: none; padding: 0; margin: 16px 0; }
 .ds-google-review { padding: 16px 0; border-top: 1px solid var(--border); }
 .ds-google-review h4 { font-size: .95rem; line-height: 1.5; }
+#dsOut .ds-google-reviews { display: grid; gap: 12px; }
+#dsOut .ds-google-review {
+  min-width: 0; padding: 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
+  overflow-wrap: anywhere;
+}
+#dsOut .ds-google-review h4 { font-size: 1rem; }
 .ds-google-rating { color: var(--ds-warn); font-weight: 650; font-variant-numeric: tabular-nums; }
 .ds-google-text { white-space: pre-wrap; overflow-wrap: anywhere; }
 .ds-google-reply { margin-top: 14px; padding-left: 12px; border-left: 2px solid var(--border); }
@@ -76,6 +98,8 @@
   #ds .input-wrap { flex: 1 1 100%; min-width: 0; }
   #ds .field-row .btn { flex: 1; }
   .ds-summary { gap: 10px; }
+  #dsOut .ds-evidence { padding: 14px; }
+  #dsOut .ds-google-review { padding: 12px; }
   .ds-locked-findings { min-height: 280px; }
   .ds-unlock-overlay { padding: 16px; }
 }

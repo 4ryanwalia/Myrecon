@@ -555,8 +555,28 @@
       if (guestReport && hasAccess()) await revealGuestReport();
     }
   }
+  function initEmbedded() {
+    const section = $("#ds[data-embedded]");
+    if (!section) return false;
+    const sync = () => {
+      const open = location.hash === "#deep-search";
+      section.hidden = !open;
+      document.body.classList.toggle("deep-search-mode", open);
+      $("#deepSearchEntry")?.setAttribute("aria-expanded", String(open));
+      if (open) section.scrollIntoView({ block: "start" });
+    };
+    $("#deepSearchEntry")?.addEventListener("click", () => {
+      // Clicking the selected entry again still brings the tool into view.
+      if (location.hash === "#deep-search") section.scrollIntoView({ block: "start" });
+    });
+    window.addEventListener("hashchange", sync);
+    sync();
+    return true;
+  }
   document.addEventListener("DOMContentLoaded", async () => {
-    initChrome(); modeHint();
+    if (!$("#dsInput")) return;
+    if (!initEmbedded()) initChrome();
+    modeHint();
     let launchQuery = "";
     try {
       const launch = JSON.parse(sessionStorage.getItem("myrecon.deep-search.launch") || "null");

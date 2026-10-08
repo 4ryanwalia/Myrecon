@@ -213,7 +213,7 @@
     deepsearch: {
       label: "Deep Search", icon: "search", placeholder: "Name, @handle or exact email",
       sub: "Investigate public profiles, indexed mentions and Google reviews. Guests can run an investigation; sign in with an eligible plan to view findings.",
-      examples: [], route: "/deep-search.html",
+      examples: [], route: "/#deep-search",
     },
     domain: {
       label: "Domain", icon: "globe", placeholder: "e.g. example.com",
@@ -1744,6 +1744,14 @@
     const value = tool.secret ? input.value : input.value.trim();
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
     if (tool.route) {
+      const deepInput = $("#ds[data-embedded] #dsInput");
+      if (deepInput) {
+        deepInput.value = value;
+        deepInput.dispatchEvent(new Event("input", { bubbles: true }));
+        location.hash = "deep-search";
+        $("#dsRun").click();
+        return;
+      }
       try { sessionStorage.setItem("myrecon.deep-search.launch", JSON.stringify({ query: value })); } catch {}
       location.assign(tool.route);
       return;
@@ -1928,18 +1936,18 @@
     const extended = body && body.scope === "extended";
     const full = extended || (body && body.scope === "full");
     const size = extended ? EXTENDED_LABEL : (full ? FULL_LABEL : "100");
-    const label = extended ? "EXTENDED" : full ? "STANDARD" : "QUICK";
     resultsEl().innerHTML = `
-      <div class="loading scan retro" role="status" aria-live="polite">
-        <div class="retro-title"><span>MYRECON.EXE · ${size} platforms</span><span aria-hidden="true">_ □ ×</span></div>
-        <div class="retro-screen">
-          <div class="retro-line">C:\\MYRECON&gt; ${label} ${esc(String(value || "").slice(0, 60))}</div>
-          <div class="retro-log" id="scanLog" role="log" aria-live="off"></div>
-          <div class="retro-line"><span id="scanPhase" class="retro-caret">Starting scan…</span></div>
-          <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
-          <div class="retro-status"><span id="scanTally">0 found</span><span id="scanPct">0%</span></div>
-          <div class="retro-line hint" id="scanDetail">Cards appear as each platform answers.</div>
+      <div class="loading scan" role="status" aria-live="polite">
+        <div class="scan-head">
+          <div class="spinner" aria-hidden="true"></div>
+          <div class="scan-meta">
+            <h3 id="scanPhase">Preparing scan…</h3>
+            <p class="hint" id="scanDetail">Results will appear below as platforms respond.</p>
+          </div>
+          <div class="scan-pct" id="scanPct">0%</div>
         </div>
+        <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
+        <div class="scan-facts"><span>${size} platforms in sweep</span><span id="scanTally">0 found</span></div>
       </div>
       <div class="live-found" id="liveFound" hidden>
         <div class="section-label">Found so far: <span id="liveCount">0</span></div>
@@ -1964,20 +1972,20 @@
   }
 
   function updateScanUI(ev) {
-    const pct = Math.max(0, Math.min(100, Math.round(ev.percent || 0)));
+    const phaseText = String(ev.phase || "");
+    const detailText = String(ev.detail || "");
+    const preparing = /\bqueued?\b|waiting for a free scan slot/i.test(phaseText + " " + detailText)
+      || /^starting(?:\s+(?:extended|full))?\s+scan/i.test(detailText)
+      || /^checked\s+0\s+of\s+\d+\s+platforms/i.test(detailText);
+    const pct = preparing ? 0 : Math.max(0, Math.min(100, Math.round(Number(ev.percent) || 0)));
     const bar = $("#scanBar"); if (bar) bar.style.width = pct + "%";
     const p = $("#scanPct"); if (p) p.textContent = pct + "%";
-    const phase = $("#scanPhase"); if (phase && ev.phase) phase.textContent = ev.phase + "…";
-    const detail = $("#scanDetail"); if (detail && ev.detail) detail.textContent = ev.detail;
-    const log = $("#scanLog");
-    if (log && ev.detail) {
-      const row = document.createElement("div");
-      row.textContent = ev.detail;
-      if (/\bfound\b/i.test(ev.detail)) row.className = "hit";
-      log.appendChild(row);
-      while (log.childElementCount > 8) log.firstElementChild.remove();
-      log.scrollTop = log.scrollHeight;
-    }
+    const phase = $("#scanPhase");
+    if (phase && (preparing || phaseText)) phase.textContent = preparing
+      ? "Preparing scan…" : phaseText.replace(/[.\u2026]+$/, "") + "…";
+    const detail = $("#scanDetail");
+    if (detail && (preparing || detailText)) detail.textContent = preparing
+      ? "Results will appear below as platforms respond." : detailText;
   }
 
   async function runUsernameStream(value, body) {

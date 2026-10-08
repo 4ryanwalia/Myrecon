@@ -13,6 +13,7 @@ const ASSETS = [
   '/assets/css/content-app-promo.css',
   '/assets/css/deep-search-preview.css',
   '/assets/css/deep-search.css',
+  '/assets/css/deep-search-embedded.css',
   '/assets/js/trust.js',
   '/assets/js/benchmarks.js',
   '/assets/js/username-benchmark.js',

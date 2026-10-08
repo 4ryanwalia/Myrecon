@@ -51,8 +51,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=5bca5cd6a8">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=d0c4f554ff">
-  <link rel="stylesheet" href="/assets/css/deep-search.css?v=007e6e2e26">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=d571c072f3">
+  <link rel="stylesheet" href="/assets/css/deep-search.css?v=b50afa60ba">
+  <link rel="stylesheet" href="/assets/css/deep-search-embedded.css?v=5e1059a3eb">
   <link rel="stylesheet" href="/assets/css/deep-search-preview.css?v=bd7c7cdb1d">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Deep Search: Public Activity & Name Research | MyRecon", "description": "Run a guest Deep Search investigation across public sources. Sign in with an eligible paid account to view findings, Google reviews, public activity and name records.", "url": "https://www.myrecon.xyz/deep-search.html", "isPartOf": {"@id": "https://www.myrecon.xyz/#website"}, "publisher": {"@id": "https://www.myrecon.xyz/#organization"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MyRecon", "item": "https://www.myrecon.xyz/"}, {"@type": "ListItem", "position": 2, "name": "Deep Search", "item": "https://www.myrecon.xyz/deep-search.html"}]}, "dateModified": "2026-09-30"}</script>
   <script type="application/ld+json">{"@type": "WebApplication", "name": "MyRecon Deep Search", "applicationCategory": "SecurityApplication", "operatingSystem": "Any", "url": "https://www.myrecon.xyz/deep-search.html", "publisher": {"@id": "https://www.myrecon.xyz/#organization"}, "description": "Public-source research by name, handle or exact email. Guests can investigate; an eligible paid account is required to view findings. Source limits stay visible.", "@context": "https://schema.org"}</script>
@@ -81,17 +82,6 @@
   <main class="container" id="ds">
     <div class="ds-head"><h1>Deep Search</h1><span class="ds-kicker">Public research</span></div>
     <p class="ds-intro">Go beyond a username scan. Explore public comments, indexed mentions and links published by account owners, search a full name in public records, or check an exact email for a public Google contributor profile and available Maps reviews.</p>
-    <section class="deep-search-preview" id="dsPreview" aria-labelledby="dsPreviewTitle" hidden>
-      <div class="deep-search-preview-heading"><span class="deep-search-plan-tag">Discover more with Deep Search</span><h2 id="dsPreviewTitle">Go deeper than usernames and profiles.</h2><p>A username scan helps you find public accounts. Deep Search adds the activity, mentions and connections around them, with links to the original sources.</p></div>
-      <dl class="deep-search-preview-list">
-        <div><dt>Public comments &amp; posts</dt><dd>Explore recent public activity returned by sources such as GitHub, Hacker News, Reddit and Bluesky.</dd></div>
-        <div><dt>Tagged &amp; mentioned pages</dt><dd>Find indexed discussions, captions and pages that mention a handle, including public Instagram pages.</dd></div>
-        <div><dt>Linked accounts &amp; aliases</dt><dd>Follow links published by account owners and discover different handles they have linked to.</dd></div>
-        <div><dt>Name records &amp; wider context</dt><dd>Search a full name across public records, professional pages, news and research. Add a city or employer for context.</dd></div>
-      </dl>
-      <div class="deep-search-preview-footer"><div><strong>Unlock Deep Search with the ₹99 plan.</strong><p>Get Deep Search, unlimited standard scans and 10 Extended scans with one payment. No renewal. Deep Search does not spend your Extended credits.</p></div><a class="btn" href="/pricing.html">Get the ₹99 plan <span aria-hidden="true">↗</span></a></div>
-      <p class="deep-search-preview-limit">What appears depends on public-source availability. Instagram comments, likes and private content are unavailable. Matches are leads to review, not confirmed identities.</p>
-    </section>
     <div class="panel ds-query">
       <label class="ds-input-label" for="dsInput">Name, handle or email</label>
       <div class="field-row">
@@ -109,13 +99,24 @@
         <button class="btn btn-ghost" id="dsRetryAccess" type="button" hidden>Retry plan check</button>
       </div>
     </section>
-    <p class="ds-foot">Public sources only. Accounts sharing a handle may belong to different people. Name matches remain candidates. <a href="/#tool">Run a free username scan</a>.</p>
+    <div id="dsOut" aria-label="Deep Search results" aria-busy="false"></div>
     <div class="ds-console" id="dsConsole" hidden>
       <div class="ds-chead"><span class="ds-pulse" aria-hidden="true"></span><span class="ds-status" id="dsStatus" role="status">Starting…</span><span class="ds-count" id="dsCount"></span></div>
       <div class="ds-bar"><i id="dsBar"></i></div>
     </div>
     <div class="ds-export-row"><button class="btn btn-ghost btn-sm" id="dsExport" type="button" hidden>Download report JSON</button><button class="btn btn-ghost btn-sm" id="dsExportCsv" type="button" hidden>Download report CSV</button></div>
-    <div id="dsOut" aria-label="Deep Search results" aria-busy="false"></div>
+    <section class="deep-search-preview" id="dsPreview" aria-labelledby="dsPreviewTitle" hidden>
+      <div class="deep-search-preview-heading"><span class="deep-search-plan-tag">Discover more with Deep Search</span><h2 id="dsPreviewTitle">Go deeper than usernames and profiles.</h2><p>A username scan helps you find public accounts. Deep Search adds the activity, mentions and connections around them, with links to the original sources.</p></div>
+      <dl class="deep-search-preview-list">
+        <div><dt>Public comments &amp; posts</dt><dd>Explore recent public activity returned by sources such as GitHub, Hacker News, Reddit and Bluesky.</dd></div>
+        <div><dt>Tagged &amp; mentioned pages</dt><dd>Find indexed discussions, captions and pages that mention a handle, including public Instagram pages.</dd></div>
+        <div><dt>Linked accounts &amp; aliases</dt><dd>Follow links published by account owners and discover different handles they have linked to.</dd></div>
+        <div><dt>Name records &amp; wider context</dt><dd>Search a full name across public records, professional pages, news and research. Add a city or employer for context.</dd></div>
+      </dl>
+      <div class="deep-search-preview-footer"><div><strong>Unlock Deep Search with the ₹99 plan.</strong><p>Get Deep Search, unlimited standard scans and 10 Extended scans with one payment. No renewal. Deep Search does not spend your Extended credits.</p></div><a class="btn" href="/pricing.html">Get the ₹99 plan <span aria-hidden="true">↗</span></a></div>
+      <p class="deep-search-preview-limit">What appears depends on public-source availability. Instagram comments, likes and private content are unavailable. Matches are leads to review, not confirmed identities.</p>
+    </section>
+    <p class="ds-foot">Public sources only. Accounts sharing a handle may belong to different people. Name matches remain candidates. <a href="/#tool">Run a free username scan</a>.</p>
     <section class="ds-panel ds-help" aria-labelledby="dsHelp">
       <h2 id="dsHelp">How to use it</h2>
       <ol><li>Enter a handle, full name or exact email you own or have permission to investigate. For names and handles, add context after a comma to improve relevance.</li><li>Press Investigate to check public sources. Guests see the returned sections with finding details locked. Sign in with an eligible paid account to reveal the retained investigation.</li><li>Open each source before making a connection. Check unavailable and partial-source notices; empty results do not establish absence.</li></ol>
@@ -169,7 +170,7 @@
   <script src="/assets/js/partial-results.js?v=4fbe1f16f7"></script>
   <script src="/assets/js/trust.js?v=50b0508fdc" defer></script>
   <script src="/assets/js/account.js?v=8441725357"></script>
-  <script src="/assets/js/deep-search.js?v=cde203f08f"></script>
+  <script src="/assets/js/deep-search.js?v=0e5a32772a"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
