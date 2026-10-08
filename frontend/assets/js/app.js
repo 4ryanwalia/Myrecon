@@ -1744,13 +1744,9 @@
     const value = tool.secret ? input.value : input.value.trim();
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
     if (tool.route) {
-      const deepInput = $("#ds[data-embedded] #dsInput");
-      if (deepInput) {
-        deepInput.value = value;
-        deepInput.dispatchEvent(new Event("input", { bubbles: true }));
-        location.hash = "deep-search";
-        $("#dsRun").click();
-        return;
+      if (window.MyReconDeepSearch) {
+        enterToolMode();
+        return window.MyReconDeepSearch.run();
       }
       try { sessionStorage.setItem("myrecon.deep-search.launch", JSON.stringify({ query: value })); } catch {}
       location.assign(tool.route);
@@ -1777,7 +1773,8 @@
       } catch (e) {
         setError(e.message);
       } finally {
-        $("#runBtn").disabled = false;
+        if (activeTool === "deepsearch" && window.MyReconDeepSearch) window.MyReconDeepSearch.select(true);
+        else $("#runBtn").disabled = false;
       }
       return;
     }
@@ -1818,7 +1815,8 @@
       if (e instanceof GateError) setGate(e); else setError(e.message);
     } finally {
       activeScanUid = null;
-      $("#runBtn").disabled = false;
+      if (activeTool === "deepsearch" && window.MyReconDeepSearch) window.MyReconDeepSearch.select(true);
+      else $("#runBtn").disabled = false;
       refreshScopeNote(activeTool !== "email");
     }
   }
@@ -2571,6 +2569,7 @@
         : "";
     }
     resultsEl().innerHTML = defaultEmpty();
+    window.MyReconDeepSearch?.select(name === "deepsearch");
     updateDetectHint();
   }
 
@@ -2682,6 +2681,12 @@
       $("#runBtn")?.addEventListener("click", run);
       $("#queryInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
       $("#queryInput")?.addEventListener("input", updateDetectHint);
+      $("#deepSearchEntry")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        switchTool("deepsearch");
+        enterToolMode();
+        $("#queryInput").focus();
+      });
       $("#detectHint")?.addEventListener("click", (e) => {
         const btn = e.target.closest("[data-switch]");
         const target = btn && btn.dataset.switch;
@@ -2806,6 +2811,11 @@
         if (params.get("scan")) openSavedScan(params.get("scan"));
         else if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); }
       }
+      if (location.hash === "#deep-search") switchTool("deepsearch");
+      window.addEventListener("hashchange", () => {
+        if (location.hash === "#deep-search" || location.hash === "#tool=deepsearch") switchTool("deepsearch");
+        else if (location.hash === "#tool" && activeTool === "deepsearch") switchTool("username");
+      });
     }
   });
 })();

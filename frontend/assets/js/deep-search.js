@@ -3,6 +3,11 @@
   "use strict";
   const CFG = { apiBase: "", ...window.MYRECON }, A = window.MyReconAccount;
   const $ = (s) => document.querySelector(s);
+  const embedded = !!$("#ds[data-embedded]");
+  let embeddedActive = false;
+  const inputNode = () => $(embedded ? "#queryInput" : "#dsInput");
+  const runNode = () => $(embedded ? "#runBtn" : "#dsRun");
+  const hintNode = () => $(embedded ? "#panelSub" : "#dsMode");
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   function safeUrl(raw) {
@@ -49,7 +54,7 @@
       const complete = !!saved.data.guest_access.complete;
       guestReport = { ...saved.data, partial: !!saved.data.partial || !complete };
       guestLive = false;
-      if (saved.data.subject) $("#dsInput").value = saved.data.subject + (saved.data.context ? ", " + saved.data.context : "");
+      if (saved.data.subject) inputNode().value = saved.data.subject + (saved.data.context ? ", " + saved.data.context : "");
       render(guestReport, guestLive);
       $("#dsConsole").hidden = false;
       $("#dsConsole").className = complete ? "ds-console done" : "ds-console failed";
@@ -213,7 +218,7 @@
     $("#dsUpgrade").hidden = paid || pending || guest;
     $("#dsRetryAccess").hidden = !pending && !(state.user && guestReport);
     $("#dsRetryAccess").textContent = pending ? "Retry plan check" : paid && guestReport ? "Refresh retained results" : "Refresh access";
-    $("#dsRun").disabled = running || restoring || (!guest && !paid);
+    if (!embedded || embeddedActive) runNode().disabled = running || restoring || (!guest && !paid);
     $("#dsExport").disabled = !paid || !lastReport || isLocked(lastReport);
     $("#dsExportCsv").disabled = $("#dsExport").disabled;
     if (!paid) { $("#dsExport").hidden = true; $("#dsExportCsv").hidden = true; }
@@ -224,8 +229,9 @@
   }
 
   function modeHint() {
-    const subject = $("#dsInput").value.trim().split(",")[0].trim();
-    $("#dsMode").textContent = !subject ? "Enter a name, handle or exact email. Add context after a comma for names and handles."
+    if (embedded && !embeddedActive) return;
+    const subject = inputNode().value.trim().split(",")[0].trim();
+    hintNode().textContent = !subject ? "Enter a name, handle or exact email. Add context after a comma for names and handles."
       : subject.includes("@") && !subject.startsWith("@")
         ? "Email search: public Google contributor profile and available Maps reviews. Use an exact email you own or have permission to check; no context is needed."
       : !subject.startsWith("@") && /\s/.test(subject)
@@ -467,19 +473,19 @@
     return false;
   }
   async function run(requestBody = null) {
-    if (running || restoring) return;
+    if (running || restoring || (embedded && !embeddedActive)) return;
     await A?.ready;
-    if (running || restoring) return;
+    if (running || restoring || (embedded && !embeddedActive)) return;
     if (!renderAccess(accountState())) return;
     if (requestBody && !hasAccess()) return;
-    const input = $("#dsInput"), query = input.value.trim();
+    const input = inputNode(), query = input.value.trim();
     if (!requestBody && !query) { input.focus(); return; }
     const previousReport = requestBody && !isLocked(lastReport) ? lastReport : null;
     running = true;
     stoppedByUser = false;
     linkedNotice = "";
     const uid = accountState().user?.uid || null;
-    $("#dsRun").disabled = true;
+    runNode().disabled = true;
     $("#dsStop").hidden = false;
     resetConsole();
     if (previousReport) {
@@ -558,23 +564,32 @@
   function initEmbedded() {
     const section = $("#ds[data-embedded]");
     if (!section) return false;
-    const sync = () => {
-      const open = location.hash === "#deep-search";
-      section.hidden = !open;
-      document.body.classList.toggle("deep-search-mode", open);
-      $("#deepSearchEntry")?.setAttribute("aria-expanded", String(open));
-      if (open) section.scrollIntoView({ block: "start" });
+    window.MyReconDeepSearch = {
+      run,
+      select(active) {
+        const wasActive = embeddedActive;
+        embeddedActive = active;
+        section.hidden = !active;
+        const lookupResults = $("#results")?.closest("section");
+        if (lookupResults) lookupResults.hidden = active;
+        $("#deepSearchEntry")?.setAttribute("aria-expanded", String(active));
+        if (active) {
+          if (!inputNode().value && typeof renderedReport?.subject === "string") {
+            inputNode().value = renderedReport.subject + (renderedReport.context ? ", " + renderedReport.context : "");
+          }
+          modeHint(); renderAccess(accountState());
+        }
+        else {
+          $("#dsStop").hidden = true;
+          if (running) { stoppedByUser = true; controller?.abort(); }
+          if (wasActive) runNode().disabled = false;
+        }
+      },
     };
-    $("#deepSearchEntry")?.addEventListener("click", () => {
-      // Clicking the selected entry again still brings the tool into view.
-      if (location.hash === "#deep-search") section.scrollIntoView({ block: "start" });
-    });
-    window.addEventListener("hashchange", sync);
-    sync();
     return true;
   }
   document.addEventListener("DOMContentLoaded", async () => {
-    if (!$("#dsInput")) return;
+    if (!inputNode()) return;
     if (!initEmbedded()) initChrome();
     modeHint();
     let launchQuery = "";
@@ -584,10 +599,12 @@
       if (typeof launch?.query === "string") launchQuery = launch.query.slice(0, 254).trim();
     } catch {}
     if (!launchQuery) readGuestReport();
-    else { $("#dsInput").value = launchQuery; modeHint(); }
-    $("#dsInput")?.addEventListener("input", modeHint);
-    $("#dsInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); run(); } });
-    $("#dsRun")?.addEventListener("click", () => run());
+    else { inputNode().value = launchQuery; modeHint(); }
+    inputNode()?.addEventListener("input", modeHint);
+    if (!embedded) {
+      inputNode()?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); run(); } });
+      runNode()?.addEventListener("click", () => run());
+    }
     $("#dsStop")?.addEventListener("click", () => { stoppedByUser = true; controller?.abort(); });
     const signIn = async () => {
       if (!A?.enabled) { $("#dsAccessNote").textContent = "Sign-in is temporarily unavailable. Try again shortly."; return; }
@@ -610,16 +627,16 @@
         if (follow.disabled || running || restoring || renderedLive) return;
         const row = renderedReport?.connections?.[Number(follow.dataset.dsFollow)], body = followBody(row);
         if (!body) return;
-        $("#dsInput").value = "@" + row.destination.handle;
+        inputNode().value = "@" + row.destination.handle;
         modeHint(); run(body);
         $("#dsConsole").scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
       const b = e.target.closest("[data-ds-alias]");
       if (b && /^[A-Za-z0-9][A-Za-z0-9._-]{0,62}$/.test(b.dataset.dsAlias)) {
-        $("#dsInput").value = "@" + b.dataset.dsAlias;
+        inputNode().value = "@" + b.dataset.dsAlias;
         modeHint(); run();
-        $("#dsInput").scrollIntoView({ behavior: "smooth", block: "center" });
+        inputNode().scrollIntoView({ behavior: "smooth", block: "center" });
       }
     });
     $("#dsExport")?.addEventListener("click", () => {
@@ -648,6 +665,6 @@
     };
     if (A) { A.onChange(onState); await A.ready; }
     onState(accountState());
-    if (launchQuery) run();
+    if (launchQuery) { inputNode().value = launchQuery; modeHint(); run(); }
   });
 })();

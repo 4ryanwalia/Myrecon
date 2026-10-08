@@ -90,7 +90,7 @@
   <link rel="stylesheet" href="/assets/css/username-benchmark.css?v=67a6bf90f8">
   <link rel="stylesheet" href="/assets/css/deep-search-preview.css?v=bd7c7cdb1d">
   <link rel="stylesheet" href="/assets/css/deep-search.css?v=b50afa60ba">
-  <link rel="stylesheet" href="/assets/css/deep-search-embedded.css?v=5e1059a3eb">
+  <link rel="stylesheet" href="/assets/css/deep-search-embedded.css?v=c81d5866b4">
 </head>
 <body class="home-page">
   <a class="skip-link" href="#tool">Skip to the tool</a>
@@ -168,6 +168,7 @@
                           aria-label="Show password" title="Show password"></button>
                 </div>
                 <button class="btn" id="runBtn" type="button">Investigate</button>
+                <button class="btn btn-ghost" id="dsStop" type="button" hidden>Stop</button>
               </div>
               <div class="detect-hint" id="detectHint" role="status" hidden></div>
               <div class="email-options" id="emailOptions" hidden>
@@ -186,7 +187,7 @@
               </div>
               <div class="examples" id="examples"></div>
             </div>
-            <a class="deep-search-entry" id="deepSearchEntry" href="#deep-search" aria-controls="ds" aria-expanded="false" aria-label="Explore Deep Search: go beyond usernames and profiles">
+            <a class="deep-search-entry" id="deepSearchEntry" href="#tool=deepsearch" aria-controls="toolPanel ds" aria-expanded="false" aria-label="Explore Deep Search: go beyond usernames and profiles">
               <span class="deep-search-entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="6"/><path d="m14.5 14.5 5 5M10 6v8M6 10h8" stroke-linecap="round"/></svg></span>
               <span class="deep-search-entry-copy"><span class="deep-search-entry-title">Deep Search <span class="deep-search-plan-tag">Paid plan</span></span><span class="deep-search-entry-description">Go beyond usernames and profiles. Explore public comments, mentions and linked accounts.</span></span>
               <span class="deep-search-entry-action">Open Deep Search <span aria-hidden="true">↗</span></span>
@@ -220,18 +221,12 @@
 
 
     <section class="container results-section ds-embedded" id="ds" data-embedded hidden>
-    <a class="ds-back" href="#tool">&larr; Back to lookups</a>
-    <div class="ds-head"><h1>Deep Search</h1><span class="ds-kicker">Public research</span></div>
-    <p class="ds-intro">Go beyond a username scan. Explore public comments, indexed mentions and links published by account owners, search a full name in public records, or check an exact email for a public Google contributor profile and available Maps reviews.</p>
-    <div class="panel ds-query">
-      <label class="ds-input-label" for="dsInput">Name, handle or email</label>
-      <div class="field-row">
-        <div class="input-wrap"><input class="input" id="dsInput" type="text" maxlength="254" autocomplete="off" spellcheck="false" placeholder="@torvalds, a full name or name@example.com" aria-describedby="dsMode"></div>
-        <button class="btn" id="dsRun" type="button">Investigate</button>
-        <button class="btn btn-ghost" id="dsStop" type="button" hidden>Stop</button>
-      </div>
-      <p class="hint" id="dsMode">Enter a name, handle or exact email. Add context after a comma for names and handles.</p>
+    <div id="dsOut" aria-label="Deep Search results" aria-busy="false"></div>
+    <div class="ds-console" id="dsConsole" hidden>
+      <div class="ds-chead"><span class="ds-pulse" aria-hidden="true"></span><span class="ds-status" id="dsStatus" role="status">Starting…</span><span class="ds-count" id="dsCount"></span></div>
+      <div class="ds-bar"><i id="dsBar"></i></div>
     </div>
+    <div class="ds-export-row"><button class="btn btn-ghost btn-sm" id="dsExport" type="button" hidden>Download report JSON</button><button class="btn btn-ghost btn-sm" id="dsExportCsv" type="button" hidden>Download report CSV</button></div>
     <section class="ds-access" id="dsAccess" aria-label="Deep Search access">
       <div><h2 id="dsAccessTitle">Run a guest investigation</h2><p id="dsAccessNote">Investigate public sources now. Sign in with an eligible paid account to view the findings.</p></div>
       <div class="ds-access-actions">
@@ -240,12 +235,6 @@
         <button class="btn btn-ghost" id="dsRetryAccess" type="button" hidden>Retry plan check</button>
       </div>
     </section>
-    <div id="dsOut" aria-label="Deep Search results" aria-busy="false"></div>
-    <div class="ds-console" id="dsConsole" hidden>
-      <div class="ds-chead"><span class="ds-pulse" aria-hidden="true"></span><span class="ds-status" id="dsStatus" role="status">Starting…</span><span class="ds-count" id="dsCount"></span></div>
-      <div class="ds-bar"><i id="dsBar"></i></div>
-    </div>
-    <div class="ds-export-row"><button class="btn btn-ghost btn-sm" id="dsExport" type="button" hidden>Download report JSON</button><button class="btn btn-ghost btn-sm" id="dsExportCsv" type="button" hidden>Download report CSV</button></div>
     <section class="deep-search-preview" id="dsPreview" aria-labelledby="dsPreviewTitle" hidden>
       <div class="deep-search-preview-heading"><span class="deep-search-plan-tag">Discover more with Deep Search</span><h2 id="dsPreviewTitle">Go deeper than usernames and profiles.</h2><p>A username scan helps you find public accounts. Deep Search adds the activity, mentions and connections around them, with links to the original sources.</p></div>
       <dl class="deep-search-preview-list">
@@ -430,8 +419,8 @@
   <script src="/assets/js/benchmarks.js?v=774ff0e8fc" defer></script>
   <script src="/assets/js/trust.js?v=50b0508fdc" defer></script>
   <script src="/assets/js/email-photos.js?v=713b5d6862"></script>
-  <script src="/assets/js/deep-search.js?v=0e5a32772a"></script>
-  <script src="/assets/js/app.js?v=7a620af94b"></script>
+  <script src="/assets/js/deep-search.js?v=c0f8352060"></script>
+  <script src="/assets/js/app.js?v=6136b9e55f"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

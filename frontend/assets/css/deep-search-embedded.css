@@ -1,13 +1,8 @@
 /* Deep Search shares the homepage and its account/theme controls. */
-.ds-embedded[hidden] { display: none !important; }
-.ds-embedded { scroll-margin-top: 88px; }
-body.deep-search-mode main > section:not(#ds) { display: none !important; }
-body.home-page #ds.ds-embedded { max-width: 1160px; padding-top: 24px; }
-.ds-back { display: inline-flex; align-items: center; min-height: 44px; color: var(--text-dim); font-size: .85rem; }
+.results-section[hidden] { display: none !important; }
+body.home-page #ds.ds-embedded { max-width: 1600px; padding-top: 6px; }
+body.home-page #dsStop[hidden] { display: none !important; }
 #ds .ds-foot { margin: 20px 0 24px; }
 #ds .ds-access.is-paid { padding: 12px 18px; }
 #ds .ds-access.is-paid h2 { font-size: .9rem; margin-bottom: 3px; }
 #ds .ds-access.is-paid p { font-size: .82rem; }
-@media (max-width: 600px) {
-  body.home-page #ds.ds-embedded { padding-top: 12px; }
-}
