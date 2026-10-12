@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import re
+import sys
 import threading
 
 from flask import Flask, request, g, Response, jsonify, stream_with_context
@@ -22,7 +23,7 @@ from flask import Flask, request, g, Response, jsonify, stream_with_context
 import config
 from core.cache import TTLCache
 from core.ratelimit import RateLimiter
-from core import clientip, responses, validation
+from core import clientip, guest_reports, responses, validation
 from core.firebase_auth import AuthError, verify_id_token
 from core.plans import GuestLimit, NoAllowance, StandardLimit
 
@@ -31,6 +32,7 @@ log = logging.getLogger("myrecon")
 
 _cache = TTLCache(ttl=config.CACHE_TTL)
 _limiter = RateLimiter(config.RATE_LIMIT_REQUESTS, config.RATE_LIMIT_WINDOW)
+_worker_limiter = RateLimiter(120, 60)
 
 
 def create_app() -> Flask:
@@ -109,11 +111,14 @@ def _register_cors(app: Flask) -> None:
         resp.headers["X-Robots-Tag"] = "noindex, nofollow"
         # Stop another origin from pulling API responses into its own process
         # via <img>/<script> side channels (Spectre-style cross-origin reads).
-        # This one route serves checked public raster photos to the separate
-        # frontend host. JSON responses retain the same-site protection.
         resp.headers["Cross-Origin-Resource-Policy"] = (
             "cross-origin" if request.path == "/api/email/photo" else "same-site"
         )
+        if request.path.startswith("/api/"):
+            # A shared cache must never mix a signed-in full report with the
+            # guest projection of the same URL, including POST/cache hits.
+            resp.headers["Cache-Control"] = "private, no-store"
+            resp.headers.add("Vary", "Authorization")
         return resp
 
 
@@ -139,6 +144,19 @@ def _client_ip() -> str:
 def _register_hooks(app: Flask) -> None:
     @app.before_request
     def rate_limit():
+        if config.SCAN_OFFLOAD_ENABLED and request.path.startswith("/api/"):
+            from services.scan_job_api import worker_authenticated
+            from services import scan_job_runner
+            from core.scan_jobs import available
+            if available():
+                scan_job_runner.ensure_started()
+            if request.path.startswith("/api/scan-worker/") and worker_authenticated():
+                allowed, retry_after = _worker_limiter.check("scan-worker")
+                if not allowed:
+                    resp = responses.error("Worker rate limit exceeded.", 429, "rate_limited")
+                    resp[0].headers["Retry-After"] = str(retry_after)
+                    return resp
+                return None
         if not config.RATE_LIMIT_ENABLED:
             return None
         if request.method == "OPTIONS" or request.path == "/api/health":
@@ -286,21 +304,25 @@ def _scope(body: dict) -> str:
     return scope
 
 
-def _admit_scan(scope: str, cached: bool):
+def _admit_scan(scope: str, cached: bool, job_id=None):
     """
     Decide whether this scan may run, charging the allowance it uses.
 
     Returns (uid, charged) where `charged` names the allowance to refund if
     the scan fails, or None when nothing was charged. Guests may only run
-    Quick scans (`standard` scope); full and extended scans require sign-in.
+    Quick scans; Standard and Extended require sign-in before admission.
     """
     from core import plans, store
 
     user = _signed_in_user()
     if user is None:
         if scope in ("full", "extended"):
+            # The Extended tier retains its signed-in credit requirement.
             raise SignInRequired()
-        plans.consume_guest_scan(_client_ip())
+        if job_id:
+            plans.consume_guest_scan(_client_ip(), job_id=job_id)
+        else:
+            plans.consume_guest_scan(_client_ip())
         return None, None
     if not store.persistent():
         raise AccountsUnavailable()
@@ -309,6 +331,8 @@ def _admit_scan(scope: str, cached: bool):
     if scope in ("standard", "full"):
         # Quick and full scans share one daily allowance per free account.
         # Cached requests count too; reopening saved reports does not.
+        if job_id:
+            return uid, plans.consume_standard_scan(uid, job_id=job_id)
         return uid, None if account["standard_scans_unlimited"] else plans.consume_standard_scan(uid)
     if scope == "extended":
         # Only Extended uses paid credits; cached results do not spend one.
@@ -316,7 +340,8 @@ def _admit_scan(scope: str, cached: bool):
             if account["extended_scans_left"] <= 0:
                 raise NoAllowance(account, "extended")
             return uid, None
-        return uid, plans.consume_extended_scan(uid)
+        return uid, (plans.consume_extended_scan(uid, job_id=job_id) if job_id
+                     else plans.consume_extended_scan(uid))
 
 
 def _remember(uid, data):
@@ -347,9 +372,12 @@ def _remember(uid, data):
         return None
 
 
+# Concurrent full and extended sweeps in this worker. Each holds 24 sockets.
+_full_slots = threading.BoundedSemaphore(1 if config.SCAN_OFFLOAD_ENABLED else max(1, config.FULL_SCAN_SLOTS))
+
+
 def _card_key(result: dict) -> tuple:
     return (result.get("platform") or result.get("source"), result.get("url"))
-
 
 def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
     """Return two guest cards and counts, without hidden details or cache mutation."""
@@ -360,7 +388,7 @@ def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
     if visible_keys:
         for key in visible_keys:
             selected.extend((kind, card) for kind, card in cards if _card_key(card) == key)
-    for entry in cards:
+    for entry in ([] if visible_keys else cards):
         if len(selected) >= 2:
             break
         if entry not in selected:
@@ -384,7 +412,6 @@ def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
                           "requires_sign_in": True},
     }
 
-
 def _guest_quick_event(event: dict, seen: set, visible: list):
     """Never send hidden card fields in live events or progress text."""
     kind = event.get("type")
@@ -404,16 +431,37 @@ def _guest_quick_event(event: dict, seen: set, visible: list):
         return {"type": "progress", "percent": event.get("percent", 0),
                 "phase": event.get("phase", "Checking platforms"),
                 "detail": "Quick scan in progress…"}
-    return event if kind in ("error", "heartbeat") else None
+    if kind == "error":
+        return {"type": "error", "error": "The scan could not complete. Please try again."}
+    return event if kind == "heartbeat" else None
 
 
-# Concurrent full and extended sweeps in this worker. Each holds 24 sockets.
-_full_slots = threading.BoundedSemaphore(max(1, config.FULL_SCAN_SLOTS))
+def _standard_response(tool, data, user=None):
+    """Never mutate the full cached report when projecting it for a guest."""
+    if user:
+        return data
+    return _guest_quick_preview(data) if tool == "username" else guest_reports.standard(tool, data)
+
+
+def _guest_username_event(event):
+    kind = event.get("type")
+    if kind == "progress":
+        return guest_reports.progress(event)
+    if kind == "complete":
+        return {"type": "complete", "data": guest_reports.standard("username", event.get("data")),
+                "history_id": None}
+    if kind == "error":
+        return {"type": "error", "error": "The scan could not complete. Please try again."}
+    # Found events are arrival order, not the final card order. Sending their
+    # raw details would expose findings later placed behind the third card.
+    return None
 
 
 # ── Routes ───────────────────────────────────────────────────────
 
 def _register_routes(app: Flask) -> None:
+    from services import scan_job_api
+    scan_job_api.register(app, sys.modules[__name__])
     from core.android_referrals import register_routes as register_android_referrals
     register_android_referrals(app, _json_body, responses)
     from services.search import search_username, search_fullname
@@ -484,6 +532,8 @@ def _register_routes(app: Flask) -> None:
         if request.method == "OPTIONS":
             return ("", 204)
         body = _json_body()
+        if config.SCAN_OFFLOAD_ENABLED:
+            return scan_job_api.handle(sys.modules[__name__], body, streaming=False)
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
         scope = _scope(body)
@@ -494,7 +544,8 @@ def _register_routes(app: Flask) -> None:
             hit = _cache.get(key) if config.CACHE_ENABLED else None
             uid, charged = _admit_scan(scope, hit is not None)
             if hit is not None:
-                return responses.ok({**hit, "history_id": _remember(uid, hit)})
+                shown = _standard_response("username", hit, uid)
+                return responses.ok({**shown, "history_id": _remember(uid, hit)})
             with _full_slots:
                 try:
                     data = _run_full(username, extended=scope == "extended")
@@ -503,7 +554,8 @@ def _register_routes(app: Flask) -> None:
                     raise
             if config.CACHE_ENABLED and not data.get("partial"):
                 _cache.set(key, data)
-            return responses.ok({**data, "history_id": _remember(uid, data)})
+            shown = _standard_response("username", data, uid)
+            return responses.ok({**shown, "history_id": _remember(uid, data)})
         uid, charged = _admit_scan("standard", False)
         try:
             data = cached_username(username, deep)
@@ -511,8 +563,7 @@ def _register_routes(app: Flask) -> None:
             from core import plans
             plans.refund_full_scan(uid, charged)
             raise
-        shown = _guest_quick_preview(data) if uid is None else data
-        return responses.ok({**shown, "history_id": _remember(uid, data)})
+        return responses.ok({**_standard_response("username", data, uid), "history_id": _remember(uid, data)})
 
     @app.route("/api/username/stream", methods=["POST", "OPTIONS"])
     def api_username_stream():
@@ -527,6 +578,8 @@ def _register_routes(app: Flask) -> None:
         from services.search import stream_username
 
         body = _json_body()
+        if config.SCAN_OFFLOAD_ENABLED:
+            return scan_job_api.handle(sys.modules[__name__], body, streaming=True)
         username = validation.username(body.get("username", ""))
         deep = validation.boolean(body.get("deep"))
         scope = _scope(body)
@@ -536,11 +589,14 @@ def _register_routes(app: Flask) -> None:
         # Admitted before the response starts, so a refusal is a real
         # 401/402/429 the page can act on, not an error halfway down a stream.
         uid, charged = _admit_scan(scope, cached_hit is not None)
+        guest = uid is None
+        guest_seen, guest_visible = set(), []
+
         def generate():
             from core import plans
             guest_seen, guest_visible = set(), []
             if cached_hit is not None:
-                shown = _guest_quick_preview(cached_hit) if uid is None else cached_hit
+                shown = _standard_response("username", cached_hit, uid)
                 yield json.dumps({"type": "complete", "data": shown,
                                   "history_id": _remember(uid, cached_hit)}) + "\n"
                 return
@@ -565,7 +621,7 @@ def _register_routes(app: Flask) -> None:
                                 and data.get("status") != "error" and not data.get("partial")):
                             _cache.set(key, data)
                         event = {**event, "history_id": _remember(uid, data)}
-                    if uid is None:
+                    if guest:
                         event = _guest_quick_event(event, guest_seen, guest_visible)
                     if event is not None:
                         yield json.dumps(event) + "\n"
@@ -587,13 +643,13 @@ def _register_routes(app: Flask) -> None:
                         plans.refund_full_scan(uid, charged)
 
         resp = Response(stream_with_context(generate()), mimetype="application/x-ndjson")
-        resp.headers["Cache-Control"] = "no-cache"
+        resp.headers["Cache-Control"] = "private, no-store"
         resp.headers["X-Accel-Buffering"] = "no"  # disable proxy buffering
         return resp
 
     @app.route("/api/investigate/stream", methods=["POST", "OPTIONS"])
     def api_investigate_stream():
-        """Paid, app-compatible public activity and name research as NDJSON."""
+        """Real investigations, with headings-only guest snapshots as NDJSON."""
         if request.method == "OPTIONS":
             return ("", 204)
         from core import plans, store
@@ -603,24 +659,50 @@ def _register_routes(app: Flask) -> None:
         import queue
 
         body = _json_body()
-        user = _require_user()
-        if not store.persistent():
-            raise AccountsUnavailable()
-        account = plans.get_account(user["sub"], user.get("email", ""), user.get("name", ""))
-        if not account["deep_search_enabled"]:
-            raise NoAllowance(account, "deep_search")
-        parsed = parse_follow(body["follow_token"], user["sub"]) if "follow_token" in body else parse_input(body.get("query", ""))
+        user = _signed_in_user()
+        if user:
+            if not store.persistent():
+                raise AccountsUnavailable()
+            account = plans.get_account(user["sub"], user.get("email", ""), user.get("name", ""))
+            if not account["deep_search_enabled"]:
+                raise NoAllowance(account, "deep_search")
+        if "follow_token" in body:
+            if user is None:
+                raise SignInRequired()
+            parsed = parse_follow(body["follow_token"], user["sub"])
+        else:
+            parsed = parse_input(body.get("query", ""))
         # Paid access continues after pack credits are spent. This feature
         # consumes neither the free daily allowance nor Extended credits.
         if not _full_slots.acquire(blocking=False):
             return responses.error("Deep Search is busy. Try again shortly.", status=429, code="scan_busy")
+        try:
+            if user is None:
+                plans.consume_guest_scan(_client_ip())
+        except Exception:
+            _full_slots.release()
+            raise
         stop = threading.Event()
         events = queue.Queue(maxsize=64)
         done = object()
+        receipt = guest_reports.deep({"status": "pending", **parsed}) if user is None else None
+        report_token = receipt["guest_access"]["report_token"] if receipt else None
 
         def emit(event):
-            if isinstance(event, dict) and event.get("type") in ("partial", "complete"):
+            if user and isinstance(event, dict) and event.get("type") in ("partial", "complete"):
                 event = {**event, "data": attach_actions(event["data"], user["sub"])}
+            if user is None and event is not done:
+                kind = event.get("type")
+                if kind in ("partial", "complete"):
+                    event = {"type": kind, "data": guest_reports.deep(
+                        event.get("data"), token=report_token, complete=kind == "complete")}
+                elif kind == "progress":
+                    event = guest_reports.progress(event, deep_search=True)
+                elif kind == "error":
+                    guest_reports.failed(report_token)
+                    event = {"type": "error", "error": "Deep Search could not complete. Please try again."}
+                else:
+                    return
             # A slow reader cannot accumulate an unbounded queue of snapshots.
             while not stop.is_set():
                 try:
@@ -632,7 +714,12 @@ def _register_routes(app: Flask) -> None:
         def work():
             try:
                 result = search(parsed, emit, stop)
-                emit({"type": "complete", "data": result})
+                if stop.is_set():
+                    if user is None:
+                        guest_reports.deep({**result, "status": "unknown", "partial": True},
+                                           token=report_token, complete=False)
+                else:
+                    emit({"type": "complete", "data": result})
             except Exception:
                 emit({"type": "error", "error": "Deep Search could not complete. Please try again."})
             finally:
@@ -641,6 +728,8 @@ def _register_routes(app: Flask) -> None:
 
         def generate():
             try:
+                if receipt:
+                    yield json.dumps({"type": "partial", "data": receipt}) + "\n"
                 while True:
                     try:
                         event = events.get(timeout=5)
@@ -663,14 +752,44 @@ def _register_routes(app: Flask) -> None:
         resp.headers["X-Accel-Buffering"] = "no"
         return resp
 
+    @app.route("/api/guest-reports/reveal", methods=["POST", "OPTIONS"])
+    def api_guest_report_reveal():
+        """Reveal the already-run report after authentication, without a rescan."""
+        if request.method == "OPTIONS":
+            return ("", 204)
+        user = _require_user()
+        token = _json_body().get("report_token")
+        report = guest_reports.read(token)
+        if report is None:
+            return responses.error("This guest report has expired or is no longer available. Run a new scan.",
+                                   status=410, code="guest_report_expired")
+        if report["tool"] == "deep_search":
+            from core import plans, store
+            if not store.persistent():
+                raise AccountsUnavailable()
+            account = plans.get_account(user["sub"], user.get("email", ""), user.get("name", ""))
+            if not account["deep_search_enabled"]:
+                raise NoAllowance(account, "deep_search")
+        # Bind only after the entitlement check so upgrading the same account
+        # can reveal the existing paid report, without repeating the lookup.
+        report = guest_reports.read(token, user["sub"])
+        if report is None:
+            return responses.error("This guest report is no longer available to this account.",
+                                   status=410, code="guest_report_expired")
+        if report["tool"] == "deep_search":
+            from modules.profile_connections import attach_actions
+            report["data"] = attach_actions(report["data"], user["sub"])
+        return responses.ok(report)
+
     @app.route("/api/fullname", methods=["POST", "OPTIONS"])
     def api_fullname():
         if request.method == "OPTIONS":
             return ("", 204)
         body = _json_body()
+        user = _signed_in_user()
         name = validation.full_name(body.get("full_name", ""))
         deep = validation.boolean(body.get("deep"))
-        return responses.ok(cached_fullname(name, deep))
+        return responses.ok(_standard_response("fullname", cached_fullname(name, deep), user))
 
     @app.route("/api/email", methods=["POST", "OPTIONS"])
     def api_email():
@@ -678,8 +797,9 @@ def _register_routes(app: Flask) -> None:
             return ("", 204)
         body = _json_body()
         email = validation.email(body.get("email", ""))
-        # Email/breach responses are processed live and never retained in the
-        # application cache or the account scan database.
+        # Email results are free for every visitor, including callers with a
+        # stale sign-in token. Process live without guest reveal retention,
+        # shared application caching, account history or scan allowances.
         check_linked = validation.boolean(body.get("check_linked_accounts"), default=False)
         return responses.ok(scan_email(email, check_linked_accounts=check_linked))
 
@@ -689,9 +809,7 @@ def _register_routes(app: Flask) -> None:
             return ("", 204)
         from services.email_public_profiles import lookup_public_profiles
         email = validation.email(_json_body().get("email", ""))
-        response, status = responses.ok(lookup_public_profiles(email))
-        response.headers["Cache-Control"] = "no-store"
-        return response, status
+        return responses.ok(lookup_public_profiles(email))
 
     @app.route("/api/email/linkedin-public", methods=["POST", "OPTIONS"])
     def api_email_linkedin_public():
@@ -699,9 +817,7 @@ def _register_routes(app: Flask) -> None:
             return ("", 204)
         from services.email_linkedin_public import lookup_linkedin_public
         email = validation.email(_json_body().get("email", ""))
-        response, status = responses.ok(lookup_linkedin_public(email))
-        response.headers["Cache-Control"] = "no-store"
-        return response, status
+        return responses.ok(lookup_linkedin_public(email))
 
     @app.route("/api/email/photo", methods=["GET", "OPTIONS"])
     def api_email_photo():
@@ -711,12 +827,9 @@ def _register_routes(app: Flask) -> None:
         try:
             photo = fetch_public_photo(request.args.get("url", ""))
         except PhotoError as exc:
-            resp, status = responses.error("Public profile photo unavailable.", exc.status, exc.code)
-            resp.headers["Cache-Control"] = "no-store"
-            return resp, status
+            return responses.error("Public profile photo unavailable.", exc.status, exc.code)
         return Response(photo.body, content_type=photo.content_type, headers={
-            "Cache-Control": "private, max-age=300",
-            "Content-Disposition": "inline",
+            "Cache-Control": "private, no-store", "Content-Disposition": "inline",
         })
 
     @app.route("/api/email/accounts", methods=["POST", "OPTIONS"])
@@ -731,34 +844,39 @@ def _register_routes(app: Flask) -> None:
     def api_domain():
         if request.method == "OPTIONS":
             return ("", 204)
+        user = _signed_in_user()
         domain = validation.domain(_json_body().get("domain", ""))
-        return responses.ok(cached_domain(domain))
+        return responses.ok(_standard_response("domain", cached_domain(domain), user))
 
     @app.route("/api/dns", methods=["POST", "OPTIONS"])
     def api_dns():
         if request.method == "OPTIONS":
             return ("", 204)
+        user = _signed_in_user()
         domain = validation.domain(_json_body().get("domain", ""))
-        return responses.ok(cached_dns(domain))
+        return responses.ok(_standard_response("dns", cached_dns(domain), user))
 
     @app.route("/api/whois", methods=["POST", "OPTIONS"])
     def api_whois():
         if request.method == "OPTIONS":
             return ("", 204)
+        user = _signed_in_user()
         domain = validation.domain(_json_body().get("domain", ""))
-        return responses.ok(cached_whois(domain))
+        return responses.ok(_standard_response("whois", cached_whois(domain), user))
 
     @app.route("/api/ip", methods=["POST", "OPTIONS"])
     def api_ip():
         if request.method == "OPTIONS":
             return ("", 204)
+        user = _signed_in_user()
         ip = validation.ip_address(_json_body().get("ip", ""))
-        return responses.ok(cached_ip(ip))
+        return responses.ok(_standard_response("ip", cached_ip(ip), user))
 
     @app.route("/api/subdomains", methods=["POST", "OPTIONS"])
     def api_subdomains():
         if request.method == "OPTIONS":
             return ("", 204)
+        _require_user()
         domain = validation.domain(_json_body().get("domain", ""))
         return responses.ok(cached_subdomains(domain))
 
@@ -767,9 +885,10 @@ def _register_routes(app: Flask) -> None:
         if request.method == "OPTIONS":
             return ("", 204)
         body = _json_body()
+        user = _signed_in_user()
         url = validation.image_url(body.get("image_url", ""))
         deep = validation.boolean(body.get("deep"))
-        return responses.ok(cached_image(url, deep))
+        return responses.ok(_standard_response("image", cached_image(url, deep), user))
 
     @app.route("/api/enrich", methods=["POST", "OPTIONS"])
     def api_enrich():
@@ -784,6 +903,7 @@ def _register_routes(app: Flask) -> None:
         """
         if request.method == "OPTIONS":
             return ("", 204)
+        _require_user()
         body = _json_body()
         platform = validation.platform_name(body.get("platform", ""))
         handle = validation.username(body.get("username", ""))
@@ -802,6 +922,7 @@ def _register_routes(app: Flask) -> None:
         """
         if request.method == "OPTIONS":
             return ("", 204)
+        _require_user()
         url = validation.page_url(_json_body().get("url", ""))
         history = {k: v for k, v in cached_wayback(url).items() if k != "status"}
         return responses.ok({"url": url, "history": history})

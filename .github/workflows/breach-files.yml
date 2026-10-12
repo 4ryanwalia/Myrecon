@@ -78,10 +78,5 @@ jobs:
           git commit -m "Breach Files: scheduled update"
           git push origin HEAD:main
 
-      - name: Tell the search engines
-        # Runs after the push, because the push is what triggers the deploy.
-        # Submitting first would send a crawler to the previous version of the
-        # page, which is worse than not submitting at all.
-        if: steps.commit.outputs.changed != ''
-        working-directory: frontend
-        run: node scripts/indexnow.js ${{ steps.commit.outputs.changed }}
+      # The IndexNow workflow waits for a successful production deployment
+      # before notifying search engines about this push.

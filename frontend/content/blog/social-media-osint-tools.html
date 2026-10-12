@@ -1,0 +1,66 @@
+<!--
+{
+  "title": "Social Media OSINT Tools for Public Profile Research | MyRecon",
+  "headline": "Social Media OSINT Tools for Public Profile Research",
+  "description": "A practical social OSINT workflow for Instagram, TikTok, X, Reddit and other public profiles: discover handles, verify content and record uncertainty.",
+  "category": "Social OSINT",
+  "datePublished": "2026-10-08",
+  "dateModified": "2026-10-08",
+  "editorial_review": "2026-10-08",
+  "keywords": ["social media osint tools", "social osint", "instagram username search", "tiktok username lookup", "reddit username search", "snapchat username search", "twitter osint"],
+  "faq": [
+    {"question": "What can an Instagram username search show?", "answer": "It can suggest a public profile address and any account-specific information the source makes accessible. A login wall, private page or blocked response limits the check. MyRecon cannot reveal private posts or messages."},
+    {"question": "Can MyRecon identify people who view my Instagram profile?", "answer": "No. MyRecon checks public-source information; it does not provide a list of profile visitors, hidden viewers or private account activity."},
+    {"question": "Does no result mean a social media account does not exist?", "answer": "No. A renamed handle, unsupported site, indexing gap or access restriction can prevent discovery. Record the source and reason, and keep the outcome unresolved when the evidence does not establish absence."}
+  ]
+}
+-->
+<p class="lead"><strong>Quick answer:</strong> social media OSINT uses accessible public information to answer a defined question. Combine a username checker, direct platform review, web search and media verification. Keep account existence, content accuracy and identity attribution as separate decisions.</p>
+
+<h2>Start with a question and an allowed scope</h2>
+<p>A social OSINT project works better when the question is precise: “Which public profiles use our brand's handle?” or “Does this public video predate the event named in its caption?” Looking for everything about a person creates a large collection without a clear way to evaluate it. For a personal privacy audit, start with your own known handles and accounts.</p>
+<p>Write down the platforms, identifiers and observations you need. Do not broaden a username check into collecting unrelated family profiles or private information. Public availability does not make every detail relevant. Keep enough evidence to answer the question, and stop when a source requires access you do not have.</p>
+
+<h2>Choose tools for three different jobs</h2>
+<p><strong>Profile discovery:</strong> MyRecon, <a href="https://github.com/sherlock-project/sherlock">Sherlock</a> and <a href="https://github.com/soxoj/maigret">Maigret</a> can help locate candidate pages using a handle. MyRecon publishes this guide, so our recommendation of the <a href="/#tool">browser search</a> is a product suggestion. Coverage, sign-in requirements and <a href="/pricing.html">plan limits</a> apply.</p>
+<p><strong>Indexed mentions:</strong> a <a href="https://developers.google.com/search/docs/monitor-debug/search-operators/all-search-site">domain-specific Google query</a> can locate publicly indexed mentions. It cannot inventory every profile or post. Open the original page instead of using a search snippet as the final evidence.</p>
+<p><strong>Media verification:</strong> <a href="https://support.google.com/websearch/answer/1325808">Google's image search workflow</a> and the <a href="https://www.invid-project.eu/tools-and-services/invid-verification-plugin/">InVID verification toolkit</a> help investigate reused images and video frames. A matching image identifies another appearance; it does not establish the uploader's identity or the accuracy of its caption.</p>
+
+<h2>Platform names are discovery targets, not access promises</h2>
+<table>
+  <caption>Questions to resolve when reviewing public social profile leads</caption>
+  <thead><tr><th scope="col">Search task</th><th scope="col">Inspect at the source</th><th scope="col">Keep unresolved when</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Instagram username search</th><td>The exact handle and any visible account-specific page information.</td><td>You reach a login prompt, private content restriction or generic page.</td></tr>
+    <tr><th scope="row">TikTok username lookup</th><td>The profile address, handle and context of accessible posts.</td><td>A video or profile cannot be viewed, or a redirect changes the destination.</td></tr>
+    <tr><th scope="row">X / Twitter OSINT</th><td>The original post URL, author handle and displayed timestamp.</td><td>Only a screenshot or stale snippet is available.</td></tr>
+    <tr><th scope="row">Reddit username search</th><td>The exact account address and relevant public discussion context.</td><td>A quoted name or mention is mistaken for a profile.</td></tr>
+    <tr><th scope="row">Snapchat username search</th><td>Any accessible public page that actually corresponds to the handle.</td><td>A lookup gives no account-specific evidence.</td></tr>
+  </tbody>
+</table>
+<p>These are verification questions, not a claim that every platform returns a usable result on every scan. A service can change its page layout or block automated access. Check the current scan's coverage and the source response, rather than inferring support from a platform name in an article.</p>
+
+<h2>A practical social OSINT sequence</h2>
+<ol>
+  <li><strong>Preserve the starting clue.</strong> Note the exact handle or public URL, why it is relevant and when you observed it.</li>
+  <li><strong>Run a limited discovery check.</strong> Search the known handle. Add a spelling variant only when you have a reason, such as your own remembered old username.</li>
+  <li><strong>Open candidate pages.</strong> Record source-supported existence separately from unresolved or contradicted leads.</li>
+  <li><strong>Check content context.</strong> For a public image or clip, compare earlier appearances and what their captions actually claim.</li>
+  <li><strong>Test the relationship.</strong> An explicit cross-link may support a connection; a shared display name or copied avatar is much weaker.</li>
+  <li><strong>Write the finding narrowly.</strong> Describe the visible evidence and uncertainty without filling gaps with guesses.</li>
+</ol>
+<p>For example, two profiles with the same handle and photo may be a legitimate cross-platform presence or an impersonation. A public personal site linking both profiles provides another observation, but control of the site and accounts still matters. If the evidence is thin, write “possible connection” and explain why. Our <a href="/guides/verify-osint-account-matches.html">account-match guide</a> covers this review.</p>
+
+<h2>When the search is about privacy or impersonation</h2>
+<p>Searches for “Instagram stalker apps” sometimes mix public-profile research with claims about hidden viewers. MyRecon does not show who viewed your profile or expose private account activity. For your own footprint, review public bio links, reused handles and old profiles, then change settings or close accounts you control.</p>
+<p>If you find apparent impersonation, keep the relevant public URL and a minimal record of the copied material. Use the platform's reporting process rather than trying to identify or contact an assumed operator. Read <a href="/blog/report-social-media-impersonation.html">how to document and report impersonation</a> and the <a href="/blog/instagram-privacy-self-audit.html">Instagram privacy self-audit</a>.</p>
+
+<h2>Frequently asked questions</h2>
+<h3>What can an Instagram username search show?</h3>
+<p>It can suggest a public profile address and any account-specific information the source makes accessible. A login wall, private page or blocked response limits the check. MyRecon cannot reveal private posts or messages.</p>
+<h3>Can MyRecon identify people who view my Instagram profile?</h3>
+<p>No. MyRecon checks public-source information; it does not provide a list of profile visitors, hidden viewers or private account activity.</p>
+<h3>Does no result mean a social media account does not exist?</h3>
+<p>No. A renamed handle, unsupported site, indexing gap or access restriction can prevent discovery. Record the source and reason, and keep the outcome unresolved when the evidence does not establish absence.</p>
+
+<p>Official tool sources were reviewed on 8 October 2026. <a href="/#tool">Start a public username self-audit</a> or use the <a href="/guides/public-profile-evidence-logging.html">evidence log guide</a> to organize a small authorized review.</p>

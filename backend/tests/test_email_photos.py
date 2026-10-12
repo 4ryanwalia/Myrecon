@@ -196,14 +196,14 @@ def test_route_public_image_corp_is_scoped_and_error_does_not_echo_url(monkeypat
     assert response.status_code == 200 and response.data == PNG
     assert response.headers["Content-Type"] == "image/png"
     assert response.headers["Cross-Origin-Resource-Policy"] == "cross-origin"
-    assert response.headers["Cache-Control"] == "private, max-age=300"
+    assert response.headers["Cache-Control"] == "private, no-store"
     assert client.get("/api/health").headers["Cross-Origin-Resource-Policy"] == "same-site"
     def fail(url):
         raise photos.PhotoError("unsupported_photo_url", 400)
     monkeypatch.setattr(photos, "fetch_public_photo", fail)
     response = client.get("/api/email/photo", query_string={"url": "https://private.invalid/?token=fixture"})
     assert response.status_code == 400 and b"token" not in response.data
-    assert response.headers["Cache-Control"] == "no-store"
+    assert response.headers["Cache-Control"] == "private, no-store"
 
 
 def test_https_transport_uses_pinned_ip_and_original_tls_hostname(monkeypatch):

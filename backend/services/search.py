@@ -312,7 +312,7 @@ def _live_view(result: dict, username: str) -> dict:
     return view
 
 
-def _run_username(username: str, deep: bool, emit=_noop) -> dict:
+def _run_username(username: str, deep: bool, emit=_noop, platform_results=None) -> dict:
     """Core username pipeline. `emit(event)` receives progress events."""
     all_results: list[dict] = []
     errors: list[dict] = []
@@ -336,13 +336,20 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     rejected: list[dict] = []
     platform_checks: list[dict] = []
     try:
-        checker = UsernameChecker(max_workers=20 if deep else 12, delay=0)
-        found = checker.scan(username, callback=_checker_cb, deep=deep)
+        checker = UsernameChecker(max_workers=8, delay=0)
+        if platform_results is None:
+            found = checker.scan(username, callback=_checker_cb, deep=deep)
+        else:
+            checker.all_results = platform_results
+            found = [r for r in platform_results if r.get("exists")]
         for r in found:
             r["category"] = categorise_result(r, username)
         all_results.extend(found)
         rejected = _rejections(checker)
         platform_checks = _standard_platform_checks(checker)
+        if any(r.get("reason") == "not checked before the scan deadline" for r in platform_results or []):
+            errors.append({"source": "username_check", "code": "out_of_time", "retryable": True,
+                           "message": "Some platforms were not checked before the scan deadline."})
     except Exception:  # noqa: BLE001 - preserve any already verified hits
         if 'checker' in locals():
             all_results.extend(r for r in getattr(checker, "all_results", []) if r.get("exists"))
@@ -413,7 +420,7 @@ def _run_username(username: str, deep: bool, emit=_noop) -> dict:
     }
 
 
-def _run_full(username: str, emit=_noop, extended: bool = False, stop_event=None) -> dict:
+def _run_full(username: str, emit=_noop, extended: bool = False, sweep_results=None, stop_event=None) -> dict:
     """
     The Android app's platform sweep (561 on the web), run here for signed-in accounts.
     Guests use the separate Quick pipeline; this builds the complete Standard report.
@@ -434,18 +441,21 @@ def _run_full(username: str, emit=_noop, extended: bool = False, stop_event=None
             "type": "progress", "phase": "Checking platforms",
             "percent": max(2, int(checked / total * 68)),
             "detail": f"[{checked}/{total}] {hit['platform']}, "
-                      f"{'found' if hit['exists'] else 'no match'}",
+                      f"{hit['verdict'].replace('_', ' ')}",
         })
         if hit["exists"]:
             emit({"type": "found", "result": _live_view(hit, username)})
 
-    sweep = Sweep(username, concurrency=config.SWEEP_CONCURRENCY,
-                  deadline_seconds=(config.EXTENDED_SCAN_DEADLINE_SECONDS if extended
-                                    else config.FULL_SCAN_DEADLINE_SECONDS),
-                  stop_event=stop_event)
-    hits, coverage = sweep.run(on_result=on_result, platforms=EXTENDED if extended else None)
-    if stop_event is not None and stop_event.is_set():
-        raise RuntimeError("Scan cancelled")
+    if sweep_results is not None:
+        hits, coverage = sweep_results
+    else:
+        sweep = Sweep(username, concurrency=config.SWEEP_CONCURRENCY,
+                      deadline_seconds=(config.EXTENDED_SCAN_DEADLINE_SECONDS if extended
+                                        else config.FULL_SCAN_DEADLINE_SECONDS),
+                      stop_event=stop_event)
+        hits, coverage = sweep.run(on_result=on_result, platforms=EXTENDED if extended else None)
+        if stop_event is not None and stop_event.is_set():
+            raise RuntimeError("Scan cancelled")
     platform_checks = _full_platform_checks(hits)
 
     found = [h for h in hits if h["verdict"] == FOUND]
@@ -453,13 +463,13 @@ def _run_full(username: str, emit=_noop, extended: bool = False, stop_event=None
         r["category"] = categorise_result(r, username)
     unverified = sorted(
         ({"platform": h["platform"], "url": h["url"], "reason": h["reason"]}
-         for h in hits if h["verdict"] not in (FOUND, NOT_FOUND) and not h["unreachable"]),
+         for h in hits if h["verdict"] not in (FOUND, NOT_FOUND)),
         key=lambda r: r["platform"].lower(),
     )
     rejected = sorted(
         ({"platform": h["platform"], "url": h["url"], "status_code": h["status_code"],
           "reason": h["reason"]}
-         for h in hits if h["verdict"] == NOT_FOUND or h["unreachable"]),
+         for h in hits if h["verdict"] == NOT_FOUND),
         key=lambda r: r["platform"].lower(),
     )
 
@@ -502,6 +512,7 @@ def _run_full(username: str, emit=_noop, extended: bool = False, stop_event=None
         },
         "coverage": coverage,
         "user_scanner": scan_selected(username, "username", permitted=False),
+        "partial": bool(coverage.get("unchecked")),
         "results": {"profiles": profiles, "documents": documents, "mentions": mentions},
         "identity_clusters": clusters,
         "exposures": exposures,

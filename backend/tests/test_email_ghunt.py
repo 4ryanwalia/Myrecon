@@ -26,7 +26,7 @@ def payload():
 def configure(monkeypatch, tmp_path):
     executable, session = tmp_path / "python.exe", tmp_path / "session.m"
     executable.touch()
-    session.touch()
+    session.write_text("e30=", encoding="utf-8")
     monkeypatch.setenv("EMAIL_GHUNT_ENABLED", "true")
     monkeypatch.setenv("GHUNT_PYTHON_EXECUTABLE", str(executable))
     monkeypatch.setenv("GHUNT_SESSION_FILE", str(session))

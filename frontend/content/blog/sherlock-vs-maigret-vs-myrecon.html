@@ -1,0 +1,68 @@
+<!--
+{
+  "title": "Sherlock vs Maigret vs MyRecon: Username Search Compared | MyRecon",
+  "headline": "Sherlock vs Maigret vs MyRecon: Username Search Compared",
+  "description": "Compare Sherlock, Maigret and MyRecon by setup, evidence, scope and reports. Follow a reproducible comparison method without confusing counts with accuracy.",
+  "category": "Tool comparisons",
+  "datePublished": "2026-10-08",
+  "dateModified": "2026-10-08",
+  "editorial_review": "2026-10-08",
+  "keywords": ["sherlock vs maigret", "sherlock alternative", "maigret alternative", "myrecon vs sherlock", "username search comparison"],
+  "faq": [
+    {"question": "Is Maigret more accurate than Sherlock?", "answer": "A larger catalogue or richer report does not establish greater accuracy. Compare the same source addresses, supported reference outcomes, tool versions and unresolved checks before making a scoped conclusion."},
+    {"question": "When should I choose MyRecon instead of a local CLI?", "answer": "Choose MyRecon when browser access and visible source leads suit your task. Choose a local tool when you need to control the environment and its configuration. MyRecon access depends on guest previews, sign-in, allowances and plan."},
+    {"question": "Do all three tools prove who owns a profile?", "answer": "No. A username match is a candidate account. Similar handles, copied photos and inferred links can connect unrelated people; ownership and identity require separate confirmation."}
+  ]
+}
+-->
+<p class="lead"><strong>Quick answer:</strong> Sherlock is a focused local username checker, Maigret adds enrichment and reporting options, and MyRecon provides a browser workflow with public-source leads and coverage context. Choose for your setup and evidence needs. A bigger result list is not proof of better accuracy.</p>
+
+<h2>Scope and publisher disclosure</h2>
+<p>MyRecon publishes this comparison and is one of the products discussed. We reviewed the official sources on 8 October 2026 and checked MyRecon's source for the features described here. This article compares workflows and explains how to evaluate findings. We did not run a new all-platform performance benchmark for this article.</p>
+<p>See the <a href="https://github.com/sherlock-project/sherlock">Sherlock repository</a>, <a href="https://github.com/soxoj/maigret">Maigret repository</a> and their current help before installing. Documentation and bundled site rules can differ between releases, so record the version you actually run. MyRecon's <a href="/pricing.html">access conditions</a> can also change.</p>
+
+<h2>How the workflows differ</h2>
+<table>
+  <caption>Practical differences to consider before a username search</caption>
+  <thead><tr><th scope="col">Decision</th><th scope="col">Sherlock</th><th scope="col">Maigret</th><th scope="col">MyRecon</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Starting interface</th><td>Local command line.</td><td>Command line; documented web interface and library options.</td><td>Hosted browser interface.</td></tr>
+    <tr><th scope="row">Typical job</th><td>Check a handle across supported sites.</td><td>Check handles and organize available public-page enrichment.</td><td>Review public profile leads without a local installation.</td></tr>
+    <tr><th scope="row">Reports</th><td>Text output with CSV/XLSX options.</td><td>Multiple formats, including HTML and PDF.</td><td>Visible results with CSV/JSON export where available.</td></tr>
+    <tr><th scope="row">Scope control</th><td>Selected sites and local options.</td><td>Site selection, tags and recursion settings.</td><td>Available scan scope, current catalogue and access tier.</td></tr>
+    <tr><th scope="row">What to maintain</th><td>Installation, version and detection rules.</td><td>Installation, configuration, database and report settings.</td><td>Account access and review of the current scan record.</td></tr>
+    <tr><th scope="row">Uncertainty review</th><td>Inspect source pages and native errors.</td><td>Inspect extracted fields, source pages and errors.</td><td>Inspect supported matches, unverified responses and coverage.</td></tr>
+  </tbody>
+</table>
+<p>For Maigret's configurable reporting and scope, consult its <a href="https://maigret.readthedocs.io/en/latest/command-line-options.html">command-line options</a>. MyRecon's full username workflow retains unresolved responses separately; that helps show the observation boundary, but does not remove the need to open important sources yourself.</p>
+
+<h2>Three reasons output counts disagree</h2>
+<p><strong>Different catalogues:</strong> tools may check different platform sets, mirrors or URL forms. Count exact account namespaces and source addresses before comparing totals. <strong>Different evidence rules:</strong> one checker may accept a page that another treats as ambiguous. <strong>Different conditions:</strong> blocks, timeouts, redirects and source changes can alter an observation even with the same handle.</p>
+<p>A report with 20 links is not automatically better than one with 12. Some may be duplicate addresses, mentions instead of profiles, generic pages or uncertain leads. Conversely, a conservative tool may miss a real account because it cannot obtain decisive public evidence. Both false positives and false negatives matter, and unknowns need their own count.</p>
+
+<h2>A fair small comparison you can reproduce</h2>
+<ol>
+  <li><strong>Define the question.</strong> For example, evaluate public account existence on a few named platforms for accounts you control.</li>
+  <li><strong>Write a reference record.</strong> Use current account-specific pages or official source responses. Keep ambiguous references unscored.</li>
+  <li><strong>Record the setup.</strong> Include versions, site rules, selected sites, timeouts and check dates. Preserve command settings or the web scan record.</li>
+  <li><strong>Compare shared source addresses.</strong> Separate the shared platform view from each full-catalogue view.</li>
+  <li><strong>Review each disagreement.</strong> Determine whether the original page supports, contradicts or fails to resolve the claim.</li>
+  <li><strong>Publish the limits.</strong> State the usernames, platforms and conditions covered, alongside unknowns and exclusions.</li>
+</ol>
+<p>The <a href="/data/username-benchmark.json">recorded MyRecon comparison data</a> and <a href="/data/benchmark-evidence/">reproduction notes</a> illustrate why evidence and catalogue scope matter. That recorded case concerns one username; it cannot establish overall tool accuracy. The homepage also explains the separate daily benchmark's restricted platform scope. Read the methodology rather than extending a narrow result to every website.</p>
+
+<h2>Illustrative local commands</h2>
+<p>These examples are based on documented options and were not executed for this article. Replace <code>YOUR_HANDLE</code> with an account you control or an identifier within your authorized task, and confirm the installed version's help first.</p>
+<pre><code>sherlock YOUR_HANDLE --site GitHub --csv
+maigret YOUR_HANDLE --site GitHub --no-recursion --html</code></pre>
+<p>Both examples deliberately start with one named site. Disabling Maigret recursion keeps discovered identifiers from silently expanding this exercise. In MyRecon, start the same handle in the <a href="/#tool">username tool</a>, inspect that platform's result and record any scope or access difference. Equivalent input alone does not make endpoints, timing or validation rules identical.</p>
+
+<h2>Frequently asked questions</h2>
+<h3>Is Maigret more accurate than Sherlock?</h3>
+<p>A larger catalogue or richer report does not establish greater accuracy. Compare the same source addresses, supported reference outcomes, tool versions and unresolved checks before making a scoped conclusion.</p>
+<h3>When should I choose MyRecon instead of a local CLI?</h3>
+<p>Choose MyRecon when browser access and visible source leads suit your task. Choose a local tool when you need to control the environment and its configuration. MyRecon access depends on guest previews, sign-in, allowances and plan.</p>
+<h3>Do all three tools prove who owns a profile?</h3>
+<p>No. A username match is a candidate account. Similar handles, copied photos and inferred links can connect unrelated people; ownership and identity require separate confirmation.</p>
+
+<p><a href="/#tool">Try the MyRecon browser workflow</a> or read the <a href="/blog/best-username-search-tools.html">username tool selection method</a> and <a href="/guides/account-enumeration-false-positives.html">account enumeration false-positive guide</a>.</p>

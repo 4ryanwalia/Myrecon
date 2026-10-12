@@ -2,48 +2,57 @@
   "kind": "comparison",
   "slug": "sherlock",
   "status": "published",
-  "title": "MyRecon vs Sherlock: OSINT Tools Compared",
-  "description": "Compare MyRecon and Sherlock: search inputs, public-source workflows and verification limits. Choose an OSINT tool for your authorized research.",
-  "h1": "MyRecon vs Sherlock: compare public-search workflows",
+  "title": "MyRecon vs Sherlock: Workflow, Cost & Limits",
+  "description": "Compare Sherlock local CLI research with MyRecon browser access, current scan limits, paid features and public-source verification requirements.",
+  "h1": "MyRecon vs Sherlock: Workflow, Cost & Limits",
   "focus_keyword": "sherlock alternative",
-  "intro": "Looking for a Sherlock alternative depends on the task: Sherlock is described by its official source as an open-source command-line username search project. MyRecon is a browser route into a public username search. This page compares workflow and fit without inventing a speed score or claiming identical coverage.",
+  "intro": "Sherlock and MyRecon both help with public username research, but their access models differ. Sherlock is an open-source command-line project you run in your own environment. MyRecon offers a browser workflow with guest previews, account limits and optional paid features. Neither tool establishes who owns a matching profile.",
   "sections": [
     {
-      "heading": "What Sherlock is designed to do",
-      "body": "Sherlock is described by its official source as An open-source command-line username search project. Its published workflow is a local, scriptable workflow and its documented site checks. Confirm current access, terms, and available features directly with the provider before relying on a capability for a live investigation."
+      "heading": "Sherlock: local installation and command-line output",
+      "body": "Sherlock's official repository documents installation with pipx install sherlock-project and a search with sherlock followed by a username. Check that repository before installation for current supported environments and options. Local execution is useful when you need repeatable commands, script integration or output files under your own control. You are responsible for dependency updates, request behavior and reviewing results. The project is free open-source software; that does not guarantee reliable responses from every third-party platform."
     },
     {
-      "heading": "Where a MyRecon username workflow fits",
-      "body": "MyRecon starts from a username and is intended to help review public profile leads across supported checks. Open every candidate source yourself: a handle match is not proof of identity, and unsupported, blocked, or unavailable checks should not be read as a confirmed absence."
+      "heading": "MyRecon: browser access and explicit plan limits",
+      "body": "The MyRecon standard release catalogue has 500+ platforms. Guests see a limited preview; signed-in free accounts get five standard scans per day. The optional one-time pack (₹99 via Indian checkout, or US$3.99 via enabled international checkout) adds unlimited standard scans, Deep Search access and ten Extended scans over a separate 3,000+ catalogue. Credits do not expire and the pack has no automatic renewal. The Android listing is in closed testing for eligible testers. Browser and Android availability should therefore not be presented as identical. The pricing page describes the current offer."
     },
     {
-      "heading": "Compare evidence rather than headline counts",
-      "body": "The tools can use different inputs, data sources, and result rules, so an unmeasured count or speed claim would not be a fair comparison. For Sherlock, check the official documentation linked below; for either workflow, confirm the original source, date, and reason a result is relevant."
+      "heading": "Compare the same question and inspect the sources",
+      "body": "Use the same handle you control and record the date, each tool's version or release, chosen scope, result status and original profile URL. Keep unsupported, blocked and unknown checks separate from negatives. A catalogue count describes scope, not successful checks or confirmed accounts. This page does not publish a same-scope Sherlock benchmark and makes no speed, coverage superiority or accuracy claim. The homepage's recorded username case has a different scope and cannot settle this comparison."
+    },
+    {
+      "heading": "Worked decision: a one-off self-audit or scripted review",
+      "body": "For a one-off self-audit on a browser-only device, MyRecon can surface candidates without a local installation. Open each result and confirm your own accounts through saved records. For a repeatable local command pipeline, Sherlock may fit better if you can maintain its environment. If the key requirement is private-profile access or identity verification, neither username workflow satisfies it. Keep that missing requirement visible rather than choosing by the largest advertised site count."
+    },
+    {
+      "heading": "Data handling and operational limits",
+      "body": "A local Sherlock search still sends requests to third-party sites. A browser-based MyRecon search uses its hosted services and the data handling described in the privacy policy. Do not describe either workflow as anonymous merely because it has no local signup step. Platform rate limits, login walls and changing templates affect both. Use bounded authorized searches, and keep your exports and screenshots under the same access and retention controls as other research notes."
     }
   ],
   "sources": [
     "https://github.com/sherlock-project/sherlock",
-    "https://www.myrecon.xyz/"
+    "/pricing",
+    "/privacy.html"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-03",
+  "modified_at": "2026-10-03",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Is MyRecon a direct replacement for Sherlock?",
-      "answer": "Not for every task. Sherlock is documented as an open-source command-line username search project. MyRecon focuses on a browser-based public username workflow. Choose based on required inputs, access model, source coverage, and the current official documentation."
+      "question": "Is MyRecon entirely free and ad-supported?",
+      "answer": "No. It has free guest previews and a signed-in daily standard allowance, plus optional paid features. See current pricing for the ₹99 scan pack."
     },
     {
-      "question": "Does MyRecon check more sites than Sherlock?",
-      "answer": "No measured, same-scope benchmark is published here, so this page makes no coverage or speed superiority claim. Compare the current source lists, methods, and result definitions under the same authorized test conditions."
+      "question": "Does this comparison prove one tool finds more accounts?",
+      "answer": "No. No same-scope Sherlock benchmark is published here. Counts, methods and source availability differ."
     },
     {
-      "question": "Can either tool prove two profiles belong to one person?",
-      "answer": "A matching username alone cannot establish identity. Open the underlying public profiles and corroborate any proposed connection with independent, voluntarily published context; keep uncertain outcomes clearly labeled."
+      "question": "When is Sherlock a better fit?",
+      "answer": "Consider it when you need a local command-line workflow or script integration and can manage installation, dependencies and source review."
     }
   ],
   "competitor": {
@@ -53,32 +62,37 @@
   },
   "capabilities": [
     {
-      "name": "How a search starts",
-      "myrecon": "Enter a username in a browser search",
-      "competitor": "Use the documented CLI workflow",
-      "evidence_url": "https://github.com/sherlock-project/sherlock"
+      "name": "Access",
+      "myrecon": "Browser; guest preview and account plans",
+      "competitor": "Local CLI; installation required"
     },
     {
-      "name": "Primary workflow",
-      "myrecon": "Review public username leads from supported checks",
-      "competitor": "A local, scriptable workflow and its documented site checks.",
-      "evidence_url": "https://github.com/sherlock-project/sherlock"
+      "name": "Cost",
+      "myrecon": "Free allowance; optional ₹99 one-time pack",
+      "competitor": "Free open-source software"
     },
     {
-      "name": "Evidence review",
-      "myrecon": "Open each source and verify a candidate manually",
-      "competitor": "Confirm current output and source pages using its official documentation",
-      "evidence_url": "https://github.com/sherlock-project/sherlock"
+      "name": "Scope",
+      "myrecon": "500+ standard catalogue; separate paid Extended scope",
+      "competitor": "Current checks listed in the official project"
+    },
+    {
+      "name": "Verification",
+      "myrecon": "Open candidate sources; keep unknown outcomes",
+      "competitor": "Open candidate sources; inspect output and request limits"
     }
   ],
   "benchmark": null,
   "pros": [
-    "MyRecon offers a browser-based entry point for a username search",
-    "This page makes no unmeasured speed or coverage claim"
+    "Browser access without local dependencies",
+    "Visible result uncertainty and separate scan scopes"
   ],
   "cons": [
-    "A web username workflow does not replace a specialist tool for every task",
-    "Sherlock's current access, coverage, and terms must be checked with its provider"
+    "Account and plan limits apply",
+    "No same-scope Sherlock benchmark on this page",
+    "Public leads do not verify ownership"
   ],
-  "migration_note": "If you currently use Sherlock, keep it for the tasks and integrations it already serves. To compare a public username workflow, use the same authorized handle in MyRecon, open candidate pages on the original services, and document differences in scope and uncertainty before changing an established process."
+  "migration_note": "Keep a local Sherlock workflow if its script integration matters. Evaluate MyRecon on an authorized handle with source review before changing your process.",
+  "editorial_review": true,
+  "method": "Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested."
 }

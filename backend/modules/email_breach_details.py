@@ -1,8 +1,10 @@
 """Optional historical aliases from LeakCheck Pro; credential values excluded."""
 import os
+import time
 from urllib.parse import quote
 import requests
 from modules.email_enrichment import text
+from modules.email_public_profiles import bounded_json
 
 
 def normalize_breach_details(payload, email):
@@ -41,13 +43,18 @@ def breach_details(email):
     token = os.environ.get("LEAKCHECK_APIKEY", "").strip()
     if not token or os.environ.get("EMAIL_BREACH_DETAILS_ENABLED", "false").lower() != "true":
         return {**empty, "status": "unconfigured"}
+    response = None
     try:
+        deadline = time.monotonic() + 25
         response = requests.get("https://leakcheck.io/api/v2/query/" + quote(email, safe=""),
                                 params={"type": "email", "limit": 100, "offset": 0},
-                                headers={"X-API-Key": token, "Accept": "application/json"}, timeout=(5, 15), allow_redirects=False)
+                                headers={"X-API-Key": token, "Accept": "application/json"}, timeout=(5, 15), allow_redirects=False, stream=True)
         if response.status_code != 200:
             state = "rate_limited" if response.status_code == 429 else "authentication_required" if response.status_code in (401, 403) else "unavailable"
             return {**empty, "status": state, "message": "Breach detail provider " + state.replace("_", " ") + "; other findings retained."}
-        return normalize_breach_details(response.json(), email)
+        return normalize_breach_details(bounded_json(response, deadline), email)
     except (requests.RequestException, ValueError, TypeError):
         return {**empty, "status": "unavailable", "message": "Breach details unavailable; other findings retained."}
+    finally:
+        if response is not None:
+            response.close()

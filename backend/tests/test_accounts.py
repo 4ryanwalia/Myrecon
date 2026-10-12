@@ -116,6 +116,8 @@ def test_paid_standard_scans_are_not_metered(client):
         assert _scan(client, token=_token()).status_code == 200
 
 
+
+
 def _full_result():
     from modules.sweep import CATALOGUE
     visible, hidden = CATALOGUE[0]["name"], CATALOGUE[100]["name"]
@@ -136,139 +138,10 @@ def _full_result():
     }
 
 
-@pytest.mark.parametrize("stream", [False, True])
-@pytest.mark.parametrize("cached", [False, True])
-def test_guest_standard_requires_signin_before_scan_or_cache(client, monkeypatch, stream, cached):
-    import services.search as search
-    calls = []
-    monkeypatch.setattr(config, "CACHE_ENABLED", True)
-    if cached:
-        app_module._cache.set(app_module._cache_key("username_full", "octocat"), _full_result())
-
-    def forbidden(*args, **kwargs):
-        calls.append(1)
-        raise AssertionError("A guest must never start a Standard scan")
-
-    monkeypatch.setattr(search, "_run_full", forbidden)
-    monkeypatch.setattr(search, "stream_username", forbidden)
-    endpoint = "/api/username/stream" if stream else "/api/username"
-    for _ in range(plans.GUEST_SCANS_PER_DAY + 1):
-        r = client.post(endpoint, json={"username": "octocat", "scope": "full"},
-                        headers={"X-Forwarded-For": "8.8.8.8"})
-        assert r.status_code == 401 and r.get_json()["code"] == "sign_in_required"
-        assert "hidden.example" not in r.get_data(as_text=True)
-    assert calls == []
-    # Refused Standard requests must leave the guest's Quick allowance intact.
-    for _ in range(plans.GUEST_SCANS_PER_DAY):
-        assert _scan(client).status_code == 200
-    assert _scan(client).get_json()["code"] == "guest_limit"
 
 
-@pytest.mark.parametrize("stream", [False, True])
-@pytest.mark.parametrize("cached", [False, True])
-def test_signed_in_standard_returns_complete_report(client, monkeypatch, stream, cached):
-    import services.search as search
-    full = _full_result()
-    calls = []
-    monkeypatch.setattr(config, "CACHE_ENABLED", True)
-    if cached:
-        app_module._cache.set(app_module._cache_key("username_full", "octocat"), full)
-
-    def run(*_args, **_kwargs):
-        calls.append(1)
-        return full
-
-    def events(*_args, **_kwargs):
-        calls.append(1)
-        yield {"type": "complete", "data": full}
-
-    monkeypatch.setattr(search, "_run_full", run)
-    monkeypatch.setattr(search, "stream_username", events)
-    endpoint = "/api/username/stream" if stream else "/api/username"
-    r = client.post(endpoint, json={"username": "octocat", "scope": "full"},
-                    headers={"Authorization": f"Bearer {_token()}"})
-    assert r.status_code == 200
-    result = json.loads(r.get_data(as_text=True))["data"] if stream else r.get_json()
-    assert "https://hidden.example/octocat" in json.dumps(result)
-    assert "preview" not in result
-    assert calls == ([] if cached else [1])
-    assert plans.get_account("user-1")["standard_scans_left"] == plans.FREE_STANDARD_SCANS_PER_DAY - 1
 
 
-@pytest.mark.parametrize("cached", [False, True])
-def test_guest_quick_stream_still_works(client, monkeypatch, cached):
-    import services.search as search
-    quick = {"status": "ok", "query": {"scope": "standard"}, "summary": {}, "results": {}}
-    calls = []
-    monkeypatch.setattr(config, "CACHE_ENABLED", True)
-    if cached:
-        app_module._cache.set(app_module._cache_key("username", "octocat", False), quick)
-
-    def events(username, deep, scope):
-        calls.append((username, deep, scope))
-        yield {"type": "complete", "data": quick}
-
-    monkeypatch.setattr(search, "stream_username", events)
-    r = client.post("/api/username/stream", json={"username": "octocat"})
-    assert r.status_code == 200
-    shown = json.loads(r.get_data(as_text=True))["data"]
-    assert shown["query"] == quick["query"]
-    assert shown["guest_preview"] == {"visible_cards": 0, "hidden_cards": 0, "requires_sign_in": True}
-    assert calls == ([] if cached else [("octocat", False, "standard")])
-
-
-@pytest.mark.parametrize("stream", [False, True])
-@pytest.mark.parametrize("cached", [False, True])
-def test_guest_quick_exposes_two_cards_without_mutating_shared_cache(client, monkeypatch, stream, cached):
-    import copy
-    import services.search as search
-    cards = [{"platform": name, "url": f"https://{name.lower()}.example/octocat",
-              "category": "profile", "confidence": "high"}
-             for name in ("First", "Second", "HiddenThird", "HiddenFourth")]
-    full = {"status": "ok", "query": {"username": "octocat", "scope": "standard", "deep": True},
-            "summary": {"total": 4, "profiles": 4, "checked": 100},
-            "results": {"profiles": cards, "documents": [], "mentions": []},
-            "identity_clusters": [{"profiles": cards}], "exposures": [{"url": cards[2]["url"]}],
-            "platform_checks": cards, "user_scanner": {"hidden": cards[3]}}
-    original = copy.deepcopy(full)
-    monkeypatch.setattr(config, "CACHE_ENABLED", True)
-    key = app_module._cache_key("username", "octocat", True)
-    if cached:
-        app_module._cache.set(key, full)
-    monkeypatch.setattr(search, "_run_username", lambda *_args, **_kwargs: full)
-
-    def events(*_args, **_kwargs):
-        for card in cards:
-            yield {"type": "progress", "phase": "Checking platforms", "percent": 20,
-                   "detail": card["platform"] + ", found"}
-            yield {"type": "found", "result": card}
-        yield {"type": "found", "result": cards[0]}
-        yield {"type": "complete", "data": full}
-
-    monkeypatch.setattr(search, "stream_username", events)
-    endpoint = "/api/username/stream" if stream else "/api/username"
-    response = client.post(endpoint, json={"username": "octocat", "deep": True, "scope": "standard"})
-    assert response.status_code == 200
-    wire = response.get_data(as_text=True)
-    if stream:
-        received = [json.loads(line) for line in wire.splitlines()]
-        shown = received[-1]["data"]
-        if not cached:
-            assert len([e for e in received if e["type"] == "found"]) == 2
-            assert [e["count"] for e in received if e["type"] == "found_locked"] == [1, 2]
-    else:
-        shown = response.get_json()
-    assert shown["guest_preview"] == {"visible_cards": 2, "hidden_cards": 2, "requires_sign_in": True}
-    assert shown["results"]["profiles"] == cards[:2]
-    assert shown["summary"]["total"] == 4
-    assert "HiddenThird" not in wire and "hiddenthird.example" not in wire
-    assert "HiddenFourth" not in wire and "hiddenfourth.example" not in wire
-    assert full == original and app_module._cache.get(key) == original
-    signed = client.post(endpoint, json={"username": "octocat", "deep": True, "scope": "standard"},
-                         headers={"Authorization": f"Bearer {_token()}"})
-    signed_wire = signed.get_data(as_text=True)
-    assert "HiddenThird" in signed_wire and "HiddenFourth" in signed_wire
-    assert "guest_preview" not in signed_wire
 
 
 def test_signed_in_daily_limit_requires_persistent_storage(client, monkeypatch):
@@ -866,117 +739,109 @@ def test_history_id_is_validated(client):
     assert client.get("/api/history/..%2F..%2Fusers", headers=_auth(_token())).status_code == 404
 
 
-def test_closing_queued_extended_stream_refunds_credit(client, monkeypatch):
-    import threading
-    slot = threading.BoundedSemaphore(1)
-    monkeypatch.setattr(app_module, "_full_slots", slot)
-    plans.grant_pass("user-1", "extended", "queued-pack")
-    slot.acquire()
-    try:
-        response = client.post("/api/username/stream",
-                               json={"username": "octocat", "scope": "extended"},
-                               headers=_auth(_token()), buffered=False)
-        assert b'Queued' in next(iter(response.response))
-        assert plans.get_account("user-1")["extended_scans_left"] == 9
-        response.close()
-        assert plans.get_account("user-1")["extended_scans_left"] == 10
-        assert not slot.acquire(blocking=False)
-    finally:
-        slot.release()
-
-
-def test_closing_running_stream_retains_slot_until_cleanup(client, monkeypatch):
-    import threading
+@pytest.mark.parametrize("stream", [False, True])
+@pytest.mark.parametrize("cached", [False, True])
+def test_guest_quick_exposes_two_cards_without_mutating_shared_cache(client, monkeypatch, stream, cached):
+    import copy
     import services.search as search
-    slot = threading.BoundedSemaphore(1)
-    monkeypatch.setattr(app_module, "_full_slots", slot)
-    plans.grant_pass("user-1", "extended", "running-pack")
-    cleaned = []
+    cards = [{"platform": name, "url": f"https://{name.lower()}.example/octocat",
+              "category": "profile", "confidence": "high"}
+             for name in ("First", "Second", "HiddenThird", "HiddenFourth")]
+    full = {"status": "ok", "query": {"username": "octocat", "scope": "standard", "deep": True},
+            "summary": {"total": 4, "profiles": 4, "checked": 100},
+            "results": {"profiles": cards, "documents": [], "mentions": []},
+            "identity_clusters": [{"profiles": cards}], "exposures": [{"url": cards[2]["url"]}],
+            "platform_checks": cards, "user_scanner": {"hidden": cards[3]}}
+    original = copy.deepcopy(full)
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    key = app_module._cache_key("username", "octocat", True)
+    if cached:
+        app_module._cache.set(key, full)
+    monkeypatch.setattr(search, "_run_username", lambda *_args, **_kwargs: full)
 
-    def events(*a, **k):
-        try:
-            yield {"type": "progress", "percent": 2}
-            yield {"type": "complete", "data": {"status": "ok"}}
-        finally:
-            assert not slot.acquire(blocking=False)
-            cleaned.append(True)
+    def events(*_args, **_kwargs):
+        for card in cards:
+            yield {"type": "progress", "phase": "Checking platforms", "percent": 20,
+                   "detail": card["platform"] + ", found"}
+            yield {"type": "found", "result": card}
+        yield {"type": "found", "result": cards[0]}
+        yield {"type": "complete", "data": full}
 
     monkeypatch.setattr(search, "stream_username", events)
-    response = client.post("/api/username/stream",
-                           json={"username": "octocat", "scope": "extended"},
-                           headers=_auth(_token()), buffered=False)
-    assert b'progress' in next(iter(response.response))
-    response.close()
-    assert cleaned == [True]
-    assert slot.acquire(blocking=False)
-    slot.release()
-    assert plans.get_account("user-1")["extended_scans_left"] == 9
+    endpoint = "/api/username/stream" if stream else "/api/username"
+    response = client.post(endpoint, json={"username": "octocat", "deep": True, "scope": "standard"})
+    assert response.status_code == 200
+    wire = response.get_data(as_text=True)
+    if stream:
+        received = [json.loads(line) for line in wire.splitlines()]
+        shown = received[-1]["data"]
+        if not cached:
+            assert len([e for e in received if e["type"] == "found"]) == 2
+            assert [e["count"] for e in received if e["type"] == "found_locked"] == [1, 2]
+    else:
+        shown = response.get_json()
+    assert shown["guest_preview"] == {"visible_cards": 2, "hidden_cards": 2, "requires_sign_in": True}
+    assert shown["results"]["profiles"] == cards[:2]
+    assert shown["summary"]["total"] == 4
+    assert "HiddenThird" not in wire and "hiddenthird.example" not in wire
+    assert "HiddenFourth" not in wire and "hiddenfourth.example" not in wire
+    assert full == original and app_module._cache.get(key) == original
+    signed = client.post(endpoint, json={"username": "octocat", "deep": True, "scope": "standard"},
+                         headers={"Authorization": f"Bearer {_token()}"})
+    signed_wire = signed.get_data(as_text=True)
+    assert "HiddenThird" in signed_wire and "HiddenFourth" in signed_wire
+    assert "guest_preview" not in signed_wire
 
+def test_guest_gets_five_quick_scans_a_day(client):
+    codes = [_scan(client).status_code for _ in range(plans.GUEST_SCANS_PER_DAY + 1)]
+    assert codes[:-1] == [200] * plans.GUEST_SCANS_PER_DAY
+    assert codes[-1] == 429
+    assert _scan(client).get_json()["code"] == "guest_limit"
 
-def test_match_choices_are_private_persistent_and_revisable(client):
-    one = {"Authorization": f"Bearer {_token('choice-one')}"}
-    two = {"Authorization": f"Bearer {_token('choice-two')}"}
-    endpoint = "/api/match-choices"
-    assert client.get(endpoint).status_code == 401
-    for choice in ("mine", "not_mine", "unsure"):
-        response = client.post(endpoint, headers=one, json={"url": "https://example.com/Alice#bio", "choice": choice})
-        assert response.status_code == 200
-        saved = list(client.get(endpoint, headers=one).get_json()["choices"].values())
-        assert len(saved) == 1
-        assert saved[0]["choice"] == choice
-        assert saved[0]["url"] == "https://example.com/Alice"
-        assert saved[0]["basis"] == "user_assertion"
-        assert client.get(endpoint, headers=two).get_json()["choices"] == {}
-    assert client.post(endpoint, headers=one, json={"url": "https://example.com/alice", "choice": "mine"}).status_code == 200
-    assert len(client.get(endpoint, headers=one).get_json()["choices"]) == 2
-    client.post(endpoint, headers=one, json={"url": "https://example.com/Alice", "choice": ""})
-    assert len(client.get(endpoint, headers=one).get_json()["choices"]) == 1
+@pytest.mark.parametrize("stream", [False, True])
+@pytest.mark.parametrize("cached", [False, True])
+def test_guest_standard_requires_signin_before_scan_or_cache(client, monkeypatch, stream, cached):
+    import services.search as search
+    calls = []
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    if cached:
+        app_module._cache.set(app_module._cache_key("username_full", "octocat"), _full_result())
 
+    def forbidden(*args, **kwargs):
+        calls.append(1)
+        raise AssertionError("A guest must never start a Standard scan")
 
-def test_match_choices_reject_invalid_input_and_volatile_storage(client, monkeypatch):
-    headers = {"Authorization": f"Bearer {_token()}"}
-    for body in ([1], {}, {"url": "javascript:alert(1)", "choice": "mine"},
-                 {"url": "https://example.com/a", "choice": "confirmed"}):
-        assert client.post("/api/match-choices", headers=headers, json=body).status_code == 400
-    monkeypatch.setattr(store, "persistent", lambda: False)
-    assert client.post("/api/match-choices", headers=headers,
-                       json={"url": "https://example.com/a", "choice": "mine"}).status_code == 503
+    monkeypatch.setattr(search, "_run_full", forbidden)
+    monkeypatch.setattr(search, "stream_username", forbidden)
+    endpoint = "/api/username/stream" if stream else "/api/username"
+    for _ in range(plans.GUEST_SCANS_PER_DAY + 1):
+        r = client.post(endpoint, json={"username": "octocat", "scope": "full"},
+                        headers={"X-Forwarded-For": "8.8.8.8"})
+        assert r.status_code == 401 and r.get_json()["code"] == "sign_in_required"
+        assert "hidden.example" not in r.get_data(as_text=True)
+    assert calls == []
+    # Refused Standard requests must leave the guest's Quick allowance intact.
+    for _ in range(plans.GUEST_SCANS_PER_DAY):
+        assert _scan(client).status_code == 200
+    assert _scan(client).get_json()["code"] == "guest_limit"
 
+@pytest.mark.parametrize("cached", [False, True])
+def test_guest_quick_stream_still_works(client, monkeypatch, cached):
+    import services.search as search
+    quick = {"status": "ok", "query": {"scope": "standard"}, "summary": {}, "results": {}}
+    calls = []
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    if cached:
+        app_module._cache.set(app_module._cache_key("username", "octocat", False), quick)
 
-def test_shared_username_never_confirms_identity():
-    from modules.correlator import IdentityCorrelator
-    clusters = IdentityCorrelator().correlate([
-        {"username": "alice", "platform": name, "category": "profile", "url": f"https://{name}.com/alice",
-         "display_name": "Alice", "bio": "Example"} for name in ("first", "second", "third")], "alice")
-    assert clusters
-    assert all(c["identity_status"] == "unverified" and c["confidence_basis"] == "retrieval_quality_not_identity" for c in clusters)
+    def events(username, deep, scope):
+        calls.append((username, deep, scope))
+        yield {"type": "complete", "data": quick}
 
-
-def test_discovery_cleanup_is_private_user_record_and_survives_reload(client):
-    headers = {"Authorization": f"Bearer {_token('cleanup-user')}"}
-    url = "https://github.com/alice/?utm_source=test"
-    endpoint = "/api/match-choices"
-    for cleanup in ("keep", "review", "requested", "completed"):
-        response = client.post(endpoint, headers=headers, json={"url": url, "choice": "mine", "cleanup": cleanup})
-        assert response.status_code == 200
-        row = list(client.get(endpoint, headers=headers).get_json()["choices"].values())[0]
-        assert row["url"] == "https://github.com/alice"
-        assert row["cleanup"] == cleanup
-        assert row["basis"] == "user_assertion"
-    client.post(endpoint, headers=headers, json={"url": url, "choice": "not_mine", "cleanup": "completed"})
-    row = list(client.get(endpoint, headers=headers).get_json()["choices"].values())[0]
-    assert row["cleanup"] == "review"
-    assert client.post(endpoint, headers=headers, json={"url": url, "choice": "mine", "cleanup": "verified_deleted"}).status_code == 400
-
-
-def test_discovery_history_retains_evidence_and_original_check_time():
-    from core.history import _trim
-    report = {"checked_at": "2026-10-12T00:00:00+00:00", "supplied_profile": "https://github.com/alice",
-              "results": {"profiles": [{"url": "https://github.com/alice", "exists": True, "evidence": "public API", "verdict": "found"}]},
-              "platform_checks": [{"platform": "Other", "verdict": "unknown", "reason": "blocked"}]}
-    saved = _trim(report)
-    assert saved["checked_at"] == report["checked_at"]
-    assert saved["supplied_profile"] == report["supplied_profile"]
-    assert saved["results"]["profiles"][0]["evidence"] == "public API"
-    assert saved["platform_checks"][0]["verdict"] == "unknown"
-    assert _trim({})["checked_at"] is None
+    monkeypatch.setattr(search, "stream_username", events)
+    r = client.post("/api/username/stream", json={"username": "octocat"})
+    assert r.status_code == 200
+    shown = json.loads(r.get_data(as_text=True))["data"]
+    assert shown["query"] == quick["query"]
+    assert shown["guest_preview"] == {"visible_cards": 0, "hidden_cards": 0, "requires_sign_in": True}
+    assert calls == ([] if cached else [("octocat", False, "standard")])

@@ -1,4 +1,5 @@
 import json
+import subprocess
 from types import SimpleNamespace
 
 import httpx
@@ -14,10 +15,10 @@ ROW = {"name": "Spotify", "id": "spotify", "domain": "spotify.com", "method": "r
 
 
 def test_catalogue_has_123_pinned_modules_and_spotify_is_eligible():
-    rows = adapter.HOLEHE_SERVICES
-    assert len(rows) == 123
+    rows = adapter.CATALOG["services"]
+    assert len(rows) == 125
     assert len({r["id"] for r in rows}) == len(rows)
-    assert sum(r["enabled"] for r in rows) == 111
+    assert sum(r["enabled"] for r in rows) == 113
     assert next(r for r in rows if r["id"] == "spotify")["enabled"]
     assert all(not r["enabled"] for r in rows if r["method"] == "password recovery")
 
@@ -101,3 +102,57 @@ def test_malformed_worker_outputs_preserve_unavailable(monkeypatch, payload):
     monkeypatch.setattr(adapter.subprocess, "run", lambda *a, **k: SimpleNamespace(returncode=0, stdout=json.dumps(payload)))
     out = adapter.scan_registered_accounts("x@example.com")
     assert out["status"] == "unavailable" and out["checked"] == 0
+
+
+def test_process_timeout_preserves_last_complete_checkpoint(monkeypatch):
+    rows = adapter.baseline("timeout")
+    rows[0].update(status="found", reason="registration signal")
+    output = (json.dumps({"status": "partial", "services": rows}) + '\n{"services":').encode()
+    def timeout(*args, **kwargs):
+        raise subprocess.TimeoutExpired(args[0], 42, output=output)
+    monkeypatch.setattr(adapter.subprocess, "run", timeout)
+    out = adapter.scan_registered_accounts("x@example.com")
+    assert out["status"] == "partial" and out["partial"]
+    assert out["checked"] == out["found"] == 1
+    assert out["counts"]["timeout"] == 112
+
+
+def test_completed_worker_with_no_answers_is_unavailable(monkeypatch):
+    monkeypatch.setattr(adapter.subprocess, "run", lambda *a, **k: SimpleNamespace(
+        returncode=0, stdout=json.dumps({"status": "ok", "services": adapter.baseline("timeout")})))
+    out = adapter.scan_registered_accounts("x@example.com")
+    assert out["status"] == "unavailable" and out["partial"]
+
+
+def test_worker_reuses_tls_context_without_sharing_clients(monkeypatch, tmp_path):
+    import hashlib
+    import trio
+    source = tmp_path / "provider.py"
+    source.write_text("reviewed fixture", encoding="utf-8")
+    rows = [{**ROW, "id": f"fixture{i}", "module": f"fixture{i}", "enabled": True,
+             "sha256": hashlib.sha256(source.read_bytes()).hexdigest()} for i in range(14)]
+    rows.append({**rows[0], "id": "spotify", "module": "spotify"})
+    monkeypatch.setattr(worker, "CATALOG", {"services": rows})
+    context = object()
+    calls, clients, started = [], [], []
+    monkeypatch.setattr(worker.ssl, "create_default_context", lambda: calls.append(True) or context)
+    def module(name):
+        async def check(email, client, out):
+            started.append(name)
+            await trio.lowlevel.checkpoint()
+            out.append({"exists": True})
+        return SimpleNamespace(__file__=str(source), **{name: check})
+    monkeypatch.setattr(worker.importlib, "import_module", module)
+    class Client:
+        def __init__(self, **kwargs):
+            assert kwargs["verify"] is context
+            assert kwargs["follow_redirects"] is False
+            clients.append(self)
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+    out = trio.run(worker.run, "x@example.com", SimpleNamespace(AsyncClient=Client), trio)
+    assert len(calls) == 1 and len(clients) == 15
+    # The first twelve clients run concurrently, so their relative start
+    # order varies. Priority services must be in that first batch.
+    assert "spotify" in started[:12]
+    assert all(row["status"] == "found" for row in out)

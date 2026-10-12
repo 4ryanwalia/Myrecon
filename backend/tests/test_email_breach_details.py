@@ -43,6 +43,7 @@ def test_key_stays_in_header_and_http_failure_preserves_unknown(monkeypatch):
     monkeypatch.setenv("EMAIL_BREACH_DETAILS_ENABLED", "true")
     class Reply:
         status_code = 429
+        def close(self): pass
     def get(endpoint, **kwargs):
         assert endpoint.endswith("fixture%40example.com")
         assert kwargs["params"]["type"] == "email"

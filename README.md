@@ -73,7 +73,7 @@ python myrecon.py --help
 | Password exposure check | Yes | No | Hashes in the browser and sends only a hash prefix to Pwned Passwords. |
 | Full-name and reverse-image web search | Yes | Yes | Requires Google Programmable Search credentials. |
 
-**Website access:** Guest login allows Quick scans across 100 platforms with no sign-up required. Only the first 2 result cards are visible; remaining cards are blurred. Standard scans require sign-in before they start. Signed-in free accounts get 5 standard 500+ platform scans per UTC day with complete results. The only paid plan is ₹99 for unlimited standard scans plus 10 Extended 3,000+ platform scans, with no expiry. Paid standard access remains unlimited after Extended credits are used. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
+**Website access:** Guests can run Quick across 100 platforms without sign-up. Only the first 2 result cards are visible; remaining cards are blurred. Standard requires sign-in. Sign in for 5 free standard 500+ platform scans per UTC day and complete results. The only paid plan is ₹99 for unlimited standard scans plus 10 Extended 3,000+ platform scans, with no expiry. Paid standard access remains unlimited after Extended credits are used. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
 
 The [Android app](https://myrecon.xyz/app.html) is maintained separately; its source is not in this repository.
 

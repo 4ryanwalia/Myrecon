@@ -322,7 +322,7 @@ def test_linkedin_endpoint_validates_and_does_not_cache_or_accept_url_claims(mon
     for _ in range(2):
         response = client.post("/api/email/linkedin-public", json={"email": EMAIL, "profile_url": URL + "-unverified"})
         assert response.status_code == 200
-        assert response.headers["Cache-Control"] == "no-store"
+        assert response.headers["Cache-Control"] == "private, no-store"
         assert response.get_json()["status"] == "unknown"
     assert calls == [EMAIL, EMAIL]
     assert client.options("/api/email/linkedin-public").status_code == 204

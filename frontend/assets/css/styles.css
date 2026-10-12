@@ -172,7 +172,7 @@ button, input, select { font: inherit; color: inherit; }
 /* ============================ Tool ============================ */
 .tool { margin-top: 34px; }
 .tool-tabs {
-  display: inline-flex; gap: 3px; overflow-x: auto; margin-bottom: 12px;
+  display: inline-flex; flex-wrap: wrap; gap: 3px; overflow-x: auto; margin-bottom: 12px;
   padding: 4px; background: var(--bg-soft); border: 1px solid var(--border);
   border-radius: 13px; max-width: 100%; scrollbar-width: none;
 }
@@ -188,6 +188,21 @@ button, input, select { font: inherit; color: inherit; }
 }
 .tab[aria-selected="true"] .tab-ico { color: var(--accent); }
 .tab .tab-ico { display: inline-flex; align-items: center; }
+.guest-visible-results { display: grid; gap: 14px; }
+.guest-visible-card { min-width: 0; }
+.guest-visible-results .card-link { display: block; }
+.guest-locked-results { position: relative; margin-top: 18px; min-height: 220px; }
+.guest-placeholder { min-height: 160px; filter: blur(7px); pointer-events: none; user-select: none; overflow: hidden; }
+.guest-placeholder-line { height: 15px; width: 85%; margin: 18px 0; border-radius: 5px; background: var(--border); }
+.guest-placeholder-line.short { width: 55%; }
+.guest-results-overlay { position: absolute; z-index: 1; top: 20px; left: 50%; transform: translateX(-50%); width: min(430px, calc(100% - 24px)); padding: 24px; text-align: center; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.guest-results-overlay strong { font-size: 1.1rem; }
+.guest-results-overlay p { margin: 10px 0; }
+.guest-card-fields { margin: 0; }
+.guest-card-fields > div { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.guest-card-fields dt { color: var(--text-mute); text-transform: capitalize; font-size: .85rem; }
+.guest-card-fields dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+@media (max-width: 599px) { .tool-tabs { display: flex; } .tool-tabs .tab { flex: 1 0 auto; justify-content: center; min-height: 44px; } .guest-locked-results .card-grid { grid-template-columns: 1fr; } }
 /* Inline icon alignment (no emoji, clean line icons) */
 .tab-ico svg, .pivot svg, .history-item .ico svg, .chip svg, .feature .fico svg { display: block; }
 .pivot svg { flex-shrink: 0; }

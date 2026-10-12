@@ -8,7 +8,8 @@ const logoHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(RO
 const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, "assets/css/site-footer.css"))).digest("hex").slice(0, 10);
 const GROUPS = [
   ["Products", [
-    ["Username search", "/#tool"], ["Username checker", "/username-checker.html"], ["Features", "/features.html"], ["Android app", "/app.html"],
+    ["Username search", "/#tool"], ["Features", "/features.html"], ["Android app", "/app.html"],
+    ["Username checker", "/username-checker.html"],
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [
@@ -16,9 +17,9 @@ const GROUPS = [
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [
-    ["MyRecon vs Sherlock", "/vs/sherlock"], ["MyRecon vs Maigret", "/vs/maigret"],
-    ["MyRecon vs WhatsMyName", "/vs/whatsmyname"], ["MyRecon vs HIBP", "/vs/have-i-been-pwned"],
-    ["All comparisons", "/vs/"],
+    ["Top 10 OSINT tools", "/blog/top-10-osint-tools.html"],
+    ["MyRecon vs Sherlock", "/vs/sherlock"],
+    ["Choose a research workflow", "/vs/"],
   ]],
   ["Company", [
     ["About MyRecon", "/about.html"], ["Founder", "/founder.html"],
@@ -57,6 +58,7 @@ function renderFooter() {
 }
 
 function enhance(file) {
+  if (file === path.join(ROOT, 'index.html')) return false;
   let html = fs.readFileSync(file, "utf8");
   const before = html;
   if (!/<html\b/i.test(html) || !/<\/body>/i.test(html)) return false;
