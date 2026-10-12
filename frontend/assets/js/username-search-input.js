@@ -17,13 +17,13 @@
         </style>
         <form aria-label="Search a public username">
           <label for="seo-username">Username</label>
-          <div class="row"><input id="seo-username" name="username" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="100" placeholder="Enter a username" required>
+          <div class="row"><input id="seo-username" name="username" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="8192" placeholder="Enter a username or paste a profile link." required>
           <button type="submit">Search public platforms</button></div>
           <p>Use usernames you own or are authorized to review. Results require manual confirmation.</p>
         </form>`;
       root.querySelector("form").addEventListener("submit", (event) => {
         event.preventDefault();
-        const value = root.querySelector("input").value.trim().replace(/^@+/, "");
+        const value = root.querySelector("input").value.trim().replace(/^@/, "");
         if (!value) return;
         const params = new URLSearchParams({ tool: "username", q: value });
         window.location.assign(`/#${params.toString()}`);

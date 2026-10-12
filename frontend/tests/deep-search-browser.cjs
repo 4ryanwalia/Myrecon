@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
   }
   if (pathname === '/assets/js/config.js') {
     res.setHeader('Content-Type', 'application/javascript');
-    return res.end('window.MYRECON={apiBase:location.origin};');
+    return res.end('window.MYRECON_API_BASE=location.origin;\n' + fs.readFileSync(path.join(root, 'assets/js/config.js'), 'utf8'));
   }
   if (pathname === '/api/investigate/stream') {
     assert.equal(req.headers.authorization, 'Bearer fixture-token');
@@ -52,11 +52,55 @@ const server = http.createServer((req, res) => {
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await page.route('**/*', (route) => route.request().url().startsWith(base) ? route.continue() : route.abort());
+    await page.goto(base + '/index.html');
+    await page.locator('.case-graph-row').first().waitFor();
+    assert.equal(await page.locator('.case-graph-row').count(), 3);
+    assert.deepEqual(await page.locator('.case-graph-total strong').allTextContents(), ['12', '18', '35']);
+    assert.deepEqual(await page.locator('.case-count-falsePositives').allTextContents(), ['0 observed false positives', '2 observed false positives', '9 observed false positives']);
+    await page.locator('#usernameCaseScope').selectOption('shared');
+    assert.deepEqual(await page.locator('.case-graph-total strong').allTextContents(), ['8', '11', '10']);
+    await page.locator('#usernameCaseScope').selectOption('full');
+    assert.equal(await page.locator('.quick-link').count(), 3);
+    await page.locator('[data-quick="email"]').click();
+    assert.equal(await page.locator('[data-quick="email"]').count(), 0);
+    assert.equal(await page.locator('[data-quick="username"]').count(), 1);
+    assert.equal(await page.locator('.home-resource-list > a').count(), 3);
+    assert.equal(await page.locator('.case-daily').evaluate(el => el.open), false);
+    await page.screenshot({ path: path.join(output, 'homepage-dark.png'), fullPage: true });
+    await page.locator('.case-daily > summary').click();
+    await page.locator('#benchmarkGraph svg').waitFor();
+    await page.locator('#benchmarkComparison').selectOption('maigret');
+    assert.equal(await page.locator('#benchmarkComparisonLabel').textContent(), 'Maigret');
+    await page.locator('.case-daily > summary').click();
+    await page.locator('#themeToggle').click();
+    await page.screenshot({ path: path.join(output, 'homepage-light.png'), fullPage: true });
+    for (const width of [375, 390, 768]) {
+      await page.setViewportSize({ width, height: 844 });
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'homepage overflow at ' + width);
+      assert.ok(await page.locator('.deep-search-entry-copy').evaluate(el => el.getBoundingClientRect().width) >= 180, 'Deep Search text is too narrow at ' + width);
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: path.join(output, 'homepage-mobile.png'), fullPage: true });
+    await page.locator('.deep-search-entry').screenshot({ path: path.join(output, 'homepage-deep-search-entry-mobile.png') });
+    await page.locator('.deep-search-entry').click();
+    await page.locator('#dsPreviewTitle').waitFor();
+    assert.equal(await page.locator('.deep-search-preview-footer a').getAttribute('href'), '/pricing.html');
+    await page.screenshot({ path: path.join(output, 'guest-preview-mobile.png'), fullPage: true });
+    await page.setViewportSize({ width: 1280, height: 900 });
     for (mode of ['guest', 'free', 'paid']) {
       await page.goto(base + '/deep-search.html');
       await page.waitForFunction(() => document.querySelector('#dsAccessTitle').textContent !== 'Checking Deep Search access');
       assert.equal(await page.locator('#dsRun').isDisabled(), mode !== 'paid');
+      assert.equal(await page.locator('#dsPreview').isVisible(), mode !== 'paid');
       if (mode !== 'paid') assert.equal(await page.locator('#dsUpgrade').isVisible(), true);
+      if (mode === 'guest') {
+        await page.screenshot({ path: path.join(output, 'guest-preview-desktop.png'), fullPage: true });
+        for (const width of [375, 390, 768]) {
+          await page.setViewportSize({ width, height: 844 });
+          assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'guest preview overflow at ' + width);
+        }
+        await page.setViewportSize({ width: 1280, height: 900 });
+      }
     }
     await page.locator('#dsInput').fill('nasa');
     await page.locator('#dsRun').click();
@@ -80,7 +124,7 @@ const server = http.createServer((req, res) => {
     await page.locator('#dsExport').click();
     assert.equal((await download).suggestedFilename(), 'myrecon-deep-search.json');
     assert.deepEqual(errors, []);
-    console.log('Browser checks passed: guest/free/paid access, streamed result groups, source limits, themes, 375/390/768px widths, query links and report download.');
+    console.log('Browser checks passed: homepage rows, three-tool graph and scope switch, daily comparison, guest preview and upgrade link, guest/free/paid access, streamed results, themes, 375/390/768px widths and report download.');
     console.log('Screenshots: ' + output);
   } finally { await browser.close(); server.close(); }
 })().catch((error) => { console.error(error); server.close(); process.exitCode = 1; });

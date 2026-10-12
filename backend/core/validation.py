@@ -38,16 +38,12 @@ def _strip(value, field: str) -> str:
 
 
 def username(value: str) -> str:
-    value = _strip(value, "username")
-    # Allow a pasted profile URL, extract the final path segment.
-    if value.lower().startswith(("http://", "https://")):
-        value = value.rstrip("/").split("/")[-1]
-    value = value.lstrip("@")
-    if not _USERNAME_RE.match(value):
-        raise ValidationError(
-            "Username may only contain letters, numbers, and . _ - @ characters."
-        )
-    return value
+    from core.profile_input import parse_profile_input
+    try:
+        return parse_profile_input(value)["handle"]
+    except ValueError as exc:
+        raise ValidationError(str(exc)) from exc
+
 
 
 def full_name(value: str) -> str:
@@ -60,6 +56,9 @@ def full_name(value: str) -> str:
 def email(value: str) -> str:
     value = _strip(value, "email").lower()
     if not _EMAIL_RE.match(value) or len(value) > 254:
+        raise ValidationError("Please enter a valid email address.")
+    local, host = value.rsplit("@", 1)
+    if len(local) > 64 or local.startswith(".") or local.endswith(".") or ".." in local or not _DOMAIN_RE.fullmatch(host):
         raise ValidationError("Please enter a valid email address.")
     return value
 

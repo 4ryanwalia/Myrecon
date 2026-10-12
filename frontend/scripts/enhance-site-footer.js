@@ -8,7 +8,7 @@ const logoHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(RO
 const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, "assets/css/site-footer.css"))).digest("hex").slice(0, 10);
 const GROUPS = [
   ["Products", [
-    ["Username search", "/#tool"], ["Features", "/features.html"], ["Android app", "/app.html"],
+    ["Username search", "/#tool"], ["Username checker", "/username-checker.html"], ["Features", "/features.html"], ["Android app", "/app.html"],
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [

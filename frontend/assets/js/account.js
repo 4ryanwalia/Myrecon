@@ -150,6 +150,14 @@
     });
   }
 
+  async function signInRedirect() {
+    if (devMode) return;
+    if (!enabled) throw new Error("Sign-in is not available yet.");
+    if (!mod || !auth) await load();
+    if (!mod || !auth) throw new Error("Sign-in could not load. Check your connection.");
+    return mod.signInWithRedirect(auth, provider());
+  }
+
   async function signOut() {
     if (!mod || !auth) return;
     await mod.signOut(auth);
@@ -240,7 +248,7 @@
 
   window.MyReconAccount = {
     get enabled() { return enabled; },
-    ready, load, signIn, signOut, authHeaders, token, refreshAccount, onChange, state,
+    ready, load, signIn, signInRedirect, signOut, authHeaders, token, refreshAccount, onChange, state,
     friendly, avatarHtml, wireAvatar,
   };
 

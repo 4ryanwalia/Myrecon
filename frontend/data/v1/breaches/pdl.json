@@ -38,6 +38,32 @@
     "band": "Severe",
     "data_provider": null,
     "summary": "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data. The exposed data included an index indicating it was sourced from data enrichment company People Data Labs (PDL) and contained 622 million unique email addresses. The server was not owned by PDL and it's believed a customer failed to…",
+    "story": {
+      "background": [
+        "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data . The exposed data included an index indicating it was sourced from data enrichment company People Data Labs (PDL) and contained 622 million unique email addresses. The server was not owned by PDL and it's believed a customer failed to properly secure the database.",
+        "Exposed information included email addresses, phone numbers, social media profiles and job history data."
+      ],
+      "how": [
+        "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data ."
+      ],
+      "motive": [],
+      "outcome": [
+        "622,161,052 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Email addresses, Employers, Geographic locations, Job titles, Names, Phone numbers, Social media profiles."
+      ],
+      "editorial": [
+        "Nobody in this file signed up for anything. Data enrichment companies do not collect from you; they buy, scrape and merge from everywhere else, then sell a composite profile to businesses that want to know more about the people already in their own database. The 622 million people here were the product, not the customers. The detail that makes it worse is where it was found.",
+        "The exposed server was not the enrichment company's, it belonged to one of its customers, who had left an Elasticsearch instance on the open internet with no password. So the data was assembled by one company, sold to a second, and exposed by the second, and there was no point in that chain at which any of the 622 million people could have been asked or told.",
+        "That chain is the reason this record is worth reading even though the fields look mundane. Name, employer, job title, phone number, location and social profiles is a background check, and it is the raw material for convincing approaches that appear to come from a colleague or a recruiter.",
+        "If you want to understand how the industry that built it works, the guide on how data brokers turn a leak into a profile covers it."
+      ]
+    },
+    "check_targets": [
+      {
+        "name": "PDL",
+        "breach_date": "2019-10-16"
+      }
+    ],
     "fields": [
       {
         "name": "Phone numbers",

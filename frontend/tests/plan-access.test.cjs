@@ -20,11 +20,20 @@ function app(state, scope) {
   return { note, results, api: context.adapter };
 }
 
-test("guest and signed-in standard scope notes state the free result boundary", async () => {
+test("guest Standard requires sign-in while Quick requires no sign-up", async () => {
   const guest = app({ user: null }, "full");
   await guest.api.refreshScopeNote(false);
-  assert.match(guest.note.textContent, /Guests see 100/);
-  assert.match(guest.note.textContent, /sign in for 5/);
+  assert.match(guest.note.textContent, /Standard scans require sign-in/);
+  assert.match(guest.note.textContent, /5 free scans a day/);
+  assert.doesNotMatch(guest.note.textContent, /Guests see|preview/);
+  guest.api.setGate({ code: "sign_in_required", scope: "full" });
+  assert.match(guest.results.innerHTML, /Standard scans require sign-in/);
+  assert.match(guest.results.innerHTML, /data-gate="signin"/);
+  assert.match(guest.results.innerHTML, /data-gate="standard"/);
+  const quickGuest = app({ user: null }, "standard");
+  await quickGuest.api.refreshScopeNote(false);
+  assert.match(quickGuest.note.textContent, /Guest login: Quick scans only/);
+  assert.match(quickGuest.note.textContent, /100 platforms.*No sign-up required/);
   const signed = app({ user: { uid: "u" }, account: { standard_scans_unlimited: true } }, "full");
   await signed.api.refreshScopeNote(false);
   assert.match(signed.note.textContent, /unlimited with your paid plan/);

@@ -9,6 +9,7 @@ const scripts = [
   'build-blog.js',
   'enhance-content-pages.js',
   'enhance-site-footer.js',
+  'build-discovery-pages.js',
   'version-site-assets.js',
   'build-sitemap.js',
   'install-google-tag.js',

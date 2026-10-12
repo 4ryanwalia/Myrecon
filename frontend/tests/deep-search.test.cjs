@@ -6,12 +6,12 @@ const path = require("node:path");
 
 function load(state = {}) {
   const elements = {};
-  for (const id of ["dsAccess", "dsAccessTitle", "dsAccessNote", "dsSignIn", "dsUpgrade", "dsRetryAccess", "dsRun", "dsInput", "dsMode", "dsOut", "dsConsole", "dsBar", "dsCount", "dsStatus", "dsExport", "dsStop"]) {
+  for (const id of ["dsAccess", "dsAccessTitle", "dsAccessNote", "dsSignIn", "dsUpgrade", "dsRetryAccess", "dsRun", "dsInput", "dsMode", "dsOut", "dsConsole", "dsBar", "dsCount", "dsStatus", "dsExport", "dsExportCsv", "dsStop"]) {
     elements["#" + id] = { textContent: "", innerHTML: "", style: {}, value: "", focus() {},
       insertAdjacentHTML(position, html) { this.innerHTML = html + this.innerHTML; } };
   }
   const context = { URL, TextDecoder, AbortController, setTimeout, clearTimeout,
-    document: { querySelector: (s) => elements[s], addEventListener() {} },
+    document: { querySelector: (s) => elements[s], querySelectorAll: () => [], addEventListener() {} },
     window: { MYRECON: {}, MyReconAccount: { enabled: true, ready: Promise.resolve(), state: () => state,
       authHeaders: async () => ({ Authorization: "Bearer signed-token" }), refreshAccount: async () => {} } } };
   const script = fs.readFileSync(path.join(__dirname, "../assets/js/deep-search.js"), "utf8");
@@ -92,4 +92,61 @@ test("result groups preserve provenance, candidate status and safe links", () =>
   assert.match(html, /candidate/);
   assert.match(html, /Published on GitHub/);
   assert.doesNotMatch(html, /<script>|<img>|href="javascript:/);
+});
+
+test("connections render separate evidence, original sources and explicit actions", () => {
+  const { api, elements } = load({ user: { uid: "u" }, account: { deep_search_enabled: true } });
+  const edge = {
+    source: { platform: "GitHub", handle: "first", url: "https://github.com/first", source: "GitHub public API" },
+    destination: { platform: "X", handle: "second", url: "https://x.com/second" },
+    explanation: "Published link",
+    can_follow: true,
+    action: { method: "POST", endpoint: "/api/investigate/stream", body: { follow_token: "signed" }, requires_user_action: true },
+  };
+  api.render({ subject: "second", connections: [
+    { ...edge, evidence_type: "same_username", can_follow: false },
+    { ...edge, evidence_type: "profile_link" },
+    { ...edge, evidence_type: "platform_verified", verification: { provider: "Mastodon", verified_at: "2026-10-05", proof_url: "javascript:evil" } },
+  ], connection_trail: [{ ...edge, evidence_type: "profile_link" }] });
+  const html = elements["#dsOut"].innerHTML;
+  for (const text of ["Explore linked profiles", "Same username", "Linked from this profile", "Platform-verified connection", "Profiles followed in this search", "GitHub · first", "2026-10-05"]) {
+    assert.ok(html.includes(text));
+  }
+  assert.equal((html.match(/data-ds-follow=/g) || []).length, 3);
+  assert.doesNotMatch(html, /href="javascript:/);
+  api.render({ subject: "second", connections: [{ ...edge, evidence_type: "profile_link" }] }, true);
+  assert.match(elements["#dsOut"].innerHTML, /data-ds-follow="0" disabled/);
+});
+
+test("explicit follow sends only the signed backend action", async () => {
+  const state = { user: { uid: "u" }, account: { deep_search_enabled: true } };
+  const { api, elements, context } = load(state);
+  elements["#dsInput"].value = "@second";
+  context.fetch = async (url, options) => {
+    assert.deepEqual(JSON.parse(options.body), { follow_token: "signed-token" });
+    const bytes = new TextEncoder().encode(JSON.stringify({ type: "complete", data: { status: "ok", subject: "second", connections: [] } }));
+    let sent = false;
+    return { ok: true, body: { getReader: () => ({ read: async () => sent ? { done: true } : (sent = true, { value: bytes, done: false }), cancel: async () => {} }) } };
+  };
+  await api.run({ follow_token: "signed-token" });
+  assert.equal(elements["#dsExport"].hidden, false);
+});
+
+
+test("empty search queries are not findings and source cards explain their destination", () => {
+  const { api, elements } = load();
+  api.render({ mode: "handle", subject: "example", plan: [
+    { executed: true, label: "Empty query", text: "site:instagram.com example", google: "https://www.google.com/search?q=example" }
+  ], sections: [{ label: "Instagram", hits: [
+    { url: "https://www.instagram.com/p/abc/", title: "A public post", snippet: "Preview text", query: "raw query" },
+    { url: "javascript:alert(1)", title: "Unsafe result" }
+  ] }] });
+  const html = elements["#dsOut"].innerHTML;
+  assert.match(html, /Open Instagram post/);
+  assert.match(html, /Instagram logo/);
+  assert.match(html, /Preview text/);
+  assert.doesNotMatch(html, /Empty query|google.com\/search|raw query|Unsafe result/);
+  api.render({ mode: "handle", subject: "example", sections: [], plan: [{ text: "empty", google: "https://www.google.com/search?q=empty" }] });
+  assert.match(elements["#dsOut"].innerHTML, /No public results were returned/);
+  assert.doesNotMatch(elements["#dsOut"].innerHTML, /google.com\/search/);
 });

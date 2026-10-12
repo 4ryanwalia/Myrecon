@@ -17,8 +17,8 @@ of sources that are documented, stable, and accurate:
                                    has confirmed it by email)
 
 "Linked services" is built only from those: named breaches the address
-appears in, plus the public profiles above. Sign-up and password-reset
-forms are deliberately not probed; see _linked_services.
+appears in, public profiles, and optional bounded registration signals.
+Password-recovery requests are excluded; see registered_accounts.
 """
 
 import hashlib
@@ -171,11 +171,9 @@ def _linked_services(gravatar: dict, github, pgp: dict, breaches: dict,
                was registered there at the time (it may have been closed since)
       profile  a public source answered for this exact address right now
 
-    Deliberately NOT here: probing sign-up or password-reset forms ("is this
-    email taken?") on Spotify, Apple and the like. That is how tools such as
-    holehe work; it breaks those sites' terms, is unreliable from a
-    datacentre, and some forms email the address's owner. A site missing from
-    this list therefore means "no evidence", never "no account".
+    Historical records are evidence of a past service association, not proof
+    of an active account. Optional registration signals are merged separately.
+    A missing service means no evidence, never no account.
     """
     rows: dict = {}
     compilations = set()
@@ -203,9 +201,13 @@ def _linked_services(gravatar: dict, github, pgp: dict, breaches: dict,
             if acc.get("name"):
                 add(acc["name"], "profile", "Listed on this address's Gravatar profile",
                     acc.get("url", ""))
+                row = rows.get(_service_key(acc["name"]))
+                if row:
+                    row["basis"] = "owner_declared"
     if github and github.get("username", github.get("url")):
         add("GitHub", "profile", github.get("evidence") or "Public GitHub evidence for this email",
             github.get("url", ""), "github.com")
+        rows[_service_key("GitHub")]["basis"] = "historical_commit" if github.get("evidence_url") else "exact_public_email"
     if (pgp or {}).get("exists"):
         add("OpenPGP key", "profile", "Published key; the owner confirmed this address",
             "https://keys.openpgp.org", "keys.openpgp.org")
@@ -237,6 +239,26 @@ def _linked_services(gravatar: dict, github, pgp: dict, breaches: dict,
         "from_profiles": sum(r["kind"] == "profile" for r in ordered),
         "compilations_skipped": len(compilations),
     }
+
+
+def _merge_registration_services(services: dict, registration: dict) -> dict:
+    rows = {_service_key(r["service"]): {**r} for r in services["services"]}
+    for check in registration.get("services", []):
+        if check.get("status") != "found":
+            continue
+        key = _service_key(check["domain"] or check["service"])
+        old = rows.get(key)
+        if old:
+            old["registration_status"] = "found"
+            old["registration_evidence"] = check["reason"]
+            old["registration_engine"] = check.get("engine", "Holehe")
+        else:
+            rows[key] = {"service": check["service"], "kind": "registration", "domain": check["domain"],
+                         "url": f'https://{check["domain"]}', "date": "", "evidence": check["reason"],
+                         "registration_engine": check.get("engine", "Holehe")}
+    ordered = sorted(rows.values(), key=lambda r: (r["kind"] == "breach", r["service"].lower()))
+    return {**services, "services": ordered, "count": len(ordered),
+            "from_registration": sum(r["kind"] == "registration" or r.get("registration_status") == "found" for r in ordered)}
 
 
 class EmailLookup:
@@ -283,6 +305,13 @@ class EmailLookup:
         )
 
         mx = _doh_query(domain, "MX")
+        mx_records = []
+        for record in mx:
+            match = re.fullmatch(r"(\d+)\s+(\S+)", record.get("value", ""))
+            if match:
+                mx_records.append({"priority": int(match[1]), "host": match[2].rstrip(".") or "."})
+        mx_records.sort(key=lambda r: (r["priority"], r["host"]))
+        null_mx = any(r["priority"] == 0 and r["host"] == "." for r in mx_records)
         return {
             "email": email,
             "local_part": local,
@@ -290,9 +319,12 @@ class EmailLookup:
             "provider": provider_name,
             "provider_type": provider_type,
             "disposable": domain in self.DISPOSABLE_DOMAINS,
-            "has_mx": bool(mx),
-            "mx_hosts": [r["value"] for r in mx][:5],
-            "deliverable": bool(mx),
+            "has_mx": bool(mx_records) and not null_mx,
+            "mx_hosts": [r["value"] for r in mx],
+            "mx_records": mx_records,
+            "deliverable": False if null_mx else None,
+            "mail_routing": "Domain rejects mail (null MX)" if null_mx else "MX hosts present; mailbox delivery not verified" if mx_records else "No MX hosts returned; delivery is unknown",
+            "smtp": {"status": "not_checked", "detail": "SMTP mailbox verification has not run."},
             "plus_addressing": "+" in local,
             "format": self._format_hint(local),
         }
@@ -325,6 +357,8 @@ class EmailLookup:
                 result["status"] = "found"
                 result["display_name"] = entry.get("displayName", "")
                 result["bio"] = (entry.get("aboutMe") or "")[:280]
+                result["username"] = entry.get("preferredUsername", "")
+                result["location"] = entry.get("currentLocation", "")
                 result["profile_url"] = entry.get("profileUrl", profile_url)
                 thumb = entry.get("thumbnailUrl") or avatar_url
                 result["avatar_url"] = thumb.split("?")[0] + "?s=400"
@@ -579,6 +613,19 @@ class EmailLookup:
         return result
 
     # ── GitHub commit-email search (official API) ────────────────
+    @staticmethod
+    def _github_fields(user: dict) -> dict:
+        """Allowlist documented public fields; never forward raw user JSON."""
+        text = lambda field, limit: _clip(user.get(field), limit)
+        return {"display_name": text("name", 160), "bio": text("bio", 500),
+                "location": text("location", 160), "company": text("company", 160),
+                "website": text("blog", 500), "created_at": text("created_at", 40),
+                "fields": {"ID": str(user["id"])} if isinstance(user.get("id"), int) else {},
+                "profile_status": "ok", "stats": {
+                    label: user[field] for field, label in (("public_repos", "Public repositories"),
+                    ("followers", "Followers"), ("following", "Following"))
+                    if isinstance(user.get(field), int) and not isinstance(user[field], bool) and user[field] >= 0}}
+
     def github(self, email: str) -> dict:
         """Exact public email evidence, with failures distinct from no match.
 
@@ -612,6 +659,7 @@ class EmailLookup:
                 user = profile.json()
                 if str(user.get("email") or "").lower() == email.lower():
                     return {"status": "found", "username": login,
+                            **self._github_fields(user),
                             "url": f"https://github.com/{login}", "avatar_url": user.get("avatar_url", ""),
                             "evidence": "Exact email published on this GitHub profile"}
             resp = requests.get("https://api.github.com/search/commits",
@@ -628,9 +676,22 @@ class EmailLookup:
                 login = author.get("login", "")
                 if str(commit_author.get("email") or "").lower() != email.lower() or not re.fullmatch(r"[A-Za-z0-9-]+", login):
                     continue
-                return {"status": "found", "username": login, "url": f"https://github.com/{login}",
+                result = {"status": "found", "username": login, "url": f"https://github.com/{login}",
                         "avatar_url": author.get("avatar_url", ""), "evidence_url": item.get("html_url", ""),
+                        "commit_date": commit_author.get("date", ""), "profile_status": "unavailable",
                         "evidence": "Public commit with this exact author email, attributed by GitHub; current account email is unknown"}
+                # Enrichment is optional: its failure must preserve exact commit evidence.
+                try:
+                    profile = requests.get(f"https://api.github.com/users/{login}", headers=headers, timeout=_TIMEOUT)
+                    if profile.status_code == 200:
+                        user = profile.json()
+                        if isinstance(user, dict) and str(user.get("login", "")).lower() == login.lower():
+                            result.update(self._github_fields(user))
+                    elif profile.status_code in (403, 429):
+                        result["profile_status"] = "rate_limited"
+                except (requests.RequestException, ValueError, TypeError, AttributeError):
+                    pass
+                return result
             return {"status": "no_match"}
         except (requests.RequestException, ValueError, TypeError, AttributeError):
             return {"status": "unavailable"}
@@ -655,7 +716,7 @@ class EmailLookup:
         return {"exists": False, "status": "unavailable"}
 
     # ── Orchestration ────────────────────────────────────────────
-    def scan(self, email: str, check_linked_accounts: bool = True) -> dict:
+    def scan(self, email: str, check_linked_accounts: bool = False) -> dict:
         errors = []
 
         def safely(name, method, defaults, nullable=False):
@@ -703,6 +764,10 @@ class EmailLookup:
         pgp = (safely("OpenPGP", self.pgp, {"exists": False})
                if check_linked_accounts else {"exists": False, "status": "skipped"})
         services = _linked_services(gravatar, github, pgp, breaches, darkweb, fallback)
+        from modules.registered_accounts import scan_registered_accounts
+        registration = (scan_registered_accounts(email) if check_linked_accounts
+                        else {"status": "skipped", "services": [], "checked": 0, "attempted": 0})
+        services = _merge_registration_services(services, registration)
 
         linked = []
         if gravatar["exists"]:
@@ -755,6 +820,7 @@ class EmailLookup:
             "analysis": analysis,
             "gravatar": gravatar,
             "github": github,
+            "registration_checks": registration,
             "account_checks": {"enabled": check_linked_accounts, "sources": [
                 {"name": "GitHub", "status": (github_result or {}).get("status", "found" if github else "no_match")},
                 {"name": "Gravatar", "status": gravatar.get("status", "found" if gravatar.get("exists") else "no_match")},

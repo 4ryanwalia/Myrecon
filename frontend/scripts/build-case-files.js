@@ -34,6 +34,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { caseStory, caseTargets, unknownMotive } = require('./breach-story');
 
 const ROOT = path.join(__dirname, "..");
 const SRC_DIR = path.join(ROOT, "content", "case-files");
@@ -174,8 +175,6 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <link rel="stylesheet" href="/assets/css/styles.css?v=16">
   <link rel="stylesheet" href="/assets/css/fx.css?v=10">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
 ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}${opts.faqLd ? `  <script type="application/ld+json">${opts.faqLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="${SITE}/breaches/feed.xml">
 </head>
 <body>
@@ -200,7 +199,7 @@ const FOOT = `
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=23"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/breach-check.js?v=3"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=8" defer></script>
 </body>
@@ -239,6 +238,8 @@ function relatedFor(c, all) {
 }
 
 function article(c, all) {
+  const story = caseStory(c);
+  const storyParagraphs = values => values.map(value => `<p>${esc(value)}</p>`).join('\n');
   const related = relatedFor(c, all);
   const mins = readingTime(c.body);
 
@@ -320,19 +321,27 @@ function article(c, all) {
       </header>
 
 ${facts ? `      <dl class="cf-facts">\n${facts}\n      </dl>\n` : ""}${c.exposed && c.exposed.length ? `      <p class="cf-exposed"><b>What was exposed:</b> ${esc(c.exposed.join(" · "))}</p>\n` : ""}
-${c.body}
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2>${storyParagraphs(story.background)}</section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2>${storyParagraphs(story.how)}</section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2>${storyParagraphs(story.motive.length ? story.motive : [unknownMotive])}<p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2>${storyParagraphs(story.outcome.length ? story.outcome : ['The public record does not establish a final outcome.'])}</section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · ${mins} min</summary>${c.body}</details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="${esc(JSON.stringify(caseTargets(c)))}">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
 ${(c.faq || []).length ? `      <h2>Questions people ask</h2>
@@ -495,7 +504,9 @@ ${b.items.map(card).join("\n")}
 /**
  * assets/data/case-files.json, what the Android app reads.
  *
- * Deliberately the metadata and not the body. The article bodies run to
+ * The feed carries source-derived story sections and the longer account for
+ * optional in-app reading. The website retains the original formatted HTML.
+ * The article bodies run to
  * forty-odd thousand words and rendering long-form HTML inside a Compose
  * screen would be a worse read than the page it came from, so the app shows
  * the facts, who, when, how they got in, what it cost, what was exposed,
@@ -526,6 +537,9 @@ function feed(all) {
         // is written for a search result. The app is a list, so blurb first.
         blurb: c.cardBlurb || c.description,
         description: c.description,
+        story: caseStory(c),
+        check_targets: caseTargets(c),
+        source_links: c.sources || [],
         records: c.records || null,
         people_count: c.peopleCount || 0,
         occurred: c.occurred || null,
