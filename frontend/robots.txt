@@ -34,6 +34,10 @@ Disallow: /content/
 # Operator interface. This is also noindex at the page and response level;
 # access control is enforced by the service, not by robots.txt.
 Disallow: /worker-console/
+# Build sources and test fixtures have no public search content.
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /node_modules/
 Allow: /
 
 # NOTE: deliberately no "Disallow: /*?" here. The stylesheets and scripts are

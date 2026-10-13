@@ -15,7 +15,7 @@ const fixtureProfiles = ['First', 'Second', 'Third', 'Fourth', 'Fifth'].map(plat
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;
   const json = (value) => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(value)); };
-  if (pathname === '/assets/js/account.js') {
+  if ((/^\/assets\/(?:optimized\/)?js\/account(?:\.[a-f0-9]{12})?\.js$/).test(pathname)) {
     res.setHeader('Content-Type', 'application/javascript');
     const state = { user: signedIn ? { uid: 'fixture-user', email: 'fixture@example.com' } : null,
       account: signedIn ? { standard_scans_left: 5, standard_scans_unlimited: false } : null };
@@ -39,7 +39,7 @@ const server = http.createServer((req, res) => {
       };
     })();`);
   }
-  if (pathname === '/assets/js/config.js') {
+  if ((/^\/assets\/(?:optimized\/)?js\/config(?:\.[a-f0-9]{12})?\.js$/).test(pathname)) {
     res.setHeader('Content-Type', 'application/javascript');
     return res.end('window.MYRECON_API_BASE=location.origin;\n' + fs.readFileSync(path.join(root, 'assets/js/config.js'), 'utf8'));
   }

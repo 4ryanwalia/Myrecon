@@ -62,6 +62,7 @@ function updatePage(file) {
         break;
       } catch (error) {
         if (error.code !== 'UNKNOWN' || attempt === 2) throw error;
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150 * (attempt + 1));
       }
     }
     updated++;

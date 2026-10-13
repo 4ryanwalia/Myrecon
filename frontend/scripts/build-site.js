@@ -65,15 +65,17 @@ const before = publicHtmlHashes();
 // checked-in contents when global article/footer/asset generators run.
 const homepagePath = path.join(ROOT, 'index.html');
 const homepageContents = fs.readFileSync(homepagePath);
-for (const script of scripts) {
+try { for (const script of scripts) {
   const result = spawnSync(process.execPath, [`scripts/${script}`], {
     cwd: ROOT,
     stdio: 'inherit',
   });
   if (result.error) throw result.error;
-  if (result.status !== 0) process.exit(result.status ?? 1);
-}
+  if (result.status !== 0) throw new Error(`${script} exited with status ${result.status}`);
+} } finally {
 fs.writeFileSync(homepagePath, homepageContents);
+}
+require('./canonicalize-links').canonicalizeLinks(ROOT);
 
 const changed = changedHtmlPaths(before, publicHtmlHashes());
 const date = changed.length ? latestFrontendCommitDate() : '';
