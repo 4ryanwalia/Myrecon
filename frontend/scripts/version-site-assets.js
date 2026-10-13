@@ -6,6 +6,8 @@ const crypto = require('node:crypto');
 const ROOT = path.resolve(__dirname, '..');
 const ASSETS = [
   '/assets/css/styles.css',
+  '/assets/css/home-video.css',
+  '/assets/js/home-video.js',
   '/assets/css/fx.css',
   '/assets/css/site-footer.css',
   '/assets/css/discovery.css',
