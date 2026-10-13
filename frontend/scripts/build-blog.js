@@ -236,9 +236,7 @@ function shellFoot() {
     <span>&copy; 2026 MyRecon · myrecon.xyz</span>
     <span><a href="/blog/" style="color:var(--text-dim)">Blog</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/vs/" style="color:var(--text-dim)">Compare</a> · <a href="/services.html" style="color:var(--text-dim)">Removal service</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/terms.html">Terms</a></span>
   </div></div></footer>
-  <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=23"></script>
+  <script src="/assets/js/editorial-shell.js" defer></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=8" defer></script>
 </body>
