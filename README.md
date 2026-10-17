@@ -4,7 +4,23 @@
 
 Public username search · digital footprint audit · email breach checker · WHOIS and DNS lookup · IP intelligence
 
-[Try the web app](https://myrecon.xyz) · [Offline demo](#try-the-verdict-demo) · [Run the CLI](#quick-start) · [Explore the API](#api) · [Contribute](CONTRIBUTING.md)
+[Download for Android](https://play.google.com/store/apps/details?id=com.Myrecon.osint) · [Try the web app](https://myrecon.xyz) · [Offline demo](#try-the-verdict-demo) · [Run the CLI](#quick-start) · [Explore the API](#api) · [Contribute](CONTRIBUTING.md)
+
+## Get MyRecon for Android
+
+**See where your username appears publicly online, right from your phone.**
+
+[![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download_MyRecon-34A853?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.Myrecon.osint)
+
+- Explore public username matches and open profiles to verify them at the source.
+- Check email breach exposure and passwords against known leaks.
+- Look up domain, DNS and IP information, and inspect QR codes and links.
+
+Start with a username you own. Matching usernames are leads, not proof of identity; unavailable sources can leave results incomplete.
+
+Requires Android 11 or newer. Contains ads. [See the app details](https://www.myrecon.xyz/app.html).
+
+The Android app is maintained separately from this repository's web app, Python CLI and API.
 
 ![MyRecon web app with a username lookup and an illustrative platform map](docs/web-home.png)
 
