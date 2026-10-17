@@ -47,14 +47,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <link rel="stylesheet" href="/assets/css/fx.css">
-  <link rel="stylesheet" href="/assets/css/breaches.css">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Uber, 2022: multi-factor authentication held, and then somebody sent a WhatsApp message","description":"A contractor's password was bought, their phone was buried in approval prompts, and a helpful message finished the job. The real prize was an admin credential sitting in a script.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/uber-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Uber 2022 internal systems breach"},"wordCount":1062}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Uber 2022 internal systems breach","item":"https://www.myrecon.xyz/breaches/case-files/uber-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is MFA fatigue?","acceptedAnswer":{"@type":"Answer","text":"Where the second factor is a push notification that the user approves with a tap, an attacker who already has the password can request approval over and over. The victim's phone fills with prompts, at any hour, with no way to make them stop. Eventually somebody taps approve, to end the noise, or because they assume a system is malfunctioning. The control is not bypassed technically. It is worn down."}},{"@type":"Question","name":"How did the attacker get the password in the first place?","acceptedAnswer":{"@type":"Answer","text":"Reporting indicates the contractor's corporate credentials were obtained from a dark web marketplace, having most likely been captured by information-stealing malware on a personal device. This is the ordinary supply chain for initial access now: the credential is a commodity bought for a small sum, and the work begins after login."}},{"@type":"Question","name":"What did the attacker actually reach?","acceptedAnswer":{"@type":"Answer","text":"After getting onto the internal network they found a PowerShell script on a shared drive containing hardcoded credentials for a privileged access management system, the vault holding administrative secrets. That unlocked access to a range of internal tools including cloud consoles, the identity provider, internal dashboards and Slack, where the attacker announced the breach. Uber stated it found no evidence of access to customer accounts or trip history."}},{"@type":"Question","name":"Why does a vulnerability disclosure programme matter here?","acceptedAnswer":{"@type":"Answer","text":"Because the attacker reached Uber's account on its bug bounty platform, which holds reports of vulnerabilities that have been submitted but not yet fixed. That is a list of ways into the company, written by researchers, held in one place. Any organisation running a disclosure programme should treat that account as a crown-jewel system rather than a security team convenience."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/css/site-footer.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -215,7 +215,7 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
@@ -242,10 +242,10 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js"></script>
-  <script src="/assets/js/app.js"></script>
-  <script src="/assets/js/breach-check.js"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=dea8105323"></script>
+  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
   <script src="/assets/js/consent.js"></script>
-  <script src="/assets/js/fx.js" defer></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
 </html>
