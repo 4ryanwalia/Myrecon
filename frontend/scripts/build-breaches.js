@@ -560,7 +560,7 @@ function article(b, editorial, siblings) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "MyRecon", item: SITE },
+      { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
       { "@type": "ListItem", position: 2, name: "The Breach Files", item: `${SITE}/breaches/` },
       { "@type": "ListItem", position: 3, name: b.Title, item: url },
     ],
@@ -618,7 +618,9 @@ function article(b, editorial, siblings) {
     }) +
 `  <main id="main" class="container">
     <article class="article breach-article">
-      <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(b.Title)}</span>
+      </nav>
 
       <header class="bx-head">
         ${logo ? `<img class="bx-logo" src="${esc(logo)}" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">` : ""}

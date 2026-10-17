@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSINT Cheat Sheet &amp; Google Dork Generator | MyRecon</title>
+  <meta name="description" content="Free interactive OSINT cheat sheet and search dork generator. Search usernames, pastebins, cloud storage leaks, exposed directories, and social profiles.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/osint-cheat-sheet.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="OSINT Cheat Sheet &amp; Google Dork Generator | MyRecon">
+  <meta property="og:description" content="Interactive search operators, Google dorks, and investigation queries for ethical OSINT research and footprint audits.">
+  <meta property="og:url" content="https://www.myrecon.xyz/osint-cheat-sheet.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon OSINT Cheat Sheet">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OSINT Cheat Sheet &amp; Google Dork Generator | MyRecon">
+  <meta name="twitter:description" content="Interactive search operators, Google dorks, and investigation queries for ethical OSINT research and footprint audits.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/fx.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://www.myrecon.xyz/osint-cheat-sheet.html#app",
+        "url": "https://www.myrecon.xyz/osint-cheat-sheet.html",
+        "name": "MyRecon OSINT Cheat Sheet & Google Dork Generator",
+        "description": "Free interactive OSINT query builder and search operator cheat sheet for ethical investigations and digital footprint checks.",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "All",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://www.myrecon.xyz/#organization" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "MyRecon", "item": "https://www.myrecon.xyz/" },
+          { "@type": "ListItem", "position": 2, "name": "OSINT Cheat Sheet", "item": "https://www.myrecon.xyz/osint-cheat-sheet.html" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Google Dorking in OSINT?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Google Dorking (also known as Google Hacking) uses advanced search operators like site:, intext:, intitle:, and filetype: to uncover publicly indexed information that standard keyword searches miss, such as open directories, exposed pastebins, configuration files, and profile mentions."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does this interactive dork generator work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Type a target username, real name, email domain, or company handle into the Target Query bar. The sheet automatically populates categorized search queries with one-click buttons to copy the dork or execute it directly in Google."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Google Dorking legal?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, using search engine operators on publicly accessible search indices is legal. However, accessing unauthorized private files, attacking systems, or abusing retrieved information is illegal. Always conduct authorized research and personal footprint audits ethically."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .cs-wrap { max-width: 1040px; margin: 0 auto; padding: 40px 20px 80px; }
+    .cs-hero { text-align: center; margin-bottom: 40px; }
+    .cs-hero h1 { font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.2; margin-bottom: 14px; font-weight: 800; }
+    .cs-hero p { font-size: 1.15rem; color: var(--text-dim, #5c6876); max-width: 680px; margin: 0 auto 24px; line-height: 1.6; }
+
+    .cs-target-box { background: var(--surface, #10161f); border: 2px solid var(--border, #273344); border-radius: 14px; padding: 22px; margin-bottom: 36px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .cs-target-label { font-size: 0.95rem; font-weight: 700; color: var(--accent, #3b82f6); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block; }
+    .cs-input-group { display: flex; gap: 12px; flex-wrap: wrap; }
+    .cs-input { flex: 1 1 300px; padding: 14px 18px; font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; background: var(--bg, #0b0f14); color: var(--text, #e2e8f0); border: 1px solid var(--border, #273344); border-radius: 8px; outline: none; transition: border-color .2s; }
+    .cs-input:focus { border-color: var(--accent, #3b82f6); }
+    .cs-target-hint { font-size: 0.88rem; color: var(--text-dim, #8b99a8); margin-top: 10px; }
+
+    .cs-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border, #273344); }
+    .cs-tab-btn { background: none; border: 1px solid var(--border, #273344); color: var(--text-dim, #8b99a8); padding: 8px 16px; border-radius: 20px; font-size: 0.92rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all .2s; }
+    .cs-tab-btn:hover, .cs-tab-btn.active { background: var(--accent, #3b82f6); color: #fff; border-color: var(--accent, #3b82f6); }
+
+    .cs-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 768px) { .cs-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .cs-card { background: var(--surface, #10161f); border: 1px solid var(--border, #273344); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .2s, border-color .2s; }
+    .cs-card:hover { border-color: var(--accent, #3b82f6); }
+    .cs-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .cs-card-title { font-size: 1.05rem; font-weight: 700; color: var(--text, #f1f5f9); }
+    .cs-card-badge { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .cs-card-desc { font-size: 0.9rem; color: var(--text-dim, #8b99a8); margin-bottom: 14px; line-height: 1.5; }
+    .cs-code-wrap { background: var(--bg, #0b0f14); border: 1px solid var(--border, #1e293b); border-radius: 6px; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: #38bdf8; word-break: break-all; margin-bottom: 14px; line-height: 1.4; user-select: all; }
+    .cs-card-actions { display: flex; gap: 8px; }
+    .cs-btn { flex: 1; padding: 8px 12px; font-size: 0.86rem; font-weight: 600; border-radius: 6px; cursor: pointer; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background .2s; }
+    .cs-btn-copy { background: rgba(255,255,255,0.06); color: var(--text, #e2e8f0); border: 1px solid var(--border, #273344); }
+    .cs-btn-copy:hover { background: rgba(255,255,255,0.12); }
+    .cs-btn-search { background: var(--accent, #3b82f6); color: #fff; border: none; }
+    .cs-btn-search:hover { opacity: 0.9; }
+
+    .cs-tool-banner { margin: 60px 0 40px; padding: 32px 28px; background: linear-gradient(135deg, rgba(27, 95, 217, 0.15) 0%, rgba(16, 22, 31, 0.9) 100%); border: 1px solid var(--accent, #3b82f6); border-radius: 14px; text-align: center; }
+    .cs-tool-banner h2 { font-size: 1.6rem; margin-bottom: 10px; font-weight: 800; }
+    .cs-tool-banner p { font-size: 1.05rem; color: var(--text-dim, #94a3b8); max-width: 620px; margin: 0 auto 20px; line-height: 1.6; }
+    .cs-banner-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    .cs-faq { margin-top: 50px; border-top: 1px solid var(--border, #273344); padding-top: 36px; }
+    .cs-faq h2 { font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; }
+    .cs-faq details { margin-bottom: 12px; padding: 14px 18px; background: var(--surface, #10161f); border: 1px solid var(--border, #273344); border-radius: 8px; }
+    .cs-faq summary { font-weight: 600; cursor: pointer; color: var(--text, #f1f5f9); }
+    .cs-faq details p { margin-top: 10px; font-size: 0.95rem; color: var(--text-dim, #94a3b8); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/osint-cheat-sheet.html" style="color:var(--accent,#3b82f6)">Cheat Sheet</a><a href="/guides/">Guides</a><a href="/find/">Find</a><a href="/vs/">Compare</a><a href="/developers.html">API</a><a href="/pricing">Pricing</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="cs-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:20px"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">OSINT Cheat Sheet</span></nav>
+
+    <div class="cs-hero">
+      <h1>OSINT Cheat Sheet &amp; Google Dork Generator</h1>
+      <p>Interactive search operators, Google dorks, and investigation queries. Enter a target username, real name, or domain to generate custom search queries in real time.</p>
+    </div>
+
+    <!-- Interactive Input Bar -->
+    <div class="cs-target-box">
+      <label class="cs-target-label" for="targetInput">Enter Target Handle, Domain, or Name:</label>
+      <div class="cs-input-group">
+        <input type="text" id="targetInput" class="cs-input" value="johndoe" placeholder="e.g. username, target.com, or 'John Doe'" autocomplete="off" spellcheck="false">
+      </div>
+      <p class="cs-target-hint">Live updates all search queries below. Click <strong>Search Google</strong> to run immediately, or <strong>Copy Dork</strong> to use in your own terminal or investigation notes.</p>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="cs-tabs">
+      <button class="cs-tab-btn active" data-cat="all">All Operators (24)</button>
+      <button class="cs-tab-btn" data-cat="username">Username &amp; Profiles</button>
+      <button class="cs-tab-btn" data-cat="breach">Pastebins &amp; Leaks</button>
+      <button class="cs-tab-btn" data-cat="cloud">Cloud &amp; Documents</button>
+      <button class="cs-tab-btn" data-cat="infrastructure">Domains &amp; Infrastructure</button>
+      <button class="cs-tab-btn" data-cat="social">Social Media &amp; Forums</button>
+    </div>
+
+    <!-- Dork Cards Grid -->
+    <div class="cs-grid" id="dorkGrid"></div>
+
+    <!-- High-Intent CTA Banner -->
+    <div class="cs-tool-banner">
+      <h2>Automate Your Username &amp; Breach Audit</h2>
+      <p>Manual Google Dorking takes hours across 500+ sites. MyRecon automates deep footprint enumeration, credential breach checks, and DNS analysis with 0% false positives.</p>
+      <div class="cs-banner-btns">
+        <a href="/#tool=username" class="btn btn-primary" style="padding:12px 24px;font-weight:700">Run Automated Username Sweep</a>
+        <a href="/breaches/" class="btn btn-secondary" style="padding:12px 24px">Browse Breach Archives</a>
+        <a href="/badge.html" class="btn btn-secondary" style="padding:12px 24px">Get Embeddable Badge</a>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="cs-faq">
+      <h2>Frequently Asked Questions</h2>
+      <details>
+        <summary>What is Google Dorking in OSINT?</summary>
+        <p>Google Dorking (advanced search indexing) uses targeted operators like <code>site:</code>, <code>intext:</code>, <code>intitle:</code>, and <code>filetype:</code> to uncover indexed files, open web directories, configuration files, and social profiles that are invisible in casual search results.</p>
+      </details>
+      <details>
+        <summary>How can I test a handle across 500+ platforms at once?</summary>
+        <p>While search operators are great for deep forensic verification, manually checking every platform is slow. Use <a href="/username-checker.html">MyRecon's Username Checker</a> or the free CLI tool to sweep handles across 500+ platforms with evidence verification.</p>
+      </details>
+      <details>
+        <summary>Can I share or embed this cheat sheet?</summary>
+        <p>Yes! This cheat sheet is open and freely accessible. You can link to it from your GitHub repositories, research blogs, or security training guides. We update the queries regularly to match search engine index changes.</p>
+      </details>
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      var dorks = [
+        {
+          id: 1,
+          cat: 'username',
+          title: 'Direct Handle Mentions & Profiles',
+          desc: 'Find all exact mentions of the handle in web page URLs and titles.',
+          tpl: 'inurl:{T} | intitle:"{T}"'
+        },
+        {
+          id: 2,
+          cat: 'username',
+          title: 'GitHub Commit & User Mentions',
+          desc: 'Search GitHub commits, pull requests, issues, and gists referencing the user.',
+          tpl: 'site:github.com "{T}" -site:github.com/{T}'
+        },
+        {
+          id: 3,
+          cat: 'username',
+          title: 'Keybase & Cryptographic Identity',
+          desc: 'Check if the handle verified PGP keys, Twitter, or Mastodon identities on Keybase.',
+          tpl: 'site:keybase.io "{T}"'
+        },
+        {
+          id: 4,
+          cat: 'username',
+          title: 'Bio Link & Linktree Profiles',
+          desc: 'Find aggregator link pages connecting alternate social handles and personal sites.',
+          tpl: 'site:linktr.ee | site:beacons.ai | site:carrd.co "{T}"'
+        },
+        {
+          id: 5,
+          cat: 'breach',
+          title: 'Pastebin & Ghostbin Mentions',
+          desc: 'Scan public paste sites for dumped configs, chat logs, or credential lists.',
+          tpl: 'site:pastebin.com | site:ghostbin.com | site:rentry.co "{T}"'
+        },
+        {
+          id: 6,
+          cat: 'breach',
+          title: 'Stealer Log & Combo Dumps',
+          desc: 'Search for handles associated with compromised credentials and stealer logs.',
+          tpl: '"{T}" (intext:"password" | intext:"pwd" | intext:"pass") (ext:txt | ext:log)'
+        },
+        {
+          id: 7,
+          cat: 'breach',
+          title: 'Email Address Associated with Handle',
+          desc: 'Uncover email addresses linked with the specific username handle.',
+          tpl: '"{T}@gmail.com" | "{T}@proton.me" | "{T}@yahoo.com" | "{T}@outlook.com"'
+        },
+        {
+          id: 8,
+          cat: 'breach',
+          title: 'JustPaste & Quick Text Notes',
+          desc: 'Search disposable text sharing services for private or scraped data.',
+          tpl: 'site:justpaste.it | site:controlc.com "{T}"'
+        },
+        {
+          id: 9,
+          cat: 'cloud',
+          title: 'Public AWS S3 Bucket Storage',
+          desc: 'Search for public Amazon S3 buckets containing files matching the target.',
+          tpl: 'site:s3.amazonaws.com "{T}"'
+        },
+        {
+          id: 10,
+          cat: 'cloud',
+          title: 'Public Google Drive Folders',
+          desc: 'Discover open Google Drive directories and shared files.',
+          tpl: 'site:drive.google.com/drive/folders "{T}"'
+        },
+        {
+          id: 11,
+          cat: 'cloud',
+          title: 'Exposed PDF & Office Documents',
+          desc: 'Search leaked or public PDF, DOCX, and XLSX records containing target keyword.',
+          tpl: '"{T}" (filetype:pdf | filetype:docx | filetype:xlsx | filetype:csv)'
+        },
+        {
+          id: 12,
+          cat: 'cloud',
+          title: 'Environment & Config File Leaks',
+          desc: 'Find leaked configuration and environment files containing secret tokens.',
+          tpl: 'site:github.com "{T}" filename:.env | filename:config.json | filename:credentials'
+        },
+        {
+          id: 13,
+          cat: 'infrastructure',
+          title: 'Exposed Directory Indexing',
+          desc: 'Discover open web servers listing root directories and files.',
+          tpl: 'intitle:"index of /" "{T}"'
+        },
+        {
+          id: 14,
+          cat: 'infrastructure',
+          title: 'Subdomain Enumeration',
+          desc: 'Find indexed subdomains while excluding the main www root domain.',
+          tpl: 'site:*.{T} -site:www.{T}'
+        },
+        {
+          id: 15,
+          cat: 'infrastructure',
+          title: 'Log & SQL Backup Dumps',
+          desc: 'Search database backups (.sql) and error logs containing target keywords.',
+          tpl: '"{T}" (filetype:sql | filetype:log | filetype:bak | filetype:dump)'
+        },
+        {
+          id: 16,
+          cat: 'infrastructure',
+          title: 'Staging & Dev Environments',
+          desc: 'Find hidden staging, test, and development servers for a domain.',
+          tpl: 'site:{T} inurl:stage | inurl:dev | inurl:test | inurl:beta'
+        },
+        {
+          id: 17,
+          cat: 'social',
+          title: 'Reddit User & Comment Search',
+          desc: 'Search user profiles, submissions, and comments across Reddit.',
+          tpl: 'site:reddit.com (inurl:/user/{T} | intext:"{T}")'
+        },
+        {
+          id: 18,
+          cat: 'social',
+          title: 'Telegram Channels & Messages',
+          desc: 'Find public Telegram channels, chat groups, and messages with this handle.',
+          tpl: 'site:t.me "{T}"'
+        },
+        {
+          id: 19,
+          cat: 'social',
+          title: 'X / Twitter Archived Posts',
+          desc: 'Discover indexed tweets and conversations referencing this username.',
+          tpl: 'site:x.com | site:twitter.com "{T}"'
+        },
+        {
+          id: 20,
+          cat: 'social',
+          title: 'Discord Server Mentions',
+          desc: 'Search for public Discord invites and community mentions.',
+          tpl: 'site:discord.com/invite | site:discord.gg "{T}"'
+        },
+        {
+          id: 21,
+          cat: 'social',
+          title: 'LinkedIn Public Identity',
+          desc: 'Find professional employment, education, and resume records on LinkedIn.',
+          tpl: 'site:linkedin.com/in/ "{T}"'
+        },
+        {
+          id: 22,
+          cat: 'social',
+          title: 'Medium & Substack Publications',
+          desc: 'Search blog posts and independent newsletters authored by the handle.',
+          tpl: 'site:medium.com/@{T} | site:substack.com "{T}"'
+        },
+        {
+          id: 23,
+          cat: 'cloud',
+          title: 'Firebase & Cloud Database Exposure',
+          desc: 'Scan for indexed Firebase realtime databases and JSON schemas.',
+          tpl: 'site:firebaseio.com "{T}"'
+        },
+        {
+          id: 24,
+          cat: 'infrastructure',
+          title: 'Robots.txt & Sitemap Findings',
+          desc: 'Direct search for disallowed paths and sitemaps.',
+          tpl: 'site:{T} (inurl:robots.txt | inurl:sitemap.xml)'
+        }
+      ];
+
+      var input = document.getElementById('targetInput');
+      var grid = document.getElementById('dorkGrid');
+      var tabs = document.querySelectorAll('.cs-tab-btn');
+      var activeCat = 'all';
+
+      function render() {
+        var target = (input.value || 'target').trim();
+        var cleanTarget = target.replace(/["']/g, '');
+
+        var html = '';
+        dorks.forEach(function(item) {
+          if (activeCat !== 'all' && item.cat !== activeCat) return;
+
+          var query = item.tpl.split('{T}').join(cleanTarget);
+          var googleUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+
+          html += '<div class="cs-card" data-cat="' + item.cat + '">' +
+            '<div>' +
+              '<div class="cs-card-header">' +
+                '<h3 class="cs-card-title">' + item.title + '</h3>' +
+                '<span class="cs-card-badge">' + item.cat + '</span>' +
+              '</div>' +
+              '<p class="cs-card-desc">' + item.desc + '</p>' +
+              '<div class="cs-code-wrap">' + escapeHtml(query) + '</div>' +
+            '</div>' +
+            '<div class="cs-card-actions">' +
+              '<button type="button" class="cs-btn cs-btn-copy" onclick="copyDork(this, \'' + escapeAttr(query) + '\')">' +
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy Dork' +
+              '</button>' +
+              '<a href="' + googleUrl + '" target="_blank" rel="noopener noreferrer" class="cs-btn cs-btn-search">' +
+                'Search Google <span aria-hidden="true">↗</span>' +
+              '</a>' +
+            '</div>' +
+          '</div>';
+        });
+
+        grid.innerHTML = html;
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function escapeAttr(str) {
+        return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      }
+
+      window.copyDork = function(btn, query) {
+        navigator.clipboard.writeText(query).then(function() {
+          var original = btn.innerHTML;
+          btn.innerHTML = '✓ Copied!';
+          btn.style.color = '#4cc38a';
+          setTimeout(function() {
+            btn.innerHTML = original;
+            btn.style.color = '';
+          }, 1500);
+        });
+      };
+
+      input.addEventListener('input', render);
+
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          tabs.forEach(function(t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+          activeCat = tab.getAttribute('data-cat');
+          render();
+        });
+      });
+
+      render();
+    })();
+  </script>
+<footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

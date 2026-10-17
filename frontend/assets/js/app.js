@@ -108,18 +108,23 @@
     const saved = stored === "light" || stored === "dark" ? stored : null;
     const defaultTheme = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
     applyTheme(saved || defaultTheme);
-    $("#themeToggle")?.addEventListener("click", () => {
-      const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      storageSet(THEME_KEY, next);
-      applyTheme(next);
-    });
+    const btn = $("#themeToggle");
+    if (btn && !btn.dataset.themeBound) {
+      btn.dataset.themeBound = "1";
+      btn.addEventListener("click", () => {
+        const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        storageSet(THEME_KEY, next);
+        applyTheme(next);
+      });
+    }
   }
 
   // ---------------------------------------------------------------- nav
   function initNav() {
     const btn = $("#navToggle");
     const links = $("#navLinks");
-    if (!btn || !links) return;
+    if (!btn || !links || btn.dataset.navBound) return;
+    btn.dataset.navBound = "1";
     // The button showed and hid the menu but never said so: no aria-expanded,
     // so a screen reader announced the same thing open or closed.
     btn.setAttribute("aria-expanded", "false");
@@ -2628,6 +2633,11 @@
     $("#panelSub").textContent = tool.sub;
     $("#deepWrap").style.display = tool.deep ? "" : "none";
     $("#emailOptions")?.toggleAttribute("hidden", name !== "email");
+    const intents = $(".lookup-intents");
+    if (intents) {
+      intents.hidden = name !== "username";
+      intents.style.display = name === "username" ? "" : "none";
+    }
     const ex = $("#examples");
     if (ex) {
       ex.innerHTML = (tool.examples || []).length
@@ -2650,15 +2660,7 @@
   ];
 
   function defaultEmpty() {
-    const starts = QUICK_STARTS.filter(([t]) => t !== activeTool && TOOLS[t]);
-    return `<div class="empty">
-      <p class="empty-title">Ready when you are</p>
-      <p>Enter a target above, or start from a question:</p>
-      <div class="quick-links">${starts.map(([t, q, d]) => `
-        <button type="button" class="quick-link" data-quick="${t}">${icon(TOOLS[t].icon, 18)}
-          <span><strong>${esc(q)}</strong><small>${esc(d)}</small></span><span class="quick-link-arrow" aria-hidden="true">→</span></button>`).join("")}
-      </div>
-    </div>`;
+    return "";
   }
 
   // ---------------------------------------------------------------- input detection
@@ -2765,7 +2767,10 @@
         }
       });
       const introductions = document.createElement("div");
-      const introduction = document.createElement("p"); introduction.className = "hint";
+      introductions.className = "lookup-intents";
+      introductions.setAttribute("aria-label", "Search ideas");
+      introductions.innerHTML = '<div class="lookup-intents-heading">START WITH A QUESTION<span>Explore your digital footprint</span></div>';
+      const introduction = document.createElement("p"); introduction.className = "lookup-intent-note"; introduction.setAttribute("aria-live", "polite");
       introduction.textContent = "Your old username has a history. Find yours.";
       for (const [title, copy] of [
         ["Forgotten Account Finder", "Your old username has a history. Find yours."],
@@ -2773,12 +2778,19 @@
         ["Check My Dating Footprint", "What can your next date find about you? Search yourself before your next date does."]
       ]) {
         const button = document.createElement("button");
-        button.type = "button"; button.className = "btn btn-ghost btn-sm"; button.textContent = title;
-        button.addEventListener("click", () => { switchTool("username"); introduction.textContent = copy; $("#queryInput").focus(); });
+        button.type = "button"; button.className = "lookup-intent";
+        const index = introductions.querySelectorAll("button").length;
+        const symbols = ["◎", "◇", "◈"];
+        const captions = ["Rediscover your old accounts", "Review a public profile", "See what you share publicly"];
+        button.setAttribute("aria-pressed", String(index === 0));
+        button.innerHTML = `<span class="lookup-intent-icon" aria-hidden="true">${symbols[index]}</span><span class="lookup-intent-copy"><strong>${title}</strong><span>${captions[index]}</span></span><span class="lookup-intent-arrow" aria-hidden="true">↗</span>`;
+        button.addEventListener("click", () => { switchTool("username"); introduction.textContent = copy; introductions.querySelectorAll("button").forEach(item => item.setAttribute("aria-pressed", String(item === button))); $("#queryInput").focus(); });
         introductions.append(button);
       }
       introductions.append(introduction);
-      $("#queryInput")?.parentElement.before(introductions);
+      introductions.hidden = activeTool !== "username";
+      introductions.style.display = activeTool === "username" ? "" : "none";
+      $("#queryInput")?.closest(".field-row").before(introductions);
       $("#detectHint")?.addEventListener("click", (e) => {
         const btn = e.target.closest("[data-switch]");
         const target = btn && btn.dataset.switch;

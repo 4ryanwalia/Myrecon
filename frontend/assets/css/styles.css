@@ -644,8 +644,13 @@ a.pill:hover { border-color: var(--accent); color: var(--accent); }
 .faq summary { cursor: pointer; padding: 15px 44px 15px 16px; font-weight: 600; list-style: none; position: relative; }
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after { content: "+"; position: absolute; right: 16px; top: 12px; font-size: 1.25rem; color: var(--text-mute); }
-.faq details[open] summary::after { content: "\2212"; }
-.faq details p { padding: 0 16px 16px; color: var(--text-dim); font-size: 0.92rem; }
+.faq details[open] > summary::after { content: "\2212"; }
+.faq details > p { padding: 0 16px 16px; color: var(--text-dim); font-size: 0.92rem; }
+.faq details.faq-more { background: transparent; border: none; border-radius: 0; }
+.faq details.faq-more > summary { background: var(--bg-soft); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); color: var(--text-dim); font-size: 0.9rem; text-align: center; padding: 12px 44px; }
+.faq details.faq-more > summary:hover { color: var(--text); border-color: var(--text-mute); }
+.faq details.faq-more[open] > summary { margin-bottom: 10px; }
+.faq-more-list { display: grid; gap: 10px; }
 /* Body links inside prose take the accent colour, but a button in prose is
    still a button. Without the :not(), this rule ties on specificity with
    `a.btn` and wins on order, painting accent-on-accent and leaving the label
@@ -1093,13 +1098,37 @@ main > p a, main > ul li a, main > ol li a {
 .scope-picker { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 .scope-opt {
   display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-  padding: 7px 12px; border: 1px solid var(--border-control); border-radius: 999px;
+  padding: 7px 13px; border: 1px solid var(--border-control); border-radius: 999px;
   font-size: 0.85rem; color: var(--text-dim); min-height: 36px;
+  background: var(--surface); transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.12s ease;
 }
+.scope-opt:hover { border-color: var(--border-strong); color: var(--text); }
+.scope-opt:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
 .scope-opt input { accent-color: var(--accent); margin: 0; }
-.scope-opt:has(input:checked) { border-color: var(--accent); color: var(--text); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.scope-opt:has(input:checked) {
+  border-color: var(--accent); color: var(--text);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
 .scope-opt .hint { font-size: 0.78rem; }
-.scope-note { font-size: 0.8rem; }
+.scope-note { font-size: 0.8rem; color: var(--text-dim); }
+
+/* SEO & library pages polish */
+.seo-link-grid a {
+  background: var(--surface);
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  text-decoration: none;
+}
+.seo-link-grid a:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+.seo-table-wrap th {
+  background: var(--surface);
+  font-weight: 600;
+}
+
 
 .nav-account {
   display: inline-flex; align-items: center; gap: 8px;
@@ -1313,3 +1342,58 @@ img.nav-avatar, img.acct-avatar { object-fit: cover; background: var(--border-co
 }
 .email-quality-badges { display: inline-flex; flex-wrap: wrap; gap: .35rem; margin: .35rem 0; max-width: 100%; }
 .email-quality-method p, .email-field-conflicts li { overflow-wrap: anywhere; }
+
+/* Search goal cards retain the existing shared lookup flow. */
+.lookup-intents { --intent-accent: #7ddce9; --intent-tint: rgba(82,190,215,.1); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:24px 0 20px; }
+.lookup-intents[hidden] { display:none !important; }
+.lookup-intents-heading { grid-column:1/-1; display:flex; justify-content:space-between; gap:12px; font-size:.7rem; letter-spacing:.12em; font-weight:700; color:var(--intent-accent); }
+.lookup-intents-heading span { letter-spacing:0; font-weight:400; color:var(--text-dim); }
+.lookup-intent { position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:16px; min-width:0; padding:18px; text-align:left; font:inherit; color:var(--text); background:var(--bg-soft); border:1px solid var(--border); border-radius:16px; cursor:pointer; transition:border-color .18s,background .18s,transform .18s; }
+.lookup-intent:hover { border-color:var(--intent-accent); transform:translateY(-2px); }
+.lookup-intent[aria-pressed="true"] { border-color:var(--intent-accent); background:linear-gradient(135deg,var(--intent-tint),transparent),var(--bg-soft); }
+.lookup-intent:focus-visible { outline:3px solid var(--intent-accent); outline-offset:3px; }
+.lookup-intent-icon { display:grid; place-items:center; width:38px; height:38px; border-radius:11px; background:var(--intent-tint); color:var(--intent-accent); font-size:26px; }
+.lookup-intent-copy { display:grid; gap:7px; }
+.lookup-intent-copy strong { font-size:.9rem; line-height:1.45; font-weight:650; }
+.lookup-intent-copy > span { font-size:.76rem; line-height:1.5; color:var(--text-dim); }
+.lookup-intent-arrow { position:absolute; right:16px; top:18px; color:var(--intent-accent); }
+.lookup-intent-note { grid-column:1/-1; margin:2px 0 0; padding:10px 14px; border-left:2px solid var(--intent-accent); color:var(--text-dim); font-size:.82rem; line-height:1.65; background:var(--intent-tint); border-radius:0 8px 8px 0; }
+:root[data-theme="light"] .lookup-intents { --intent-accent:#086979; --intent-tint:rgba(8,105,121,.07); }
+@media(max-width:620px) {
+.lookup-intents { grid-template-columns:1fr; gap:8px; }
+.lookup-intents-heading { flex-direction:column; gap:5px; margin-bottom:4px; }
+.lookup-intent { flex-direction:row; align-items:center; gap:12px; padding:14px 34px 14px 14px; }
+.lookup-intent-icon { flex-shrink:0; }
+.lookup-intent-copy { gap:3px; }
+.lookup-intent-arrow { top:18px; right:12px; }
+}
+@media(prefers-reduced-motion:reduce) { .lookup-intent { transition:none; } .lookup-intent:hover { transform:none; } }
+
+/* Unified breadcrumb styling for SEO and accessible navigation */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  margin: 0 0 20px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+.breadcrumb a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.breadcrumb a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+.breadcrumb .sep, .breadcrumb [aria-hidden="true"] {
+  opacity: 0.55;
+  user-select: none;
+}
+.breadcrumb [aria-current="page"] {
+  color: var(--text);
+  font-weight: 500;
+}

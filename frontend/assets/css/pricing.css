@@ -19,6 +19,24 @@
 .international-checkout a[aria-disabled="true"] { opacity: .6; cursor: default; }
 .signin-recovery { margin: 12px 0 20px; }
 .signin-recovery p { margin-bottom: 12px; line-height: 1.6; }
+.plans { align-items: stretch; }
+.plan { padding: 24px; transition: border-color 0.16s ease, box-shadow 0.16s ease; }
+.plan.featured {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)) 0%, var(--surface) 100%);
+  box-shadow: var(--shadow-sm);
+}
+.plan ul { margin: 6px 0 10px; }
+.plan .hint[id$="Status"] {
+  margin: -4px 0 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border);
+  line-height: 1.45;
+}
+.plan .hint#indianStatus {
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
 @media (max-width: 600px) {
   .checkout-steps > li { padding-left: 38px; }
   .checkout-code-row .btn, .checkout-steps > li > .btn { width: 100%; }

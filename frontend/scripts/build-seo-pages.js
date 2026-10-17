@@ -102,12 +102,30 @@ ${cards}
 <text x="38" y="814" fill="#a8b3c7" font-size="17">Public sources · Verify leads · Record uncertainty</text>
 </svg>\n`;
 }
+function writeSafe(filePath, content) {
+  if (fs.existsSync(filePath)) {
+    try {
+      if (fs.readFileSync(filePath, "utf8") === content) return;
+    } catch (_) {}
+  }
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      fs.writeFileSync(filePath, content, "utf8");
+      return;
+    } catch (err) {
+      if (attempt === 4) throw err;
+      const wait = 100 * (attempt + 1);
+      const start = Date.now();
+      while (Date.now() - start < wait) {}
+    }
+  }
+}
 function writeGuideDiagram(record) {
   if (record.kind !== "guide") return;
   if (!/^[a-z0-9-]+$/.test(record.slug)) fail(`Unsafe guide image slug: ${record.slug}`);
   fs.mkdirSync(GUIDE_IMAGES, { recursive: true });
-  fs.writeFileSync(path.join(GUIDE_IMAGES, `${record.slug}.svg`), guideDiagram(record), "utf8");
-  fs.writeFileSync(path.join(GUIDE_IMAGES, `${record.slug}-mobile.svg`), guideMobileDiagram(record), "utf8");
+  writeSafe(path.join(GUIDE_IMAGES, `${record.slug}.svg`), guideDiagram(record));
+  writeSafe(path.join(GUIDE_IMAGES, `${record.slug}-mobile.svg`), guideMobileDiagram(record));
 }
 function routeFor(record) {
   if (record.kind === "core") return record.slug === "home" ? "/" : `/${record.slug}`;
@@ -201,11 +219,16 @@ function jsonLd(record, route) {
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
-        { "@type": "ListItem", position: 2, name: LABELS[record.kind] || "MyRecon", item: record.kind === "core" ? `${SITE}/` : `${SITE}/${CLUSTERS[record.kind]}/` },
-        { "@type": "ListItem", position: 3, name: record.h1, item: url },
-      ],
+      itemListElement: record.kind === "core"
+        ? [
+            { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
+            { "@type": "ListItem", position: 2, name: record.h1, item: url },
+          ]
+        : [
+            { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
+            { "@type": "ListItem", position: 2, name: LABELS[record.kind] || "MyRecon", item: `${SITE}/${CLUSTERS[record.kind]}/` },
+            { "@type": "ListItem", position: 3, name: record.h1, item: url },
+          ],
     },
     faqSchema(record),
   ];
@@ -260,6 +283,9 @@ function renderPage(record) {
   const label = LABELS[record.kind] || "MyRecon";
   const categoryRoute = CLUSTERS[record.kind] ? `/${CLUSTERS[record.kind]}/` : "/";
   const sourceList = [...new Set([...(record.sources || []), record.official_help_url, record.optout_link].filter(Boolean))];
+  const crumbHtml = record.kind === "core"
+    ? `<a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(record.h1)}</span>`
+    : `<a href="/">Home</a> <span aria-hidden="true">/</span> <a href="${categoryRoute}">${esc(label)}</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(record.h1)}</span>`;
   return `<!doctype html>
 <html lang="en" data-theme="light">
 <head>
@@ -292,10 +318,12 @@ ${jsonLd(record, route)}
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav editorial-nav"><div class="container nav-inner">
     <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-    <nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
+    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
+    <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+    <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
   </div></header>
   <main id="main" class="container prose seo-page">
-    <nav class="seo-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="${categoryRoute}">${esc(label)}</a></nav>
+    <nav class="seo-breadcrumb" aria-label="Breadcrumb">${crumbHtml}</nav>
     <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p><p class="seo-sources">MyRecon editorial · Updated ${esc(record.modified_at)}</p>${record.kind === "guide" ? `
       <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>Workflow illustration, not a screenshot or a recorded test.</figcaption></figure>` : ""}
       ${renderSpecific(record)}${renderSections(record)}
@@ -332,7 +360,7 @@ function renderHub(kind, records) {
   const list = records.map((record) => `      <a href="${esc(routeFor(record))}"><strong>${esc(record.h1)}</strong><br><span>${esc(record.description)}</span></a>`).join("\n");
   const pageRecord = { title, h1: editorial.heading, description, intro: editorial.intro, kind, modified_at: '2026-10-03', faq: [] };
   const hubSchema = safeJson({ "@context": "https://schema.org", "@type": "CollectionPage", name: title, description, url: `${SITE}${route}`, mainEntity: { "@type": "ItemList", itemListElement: records.map((record, index) => ({ "@type": "ListItem", position: index + 1, name: record.h1, url: `${SITE}${routeFor(record)}` })) } });
-  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4"><link rel="canonical" href="${SITE}${route}"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}.seo-section{margin:32px 0;max-width:78ch}.seo-section p{line-height:1.75}.seo-page h1{line-height:1.2;margin-bottom:18px}.seo-page>p{margin:18px 0;line-height:1.7}@media(max-width:700px){.seo-page{padding:28px 20px}.nav-links{flex-wrap:wrap;gap:10px}}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/">MyRecon <small>OSINT</small></a><nav class="nav-links" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(pageRecord.h1)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div>${renderSections(editorial)}${editorial.links ? `<section class="seo-section"><h2>Official instructions and sources</h2><ul>${editorial.links.map(([label, url]) => `<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a></li>`).join('')}</ul></section>` : ''}<p>Updated October 3, 2026. Worked examples are illustrative; external account flows were not tested on personal accounts.</p></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4"><link rel="canonical" href="${SITE}${route}"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}.seo-section{margin:32px 0;max-width:78ch}.seo-section p{line-height:1.75}.seo-page h1{line-height:1.2;margin-bottom:18px}.seo-page>p{margin:18px 0;line-height:1.7}@media(max-width:700px){.seo-page{padding:28px 20px}.nav-links{flex-wrap:wrap;gap:10px}}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a><nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav><button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button><button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(pageRecord.h1)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div>${renderSections(editorial)}${editorial.links ? `<section class="seo-section"><h2>Official instructions and sources</h2><ul>${editorial.links.map(([label, url]) => `<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a></li>`).join('')}</ul></section>` : ''}<p>Updated October 3, 2026. Worked examples are illustrative; external account flows were not tested on personal accounts.</p></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer><script src="/assets/js/username-search-input.js" defer></script></body></html>`;
 }
 function setAttr(tag, attr, value) {
   const escaped = esc(value);
@@ -391,7 +419,7 @@ function syncPreservedPage(record) {
     html = html.replace(/<\/main>/i, `${cta}</main>`);
     if (!/username-search-input\.js/i.test(html)) html = html.replace(/<\/body>/i, `  <script src="/assets/js/username-search-input.js" defer></script>\n</body>`);
   }
-  fs.writeFileSync(file, html, "utf8");
+  writeSafe(file, html);
 }
 function safeGeneratedFile(relative) {
   const file = path.resolve(FRONTEND, relative);
@@ -425,7 +453,7 @@ function main() {
     const relative = path.relative(FRONTEND, file).split(path.sep).join("/");
     if (fs.existsSync(file) && !previousFiles.has(relative) && route !== "/vs/sherlock") fail(`Refusing to overwrite an existing page not owned by this generator: ${relative}`);
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    fs.writeFileSync(file, cleanHtml(renderPage(record)), "utf8");
+    writeSafe(file, cleanHtml(renderPage(record)));
     generated.add(relative);
     byKind.set(record.kind, [...(byKind.get(record.kind) || []), record]);
     rendered++;
@@ -435,7 +463,7 @@ function main() {
     const file = safeGeneratedFile(relative);
     // Library hubs are explicitly owned by this renderer.
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    fs.writeFileSync(file, cleanHtml(renderHub(kind, byKind.get(kind) || [])), "utf8");
+    writeSafe(file, cleanHtml(renderHub(kind, byKind.get(kind) || [])));
     generated.add(relative);
   }
   for (const stale of previousFiles) {

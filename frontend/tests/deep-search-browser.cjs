@@ -60,18 +60,11 @@ const server = http.createServer((req, res) => {
     await page.locator('#usernameCaseScope').selectOption('shared');
     assert.deepEqual(await page.locator('.case-graph-total strong').allTextContents(), ['8', '11', '10']);
     await page.locator('#usernameCaseScope').selectOption('full');
-    assert.equal(await page.locator('.quick-link').count(), 3);
-    await page.locator('[data-quick="email"]').click();
-    assert.equal(await page.locator('[data-quick="email"]').count(), 0);
-    assert.equal(await page.locator('[data-quick="username"]').count(), 1);
+    assert.equal(await page.locator('#tab-deepsearch').count(), 1);
+    assert.equal(await page.locator('.quick-link').count(), 0);
     assert.equal(await page.locator('.home-resource-list > a').count(), 3);
-    assert.equal(await page.locator('.case-daily').evaluate(el => el.open), false);
+    assert.equal(await page.locator('.faq-more').evaluate(el => el.open), false);
     await page.screenshot({ path: path.join(output, 'homepage-dark.png'), fullPage: true });
-    await page.locator('.case-daily > summary').click();
-    await page.locator('#benchmarkGraph svg').waitFor();
-    await page.locator('#benchmarkComparison').selectOption('maigret');
-    assert.equal(await page.locator('#benchmarkComparisonLabel').textContent(), 'Maigret');
-    await page.locator('.case-daily > summary').click();
     await page.locator('#themeToggle').click();
     await page.screenshot({ path: path.join(output, 'homepage-light.png'), fullPage: true });
     for (const width of [375, 390, 768]) {

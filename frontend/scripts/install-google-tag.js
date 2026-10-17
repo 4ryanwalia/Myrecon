@@ -43,8 +43,21 @@ function visit(directory) {
       continue;
     }
     const insertion = head.index + head[0].length;
-    fs.writeFileSync(file, html.slice(0, insertion) + '\n' + TAG + html.slice(insertion), 'utf8');
-    updated++;
+    const nextHtml = html.slice(0, insertion) + '\n' + TAG + html.slice(insertion);
+    let written = false;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        fs.writeFileSync(file, nextHtml, 'utf8');
+        written = true;
+        break;
+      } catch (err) {
+        if (attempt === 4) throw err;
+        const wait = 100 * (attempt + 1);
+        const start = Date.now();
+        while (Date.now() - start < wait) {}
+      }
+    }
+    if (written) updated++;
   }
 }
 

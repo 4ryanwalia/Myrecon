@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-10-12",
+  "generated": "2026-10-17",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -12,8 +12,8 @@
     "licence": "https://creativecommons.org/licenses/by/4.0/",
     "notice": "Breach data originates from Have I Been Pwned and is licensed CC BY 4.0. If you publish it you must credit Have I Been Pwned. A link to https://www.myrecon.xyz/breaches/ is appreciated but not required by the licence."
   },
-  "count": 48,
-  "total_accounts": 5790963146,
+  "count": 50,
+  "total_accounts": 5303637756,
   "breaches": [
     {
       "name": "DoubleCounter",
@@ -430,6 +430,108 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": "That is about 48% of the population of Australia."
+    },
+    {
+      "name": "Sharecare",
+      "title": "Sharecare",
+      "slug": "sharecare",
+      "url": "https://www.myrecon.xyz/breaches/sharecare.html",
+      "domain": "sharecare.com",
+      "breach_date": "2026-08-12",
+      "added_date": "2026-10-12T23:28:32Z",
+      "accounts": 318185,
+      "data_classes": [
+        "Dates of birth",
+        "Email addresses",
+        "Employers",
+        "Genders",
+        "Government issued IDs",
+        "Job titles",
+        "Marital statuses",
+        "Names",
+        "Phone numbers",
+        "Physical addresses"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Sharecare.png",
+      "severity": 59,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In August 2026, the digital health company Sharecare was the target of a ShinyHunters \"pay or leak\" extortion campaign. The group subsequently published data it claimed was taken from Sharecare's systems, containing 318k unique email addresses. Most of the data consisted of B2B sales and marketing records with names, physical addresses, phone numbers, job titles and employers. The data also…",
+      "story": {
+        "background": [
+          "In August 2026, the digital health company Sharecare was the target of a ShinyHunters \"pay or leak\" extortion campaign . The group subsequently published data it claimed was taken from Sharecare's systems, containing 318k unique email addresses. Most of the data consisted of B2B sales and marketing records with names, physical addresses, phone numbers, job titles and employers.",
+          "The data also included a small number of Brazilian health insurance plan members, including dates of birth, genders, marital statuses and CPF numbers (Brazilian taxpayer identification numbers)."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [
+          "In August 2026, the digital health company Sharecare was the target of a ShinyHunters \"pay or leak\" extortion campaign ."
+        ],
+        "outcome": [
+          "318,185 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Dates of birth, Email addresses, Employers, Genders, Government issued IDs, Job titles, Marital statuses, Names, Phone numbers, Physical addresses."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "Sharecare",
+          "breach_date": "2026-08-12"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Government issued IDs",
+          "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+        },
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Employers",
+          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Job titles",
+          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
+        },
+        {
+          "name": "Marital statuses",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Genders",
+          "why": "Small on its own; useful to anyone assembling a fuller profile."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
     },
     {
       "name": "CyrusOne",
@@ -992,6 +1094,91 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": "That is about 46% of the population of Australia."
+    },
+    {
+      "name": "Crunchbase",
+      "title": "Crunchbase",
+      "slug": "crunchbase",
+      "url": "https://www.myrecon.xyz/breaches/crunchbase.html",
+      "domain": "crunchbase.com",
+      "breach_date": "2026-01-22",
+      "added_date": "2026-10-14T06:01:26Z",
+      "accounts": 559908,
+      "data_classes": [
+        "Email addresses",
+        "Employers",
+        "Job titles",
+        "Names",
+        "Phone numbers",
+        "Physical addresses",
+        "Social media profiles"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Crunchbase.png",
+      "severity": 57,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In January 2026, the private company intelligence platform Crunchbase was targeted in a ShinyHunters \"pay or leak\" extortion attempt. Data allegedly obtained from the company was subsequently published publicly and included 560k unique email addresses, largely belonging to leads and business contacts. Other data included names, physical addresses, phone numbers, job titles, employers and LinkedIn…",
+      "story": {
+        "background": [
+          "In January 2026, the private company intelligence platform Crunchbase was targeted in a ShinyHunters \"pay or leak\" extortion attempt . Data allegedly obtained from the company was subsequently published publicly and included 560k unique email addresses, largely belonging to leads and business contacts. Other data included names, physical addresses, phone numbers, job titles, employers and LinkedIn profiles. Crunchbase later confirmed that a threat actor had exfiltrated documents from its corporate network."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [
+          "In January 2026, the private company intelligence platform Crunchbase was targeted in a ShinyHunters \"pay or leak\" extortion attempt ."
+        ],
+        "outcome": [
+          "559,908 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Social media profiles."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "Crunchbase",
+          "breach_date": "2026-01-22"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Employers",
+          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Job titles",
+          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
+        },
+        {
+          "name": "Social media profiles",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
     },
     {
       "name": "SoundCloud",
@@ -2182,6 +2369,91 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": "That is roughly everyone in Canada."
+    },
+    {
+      "name": "NationalPublicData",
+      "title": "National Public Data",
+      "slug": "nationalpublicdata",
+      "url": "https://www.myrecon.xyz/breaches/nationalpublicdata.html",
+      "domain": null,
+      "breach_date": "2024-04-09",
+      "added_date": "2024-08-13T18:09:46Z",
+      "accounts": 133957569,
+      "data_classes": [
+        "Dates of birth",
+        "Email addresses",
+        "Genders",
+        "Government issued IDs",
+        "Names",
+        "Phone numbers",
+        "Physical addresses"
+      ],
+      "verified": false,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": null,
+      "severity": 77,
+      "band": "Severe",
+      "data_provider": null,
+      "summary": "In April 2024, a large trove of data made headlines as having exposed \"3 billion people\" due to a breach of the National Public Data background check service. The initial corpus of data released in the breach contained billions of rows of personal information, including US social security numbers. Further partial data sets were later released including extensive personal information and 134M…",
+      "story": {
+        "background": [
+          "In April 2024, a large trove of data made headlines as having exposed \"3 billion people\" due to a breach of the National Public Data background check service . The initial corpus of data released in the breach contained billions of rows of personal information, including US social security numbers.",
+          "Further partial data sets were later released including extensive personal information and 134M unique email addresses, although the origin and accuracy of the data remains in question. This breach has been flagged as \"unverified\" and a full description of the incident is in the link above."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "133,957,569 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Dates of birth, Email addresses, Genders, Government issued IDs, Names, Phone numbers, Physical addresses."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "NationalPublicData",
+          "breach_date": "2024-04-09"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Government issued IDs",
+          "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+        },
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Genders",
+          "why": "Small on its own; useful to anyone assembling a fuller profile."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": "That is roughly everyone in Japan."
     },
     {
       "name": "DemandScience",
@@ -3888,94 +4160,6 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": "That is roughly everyone in the United Kingdom."
-    },
-    {
-      "name": "PDL",
-      "title": "Data Enrichment Exposure From PDL Customer",
-      "slug": "pdl",
-      "url": "https://www.myrecon.xyz/breaches/pdl.html",
-      "domain": null,
-      "breach_date": "2019-10-16",
-      "added_date": "2019-11-22T20:13:04Z",
-      "accounts": 622161052,
-      "data_classes": [
-        "Email addresses",
-        "Employers",
-        "Geographic locations",
-        "Job titles",
-        "Names",
-        "Phone numbers",
-        "Social media profiles"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": null,
-      "severity": 79,
-      "band": "Severe",
-      "data_provider": null,
-      "summary": "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data. The exposed data included an index indicating it was sourced from data enrichment company People Data Labs (PDL) and contained 622 million unique email addresses. The server was not owned by PDL and it's believed a customer failed to…",
-      "story": {
-        "background": [
-          "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data . The exposed data included an index indicating it was sourced from data enrichment company People Data Labs (PDL) and contained 622 million unique email addresses. The server was not owned by PDL and it's believed a customer failed to properly secure the database.",
-          "Exposed information included email addresses, phone numbers, social media profiles and job history data."
-        ],
-        "how": [
-          "In October 2019, security researchers Vinny Troia and Bob Diachenko identified an unprotected Elasticsearch server holding 1.2 billion records of personal data ."
-        ],
-        "motive": [],
-        "outcome": [
-          "622,161,052 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Employers, Geographic locations, Job titles, Names, Phone numbers, Social media profiles."
-        ],
-        "editorial": [
-          "Nobody in this file signed up for anything. Data enrichment companies do not collect from you; they buy, scrape and merge from everywhere else, then sell a composite profile to businesses that want to know more about the people already in their own database. The 622 million people here were the product, not the customers. The detail that makes it worse is where it was found.",
-          "The exposed server was not the enrichment company's, it belonged to one of its customers, who had left an Elasticsearch instance on the open internet with no password. So the data was assembled by one company, sold to a second, and exposed by the second, and there was no point in that chain at which any of the 622 million people could have been asked or told.",
-          "That chain is the reason this record is worth reading even though the fields look mundane. Name, employer, job title, phone number, location and social profiles is a background check, and it is the raw material for convincing approaches that appear to come from a colleague or a recruiter.",
-          "If you want to understand how the industry that built it works, the guide on how data brokers turn a leak into a profile covers it."
-        ]
-      },
-      "check_targets": [
-        {
-          "name": "PDL",
-          "breach_date": "2019-10-16"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Geographic locations",
-          "why": "Where the account was used, which narrows a person down further than most people expect."
-        },
-        {
-          "name": "Employers",
-          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        },
-        {
-          "name": "Job titles",
-          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
-        },
-        {
-          "name": "Social media profiles",
-          "why": "Adds detail to a profile that can be assembled from several breaches at once."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": "That is about 1.8× the population of the United States."
     }
   ]
 }

@@ -58,13 +58,13 @@ function updatePage(file) {
     );
   }
   if (after !== before) {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 10; attempt++) {
       try {
         fs.writeFileSync(file, after, 'utf8');
         break;
       } catch (error) {
-        if (error.code !== 'UNKNOWN' || attempt === 2) throw error;
-        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150 * (attempt + 1));
+        if ((error.code !== 'UNKNOWN' && error.code !== 'EBUSY' && error.code !== 'EPERM') || attempt === 9) throw error;
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 100);
       }
     }
     updated++;

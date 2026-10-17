@@ -1,0 +1,69 @@
+<!--
+{
+  "title": "How to Find Someone's Social Media Accounts: Ethical OSINT Guide (2026) | MyRecon",
+  "headline": "How to Find Someone's Social Media Accounts: The Complete Ethical OSINT Guide",
+  "description": "Learn ethical OSINT techniques to find public social media accounts using usernames, emails, profile pictures, and search operators. Step-by-step guide with verification rules.",
+  "category": "OSINT Investigation",
+  "datePublished": "2026-10-14",
+  "dateModified": "2026-10-14"
+}
+-->
+<p class="lead">Whether you are conducting authorized pre-employment due diligence, investigating online fraud, or auditing your own digital footprint, locating public social media accounts is one of the most common open-source intelligence (OSINT) workflows. Here is the complete step-by-step methodology used by professional researchers.</p>
+
+<h2>The Golden Rule of Account Attribution</h2>
+<p>Before launching any search, understand the foundational principle of digital footprint analysis: <strong>A matching username is a lead, not proof of identity.</strong></p>
+<p>If you search for a generic handle like <code>alex_dev</code>, you will discover profiles across GitHub, Instagram, and Reddit that belong to entirely different human beings who happen to share a common nickname. Valid attribution requires establishing a <em>chain of corroborating evidence</em>:</p>
+<ul>
+  <li><strong>Cross-linked URLs:</strong> Does profile A link directly to website B or profile C?</li>
+  <li><strong>Matching Avatars:</strong> Does the user share the exact same profile image across accounts (verifiable via reverse image search)?</li>
+  <li><strong>Stylometric Consistency:</strong> Are the language patterns, location references, and interests aligned?</li>
+  <li><strong>Temporal Overlap:</strong> Do the account creation dates and activity schedules match?</li>
+</ul>
+
+<h2>Method 1: Reverse Username Lookup Across 500+ Platforms</h2>
+<p>Over 70% of internet users reuse their favorite handle across multiple platforms—from mainstream networks like X, YouTube, and Instagram to developer hubs, gaming networks, and niche forums.</p>
+<p>Rather than manually typing URLs into dozens of websites, automated username checkers query platform registration endpoints in parallel. To begin an investigation:</p>
+<ol>
+  <li>Collect known handles, variations, and past gaming or forum handles.</li>
+  <li>Enter the handle into the <a href="/#tool">MyRecon username checker</a> to scan across 500+ supported public networks.</li>
+  <li>Examine the outcome labels: MyRecon distinguishes between confirmed profiles (<code>found</code>), confirmed absences (<code>not_found</code>), and ambiguous responses like rate limits or login walls (<code>unknown</code>).</li>
+  <li>Open each positive lead directly on its official platform to inspect the bio and recent activity.</li>
+</ol>
+
+<h2>Method 2: Email Reverse Search and Identity Pivots</h2>
+<p>If you have a known email address, you can pivot from the email to connected social identities without sending any communication:</p>
+<ul>
+  <li><strong>Gravatar &amp; Automattic Avatars:</strong> Gravatar hashes email addresses using MD5 (e.g., <code>https://www.gravatar.com/avatar/&lt;hash&gt;.json</code>). Querying this endpoint can reveal full names, usernames, and profile pictures voluntarily linked to the address.</li>
+  <li><strong>GitHub Commit Logs:</strong> If the target has contributed to public open-source repositories, their git commit metadata often includes both their public handle and their configured email address.</li>
+  <li><strong>Breach Intelligence:</strong> Public breach notifications (such as those indexed by <a href="/#tool">MyRecon email breach search</a>) associate emails with compromised services, exposing which platforms the user historically registered on.</li>
+</ul>
+
+<h2>Method 3: Reverse Image Search on Profile Pictures</h2>
+<p>People frequently crop the same headshot or use the same illustration as their avatar across LinkedIn, X, Telegram, and Discord. You can isolate this avatar to find connected accounts:</p>
+<ol>
+  <li>Download the highest resolution version of the subject's profile picture.</li>
+  <li>Crop out background distractions and watermark artifacts.</li>
+  <li>Upload the image to visual search engines: Google Lens, Yandex Visual Search, and TinEye.</li>
+  <li>Review the visual matches for alternative platforms, portfolio websites, or school directories.</li>
+</ol>
+
+<h2>Method 4: Google Dorking and Search Engine Operators</h2>
+<p>Search engines index billions of pages that platform-specific search forms hide behind algorithm walls. Using advanced search operators allows you to surface hidden profiles:</p>
+<pre><code>site:instagram.com "username" OR "Full Name"
+site:linkedin.com/in/ "username"
+site:reddit.com/user/ "username"
+"username" (site:tiktok.com OR site:youtube.com OR site:twitch.tv)
+"known_email@gmail.com" -site:google.com</code></pre>
+<p>To find cached or deleted profile pages, prepend <code>cache:</code> to the profile URL or inspect historical captures on the Wayback Machine (archive.org).</p>
+
+<h2>Legal and Ethical Boundaries</h2>
+<p>OSINT investigations must adhere strictly to legal guidelines:</p>
+<ul>
+  <li><strong>Public data only:</strong> Never attempt to guess passwords, send malicious phishing lures, or bypass access control systems (violating the CFAA or international equivalents).</li>
+  <li><strong>No harassment or doxxing:</strong> Gathering intelligence to intimidate, harass, or publish sensitive private details is unethical and illegal.</li>
+  <li><strong>Respect opt-outs:</strong> Honor data subject requests and service terms of use.</li>
+</ul>
+
+<h2>Next Steps for Your Investigation</h2>
+<p>Ready to put these methods into action? Start by auditing your own public footprint to understand what strangers can uncover about you:</p>
+<p><a href="/#tool">Run a free username audit on MyRecon</a> · <a href="/blog/reverse-username-lookup-guide.html">Read our reverse username guide</a> · <a href="/blog/digital-footprint-checker-guide.html">Download the digital footprint checklist</a></p>

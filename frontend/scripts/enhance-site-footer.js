@@ -9,11 +9,11 @@ const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(
 const GROUPS = [
   ["Products", [
     ["Username search", "/#tool"], ["Features", "/features.html"], ["Android app", "/app.html"],
-    ["Username checker", "/username-checker.html"],
+    ["Username checker", "/username-checker.html"], ["Deep Search", "/deep-search.html"], ["Badges & widgets", "/badge.html"],
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [
-    ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
+    ["OSINT cheat sheet", "/osint-cheat-sheet.html"], ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [
@@ -72,7 +72,7 @@ function enhance(file) {
     html = html.replace(/<\/head>/i, `  <link rel="stylesheet" href="/assets/css/site-footer.css?v=${footerHash}">\n</head>`);
   }
   if (html === before) return false;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     try {
       fs.writeFileSync(file, html, "utf8");
       return true;

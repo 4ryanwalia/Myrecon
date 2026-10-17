@@ -26,7 +26,7 @@
   if (typeof module === "object" && module.exports) module.exports = { validCase, comparisonSeries };
   if (typeof document === "undefined") return;
   const node = (tag, value) => { const n = document.createElement(tag); if (value !== undefined) n.textContent = value; return n; };
-  const put = (id, value) => { document.getElementById(id).textContent = value; };
+  const put = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
   function drawComparison(data, scope) {
     const series = comparisonSeries(data, scope), max = Math.max(1, ...series.map((s) => s.total));
     const chart = document.getElementById("usernameCaseGraph");
@@ -87,7 +87,7 @@
       if (!shared) rows.push([labels.osintsearch + " (free preview)", `${preview.endpoints_checked} endpoints`,
         `${preview.grouped_matches} grouped / ${preview.endpoint_hits} endpoint hits`, "N/A", "N/A", "N/A",
         `${preview.named_matches} named; ${preview.hidden_matches} hidden`, "N/A"]);
-      document.getElementById("usernameCaseSummary").replaceChildren(table(
+      document.getElementById("usernameCaseSummary")?.replaceChildren(table(
         ["Tool", "Checked", "Reported hits", "Unique URLs", "Supported", "Contradicted", "Unverified", "Unknown checks"], rows,
         shared ? `${data.shared_address_count} exact profile addresses shared by the three local engines. Counts reuse the full runs; OSINTsearch hides its URLs.`
           : "Different catalogues. Reported hits include native positive verdicts; a duplicate URL counts once for source review. Supported means profile existence, not ownership."));
@@ -103,16 +103,18 @@
           const c = r.tools[tool]; return !c ? "Not checked" : c.reported ? (c.verdict === "unknown" ? "Reported hit; HTTP error" : "Reported hit") : c.verdict === "unknown" ? "Unknown" : c.verdict === "not_found" ? "No match" : "Found";
         }), verdict, evidence];
       });
-      document.getElementById("usernameCaseLeads").replaceChildren(table(
+      document.getElementById("usernameCaseLeads")?.replaceChildren(table(
         ["Source profile", "MyRecon", "Sherlock", "Maigret", "Source review", "Evidence"], details,
         `${leads.length} unique reported addresses in this view. Unverified leads are not counted as false positives.`));
     };
-    document.getElementById("usernameCaseScope").onchange = (event) => { scope = event.target.value; draw(); };
-    document.getElementById("usernameCaseFilter").onchange = (event) => { filter = event.target.value; draw(); };
+    const scopeEl = document.getElementById("usernameCaseScope");
+    if (scopeEl) scopeEl.onchange = (event) => { scope = event.target.value; draw(); };
+    const filterEl = document.getElementById("usernameCaseFilter");
+    if (filterEl) filterEl.onchange = (event) => { filter = event.target.value; draw(); };
     const preview = data.tools.osintsearch;
     put("usernameCasePreview", `OSINTsearch displayed ${preview.grouped_matches} grouped matches and ${preview.endpoint_hits} endpoint hits across ${preview.endpoints_checked} endpoints. The free preview named ${preview.named_matches} platforms and hid ${preview.hidden_matches} matches plus all profile links. Those hidden results cannot be scored.`);
-    document.getElementById("usernameCaseNamed").replaceChildren(...preview.platforms.map((name) => node("li", name)));
-    put("usernameCaseWhen", `Local runs: ${data.tools.myrecon.started_at_utc.slice(0, 10)}. This is a recorded case study; the daily regression sample below updates separately.`);
+    document.getElementById("usernameCaseNamed")?.replaceChildren(...preview.platforms.map((name) => node("li", name)));
+    put("usernameCaseWhen", `Local runs: ${data.tools.myrecon.started_at_utc.slice(0, 10)}. This is a recorded case study.`);
     draw();
   }
   async function load() {

@@ -247,7 +247,7 @@ function article(c, all) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "MyRecon", item: SITE },
+      { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
       { "@type": "ListItem", position: 2, name: "The Breach Files", item: `${SITE}/breaches/` },
       { "@type": "ListItem", position: 3, name: "Case Files", item: `${SITE}${BASE}/` },
       { "@type": "ListItem", position: 4, name: c.subject || c.headline, item: c.url },
@@ -310,7 +310,9 @@ function article(c, all) {
     }) +
       `  <main id="main" class="container">
     <article class="article breach-article cf-article">
-      <p class="bx-crumb"><a href="${BASE}/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="${BASE}/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(c.headline)}</span>
+      </nav>
 
       <header class="bx-head">
         <div>

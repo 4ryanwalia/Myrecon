@@ -58,6 +58,7 @@ const scripts = [
   'finalize-editorial.js',
   'version-site-assets.js',
   'install-google-tag.js',
+  'install-adsense-tag.js',
 ];
 
 const before = publicHtmlHashes();

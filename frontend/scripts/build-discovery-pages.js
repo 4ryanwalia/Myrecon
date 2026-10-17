@@ -15,7 +15,7 @@ const questions = [
   ['Can I use MyRecon for Instagram username search?', 'The supported catalogue includes Instagram public-profile checks. Login walls and platform restrictions can leave a result unknown. MyRecon cannot access private Instagram posts or messages; inspect the official profile before relying on a match.'],
 ];
 const body = `<main id="main" class="container prose discovery-page">
-  <nav aria-label="Breadcrumb"><a href="/">MyRecon</a> / Username checker</nav>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Username checker</span></nav>
   <h1>Username checker and social media username search</h1>
   <p class="sub">MyRecon searches a public username across a supported catalogue of 500+ platforms. Use it to review your own digital footprint or accounts you are authorized to investigate. Verify each profile at its source.</p>
   <a class="btn btn-primary" href="/#tool=username">Check a username</a>
@@ -49,5 +49,16 @@ const graph = { '@context': 'https://schema.org', '@graph': [
 html = html.replace('</head>', `<link rel="stylesheet" href="/assets/css/discovery.css">\n<script type="application/ld+json">${JSON.stringify(graph).replace(/</g, '\\u003c')}</script>\n</head>`);
 html = html.replace(/<main\b[^>]*>.*?<\/main>/s, body);
 html = html.replace(/(<meta name="robots" content=")[^"]+/, '$1index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-fs.writeFileSync(path.join(root, 'username-checker.html'), html);
+const outPath = path.join(root, 'username-checker.html');
+for (let attempt = 0; attempt < 5; attempt++) {
+  try {
+    fs.writeFileSync(outPath, html);
+    break;
+  } catch (err) {
+    if (attempt === 4) throw err;
+    const wait = 100 * (attempt + 1);
+    const start = Date.now();
+    while (Date.now() - start < wait) {}
+  }
+}
 console.log('[discovery] Built username-checker.html');

@@ -258,8 +258,14 @@ function articlePage(article, articles = []) {
   const related = articles.filter(item => item.slug !== article.slug).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 3);
   return `${shellHead({ title: article.title, description: article.description, url: article.url, article })}
   <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:16px 0 20px;color:var(--text-dim)">
+      <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <a href="/blog/" style="color:var(--text-dim);text-decoration:none">Blog</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <span style="color:var(--text);font-weight:500" aria-current="page">${esc(article.headline)}</span>
+    </nav>
     <article class="article">
-      <nav class="blog-breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <a href="/blog/">OSINT and privacy articles</a></nav>
       <span class="kicker">${esc(article.category)}</span>
       <h1>${esc(article.headline)}</h1>
       <p class="meta">Updated <time datetime="${esc(article.dateModified)}">${displayDate}</time> · <a href="/about.html">MyRecon editorial</a></p>
@@ -289,6 +295,11 @@ function indexPage(articles) {
   const categoryId = category => `topic-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   const html = `${shellHead({ title: "OSINT Tools, Username Search and Privacy Blog | MyRecon", description, url, crumbs: collection })}
   <main id="main" class="container prose" style="padding-top:44px;padding-bottom:56px">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:0 0 20px;color:var(--text-dim)">
+      <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <span style="color:var(--text);font-weight:500" aria-current="page">Blog</span>
+    </nav>
     <span class="kicker" style="color:var(--accent);font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase">MyRecon Blog</span>
     <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin:8px 0 10px">OSINT tools, username search and online privacy</h1>
     <p class="sub" style="max-width:70ch">Choose a research workflow, compare public-source tools, search social media usernames and reduce your own digital footprint. Our articles explain what a result supports, what remains unknown and how to check the original source.</p>
@@ -296,6 +307,15 @@ function indexPage(articles) {
       <p><strong>Start with your own footprint.</strong> MyRecon's username search checks public profile pages; it does not reveal private content or prove identity. For cleanup help, our service works only on your own footprint or one you are formally authorised to manage.</p>
       <p><a href="/#tool">Run a username self-audit</a> · <a href="/services.html">Learn about footprint removal support</a> · <a href="/vs/">Compare MyRecon with other tools</a></p>
     </section>
+    <div class="ad-blog-container" style="margin:24px 0;text-align:center">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6109270472398539"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
     <script type="application/ld+json">${list}</script>
     <nav class="blog-topics" aria-label="Article topics">${categories.map(category => `<a href="#${categoryId(category)}">${esc(category)}</a>`).join('')}</nav>
 ${categories.map(category => `<section class="blog-category" aria-labelledby="${categoryId(category)}"><h2 id="${categoryId(category)}">${esc(category)}</h2><div class="guide-grid">${articles.filter(article => article.category === category).map(article => `<a class="guide-card" href="/blog/${article.slug}.html"><h3>${esc(article.headline)}</h3><p>${esc(article.description)}</p><span class="read">Read article →</span></a>`).join('\n')}</div></section>`).join('\n')}

@@ -54,7 +54,7 @@ const SECTIONS = [
   { test: (u) => u.startsWith("/guides/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/blog/", changefreq: "weekly", priority: "0.9" },
   { test: (u) => u.startsWith("/blog/"), changefreq: "monthly", priority: "0.8" },
-  { test: (u) => u === "/services.html" || u === "/app.html" || u === "/deep-search.html", changefreq: "monthly", priority: "0.9" },
+  { test: (u) => u === "/services.html" || u === "/app.html" || u === "/deep-search.html" || u === "/osint-cheat-sheet.html" || u === "/badge.html", changefreq: "monthly", priority: "0.9" },
   { test: (u) => u === "/pricing" || u === "/features" || u === "/privacy-audit" || u === "/enterprise-osint-api", changefreq: "monthly", priority: "0.9" },
   // The three explainer pages. High-intent search targets ("is X legit",
   // "X vs Y"), so they sit above About and below the tool pages. Without an
@@ -292,6 +292,20 @@ function buildSitemap(options = {}) {
   function writeIfChanged(filename, contents) {
     const target = path.join(root, filename);
     if (!fs.existsSync(target) || fs.readFileSync(target, 'utf8') !== contents) fs.writeFileSync(target, contents, 'utf8');
+  }
+
+  function writeSafe(filePath, content) {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        fs.writeFileSync(filePath, content, "utf8");
+        break;
+      } catch (err) {
+        if (attempt === 4) throw err;
+        const wait = 100 * (attempt + 1);
+        const start = Date.now();
+        while (Date.now() - start < wait) {}
+      }
+    }
   }
 
   // .gitattributes normalises the repo to LF; writing CRLF back would show the

@@ -3141,6 +3141,19 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/(sitemap.*\\.xml)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, must-revalidate"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -3175,6 +3188,14 @@
     {
       "source": "/vs/:slug",
       "destination": "/vs/:slug.html"
+    },
+    {
+      "source": "/osint-cheat-sheet",
+      "destination": "/osint-cheat-sheet.html"
+    },
+    {
+      "source": "/badge",
+      "destination": "/badge.html"
     }
   ],
   "installCommand": "npm ci --include=dev"

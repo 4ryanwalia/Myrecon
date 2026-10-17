@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-10-12",
+  "generated": "2026-10-17",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,6 +14,193 @@
   },
   "count": 10,
   "breaches": [
+    {
+      "name": "Crunchbase",
+      "title": "Crunchbase",
+      "slug": "crunchbase",
+      "url": "https://www.myrecon.xyz/breaches/crunchbase.html",
+      "domain": "crunchbase.com",
+      "breach_date": "2026-01-22",
+      "added_date": "2026-10-14T06:01:26Z",
+      "accounts": 559908,
+      "data_classes": [
+        "Email addresses",
+        "Employers",
+        "Job titles",
+        "Names",
+        "Phone numbers",
+        "Physical addresses",
+        "Social media profiles"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Crunchbase.png",
+      "severity": 57,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In January 2026, the private company intelligence platform Crunchbase was targeted in a ShinyHunters \"pay or leak\" extortion attempt. Data allegedly obtained from the company was subsequently published publicly and included 560k unique email addresses, largely belonging to leads and business contacts. Other data included names, physical addresses, phone numbers, job titles, employers and LinkedIn…",
+      "story": {
+        "background": [
+          "In January 2026, the private company intelligence platform Crunchbase was targeted in a ShinyHunters \"pay or leak\" extortion attempt . Data allegedly obtained from the company was subsequently published publicly and included 560k unique email addresses, largely belonging to leads and business contacts. Other data included names, physical addresses, phone numbers, job titles, employers and LinkedIn profiles. Crunchbase later confirmed that a threat actor had exfiltrated documents from its corporate network."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [
+          "In January 2026, the private company intelligence platform Crunchbase was targeted in a ShinyHunters \"pay or leak\" extortion attempt ."
+        ],
+        "outcome": [
+          "559,908 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Social media profiles."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "Crunchbase",
+          "breach_date": "2026-01-22"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Employers",
+          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Job titles",
+          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
+        },
+        {
+          "name": "Social media profiles",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
+    },
+    {
+      "name": "Sharecare",
+      "title": "Sharecare",
+      "slug": "sharecare",
+      "url": "https://www.myrecon.xyz/breaches/sharecare.html",
+      "domain": "sharecare.com",
+      "breach_date": "2026-08-12",
+      "added_date": "2026-10-12T23:28:32Z",
+      "accounts": 318185,
+      "data_classes": [
+        "Dates of birth",
+        "Email addresses",
+        "Employers",
+        "Genders",
+        "Government issued IDs",
+        "Job titles",
+        "Marital statuses",
+        "Names",
+        "Phone numbers",
+        "Physical addresses"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Sharecare.png",
+      "severity": 59,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In August 2026, the digital health company Sharecare was the target of a ShinyHunters \"pay or leak\" extortion campaign. The group subsequently published data it claimed was taken from Sharecare's systems, containing 318k unique email addresses. Most of the data consisted of B2B sales and marketing records with names, physical addresses, phone numbers, job titles and employers. The data also…",
+      "story": {
+        "background": [
+          "In August 2026, the digital health company Sharecare was the target of a ShinyHunters \"pay or leak\" extortion campaign . The group subsequently published data it claimed was taken from Sharecare's systems, containing 318k unique email addresses. Most of the data consisted of B2B sales and marketing records with names, physical addresses, phone numbers, job titles and employers.",
+          "The data also included a small number of Brazilian health insurance plan members, including dates of birth, genders, marital statuses and CPF numbers (Brazilian taxpayer identification numbers)."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [
+          "In August 2026, the digital health company Sharecare was the target of a ShinyHunters \"pay or leak\" extortion campaign ."
+        ],
+        "outcome": [
+          "318,185 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Dates of birth, Email addresses, Employers, Genders, Government issued IDs, Job titles, Marital statuses, Names, Phone numbers, Physical addresses."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "Sharecare",
+          "breach_date": "2026-08-12"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Government issued IDs",
+          "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+        },
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Employers",
+          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Job titles",
+          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
+        },
+        {
+          "name": "Marital statuses",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Genders",
+          "why": "Small on its own; useful to anyone assembling a fuller profile."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
+    },
     {
       "name": "Neogen",
       "title": "Neogen",
@@ -686,164 +873,6 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": "That is about 24% of the population of Australia."
-    },
-    {
-      "name": "Carhartt",
-      "title": "Carhartt",
-      "slug": "carhartt",
-      "url": "https://www.myrecon.xyz/breaches/carhartt.html",
-      "domain": "carhartt.com",
-      "breach_date": "2026-08-13",
-      "added_date": "2026-08-25T21:34:25Z",
-      "accounts": 12933413,
-      "data_classes": [
-        "Email addresses",
-        "Names",
-        "Phone numbers",
-        "Physical addresses"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/Carhartt.png",
-      "severity": 67,
-      "band": "Severe",
-      "data_provider": null,
-      "summary": "In August 2026, clothing retailer Carhartt was the target of a ShinyHunters \"pay or leak\" extortion campaign. The group subsequently published data allegedly obtained from the company including 12.9M unique email addresses, names, phone numbers and physical addresses. The published corpus also contained millions of synthetic records that did not relate to real individuals and were excluded from…",
-      "story": {
-        "background": [
-          "In August 2026, clothing retailer Carhartt was the target of a ShinyHunters \"pay or leak\" extortion campaign . The group subsequently published data allegedly obtained from the company including 12.9M unique email addresses, names, phone numbers and physical addresses. The published corpus also contained millions of synthetic records that did not relate to real individuals and were excluded from the breach."
-        ],
-        "how": [
-          "The published account does not explain the exact way the data was obtained."
-        ],
-        "motive": [
-          "In August 2026, clothing retailer Carhartt was the target of a ShinyHunters \"pay or leak\" extortion campaign ."
-        ],
-        "outcome": [
-          "12,933,413 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Names, Phone numbers, Physical addresses."
-        ],
-        "editorial": [
-          "The published corpus contained millions of synthetic records, fabricated rows matching no real person, which were identified and excluded before the figure of 12.9 million was settled on. That detail is worth more than the breach itself, because the number an extortion crew posts and the number of people actually in the file are routinely different numbers, and the first one is the one that becomes the headline. Padding pays twice.",
-          "A larger file sells for more, and a company forced to answer for an inflated figure looks worse than it is, which is useful leverage when the demand is \"pay or we publish\". Establishing what is actually in a dump is slow, unglamorous work, and a breach story that leads with the raw row count is a story where nobody has done it yet.",
-          "What genuinely leaked here is ordinary: name, email address, phone number, home address. No passwords, no card numbers, nothing that opens an account. That combination does not get into anything, it gets a convincing message about a delivery problem on an order you could plausibly have placed. The uptick in parcel texts after a retail breach is not a coincidence, and it is the whole return on data like this."
-        ]
-      },
-      "check_targets": [
-        {
-          "name": "Carhartt",
-          "breach_date": "2026-08-13"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": "That is about 48% of the population of Australia."
-    },
-    {
-      "name": "Suno",
-      "title": "Suno",
-      "slug": "suno",
-      "url": "https://www.myrecon.xyz/breaches/suno.html",
-      "domain": "suno.com",
-      "breach_date": "2025-11-25",
-      "added_date": "2026-07-20T19:49:51Z",
-      "accounts": 55282226,
-      "data_classes": [
-        "Email addresses",
-        "Names",
-        "Partial credit card data",
-        "Phone numbers",
-        "Physical addresses",
-        "Purchases"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/Suno.png",
-      "severity": 76,
-      "band": "Severe",
-      "data_provider": null,
-      "summary": "In November 2025, AI music generation tool Suno suffered a data breach that later came to light in July the following year. The data contained over 55M unique email addresses. Phone numbers were also present where they had been used as the sign-up method. Although representing a small portion of the corpus, the breach also included tens of thousands of Stripe records relating to purchases…",
-      "story": {
-        "background": [
-          "In November 2025, AI music generation tool Suno suffered a data breach that later came to light in July the following year . The data contained over 55M unique email addresses. Phone numbers were also present where they had been used as the sign-up method.",
-          "Although representing a small portion of the corpus, the breach also included tens of thousands of Stripe records relating to purchases, containing names, physical addresses, purchase amounts and partial credit card data including the card type, expiry date and last 4 digits. The company advised that \"Suno does not have access to customers' full credit card numbers in Stripe\"."
-        ],
-        "how": [
-          "The published account does not explain the exact way the data was obtained."
-        ],
-        "motive": [],
-        "outcome": [
-          "55,282,226 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Names, Partial credit card data, Phone numbers, Physical addresses, Purchases."
-        ],
-        "editorial": [
-          "Eight months passed between the breach date on this record and the point at which it came to light. That gap is the most useful thing on the page.",
-          "Everyone in the file spent most of a year with no reason to change anything, while the data was already out, which is why \"there is no evidence of misuse\" is a statement about what the company can see, not about what has happened. The second detail worth noticing is the shape of the exposure. Fifty-five million email addresses with names and phone numbers is a contact list.",
-          "The tens of thousands of payment records inside it are a different category entirely: a much smaller group, exposed far more seriously, buried inside a number so large that the distinction disappears from most coverage. If you only ever generated a few tracks and never paid, your realistic risk is targeted phishing that references a service you actually used.",
-          "If you bought anything, you are in the smaller set, check the card statement for that period specifically, and treat any message about a subscription or refund as unverified until you have opened the account yourself."
-        ]
-      },
-      "check_targets": [
-        {
-          "name": "Suno",
-          "breach_date": "2025-11-25"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Partial credit card data",
-          "why": "Not enough to spend, but enough to convince a victim that a caller is genuinely from their bank."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Purchases",
-          "why": "What was bought and when, detail that makes an impersonation convincing."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": "That is roughly everyone in Canada."
     }
   ]
 }
