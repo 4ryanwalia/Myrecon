@@ -1,8 +1,8 @@
 {
-  "generated": "2026-10-18T04:32:23.331Z",
+  "generated": "2026-10-18T11:03:18.646Z",
   "source": "Have I Been Pwned",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
-  "total_accounts": 5303637756,
+  "total_accounts": 5303755330,
   "breaches": [
     {
       "name": "DoubleCounter",
@@ -679,6 +679,79 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": "That is about 17% of the population of Australia."
+    },
+    {
+      "name": "GitesDeFrance",
+      "title": "Gîtes de France",
+      "slug": "gitesdefrance",
+      "url": "https://www.myrecon.xyz/breaches/gitesdefrance.html",
+      "domain": "gites-de-france.com",
+      "breach_date": "2026-05-16",
+      "added_date": "2026-10-18T04:50:13Z",
+      "accounts": 117574,
+      "data_classes": [
+        "Booking details",
+        "Email addresses",
+        "Names",
+        "Phone numbers",
+        "Physical addresses"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/GitesDeFrance.png",
+      "severity": 49,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In May 2026, the French holiday rental network Gîtes de France suffered a data breach affecting some of its departmental branches. The incident exposed hundreds of thousands of customer records, including 118k unique email addresses alongside names, phone numbers, postal addresses and booking details.",
+      "story": {
+        "background": [
+          "In May 2026, the French holiday rental network Gîtes de France suffered a data breach affecting some of its departmental branches. The incident exposed hundreds of thousands of customer records, including 118k unique email addresses alongside names, phone numbers, postal addresses and booking details."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "117,574 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Booking details, Email addresses, Names, Phone numbers, Physical addresses."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "GitesDeFrance",
+          "breach_date": "2026-05-16"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Booking details",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
     },
     {
       "name": "McGrawHill",
