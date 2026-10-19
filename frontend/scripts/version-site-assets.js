@@ -6,20 +6,29 @@ const crypto = require('node:crypto');
 const ROOT = path.resolve(__dirname, '..');
 const ASSETS = [
   '/assets/css/styles.css',
+  '/assets/css/home-video.css',
+  '/assets/js/home-video.js',
   '/assets/css/fx.css',
   '/assets/css/site-footer.css',
+  '/assets/css/discovery.css',
   '/assets/css/trust.css',
   '/assets/css/breaches.css',
   '/assets/css/content-app-promo.css',
+  '/assets/css/deep-search-preview.css',
   '/assets/js/trust.js',
   '/assets/js/benchmarks.js',
   '/assets/js/username-benchmark.js',
   '/assets/css/username-benchmark.css',
   '/assets/js/partial-results.js',
+  '/assets/js/email-outcome.js',
   '/assets/js/app.js',
+  '/assets/js/match-choices.js',
+  '/assets/js/breach-check.js',
+  '/assets/js/config.js',
   '/assets/js/deep-search.js',
   '/assets/js/fx.js',
   '/assets/js/pricing.js',
+  '/assets/js/paypal-checkout.js',
   '/assets/js/username-search-input.js',
   '/assets/img/logo.svg',
   '/assets/img/favicon.svg',
@@ -46,12 +55,13 @@ function updatePage(file) {
     );
   }
   if (after !== before) {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 10; attempt++) {
       try {
         fs.writeFileSync(file, after, 'utf8');
         break;
       } catch (error) {
-        if (error.code !== 'UNKNOWN' || attempt === 2) throw error;
+        if ((error.code !== 'UNKNOWN' && error.code !== 'EBUSY' && error.code !== 'EPERM') || attempt === 9) throw error;
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 100);
       }
     }
     updated++;

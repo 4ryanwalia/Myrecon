@@ -47,13 +47,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css?v=6743ad80d4">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=2e36ee7372">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=7a7a010a5e">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"AT&T, 2024: who called whom, for nearly every customer","description":"AT&T lost six months of call and text metadata for nearly all its mobile customers. Not what was said, who spoke to whom, how often, and from roughly where.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/att-2024.html","articleSection":"Case Files","about":{"@type":"Thing","name":"AT&T call records breach"},"wordCount":857}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"AT&T call records breach","item":"https://www.myrecon.xyz/breaches/case-files/att-2024.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"AT&T call records breach","item":"https://www.myrecon.xyz/breaches/case-files/att-2024.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were the contents of my calls or messages stolen?","acceptedAnswer":{"@type":"Answer","text":"No. The data was metadata: which numbers interacted, how many times, and for how long, plus cell site identifiers for a subset of records. The words spoken and the text of messages were not included."}},{"@type":"Question","name":"If it is only metadata, why does it matter?","acceptedAnswer":{"@type":"Answer","text":"Because a complete record of who you contact reveals relationships that content often does not. A sequence of calls to an oncology practice, a divorce lawyer, a rehabilitation clinic or a domestic violence helpline tells the story without a single word being read. Metadata at scale is also easy to analyse automatically, which content is not."}},{"@type":"Question","name":"I was not an AT&T customer. Am I in it?","acceptedAnswer":{"@type":"Answer","text":"Possibly. The records cover numbers that AT&T customers interacted with, and that includes people on other networks. You can be in a telephone metadata set without ever having had a relationship with the carrier that lost it."}},{"@type":"Question","name":"Was this the same as the other AT&T leak in 2024?","acceptedAnswer":{"@type":"Answer","text":"No, they are separate. In March 2024, a dataset of about 73 million current and former customer records from 2019 or earlier surfaced publicly, including Social Security numbers and account passcodes, prompting a mass passcode reset. The July disclosure concerned call and text metadata taken from a cloud data warehouse in April 2024."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
@@ -70,7 +68,9 @@
   </header>
   <main id="main" class="container">
     <article class="article breach-article cf-article">
-      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="/breaches/case-files/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">AT&amp;T, 2024: who called whom, for nearly every customer</span>
+      </nav>
 
       <header class="bx-head">
         <div>
@@ -90,7 +90,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Phone numbers contacted · Counts of calls and texts · Call durations · Cell site identifiers for some records</p>
 
-<p class="lead">In July 2024, AT&T disclosed that call and text metadata for nearly all of its mobile customers, roughly 109 million accounts, had been copied from a cloud data warehouse. The records covered a six-month window in 2022. No conversations were taken, and that fact has been used to soften the story ever since. It should not.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>In July 2024, AT&amp;T disclosed that call and text metadata for nearly all of its mobile customers, roughly 109 million accounts, had been copied from a cloud data warehouse. The records covered a six-month window in 2022. No conversations were taken, and that fact has been used to soften the story ever since. It should not.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>A third-party cloud data warehouse account without multi-factor authentication</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>A proposed $177 million settlement covering both 2024 incidents</p>
+<p>Reported scale: call and text metadata for nearly all mobile customers, about 109 million accounts.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In July 2024, AT&T disclosed that call and text metadata for nearly all of its mobile customers, roughly 109 million accounts, had been copied from a cloud data warehouse. The records covered a six-month window in 2022. No conversations were taken, and that fact has been used to soften the story ever since. It should not.</p>
 
 <h2>What was taken</h2>
 
@@ -148,19 +154,22 @@
   <li><strong>If your contacts are sensitive, adjust the channel rather than the number.</strong> End-to-end encrypted messaging that does not route through carrier records is the control that actually addresses this.</li>
   <li><strong>Set a port-out PIN.</strong> Separate risk, cheap fix, and relevant to every carrier breach.</li>
   <li><strong>For the March 2024 dataset, treat your old account passcode as public</strong> and make sure it is not reused anywhere else, <a href="/guides/strong-passwords-guide.html">the reuse problem in practical terms</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;ATT&quot;,&quot;breach_date&quot;:&quot;2024-07-12&quot;,&quot;match_year&quot;:true}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -199,8 +208,10 @@
       <h2>Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/snowflake-2024.html">Snowflake, 2024: 165 companies breached without anyone touching Snowflake</a></li>
+        <li><a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare, 2024: one login, and American healthcare stopped billing</a></li>
         <li><a href="/breaches/case-files/t-mobile-2021.html">T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers</a></li>
         <li><a href="/breaches/case-files/facebook-scrape-2021.html">Facebook, 2021: 533 million phone numbers that were never &quot;hacked&quot;</a></li>
+        <li><a href="/breaches/case-files/british-library-2023.html">The British Library, 2023: the ransom was refused and the catalogue stayed dark</a></li>
       </ul>
 
       <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
@@ -218,15 +229,15 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/free-osint-tool.html">Free OSINT tool</a></li><li><a href="/boost.html">Boost OSINT</a></li><li><a href="/browser.html">Browser OSINT</a></li><li><a href="/goal.html">Privacy goal</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/features">Features</a></li><li><a href="/privacy-audit">Privacy audit</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li><li><a href="/enterprise-osint-api">Enterprise API</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/directory.html">Site directory</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned.html">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -245,9 +256,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=1fcd6336d1"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

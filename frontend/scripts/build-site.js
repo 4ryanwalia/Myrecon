@@ -8,10 +8,13 @@ const scripts = [
   'build-seo-pages.js',
   'build-blog.js',
   'enhance-content-pages.js',
+  'build-discovery-pages.js',
+  'build-html-sitemap.js',
   'enhance-site-footer.js',
   'version-site-assets.js',
   'build-sitemap.js',
   'install-google-tag.js',
+  'install-adsense-tag.js',
 ];
 
 for (const script of scripts) {

@@ -47,13 +47,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css?v=6743ad80d4">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=2e36ee7372">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=7a7a010a5e">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Colonial Pipeline, 2021: one leaked password, and the fuel stopped","description":"A disused VPN account with no second factor let ransomware into the company that supplies nearly half the US East Coast's fuel. The pipeline stopped for six days.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/colonial-pipeline-2021.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Colonial Pipeline ransomware attack"},"wordCount":888}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Colonial Pipeline ransomware attack","item":"https://www.myrecon.xyz/breaches/case-files/colonial-pipeline-2021.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Colonial Pipeline ransomware attack","item":"https://www.myrecon.xyz/breaches/case-files/colonial-pipeline-2021.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Did hackers take control of the pipeline?","acceptedAnswer":{"@type":"Answer","text":"No. The ransomware hit the business IT network, including billing systems. Colonial shut the pipeline itself as a precaution, because it could not reliably bill for fuel it delivered and could not be certain the intrusion had not reached operational systems. The physical shutdown was a business and safety decision, not a hijacking."}},{"@type":"Question","name":"How did the attackers get in?","acceptedAnswer":{"@type":"Answer","text":"Through a virtual private network account that was no longer in active use and was not protected by multi-factor authentication. The password appeared in a batch of leaked credentials, suggesting it had been reused elsewhere and harvested from an unrelated breach. One dormant account, one reused password, no second factor."}},{"@type":"Question","name":"Did Colonial pay?","acceptedAnswer":{"@type":"Answer","text":"Yes, around $4.4 million in bitcoin, within hours. The decryption tool provided in return worked so slowly that the company largely restored from its own backups anyway. In June 2021 the US Department of Justice announced it had seized about $2.3 million of the payment."}},{"@type":"Question","name":"Why did petrol stations run dry if the pipeline restarted in six days?","acceptedAnswer":{"@type":"Answer","text":"Panic buying. The shortages across the south-eastern United States were driven mainly by consumers filling every container they could find, not by the volume of fuel lost. It is a useful reminder that the second-order effects of an incident can be larger than the incident."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
@@ -70,7 +68,9 @@
   </header>
   <main id="main" class="container">
     <article class="article breach-article cf-article">
-      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="/breaches/case-files/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">Colonial Pipeline, 2021: one leaked password, and the fuel stopped</span>
+      </nav>
 
       <header class="bx-head">
         <div>
@@ -90,7 +90,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Business systems and billing data · Personal data of a small number of individuals</p>
 
-<p class="lead">On 7 May 2021, a ransomware group encrypted the business systems of a company most Americans had never heard of. Within days, petrol stations across the south-eastern United States had bags over their pumps, airlines were rerouting to refuel, and the president was giving press conferences about fuel supply. The way in was a dormant VPN account with a reused password and no second factor.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>On 7 May 2021, a ransomware group encrypted the business systems of a company most Americans had never heard of. Within days, petrol stations across the south-eastern United States had bags over their pumps, airlines were rerouting to refuel, and the president was giving press conferences about fuel supply. The way in was a dormant VPN account with a reused password and no second factor.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>A legacy VPN account with no multi-factor authentication, using a password found in a breach dump</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>A $4.4 million ransom, of which about $2.3 million was later recovered by the FBI</p>
+<p>Reported scale: Operational shutdown; a limited number of personal records also taken.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">On 7 May 2021, a ransomware group encrypted the business systems of a company most Americans had never heard of. Within days, petrol stations across the south-eastern United States had bags over their pumps, airlines were rerouting to refuel, and the president was giving press conferences about fuel supply. The way in was a dormant VPN account with a reused password and no second factor.</p>
 
 <h2>What happened</h2>
 
@@ -145,19 +151,22 @@
   <li><strong>Check corporate email domains against breach corpora.</strong> Reused employee passwords are visible in public data long before they are used against you.</li>
   <li><strong>Decide the payment question before you need to answer it</strong>, in writing, with legal and executive input. Colonial's chief executive made a multi-million dollar decision in hours with no prepared position.</li>
   <li><strong>As an individual, the lesson is the same as always:</strong> the password you reused at work came from somewhere, <a href="/guides/strong-passwords-guide.html">how to stop that being true of you</a>.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -194,6 +203,8 @@
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
+        <li><a href="/breaches/case-files/facebook-scrape-2021.html">Facebook, 2021: 533 million phone numbers that were never &quot;hacked&quot;</a></li>
+        <li><a href="/breaches/case-files/mobikwik-2021.html">MobiKwik, 2021: the breach that was denied while people searched their own KYC files</a></li>
         <li><a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare, 2024: one login, and American healthcare stopped billing</a></li>
         <li><a href="/breaches/case-files/moveit-2023.html">MOVEit, 2023: one file transfer product, 2,700 organisations</a></li>
         <li><a href="/breaches/case-files/medibank-2022.html">Medibank, 2022: the company said no, and the data went up anyway</a></li>
@@ -214,15 +225,15 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/free-osint-tool.html">Free OSINT tool</a></li><li><a href="/boost.html">Boost OSINT</a></li><li><a href="/browser.html">Browser OSINT</a></li><li><a href="/goal.html">Privacy goal</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/features">Features</a></li><li><a href="/privacy-audit">Privacy audit</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li><li><a href="/enterprise-osint-api">Enterprise API</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/directory.html">Site directory</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned.html">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -241,9 +252,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=1fcd6336d1"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

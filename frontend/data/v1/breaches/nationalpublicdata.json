@@ -1,0 +1,100 @@
+{
+  "api_version": 1,
+  "generated": "2026-10-19",
+  "documentation": "https://www.myrecon.xyz/developers.html",
+  "licence": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": {
+    "required": true,
+    "source": "Have I Been Pwned",
+    "source_url": "https://haveibeenpwned.com/",
+    "distributor": "MyRecon",
+    "distributor_url": "https://www.myrecon.xyz",
+    "licence": "https://creativecommons.org/licenses/by/4.0/",
+    "notice": "Breach data originates from Have I Been Pwned and is licensed CC BY 4.0. If you publish it you must credit Have I Been Pwned. A link to https://www.myrecon.xyz/breaches/ is appreciated but not required by the licence."
+  },
+  "breach": {
+    "name": "NationalPublicData",
+    "title": "National Public Data",
+    "slug": "nationalpublicdata",
+    "url": "https://www.myrecon.xyz/breaches/nationalpublicdata.html",
+    "domain": null,
+    "breach_date": "2024-04-09",
+    "added_date": "2024-08-13T18:09:46Z",
+    "accounts": 133957569,
+    "data_classes": [
+      "Dates of birth",
+      "Email addresses",
+      "Genders",
+      "Government issued IDs",
+      "Names",
+      "Phone numbers",
+      "Physical addresses"
+    ],
+    "verified": false,
+    "sensitive": false,
+    "stealer_log": false,
+    "logo": null,
+    "severity": 77,
+    "band": "Severe",
+    "data_provider": null,
+    "summary": "In April 2024, a large trove of data made headlines as having exposed \"3 billion people\" due to a breach of the National Public Data background check service. The initial corpus of data released in the breach contained billions of rows of personal information, including US social security numbers. Further partial data sets were later released including extensive personal information and 134M…",
+    "story": {
+      "background": [
+        "In April 2024, a large trove of data made headlines as having exposed \"3 billion people\" due to a breach of the National Public Data background check service . The initial corpus of data released in the breach contained billions of rows of personal information, including US social security numbers.",
+        "Further partial data sets were later released including extensive personal information and 134M unique email addresses, although the origin and accuracy of the data remains in question. This breach has been flagged as \"unverified\" and a full description of the incident is in the link above."
+      ],
+      "how": [
+        "The published account does not explain the exact way the data was obtained."
+      ],
+      "motive": [],
+      "outcome": [
+        "133,957,569 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Dates of birth, Email addresses, Genders, Government issued IDs, Names, Phone numbers, Physical addresses."
+      ],
+      "editorial": []
+    },
+    "check_targets": [
+      {
+        "name": "NationalPublicData",
+        "breach_date": "2024-04-09"
+      }
+    ],
+    "fields": [
+      {
+        "name": "Government issued IDs",
+        "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+      },
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "Dates of birth",
+        "why": "One of the three things call centres ask to verify identity, and it never changes."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+      },
+      {
+        "name": "Genders",
+        "why": "Small on its own; useful to anyone assembling a fuller profile."
+      }
+    ],
+    "actions": [
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+    ],
+    "scale_line": "That is roughly everyone in Japan."
+  }
+}

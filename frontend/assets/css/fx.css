@@ -84,7 +84,7 @@ body { position: relative; isolation: isolate; }
 .fx-stat.fx-in .bar span { transform: scaleX(var(--fill, 1)); }
 
 /* FAQ open animation */
-.faq details[open] p { animation: fx-drop 0.3s ease; }
+.faq details[open] > p, .faq details.faq-more[open] > .faq-more-list { animation: fx-drop 0.3s ease; }
 @keyframes fx-drop { from { opacity: 0; transform: translateY(-6px); } }
 
 /* Phone mock rows appear one by one when scrolled in. */
@@ -376,6 +376,29 @@ a.vs-card:hover .go::after { transform: translateX(4px); }
 .live-found .section-label { display: flex; align-items: center; gap: 8px; }
 .live-found .card { animation: rise .3s ease both; }
 
+/* Running scan window and log, with cards arriving below it. */
+.results .loading.retro { padding: 0; text-align: left; border-radius: 0; border: 2px solid var(--border-strong); background: var(--surface-2); }
+.retro-title { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; background: var(--text); color: var(--bg); font: 700 .78rem/1.4 var(--mono); }
+.retro-screen { margin: 6px; padding: 14px; background: var(--bg); color: var(--accent); font: .8rem/1.7 var(--mono); }
+.retro-line { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.retro-log { min-height: 10em; max-height: 14em; margin: 10px 0; overflow: auto; color: var(--text-dim); }
+.retro-log > div { overflow-wrap: anywhere; }
+.retro-log .hit { color: var(--accent); }
+.retro-status { display: flex; justify-content: space-between; gap: 12px; margin: 6px 0; }
+.results .retro .progress { height: 15px; border-radius: 0; background: var(--surface-2); }
+.results .retro .progress > i { border-radius: 0; background: var(--accent); }
+.retro-caret::after { content: "_"; animation: fx-blink 1s steps(1) infinite; }
+
+/* Hidden guest cards use blurred shapes, never hidden account fields or links. */
+.card-locked { min-height: 168px; }
+.card-locked:hover { transform: none; }
+.locked-card-shape { filter: blur(5px); opacity: .55; user-select: none; pointer-events: none; }
+.locked-lines { flex: 1; margin-top: 12px; }
+.locked-lines i { display: block; height: 10px; margin: 12px 0; width: 80%; background: var(--text-mute); }
+.locked-lines i:nth-child(even) { width: 55%; }
+.locked-card-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: color-mix(in srgb, var(--surface) 35%, transparent); }
+@media (prefers-reduced-motion: reduce) { .retro-caret::after { animation: none; } }
+
 /* Result header */
 .results .results-bar h2 { font-size: 1.08rem; }
 .results .results-bar .hint { font-family: var(--mono); font-size: .76rem; padding: 3px 8px; border-radius: 6px; background: var(--surface-2); }
@@ -527,8 +550,60 @@ body.tool-mode .hero h1,
 body.tool-mode .hero .lead { display: none !important; }
 body.tool-mode .hero { padding-top: 22px; padding-bottom: 6px; min-height: 0; }
 body.tool-mode .hero-grid,
-body.tool-mode.home-page .hero-grid { grid-template-columns: minmax(0, 1fr) !important; max-width: 980px; margin-inline: auto; }
-body.tool-mode .results-section { max-width: 980px; }
+body.tool-mode.home-page .hero-grid { grid-template-columns: minmax(0, 1fr) !important; max-width: 1600px; margin-inline: auto; }
+body.tool-mode .results-section { max-width: 1600px; }
+body.home-page .hero-grid { max-width: 1600px; }
+body.home-page .hero-grid,
+body.tool-mode .results-section { padding-inline: clamp(20px, 3vw, 48px); }
+body.tool-mode .hero-copy:has(+ .hero-tool) { display: none; }
+body.home-page .hero-tool { width: 100%; max-width: none; margin: 0; }
+/* Keep the overview and tool on the same page grid. */
+@media screen {
+  body.home-page main > section.container,
+  body.home-page main > section > .container,
+  body.home-page #features > .container,
+  body.home-page #faq > .container,
+  body.home-page .nav-inner {
+    max-width: 1600px; padding-inline: clamp(20px, 3vw, 48px);
+  }
+  body.home-page #history-section,
+  body.home-page #saved-section { margin-top: 32px; padding-bottom: 32px; }
+}
+@media screen and (min-width: 1000px) {
+  body.home-page .hero-grid { grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr); column-gap: 24px; }
+  body.home-page .hero .orbit { justify-self: center; }
+  body.home-page .hero-tool {
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    gap: 12px; align-items: start; width: 100%; max-width: none;
+  }
+  body.home-page .hero-tool .tool-tabs {
+    grid-column: 1 / -1; margin: 0; width: 100%; display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  body.home-page .hero-tool .tab { justify-content: center; padding-inline: 5px; }
+  body.home-page .hero-tool #toolPanel { grid-column: 1 / -1; height: auto; margin-top: -12px; }
+  body.home-page .hero-tool .deep-search-entry,
+  body.home-page .hero-tool .privacy-disclosure,
+  body.home-page .hero-tool .tool-support { grid-column: 1 / -1; margin: 0; }
+  body.home-page .hero-tool .deep-search-entry { border-radius: 4px; }
+  body.home-page .hero-tool .tool-foot { grid-column: 1 / -1; margin: 0; }
+  body.tool-mode .email-overview {
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px;
+  }
+  body.tool-mode .email-overview-identity { border-left: 1px solid var(--border); padding-left: 28px; }
+  body.tool-mode .email-overview-identity > .section-label { margin-top: 0; }
+  body.tool-mode .results:has(> .email-overview) {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; align-items: start;
+  }
+  body.tool-mode .results:has(> .email-overview) > * { grid-column: 1 / -1; min-width: 0; }
+  body.tool-mode .results:has(> .email-overview) > .email-evidence-timeline { grid-column: 1; }
+  body.tool-mode .results:has(> .email-overview) > .email-breaches { grid-column: 2; }
+}
+.email-overview-evidence, .email-overview-identity { min-width: 0; overflow-wrap: anywhere; }
+.email-overview-evidence > .hint, .email-overview-identity > .hint { line-height: 1.6; margin: 12px 0; }
+@media screen and (max-width: 999px) {
+  .email-overview-identity { border-top: 1px solid var(--border); margin-top: 20px; padding-top: 4px; }
+}
 .tool-exit { display: none; }
 body.tool-mode .tool-exit { display: inline; }
 

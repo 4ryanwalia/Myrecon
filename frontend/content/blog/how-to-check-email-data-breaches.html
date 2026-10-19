@@ -1,0 +1,69 @@
+<!--
+{
+  "title": "How to Check if Your Email Was in a Data Breach | MyRecon",
+  "headline": "How to Check if Your Email Was Leaked in a Data Breach (And What to Do)",
+  "description": "Learn how to safely check if your email or password was in a data breach. Understand credential stuffing, k-anonymity, and 5 steps to secure your accounts.",
+  "category": "Breach Defense",
+  "datePublished": "2026-10-13",
+  "dateModified": "2026-10-13",
+  "faq": [
+    {
+      "question": "How do I know if my email address was in a data breach?",
+      "answer": "You can check your email on breach intelligence tools like MyRecon or Have I Been Pwned. These platforms cross-reference your email address against billions of publicly disclosed records from confirmed security incidents."
+    },
+    {
+      "question": "Is it safe to enter my email into a breach checker?",
+      "answer": "Yes, reputable breach checkers only compare your email address against publicly known incident metadata. They do not store your private passwords or sell your inquiry."
+    },
+    {
+      "question": "What should I do immediately if my email was breached?",
+      "answer": "First, change the password on the breached service and on any other account where you reused that password. Second, enable two-factor authentication (2FA) using an authenticator app. Third, check your inbox rules for unauthorized forwarding."
+    },
+    {
+      "question": "What is k-anonymity for password checking?",
+      "answer": "K-anonymity is a mathematical privacy method where only the first 5 characters of a SHA-1 password hash are sent to a server. The server returns all matching hashes, allowing your browser to confirm if your password was leaked locally without ever transmitting your actual password."
+    }
+  ]
+}
+-->
+<p class="lead">Billions of user accounts and personal records are exposed in commercial data breaches every year. When cybercriminals breach a database, they often leak email addresses, hashed or plaintext passwords, phone numbers, and physical addresses onto hacker forums and dark web markets.</p>
+
+<h2>What happens when a company suffers a data breach?</h2>
+<p>When an application or service experiences unauthorized database access, threat actors exfiltrate the stored user table. These stolen databases often circulate through several stages:</p>
+<ol>
+  <li><strong>Private Sale:</strong> Initially, the breach data is sold privately among criminal syndicates for targeted extortion or high-value account takeovers.</li>
+  <li><strong>Combo Lists & Credential Stuffing:</strong> Attackers extract email-and-password combinations ("combos") and use automated botnets to test those credentials across hundreds of banking, shopping, and streaming platforms.</li>
+  <li><strong>Public Disclosure & Leak:</strong> Eventually, the entire database is dumped on public forums or distributed via torrents, making it accessible to security researchers and breach intelligence repositories.</li>
+</ol>
+
+<h2>How to check if your email was compromised</h2>
+<p>You can quickly evaluate your email exposure using open breach intelligence databases:</p>
+<ul>
+  <li><strong>Use MyRecon's Email Tool:</strong> Enter your email into the <a href="/#tool">MyRecon lookup tool</a> to identify confirmed breaches associated with that address, along with specific exposed data classes (such as passwords, birthdates, or IP addresses).</li>
+  <li><strong>Check Have I Been Pwned:</strong> Query Troy Hunt's renowned service at <a href="/vs/have-i-been-pwned">Have I Been Pwned</a>, which indexes over 14 billion compromised records.</li>
+  <li><strong>Inspect Breach Case Files:</strong> Read detailed retrospective analyses of major historical breaches in our <a href="/breaches/">breach directory</a> and <a href="/breaches/case-files/">case files library</a>.</li>
+</ul>
+
+<h2>The dangers of credential stuffing</h2>
+<p>The single greatest threat resulting from a data breach is <strong>credential stuffing</strong>. Over 65% of internet users admit to reusing the same password or variations of it across multiple services. When an attacker acquires a working email and password combination from a breach of an obscure forum, they automatically script login attempts on Gmail, Amazon, PayPal, Netflix, and Apple ID.</p>
+<p>If you reused that password anywhere, attackers gain immediate unauthorized access without needing to breach the major provider directly.</p>
+
+<h2>How k-anonymity allows safe password checking</h2>
+<p>You should <em>never</em> type your actual password into a plain website form to check if it has been leaked. Legitimate services use a cryptographic technique called <strong>k-anonymity</strong>:</p>
+<ul>
+  <li>Your browser computes the SHA-1 hash of your password locally on your device (e.g. <code>2FD4E1C67A2D28FCED849EE1BB76E7391B93EB12</code>).</li>
+  <li>Only the first 5 characters of the hash (<code>2FD4E</code>) are sent over the network to the database.</li>
+  <li>The database responds with all hash suffixes that begin with those 5 characters (usually several hundred entries).</li>
+  <li>Your device locally checks whether your full hash is in that returned list. The server never sees your password or your complete hash.</li>
+</ul>
+
+<h2>5 immediate steps to take if your email was breached</h2>
+<ol>
+  <li><strong>Change the compromised password immediately:</strong> Generate a unique, random 16+ character password using a trusted password manager (such as Bitwarden, 1Password, or Apple Keychain).</li>
+  <li><strong>Update all accounts with reused passwords:</strong> Audit your password manager and replace any instance where that password or similar variations were utilized.</li>
+  <li><strong>Enable Two-Factor Authentication (2FA):</strong> Turn on 2FA across your essential accounts. Prioritize authenticator apps (like Aegis, Google Authenticator) or hardware security keys (YubiKey) over SMS verification, which is susceptible to <a href="/guides/sim-swap-attacks.html">SIM swapping attacks</a>.</li>
+  <li><strong>Review email forwarding rules:</strong> Sign into your email account and verify that no hidden forwarding filters or unauthorized recovery addresses have been created.</li>
+  <li><strong>Stay vigilant against targeted phishing:</strong> Breached personal details are routinely used to craft convincing phishing emails referencing real names and past purchases.</li>
+</ol>
+
+<div class="callout"><p><strong>Stay Ahead of Breaches:</strong> Run regular checks on your active email accounts using the <a href="/#tool">MyRecon email scanner</a> and learn more about protecting your accounts in our <a href="/guides/passkeys-explained.html">guide to passkeys</a>.</p></div>

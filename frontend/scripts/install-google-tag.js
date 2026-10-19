@@ -31,6 +31,7 @@ function visit(directory) {
     if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
     const file = path.join(directory, entry.name);
     const html = fs.readFileSync(file, 'utf8');
+    if (/<meta\b[^>]*http-equiv=["']refresh["']/i.test(html)) continue;
     const head = /<head\b[^>]*>/i.exec(html);
     if (!head) continue;
     checked++;
@@ -43,8 +44,21 @@ function visit(directory) {
       continue;
     }
     const insertion = head.index + head[0].length;
-    fs.writeFileSync(file, html.slice(0, insertion) + '\n' + TAG + html.slice(insertion), 'utf8');
-    updated++;
+    const nextHtml = html.slice(0, insertion) + '\n' + TAG + html.slice(insertion);
+    let written = false;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        fs.writeFileSync(file, nextHtml, 'utf8');
+        written = true;
+        break;
+      } catch (err) {
+        if (attempt === 4) throw err;
+        const wait = 100 * (attempt + 1);
+        const start = Date.now();
+        while (Date.now() - start < wait) {}
+      }
+    }
+    if (written) updated++;
   }
 }
 

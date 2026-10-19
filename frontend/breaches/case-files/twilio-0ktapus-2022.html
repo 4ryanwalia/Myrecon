@@ -47,13 +47,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css?v=6743ad80d4">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=2e36ee7372">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=7a7a010a5e">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"0ktapus, 2022: one text message, one hundred and thirty companies","description":"A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies. Cloudflare was targeted with the same messages and lost nothing.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html","articleSection":"Case Files","about":{"@type":"Thing","name":"0ktapus phishing campaign"},"wordCount":927}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"0ktapus phishing campaign","item":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"0ktapus phishing campaign","item":"https://www.myrecon.xyz/breaches/case-files/twilio-0ktapus-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"If they had one-time codes, is two-factor authentication useless?","acceptedAnswer":{"@type":"Answer","text":"No, the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one."}},{"@type":"Question","name":"What actually happened to Twilio customers?","acceptedAnswer":{"@type":"Answer","text":"Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them."}},{"@type":"Question","name":"Why is it called 0ktapus?","acceptedAnswer":{"@type":"Answer","text":"Group-IB, which analysed the campaign, named it after the phishing pages themselves, most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises."}},{"@type":"Question","name":"How did attackers know which employees to text?","acceptedAnswer":{"@type":"Answer","text":"Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
@@ -70,7 +68,9 @@
   </header>
   <main id="main" class="container">
     <article class="article breach-article cf-article">
-      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="/breaches/case-files/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">0ktapus, 2022: one text message, one hundred and thirty companies</span>
+      </nav>
 
       <header class="bx-head">
         <div>
@@ -90,7 +90,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Corporate credentials · One-time passcodes · Customer support tooling access · Phone numbers of 1,900 Signal users</p>
 
-<p class="lead">In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>SMS phishing to employees, directing them to convincing fake single sign-on pages that relayed credentials and one-time codes in real time</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Not disclosed; downstream compromises at Twilio, Signal, DoorDash, Mailchimp and others</p>
+<p>Reported scale: ~9,900 accounts and ~5,400 one-time codes captured across 130+ organisations.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p>
 
 <h2>What happened</h2>
 
@@ -140,19 +146,22 @@
   <li><strong>Treat any login page you arrived at from a message as hostile.</strong> Not because you will spot the fake, the people in this case did not, but because navigating there yourself removes the attack entirely.</li>
   <li><strong>A code you were asked for is more dangerous than a password you volunteered.</strong> Legitimate services do not phone or text asking you to read a code back. That request is, on its own, sufficient evidence of an attack.</li>
   <li><strong>Assume your work phone number is known.</strong> It leaks from directories, breaches and conference lists, and it is the delivery channel for this entire class of attack.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -190,9 +199,11 @@
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
+        <li><a href="/breaches/case-files/twitter-2022.html">Twitter, 2022: an API that confirmed which account owned which email</a></li>
+        <li><a href="/breaches/case-files/t-mobile-2021.html">T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers</a></li>
         <li><a href="/breaches/case-files/lastpass-2022.html">LastPass, 2022: the vaults were stolen, and then attacked offline</a></li>
         <li><a href="/breaches/case-files/mgm-resorts-2023.html">MGM Resorts, 2023: a ten-minute phone call to the help desk</a></li>
-        <li><a href="/breaches/case-files/twitter-2022.html">Twitter, 2022: an API that confirmed which account owned which email</a></li>
+        <li><a href="/breaches/case-files/colonial-pipeline-2021.html">Colonial Pipeline, 2021: one leaked password, and the fuel stopped</a></li>
       </ul>
 
       <p class="bx-method">Case files are written from the public record: regulatory findings, court filings, company disclosures and contemporaneous reporting, cited above. Figures are the ones the organisation or its regulator finally settled on, which is often not the number first reported, where that differs, the page says so. Disputed accounts are marked as disputed rather than resolved in either direction.</p>
@@ -210,15 +221,15 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/free-osint-tool.html">Free OSINT tool</a></li><li><a href="/boost.html">Boost OSINT</a></li><li><a href="/browser.html">Browser OSINT</a></li><li><a href="/goal.html">Privacy goal</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/features">Features</a></li><li><a href="/privacy-audit">Privacy audit</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li><li><a href="/enterprise-osint-api">Enterprise API</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/directory.html">Site directory</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned.html">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -237,9 +248,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=1fcd6336d1"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

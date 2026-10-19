@@ -42,7 +42,24 @@ function readArticles() {
       if (!body || !/<h2\b/i.test(body)) throw new Error(`${file}: article needs body text and section headings`);
       return { ...meta, slug, body, url: `${SITE}/blog/${slug}.html` };
     })
-    .sort((a, b) => a.headline.localeCompare(b.headline));
+    .sort((a, b) => b.datePublished.localeCompare(a.datePublished) || a.headline.localeCompare(b.headline));
+}
+
+function faqSchema(article) {
+  if (!article.faq || !Array.isArray(article.faq) || !article.faq.length) return "";
+  const value = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: article.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+  return `  <script type="application/ld+json">${JSON.stringify(value).replace(/</g, "\\u003c")}</script>\n`;
 }
 
 function schema(article) {
@@ -76,9 +93,10 @@ function breadcrumb(article) {
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 
-function shellHead({ title, description, url, article, crumbs }) {
+function shellHead({ title, description, keywords, url, article, crumbs }) {
   const ogType = article ? "article" : "website";
   const blogCurrent = article ? "" : ' aria-current="page"';
+  const kw = keywords || (article ? `${article.headline.toLowerCase()}, ${article.category.toLowerCase()}, myrecon blog, osint guide, digital footprint` : "myrecon blog, online privacy articles, digital footprint cleanup, osint guides, account deletion");
   return `<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -99,6 +117,7 @@ function shellHead({ title, description, url, article, crumbs }) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
+  <meta name="keywords" content="${esc(kw)}">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${esc(url)}">
@@ -126,13 +145,13 @@ function shellHead({ title, description, url, article, crumbs }) {
   <link rel="stylesheet" href="/assets/css/fx.css?v=10">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-${article ? `  <script type="application/ld+json">${schema(article)}</script>\n  <script type="application/ld+json">${breadcrumb(article)}</script>\n` : `  <script type="application/ld+json">${crumbs}</script>\n`}</head>
+${article ? `  <script type="application/ld+json">${schema(article)}</script>\n  <script type="application/ld+json">${breadcrumb(article)}</script>\n${faqSchema(article)}` : `  <script type="application/ld+json">${crumbs}</script>\n`}</head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=2" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/"${blogCurrent}>Blog</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/"${blogCurrent}>Blog</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -155,20 +174,43 @@ function shellFoot() {
 `;
 }
 
-function articlePage(article) {
+function articlePage(article, articles = [], idx = 0) {
   const displayDate = new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
     day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
   });
+  const related = [];
+  for (let offset = 1; offset < articles.length && related.length < 4; offset++) {
+    related.push(articles[(idx + offset) % articles.length]);
+  }
+  const relatedHtml = related.length
+    ? `\n      <section style="margin-top:28px"><h2>Related articles</h2><ul>${related.map((r) => `<li><a href="/blog/${r.slug}.html">${esc(r.headline)}</a></li>`).join("")}</ul></section>`
+    : "";
   return `${shellHead({ title: article.title, description: article.description, url: article.url, article })}
   <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:16px 0 20px;color:var(--text-dim)">
+      <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <a href="/blog/" style="color:var(--text-dim);text-decoration:none">Blog</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <span style="color:var(--text);font-weight:500" aria-current="page">${esc(article.headline)}</span>
+    </nav>
     <article class="article">
       <span class="kicker">${esc(article.category)}</span>
       <h1>${esc(article.headline)}</h1>
       <p class="meta"><time datetime="${esc(article.datePublished)}">${displayDate}</time> · MyRecon editorial</p>
       ${article.body}
+      <div class="ad-blog-container" style="margin:28px 0;text-align:center">
+        <ins class="adsbygoogle"
+             style="display:block;text-align:center"
+             data-ad-layout="in-article"
+             data-ad-format="fluid"
+             data-ad-client="ca-pub-6109270472398539"
+             data-ad-slot="auto"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
       <div class="callout">
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
-      </div>
+      </div>${relatedHtml}
       <p><a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
     </article>
   </main>
@@ -177,7 +219,7 @@ ${shellFoot()}`;
 
 function indexPage(articles) {
   const url = `${SITE}/blog/`;
-  const description = "Practical MyRecon articles on online privacy, public-profile self-audits, account deletion and safer username habits. Written for people managing their own digital footprint.";
+  const description = "Practical articles on online privacy, public profile self-audits, account deletion, and safer username habits for managing your own digital footprint.";
   const collection = JSON.stringify({
     "@context": "https://schema.org", "@type": "CollectionPage", name: "MyRecon Blog: Privacy and Account Cleanup",
     description, url, isPartOf: { "@id": `${SITE}/#website` }, publisher: { "@id": `${SITE}/#organization` },
@@ -188,6 +230,11 @@ function indexPage(articles) {
   }).replace(/</g, "\\u003c");
   const html = `${shellHead({ title: "MyRecon Blog: Privacy, Instagram and Account Cleanup", description, url, crumbs: collection })}
   <main id="main" class="container prose" style="padding-top:44px;padding-bottom:56px">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:0 0 20px;color:var(--text-dim)">
+      <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <span style="color:var(--text);font-weight:500" aria-current="page">Blog</span>
+    </nav>
     <span class="kicker" style="color:var(--accent);font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase">MyRecon Blog</span>
     <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin:8px 0 10px">Privacy, public profiles and account cleanup</h1>
     <p class="sub" style="max-width:70ch">Practical guides for understanding your own public footprint, protecting accounts you control, and closing profiles you no longer need. These articles focus on consent-based self-audits and verifiable public information.</p>
@@ -195,6 +242,15 @@ function indexPage(articles) {
       <p><strong>Start with your own footprint.</strong> MyRecon's username search checks public profile pages; it does not reveal private content or prove identity. For cleanup help, our service works only on your own footprint or one you are formally authorised to manage.</p>
       <p><a href="/#tool">Run a username self-audit</a> · <a href="/services.html">Learn about footprint removal support</a> · <a href="/vs/">Compare MyRecon with other tools</a></p>
     </section>
+    <div class="ad-blog-container" style="margin:24px 0;text-align:center">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6109270472398539"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
     <script type="application/ld+json">${list}</script>
     <div class="guide-grid">
 ${articles.map((article) => `      <a class="guide-card" href="/blog/${article.slug}.html"><span class="kicker">${esc(article.category)}</span><h2>${esc(article.headline)}</h2><p>${esc(article.description)}</p><span class="read">Read article →</span></a>`).join("\n")}
@@ -216,8 +272,26 @@ function main() {
   for (const file of fs.readdirSync(OUT)) {
     if (file.endsWith(".html") && !expected.has(file)) fs.unlinkSync(path.join(OUT, file));
   }
-  for (const article of articles) fs.writeFileSync(path.join(OUT, `${article.slug}.html`), articlePage(article), "utf8");
-  fs.writeFileSync(path.join(OUT, "index.html"), indexPage(articles), "utf8");
+  function writeSafe(filePath, content) {
+    if (fs.existsSync(filePath)) {
+      try {
+        if (fs.readFileSync(filePath, "utf8") === content) return;
+      } catch (_) {}
+    }
+    for (let attempt = 0; attempt < 10; attempt++) {
+      try {
+        fs.writeFileSync(filePath, content, "utf8");
+        return;
+      } catch (err) {
+        if (attempt === 9) throw err;
+        const wait = 200 * (attempt + 1);
+        const start = Date.now();
+        while (Date.now() - start < wait) {}
+      }
+    }
+  }
+  articles.forEach((article, idx) => writeSafe(path.join(OUT, `${article.slug}.html`), articlePage(article, articles, idx)));
+  writeSafe(path.join(OUT, "index.html"), indexPage(articles));
   console.log(`[blog] ${articles.length} original articles and /blog/ index written`);
 }
 

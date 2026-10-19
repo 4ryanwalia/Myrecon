@@ -34,9 +34,19 @@ const ENDPOINT = "https://api.indexnow.org/indexnow";
 const KEY = "ed34c84a1c19af372b78c1a66d636aaa";
 
 const KEY_FILE = path.join(__dirname, "..", `${KEY}.txt`);
+const SITEMAP_FILE = path.join(__dirname, "..", "sitemap.xml");
+
+function loadSitemapUrls() {
+  if (!fs.existsSync(SITEMAP_FILE)) return [];
+  const xml = fs.readFileSync(SITEMAP_FILE, "utf8");
+  return [...xml.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)].map((m) => m[1].trim());
+}
 
 async function main() {
-  const urls = process.argv.slice(2).filter((u) => u.startsWith("https://"));
+  const args = process.argv.slice(2);
+  const fromSitemap = args.includes("--sitemap") ? loadSitemapUrls() : [];
+  const directUrls = args.filter((u) => u.startsWith("https://"));
+  const urls = [...new Set([...fromSitemap, ...directUrls])];
 
   if (!fs.existsSync(KEY_FILE)) {
     console.error(`[indexnow] key file missing: ${KEY_FILE}`);

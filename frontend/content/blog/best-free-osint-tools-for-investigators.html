@@ -1,0 +1,99 @@
+<!--
+{
+  "title": "Best Free OSINT Tools for Investigators (2026) | MyRecon",
+  "headline": "The Best Free OSINT Tools for Security Researchers and Digital Footprint Audits",
+  "description": "Discover the top free OSINT tools for username lookup, breach intelligence, domain analysis, and metadata extraction. Strengths, limits, and best practices.",
+  "category": "OSINT Tools",
+  "datePublished": "2026-10-14",
+  "dateModified": "2026-10-14",
+  "faq": [
+    {
+      "question": "What is the best free OSINT tool for username search?",
+      "answer": "MyRecon offers the fastest browser-based workflow across 500+ platforms with evidence-backed labels. For command-line terminal power users, Sherlock, Maigret, and Blackbird are the industry-standard open-source CLI tools."
+    },
+    {
+      "question": "Are OSINT tools safe and legal to use?",
+      "answer": "Yes. Legitimate OSINT tools query only publicly accessible web endpoints and government or domain registries. They do not hack into accounts, exploit software vulnerabilities, or decrypt private information."
+    },
+    {
+      "question": "What tools can check if an email was involved in a data breach?",
+      "answer": "Have I Been Pwned is the gold standard for breach notification. MyRecon integrates breach intelligence and credential exposure checks directly alongside username and DNS investigations."
+    },
+    {
+      "question": "Can I use OSINT tools on a mobile phone?",
+      "answer": "Yes. MyRecon is accessible directly in any mobile web browser and provides a dedicated Android application designed for mobile username sweeps and k-anonymity password exposure checks."
+    }
+  ]
+}
+-->
+<p class="lead">Open-Source Intelligence (OSINT) has transformed cybersecurity, threat intelligence, and digital investigative journalism. Whether you are conducting corporate due diligence or securing your personal footprint, having the right toolkit makes all the difference. Here is our curated guide to the best free OSINT tools available in 2026.</p>
+
+<h2>1. Username &amp; Social Media Search Tools</h2>
+<p>Finding where an online identity lives across the web is often step zero of an investigation. Here are the leading options for handle enumeration:</p>
+
+<h3>MyRecon (Browser &amp; API)</h3>
+<p><strong>Best for:</strong> Fast, evidence-aware browser searches with zero setup.</p>
+<p><a href="/#tool">MyRecon</a> searches across 500+ public platforms simultaneously. Unlike tools that blindly assume an HTTP 200 response proves an account exists, MyRecon evaluates server responses against synthetic control tests to eliminate false positives. Results are labeled <code>found</code>, <code>not_found</code>, or <code>unknown</code> (such as when rate limits or login gates prevent verification).</p>
+<ul>
+  <li><strong>Pros:</strong> Runs instantly in the browser, provides JSON/CSV export, integrates breach and domain data in a single tab.</li>
+  <li><strong>Cons:</strong> Focuses on supported public web checks rather than deep automated network graph clustering.</li>
+</ul>
+
+<h3>Sherlock &amp; Maigret (Python CLI)</h3>
+<p><strong>Best for:</strong> Local script automation and heavy terminal users.</p>
+<p>Sherlock is the pioneering open-source Python tool for hunting usernames across social networks. Maigret extends Sherlock’s logic by extracting profile names, bio links, and avatar hashes from returned HTML pages.</p>
+<ul>
+  <li><strong>Pros:</strong> Completely local execution, highly customizable platform files, deep community support.</li>
+  <li><strong>Cons:</strong> Requires Python environment setup, prone to IP rate-limiting without proxies, requires manual false-positive triage.</li>
+</ul>
+<p>See our full breakdown: <a href="/vs/sherlock.html">MyRecon vs Sherlock</a> and <a href="/vs/maigret.html">MyRecon vs Maigret</a>.</p>
+
+<h2>2. Breach Intelligence &amp; Credential Exposure</h2>
+<p>Compromised credentials from past corporate data leaks are the primary attack vector for account takeovers. These tools verify breach exposure:</p>
+
+<h3>Have I Been Pwned (HIBP)</h3>
+<p>Created by security researcher Troy Hunt, HIBP is the world's most trusted archive of compromised email addresses. It allows individuals and corporate administrators to monitor breach exposure across hundreds of historical corporate leaks.</p>
+
+<h3>Pwned Passwords (k-Anonymity)</h3>
+<p>Checks whether a password has appeared in known data dumps without exposing the password itself. By hashing the password with SHA-1 and sending only the first 5 characters (a mathematical principle called <em>k-anonymity</em>), your secret never leaves your computer.</p>
+<p>Read more: <a href="/blog/how-to-check-email-data-breaches.html">How to Check Email Data Breaches Safely</a>.</p>
+
+<h2>3. Domain, DNS &amp; Network Infrastructure</h2>
+<p>Investigating the infrastructure behind a domain name reveals hosting providers, mail servers, and spoofing vulnerabilities:</p>
+<ul>
+  <li><strong>RDAP / WHOIS:</strong> Registration Data Access Protocol (RDAP) provides standardized JSON access to domain registrar and registry details.</li>
+  <li><strong>DNS over HTTPS (DoH):</strong> Resolves A, AAAA, MX, TXT, and CNAME records with cryptographic integrity.</li>
+  <li><strong>Email Security Evaluators:</strong> Checks whether a domain has configured SPF (Sender Policy Framework), DKIM, and DMARC policies to prevent spoofed phishing attacks from impersonating its name. You can run all of these directly using the <a href="/#tool=domain">MyRecon Domain Tool</a>.</li>
+</ul>
+
+<h2>4. Visual Intelligence &amp; Image Verification</h2>
+<p>Determining whether a photo is genuine, stolen, or generated by AI is critical when investigating online personas:</p>
+<ul>
+  <li><strong>Google Lens &amp; Yandex Visual:</strong> Outstanding reverse image search engines for recognizing faces, landmarks, and identical product photos.</li>
+  <li><strong>FotoForensics:</strong> Applies Error Level Analysis (ELA) to identify manipulated pixels and edited text in image files.</li>
+  <li><strong>ExifTool:</strong> An open-source command-line tool that extracts camera metadata, GPS location coordinates, and creation timestamps from unaltered photographs.</li>
+</ul>
+
+<h2>Comparison Matrix: Choosing the Right OSINT Tool</h2>
+<div class="legal-table-wrap">
+  <table>
+    <thead>
+      <tr><th>Tool</th><th>Primary Purpose</th><th>Interface</th><th>Cost</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>MyRecon</strong></td><td>Username, Breach, DNS, IP</td><td>Web, CLI, Android</td><td>Free / Low Cost</td></tr>
+      <tr><td><strong>Sherlock</strong></td><td>Username hunting</td><td>Python CLI</td><td>100% Free Open Source</td></tr>
+      <tr><td><strong>Have I Been Pwned</strong></td><td>Breach notifications</td><td>Web, REST API</td><td>Free for personal use</td></tr>
+      <tr><td><strong>ExifTool</strong></td><td>File metadata analysis</td><td>Command Line</td><td>Free Open Source</td></tr>
+      <tr><td><strong>Maltego</strong></td><td>Graph link analysis</td><td>Desktop Application</td><td>Freemium / Commercial</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Ethical Guidelines for OSINT Practitioners</h2>
+<p>Powerful tools come with serious responsibility. Always remember:</p>
+<ol>
+  <li><strong>Operate within legal jurisdiction:</strong> Only inspect publicly accessible endpoints and avoid unauthorized penetration testing.</li>
+  <li><strong>Never act on uncorroborated leads:</strong> Always verify candidate data with multiple independent sources.</li>
+  <li><strong>Protect privacy:</strong> Safely discard investigation data when an audit is complete.</li>
+</ol>

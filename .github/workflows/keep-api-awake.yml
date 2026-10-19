@@ -12,11 +12,10 @@
 # WHAT THIS DOES NOT GUARANTEE
 # GitHub runs scheduled workflows on a best-effort queue. Runs are routinely
 # late by several minutes and are dropped outright when the platform is busy,
-# so a 10-minute cron does NOT guarantee a ping inside every 15-minute window.
-# It keeps the service warm the large majority of the time, which is the
-# realistic ceiling for a free, in-repo solution. For a hard guarantee, point
-# an external uptime monitor at the same URL on a 5-minute interval and treat
-# this workflow as the backup.
+# so even a 5-minute cron does NOT guarantee a ping inside every 15-minute window.
+# Observed on 2026-10-18: the previous 10-minute schedule had 2-4 hour gaps.
+# Use an external uptime monitor at the same URL on a 5-minute interval;
+# this workflow is only a best-effort backup, not continuous uptime coverage.
 #
 # GitHub also disables scheduled workflows in a repository that has gone 60
 # days without a commit. This repo is active, but if it ever goes quiet, the
@@ -32,9 +31,8 @@ name: Keep API Awake
 
 on:
   schedule:
-    # Every 10 minutes, leaving 5 minutes of slack against Render's 15-minute
-    # idle timeout for the queue delay described above.
-    - cron: "*/10 * * * *"
+    # Every 5 minutes, offset from the busy start of each hour.
+    - cron: "3-58/5 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -63,7 +61,7 @@ jobs:
           set -uo pipefail
 
           url="${API_BASE%/}/api/health"
-          echo "Pinging $url"
+          echo "Pinging $url at $(date -u +%FT%TZ)"
 
           # Three attempts, because the FIRST request after a spin-down is the
           # one that pays the cold start and can exceed a short timeout or be
@@ -72,21 +70,25 @@ jobs:
           # is doing its job.
           for attempt in 1 2 3; do
             code=$(curl -sS -o /tmp/health.json -w '%{http_code}' \
-                        --max-time 90 "$url" 2>/tmp/curl.err || echo "000")
+                        --connect-timeout 15 --max-time 90 \
+                        -H 'Cache-Control: no-cache' \
+                        -A 'MyRecon-Health-Monitor/1.0' \
+                        "$url" 2>/tmp/curl.err) || code="000"
 
-            if [ "$code" = "200" ]; then
-              echo "Attempt $attempt: HTTP 200"
-              head -c 400 /tmp/health.json; echo
+            if [ "$code" = "200" ] && python3 -c 'import json; d=json.load(open("/tmp/health.json")); assert d.get("status") == "ok" and d.get("service", {}).get("app") == "MyRecon"' 2>/tmp/health-validation.err; then
+              echo "Attempt $attempt: HTTP 200, MyRecon healthy at $(date -u +%FT%TZ)"
               exit 0
             fi
 
             echo "Attempt $attempt: HTTP $code"
             [ -s /tmp/curl.err ] && sed 's/^/  curl: /' /tmp/curl.err
+            if [ "$code" = "200" ]; then
+              echo "Response was not valid MyRecon health JSON."
+            fi
             [ "$attempt" -lt 3 ] && sleep 20
           done
 
-          # All three failed, so this is a real outage rather than a cold
-          # start. Failing the job is what turns this into a free uptime
-          # alert — GitHub emails on the transition from passing to failing.
-          echo "::error::$url did not return 200 after 3 attempts."
+          # This can be an outage, prolonged cold start, or upstream throttling.
+          # A failed run makes the problem visible in Actions notifications.
+          echo "::error::$url did not return healthy MyRecon JSON after 3 attempts."
           exit 1

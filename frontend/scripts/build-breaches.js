@@ -32,6 +32,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { breachStory, unknownMotive } = require('./breach-story');
 
 const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "breaches");
@@ -322,8 +323,10 @@ function select(all) {
   // curation applies to the back catalogue, not to the news.
   const fresh = window.filter((b) => (b.AddedDate || "").slice(0, 10) >= TRACK_ADDED_SINCE);
 
+  const withEditorial = all.filter((b) => !b.IsFabricated && !b.IsRetired && readEditorial(b.Name));
+
   const byName = new Map();
-  [...named, ...aggregate, ...fresh].forEach((b) => byName.set(b.Name, b));
+  [...named, ...aggregate, ...fresh, ...withEditorial].forEach((b) => byName.set(b.Name, b));
   return [...byName.values()].sort((a, b) => (b.BreachDate || "").localeCompare(a.BreachDate || ""));
 }
 
@@ -491,8 +494,6 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <link rel="stylesheet" href="/assets/css/styles.css?v=16">
   <link rel="stylesheet" href="/assets/css/fx.css?v=10">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=4">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
 ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n` : ""}${opts.extraLd ? `  <script type="application/ld+json">${opts.extraLd}</script>\n` : ""}  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="${SITE}/breaches/feed.xml">
 </head>
 <body>
@@ -517,7 +518,7 @@ const FOOT = `
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=10"></script>
   <script src="/assets/js/app.js?v=23"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/breach-check.js?v=3"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=8" defer></script>
 </body>
@@ -533,6 +534,8 @@ function logoFor(b) {
 }
 
 function article(b, editorial, siblings) {
+  const story = breachStory(b, editorial);
+  const storyParagraphs = values => values.map(value => `<p>${esc(value)}</p>`).join('\n');
   const sev = severity(b);
   const url = `${SITE}/breaches/${slug(b.Name)}.html`;
   const logo = logoFor(b);
@@ -558,7 +561,7 @@ function article(b, editorial, siblings) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "MyRecon", item: SITE },
+      { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
       { "@type": "ListItem", position: 2, name: "The Breach Files", item: `${SITE}/breaches/` },
       { "@type": "ListItem", position: 3, name: b.Title, item: url },
     ],
@@ -616,7 +619,9 @@ function article(b, editorial, siblings) {
     }) +
 `  <main id="main" class="container">
     <article class="article breach-article">
-      <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(b.Title)}</span>
+      </nav>
 
       <header class="bx-head">
         ${logo ? `<img class="bx-logo" src="${esc(logo)}" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">` : ""}
@@ -638,34 +643,33 @@ function article(b, editorial, siblings) {
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
-      <form class="bx-check" data-breach-check>
-        <label for="bxEmail">Was your address in this breach?</label>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav>
+      <form class="bx-check" data-breach-check data-targets="${esc(JSON.stringify([{name: b.Name, breach_date: b.BreachDate}]))}">
+        <h2>Were you part of this breach?</h2>
+        <label for="bxEmail">Check your email for ${esc(b.Title)}</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="bxEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="bxEmailNote">Checked against this breach and every other on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="bxEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Provider coverage can be incomplete.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
 ${editorial ? `      <section class="bx-editorial">
         <span class="bx-byline">MyRecon's take</span>
 ${editorial}
       </section>\n` : ""}
-      <h2>What happened</h2>
+      <h2 id="story">The story behind the breach</h2>
       <div class="bx-source">
-        <p>${sanitise(b.Description)}</p>
+        ${storyParagraphs(story.background)}
         <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#${esc(b.Name)}" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>.${b.Attribution ? ` Data provided to HIBP by ${esc(b.Attribution)}.` : ""}</p>
       </div>
 ${b.DisclosureUrl ? `      <p><a class="btn btn-ghost btn-sm" href="${esc(b.DisclosureUrl)}" target="_blank" rel="noopener nofollow">Read the original disclosure ↗</a></p>\n` : ""}
-      <h2>Who was behind it</h2>
-      <p>No party has been publicly confirmed as responsible, and this page will not name one. Most breaches are never formally attributed: data surfaces on a forum or inside a combined dump long after the intrusion, and the trail back to a specific actor is rarely made public. Where a group has claimed responsibility it is usually named in the account above, that claim is theirs, not a finding of ours.${
-        b.IsStealerLog
-          ? " These records came from information-stealing malware on victims' own machines rather than from one company's servers, so the exposure follows the person, not the site."
-          : b.IsSpamList
-            ? " This entry is a marketing list rather than a break-in: the data was aggregated and traded, which is legal in more places than most people assume."
-            : ""
-      }</p>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2>${storyParagraphs(story.how)}</section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2>${storyParagraphs(story.motive.length ? story.motive : [unknownMotive])}<p class="bx-check-note">Reported demands or attempts to sell data describe what happened, rather than prove every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2>${storyParagraphs(story.outcome)}</section>
 
       <h2>What was exposed, and why it matters</h2>
       <ul class="bx-classes">
@@ -690,7 +694,7 @@ ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
       <h2>Questions people ask about this breach</h2>
       <div class="bx-faq">
         <h3>Was my email address in the ${esc(b.Title)} breach?</h3>
-        <p>Enter it in the box at the top of this page. MyRecon checks it against this breach and every other one on record, and the address is never stored.</p>
+        <p>Use the email box on this page. The result applies only to this incident. If the provider does not cover this breach, we say so. A missing match does not prove you were unaffected.</p>
 
         <h3>What data was leaked in the ${esc(b.Title)} breach?</h3>
         <p>${classes.length ? esc(classes.map((c) => c.name.toLowerCase()).join(", ")) + "." : "No field list has been published for this breach."} ${classes.length ? "Each one is explained above, along with what it means for the person it belongs to." : ""}</p>
@@ -788,7 +792,7 @@ function index(items) {
            rather than buried in the footer, because a reader who wants the
            story of a breach will not find it in a record. -->
       <aside class="bx-offer">
-        <h3>Case Files: how the breaches that mattered actually happened</h3>
+        <h2>Case Files: how the breaches that mattered actually happened</h2>
         <p>In-depth write-ups of the landmark incidents, Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
         <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a></p>
       </aside>
@@ -799,7 +803,7 @@ function index(items) {
            their own site; a reader who only wanted to look something up
            scrolls straight past an aside. -->
       <aside class="bx-offer">
-        <h3>Building something? Take this data</h3>
+        <h2>Building something? Take this data</h2>
         <p>The whole archive is published as versioned JSON, no account, no API key, no rate limit, CORS enabled and rebuilt daily. There is a drop-in embed widget too, if you want a live breach list on your own page without writing the rendering. Free under CC BY 4.0, with credit to Have I Been Pwned.</p>
         <p><a class="btn btn-sm" href="/developers.html">Read the API documentation →</a></p>
       </aside>
@@ -971,6 +975,8 @@ async function main() {
         // Who supplied the records to HIBP, a requested credit, not blame.
         data_provider: b.Attribution || null,
         summary: excerpt(sanitise(b.Description).replace(/<[^>]*>/g, ""), 400),
+        story: breachStory(b, readEditorial(b.Name)),
+        check_targets: [{ name: b.Name, breach_date: b.BreachDate }],
         // The article's analysis, so the app can show it without keeping its
         // own copy of DATA_CLASSES and actions() that would drift from this
         // one. Fields are ordered most damaging first, the order a reader on

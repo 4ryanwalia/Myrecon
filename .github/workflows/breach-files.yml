@@ -52,7 +52,10 @@ jobs:
         run: |
           node scripts/build-breaches.js
           node scripts/build-blog.js
+          node scripts/enhance-content-pages.js
           node scripts/enhance-site-footer.js
+          node scripts/install-google-tag.js
+          node scripts/install-adsense-tag.js
           node scripts/version-site-assets.js
           node scripts/build-sitemap.js
 

@@ -107,18 +107,23 @@
     const saved = stored === "light" || stored === "dark" ? stored : null;
     const defaultTheme = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
     applyTheme(saved || defaultTheme);
-    $("#themeToggle")?.addEventListener("click", () => {
-      const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      storageSet(THEME_KEY, next);
-      applyTheme(next);
-    });
+    const btn = $("#themeToggle");
+    if (btn && !btn.dataset.themeBound) {
+      btn.dataset.themeBound = "1";
+      btn.addEventListener("click", () => {
+        const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        storageSet(THEME_KEY, next);
+        applyTheme(next);
+      });
+    }
   }
 
   // ---------------------------------------------------------------- nav
   function initNav() {
     const btn = $("#navToggle");
     const links = $("#navLinks");
-    if (!btn || !links) return;
+    if (!btn || !links || btn.dataset.navBound) return;
+    btn.dataset.navBound = "1";
     // The button showed and hid the menu but never said so: no aria-expanded,
     // so a screen reader announced the same thing open or closed.
     btn.setAttribute("aria-expanded", "false");
@@ -165,8 +170,8 @@
     const ctrl = new AbortController();
     // The full sweep checks 561 platforms and can take well over a minute;
     // the extended one checks several times that.
-    const scopeWait = { full: 180000, extended: 330000 };
-    const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || 90000);
+    const scopeWait = { full: 420000, extended: 1920000 };
+    const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || (endpoint === CFG.endpoints.email ? 140000 : 90000));
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -191,7 +196,7 @@
   // ---------------------------------------------------------------- tools registry
   const TOOLS = {
     username: {
-      label: "Username", icon: "user", placeholder: "e.g. johndoe or a profile URL",
+      label: "Username", icon: "user", placeholder: "Enter a username or paste a profile link.",
       endpoint: CFG.endpoints.username, field: "username", deep: true,
       sub: "Search a username across a wide range of platforms and enrich matches with avatars and bios.",
       examples: ["github", "torvalds", "nasa"],
@@ -228,6 +233,12 @@
       local: true, secret: true, field: "password",
       sub: "Checks a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser, only the first 5 characters of the hash are ever sent.",
       examples: ["password", "qwerty123", "letmein"],
+    },
+    deepsearch: {
+      label: "Deep Search", icon: "search", placeholder: "@torvalds, a full name or name@example.com",
+      external: "/deep-search.html", field: "query",
+      sub: "Go beyond usernames and profiles. Explore public comments, mentions, linked accounts, full names and Google contributor reviews.",
+      examples: ["@torvalds", "Linus Torvalds"],
     },
   };
 
@@ -277,10 +288,10 @@
       case "guest_limit":
         title = "That's today's free scans";
         if (!canSignIn) {
-          body = "Guests get 5 username scans a day. Each full sweep checks 500+ platforms and shows a 100-platform preview. The allowance resets at midnight UTC.";
+          body = "Guests get 5 Quick scans a day across 100 platforms. The allowance resets at midnight UTC.";
           break;
         }
-        body = "Guests get 5 username scans a day. Sign in with Google for 5 free standard 500+ platform scans a day and complete results.";
+        body = "Guests get 5 Quick scans a day across 100 platforms. Sign in with Google for 5 free Standard 500+ platform scans a day and complete results.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "standard_daily_limit":
@@ -290,9 +301,13 @@
         break;
       case "sign_in_required":
       case "auth_invalid":
-        title = err.code === "auth_invalid" ? "Please sign in again" : "The full report needs a free account";
-        body = "Sign in with Google to see complete standard 500+ platform results for free. Free accounts get 5 standard scans daily. The ₹99 plan adds unlimited standard scans and 10 Extended scans.";
-        action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
+        title = err.code === "auth_invalid" ? "Please sign in again"
+          : err.scope === "extended" ? "Extended scans require sign-in" : "Standard scans require sign-in";
+        body = canSignIn
+          ? "Sign in with Google before running a Standard scan across 500+ platforms. Free accounts get 5 standard scans daily. Guests can run Quick scans across 100 platforms. The ₹99 plan adds unlimited standard scans and 10 Extended scans."
+          : "Sign-in is temporarily unavailable. Guests can still run Quick scans across 100 platforms.";
+        action = (canSignIn ? `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>` : "")
+          + `<button type="button" class="btn btn-ghost" data-gate="standard">Run a Quick scan</button>`;
         break;
       case "upgrade_required": {
         title = "Get more Extended scans";
@@ -315,9 +330,9 @@
         <h2>${esc(title)}</h2>
         <span class="hint">${count}</span>
         <div class="results-actions">
-          <button type="button" class="btn btn-sm" data-action="share-native">Share</button>
+          <button type="button" class="btn btn-sm" data-action="share-native">Share report</button>
           <button type="button" class="btn btn-ghost btn-sm" data-action="save">Save</button>
-          <button type="button" class="btn btn-ghost btn-sm" data-action="share">Copy link</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="share">Copy search link</button>
           <button type="button" class="btn btn-ghost btn-sm" data-action="copy">Copy results</button>
           <button type="button" class="btn btn-ghost btn-sm" data-action="print">Download PDF</button>
           <button type="button" class="btn btn-ghost btn-sm" data-export="json">Download JSON</button>
@@ -326,14 +341,25 @@
       </div>`;
   }
 
-  function avatarHTML(r, fallbackChar) {
-    const pic = r.profile_pic_url || r.avatar_url;
-    if (pic) {
-      return `<div class="avatar"><img src="${esc(safeUrl(pic))}" alt="" loading="lazy" referrerpolicy="no-referrer"
-        onerror="this.remove();this.parentElement.textContent='${esc(fallbackChar)}'"></div>`;
-    }
-    return `<div class="avatar">${esc(fallbackChar)}</div>`;
+  function avatarHTML(r, fallbackChar, emailPhoto = false) {
+    const pic = safeUrl(r.profile_pic_url || r.avatar_url);
+    return `<div class="avatar"><span class="avatar-fallback" aria-hidden="true">${esc(fallbackChar)}</span>${pic
+      ? `<img data-avatar${emailPhoto ? " data-email-photo" : ""} src="${esc(pic)}" alt="${esc(r.platform || "Profile")} photo" loading="lazy" referrerpolicy="no-referrer">` : ""}</div>`;
   }
+
+  // Capture handles images inserted by any renderer. Keep the initials visible
+  // until the image loads, and never read the parent after removing an image.
+  document.addEventListener("load", (event) => {
+    const img = event.target;
+    if (img.matches?.("img[data-avatar]")) img.parentElement?.classList.add("loaded");
+  }, true);
+  document.addEventListener("error", (event) => {
+    const img = event.target;
+    if (!img.matches?.("img[data-avatar]") || (img.hasAttribute("data-email-photo") && window.EmailPhotos)) return;
+    const parent = img.parentElement;
+    if (parent) { parent.classList.remove("loaded"); parent.title = "Photo unavailable"; }
+    img.remove();
+  }, true);
 
   // -- Username results
   function previewMeta(data) {
@@ -468,38 +494,44 @@
     const { profiles = [], documents = [], mentions = [] } = data.results || {};
     const s = data.summary || {};
     const preview = previewMeta(data);
+    const guest = !signedIn() || data.guest_preview?.requires_sign_in === true;
+    const allCards = profiles.concat(documents, mentions);
+    const hiddenCards = guest ? Math.max(0, Number(data.guest_preview?.hidden_cards) || allCards.length - 2) : 0;
     let html = resultsHeader(`Results for “${data.query.username}”`, `${s.total || 0} ${preview ? "visible findings" : "findings"}`);
     html += window.MyReconPartial?.notice(data) || "";
+    if (data.supplied_profile) html += `<p class="hint">User-supplied profile (not verification): ${esc(data.supplied_profile)}</p>`;
 
     if (preview) html += previewNotice(preview);
+    if (guest && allCards.length) html += `<div class="preview-notice" role="status"><strong>Guest preview</strong><span>Only the first 2 result cards are visible. Sign in to run Standard and see complete results.</span></div>`;
 
-    // A score calculated from 100 visible platforms would misstate a 561-
-    // platform sweep. Signed-in reports still get the complete score.
-    const exp = preview || data.partial ? null : computeExposure("username", data);
+    // A score based on two visible cards would misstate the complete report.
+    const exp = null; // Profile counts are not an exposure score.
     lastExposure = exp;
     if (exp && (s.profiles || 0) > 0) html += exposureGauge(exp);
 
     html += `<div class="summary-grid">
       ${stat(s.profiles, "Profiles")}${stat(s.documents, "Documents")}
-      ${stat(s.mentions, "Mentions")}${stat(s.clusters, "Identities")}
+      ${stat(s.mentions, "Mentions")}
     </div>`;
 
-    const relDomains = usernameRelatedDomains(data);
+    html += `<section class="preview-notice"><strong data-confirmed-count>0 accounts confirmed by you</strong><p>Same username does not establish identity. Confirm only your own accounts.</p><button class="btn btn-sm" data-action="discovery-recap">Preview my discovery recap</button><p class="hint">Last checked: ${esc(data.checked_at || data.scanned_at || "Not recorded in this report")}</p></section>`;
+    const relDomains = guest ? [] : usernameRelatedDomains(data);
     if (relDomains.length) html += pivotRow("Related domains", relDomains.map((d) => pivotChip("domain", d, d)));
 
-    (data.identity_clusters || []).forEach((c) => { html += clusterCard(c); });
+    (guest ? [] : data.identity_clusters || []).forEach((c) => { html += clusterCard(c); });
 
-    html += exposuresPanel(data.exposures || []);
+    if (!guest) html += exposuresPanel(data.exposures || []);
 
     if (!profiles.length && !documents.length && !mentions.length) {
       html += emptyState(data.partial ? "No confirmed findings from the completed checks. Some sources could not be checked." : "No public profiles were found for this username.");
     } else {
       let cards = `<div class="card-grid">`;
-      profiles.concat(documents, mentions).forEach((item) => { cards += profileCard(item); });
+      (guest ? allCards.slice(0, 2) : allCards).forEach((item) => { cards += profileCard(item); });
+      for (let i = 0; i < hiddenCards; i++) cards += lockedProfileCard();
       cards += `</div>`;
       // The account map is for signed-in reports, and it replaces the cards
       // rather than sitting above them: one view of the same profiles at a time.
-      if (signedIn() && !preview && profiles.length) {
+      if (!guest && !preview && profiles.length) {
         const view = resultsView();
         html += `<div class="view-switch" role="group" aria-label="Show results as">
             <button type="button" data-view="cards" aria-pressed="${view === "cards"}">Cards</button>
@@ -512,20 +544,22 @@
       }
     }
 
-    const platformChecks = data.platform_checks || [];
+    const platformChecks = guest ? [] : data.platform_checks || [];
     if (platformChecks.length) {
       html += platformChecksPanel(platformChecks, s.checked || 0, data.query.username);
-    } else {
+    } else if (!guest) {
       // Older saved reports predate the complete platform-check log. Keep their
       // original disclosures useful instead of rendering an empty new panel.
       html += unverifiedPanel(data.unverified || []);
       html += rejectedPanel(data.rejected || [], s.checked || 0);
     }
-    if (data.coverage && !preview) html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
-    else if ((data.query || {}).deep && !signedIn()
+    if (data.coverage && !guest && !preview) html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
+    else if (guest
       && !preview && window.MyReconAccount && window.MyReconAccount.enabled) html += fullScanNudge();
     if (preview) html += previewUnlock(preview);
     r.innerHTML = html;
+    window.MyReconMatchChoices?.paint();
+    updateDiscoveryCount();
     wireMapFavicons(r);
     animateCountUps();
   }
@@ -600,9 +634,9 @@
   }
 
   function fullScanNudge() {
-    return `<div class="panel gate slim"><p>This was the 100-platform quick scan. Run the
-      <strong>500+ platform sweep</strong> to see a guest preview, then sign in to request the full report.</p>
-      <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="full">Run the full sweep</button></div></div>`;
+    return `<div class="panel gate slim"><p>This was the 100-platform Quick scan. ${signedIn() ? "Run" : "Sign in to run"} a
+      <strong>Standard scan across 500+ platforms</strong> with complete results.</p>
+      <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="${signedIn() ? "full" : "signin-full"}">${signedIn() ? "Run Standard scan" : "Sign in for Standard"}</button></div></div>`;
   }
 
   // Addresses and identifiers the handle leaks, as opposed to where it exists.
@@ -664,7 +698,6 @@
   }
 
   function clusterCard(c) {
-    const conf = c.confidence || 0;
     const platforms = (c.platforms || []).map((p) =>
       `<a class="meta-tag" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener nofollow">${esc(p.platform)}</a>`
     ).join("");
@@ -672,10 +705,10 @@
       <div class="card-head">
         ${avatarHTML(c, (c.display_name || c.username || "?").charAt(0).toUpperCase())}
         <div style="min-width:0">
-          <div class="card-title">${esc(c.display_name || c.username || "Correlated identity")}</div>
-          <div class="card-url">Cross-platform match</div>
+          <div class="card-title">${esc(c.display_name || c.username || "Possible profile connection")}</div>
+          <div class="card-url">Possible cross-platform connection · identity unverified</div>
         </div>
-        <span class="tag profile">${conf}% match</span>
+        <span class="tag profile">Shared username</span>
       </div>
       ${c.bio ? `<div class="card-bio">${esc(c.bio.slice(0, 160))}</div>` : ""}
       <div class="card-meta">${platforms}</div>
@@ -686,18 +719,24 @@
     const platform = r.platform || r.source || hostOf(r.url) || "Result";
     const cat = r.category || "mention";
     const fallback = (platform[0] || "?").toUpperCase();
-    let meta = "";
+    let meta = `<span class="meta-tag">Same username · identity unverified</span>`;
     // "low" is reported, not hidden: the platform answered without an error but
     // served nothing that distinguishes a real account from a missing one. The
     // label has to say that, or an unverifiable hit reads as a confirmed one.
     if (r.confidence === "low") meta += `<span class="meta-tag conf-low" title="This platform returns the same page whether or not the account exists">Unconfirmed</span>`;
     else if (r.confidence === "medium") meta += `<span class="meta-tag conf-medium">Possible match</span>`;
-    else if (r.confidence === "high") meta += `<span class="meta-tag conf-high">Confirmed</span>`;
-    if (r.followers) meta += `<span class="meta-tag">${fmtNum(r.followers)} followers</span>`;
+    else if (r.confidence === "high") meta += `<span class="meta-tag conf-high">Account found · ownership unverified</span>`;
+    if (r.followers || r.followers === 0) meta += `<span class="meta-tag">${fmtNum(r.followers)} followers</span>`;
+    Object.entries(r.statistics || {}).filter(([key, value]) => key !== "followers" && Number.isFinite(value))
+      .forEach(([key, value]) => { meta += `<span class="meta-tag">${fmtNum(value)} ${esc(key.replace(/_/g, " "))}</span>`; });
     if (r.is_verified) meta += `<span class="meta-tag">Verified</span>`;
     if (r.is_private) meta += `<span class="meta-tag">Private</span>`;
     if (r.repos) meta += `<span class="meta-tag">${fmtNum(r.repos)} repos</span>`;
     const href = r.url && /^https?:\/\//.test(r.url) ? r.url : null;
+    // Sourced adapter metadata carries its own links, so such a card is not an
+    // <a>: nested anchors are invalid and would swallow the link clicks.
+    const publicLinks = (Array.isArray(r.public_links) ? r.public_links : []).filter(u => /^https?:\/\//i.test(u) && safeUrl(u));
+    const hasDetails = publicLinks.length > 0 || Boolean(r.metadata_source) || !live;
     // On demand, never during the scan: archive.org needs ~10s per cold key
     // and throttles under fan-out. A span, not a button, the card is an <a>.
     // Left off live cards: its handler is bound only when the final result
@@ -709,29 +748,188 @@
         ${avatarHTML(r, fallback)}
         <div style="min-width:0">
           <div class="card-title">${esc(platform)}</div>
-          <div class="card-url">${esc(hostOf(r.url))}${href ? ` <span class="open-ico">${icon("external", 12)}</span>` : ""}</div>
+          <div class="card-url">${hasDetails && href ? `<a href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow">Open profile ${icon("external", 12)}</a>` : `${esc(hostOf(r.url))}${href ? ` <span class="open-ico">${icon("external", 12)}</span>` : ""}`}</div>
         </div>
         <span class="tag ${esc(cat)}">${esc(cat)}</span>
       </div>
       ${r.display_name && r.display_name !== platform ? `<div class="card-bio" style="font-weight:600;color:var(--text)">${esc(r.display_name)}</div>` : ""}
       ${r.bio ? `<div class="card-bio">${esc(r.bio.slice(0, 150))}</div>` : ""}
-      ${meta ? `<div class="card-meta">${meta}</div>` : ""}`;
-    if (href) {
+      ${r.metadata_source ? `<div class="hint">Source: ${safeUrl(r.metadata_source.url) ? `<a href="${esc(safeUrl(r.metadata_source.url))}" target="_blank" rel="noopener nofollow">${esc(r.metadata_source.platform || platform)} public account data</a>` : esc(r.metadata_source.platform || platform)}</div>` : ""}
+      ${publicLinks.length ? `<div class="card-bio">Public links: ${publicLinks.map(u => `<a href="${esc(safeUrl(u))}" target="_blank" rel="noopener nofollow">${esc(hostOf(u))}</a>`).join(" · ")}</div>` : ""}
+      <p class="hint">${esc(r.evidence || "Appeared in the supported-source lookup for this handle. Review the source and confidence label.")}</p>
+      ${meta ? `<div class="card-meta">${meta}</div>` : ""}
+      ${!live ? window.MyReconMatchChoices?.controls(r.url) || "" : ""}`;
+    if (href && !hasDetails) {
       return `<a class="card card-link" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow"
         aria-label="Open ${esc(platform)} profile in a new tab">${inner}</a>`;
     }
     return `<div class="card">${inner}</div>`;
   }
 
+  function lockedProfileCard(live = false) {
+    return `<div class="card card-locked" aria-label="Locked result card">
+      <div class="locked-card-shape" aria-hidden="true"><div class="card-head"><div class="avatar"></div><div class="locked-lines"><i></i><i></i></div></div><div class="locked-lines"><i></i><i></i><i></i></div></div>
+      <div class="locked-card-overlay">${icon("lock", 20)}<strong>Result locked</strong>${live
+        ? `<span class="hint">Sign in for Standard</span>`
+        : `<button type="button" class="btn btn-ghost btn-sm" data-gate="signin-full">Sign in for Standard</button>`}</div>
+    </div>`;
+  }
+
   // -- Email results
+  function emailQualityBadges(record, compact = false) {
+    let html = "";
+    const score = record?.confidence;
+    if (score?.method === "source-basis-v1" && Number.isInteger(score.score) && score.scale === 4 && score.score >= 0 && score.score <= 4) {
+      html += `<span class="pill" title="${esc(score.label || "Evidence strength")} · ${esc(score.reason || "Rule-based association score; not a probability of identity.")}">Evidence strength ${score.score}/4</span>`;
+    }
+    const age = record?.freshness;
+    if (age?.label && (!compact || age.status !== "unknown")) {
+      html += `<span class="pill${["potentially_outdated", "future_date", "invalid_date"].includes(age.status) ? " danger" : ""}" title="${esc(age.reason || "Recency is source-reported")}">${esc(age.label)}</span>`;
+    }
+    return html ? `<span class="email-quality-badges">${html}</span>` : "";
+  }
+
+  function emailFieldConflicts(profile) {
+    const rows = Object.entries(profile.field_conflicts || {}).filter(([, alternatives]) => Array.isArray(alternatives) && alternatives.length > 1);
+    if (!rows.length) return "";
+    return `<details class="registration-coverage email-field-conflicts"><summary>Source values differ for ${rows.length} ${rows.length === 1 ? "field" : "fields"}</summary><ul>${rows.map(([field, alternatives]) => `<li><strong>${esc(field)}</strong><ul>${alternatives.slice(0, 5).map(value => `<li>${esc(typeof value.value === "object" ? JSON.stringify(value.value).slice(0, 1000) : String(value.value ?? "").slice(0, 1000))}<span class="hint"> · ${esc(value.source || "Source not specified")}${value.basis ? " · " + esc(value.basis.replace(/_/g, " ")) : ""}</span></li>`).join("")}</ul></li>`).join("")}</ul></details>`;
+  }
+
+  function emailEvidenceOverview(data) {
+    const report = data.evidence_report;
+    if (!report) return ""; // Older saved reports keep their original evidence.
+    const counts = report.counts || {};
+    const identity = report.identity || {};
+    const photos = new Map();
+    (report.profiles || []).forEach(p => {
+      const url = safeUrl(p.avatar_url);
+      if (!url) return;
+      if (!photos.has(url)) photos.set(url, []);
+      photos.get(url).push(p);
+    });
+    const field = (label, values, usernameActions = false) => `<div class="email-identity-field"><h3>${label}</h3>${values?.length
+      ? values.map((v) => `<p>${safeUrl(v.url) ? `<a href="${esc(safeUrl(v.url))}" target="_blank" rel="noopener nofollow"><strong>${esc(v.value)}</strong></a>` : `<strong>${esc(v.value)}</strong>`}<span>${esc(v.source)}${v.basis === "historical_commit" ? " · historical commit association" : v.basis === "historical_breach" ? " · historical breach" : ""}</span>${usernameActions && String(v.value || "").trim() ? `<button type="button" class="btn btn-ghost btn-sm" data-email-username="${esc(v.value)}" aria-label="Search this username: ${esc(v.value)}">Search this username</button>` : ""}</p>`).join("")
+      : `<p class="hint">Not returned by checked sources</p>`}${usernameActions && values?.length ? `<p class="hint">Opens the username scanner for you to run. Matches to a handle do not verify the same person.</p>` : ""}</div>`;
+    return `<section class="email-overview" aria-label="Email evidence summary">
+      <div class="email-overview-evidence">
+      ${emailPlatformSummary(data)}
+      <div class="email-evidence-counts">${[["Public profiles", counts.public_profiles], ["Registration signals", counts.registration_signals], ["Historical services", counts.historical_services], ["Named breaches", counts.named_breaches]].map(([label, n]) => `<div><strong>${esc(n || 0)}</strong><span>${label}</span></div>`).join("")}</div>
+      <p class="hint">${esc(report.counts_note || "Counts describe returned evidence. Categories can overlap; zero does not prove no account or exposure.")}</p>
+      ${report.confidence_note ? `<details class="registration-coverage email-quality-method"><summary>How evidence strength and age are assessed</summary><p class="hint">${esc(report.confidence_note)}</p><p class="hint">${esc(report.freshness_note || "Retrieval time is not an activity date.")}</p>${report.generated_at ? `<p class="hint">Report collected: ${esc(report.generated_at)}</p>` : ""}</details>` : ""}
+      ${data.account_checks?.enabled === false ? `<p class="hint">Live profile and registration checks are off. Enable “Check linked accounts” to include them in a new lookup.</p>` : ""}
+      <div class="email-evidence-range"><div><span>Earliest dated evidence</span><strong>${esc(report.earliest?.date_label || "Not available")}</strong></div><div><span>Latest dated evidence</span><strong>${esc(report.latest?.date_label || "Not available")}</strong></div></div>
+      <p class="hint">${esc(report.date_note)}</p>
+      </div><div class="email-overview-identity">
+      <div class="section-label">Profile summary</div><div class="email-identity-grid">${field("Names reported", identity.display_name)}${field("Usernames", identity.username, true)}
+        <div class="email-identity-field"><h3>Profile pictures</h3><div class="email-photo-strip">${[...photos.values()].map(group => `<figure>${avatarHTML(group[0], String(group[0].platform).slice(0, 2), true)}<figcaption>${[...new Set(group.map(p => p.platform))].map(esc).join(" · ")}</figcaption></figure>`).join("") || `<p class="hint">Not returned by checked sources</p>`}</div></div>
+        <div class="email-identity-field"><h3>Profile links</h3>${(report.profiles || []).filter(p => safeUrl(p.url)).map(p => `<p><a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener nofollow">${esc(p.display_name || p.username || p.platform)} ↗</a><span>${esc(p.platform)}</span></p>`).join("") || `<p class="hint">Not returned by checked sources</p>`}</div></div>
+      ${emailLocations(report.locations || identity.location || [])}
+      <p class="hint">${esc(report.identity_note)}</p>
+      </div>
+    </section>`;
+  }
+
+  function emailPlatformSummary(data) {
+    const summary = window.MyReconEmailOutcome.platforms?.(data);
+    if (!summary) return "";
+    const coverage = summary.coverage || {};
+    const observed = (data.platform_summary?.platforms || []).filter(p => p.status === "found");
+    const names = summary.names || [];
+    const chips = names.map(name => {
+      const row = observed.find(p => p.name === name);
+      const href = safeUrl(row?.url);
+      return href ? `<a class="pill" href="${esc(href)}" target="_blank" rel="noopener nofollow">${esc(name)} ↗</a>` : `<span class="pill">${esc(name)}</span>`;
+    }).join("");
+    const completed = Number.isFinite(coverage.completed) ? coverage.completed : 0;
+    const attempted = Number.isFinite(coverage.attempted) ? coverage.attempted : 0;
+    const gap = Number.isFinite(coverage.unavailable) ? coverage.unavailable : 0;
+    return `<div class="email-platform-summary" aria-label="Email linked platforms">
+      <div class="email-platform-head"><div><span class="hint">Platforms associated with this email</span><h3>${esc(summary.linked)} <span>${summary.linked === 1 ? "linked platform" : "linked platforms"}</span></h3></div><span class="pill">${esc(coverage.status || "unknown")}</span></div>
+      <p class="hint">${esc(summary.detail)}</p>
+      ${chips ? `<div class="chips" aria-label="Source-associated platforms">${chips}</div>` : `<p class="hint">No linked-platform evidence was returned by the available sources.</p>`}
+      <p class="hint">${coverage.enabled === false ? "Linked-account checks were off." : `${completed} of ${attempted} platform checks completed${gap ? ` · ${gap} could not establish an answer` : ""}.`}${summary.historical ? ` ${summary.historical} platforms also have historical evidence.` : ""}</p>
+    </div>`;
+  }
+
+  function emailLocations(locations) {
+    const row = v => `<li>${safeUrl(v.url) ? `<a href="${esc(safeUrl(v.url))}" target="_blank" rel="noopener nofollow">${esc(v.value)} ↗</a>` : esc(v.value)}<span>${esc(v.source)} · ${v.basis === "review_venue" ? "review venue" : "profile location"}${v.date_label ? " · " + esc(v.date_label) : ""}${Number.isFinite(v.latitude) && Number.isFinite(v.longitude) ? ` · ${v.latitude.toFixed(4)}, ${v.longitude.toFixed(4)}` : ""}</span></li>`;
+    return `<div class="email-locations"><h3>Locations</h3>${locations.length ? `<ul>${locations.slice(0, 6).map(row).join("")}</ul>${locations.length > 6 ? `<details><summary>Show ${locations.length - 6} more locations</summary><ul>${locations.slice(6).map(row).join("")}</ul></details>` : ""}` : `<p class="hint">Not returned by checked sources</p>`}</div>`;
+  }
+
+  function emailProfileCollections(p, data = {}) {
+    const reviews = p.reviews || [];
+    const reviewState = window.MyReconEmailOutcome.reviews?.(p, data);
+    const link = (label, value) => safeUrl(value) ? `<a href="${esc(safeUrl(value))}" target="_blank" rel="noopener nofollow">${label} ↗</a>` : "";
+    const reviewHTML = reviews.length ? `<div class="email-profile-collection email-google-reviews"><h3>Google reviews and ratings <span>${reviews.length} items returned${reviewState?.totalReported !== null && reviewState?.totalReported !== undefined ? ` · ${esc(reviewState.totalReported)} reviews reported by source` : ""}</span></h3>${reviewState ? `<p class="hint">${esc(reviewState.detail)}</p>` : ""}${reviews.map(r => {
+      const coordinates = Number.isFinite(r.latitude) && Number.isFinite(r.longitude) ? `${r.latitude.toFixed(4)}, ${r.longitude.toFixed(4)}` : "";
+      const maps = r.maps_url || (coordinates ? `https://www.google.com/maps?q=${r.latitude},${r.longitude}` : "");
+      const rating = Number.isFinite(r.rating) && r.rating >= 0 && r.rating <= 5 ? r.rating : null;
+      return `<article class="email-review"><div class="email-review-heading"><h4>${esc(r.name || "Review venue")}</h4>${rating !== null ? `<span class="email-review-rating" aria-label="${rating} out of 5 stars">${"★".repeat(Math.round(rating))}<small>${rating}/5</small></span>` : ""}</div>
+        ${r.address ? `<p class="hint">${esc(r.address)}</p>` : ""}${r.text ? `<p>${esc(r.text)}</p>` : `<p class="hint">Review text not returned</p>`}
+        ${r.owner_reply ? `<blockquote><span>Owner reply${r.owner_reply_date ? " · " + esc(r.owner_reply_date) : ""}</span><p>${esc(r.owner_reply)}</p></blockquote>` : ""}
+        <footer><span>${esc(r.date_label || r.date || "Date not provided")}${coordinates ? " · " + esc(coordinates) : ""}${r.source || reviewState?.source ? " · " + esc(r.source || reviewState.source) : ""}</span><div>${link("Open in Maps", maps)}${link("Source", r.source_url)}</div></footer></article>`;
+    }).join("")}</div>` : "";
+    const careerDate = value => {
+      const match = /^(\d{4})-(\d{2})$/.exec(String(value || ""));
+      return match && Number(match[2]) >= 1 && Number(match[2]) <= 12
+        ? `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(match[2]) - 1]} ${match[1]}` : value;
+    };
+    const history = (label, rows, title, subtitle) => rows?.length ? `<div class="email-profile-collection"><h3>${label}<span>${rows.length} ${rows.length === 1 ? "item" : "items"}</span></h3>${rows.map(r => `<article class="email-career"><h4>${esc(r[title] || "Not provided")}${r.current ? `<span class="pill ok">Current</span>` : ""}</h4>${r[subtitle] ? `<p>${esc(r[subtitle])}</p>` : ""}<p class="hint">${esc(careerDate(r.start) || "Start not provided")} · ${esc(r.current ? "Present" : careerDate(r.end) || "End not provided")}</p>${r.field_of_study ? `<p>${esc(r.field_of_study)}</p>` : ""}${r.description ? `<p>${esc(r.description)}</p>` : ""}${link("Source", r.url)}</article>`).join("")}</div>` : "";
+    const missing = String(p.platform).toLowerCase() === "google" && !reviews.length ? `<div class="email-review-availability"><strong>${esc(reviewState?.label || "Google review details not returned")}</strong><p class="hint">${esc(reviewState?.detail || "The available source did not return individual reviews.")}</p>${link("View public Maps contributions", p.url)}</div>` : "";
+    return reviewHTML + missing + history("LinkedIn positions", p.positions, "title", "company") + history("LinkedIn education", p.education, "school", "degree");
+  }
+
+  function emailRegistrations(data) {
+    const rows = data.evidence_report?.registrations || [];
+    if (!rows.length) return "";
+    return `<section class="email-registrations"><div class="section-label">Registrations <span class="hint">${rows.length} services returned a signal</span></div><div class="chips">${rows.map(r => `<span class="pill" title="${esc(r.source || "Holehe")} · ${esc(r.reason || "Registration signal")}">${esc(r.service)}</span>`).join("")}</div></section>`;
+  }
+
+  function emailEvidenceTimeline(data) {
+    const report = data.evidence_report;
+    if (!report) return "";
+    const rows = report.timeline || [], undated = report.undated_events || [];
+    const item = (r) => `<li data-email-event="${esc(r.kind)}"><time${r.date ? ` datetime="${esc(r.date)}"` : ""}>${esc(r.date_label)}${["year", "month"].includes(r.precision) ? `<small>${esc(r.precision)} only</small>` : ""}</time><div><strong>${esc(r.title)}</strong>${r.date_conflict ? `<span class="pill">Source dates differ</span>` : ""}<span class="email-event-source">${(r.sources || []).map(esc).join(" · ")}</span>${r.detail && (r.kind !== "breach" || r.date_conflict) ? `<p>${esc(r.detail)}</p>` : ""}${r.date_evidence?.length > 1 ? `<details class="email-event-dates"><summary>Reported dates</summary><ul>${r.date_evidence.map(d => `<li>${esc(d.date_label)} · ${(d.sources || []).map(esc).join(" · ")}</li>`).join("")}</ul></details>` : ""}${safeUrl(r.url) ? `<a href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener nofollow">View source ↗</a>` : ""}</div></li>`;
+    return `<section class="email-evidence-timeline" aria-label="Evidence timeline">
+      <div class="section-label">Activity timeline<span class="hint">${rows.length} dated events</span></div>
+      <p class="hint">Newest first. Breach dates describe the incident; profile dates describe the account. These are not the first or last use of this email. Compatible dates from multiple sources appear once.</p>
+      ${rows.length ? `<div class="email-timeline-filters" role="group" aria-label="Filter evidence timeline">${[["all", "All evidence"], ["profile", "Profiles"], ["activity", "Public activity"], ["breach", "Breaches"]].map(([kind, label]) => `<button type="button" class="btn btn-ghost btn-sm" data-action="email-timeline-filter" data-kind="${kind}" aria-pressed="${kind === "all"}">${label}</button>`).join("")}</div><ol class="email-event-list">${rows.map(item).join("")}</ol><p class="hint email-timeline-empty" hidden>No dated events in this category.</p>`
+        : `<p class="email-evidence-empty">No usable dates were returned. Undated findings are still shown below.</p>`}
+      ${undated.length ? `<details class="email-undated"><summary>${undated.length} undated findings</summary><ol class="email-event-list">${undated.map(item).join("")}</ol></details>` : ""}
+    </section>`;
+  }
+
+  function emailProfileCards(data) {
+    const profiles = data.evidence_report?.profiles;
+    if (!profiles?.length) return "";
+    return `<section class="email-profiles" aria-label="Public profile details"><div class="section-label">Public profiles<span class="hint">${profiles.length} returned</span></div><div class="email-profile-grid">${profiles.map((p) => {
+      const href = safeUrl(p.url);
+      const details = [["Username", p.username], ["Location (source-reported)", p.location], ["Company (self-reported)", p.company], ...Object.entries(p.fields || {})];
+      return `<article class="card email-profile-card${p.reviews?.length || p.positions?.length || p.education?.length ? " email-profile-wide" : ""}"><div class="card-head">${avatarHTML(p, String(p.platform).slice(0, 2), true)}<div><div class="card-title">${esc(p.platform)}</div><div class="card-url">${esc(p.display_name || p.username || p.platform)}</div></div></div>
+        <span class="pill">${p.basis === "historical_commit" ? "Historical commit association" : p.basis === "provider_email" ? "Provider email association" : p.basis === "public_link" ? "Publicly linked profile" : p.basis === "historical_public_link" ? "Historical linked profile" : p.basis === "email_hash" ? "Email-hash association" : "Public email evidence"}</span>
+        ${emailQualityBadges(p)}
+        ${emailFieldConflicts(p)}
+        ${p.bio ? `<p class="card-bio">${esc(p.bio)}</p>` : ""}
+        <dl class="email-profile-fields">${details.filter(([, v]) => v !== undefined && v !== null && v !== "").map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}${Object.entries(p.stats || {}).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+        ${Object.entries(p.lists || {}).map(([k, rows]) => `<div class="email-profile-list"><h4>${esc(k)}</h4><div class="chips">${rows.map(v => `<span class="pill">${esc(v)}</span>`).join("")}</div></div>`).join("")}
+        ${p.last_seen ? `<p class="hint">Last seen (source-reported): ${esc(p.last_seen)}</p>` : ""}${window.MyReconMatchChoices?.controls(p.url) || ""}${emailProfileCollections(p, data)}
+        <p class="hint">${esc(p.evidence)}</p><p class="email-event-source">${esc(p.source)}</p>
+        ${p.profile_status && p.profile_status !== "ok" ? `<p class="hint">Profile details ${esc(p.profile_status.replace(/_/g, " "))}; the original email evidence is retained.</p>` : ""}
+        <div class="email-profile-links">${href ? `<a href="${esc(href)}" target="_blank" rel="noopener nofollow">Open profile ↗</a>` : ""}${safeUrl(p.evidence_url) && p.evidence_url !== p.url ? `<a href="${esc(safeUrl(p.evidence_url))}" target="_blank" rel="noopener nofollow">View email evidence ↗</a>` : ""}${safeUrl(p.website) ? `<a href="${esc(safeUrl(p.website))}" target="_blank" rel="noopener nofollow">Declared website ↗</a>` : ""}</div>
+      </article>`;
+    }).join("")}</div></section>`;
+  }
+
   function renderEmail(data) {
     const a = data.analysis || {}, g = data.gravatar || {}, s = data.summary || {};
     const breaches = data.breaches || {}, hibp = data.hibp;
     let html = resultsHeader(`Email intelligence: ${esc(data.query.email)}`, "");
     html += window.MyReconPartial?.notice(data) || "";
+    if (data.supplied_profile) html += `<p class="hint">User-supplied profile (not verification): ${esc(data.supplied_profile)}</p>`;
+    html += emailEvidenceOverview(data);
 
     const outcome = window.MyReconEmailOutcome(data);
-    const exp = outcome.partial ? null : computeExposure("email", data);
+    const exp = outcome.partial || data.partial ? null : computeExposure("email", data);
     lastExposure = exp;
     const dw = data.darkweb || {};
     const breached = outcome.found, count = s.breach_count || 0;
@@ -759,25 +957,20 @@
       ${dw.error ? `<div class="hint" style="margin-top:10px">${esc(dw.error)}</div>` : ""}
     </div>`;
 
+    html += emailEvidenceTimeline(data);
     html += emailBreachList(data);
+    html += emailProfileCards(data);
+    html += emailRegistrations(data);
+    if (data.profile_enrichment?.status === "unconfigured" && data.account_checks?.enabled) html += `<p class="hint email-enrichment-gap">Google reviews and LinkedIn details are unavailable until a profile data source is connected.</p>`;
+    if (data.profile_enrichment?.sources?.length) html += `<details class="registration-coverage"><summary>Profile source coverage</summary><ul class="source-coverage">${data.profile_enrichment.sources.map(r => `<li><strong>${esc(r.name)}${r.provider ? " · " + esc(r.provider) : ""}</strong>: ${esc(r.status.replace(/_/g, " "))}${r.message || r.reason ? `<p class="hint">${esc(r.message || r.reason)}</p>` : ""}${Number.isFinite(r.returned) ? `<p class="hint">${esc(r.returned)} items returned${r.limit ? " · retrieval limit " + esc(r.limit) : ""}</p>` : ""}</li>`).join("")}</ul></details>`;
+    html += linkedServices(data.linked_services, data.account_checks, data.registration_checks);
     if (exp) html += exposureGauge(exp);
+    else if (data.partial && !outcome.partial) html += `<p class="hint">Exposure score unavailable while profile-source coverage is incomplete.</p>`;
 
     // Straight under the verdict: it is what someone who just learned they
     // were breached needs next, and the evidence below can run to 30 cards.
     html += emailNextSteps(outcome, data);
     html += breachAlertCta(outcome);
-    html += linkedServices(data.linked_services, data.account_checks);
-
-    if (dw.exposed_data && dw.exposed_data.length) {
-      const top = dw.exposed_data.slice(0, 10), max = top[0].count || 1;
-      html += `<div class="section-label">What leaked about this address</div>
-        <div class="bars">${top.map((x) => `
-          <div class="bar-row">
-            <div class="bar-k" title="${esc(x.category)}">${esc(x.name)}</div>
-            <div class="bar-track"><i style="width:${Math.max(4, (x.count / max) * 100).toFixed(1)}%"></i></div>
-            <div class="bar-v">${x.count}</div>
-          </div>`).join("")}</div>`;
-    }
 
     if (dw.timeline && dw.timeline.length > 1) {
       const peak = Math.max(...dw.timeline.map((t) => t.count));
@@ -790,16 +983,6 @@
             </div>`).join("")}
         </div>`;
     }
-
-    html += `<div class="section-label">Address analysis</div>`;
-    html += datalist([
-      ["Provider", `${esc(a.provider)} (${esc(a.provider_type)})`],
-      ["Deliverable", a.deliverable == null ? "Unknown, check unavailable" : a.deliverable ? "Yes, mail server present" : "No MX record found"],
-      ["Disposable", a.disposable == null ? "Unknown, check unavailable" : a.disposable ? "Yes (flagged)" : "No"],
-      ["Plus addressing", a.plus_addressing ? "Yes" : "No"],
-      ["Format", esc(a.format)],
-      ["MX hosts", (a.mx_hosts || []).map(esc).join("<br>") || "-"],
-    ]);
 
     const emailDomain = baseDomain(data.query.email.split("@")[1] || "");
     html += pivotRow("Pivot", [
@@ -814,14 +997,14 @@
       html += `<div class="chips">${s.linked_accounts.map((x) => `<span class="pill">${esc(x)}</span>`).join("")}</div>`;
     }
 
-    if (g.exists) {
+    if (g.exists && !data.evidence_report) {
       html += `<div class="section-label">Gravatar profile</div>`;
       html += `<div class="card"><div class="card-head">${avatarHTML(g, "G")}
         <div style="min-width:0"><div class="card-title">${esc(g.display_name || "Gravatar")}</div>
         <div class="card-url"><a href="${esc(safeUrl(g.profile_url))}" target="_blank" rel="noopener nofollow">${esc(hostOf(g.profile_url) || "gravatar.com")}</a></div></div></div>
         ${g.bio ? `<div class="card-bio">${esc(g.bio)}</div>` : ""}</div>`;
     }
-    if (data.github) {
+    if (data.github && !data.evidence_report) {
       html += `<div class="section-label">GitHub</div>`;
       html += `<div class="card"><div class="card-head">${avatarHTML({ avatar_url: data.github.avatar_url }, "GH")}
         <div style="min-width:0"><div class="card-title">${esc(data.github.username)}</div>
@@ -830,6 +1013,7 @@
         ${data.github.evidence_url ? `<p><a href="${esc(safeUrl(data.github.evidence_url))}" target="_blank" rel="noopener nofollow">View public commit evidence</a></p>` : ""}</div>`;
     }
     resultsEl().innerHTML = html;
+    window.EmailPhotos?.wire(resultsEl(), CFG.apiBase);
     animateCountUps();
     linkBreachWriteups();
   }
@@ -844,7 +1028,7 @@
       const existing = rows.get(id);
       if (existing) {
         if (!existing.sources.includes(source)) existing.sources.push(source);
-        if (!existing.date && record.date) existing.date = record.date;
+        if (record.date && (!existing.date || (String(record.date).startsWith(String(existing.date) + "-") && /^\d{4}(?:-\d{2}){0,2}$/.test(record.date)))) existing.date = record.date;
         return;
       }
       rows.set(id, { ...record, detailed, sources: [source] });
@@ -853,6 +1037,11 @@
     [data.breaches, data.fallback].forEach((source) => {
       if (!source || source.status === "skipped") return;
       (source.sources || []).forEach((b) => add(b, source.source || (source === data.breaches ? "LeakCheck" : "XposedOrNot fallback"), false));
+    });
+    (data.breach_details?.records || []).forEach(r => {
+      add(r, "LeakCheck Pro", true);
+      const row = rows.get(key(r.name));
+      (row.identities ||= []).push(r);
     });
     return [...rows.values()].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || a.name.localeCompare(b.name));
   }
@@ -868,6 +1057,7 @@
       <div class="breach-list">${rows.map((b) => `<article class="breach-card" data-bname="${esc(b.name)}" data-byear="${esc(String(b.date || "").slice(0, 4))}">
         <div class="bc-overview"><div class="bc-title"><h3 class="bc-name">${esc(b.name)}</h3><span class="bc-meta">${b.date ? `Breach date: ${esc(b.date)}` : "Date not provided"}</span></div>
           <p class="bc-source">Reported by ${b.sources.map(esc).join(" · ")}</p>
+          ${(b.identities || []).map(r => `<dl class="email-profile-fields">${r.username ? `<div><dt>Historical username</dt><dd>${esc(r.username)}</dd></div>` : ""}${r.full_name ? `<div><dt>Name in this record</dt><dd>${esc(r.full_name)}</dd></div>` : ""}${r.password_exposed ? `<div><dt>Password</dt><dd>Exposure reported</dd></div>` : ""}</dl>${r.unverified ? `<p class="hint">Source marks this record as unverified.</p>` : ""}${r.compilation ? `<p class="hint">Compilation record; does not establish a platform account.</p>` : ""}`).join("")}
           ${b.password_risk === "plaintext" ? `<p class="pill danger">Plaintext passwords in this breach</p>` : ""}
           <div class="bc-fields"><strong>Data exposed</strong>${b.exposed?.length ? `<div class="chips">${b.exposed.map((f) => `<span class="pill ${/password|ssn|bank|card|phone|address|birth|token/i.test(f) ? "danger" : ""}">${esc(f)}</span>`).join("")}</div>` : `<p class="hint">Per-breach data types not provided by this source.</p>`}</div>
           ${b.details || b.records || b.industry ? `<details class="bc-details"><summary>More about this breach</summary><div class="bc-body">${b.details ? `<p>${esc(b.details)}</p>` : ""}${b.records ? `<p>${fmtNum(b.records)} records across the whole breach.</p>` : ""}${b.industry ? `<p>Industry: ${esc(b.industry)}</p>` : ""}</div></details>` : ""}
@@ -876,32 +1066,39 @@
   }
 
   // Services this address is tied to, each with the evidence that ties it.
-  // Built server-side from breach records and public profiles only; sign-up
-  // forms are never probed, so a missing site means "no evidence", and the
-  // footnote says so rather than letting absence read as "no account".
-  function linkedServices(ls, checks) {
+  // Source kinds remain distinct, including optional registration signals.
+  function linkedServices(ls, checks, registration) {
     if (!ls && !checks) return "";
     ls = ls || {};
-    const rows = (ls.services || []).filter((r) => r.kind === "profile");
-    let html = `<div class="section-label">Public accounts linked to this email
-      <span class="hint">${checks?.enabled === false ? "not checked" : rows.length ? `${rows.length} found` : "no public evidence"}</span></div>`;
+    const rows = ls.services || [];
+    let html = `<div class="section-label">Accounts and services linked to this email
+      <span class="hint">${rows.length ? `${rows.length} service evidence entries` : "no evidence returned"}</span></div>`;
     if (rows.length) {
       html += `<ul class="svc-list">${rows.map((r) => {
-        const tag = r.kind === "profile"
-          ? `<span class="pill ok">public profile</span>`
-          : `<span class="pill">breach record${r.date ? " · " + esc(r.date) : ""}</span>`;
+        const tag = r.basis === "owner_declared" ? `<span class="pill">owner-declared link</span>`
+          : r.basis === "historical_commit" ? `<span class="pill">historical commit evidence</span>`
+          : r.basis === "provider_email" ? `<span class="pill">provider email association</span>`
+          : r.kind === "profile" ? `<span class="pill ok">public profile evidence</span>`
+          : r.kind === "registration" ? `<span class="pill">registration signal</span>`
+          : `<span class="pill">historical breach${r.date ? " · " + esc(r.date) : ""}</span>`;
         const name = r.url
           ? `<a href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener nofollow">${esc(r.service)}</a>`
           : esc(r.service);
-        return `<li><span class="svc-name">${name}</span>${tag}<span class="svc-ev">${esc(r.evidence)}</span></li>`;
+        return `<li><span class="svc-name">${name}</span>${tag}<span class="svc-ev">${esc(r.evidence)}${r.kind === "breach" ? ". Evidence of a past association; the account may have been closed." : ""}${r.registration_evidence ? ". " + esc(r.registration_evidence) : ""}</span></li>`;
       }).join("")}</ul>`;
     }
     if (checks?.enabled === false) {
-      html += `<p class="hint">Account checks are off. Turn on “Check linked accounts” above and run the lookup to check public sources.</p>`;
+      html += `<p class="hint">Live account checks are off. Breach-linked services still appear above. Turn on “Check linked accounts” and run the lookup for registration signals.</p>`;
     } else if (checks) {
       html += `<ul class="source-coverage">${(checks.sources || []).map((source) => `<li><strong>${esc(source.name)}</strong>: ${esc(source.status === "no_match" ? "no public match" : source.status.replace(/_/g, " "))}</li>`).join("")}</ul>`;
     }
-    html += `<p class="hint svc-note">Only public evidence is shown. Private account emails cannot be checked. Public evidence does not prove account ownership. No public match means no evidence, not no account. Historical breach entries are shown in the breach list above.</p>`;
+    if (registration && registration.status !== "skipped") {
+      const statuses = { found: "Registration signal", no_signal: "No registration signal", unavailable: "Unavailable", rate_limited: "Blocked or rate limited", timeout: "Timed out", skipped: "Skipped" };
+      html += `<details class="registration-coverage"><summary>Email registration checks: ${registration.checked || 0} answered of ${registration.attempted || 0} eligible · ${registration.catalogue_count || 0} service checks</summary>
+        <p class="hint">Every service has its own outcome. Skipped or blocked checks are not negative results.</p>
+        <ul class="svc-list">${(registration.services || []).map((r) => `<li><span class="svc-name">${esc(r.service)}</span><span class="pill">${esc(statuses[r.status] || r.status)}</span><span class="svc-ev">${esc(r.engine || "Holehe")} · ${esc(r.reason)}</span></li>`).join("")}</ul></details>`;
+    }
+    html += `<p class="hint svc-note">Breach records show historical service associations. Registration signals are service responses, not verified profiles or proof of ownership. No signal does not prove no account. Combined leak lists are excluded from account evidence. <a href="https://github.com/megadose/holehe" target="_blank" rel="noopener">Holehe source</a></p>`;
     return html;
   }
 
@@ -1267,12 +1464,12 @@
       ];
     } else {
       const breached = window.MyReconEmailOutcome(data).found, bc = s.breach_count || 0;
-      const linked = (s.linked_accounts || []).length;
-      const grav = data.gravatar && data.gravatar.exists ? 1 : 0;
+      const linked = data.evidence_report?.profiles?.length ?? (s.linked_accounts || []).length;
+      const grav = data.evidence_report?.profiles ? Number(data.evidence_report.profiles.some(p => String(p.platform).toLowerCase() === "gravatar")) : data.gravatar && data.gravatar.exists ? 1 : 0;
       score = Math.round((breached ? 35 : 0) + Math.min(bc, 45) + linked * 6 + grav * 8);
       factors = [
         { label: "Breaches", value: bc },
-        { label: "Linked accounts", value: linked },
+        { label: "Source-linked profiles", value: linked },
         { label: "Gravatar", value: grav ? "Yes" : "No" },
       ];
     }
@@ -1430,11 +1627,38 @@
   const RENDERERS = { username: renderUsername, email: renderEmail, domain: renderDomain, dns: renderDns, ip: renderIp };
 
   // ---------------------------------------------------------------- run
+  const profileAutoGate = window.MyReconProfileInput?.autoGate();
+  let profileTimer;
+  let pendingProfileUrl = null;
+  let profileController = null;
+  let profileCancelled = false;
+  function profilePreview(parsed) {
+    let box = $("#profileInputPreview");
+    if (!box) {
+      box = document.createElement("div"); box.id = "profileInputPreview"; box.style.overflowWrap = "anywhere"; box.setAttribute("role", "status");
+      $("#queryInput").parentElement.after(box);
+    }
+    box.innerHTML = parsed.url ? `<p>${esc(parsed.platform)} · @${esc(parsed.handle)} · Source profile supplied by you, not verified: <a href="${esc(parsed.url)}" target="_blank" rel="noopener noreferrer">${esc(parsed.url)}</a></p><button type="button" class="btn btn-ghost btn-sm" data-profile-edit>Edit</button> <button type="button" class="btn btn-ghost btn-sm" data-profile-cancel>Cancel</button>` : `<p>${esc(parsed.error || '')}</p>`;
+    box.querySelector('[data-profile-edit]')?.addEventListener('click', () => { clearTimeout(profileTimer); pendingProfileUrl = null; profileCancelled = true; profileController?.abort(); $("#queryInput").value = parsed.handle; profileAutoGate.reset(); box.remove(); $("#queryInput").focus(); });
+    box.querySelector('[data-profile-cancel]')?.addEventListener('click', () => { clearTimeout(profileTimer); pendingProfileUrl = null; profileCancelled = true; profileController?.abort(); $("#queryInput").value = ''; profileAutoGate.reset(); box.remove(); });
+  }
   async function run() {
+    clearTimeout(profileTimer); pendingProfileUrl = null;
+    if ($("#runBtn").disabled) return;
     const tool = TOOLS[activeTool];
     const input = $("#queryInput");
     // Never trim a secret, leading and trailing spaces are part of a password.
-    const value = tool.secret ? input.value : input.value.trim();
+    let value = tool.secret ? input.value : input.value.trim();
+    if (tool.external) {
+      window.location.href = value ? `${tool.external}?q=${encodeURIComponent(value)}` : tool.external;
+      return;
+    }
+    if (activeTool === "username") {
+      const parsed = window.MyReconProfileInput.parse(value);
+      profilePreview(parsed);
+      if (parsed.error) { toast(parsed.error, "err"); return; }
+      value = parsed.handle;
+    }
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
     enterToolMode();
 
@@ -1463,6 +1687,7 @@
     }
 
     const body = { [tool.field]: value };
+    if (activeTool === "username") body.supplied_profile = window.MyReconProfileInput.parse(input.value).url || null;
     if (activeTool === "email") body.check_linked_accounts = !!$("#linkedAccountsToggle")?.checked;
     if (tool.deep) {
       const scope = currentScope();
@@ -1474,6 +1699,14 @@
     lastResult = null;
     try {
       if (activeTool === "username") {
+        if (body.scope === "full" || body.scope === "extended") {
+          const account = window.MyReconAccount;
+          if (account) {
+            await account.ready;
+            if (account.load) await account.load();
+          }
+          if (!signedIn()) throw new GateError("Sign in before running this scan.", "sign_in_required", null, body.scope);
+        }
         await runUsernameStream(value, body);
       } else {
         setLoading(activeTool);
@@ -1538,7 +1771,7 @@
     const acct = st && st.user ? A.state().account : null;
     const scope = currentScope();
     if (scope !== "full" && scope !== "extended" && (!st || !st.user)) {
-      note.textContent = "Quick scan checks 100 platforms, free without sign-in.";
+      note.textContent = "Guest login: Quick scans only, across 100 platforms. First 2 cards visible; the rest are blurred. No sign-up required. 5 free scans a day.";
       return;
     }
     if (scope === "extended" && (!st || !st.user)) {
@@ -1546,7 +1779,7 @@
       return;
     }
     if (!st || !st.user) {
-      note.textContent = "Free standard scan across 500+ platforms. Guests see 100; sign in for 5 complete standard scans a day.";
+      note.textContent = "Standard scans require sign-in. Sign in with Google for 5 free scans a day across 500+ platforms with complete results.";
       return;
     }
     if (scope === "extended") {
@@ -1568,29 +1801,29 @@
   // ---- Username: live streaming scan with progress -----------------
   // Platforms already drawn as live cards during this sweep.
   let liveSeen = new Set();
+  let liveLocked = 0;
 
-  function setScanning(body) {
+  function setScanning(value, body) {
     liveSeen = new Set();
+    liveLocked = 0;
     const extended = body && body.scope === "extended";
     const full = extended || (body && body.scope === "full");
-    const preview = full && !extended && !signedIn();
     const size = extended ? EXTENDED_LABEL : (full ? FULL_LABEL : "100");
     resultsEl().innerHTML = `
       <div class="loading scan" role="status" aria-live="polite">
         <div class="scan-head">
-          <div class="spinner"></div>
+          <div class="spinner" aria-hidden="true"></div>
           <div class="scan-meta">
-            <h3 id="scanPhase">Starting scan…</h3>
-            <p class="hint" id="scanDetail">Preparing a sweep of ${size} platforms.</p>
+            <h3 id="scanPhase">Preparing scan…</h3>
+            <p class="hint" id="scanDetail">Results will appear below as platforms respond.</p>
           </div>
           <div class="scan-pct" id="scanPct">0%</div>
         </div>
         <div class="progress determinate"><i id="scanBar" style="width:0%"></i></div>
-        <div class="scan-facts"><span>${size} platforms in sweep</span>
-          <span>${preview ? "Guest preview: first 100 platform verdicts visible" : "Confirmed matches appear as platforms answer"}</span></div>
+        <div class="scan-facts"><span>${size} platforms in sweep</span><span id="scanTally">0 found</span></div>
       </div>
       <div class="live-found" id="liveFound" hidden>
-        <div class="section-label">${preview ? "Visible matches so far" : "Found so far"}: <span id="liveCount">0</span></div>
+        <div class="section-label">Found so far: <span id="liveCount">0</span></div>
         <div class="card-grid" id="liveGrid"></div>
       </div>`;
   }
@@ -1601,34 +1834,67 @@
   function addLiveCard(r) {
     if (!r || !r.platform || liveSeen.has(r.platform)) return;
     liveSeen.add(r.platform);
-    const wrap = $("#liveFound"), grid = $("#liveGrid"), n = $("#liveCount");
+    const wrap = $("#liveFound"), grid = $("#liveGrid");
     if (!wrap || !grid) return;
     wrap.hidden = false;
-    grid.insertAdjacentHTML("beforeend", profileCard(r, true));
-    if (n) n.textContent = String(liveSeen.size);
+    if (!signedIn() && liveSeen.size > 2) {
+      liveLocked++;
+      grid.insertAdjacentHTML("beforeend", lockedProfileCard(true));
+    } else grid.insertAdjacentHTML("beforeend", profileCard(r, true));
+    updateLiveTally();
+  }
+
+  function updateLiveTally() {
+    const visible = signedIn() ? liveSeen.size : Math.min(2, liveSeen.size);
+    const total = visible + liveLocked;
+    const count = $("#liveCount"), tally = $("#scanTally");
+    if (count) count.textContent = String(total);
+    if (tally) tally.textContent = `${total} found${liveLocked ? ` · ${liveLocked} locked` : ""}`;
+  }
+
+  function addLockedLiveCard(count) {
+    const grid = $("#liveGrid"), wrap = $("#liveFound");
+    if (!grid || !wrap || !Number.isInteger(count) || count <= liveLocked) return;
+    wrap.hidden = false;
+    while (liveLocked < count) {
+      grid.insertAdjacentHTML("beforeend", lockedProfileCard(true));
+      liveLocked++;
+    }
+    updateLiveTally();
   }
 
   function updateScanUI(ev) {
-    const pct = Math.max(0, Math.min(100, Math.round(ev.percent || 0)));
+    const phaseText = String(ev.phase || "");
+    const detailText = String(ev.detail || "");
+    const preparing = /\bqueued?\b|waiting for a free scan slot/i.test(phaseText + " " + detailText)
+      || /^starting(?:\s+(?:extended|full))?\s+scan/i.test(detailText)
+      || /^checked\s+0\s+of\s+\d+\s+platforms/i.test(detailText);
+    const pct = preparing ? 0 : Math.max(0, Math.min(100, Math.round(Number(ev.percent) || 0)));
     const bar = $("#scanBar"); if (bar) bar.style.width = pct + "%";
     const p = $("#scanPct"); if (p) p.textContent = pct + "%";
-    const phase = $("#scanPhase"); if (phase && ev.phase) phase.textContent = ev.phase + "…";
-    const detail = $("#scanDetail"); if (detail && ev.detail) detail.textContent = ev.detail;
+    const phase = $("#scanPhase");
+    if (phase && (preparing || phaseText)) phase.textContent = preparing
+      ? "Preparing scan…" : phaseText.replace(/[.\u2026]+$/, "") + "…";
+    const detail = $("#scanDetail");
+    if (detail && (preparing || detailText)) detail.textContent = preparing
+      ? "Results will appear below as platforms respond." : detailText;
   }
 
   async function runUsernameStream(value, body) {
     const controller = new AbortController();
-    const wait = { full: 180000, extended: 330000 };
+    profileController = controller;
+    profileCancelled = false;
+    const wait = { full: 420000, extended: 1920000 };
     const timer = setTimeout(() => controller.abort(), wait[body.scope] || 120000);
     try { await consumeUsernameStream(value, body, controller.signal); }
     catch (error) {
-      if (error.name === "AbortError") throw new Error("The scan reached its time limit. Try again later.");
+      if (error.name === "AbortError") throw new Error(profileCancelled ? "Scan cancelled; results are incomplete." : "The scan reached its time limit. Try again later.");
       throw error;
-    } finally { clearTimeout(timer); }
+    } finally { clearTimeout(timer); profileController = null; }
   }
 
   async function consumeUsernameStream(value, body, signal) {
-    setScanning(body);
+    setScanning(value, body);
     let res;
     try {
       res = await fetch(CFG.apiBase + CFG.endpoints.usernameStream, {
@@ -1662,6 +1928,7 @@
       let ev; try { ev = JSON.parse(line); } catch { return; }
       if (ev.type === "progress") updateScanUI(ev);
       else if (ev.type === "found") addLiveCard(ev.result);
+      else if (ev.type === "found_locked") addLockedLiveCard(ev.count);
       else if (ev.type === "complete") { finalData = ev.data; savedId = ev.history_id; }
       else if (ev.type === "error") throw new Error(ev.error || "Scan failed");
     };
@@ -1731,11 +1998,20 @@
     $$("[data-action]").forEach((btn) => btn.addEventListener("click", () => {
       const a = btn.dataset.action;
       if (a === "save") saveCurrent(btn);
+      else if (a === "discovery-recap") previewDiscoveryRecap();
       else if (a === "share-native") shareNative();
       else if (a === "share") shareLink();
       else if (a === "copy") copySummary();
       else if (a === "print") printReport();
       else if (a === "subdomains") discoverSubdomains(btn);
+      else if (a === "email-timeline-filter") {
+        const section = btn.closest('.email-evidence-timeline');
+        const kind = btn.dataset.kind;
+        section.querySelectorAll('[data-kind]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        const rows = Array.from(section.querySelectorAll(':scope > .email-event-list > li'));
+        rows.forEach((row) => { row.hidden = kind !== 'all' && row.dataset.emailEvent !== kind; });
+        section.querySelector('.email-timeline-empty').hidden = rows.some((row) => !row.hidden);
+      }
       // Opens the password tool empty. Nothing from the email result is
       // carried across, the only value that tool may ever hold is typed.
       else if (a === "open-password") {
@@ -1764,6 +2040,35 @@
     document.body.appendChild(ta); ta.select();
     try { document.execCommand("copy"); done(); } catch { toast("Copy failed.", "err"); }
     ta.remove();
+  }
+
+  function discoveryCount() {
+    if (lastResult?.tool !== "username") return 0;
+    return window.MyReconDiscovery?.confirmed(lastResult.data.results?.profiles, u => window.MyReconMatchChoices?.choice(u), u => window.MyReconMatchChoices?.key(u)) || 0;
+  }
+  function updateDiscoveryCount() {
+    const count = discoveryCount();
+    document.querySelectorAll("[data-confirmed-count]").forEach(el => el.textContent = `${count} accounts confirmed by you`);
+  }
+  document.addEventListener("myrecon-choices-changed", updateDiscoveryCount);
+  function previewDiscoveryRecap() {
+    const count = discoveryCount();
+    if (!count) { toast("Mark your own found accounts as Mine before sharing a recap."); return; }
+    const payload = window.MyReconDiscovery.recap(count);
+    const dialog = document.createElement("dialog");
+    dialog.className = "card";
+    dialog.innerHTML = `<h2>MyRecon</h2><p>${esc(payload.text)}</p><p>What did you leave public?</p><p>myrecon.xyz</p><p class="hint">Only this count is shared. No usernames, names, photos, emails, or profile links.</p><button class="btn" data-share>Share this recap</button> <button class="btn btn-ghost" data-close>Cancel</button>`;
+    document.body.append(dialog);
+    dialog.addEventListener("close", () => dialog.remove());
+    dialog.querySelector("[data-close]").onclick = () => dialog.close();
+    dialog.querySelector("[data-share]").onclick = async () => {
+      if (discoveryCount() !== count) { dialog.close(); toast("Your choices changed. Preview the recap again."); return; }
+      if (navigator.share) {
+        try { await navigator.share(payload); } catch(e) { if(e.name !== "AbortError") toast("Could not share. Please retry.", "err"); }
+      } else copyText(`${payload.text}\n${payload.url}`, "Redacted recap copied.");
+      dialog.close();
+    };
+    dialog.showModal();
   }
 
   function shareUrl() {
@@ -1812,12 +2117,15 @@
       + (preview ? ` · Guest preview: ${preview.visible} of ${preview.checked} platforms shown` : "");
     const prev = document.title;
     document.title = `MyRecon ${TOOLS[lastResult.tool].label} report: ${lastResult.query}`;
+    const folded = $$("#results details:not([open])");
+    folded.forEach(node => { node.open = true; });
+    window.addEventListener("afterprint", () => folded.forEach(node => { node.open = false; }), { once: true });
     window.print();
     setTimeout(() => { document.title = prev; }, 800);
   }
 
   function buildTextSummary(res) {
-    const d = res.data;
+    const d = window.MyReconMatchChoices?.annotate(res.data) || res.data;
     const L = [`MyRecon, ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
     if (d.partial) {
       L.push("Search partially completed. Unavailable checks do not mean no match.");
@@ -1825,7 +2133,7 @@
         .forEach((message) => L.push(`- ${message}`));
       L.push("");
     }
-    const exposure = (res.tool === "username" && !previewMeta(d) && !d.partial) || (res.tool === "email" && !window.MyReconEmailOutcome(d).partial)
+    const exposure = (res.tool === "username" && !previewMeta(d) && !d.guest_preview && !d.partial) || (res.tool === "email" && !d.partial && !window.MyReconEmailOutcome(d).partial)
       ? computeExposure(res.tool, d) : null;
     if (exposure) {
       L.push(`Digital exposure score: ${exposure.score}/100 (${exposure.label})`, "");
@@ -1833,14 +2141,31 @@
     if (res.tool === "username") {
       const preview = previewMeta(d);
       if (preview) L.push(`Guest preview: ${preview.visible} of ${preview.checked} platforms shown; ${preview.hidden} platform verdicts require sign-in.`, "");
+      if (d.guest_preview) L.push(`Guest preview: ${d.guest_preview.visible_cards} card details visible; ${d.guest_preview.hidden_cards} cards locked. Sign in to run Standard for complete results.`, "");
       const all = [].concat(d.results?.profiles || [], d.results?.documents || [], d.results?.mentions || []);
+      L.push("A matching username alone does not establish identity. Ownership choices are self-reported.");
       L.push(`${all.length} ${preview ? "visible results" : "results"} found:`);
-      all.forEach((r) => L.push(`- ${r.platform || hostOf(r.url)}, ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`));
+      all.forEach((r) => {
+        L.push(`- ${r.platform || hostOf(r.url)}, ${r.url}${r.confidence ? ` [${r.confidence}]` : ""}`);
+        if (r.ownership_choice) L.push(`  Your ownership choice: ${r.ownership_choice.choice.replace(/_/g, " ")} (self-reported)`);
+        if (r.display_name) L.push(`  Name: ${r.display_name}`);
+        if (r.bio) L.push(`  Bio: ${r.bio}`);
+        if (r.profile_pic_url) L.push(`  Avatar: ${r.profile_pic_url}`);
+        if (r.public_links?.length) L.push(`  Public links: ${r.public_links.join(", ")}`);
+        Object.entries(r.statistics || {}).forEach(([key, value]) => L.push(`  ${key.replace(/_/g, " ")}: ${value}`));
+        if (r.metadata_source) L.push(`  Source: ${r.metadata_source.platform}; ${r.metadata_source.url}; ${r.metadata_source.basis}`);
+      });
     } else if (res.tool === "email") {
       const a = d.analysis || {}, s = d.summary || {};
       L.push(`Provider: ${a.provider || "-"} (${a.provider_type || "-"})`);
       L.push(`Deliverable: ${a.deliverable == null ? "unknown" : a.deliverable ? "yes" : "no"} · Disposable: ${a.disposable == null ? "unknown" : a.disposable ? "yes" : "no"}`);
       const outcome = window.MyReconEmailOutcome(d);
+      const platforms = window.MyReconEmailOutcome.platforms?.(d);
+      if (platforms) {
+        L.push(`Linked platforms: ${platforms.linked}; historical evidence: ${platforms.historical}.`, platforms.detail);
+        L.push(`Platform coverage: ${platforms.coverage.completed} of ${platforms.coverage.attempted} completed; ${platforms.coverage.unavailable} inconclusive.`);
+        L.push(`Source-associated platforms: ${platforms.names.join(", ") || "none returned"}`);
+      }
       L.push(`Breaches: ${outcome.label}${outcome.found && s.breach_count > 0 ? ` (${s.breach_count})` : ""}`);
       L.push(`Coverage: ${outcome.coverage}${outcome.partial ? " (incomplete)" : ""}`, outcome.detail);
       outcome.sources.forEach((source) => L.push(`- ${source.name}: ${source.status}${source.error ? ", " + source.error : ""}`));
@@ -1851,9 +2176,44 @@
         L.push(`Public account checks: ${d.account_checks.enabled ? "enabled" : "off"}`);
         (d.account_checks.sources || []).forEach((source) => L.push(`- ${source.name}: ${source.status}`));
       }
+      if (d.registration_checks && d.registration_checks.status !== "skipped") {
+        L.push(`Registration checks: ${d.registration_checks.checked || 0} answered of ${d.registration_checks.attempted || 0} eligible`);
+        (d.registration_checks.services || []).forEach((r) => L.push(`- ${r.service} (${r.engine || "Holehe"}): ${r.status}; ${r.reason}`));
+      }
       const svc = (d.linked_services && d.linked_services.services) || [];
+      const evidence = d.evidence_report;
+      if (evidence) {
+        if (evidence.generated_at) L.push(`Report collected: ${evidence.generated_at}`);
+        if (evidence.confidence_note) L.push(evidence.confidence_note);
+        if (evidence.freshness_note) L.push(evidence.freshness_note);
+        L.push("Profile summary:");
+        Object.entries(evidence.identity || {}).forEach(([field, values]) => values.forEach((v) => L.push(`- ${field}: ${v.value}; source: ${v.source}; basis: ${v.basis}`)));
+        L.push(evidence.identity_note, "Evidence timeline:");
+        L.push(evidence.counts_note || "Counts describe returned evidence; categories can overlap.");
+        [...(evidence.timeline || []), ...(evidence.undated_events || [])].forEach((event) => L.push(`- ${event.date_label}: ${event.title}; source: ${event.sources.join(', ')}; ${event.detail}${event.url ? `; ${event.url}` : ''}`));
+        L.push(evidence.date_note);
+        if (evidence.locations?.length) {
+          L.push("Locations:");
+          evidence.locations.forEach(v => L.push(`- ${v.value}; source: ${v.source}; basis: ${v.basis}${v.date_label ? `; ${v.date_label}` : ''}${v.url ? `; ${v.url}` : ''}`));
+        }
+        (evidence.profiles || []).forEach(p => {
+          L.push(`${p.platform} profile: ${p.display_name || p.username || ''}; source: ${p.source}`);
+          if (p.confidence?.scale === 4) L.push(`- Evidence strength: ${p.confidence.score}/4; ${p.confidence.label}; ${p.confidence.reason}`);
+          if (p.freshness) L.push(`- Recency: ${p.freshness.label}; ${p.freshness.reason}`);
+          Object.entries(p.field_conflicts || {}).forEach(([field, values]) => L.push(`- Source values differ (${field}): ${values.map(v => `${typeof v.value === 'object' ? JSON.stringify(v.value) : v.value}; source: ${v.source || 'not specified'}`).join(' | ')}`));
+          Object.entries(p.fields || {}).forEach(([k, v]) => L.push(`- ${k}: ${v}`));
+          Object.entries(p.lists || {}).forEach(([k, v]) => L.push(`- ${k}: ${v.join(', ')}`));
+          if (String(p.platform).toLowerCase() === "google") {
+            const reviews = window.MyReconEmailOutcome.reviews?.(p, d);
+            if (reviews) L.push(`- Google reviews: ${reviews.label}; ${reviews.returned} records returned; source: ${reviews.source || "not specified"}.`, reviews.detail);
+          }
+          (p.reviews || []).forEach(r => L.push(`- Review: ${r.name || ''}; ${r.address || ''}; ${r.date_label || r.date || 'date not provided'}; ${r.rating ?? 'rating not provided'}; ${r.text || ''}${r.owner_reply ? `; Owner reply: ${r.owner_reply}` : ''}${r.source_url ? `; ${r.source_url}` : ''}`));
+          (p.positions || []).forEach(r => L.push(`- Position: ${r.title || ''}; ${r.company || ''}; ${r.start || ''} to ${r.current ? 'Present' : r.end || ''}`));
+          (p.education || []).forEach(r => L.push(`- Education: ${r.school || ''}; ${r.start || ''} to ${r.end || ''}`));
+        });
+      }
       if (svc.length) {
-        L.push(`Linked services (${svc.length}):`);
+        L.push(`Service evidence entries (${svc.length}):`);
         svc.forEach((r) => L.push(`- ${r.service}: ${r.evidence}${r.date ? ` (${r.date})` : ""}`));
       } else if ((s.linked_accounts || []).length) L.push(`Linked accounts: ${s.linked_accounts.join(", ")}`);
     } else if (res.tool === "domain") {
@@ -1979,14 +2339,24 @@
   }
 
   function exportData(res) {
+    res = { ...res, data: window.MyReconMatchChoices?.annotate(res.data) || res.data };
     if (res.tool !== "email") return res.data;
     const outcome = window.MyReconEmailOutcome(res.data);
+    const platforms = window.MyReconEmailOutcome.platforms?.(res.data);
+    const reviewCoverage = (res.data.evidence_report?.profiles || []).filter(p => String(p.platform).toLowerCase() === "google")
+      .map(p => window.MyReconEmailOutcome.reviews?.(p, res.data)).filter(Boolean);
     return { ...res.data, summary: { ...res.data.summary,
       breached: outcome.found,
       breach_outcome: outcome.state,
-      coverage_incomplete: outcome.partial,
+      coverage_incomplete: outcome.partial || !!res.data.partial,
       breach_coverage: { completed: outcome.completed, attempted: outcome.attempted, sources: outcome.sources },
       interpretation: outcome.detail,
+      ...(platforms ? { linked_platforms_count: platforms.linked, platform_coverage: platforms.coverage,
+        platform_coverage_incomplete: platforms.coverage.enabled !== false && (platforms.coverage.status !== "ok" || platforms.coverage.unavailable > 0 || platforms.coverage.unconfigured > 0) } : {}),
+      review_coverage: reviewCoverage.map(r => ({ returned: r.returned, source: r.source, state: r.state,
+        total_reported: r.totalReported, ratings_reported: r.ratingsReported,
+        contributions_reported: r.contributionsReported, partial: r.partial, interpretation: r.detail })),
+      review_coverage_incomplete: reviewCoverage.some(r => r.partial),
     } };
   }
 
@@ -2066,6 +2436,8 @@
   }
 
   function switchTool(name) {
+    clearTimeout(profileTimer); pendingProfileUrl = null;
+    $("#profileInputPreview")?.remove();
     if (!TOOLS[name]) return;
     activeTool = name;
     $$(".tab").forEach((t) => {
@@ -2085,6 +2457,11 @@
     $("#panelSub").textContent = tool.sub;
     $("#deepWrap").style.display = tool.deep ? "" : "none";
     $("#emailOptions")?.toggleAttribute("hidden", name !== "email");
+    const intents = $(".lookup-intents");
+    if (intents) {
+      intents.hidden = name !== "username";
+      intents.style.display = name === "username" ? "" : "none";
+    }
     const ex = $("#examples");
     if (ex) {
       ex.innerHTML = (tool.examples || []).length
@@ -2106,15 +2483,7 @@
   ];
 
   function defaultEmpty() {
-    const starts = QUICK_STARTS.filter(([t]) => t !== activeTool && TOOLS[t]);
-    return `<div class="empty">
-      <p class="empty-title">Ready when you are</p>
-      <p>Enter a target above, or start from a question:</p>
-      <div class="quick-starts">${starts.map(([t, q, d]) => `
-        <button type="button" class="quick-start" data-quick="${t}">${icon(TOOLS[t].icon, 18)}
-          <span><strong>${esc(q)}</strong><small>${esc(d)}</small></span></button>`).join("")}
-      </div>
-    </div>`;
+    return "";
   }
 
   // ---------------------------------------------------------------- input detection
@@ -2204,6 +2573,47 @@
       $("#runBtn")?.addEventListener("click", run);
       $("#queryInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
       $("#queryInput")?.addEventListener("input", updateDetectHint);
+      $("#queryInput")?.addEventListener("input", () => { clearTimeout(profileTimer); pendingProfileUrl = null; });
+      $("#queryInput")?.addEventListener("paste", (event) => {
+        if (activeTool !== "username") return;
+        const raw = event.clipboardData?.getData("text");
+        if (!raw) return;
+        const parsed = window.MyReconProfileInput.shared(raw);
+        event.preventDefault();
+        if (parsed.url && pendingProfileUrl === parsed.url) return;
+        $("#queryInput").value = parsed.url || raw;
+        profilePreview(parsed);
+        clearTimeout(profileTimer); pendingProfileUrl = null;
+        if (!$("#runBtn").disabled && profileAutoGate.accept(parsed)) {
+          pendingProfileUrl = parsed.url;
+          profileTimer = setTimeout(() => { pendingProfileUrl = null; run(); }, 700);
+        }
+      });
+      const introductions = document.createElement("div");
+      introductions.className = "lookup-intents";
+      introductions.setAttribute("aria-label", "Search ideas");
+      introductions.innerHTML = '<div class="lookup-intents-heading">START WITH A QUESTION<span>Explore your digital footprint</span></div>';
+      const introduction = document.createElement("p"); introduction.className = "lookup-intent-note"; introduction.setAttribute("aria-live", "polite");
+      introduction.textContent = "Your old username has a history. Find yours.";
+      for (const [title, copy] of [
+        ["Forgotten Account Finder", "Your old username has a history. Find yours."],
+        ["Before You Meet", "Review public information associated with a profile. Same usernames can belong to different people. This cannot tell you whether someone is safe to date."],
+        ["Check My Dating Footprint", "What can your next date find about you? Search yourself before your next date does."]
+      ]) {
+        const button = document.createElement("button");
+        button.type = "button"; button.className = "lookup-intent";
+        const index = introductions.querySelectorAll("button").length;
+        const symbols = ["◎", "◇", "◈"];
+        const captions = ["Rediscover your old accounts", "Review a public profile", "See what you share publicly"];
+        button.setAttribute("aria-pressed", String(index === 0));
+        button.innerHTML = `<span class="lookup-intent-icon" aria-hidden="true">${symbols[index]}</span><span class="lookup-intent-copy"><strong>${title}</strong><span>${captions[index]}</span></span><span class="lookup-intent-arrow" aria-hidden="true">↗</span>`;
+        button.addEventListener("click", () => { switchTool("username"); introduction.textContent = copy; introductions.querySelectorAll("button").forEach(item => item.setAttribute("aria-pressed", String(item === button))); $("#queryInput").focus(); });
+        introductions.append(button);
+      }
+      introductions.append(introduction);
+      introductions.hidden = activeTool !== "username";
+      introductions.style.display = activeTool === "username" ? "" : "none";
+      $("#queryInput")?.closest(".field-row").before(introductions);
       $("#detectHint")?.addEventListener("click", (e) => {
         const btn = e.target.closest("[data-switch]");
         const target = btn && btn.dataset.switch;
@@ -2233,6 +2643,19 @@
       });
       // Cross-tool pivoting: delegated so it survives result re-renders.
       resultsEl().addEventListener("click", (e) => {
+        const el = e.target.closest("[data-email-username]");
+        if (!el) return;
+        e.preventDefault();
+        const handle = el.dataset.emailUsername;
+        if (!handle?.trim()) return;
+        switchTool("username");
+        $("#queryInput").value = handle;
+        $("#panelSub").textContent = `${TOOLS.username.sub} Matches to this handle do not verify the same person as the email findings.`;
+        updateDetectHint();
+        $("#queryInput").focus();
+        $("#tool")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      resultsEl().addEventListener("click", (e) => {
         const el = e.target.closest("[data-pivot]");
         if (!el) return;
         e.preventDefault();
@@ -2253,11 +2676,15 @@
         const el = e.target.closest("[data-gate]");
         if (!el) return;
         const want = el.dataset.gate;
-        if (want === "signin" || want === "unlock") {
+        if (want === "signin" || want === "unlock" || want === "signin-full") {
           try { await window.MyReconAccount.signIn(); } catch { return; }
           if (want === "unlock") {
             if (lastResult?.tool !== "username" || !previewMeta(lastResult.data)) return;
             $("#queryInput").value = lastResult.query;
+            const full = document.querySelector('input[name="scope"][value="full"]');
+            if (full) full.checked = true;
+          }
+          if (want === "signin-full") {
             const full = document.querySelector('input[name="scope"][value="full"]');
             if (full) full.checked = true;
           }

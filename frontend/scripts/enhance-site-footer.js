@@ -8,16 +8,16 @@ const logoHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(RO
 const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, "assets/css/site-footer.css"))).digest("hex").slice(0, 10);
 const GROUPS = [
   ["Products", [
-    ["Username search", "/#tool"], ["Features", "/features.html"], ["Android app", "/app.html"],
-    ["Plans", "/pricing.html"], ["API", "/developers.html"],
+    ["Username search", "/#tool"], ["Free OSINT tool", "/free-osint-tool.html"], ["Boost OSINT", "/boost.html"], ["Browser OSINT", "/browser.html"], ["Privacy goal", "/goal.html"], ["Digital footprint checker", "/digital-footprint-checker.html"], ["Reverse username lookup", "/reverse-username-lookup.html"], ["Username checker", "/username-checker.html"], ["Deep Search", "/deep-search.html"], ["Features", "/features"], ["Privacy audit", "/privacy-audit"], ["Android app", "/app.html"],
+    ["Plans", "/pricing"], ["API", "/developers.html"], ["Enterprise API", "/enterprise-osint-api"], ["Badges & widgets", "/badge.html"],
   ]],
   ["Explore", [
-    ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
+    ["OSINT cheat sheet", "/osint-cheat-sheet.html"], ["Site directory", "/directory.html"], ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [
     ["MyRecon vs Sherlock", "/vs/sherlock"], ["MyRecon vs Maigret", "/vs/maigret"],
-    ["MyRecon vs WhatsMyName", "/vs/whatsmyname"], ["MyRecon vs HIBP", "/vs/have-i-been-pwned"],
+    ["MyRecon vs WhatsMyName", "/vs/whatsmyname"], ["MyRecon vs HIBP", "/vs/have-i-been-pwned.html"],
     ["All comparisons", "/vs/"],
   ]],
   ["Company", [
@@ -59,7 +59,7 @@ function renderFooter() {
 function enhance(file) {
   let html = fs.readFileSync(file, "utf8");
   const before = html;
-  if (!/<html\b/i.test(html) || !/<\/body>/i.test(html)) return false;
+  if (!/<html\b/i.test(html) || !/<\/body>/i.test(html) || /<meta\b[^>]*http-equiv=["']refresh["']/i.test(html)) return false;
   const footer = renderFooter();
   if (/<footer\b[^>]*>[\s\S]*?<\/footer>/i.test(html)) {
     html = html.replace(/<footer\b[^>]*>[\s\S]*?<\/footer>/i, footer);
@@ -70,12 +70,15 @@ function enhance(file) {
     html = html.replace(/<\/head>/i, `  <link rel="stylesheet" href="/assets/css/site-footer.css?v=${footerHash}">\n</head>`);
   }
   if (html === before) return false;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     try {
       fs.writeFileSync(file, html, "utf8");
       return true;
     } catch (error) {
-      if (error.code !== "UNKNOWN" || attempt === 2) throw error;
+      if (attempt === 4) throw error;
+      const wait = 100 * (attempt + 1);
+      const start = Date.now();
+      while (Date.now() - start < wait) {}
     }
   }
   return false;

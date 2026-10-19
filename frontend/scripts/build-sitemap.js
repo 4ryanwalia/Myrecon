@@ -41,10 +41,10 @@ const ROOT = path.join(__dirname, "..");
 const SITE = "https://www.myrecon.xyz";
 
 /** Directories that never contain indexable pages. */
-const EXCLUDE_DIRS = new Set(["node_modules", ".git", ".vercel", "content", "data", "scripts"]);
+const EXCLUDE_DIRS = new Set(["node_modules", ".git", ".vercel", "content", "data", "scripts", "tests"]);
 
 /** Individual files that are real pages but must not be indexed. */
-const EXCLUDE_FILES = new Set(["404.html"]);
+const EXCLUDE_FILES = new Set(["404.html", "ops.html"]);
 
 /**
  * changefreq/priority by section. Google has said publicly it ignores both;
@@ -52,24 +52,19 @@ const EXCLUDE_FILES = new Set(["404.html"]);
  */
 const SECTIONS = [
   { test: (u) => u === "/", changefreq: "weekly", priority: "1.0" },
-  { test: (u) => u === "/breaches/", changefreq: "daily", priority: "0.8" },
-  { test: (u) => u.startsWith("/breaches/"), changefreq: "monthly", priority: "0.6" },
-  { test: (u) => u === "/guides/", changefreq: "weekly", priority: "0.9" },
-  { test: (u) => u.startsWith("/guides/"), changefreq: "monthly", priority: "0.8" },
-  { test: (u) => u === "/blog/", changefreq: "weekly", priority: "0.9" },
-  { test: (u) => u.startsWith("/blog/"), changefreq: "monthly", priority: "0.8" },
-  { test: (u) => u === "/services.html" || u === "/app.html" || u === "/deep-search.html", changefreq: "monthly", priority: "0.9" },
+  { test: (u) => u === "/breaches/" || u === "/breaches/case-files/", changefreq: "daily", priority: "0.9" },
+  { test: (u) => u.startsWith("/breaches/case-files/"), changefreq: "monthly", priority: "0.7" },
+  { test: (u) => u.startsWith("/breaches/"), changefreq: "monthly", priority: "0.7" },
+  { test: (u) => u === "/guides/" || u === "/find/" || u === "/privacy/" || u === "/vs/" || u === "/blog/", changefreq: "weekly", priority: "0.9" },
+  { test: (u) => u.startsWith("/guides/") || u.startsWith("/find/") || u.startsWith("/privacy/") || u.startsWith("/vs/") || u.startsWith("/blog/"), changefreq: "monthly", priority: "0.8" },
+  { test: (u) => u === "/boost.html" || u === "/browser.html" || u === "/goal.html" || u === "/services.html" || u === "/app.html" || u === "/deep-search.html" || u === "/osint-cheat-sheet.html" || u === "/badge.html" || u === "/free-osint-tool.html" || u === "/digital-footprint-checker.html" || u === "/reverse-username-lookup.html" || u === "/username-checker.html", changefreq: "monthly", priority: "0.9" },
   { test: (u) => u === "/pricing" || u === "/features" || u === "/privacy-audit" || u === "/enterprise-osint-api", changefreq: "monthly", priority: "0.9" },
-  // The three explainer pages. High-intent search targets ("is X legit",
-  // "X vs Y"), so they sit above About and below the tool pages. Without an
-  // entry here they would fall through to the 0.3 catch-all, which is where
-  // legal boilerplate lives.
+  // The three explainer pages and developer API documentation.
   { test: (u) => u === "/is-myrecon-legit.html"
       || u === "/how-myrecon-compares.html"
-      || u === "/username-sweep-vs-deep-search.html",
+      || u === "/username-sweep-vs-deep-search.html"
+      || u === "/developers.html",
     changefreq: "monthly", priority: "0.8" },
-  // Named head-to-head comparisons. Same intent class as the explainers.
-  { test: (u) => u.startsWith("/vs/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/founder.html", changefreq: "monthly", priority: "0.7" },
   { test: (u) => u === "/about.html", changefreq: "monthly", priority: "0.6" },
   { test: (u) => u === "/contact.html", changefreq: "yearly", priority: "0.5" },
@@ -95,15 +90,28 @@ function toUrlPath(file, html) {
   if (canonicalHref) {
     try {
       const canonical = new URL(canonicalHref, SITE);
-      if (["myrecon.xyz", "www.myrecon.xyz"].includes(canonical.hostname)) {
+      if (["myrecon.xyz", "www.myrecon.xyz"].includes(canonical.hostname) && canonical.protocol === "https:") {
+        if (canonical.search || canonical.hash) return null;
         return canonical.pathname || "/";
       }
+      return null; // Syndicated content belongs to its external canonical.
     } catch {
       // Fall through to the path on disk when a page has a malformed canonical.
     }
   }
   const rel = path.relative(ROOT, file).split(path.sep).join("/");
   return "/" + (rel.endsWith("index.html") ? rel.slice(0, -"index.html".length) : rel);
+}
+
+function isNoindex(html) {
+  return [...html.matchAll(/<meta\b[^>]*>/gi)].some(([tag]) =>
+    /\bname\s*=\s*["'](?:robots|googlebot)["']/i.test(tag) &&
+    /\bcontent\s*=\s*["'][^"']*\b(?:noindex|none)\b/i.test(tag));
+}
+
+function xmlEscape(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 }
 
 function gitDate(file) {
@@ -133,8 +141,11 @@ function main() {
     const html = fs.readFileSync(file, "utf8");
     const url = toUrlPath(file, html);
 
-    const robots = html.match(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
-    if (robots && /noindex|none/i.test(robots[1])) {
+    if (url === null) {
+      skipped.push(`${path.relative(ROOT, file)} (external canonical)`);
+      continue;
+    }
+    if (isNoindex(html) || /<meta\b[^>]*http-equiv=["']refresh["']/i.test(html)) {
       skipped.push(`${url} (noindex)`);
       continue;
     }
@@ -169,17 +180,84 @@ function main() {
     unique
       .map(
         (e) =>
-          `  <url><loc>${SITE}${e.url}</loc><lastmod>${e.lastmod}</lastmod>` +
+          `  <url><loc>${xmlEscape(SITE + e.url)}</loc><lastmod>${e.lastmod}</lastmod>` +
           `<changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`,
       )
       .join("\n") +
     `\n</urlset>\n`;
 
+  function writeSafe(filePath, content) {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        fs.writeFileSync(filePath, content, "utf8");
+        break;
+      } catch (err) {
+        if (attempt === 4) throw err;
+        const wait = 100 * (attempt + 1);
+        const start = Date.now();
+        while (Date.now() - start < wait) {}
+      }
+    }
+  }
+
   // .gitattributes normalises the repo to LF; writing CRLF back would show the
   // whole file as changed on every build.
-  fs.writeFileSync(path.join(ROOT, "sitemap.xml"), xml.replace(/\r\n/g, "\n"), "utf8");
+  writeSafe(path.join(ROOT, "sitemap.xml"), xml.replace(/\r\n/g, "\n"));
 
-  console.log(`[sitemap] ${unique.length} URLs written`);
+  function buildUrlset(items) {
+    return (
+      `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+      items
+        .map(
+          (e) =>
+            `  <url><loc>${xmlEscape(SITE + e.url)}</loc><lastmod>${e.lastmod}</lastmod>` +
+            `<changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`,
+        )
+        .join("\n") +
+      `\n</urlset>\n`
+    );
+  }
+
+  const sections = {
+    "sitemap-breaches.xml": unique.filter((e) => e.url.startsWith("/breaches/")),
+    "sitemap-blog.xml": unique.filter((e) => e.url.startsWith("/blog/")),
+    "sitemap-guides.xml": unique.filter((e) => e.url.startsWith("/guides/")),
+    "sitemap-find.xml": unique.filter((e) => e.url.startsWith("/find/")),
+    "sitemap-privacy.xml": unique.filter((e) => e.url.startsWith("/privacy/")),
+    "sitemap-vs.xml": unique.filter((e) => e.url.startsWith("/vs/")),
+    "sitemap-core.xml": unique.filter((e) => !e.url.startsWith("/breaches/") && !e.url.startsWith("/blog/") && !e.url.startsWith("/guides/") && !e.url.startsWith("/find/") && !e.url.startsWith("/privacy/") && !e.url.startsWith("/vs/")),
+  };
+
+  for (const [secFile, secEntries] of Object.entries(sections)) {
+    if (secEntries.length > 0) {
+      writeSafe(path.join(ROOT, secFile), buildUrlset(secEntries).replace(/\r\n/g, "\n"));
+    }
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const sitemapIndexXml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    `  <sitemap>\n` +
+    `    <loc>${SITE}/sitemap.xml</loc>\n` +
+    `    <lastmod>${today}</lastmod>\n` +
+    `  </sitemap>\n` +
+    Object.keys(sections)
+      .map(
+        (secFile) =>
+          `  <sitemap>\n` +
+          `    <loc>${SITE}/${secFile}</loc>\n` +
+          `    <lastmod>${today}</lastmod>\n` +
+          `  </sitemap>`,
+      )
+      .join("\n") +
+    `\n</sitemapindex>\n`;
+
+  writeSafe(path.join(ROOT, "sitemap-index.xml"), sitemapIndexXml.replace(/\r\n/g, "\n"));
+  writeSafe(path.join(ROOT, "sitemap_index.xml"), sitemapIndexXml.replace(/\r\n/g, "\n"));
+
+  console.log(`[sitemap] ${unique.length} URLs written to sitemap.xml, section sitemaps, and sitemap-index.xml`);
   if (skipped.length) console.log(`[sitemap] skipped ${skipped.length}: ${skipped.join(", ")}`);
 
   // 50,000 is the per-file ceiling in the protocol. Nowhere near it, but a
@@ -190,4 +268,5 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) main();
+module.exports = { toUrlPath, isNoindex, xmlEscape, lastmod };

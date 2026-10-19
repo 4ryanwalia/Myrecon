@@ -1,0 +1,78 @@
+<!--
+{
+  "title": "Reverse Phone Lookup & Number OSINT: 2026 Guide | MyRecon",
+  "headline": "Reverse Phone Lookup & Phone Number OSINT: How to Investigate Numbers Safely",
+  "description": "Learn technical methods to trace phone numbers using carrier lookups, HLR validation, messaging platform discovery, and ethical OSINT tools without scams.",
+  "category": "OSINT Investigation",
+  "datePublished": "2026-10-14",
+  "dateModified": "2026-10-14",
+  "faq": [
+    {
+      "question": "Can you do a reverse phone lookup for free?",
+      "answer": "Yes. Basic technical data including the country of origin, original carrier, line type (mobile, landline, or VoIP), and timezone can be identified for free using open telecom databases and open-source tools like PhoneInfoga."
+    },
+    {
+      "question": "What is an HLR lookup in phone OSINT?",
+      "answer": "Home Location Register (HLR) is a telecom database that stores subscriber details. An HLR query confirms whether a mobile number is currently active, connected to a cellular tower, roaming, or ported to another carrier, without ringing the handset."
+    },
+    {
+      "question": "Can you find someone's name from a phone number?",
+      "answer": "Depending on caller ID registries, public social listings, and messaging app syncs (like WhatsApp or Telegram), public names or profile pictures may be discovered. However, spoofing and burner numbers often obscure real ownership."
+    },
+    {
+      "question": "How do scammers use spoofed phone numbers?",
+      "answer": "Scammers exploit VoIP protocols to alter their outgoing caller ID so an incoming call appears to originate from a local bank, government agency, or local area code. True carrier lookups can expose whether a number is VoIP."
+    }
+  ]
+}
+-->
+<p class="lead">From spam callers and SMS phishing (smishing) scams to due-diligence verifications, analyzing a telephone number is a vital branch of modern open-source intelligence. Here is how investigators and cybersecurity analysts dissect phone numbers using ethical, technical OSINT methods.</p>
+
+<h2>Understanding Phone Number Anatomy (E.164 Format)</h2>
+<p>Every legitimate phone number follows the international telecom standard <strong>ITU E.164</strong>, formatted as <code>+[Country Code][National Destination Code][Subscriber Number]</code>.</p>
+<p>Breaking down a number provides the initial technical clues:</p>
+<ul>
+  <li><strong>Country Code (CC):</strong> Identifies the sovereign telecom regulatory authority (e.g., <code>+1</code> for North America, <code>+44</code> for the UK, <code>+91</code> for India).</li>
+  <li><strong>National Destination / Area Code:</strong> Identifies geographic region or telecom operator routing blocks.</li>
+  <li><strong>Line Type:</strong> Tells you whether the number is assigned to a physical <strong>Mobile/Cellular</strong> SIM, a legacy copper <strong>Landline</strong>, or a virtual <strong>VoIP (Voice over IP)</strong> provider (e.g., Google Voice, Twilio, Skype, or TextNow).</li>
+</ul>
+
+<h2>Step 1: Carrier &amp; Line Type Identification (The VoIP Check)</h2>
+<p>Determining whether a phone number is a physical mobile SIM or a virtual VoIP number is the single most important diagnostic step:</p>
+<ol>
+  <li><strong>VoIP Numbers:</strong> Widely used by scammers, spammers, and customer support desks because they can be created and discarded in seconds with zero physical SIM registration.</li>
+  <li><strong>Cellular / Mobile:</strong> In many jurisdictions, obtaining a physical SIM requires government identification (Know Your Customer / KYC laws), making mobile numbers more tightly bound to a real person.</li>
+  <li><strong>Free Carrier Check:</strong> You can query local Number Portability Administration Centers (NPAC) or open telecom tools like <em>PhoneInfoga</em> and telecom API lookup endpoints to identify the original and current ported carrier.</li>
+</ol>
+
+<h2>Step 2: HLR (Home Location Register) Lookup</h2>
+<p>An HLR lookup queries the worldwide cellular signaling network (SS7/Diameter) to determine the real-time operational status of a mobile device:</p>
+<ul>
+  <li><strong>Active Status:</strong> Confirms whether the phone is turned on and communicating with a cell tower.</li>
+  <li><strong>Current Network:</strong> Reveals if the subscriber has ported their number from AT&amp;T to Verizon, or Vodafone to Airtel.</li>
+  <li><strong>Roaming State:</strong> Indicates whether the mobile device is currently registered in its home region or traveling abroad on a foreign carrier network.</li>
+  <li><strong>Zero Trace:</strong> HLR lookups do not ring the phone, send an alert, or notify the device owner.</li>
+</ul>
+
+<h2>Step 3: Messaging App Profile Pivots (WhatsApp, Telegram, Signal)</h2>
+<p>Billions of users link their phone numbers to popular end-to-end encrypted messaging applications. These platforms often serve as public identity anchors:</p>
+<ul>
+  <li><strong>WhatsApp Web / API:</strong> Saving a phone number in your address book or opening <code>https://wa.me/&lt;number&gt;</code> allows you to check if a WhatsApp account is active. If the user's privacy settings permit public visibility, their profile photo, display name, and "About" bio can be examined.</li>
+  <li><strong>Telegram:</strong> Adding a number to a sandboxed research device’s contacts allows you to see if an associated Telegram account exists, often revealing their public <code>@username</code>. You can then take that username and run it through <a href="/#tool">MyRecon username search</a> to discover connected profiles across 500+ other platforms!</li>
+  <li><strong>Truecaller / Caller ID Databases:</strong> Crowdsourced caller ID directories aggregate contacts from users who upload their phone books. While effective, keep in mind that caller names reflect how other people saved the contact, not necessarily their official legal name.</li>
+</ul>
+
+<h2>Step 4: Search Engine Operators and Dorks for Phone Numbers</h2>
+<p>Numbers frequently surface in public business registries, resume uploads, forum sales listings, and real estate classifieds. Search engine syntax helps unearth these links:</p>
+<pre><code>"123-456-7890" OR "(123) 456-7890" OR "+11234567890"
+"phone_number" (resume OR curriculum OR contact OR invoice)
+site:facebook.com "phone_number"
+site:linkedin.com "phone_number"</code></pre>
+
+<h2>Defending Your Own Phone Privacy</h2>
+<p>Because phone numbers act as de facto universal identity tokens, exposing your real number creates significant security risks, including SIM swapping attacks and identity theft:</p>
+<ul>
+  <li><strong>Never use your personal number for public 2FA:</strong> Switch two-factor authentication from SMS to an authenticator app (like Aegis, 2FAS, or YubiKey) to prevent SIM hijacking.</li>
+  <li><strong>Use secondary numbers:</strong> Keep a dedicated secondary VoIP number (like Google Voice, MySudo, or a secondary prepaid eSIM) for shopping receipts, classifieds, and delivery apps.</li>
+  <li><strong>Remove your number from broker sites:</strong> Follow our <a href="/blog/how-to-remove-yourself-from-the-internet.html">data broker opt-out guide</a> to purge your phone number from public registries.</li>
+</ul>

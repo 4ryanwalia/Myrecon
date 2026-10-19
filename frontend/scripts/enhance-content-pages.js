@@ -53,8 +53,20 @@ function enhance(file, section) {
   // that an editor has assigned after this release.
   html = html.replace(/("dateModified"\s*:\s*")(\d{4}-\d{2}-\d{2})(")/g,
     (whole, before, day, after) => day < CONTENT_UPDATE_DATE ? `${before}${CONTENT_UPDATE_DATE}${after}` : whole);
-  fs.writeFileSync(file, html, "utf8");
-  return true;
+  const before = fs.readFileSync(file, "utf8");
+  if (html === before) return false;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      fs.writeFileSync(file, html, "utf8");
+      return true;
+    } catch (err) {
+      if (attempt === 4) throw err;
+      const wait = 100 * (attempt + 1);
+      const start = Date.now();
+      while (Date.now() - start < wait) {}
+    }
+  }
+  return false;
 }
 
 let count = 0;

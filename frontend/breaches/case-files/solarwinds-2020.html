@@ -47,13 +47,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=5d5e886941">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=eacd010be9">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=9c9b9fad07">
-  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css?v=6743ad80d4">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=2e36ee7372">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=7a7a010a5e">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SolarWinds, 2020: 18,000 organisations installed the backdoor themselves","description":"Attackers compromised SolarWinds' build system and shipped a backdoor inside a signed software update. Around 18,000 customers installed it. Fewer than 100 were the point.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/solarwinds-2020.html","articleSection":"Case Files","about":{"@type":"Thing","name":"SolarWinds supply chain attack"},"wordCount":1080}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"SolarWinds supply chain attack","item":"https://www.myrecon.xyz/breaches/case-files/solarwinds-2020.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"SolarWinds supply chain attack","item":"https://www.myrecon.xyz/breaches/case-files/solarwinds-2020.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was SolarWinds a data breach?","acceptedAnswer":{"@type":"Answer","text":"Not in the usual sense. Almost no consumer records were stolen. What was stolen was access, to US federal departments, to security vendors, to technology companies, and in several cases email, source code and authentication material. It matters because it changed what the industry counts as a breach: the asset taken was a position inside other people's networks."}},{"@type":"Question","name":"How many organisations were actually compromised?","acceptedAnswer":{"@type":"Answer","text":"Around 18,000 SolarWinds customers downloaded a trojanised Orion update. That number is usually quoted as the scale of the attack, and it overstates the damage. The backdoor only phoned home; the attackers then selected a much smaller set, commonly reported as fewer than 100 organisations, for hands-on intrusion. Everyone else had a dormant backdoor and a very bad month of incident response."}},{"@type":"Question","name":"Who was behind the SolarWinds attack?","acceptedAnswer":{"@type":"Answer","text":"In April 2021 the US government formally attributed it to the SVR, Russia's foreign intelligence service. The industry tracks the same activity as APT29 or Cozy Bear. Russia denied involvement and no individual has been prosecuted."}},{"@type":"Question","name":"What is SUNBURST?","acceptedAnswer":{"@type":"Answer","text":"SUNBURST is the name FireEye gave to the backdoor inserted into SolarWinds Orion. It was written to resemble ordinary Orion code, waited up to two weeks before activating, checked whether it was running inside a researcher's analysis environment, and disguised its command traffic as Orion's own telemetry protocol."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
@@ -70,7 +68,9 @@
   </header>
   <main id="main" class="container">
     <article class="article breach-article cf-article">
-      <p class="bx-crumb"><a href="/breaches/case-files/">← Case Files</a> · <a href="/breaches/">The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="/breaches/case-files/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">SolarWinds, 2020: 18,000 organisations installed the backdoor themselves</span>
+      </nav>
 
       <header class="bx-head">
         <div>
@@ -90,7 +90,13 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Government and corporate email · Internal network access · Source code · Authentication tokens</p>
 
-<p class="lead">Every piece of security advice about software updates says the same thing: install them promptly, get them from the vendor, check the signature. In 2020, around 18,000 organisations did exactly that and installed a Russian intelligence backdoor. The update was genuine. It came from the real vendor, over the real update channel, signed with the real certificate. The compromise sat upstream of every control anyone had.</p>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Every piece of security advice about software updates says the same thing: install them promptly, get them from the vendor, check the signature. In 2020, around 18,000 organisations did exactly that and installed a Russian intelligence backdoor. The update was genuine. It came from the real vendor, over the real update channel, signed with the real certificate. The compromise sat upstream of every control anyone had.</p></section>
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Malicious code inserted into the SolarWinds Orion build pipeline and distributed as a digitally signed update</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Tens of millions in direct costs to SolarWinds; the SEC later sued the company and its security chief</p>
+<p>Reported scale: ~18,000 organisations downloaded the backdoor.</p></section>
+      <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Every piece of security advice about software updates says the same thing: install them promptly, get them from the vendor, check the signature. In 2020, around 18,000 organisations did exactly that and installed a Russian intelligence backdoor. The update was genuine. It came from the real vendor, over the real update channel, signed with the real certificate. The compromise sat upstream of every control anyone had.</p>
 
 <h2>What happened</h2>
 
@@ -147,19 +153,22 @@
   <li><strong>Give management software an outbound allowlist.</strong> SUNBURST had to reach the internet to be useful. A monitoring platform that can only talk to the things it monitors is a much smaller problem.</li>
   <li><strong>Know which vendors can run code on your machines.</strong> Any vendor shipping you automatic updates has that power. The list is usually longer than people expect and almost never written down.</li>
   <li><strong>For individuals the lesson is narrower but real.</strong> Take updates from the vendor rather than a mirror or a bundled installer. Supply chain attacks that reach consumers almost always arrive through the unofficial route, not the official one.</li>
-</ol>
+</ol></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
-      <form class="bx-check" data-breach-check>
-        <label for="cfEmail">Check whether your own address is in a known breach</label>
+      <form class="bx-check" data-breach-check data-targets="[]">
+        <h2>Were you part of this breach?</h2>
+        <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
           <button class="btn btn-sm" type="submit">Check my address</button>
         </div>
-        <p class="bx-check-note" id="cfEmailNote">Checked against every breach on record, against public breach data only. Your address is not sent to us as a form and is not stored, it is handed straight to the lookup tool in your own browser. See the <a href="/privacy.html#forms">privacy policy</a>.</p>
+        <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
       <h2>Questions people ask</h2>
@@ -197,6 +206,8 @@
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
+        <li><a href="/breaches/case-files/clearview-ai-2020.html">Clearview AI, 2020: three billion faces, scraped and sold</a></li>
+        <li><a href="/breaches/case-files/capital-one-2019.html">Capital One, 2019: a firewall misconfiguration and 106 million applicants</a></li>
         <li><a href="/breaches/case-files/moveit-2023.html">MOVEit, 2023: one file transfer product, 2,700 organisations</a></li>
         <li><a href="/breaches/case-files/accellion-2021.html">Accellion FTA, 2021: the rehearsal for MOVEit</a></li>
         <li><a href="/breaches/case-files/opm-2015.html">OPM, 2015: 21.5 million security clearance files, fingerprints included</a></li>
@@ -217,15 +228,15 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/free-osint-tool.html">Free OSINT tool</a></li><li><a href="/boost.html">Boost OSINT</a></li><li><a href="/browser.html">Browser OSINT</a></li><li><a href="/goal.html">Privacy goal</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/features">Features</a></li><li><a href="/privacy-audit">Privacy audit</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li><li><a href="/enterprise-osint-api">Enterprise API</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/directory.html">Site directory</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned.html">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -244,9 +255,9 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=e91ad6a95d"></script>
-  <script src="/assets/js/breach-check.js?v=2"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=1fcd6336d1"></script>
+  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
