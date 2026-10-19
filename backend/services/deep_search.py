@@ -2,24 +2,73 @@
 import copy
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import unquote, urlsplit
 
 from modules.deep_search_plan import LABELS, build_plan, dedupe_key, is_profile, matches_context, section_for
 from modules.deep_search_sources import ACTIVITY_SOURCES, NAME_SOURCES, Missing, keybase
 from modules.deep_search_web import run_plan
+from modules.profile_connections import connections
+
+
+def _search_email(parsed, emit, stop):
+    """Exact-email Google lookup only, with the public endpoint's projection."""
+    from services.email_public_profiles import lookup_public_profiles
+
+    subject = parsed["subject"]
+    result = {"status": "pending", **parsed, "activity": [], "accounts": [], "people": [],
+              "identity": None, "owner_links": [], "sections": [], "source_checks": [],
+              "plan": [], "notes": [], "queries_run": 0, "partial": False,
+              "google_public_profiles": {"query": {"email": subject}, "status": "pending",
+                                         "profiles": [], "sources": []}}
+    if stop.is_set():
+        return result
+    emit({"type": "progress", "phase": "Google public profile",
+          "detail": "Resolving the exact email and checking public contributor reviews.", "percent": 5})
+    emit({"type": "partial", "data": copy.deepcopy(result)})
+    if stop.is_set():
+        return result
+    try:
+        public = lookup_public_profiles(subject)
+        if (not isinstance(public, dict) or not isinstance(public.get("profiles"), list)
+                or not isinstance(public.get("sources"), list) or not isinstance(public.get("status"), str)):
+            raise ValueError("Invalid public-profile result")
+    except Exception:
+        public = {"query": {"email": subject}, "status": "unavailable", "profiles": [],
+                  "sources": [{"name": "Google public profile", "provider": "GHunt", "status": "unavailable",
+                               "reason": "The public Google source could not complete this lookup."}]}
+    result["google_public_profiles"] = public
+    result["status"] = public["status"]
+    result["partial"] = public["status"] not in ("ok", "no_match")
+    result["source_checks"] = [{"source": source.get("name", "Google public source"),
+                                "state": source.get("status", "unavailable")} for source in public["sources"]]
+    result["notes"] = [
+        "Only an exact-email public Google identity and its public contributor reviews are checked.",
+        "Unavailable, private or incomplete review collections do not prove that no reviews exist.",
+        "Profile edit dates describe profile changes and do not establish online or login activity.",
+    ]
+    if not stop.is_set():
+        emit({"type": "progress", "phase": "Google public reviews",
+              "detail": "Public Google lookup finished; source status and coverage are shown.", "percent": 98})
+        emit({"type": "partial", "data": copy.deepcopy(result)})
+    return result
 
 
 def search(parsed, emit, stop=None):
     stop = stop or threading.Event()
     subject, mode, context = parsed["subject"], parsed["mode"], parsed["context"]
+    if mode == "email":
+        return _search_email(parsed, emit, stop)
     plan = build_plan(subject, mode, context)
     result = {"status": "ok", **parsed, "activity": [], "accounts": [], "people": [], "identity": None,
-              "owner_links": [], "sections": [], "source_checks": [], "plan": plan, "notes": [], "queries_run": 0}
+              "owner_links": [], "connections": [], "connection_trail": parsed.get("connection_trail", []),
+              "connection_limits": {"suggestions": 30, "follow_depth": 3},
+              "sections": [], "source_checks": [], "plan": plan, "notes": [], "queries_run": 0}
     lock = threading.Lock()
     seen = set()
+    network_checks = {}
 
     def publish():
         if not stop.is_set():
+            result["connections"] = connections(result, network_checks)
             emit({"type": "partial", "data": copy.deepcopy(result)})
 
     def web_hits(query, hits):
@@ -70,17 +119,8 @@ def search(parsed, emit, stop=None):
                     if data and label in ACTIVITY_SOURCES and mode == "handle":
                         result["activity"].append(data)
                         for link in data["declared"]:
-                            parts = urlsplit(link["url"])
-                            host = (parts.hostname or "").removeprefix("www.")
-                            segments = [unquote(s).removeprefix("@") for s in parts.path.split("/") if s]
-                            if segments and segments[0] in {"in", "user", "users", "profile"}:
-                                segments = segments[1:]
-                            alias = segments[0] if segments and host in {"github.com", "x.com", "twitter.com", "instagram.com", "linkedin.com", "reddit.com", "bsky.app", "dev.to"} else None
-                            if alias and alias.casefold() == subject.casefold():
-                                alias = None
-                            if alias and not is_profile(link["url"], alias):
-                                alias = None
-                            result["owner_links"].append({**link, "alias": alias, "declared_on": data["platform"] + " · " + data["handle"]})
+                            result["owner_links"].append({**link, "declared_on": data["platform"] + " · " + data["handle"],
+                                                          "source_url": data["url"]})
                     elif data:
                         result["accounts"].extend(data.get("accounts", []))
                         result["people"].extend(data.get("people", []))
@@ -100,5 +140,7 @@ def search(parsed, emit, stop=None):
         "Accounts sharing a handle can belong to unrelated people. Name records are candidates, not confirmed identities.",
         "Instagram results are indexed profiles, captions and mentions. Private content, likes and Instagram comment bodies are not available.",
         "Mastodon checks cover mastodon.social only. Public posts and comments are limited to the recent items each source returns.",
+        "Linked handles are checked only when you choose Follow. Emails are never swept automatically. Suggestions and follow depth are bounded.",
     ])
+    result["connections"] = connections(result, network_checks)
     return result

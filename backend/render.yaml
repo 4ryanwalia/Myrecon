@@ -7,11 +7,13 @@ services:
     runtime: python
     rootDir: backend
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app --workers 2 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT
+    buildCommand: bash tools/build-render.sh
+    startCommand: gunicorn wsgi:app --workers 1 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.14"
       - key: FLASK_ENV
         value: production
       - key: ALLOWED_ORIGINS
@@ -24,6 +26,22 @@ services:
         value: "60"
       - key: CACHE_TTL
         value: "600"
+      - key: FULL_SCAN_SLOTS
+        value: "1"
+      - key: SWEEP_CONCURRENCY
+        value: "8"
+      - key: FULL_SCAN_DEADLINE_SECONDS
+        value: "300"
+      - key: EXTENDED_SCAN_DEADLINE_SECONDS
+        value: "1800"
+      # Exact-email Google identity and bounded anonymous public Maps reviews.
+      # GHunt runs in .venv/ghunt; its operator session is a Render secret.
+      - key: EMAIL_GHUNT_ENABLED
+        value: "true"
+      - key: EMAIL_GOOGLE_PUBLIC_REVIEWS_ENABLED
+        value: "true"
+      - key: GHUNT_SESSION_B64
+        sync: false
       # Optional integrations, set these in the Render dashboard, not here.
       - key: GOOGLE_API_KEY
         sync: false
@@ -37,6 +55,10 @@ services:
       # Realtime Database. Guest scans still run without account storage,
       # but sign-in and full-report unlocks need this configuration.
       - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
+      # Required for Android referral unlocks. Use the SHA-256 fingerprint from
+      # Play Console > App integrity > App signing, not the upload certificate.
+      - key: ANDROID_REFERRAL_CERT_SHA256
         sync: false
       # Pro passes. Key id is public, the two secrets are not.
       - key: RAZORPAY_KEY_ID

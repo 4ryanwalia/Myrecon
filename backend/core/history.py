@@ -27,7 +27,7 @@ from core import store as _store
 MAX_SCANS = 50
 _ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 _PROFILE_FIELDS = ("platform", "url", "confidence", "display_name", "bio",
-                   "profile_pic_url", "platform_category", "category", "exists")
+                   "profile_pic_url", "platform_category", "category", "exists", "evidence", "verdict")
 
 
 class NotFound(Exception):
@@ -42,6 +42,9 @@ def _trim(result: dict) -> dict:
     results = result.get("results") or {}
     return {
         "status": "ok",
+        "checked_at": result.get("checked_at"),
+        "supplied_profile": result.get("supplied_profile"),
+        "platform_checks": (result.get("platform_checks") or [])[:5000],
         "query": result.get("query") or {},
         "summary": result.get("summary") or {},
         "coverage": result.get("coverage"),

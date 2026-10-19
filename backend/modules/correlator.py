@@ -143,6 +143,11 @@ class IdentityCorrelator:
                 score += 5
 
             cluster["confidence"] = min(100, score)
+            # This ranks retrieved evidence, never the probability of identity.
+            cluster["identity_status"] = "unverified"
+            cluster["grouping_basis"] = "same_username"
+            cluster["confidence_basis"] = "retrieval_quality_not_identity"
+            cluster["identity_note"] = "A matching username alone does not establish identity. Accounts may belong to different people."
 
         # ── Quality Filtering ────────────────────────────────────
         # Only keep identities that meet minimum quality standards

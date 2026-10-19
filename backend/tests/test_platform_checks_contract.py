@@ -126,26 +126,26 @@ def test_standard_platform_checks_cover_every_actual_outcome_with_truthful_verdi
     assert checks["Blocked platform"]["reason"] == "the platform blocked or rate-limited the check"
 
 
-def test_guest_full_response_exposes_only_the_first_hundred_platform_checks(monkeypatch):
-    full = _full_result_with_every_check()
-    visible_names = {platform["name"] for platform in CATALOGUE[:100]}
+def test_guest_standard_requires_signin_without_exposing_platform_checks(monkeypatch):
     hidden_name = CATALOGUE[100]["name"]
 
     monkeypatch.setattr(config, "CACHE_ENABLED", False)
-    monkeypatch.setattr(app_module, "_admit_scan", lambda *_args, **_kwargs: (None, None))
-    monkeypatch.setattr(app_module, "_remember", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr(search, "_run_full", lambda *_args, **_kwargs: full)
+    monkeypatch.setattr(config, "RATE_LIMIT_ENABLED", False)
+    monkeypatch.setattr(app_module, "_signed_in_user", lambda: None)
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("Guests cannot start Standard scans")
+
+    monkeypatch.setattr(search, "_run_full", forbidden)
 
     response = app_module.app.test_client().post(
         "/api/username", json={"username": "octocat", "scope": "full"}
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 401
     body = response.get_json()
-    checks = body["platform_checks"]
-    assert len(checks) == 100
-    assert {row["platform"] for row in checks} == visible_names
-    assert hidden_name not in {row["platform"] for row in checks}
+    assert body["code"] == "sign_in_required"
+    assert "platform_checks" not in body
     assert hidden_name not in json.dumps(body)
 
 
