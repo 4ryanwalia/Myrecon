@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const site = 'https://www.myrecon.xyz';
-const title = 'Username Checker & Social Media Username Search | MyRecon';
+const title = 'Username Lookup & Social Media Username Checker | MyRecon';
 const description = 'Check public usernames across 500+ platforms with MyRecon. Review social media profile leads, unknown results and username availability limits.';
 const url = `${site}/username-checker.html`;
 const questions = [
@@ -23,6 +23,10 @@ const body = `<main id="main" class="container prose discovery-page">
   <section><h2>How to search a username across platforms</h2>
   <ol><li>Enter a handle you use or have permission to research in the <a href="/#tool=username">username search tool</a>.</li><li>Run the standard sweep. Try another known spelling separately if you have used different handles.</li><li>Review found, not found and unknown checks. Open reported profile URLs before drawing conclusions.</li><li>For your own accounts, compare the result with signup emails and saved logins. Secure or close accounts through the official service.</li></ol>
   <p>A username lookup searches a handle, not a personal name. Different people can use the same handle on different sites. Read the <a href="/guides/verify-osint-account-matches">account-match verification guide</a> before linking profiles.</p></section>
+  <section><h2>Social media checker: find accounts by username</h2>
+  <p>A social media checker can help you find public profile candidates associated with a handle. Start with your current username, then check older handles individually. This also covers a reverse username lookup: you start with a handle and work back to possible public accounts, without assuming they all belong to one person.</p>
+  <p>For example, if you once used <code>sample_handle</code> for gaming and later changed it on social media, check both known handles. Compare links you published yourself, account history you recognize and saved logins. A matching photo or display name alone can be copied.</p>
+  <p>For a single network, use the <a href="/find/instagram-account">Instagram OSINT and username lookup guide</a>. For broader cleanup, follow the <a href="/blog/digital-footprint-checker.html">email and username footprint audit</a>.</p></section>
   <section><h2>Username search vs username availability</h2>
   <p>People searching for a social media username checker often want either existing profile links or a handle they can register. These are different questions. MyRecon supports public profile research. For a brand name or creator handle, check registration directly with each platform.</p>
   <dl><dt><strong>Found</strong></dt><dd>A supported check found evidence of a public profile. Review the source; ownership remains unconfirmed.</dd><dt><strong>Not found</strong></dt><dd>The check did not find the expected public profile. This does not establish registration availability or rule out other handles.</dd><dt><strong>Unknown</strong></dt><dd>The check could not reach a reliable conclusion, for example because of a block, timeout or ambiguous response. Retry or check manually.</dd></dl>
@@ -42,7 +46,7 @@ html = html.replace(/(<meta\b[^>]*(?:name="twitter:title"|property="og:title")[^
 html = html.replace(/https:\/\/www\.myrecon\.xyz\/about\.html/g, url);
 html = html.replace(/<script\b[^>]*type="application\/ld\+json"[^>]*>.*?<\/script>/gs, '');
 const graph = { '@context': 'https://schema.org', '@graph': [
-  { '@type': 'WebPage', '@id': `${url}#page`, url, name: title, description, dateModified: '2026-10-08', inLanguage: 'en', isPartOf: { '@id': `${site}/#website` }, publisher: { '@id': `${site}/#organization` } },
+  { '@type': 'WebPage', '@id': `${url}#page`, url, name: title, description, dateModified: '2026-10-20', inLanguage: 'en', isPartOf: { '@id': `${site}/#website` }, publisher: { '@id': `${site}/#organization` } },
   { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'MyRecon', item: `${site}/` }, { '@type': 'ListItem', position: 2, name: 'Username checker', item: url }] },
   { '@type': 'FAQPage', mainEntity: questions.map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
 ] };
