@@ -55,6 +55,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is SSRF, in plain terms?","acceptedAnswer":{"@type":"Answer","text":"Server-side request forgery. You persuade a server to make a web request on your behalf, to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials."}},{"@type":"Question","name":"Why did the cloud hand over credentials?","acceptedAnswer":{"@type":"Answer","text":"Cloud instances fetch temporary credentials from a link-local metadata address so applications do not need hard-coded keys. It is a good design with one weakness: any code that can make an HTTP request from the instance can ask for those credentials. If the request can be triggered from outside through SSRF, so can the credential theft. Amazon's IMDSv2, released months after this breach, requires a session token first, which closes that path."}},{"@type":"Question","name":"Was Capital One hacked because it used the cloud?","acceptedAnswer":{"@type":"Answer","text":"No. The misconfiguration was Capital One's, in a firewall it operated, and the same mistake is possible in a data centre. What the cloud changed is the blast radius: an over-permissive role attached to one instance could list and copy entire storage buckets in minutes."}},{"@type":"Question","name":"What happened to the attacker?","acceptedAnswer":{"@type":"Answer","text":"Paige Thompson, a former Amazon Web Services engineer, was arrested in July 2019 after discussing the data online and publishing evidence of it to a public code-sharing site. She was convicted of wire fraud and computer fraud in June 2022 and sentenced to time served with five years of probation."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -226,7 +227,7 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
