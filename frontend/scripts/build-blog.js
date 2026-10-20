@@ -62,6 +62,19 @@ function faqSchema(article) {
   return `  <script type="application/ld+json">${JSON.stringify(value).replace(/</g, "\\u003c")}</script>\n`;
 }
 
+const publisher = {
+  "@type": "Organization",
+  "@id": `${SITE}/#organization`,
+  name: "MyRecon",
+  url: `${SITE}/`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE}/assets/img/og-image.png`,
+    width: 1200,
+    height: 630,
+  },
+};
+
 function schema(article) {
   const value = {
     "@context": "https://schema.org",
@@ -73,7 +86,7 @@ function schema(article) {
     articleSection: article.category,
     inLanguage: "en",
     author: { "@type": "Organization", name: "MyRecon" },
-    publisher: { "@id": `${SITE}/#organization` },
+    publisher,
     isPartOf: { "@id": `${SITE}/#website` },
     mainEntityOfPage: article.url,
   };
@@ -222,7 +235,7 @@ function indexPage(articles) {
   const description = "Practical articles on online privacy, public profile self-audits, account deletion, and safer username habits for managing your own digital footprint.";
   const collection = JSON.stringify({
     "@context": "https://schema.org", "@type": "CollectionPage", name: "MyRecon Blog: Privacy and Account Cleanup",
-    description, url, isPartOf: { "@id": `${SITE}/#website` }, publisher: { "@id": `${SITE}/#organization` },
+    description, url, isPartOf: { "@id": `${SITE}/#website` }, publisher,
   }).replace(/</g, "\\u003c");
   const list = JSON.stringify({
     "@context": "https://schema.org", "@type": "ItemList", name: "MyRecon privacy and account cleanup articles",

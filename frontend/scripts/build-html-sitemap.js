@@ -164,7 +164,18 @@ function main() {
         dateModified: new Date().toISOString().slice(0, 10),
         inLanguage: 'en',
         isPartOf: { '@id': `${SITE}/#website` },
-        publisher: { '@id': `${SITE}/#organization` },
+        publisher: {
+          '@type': 'Organization',
+          '@id': `${SITE}/#organization`,
+          name: 'MyRecon',
+          url: `${SITE}/`,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${SITE}/assets/img/og-image.png`,
+            width: 1200,
+            height: 630,
+          },
+        },
       },
       {
         '@type': 'BreadcrumbList',

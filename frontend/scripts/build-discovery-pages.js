@@ -4,7 +4,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const site = 'https://www.myrecon.xyz';
 
-function buildDiscoveryPage({ title, description, keywords, url, outFileName, crumbLabel, questions, bodyHtml, modifiedAt = '2026-10-18' }) {
+function buildDiscoveryPage({ title, description, keywords, url, outFileName, crumbLabel, questions, bodyHtml, videoObject, modifiedAt = '2026-10-18' }) {
   let html = fs.readFileSync(path.join(root, 'about.html'), 'utf8');
   html = html.replace(/<title>.*?<\/title>/s, `<title>${title.replace(/&/g, '&amp;')}</title>`);
   html = html.replace(/(<meta\b[^>]*(?:name="(?:description|twitter:description)"|property="og:description")[^>]*content=")[^"]*/g, `$1${description}`);
@@ -37,7 +37,18 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
         dateModified: modifiedAt,
         inLanguage: 'en',
         isPartOf: { '@id': `${site}/#website` },
-        publisher: { '@id': `${site}/#organization` },
+        publisher: {
+          '@type': 'Organization',
+          '@id': `${site}/#organization`,
+          name: 'MyRecon',
+          url: `${site}/`,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${site}/assets/img/og-image.png`,
+            width: 1200,
+            height: 630,
+          },
+        },
       },
       {
         '@type': 'BreadcrumbList',
@@ -58,6 +69,9 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
   };
 
   html = html.replace('</head>', `<link rel="stylesheet" href="/assets/css/discovery.css">\n<script type="application/ld+json">${JSON.stringify(graph).replace(/</g, '\\u003c')}</script>\n</head>`);
+  if (videoObject) {
+    graph['@graph'].push(videoObject);
+  }
   html = html.replace(/<main\b[^>]*>.*?<\/main>/s, bodyHtml);
 
   const outPath = path.join(root, outFileName);
@@ -639,3 +653,93 @@ buildDiscoveryPage({
   bodyHtml: goalBody,
 });
 
+
+
+// 8. Product Walkthrough Watch Page (Primary VideoObject)
+const watchQuestions = [
+  ['What is shown in the MyRecon product walkthrough video?', 'The walkthrough demonstrates running multi-platform username sweeps across 500+ sources, checking email breach exposures with k-anonymity, auditing digital footprints, and performing privacy cleanup without command-line dependencies.'],
+  ['How does MyRecon prevent false positives during username searches?', 'As shown in the video, MyRecon tests synthetic negative controls to detect platform false positives, wildcard matching, and HTTP 200 soft-404 redirects before returning verified public profile leads.'],
+  ['Can I try the search features shown in the video for free?', 'Yes. Guests can run free Quick sweeps without creating an account or providing payment information. Standard scans across 500+ platforms are available with a free account.'],
+  ['Where is the video hosted?', 'The product walkthrough video is embedded using YouTube\'s privacy-enhanced domain (youtube-nocookie.com), which does not set tracking cookies until the user initiates playback.'],
+  ['How can I audit or remove accounts found during a search?', 'MyRecon provides direct links to official platform deletion pages, opt-out request forms for data brokers, and step-by-step privacy audit guides in our resource library.'],
+];
+
+const watchBody = `<main id="main" class="container prose discovery-page watch-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Product Walkthrough</span></nav>
+  <h1>MyRecon Product Walkthrough &amp; Video Tour</h1>
+  <p class="lead">Watch a 2-minute overview of MyRecon's public username search, data breach exposure checks, and digital footprint audit workflow.</p>
+  
+  <section class="watch-player-section" style="margin: 28px 0;">
+    <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;border:1px solid var(--border);background:#151515;">
+      <iframe src="https://www.youtube-nocookie.com/embed/JysZLBTrdc4" title="MyRecon Product Walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>
+    </div>
+  </section>
+
+  <section>
+    <h2>What you'll see in this video</h2>
+    <ul>
+      <li><strong>0:00 — High-Speed Username Sweeps</strong>: Querying 500+ platforms in parallel to discover public profile leads.</li>
+      <li><strong>0:45 — Email &amp; Breach Exposure</strong>: Inspecting exposed databases without revealing sensitive credentials.</li>
+      <li><strong>1:15 — Synthetic Control &amp; Verification</strong>: Eliminating soft-404 false positives and ghost accounts.</li>
+      <li><strong>1:45 — Privacy Cleanup &amp; Deep Search</strong>: Moving from intelligence leads to data broker removals and opt-outs.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Try MyRecon after watching</h2>
+    <p>Jump directly into the free OSINT investigation workspace:</p>
+    <ul>
+      <li><a href="/">Launch MyRecon username search console</a></li>
+      <li><a href="/username-checker.html">Use the web username checker</a></li>
+      <li><a href="/boost.html">Boost OSINT investigation speed and parallel sweeps</a></li>
+      <li><a href="/browser.html">Browser OSINT tools and public scanning</a></li>
+      <li><a href="/goal.html">Set and track a zero-footprint privacy goal</a></li>
+      <li><a href="/directory.html">Browse the complete 400+ page research directory</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Frequently asked questions about the video walkthrough</h2>
+    <div class="faq">${watchQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
+  </section>
+
+  <section>
+    <h2>Consent-based self-audits and privacy ethics</h2>
+    <p>MyRecon is designed to help you understand and reduce your own public exposure or conduct authorized security reviews. A matching handle is a lead to verify, not proof of identity. Review our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
+    <p>Reviewed for this release: October 2026.</p>
+  </section>
+</main>`;
+
+buildDiscoveryPage({
+  title: 'MyRecon Product Walkthrough & Video Tour | OSINT Tools',
+  description: 'Watch the official MyRecon product walkthrough. Learn how to search public usernames across 500+ platforms, check breach exposures, and audit your digital footprint.',
+  keywords: 'myrecon product video, myrecon walkthrough, osint tool demo, username search video, reverse username lookup tutorial, digital footprint video guide, free osint tool walkthrough, myrecon tutorial, online privacy video tour',
+  url: `${site}/watch.html`,
+  outFileName: 'watch.html',
+  crumbLabel: 'Product walkthrough',
+  questions: watchQuestions,
+  bodyHtml: watchBody,
+  videoObject: {
+    '@type': 'VideoObject',
+    '@id': `${site}/watch.html#video`,
+    name: 'MyRecon Product Walkthrough: OSINT & Digital Footprint Research',
+    description: 'Watch how MyRecon searches public usernames across 500+ platforms, detects data breach exposures, and helps you audit and clean up your online digital footprint.',
+    thumbnailUrl: [`${site}/assets/img/og-image.png`],
+    uploadDate: '2026-10-18T08:00:00+00:00',
+    duration: 'PT2M15S',
+    contentUrl: 'https://www.youtube.com/watch?v=JysZLBTrdc4',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/JysZLBTrdc4',
+    publisher: {
+      '@type': 'Organization',
+      '@id': `${site}/#organization`,
+      name: 'MyRecon',
+      url: `${site}/`,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${site}/assets/img/og-image.png`,
+        width: 1200,
+        height: 630,
+      },
+    },
+  },
+});

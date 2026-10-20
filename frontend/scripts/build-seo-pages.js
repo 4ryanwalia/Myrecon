@@ -213,7 +213,19 @@ function jsonLd(record, route) {
       ...(record.focus_keyword ? { keywords: record.focus_keyword } : {}),
       dateModified: record.modified_at, inLanguage: "en",
       author: { "@type": "Organization", name: "MyRecon" },
-      publisher: { "@id": `${SITE}/#organization` }, mainEntityOfPage: url,
+      publisher: {
+        "@type": "Organization",
+        "@id": `${SITE}/#organization`,
+        name: "MyRecon",
+        url: `${SITE}/`,
+        logo: {
+          "@type": "ImageObject",
+          url: `${SITE}/assets/img/og-image.png`,
+          width: 1200,
+          height: 630,
+        },
+      },
+      mainEntityOfPage: url,
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",

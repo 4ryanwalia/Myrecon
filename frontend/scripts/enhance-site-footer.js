@@ -8,7 +8,7 @@ const logoHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(RO
 const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, "assets/css/site-footer.css"))).digest("hex").slice(0, 10);
 const GROUPS = [
   ["Products", [
-    ["Username search", "/#tool"], ["Free OSINT tool", "/free-osint-tool.html"], ["Boost OSINT", "/boost.html"], ["Browser OSINT", "/browser.html"], ["Privacy goal", "/goal.html"], ["Digital footprint checker", "/digital-footprint-checker.html"], ["Reverse username lookup", "/reverse-username-lookup.html"], ["Username checker", "/username-checker.html"], ["Deep Search", "/deep-search.html"], ["Features", "/features"], ["Privacy audit", "/privacy-audit"], ["Android app", "/app.html"],
+    ["Username search", "/#tool"], ["Free OSINT tool", "/free-osint-tool.html"], ["Boost OSINT", "/boost.html"], ["Browser OSINT", "/browser.html"], ["Privacy goal", "/goal.html"], ["Video walkthrough", "/watch.html"], ["Digital footprint checker", "/digital-footprint-checker.html"], ["Reverse username lookup", "/reverse-username-lookup.html"], ["Username checker", "/username-checker.html"], ["Deep Search", "/deep-search.html"], ["Features", "/features"], ["Privacy audit", "/privacy-audit"], ["Android app", "/app.html"],
     ["Plans", "/pricing"], ["API", "/developers.html"], ["Enterprise API", "/enterprise-osint-api"], ["Badges & widgets", "/badge.html"],
   ]],
   ["Explore", [

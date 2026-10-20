@@ -575,7 +575,18 @@ function article(b, editorial, siblings) {
     datePublished: (b.AddedDate || b.BreachDate || "").slice(0, 10),
     dateModified: (b.ModifiedDate || b.AddedDate || "").slice(0, 10),
     author: { "@type": "Organization", name: "MyRecon" },
-    publisher: { "@type": "Organization", name: "MyRecon" },
+    publisher: {
+      "@type": "Organization",
+      "@id": `${SITE}/#organization`,
+      name: "MyRecon",
+      url: `${SITE}/`,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE}/assets/img/og-image.png`,
+        width: 1200,
+        height: 630,
+      },
+    },
     mainEntityOfPage: url,
     ...(logo ? { image: logo } : {}),
   });

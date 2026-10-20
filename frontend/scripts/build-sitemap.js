@@ -57,7 +57,7 @@ const SECTIONS = [
   { test: (u) => u.startsWith("/breaches/"), changefreq: "monthly", priority: "0.7" },
   { test: (u) => u === "/guides/" || u === "/find/" || u === "/privacy/" || u === "/vs/" || u === "/blog/", changefreq: "weekly", priority: "0.9" },
   { test: (u) => u.startsWith("/guides/") || u.startsWith("/find/") || u.startsWith("/privacy/") || u.startsWith("/vs/") || u.startsWith("/blog/"), changefreq: "monthly", priority: "0.8" },
-  { test: (u) => u === "/boost.html" || u === "/browser.html" || u === "/goal.html" || u === "/services.html" || u === "/app.html" || u === "/deep-search.html" || u === "/osint-cheat-sheet.html" || u === "/badge.html" || u === "/free-osint-tool.html" || u === "/digital-footprint-checker.html" || u === "/reverse-username-lookup.html" || u === "/username-checker.html", changefreq: "monthly", priority: "0.9" },
+  { test: (u) => u === "/boost.html" || u === "/browser.html" || u === "/goal.html" || u === "/watch.html" || u === "/services.html" || u === "/app.html" || u === "/deep-search.html" || u === "/osint-cheat-sheet.html" || u === "/badge.html" || u === "/free-osint-tool.html" || u === "/digital-footprint-checker.html" || u === "/reverse-username-lookup.html" || u === "/username-checker.html", changefreq: "monthly", priority: "0.9" },
   { test: (u) => u === "/pricing" || u === "/features" || u === "/privacy-audit" || u === "/enterprise-osint-api", changefreq: "monthly", priority: "0.9" },
   // The three explainer pages and developer API documentation.
   { test: (u) => u === "/is-myrecon-legit.html"
