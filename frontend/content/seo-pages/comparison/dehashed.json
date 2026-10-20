@@ -6,44 +6,54 @@
   "description": "Compare MyRecon and DeHashed: search inputs, breach workflows and verification limits. Choose an OSINT tool for authorized research.",
   "h1": "MyRecon vs DeHashed: compare breach and footprint workflows",
   "focus_keyword": "dehashed alternative",
-  "intro": "Looking for a DeHashed alternative depends on the investigation requirements: DeHashed is a commercial search engine indexing historical breach data and asset records. MyRecon provides a free browser-based public username search, email breach detection, and digital footprint audit tools. This page compares their workflows, ethics, and data sources objectively.",
+  "intro": "Compare DeHashed and MyRecon by the question you need to answer. DeHashed describes indexed exposure research; MyRecon helps review public username candidates and supported exposure checks. This comparison does not establish superior accuracy or complete coverage.",
   "sections": [
     {
-      "heading": "What DeHashed is designed to do",
-      "body": "DeHashed is documented as a commercial asset search engine that indexes historical data breach records, leaked credential datasets, and compromised database dumps. It is primarily used by enterprise security analysts, incident responders, and certified investigators to identify corporate exposure and credential compromise."
+      "heading": "What DeHashed documents",
+      "body": "DeHashed documents searches across collected exposure data using inputs such as usernames, emails and IP addresses. It also describes monitoring, an API and historical WHOIS services. These are provider descriptions, not results of our own comparative trial."
     },
     {
-      "heading": "Where a MyRecon workflow fits",
-      "body": "MyRecon focuses on zero-install public-source intelligence and consent-based footprint audits. It allows users to search public handles across 500+ live platforms, check email breach exposures via verified incident metadata, analyze DNS/WHOIS records, and perform digital footprint self-audits without requiring subscription fees or software downloads."
+      "heading": "What MyRecon checks and what a result means",
+      "body": "MyRecon checks public usernames across a supported catalogue of 500+ platforms. The chosen scan scope determines which checks run. Found means a lead for source review. Not found does not guarantee registration availability. Unknown means the check could not reach a reliable conclusion. Email and password-exposure tools are separate checks, not a complete inventory of every account."
     },
     {
-      "heading": "Compare evidence rather than raw record counts",
-      "body": "The two tools operate under different philosophies and data collection models. DeHashed maintains an indexed historical breach repository, while MyRecon queries live public platform endpoints and ethical breach metadata APIs. Always corroborate results from either tool using primary sources and independently verified documentation."
+      "heading": "Illustrative decision: Historical exposure versus a current profile",
+      "body": "For your own address appearing in an exposure record, note the incident and take account-security action. To check a known public handle, inspect the current profile URL separately. Historical records cannot establish that an account is still active or that a password still works."
+    },
+    {
+      "heading": "Access and costs before you choose",
+      "body": "MyRecon guest Quick scans show a limited preview. Standard scans require sign-in; account and plan limits apply. Paid features are described on the current pricing page. Check DeHashed provider terms and available fields separately. This page does not claim either service is unlimited, always free or anonymous, and includes no paid-account or same-scope benchmark."
+    },
+    {
+      "heading": "Record evidence and verify your next action",
+      "body": "For each authorized check, record the exact input, date, scope, result status and source URL. Keep unknown outcomes separate from negative results. Confirm accounts you own through an existing login or official recovery process, apply the privacy or security change, and recheck the specific exposure. A shared username alone does not identify a person."
     }
   ],
   "sources": [
     "https://www.dehashed.com/",
-    "https://www.myrecon.xyz/"
+    "/pricing",
+    "/privacy.html",
+    "/guides/verify-osint-account-matches"
   ],
-  "reviewed_at": "2026-10-13",
-  "modified_at": "2026-10-13",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-20",
+  "modified_at": "2026-10-20",
+  "reviewer": "MyRecon editorial review",
   "cta": {
     "label": "Audit your footprint with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Is MyRecon a free alternative to DeHashed?",
-      "answer": "For public username searches, email exposure checks, and digital footprint auditing, yes. MyRecon offers free guest scans without registration. However, MyRecon does not host raw plaintext password databases or compromised company dumps."
+      "question": "Is MyRecon a direct replacement for DeHashed?",
+      "answer": "It depends on the task. Public profile discovery and indexed exposure research have different inputs and evidence limits. Compare the required workflow before switching."
     },
     {
-      "question": "How does MyRecon handle breach searches differently from DeHashed?",
-      "answer": "MyRecon uses privacy-preserving breach metadata and k-anonymity protocols, confirming whether an email or password hash was exposed in a confirmed incident without storing or displaying sensitive plaintext records."
+      "question": "Can I try MyRecon for free?",
+      "answer": "Guest Quick scans offer a limited preview. Standard scans require sign-in, and account and plan limits apply. See the current pricing page."
     },
     {
-      "question": "Can I search usernames on both platforms?",
-      "answer": "Yes. DeHashed searches its historical database for usernames found in past leaks, whereas MyRecon queries 500+ live social, developer, and forum platforms directly in real time to see where the handle is currently active."
+      "question": "Does a match prove ownership?",
+      "answer": "No. A shared username, similar name or historical record is not ownership proof. Keep uncertain matches unconfirmed and review independent evidence."
     }
   ],
   "competitor": {
@@ -53,32 +63,32 @@
   },
   "capabilities": [
     {
-      "name": "Live username checking",
-      "myrecon": "Real-time parallel queries across 500+ live platforms",
-      "competitor": "Historical matching in breach databases",
-      "evidence_url": "https://www.dehashed.com/"
+      "name": "Research question",
+      "myrecon": "Where can this public handle be checked?",
+      "competitor": "indexed exposure research"
     },
     {
-      "name": "Access model",
-      "myrecon": "Free guest access with optional upgrade",
-      "competitor": "Commercial subscription required for full search results",
-      "evidence_url": "https://www.dehashed.com/"
+      "name": "Evidence review",
+      "myrecon": "Inspect source URLs and unresolved checks",
+      "competitor": "Review original sources, dates and provider limits"
     },
     {
-      "name": "Privacy model",
-      "myrecon": "K-anonymity checking; no plaintext password display",
-      "competitor": "Indexed breach records accessible to subscribers",
-      "evidence_url": "https://www.dehashed.com/"
+      "name": "Access",
+      "myrecon": "Guest preview, signed-in scans and paid features",
+      "competitor": "Check current provider access terms"
     }
   ],
   "benchmark": null,
   "pros": [
-    "MyRecon runs live checks across 500+ platforms in real time directly in your browser",
-    "No paid subscription needed to audit your primary username and email footprint"
+    "Browser access for an authorized public username review",
+    "Candidate source links for your own footprint audit"
   ],
   "cons": [
-    "MyRecon does not archive private compromised database dumps or plaintext records",
-    "DeHashed provides deep historical breach indexing for enterprise security investigations"
+    "Account and plan limits apply",
+    "Public matches do not establish identity",
+    "No controlled comparison against DeHashed was performed"
   ],
-  "migration_note": "If you need deep historical compromised credential analysis for authorized threat modeling, DeHashed serves that specific role. For live cross-platform handle detection, domain investigation, and digital footprint reduction, MyRecon offers an immediate, accessible workflow."
+  "migration_note": "Try a bounded check on a handle you control and review its evidence before changing your workflow.",
+  "editorial_review": true,
+  "method": "Provider descriptions checked against the linked official source on 2026-10-20. Worked decisions are illustrative. No paid-provider benchmark was performed."
 }

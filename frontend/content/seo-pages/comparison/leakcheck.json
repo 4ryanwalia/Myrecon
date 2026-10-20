@@ -6,44 +6,54 @@
   "description": "Compare MyRecon and LeakCheck: search inputs, credential exposure and verification limits. Choose an OSINT tool for authorized research.",
   "h1": "MyRecon vs LeakCheck: compare credential and breach workflows",
   "focus_keyword": "leakcheck alternative",
-  "intro": "Looking for a LeakCheck alternative depends on the task: LeakCheck is documented as a data breach search engine and credential monitoring service. MyRecon is a browser-first public username scanner, email breach exposure tool, and digital footprint audit platform. This page compares their workflows, ethics, and features objectively.",
+  "intro": "Compare LeakCheck and MyRecon by the question you need to answer. LeakCheck describes breach-record searches; MyRecon helps review public username candidates and supported exposure checks. This comparison does not establish superior accuracy or complete coverage.",
   "sections": [
     {
-      "heading": "What LeakCheck is designed to do",
-      "body": "LeakCheck is designed as a credential leak search engine that aggregates historical corporate database intrusions and compromised account lists. It provides search APIs and web query capabilities for security operations teams and individuals monitoring whether their credentials have been exposed."
+      "heading": "What LeakCheck documents",
+      "body": "LeakCheck advertises breach searches with inputs including email and username, plus monitoring and API access. Its FAQ says access to compromised fields depends on the plan. This comparison does not reproduce exposure records or test paid capabilities."
     },
     {
-      "heading": "Where a MyRecon workflow fits",
-      "body": "MyRecon combines live multi-platform username scanning across 500+ networks with ethical email breach metadata, k-anonymity password security checks, and digital footprint removal workflows. It provides an immediate, zero-registration browser preview for personal audits."
+      "heading": "What MyRecon checks and what a result means",
+      "body": "MyRecon checks public usernames across a supported catalogue of 500+ platforms. The chosen scan scope determines which checks run. Found means a lead for source review. Not found does not guarantee registration availability. Unknown means the check could not reach a reliable conclusion. Email and password-exposure tools are separate checks, not a complete inventory of every account."
     },
     {
-      "heading": "Compare evidence rather than raw leak figures",
-      "body": "Each service serves different research workflows. For LeakCheck, review the provider's official documentation and subscription tiers. For MyRecon, review verified breach metadata and live profile endpoints directly."
+      "heading": "Illustrative decision: Exposure response versus footprint cleanup",
+      "body": "For an exposure affecting your own address, review the affected account and secure reused credentials. For an old public biography, change its visibility or request account deletion. Removing a live profile does not erase historical copies; track both actions separately."
+    },
+    {
+      "heading": "Access and costs before you choose",
+      "body": "MyRecon guest Quick scans show a limited preview. Standard scans require sign-in; account and plan limits apply. Paid features are described on the current pricing page. Check LeakCheck provider terms and available fields separately. This page does not claim either service is unlimited, always free or anonymous, and includes no paid-account or same-scope benchmark."
+    },
+    {
+      "heading": "Record evidence and verify your next action",
+      "body": "For each authorized check, record the exact input, date, scope, result status and source URL. Keep unknown outcomes separate from negative results. Confirm accounts you own through an existing login or official recovery process, apply the privacy or security change, and recheck the specific exposure. A shared username alone does not identify a person."
     }
   ],
   "sources": [
     "https://leakcheck.io/",
-    "https://www.myrecon.xyz/"
+    "/pricing",
+    "/privacy.html",
+    "/guides/verify-osint-account-matches"
   ],
-  "reviewed_at": "2026-10-13",
-  "modified_at": "2026-10-13",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-20",
+  "modified_at": "2026-10-20",
+  "reviewer": "MyRecon editorial review",
   "cta": {
     "label": "Check your exposure with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Is MyRecon a free alternative to LeakCheck?",
-      "answer": "Yes, for live username enumeration and ethical email breach checking, MyRecon provides free guest access and standard scans. MyRecon uses verified incident metadata without storing sensitive plaintext dumps."
+      "question": "Is MyRecon a direct replacement for LeakCheck?",
+      "answer": "It depends on the task. Public profile discovery and breach-record searches have different inputs and evidence limits. Compare the required workflow before switching."
     },
     {
-      "question": "Can I check passwords on MyRecon?",
-      "answer": "Yes. MyRecon utilizes the k-anonymity SHA-1 hash standard (via Pwned Passwords) so you can verify if a password has been compromised without sending your actual password over the internet."
+      "question": "Can I try MyRecon for free?",
+      "answer": "Guest Quick scans offer a limited preview. Standard scans require sign-in, and account and plan limits apply. See the current pricing page."
     },
     {
-      "question": "Does LeakCheck check live social media usernames?",
-      "answer": "LeakCheck focuses primarily on whether a username or email was found in historical breach datasets, whereas MyRecon queries live social media, forum, and developer sites to check if an account exists right now."
+      "question": "Does a match prove ownership?",
+      "answer": "No. A shared username, similar name or historical record is not ownership proof. Keep uncertain matches unconfirmed and review independent evidence."
     }
   ],
   "competitor": {
@@ -53,32 +63,32 @@
   },
   "capabilities": [
     {
-      "name": "Live handle discovery",
-      "myrecon": "Real-time checks across 500+ live platforms",
-      "competitor": "Search in historical breach records",
-      "evidence_url": "https://leakcheck.io/"
+      "name": "Research question",
+      "myrecon": "Where can this public handle be checked?",
+      "competitor": "breach-record searches"
     },
     {
-      "name": "Breach exposure method",
-      "myrecon": "Ethical breach metadata and k-anonymity hash queries",
-      "competitor": "Aggregated credential database queries",
-      "evidence_url": "https://leakcheck.io/"
+      "name": "Evidence review",
+      "myrecon": "Inspect source URLs and unresolved checks",
+      "competitor": "Review original sources, dates and provider limits"
     },
     {
-      "name": "Access and pricing",
-      "myrecon": "Free guest access, affordable one-time Extended scans",
-      "competitor": "Subscription plans for full search results and API",
-      "evidence_url": "https://leakcheck.io/"
+      "name": "Access",
+      "myrecon": "Guest preview, signed-in scans and paid features",
+      "competitor": "Check current provider access terms"
     }
   ],
   "benchmark": null,
   "pros": [
-    "MyRecon checks live active accounts across 500+ platforms in real time",
-    "Strong user privacy protections with zero credential logging"
+    "Browser access for an authorized public username review",
+    "Candidate source links for your own footprint audit"
   ],
   "cons": [
-    "MyRecon does not index private combo lists or dark web breach dumps",
-    "LeakCheck provides targeted credential monitoring for security teams"
+    "Account and plan limits apply",
+    "Public matches do not establish identity",
+    "No controlled comparison against LeakCheck was performed"
   ],
-  "migration_note": "If your priority is enterprise credential stuffing detection from compromised databases, LeakCheck serves that specific need. If your goal is discovering public social accounts, auditing your digital footprint, and verifying breach exposure ethically, MyRecon is the optimal solution."
+  "migration_note": "Try a bounded check on a handle you control and review its evidence before changing your workflow.",
+  "editorial_review": true,
+  "method": "Provider descriptions checked against the linked official source on 2026-10-20. Worked decisions are illustrative. No paid-provider benchmark was performed."
 }

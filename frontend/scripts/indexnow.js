@@ -32,7 +32,7 @@ const HOST = "www.myrecon.xyz";
 const ENDPOINT = "https://api.indexnow.org/indexnow";
 
 /** Must match the filename of the key file served from the site root. */
-const KEY = "ed34c84a1c19af372b78c1a66d636aaa";
+const KEY = "ed34c84a1c19af372b78c1a66d636aaa"; // gitleaks:allow
 
 const KEY_FILE = path.join(__dirname, "..", `${KEY}.txt`);
 const ROOT = path.resolve(__dirname, "../..");

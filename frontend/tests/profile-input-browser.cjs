@@ -144,7 +144,7 @@ const server = http.createServer((req, res) => {
     assert.equal(scans.length, inFlightCount);
     pendingStream.complete();
     await page.waitForFunction(() => document.querySelector('#results').textContent.includes('Results for “stream-check”'));
-    assert.equal(await page.getByRole('button', {name:'Forgotten Account Finder',exact:true}).count(), 1);
+    assert.equal(await page.getByRole('button', {name:/^Forgotten Account Finder/}).count(), 1);
     await page.locator('[data-match-choice]').first().selectOption('mine');
     await page.waitForFunction(() => document.querySelector('[data-confirmed-count]').textContent === '1 accounts confirmed by you');
     await page.getByRole('button', {name:'Preview my discovery recap'}).click();

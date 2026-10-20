@@ -325,7 +325,8 @@ function select(all) {
   const fresh = window.filter((b) => (b.AddedDate || "").slice(0, 10) >= TRACK_ADDED_SINCE);
 
   const byName = new Map();
-  [...named, ...aggregate, ...fresh].forEach((b) => byName.set(b.Name, b));
+  const withEditorial = all.filter(b => !b.IsFabricated && !b.IsRetired && readEditorial(b.Name));
+  [...named, ...aggregate, ...fresh, ...withEditorial].forEach((b) => byName.set(b.Name, b));
   return [...byName.values()].sort((a, b) => (b.BreachDate || "").localeCompare(a.BreachDate || ""));
 }
 
@@ -574,7 +575,7 @@ function article(b, editorial, siblings) {
     datePublished: (b.AddedDate || b.BreachDate || "").slice(0, 10),
     dateModified: (b.ModifiedDate || b.AddedDate || "").slice(0, 10),
     author: { "@type": "Organization", name: "MyRecon" },
-    publisher: { "@type": "Organization", name: "MyRecon" },
+    publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
     mainEntityOfPage: url,
     ...(logo ? { image: logo } : {}),
   });
@@ -817,7 +818,7 @@ function index(items, earlier = earlierArchiveEntries(items)) {
            rather than buried in the footer, because a reader who wants the
            story of a breach will not find it in a record. -->
       <aside class="bx-offer">
-        <h3>Case Files: how the breaches that mattered actually happened</h3>
+        <h2>Case Files: how the breaches that mattered actually happened</h2>
         <p>In-depth write-ups of the landmark incidents, Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
         <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a></p>
       </aside>
@@ -828,7 +829,7 @@ function index(items, earlier = earlierArchiveEntries(items)) {
            their own site; a reader who only wanted to look something up
            scrolls straight past an aside. -->
       <aside class="bx-offer">
-        <h3>Building something? Take this data</h3>
+        <h2>Building something? Take this data</h2>
         <p>The whole archive is published as versioned JSON, no account, no API key, no rate limit, CORS enabled and rebuilt daily. There is a drop-in embed widget too, if you want a live breach list on your own page without writing the rendering. Free under CC BY 4.0, with credit to Have I Been Pwned.</p>
         <p><a class="btn btn-sm" href="/developers.html">Read the API documentation →</a></p>
       </aside>

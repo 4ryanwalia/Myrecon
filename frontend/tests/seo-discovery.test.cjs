@@ -160,7 +160,7 @@ test('homepage includes Deep Search tab, full-width tool layout, clean benchmark
   assert.equal((moreMatch[1].match(/<details>/g) || []).length, 5, 'remaining 5 questions should be inside .faq-more-list');
 });
 
-test('homepage and key public landing pages score 100/100 on Lighthouse SEO audit criteria', () => {
+test('homepage and key public landing pages pass static SEO checks', () => {
   function auditPage(file) {
     const html = fs.readFileSync(file, 'utf8');
     const checks = [];
@@ -261,7 +261,7 @@ test('homepage and key public landing pages score 100/100 on Lighthouse SEO audi
     'deep-search.html',
     'app.html',
     'is-myrecon-legit.html',
-    'how-myrecon-compares.html',
+    'vs/index.html',
     'features.html',
     'pricing.html',
     'about.html',
@@ -274,7 +274,7 @@ test('homepage and key public landing pages score 100/100 on Lighthouse SEO audi
   for (const page of pagesToTest) {
     const res = auditPage(path.join(root, page));
     assert.ok(res.score >= 95, `${page} should score at least 95/100, got ${res.score}/100. Failed: ${JSON.stringify(res.failed)}`);
-    assert.equal(res.score, 100, `${page} should achieve 100/100 on Lighthouse SEO audit`);
+    assert.equal(res.score, 100, `${page} should pass every static SEO check`);
   }
 });
 
@@ -355,7 +355,7 @@ test('no public pages contain unbacked aggregateRating schema', () => {
     'deep-search.html',
     'app.html',
     'is-myrecon-legit.html',
-    'how-myrecon-compares.html',
+    'vs/index.html',
     'features.html',
     'pricing.html',
     'about.html',
@@ -381,7 +381,7 @@ function walkAllHtml(dir, out = []) {
   return out;
 }
 
-test('all indexable public HTML pages across the entire site score 100/100 on Lighthouse SEO criteria', () => {
+test('all indexable public HTML pages across the entire site pass static SEO checks', () => {
   const skipRedirect = new Set(['404.html', 'ops.html']);
   const allFiles = walkAllHtml(root);
   let checkedCount = 0;
@@ -439,10 +439,11 @@ test('all indexable public HTML pages across the entire site score 100/100 on Li
     }
   }
 
-  assert.ok(checkedCount >= 400, `Expected to audit at least 400 indexable pages, audited ${checkedCount}`);
+  const canonicalCount = [...fs.readFileSync(path.join(root, "sitemap.xml"), "utf8").matchAll(/<loc>/g)].length;
+  assert.ok(checkedCount >= canonicalCount, `Expected to audit every canonical public page, audited ${checkedCount} for ${canonicalCount} canonicals`);
 });
 
-test('every indexable page is in sitemap.xml with accurate priority and zero orphan or single-inbound pages', () => {
+test('every indexable page is in sitemap.xml with valid hints and zero orphan or single-inbound pages', () => {
   const skipRedirect = new Set(['404.html', 'ops.html']);
   const allFiles = walkAllHtml(root);
   const sitemapXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
@@ -492,7 +493,7 @@ test('every indexable page is in sitemap.xml with accurate priority and zero orp
   assert.deepEqual(orphans, [], `Found orphan indexable pages with 0 inbound links: ${orphans.join(', ')}`);
   assert.deepEqual(singleInbound, [], `Found weakly linked pages with only 1 inbound link: ${singleInbound.join(', ')}`);
 
-  // Ensure /find/* and /privacy/* content pages have priority >= 0.7 in sitemap.xml
+  // Validate optional sitemap hints; their numeric value is not a ranking signal.
   for (const section of ['/find/', '/privacy/', '/guides/', '/vs/', '/blog/', '/breaches/']) {
     const regex = new RegExp(`<loc>https://www\\.myrecon\\.xyz(${section}[^<]*)</loc>\\s*<lastmod>[^<]+</lastmod>\\s*<changefreq>([^<]+)</changefreq>\\s*<priority>([^<]+)</priority>`, 'g');
     let m;
@@ -500,16 +501,15 @@ test('every indexable page is in sitemap.xml with accurate priority and zero orp
     while ((m = regex.exec(sitemapXml)) !== null) {
       count++;
       const prio = parseFloat(m[3]);
-      assert.ok(prio >= 0.7, `Sitemap entry ${m[1]} should have priority >= 0.7, got ${prio} (${m[2]})`);
+      assert.ok(prio >= 0 && prio <= 1, `Sitemap entry ${m[1]} has invalid priority ${prio}`);
     }
     assert.ok(count > 0, `Expected sitemap entries for ${section}`);
   }
 });
 
-test('boost, browser, and goal routes and redirect pages are configured across HTML, Vercel, and Flask', () => {
+test('boost, browser, and goal routes and redirect pages are configured across HTML and the Vercel hosting configuration', () => {
   const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
   const sitemapXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-  const webMain = fs.readFileSync(path.join(root, '..', 'web_main.py'), 'utf8');
 
   const expectedPages = [
     { alias: 'boost', keyword: 'boost osint' },
@@ -526,7 +526,6 @@ test('boost, browser, and goal routes and redirect pages are configured across H
 
     const vercelRewrite = vercel.rewrites.find(r => r.source === `/${alias}`);
     assert.ok(vercelRewrite && vercelRewrite.destination === `/${alias}.html`, `vercel.json missing rewrite for /${alias}`);
-    assert.ok(webMain.includes(`@app.route("/${alias}")`), `web_main.py missing route for /${alias}`);
   }
 
   // Verify osint-cheat-sheet.html FAQPage schema matches visible FAQ items

@@ -4,8 +4,7 @@
  * Search engines (especially Googlebot) discover pages primarily through in-document
  * hyperlinks from high-authority pages. While XML sitemaps provide an advisory list,
  * an HTML directory with crawlable <a> tags provides direct DOM pathways for Googlebot
- * to crawl and index all 400+ pages rapidly, shifting crawl requests from 92% refresh
- * to high-volume discovery.
+ * to crawl and index public pages. Crawl frequency and indexing remain decisions made by search engines.
  *
  * Run from frontend/: node scripts/build-html-sitemap.js
  */
@@ -26,6 +25,7 @@ function esc(value) {
 
 function getPageMetadata(file) {
   const html = fs.readFileSync(file, 'utf8');
+  if (require('./build-sitemap').isNoindex(html)) return null;
   const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   const title = titleMatch ? titleMatch[1].trim().replace(/\s*\|\s*MyRecon\s*$/i, '') : path.basename(file, '.html');
   
@@ -45,12 +45,13 @@ function walkDir(dir, relPrefix = '') {
   if (!fs.existsSync(dir)) return pages;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.isDirectory()) {
-      if (['node_modules', '.git', '.vercel', 'content', 'data', 'scripts', 'tests', 'assets'].includes(entry.name)) continue;
+      if (['node_modules', '.git', '.vercel', 'content', 'data', 'scripts', 'tests', 'assets', 'worker-console'].includes(entry.name)) continue;
       pages.push(...walkDir(path.join(dir, entry.name), path.join(relPrefix, entry.name)));
     } else if (entry.isFile() && entry.name.endsWith('.html')) {
       if (['404.html', 'ops.html', 'directory.html', 'sitemap.html'].includes(entry.name)) continue;
       const full = path.join(dir, entry.name);
-      pages.push(getPageMetadata(full));
+      const metadata = getPageMetadata(full);
+      if (metadata) pages.push(metadata);
     }
   }
   return pages;
@@ -160,7 +161,7 @@ function main() {
         '@id': `${SITE}/directory.html#page`,
         url: `${SITE}/directory.html`,
         name: 'MyRecon Complete Site Directory & All Research Hubs',
-        description: 'Complete directory of all 400+ public OSINT tools, username lookup guides, data breach investigations, privacy audit checklists, and comparison articles on MyRecon.',
+        description: 'Complete directory of public OSINT tools, username lookup guides, data breach investigations, privacy audit checklists, and comparison articles on MyRecon.',
         dateModified: new Date().toISOString().slice(0, 10),
         inLanguage: 'en',
         isPartOf: { '@id': `${SITE}/#website` },
@@ -200,7 +201,7 @@ function main() {
   };
 
   const html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
@@ -217,8 +218,8 @@ function main() {
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyRecon Site Directory &amp; All 400+ OSINT Research Hubs</title>
-  <meta name="description" content="Explore all 400+ public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
+  <title>MyRecon Site Directory &amp; OSINT Research Guides</title>
+  <meta name="description" content="Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
   <meta name="keywords" content="myrecon directory, all osint tools, osint site map, public intelligence directory, username lookup list, breach archive, privacy guides, osint comparisons">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="${SITE}/directory.html">
@@ -228,13 +229,14 @@ function main() {
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:locale" content="en_US">
   <meta property="og:title" content="MyRecon Complete Site Directory &amp; All Research Hubs">
-  <meta property="og:description" content="Explore all 400+ public OSINT scanner tools, username search guides, data breach archives, and privacy audit checklists.">
+  <meta property="og:description" content="Explore public OSINT scanner tools, username search guides, data breach archives, and privacy audit checklists.">
   <meta property="og:url" content="${SITE}/directory.html">
   <meta property="og:image" content="${SITE}/assets/img/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MyRecon Site Directory &amp; All Research Hubs">
-  <meta name="twitter:description" content="Explore all 400+ public OSINT tools, username guides, breach archives, and privacy checklists.">
+  <meta name="twitter:description" content="Explore public OSINT tools, username guides, breach archives, and privacy checklists.">
   <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
+  <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/site-footer.css">
   <link rel="stylesheet" href="/assets/css/discovery.css">
   <style>
@@ -266,7 +268,7 @@ function main() {
       <h1>MyRecon Site Directory &amp; Knowledge Index</h1>
       <p>Direct navigation index across all ${allPages.length} public tools, breach investigations, threat intelligence analyses, and privacy defense guides published on MyRecon.</p>
       <div class="directory-stats">
-        <div class="directory-stat"><strong>${allPages.length}+</strong> Indexed Pages</div>
+        <div class="directory-stat"><strong>${allPages.length}+</strong> Public Pages</div>
         <div class="directory-stat"><strong>500+</strong> Supported Platforms</div>
         <div class="directory-stat"><strong>50+</strong> Breach Case Studies</div>
         <div class="directory-stat"><strong>100%</strong> Public Source Evidence</div>
@@ -281,7 +283,7 @@ function main() {
 
   fs.writeFileSync(path.join(ROOT, 'directory.html'), html, 'utf8');
   fs.writeFileSync(path.join(ROOT, 'sitemap.html'), html, 'utf8');
-  console.log(`[html-sitemap] Built directory.html & sitemap.html with ${allPages.length} indexed URLs across 8 categories`);
+  console.log(`[html-sitemap] Built directory.html & sitemap.html with ${allPages.length} public URLs across 8 categories`);
 }
 
 if (require.main === module) main();

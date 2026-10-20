@@ -278,9 +278,9 @@ function article(c, all) {
         height: 630,
       },
     },
-    mainEntityOfPage: c.url,
     articleSection: "Case Files",
     ...(c.subject ? { about: { "@type": "Thing", name: c.subject } } : {}),
+    mainEntityOfPage: c.url,
     wordCount: wordsIn(c.body),
   });
 

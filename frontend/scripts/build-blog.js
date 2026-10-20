@@ -122,7 +122,7 @@ function schema(article) {
     articleSection: article.category,
     inLanguage: "en",
     author: { "@type": "Organization", name: "MyRecon", url: `${SITE}/about.html` },
-    publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/` },
+    publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
     isPartOf: { "@id": `${SITE}/#website` },
     mainEntityOfPage: article.url,
     ...(article.media ? { image: `${SITE}/assets/img/blog/${article.media.photo}.webp`, video: {'@id': `${article.url}#explainer`} } : {}),
@@ -138,7 +138,7 @@ function additionalSchema(article) {
     thumbnailUrl: `${SITE}/assets/media/blog/${article.slug}-poster.jpg`, contentUrl: `${SITE}/assets/media/blog/${article.slug}.mp4`,
     duration: 'PT32S', inLanguage: 'en', isFamilyFriendly: true, isPartOf: {'@id': `${article.url}`},
     transcript: article.media.steps.map(([heading, text]) => `${heading}. ${text}`).join(' '),
-    publisher: {'@type': 'Organization', name: 'MyRecon', url: `${SITE}/`},
+    publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
   });
   if (article.faq?.length) values.push({
     '@context': 'https://schema.org', '@type': 'FAQPage', '@id': `${article.url}#faq`,
@@ -285,7 +285,7 @@ function indexPage(articles) {
   const description = "Compare OSINT tools, search social media usernames, understand Instagram public profiles and check your digital footprint with sourced MyRecon articles.";
   const collection = JSON.stringify({
     "@context": "https://schema.org", "@type": "CollectionPage", name: "MyRecon Blog: OSINT Tools, Username Search and Privacy",
-    description, url, isPartOf: { "@id": `${SITE}/#website` }, publisher: { "@id": `${SITE}/#organization` },
+    description, url, isPartOf: { "@id": `${SITE}/#website` }, publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
   }).replace(/</g, "\\u003c");
   const list = JSON.stringify({
     "@context": "https://schema.org", "@type": "ItemList", name: "MyRecon OSINT and privacy articles",
