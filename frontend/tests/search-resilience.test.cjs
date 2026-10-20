@@ -75,7 +75,7 @@ test("guest report keeps two card details, locked placeholders and an honest cop
 test("Deep Search source links reject script URLs and escape provider content", () => {
   const context = { window: { MYRECON: {} }, URL,
     location: { href: "https://myrecon.xyz/deep-search.html" },
-    document: { addEventListener() {} } };
+    document: { addEventListener() {}, querySelector() { return null; } } };
   vm.runInNewContext(script("deep-search.js").replace(/\}\)\(\);\s*$/,
     "globalThis.adapter = { link };})();"), context);
   const html = context.adapter.link("javascript:alert(1)", '<img src=x onerror="alert(2)">');

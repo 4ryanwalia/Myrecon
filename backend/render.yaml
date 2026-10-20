@@ -8,7 +8,7 @@ services:
     rootDir: backend
     plan: free
     buildCommand: bash tools/build-render.sh
-    startCommand: gunicorn wsgi:app --workers 1 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT
+    startCommand: gunicorn wsgi:app --workers 1 --threads 16 --timeout 120 --bind 0.0.0.0:$PORT
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
@@ -30,12 +30,13 @@ services:
         value: "1"
       - key: SWEEP_CONCURRENCY
         value: "8"
-      - key: FULL_SCAN_DEADLINE_SECONDS
-        value: "300"
-      - key: EXTENDED_SCAN_DEADLINE_SECONDS
-        value: "1800"
-      # Exact-email Google identity and bounded anonymous public Maps reviews.
-      # GHunt runs in .venv/ghunt; its operator session is a Render secret.
+      - key: SCAN_JOB_LIMIT
+        value: "8"
+      # Enable only after configuring the dedicated token and testing Colab.
+      - key: SCAN_OFFLOAD_ENABLED
+        value: "false"
+      # Exact-email Google identity with bounded anonymous public Maps reviews.
+      # The operator-authenticated GHunt session belongs only in hosting secrets.
       - key: EMAIL_GHUNT_ENABLED
         value: "true"
       - key: EMAIL_GOOGLE_PUBLIC_REVIEWS_ENABLED
@@ -55,10 +56,6 @@ services:
       # Realtime Database. Guest scans still run without account storage,
       # but sign-in and full-report unlocks need this configuration.
       - key: FIREBASE_SERVICE_ACCOUNT
-        sync: false
-      # Required for Android referral unlocks. Use the SHA-256 fingerprint from
-      # Play Console > App integrity > App signing, not the upload certificate.
-      - key: ANDROID_REFERRAL_CERT_SHA256
         sync: false
       # Pro passes. Key id is public, the two secrets are not.
       - key: RAZORPAY_KEY_ID

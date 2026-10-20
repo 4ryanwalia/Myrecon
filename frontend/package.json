@@ -1,0 +1,13 @@
+{
+  "name": "myrecon-static-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-site.js && node scripts/optimize-assets.js",
+    "test:seo": "node --test tests/crawler-discovery.test.cjs tests/seo-discovery.test.cjs tests/editorial-quality.test.cjs tests/asset-optimization.test.cjs tests/canonical-links.test.cjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright": "1.56.1"
+  }
+}

@@ -1,21 +1,27 @@
-# Notify IndexNow after page or sitemap changes reach main, including updates
-# pushed by the scheduled Breach Files job or manual workflow_dispatch runs.
+# Notify IndexNow after public page changes are deployed, including updates pushed
+# by the scheduled Breach Files job with its repository deploy key.
 name: IndexNow
 
 on:
   push:
     branches: [main]
     paths:
-      - "frontend/**/*.html"
-      - "frontend/sitemap.xml"
+      - "frontend/**"
+
   workflow_dispatch:
+    inputs:
+      before:
+        description: "Commit before the public page changes to submit"
+        required: true
 
 permissions:
   contents: read
+  deployments: read
 
 jobs:
   notify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
         with:
@@ -25,36 +31,39 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Submit changed or full-sitemap URLs
+      - name: Wait for this commit's successful production deployment
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          BEFORE: ${{ github.event.before }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in {1..40}; do
+            mapfile -t ids < <(gh api "repos/$GITHUB_REPOSITORY/deployments?sha=$GITHUB_SHA&per_page=100" --jq '.[] | select((.environment | ascii_downcase) == "production") | .id')
+            for id in "${ids[@]}"; do
+              state=$(gh api "repos/$GITHUB_REPOSITORY/deployments/$id/statuses" --jq '.[0].state')
+              if [[ "$state" == "success" ]]; then
+                echo "Production deployment succeeded for $GITHUB_SHA."
+                exit 0
+              fi
+              if [[ "$state" == "failure" || "$state" == "error" ]]; then
+                echo "Production deployment failed. Skipping crawler notification."
+                exit 1
+              fi
+            done
+            sleep 15
+          done
+          echo "Production deployment was not confirmed. Skipping crawler notification."
+          exit 1
+
+      - name: Rebuild both revisions and submit changed canonical public URLs
+        env:
+          BEFORE: ${{ inputs.before || github.event.before }}
           AFTER: ${{ github.sha }}
         run: |
-          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            node frontend/scripts/indexnow.js --sitemap
-            exit 0
-          fi
-
-          mapfile -t pages < <(
-            git diff --name-only "$BEFORE" "$AFTER" -- frontend |
-              grep -E '^frontend/.*[.]html$' |
-              grep -vE '^frontend/404[.]html$' || true
-          )
-          if (( ${#pages[@]} == 0 )); then
-            echo "No indexable HTML URLs changed."
-            exit 0
-          fi
-
-          urls=()
-          for page in "${pages[@]}"; do
-            if [[ -f "$page" ]]; then
-              canonical=$(grep -oE '<link rel="canonical" href="https://www\.myrecon\.xyz[^"]*"' "$page" | head -n1 | sed -E 's/.*href="([^"]+)".*/\1/' || true)
-              if [[ -n "$canonical" ]]; then
-                urls+=("$canonical")
-              else
-                urls+=("https://www.myrecon.xyz/${page#frontend/}")
-              fi
-            fi
-          done
-          node frontend/scripts/indexnow.js "${urls[@]}"
+          before_dir="$RUNNER_TEMP/myrecon-before-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          git worktree add --detach "$before_dir" "$BEFORE"
+          pushd "$before_dir/frontend"
+          node scripts/build-site.js
+          popd
+          pushd frontend
+          node scripts/build-site.js
+          popd
+          node frontend/scripts/indexnow.js --rendered-changes "$before_dir/frontend" "$GITHUB_WORKSPACE/frontend"

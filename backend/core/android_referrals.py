@@ -42,7 +42,7 @@ def _certificates():
 
 
 def configured():
-    return storage.store.backend == "rtdb" and bool(config.SECRET_KEY and
+    return storage.store.backend == "rtdb" and not config.SECRET_KEY_IS_EPHEMERAL and bool(config.SECRET_KEY and
         config.FIREBASE_SERVICE_ACCOUNT and _certificates())
 
 
@@ -163,6 +163,7 @@ def redeem(body):
         _scan_slot.release()
     outcome = {"claim": "counted"}
     def grant(current):
+        outcome["claim"] = "counted"
         current = current or {}
         claims = current.setdefault("claims", {})
         if claim["claim_key"] in claims:
@@ -189,6 +190,6 @@ def register_routes(app, json_body, responses):
         except (Rejected, validation.ValidationError):
             return responses.error("Referral verification failed. Install the current app from Google Play and try again.",
                 status=403, code="referral_verification_failed")
-        except Unavailable:
+        except (Unavailable, requests.RequestException):
             return responses.error("Referral verification is temporarily unavailable. Your invite is saved for retry.",
                 status=503, code="referral_unavailable")

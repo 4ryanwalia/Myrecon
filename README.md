@@ -1,15 +1,26 @@
 # MyRecon: Username Search & OSINT Toolkit
 
-[![Website](https://img.shields.io/badge/Website-myrecon.xyz-blue.svg)](https://www.myrecon.xyz/)
-[![Platforms Checked](https://img.shields.io/badge/Platforms-500%2B-green.svg)](https://www.myrecon.xyz/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-
 **Open-source OSINT toolkit for authorized digital-footprint audits.** Check usernames, breach exposure, domains, DNS, and IPs with a web app, Python CLI, or Flask API.
 
 Public username search · digital footprint audit · email breach checker · WHOIS and DNS lookup · IP intelligence
 
-[Try the Web App](https://www.myrecon.xyz) · [Username Checker](https://www.myrecon.xyz/username-checker.html) · [OSINT Cheat Sheet](https://www.myrecon.xyz/osint-cheat-sheet.html) · [Badges & Widgets](https://www.myrecon.xyz/badge.html) · [Deep Search](https://www.myrecon.xyz/deep-search.html) · [Breach Archive](https://www.myrecon.xyz/breaches/) · [Read the Blog](https://www.myrecon.xyz/blog/) · [Offline Demo](#try-the-verdict-demo) · [Run the CLI](#quick-start) · [Explore the API](#api) · [Contribute](CONTRIBUTING.md)
+[Download for Android](https://play.google.com/store/apps/details?id=com.Myrecon.osint) · [Try the web app](https://myrecon.xyz) · [Offline demo](#try-the-verdict-demo) · [Run the CLI](#quick-start) · [Explore the API](#api) · [Contribute](CONTRIBUTING.md)
+
+## Get MyRecon for Android
+
+**See where your username appears publicly online, right from your phone.**
+
+[![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download_MyRecon-34A853?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.Myrecon.osint)
+
+- Explore public username matches and open profiles to verify them at the source.
+- Check email breach exposure and passwords against known leaks.
+- Look up domain, DNS and IP information, and inspect QR codes and links.
+
+Start with a username you own. Matching usernames are leads, not proof of identity; unavailable sources can leave results incomplete.
+
+Requires Android 11 or newer. Contains ads. [See the app details](https://www.myrecon.xyz/app.html).
+
+The Android app is maintained separately from this repository's web app, Python CLI and API.
 
 ![MyRecon web app with a username lookup and an illustrative platform map](docs/web-home.png)
 
@@ -20,26 +31,6 @@ MyRecon is built for self-audits and authorized research. A shared username is n
 Digital-footprint checks are often scattered across separate tools, and username search tools can mistake a block page, sign-in wall, or generic HTTP 200 response for proof that an account exists. That creates fragmented investigations and false confidence.
 
 MyRecon brings public username signals, supported breach exposure checks, and domain/DNS/IP research into one web app, Python CLI, and API. Each username result is labeled `found`, `not_found`, or `unknown` according to the evidence available, so an inconclusive lookup stays inconclusive. It is designed for people auditing their own footprint and for authorized research using public sources.
-
-## 📚 OSINT Guides & Investigation Tutorials
-
-Explore our comprehensive library of research guides, tool comparisons, and personal privacy tutorials:
-
-- **Username & Profile Hunting:**
-  - [Reverse Username Lookup Guide](https://www.myrecon.xyz/blog/reverse-username-lookup-guide.html): Search handles across 500+ platforms without false positives.
-  - [How to Find Someone's Social Media Accounts](https://www.myrecon.xyz/blog/how-to-find-someones-social-media-accounts.html): Ethical OSINT techniques to connect usernames, emails, and profiles.
-  - [How to Find Hidden Social Media Profiles](https://www.myrecon.xyz/blog/how-to-find-hidden-social-media-profiles.html): Uncovering alternate accounts, bio links, and niche networks.
-  - [Username OSINT Search Guide](https://www.myrecon.xyz/guides/username-osint-search.html): Fundamental handle enumeration principles.
-- **Tools & Platform Comparisons:**
-  - [Best Free OSINT Tools for Investigators (2026)](https://www.myrecon.xyz/blog/best-free-osint-tools-for-investigators.html): Top tools for usernames, breaches, DNS, and metadata.
-  - [Best OSINT Username Search Tools](https://www.myrecon.xyz/blog/best-osint-tools-username-search-comparison.html): Sherlock vs Maigret vs WhatsMyName vs MyRecon.
-  - [All Tool Comparisons](https://www.myrecon.xyz/vs/): Side-by-side breakdowns across 30+ intelligence tools.
-- **Digital Footprint & Privacy Protection:**
-  - [Digital Footprint Checker Guide](https://www.myrecon.xyz/blog/digital-footprint-checker-guide.html): Complete self-audit checklist to discover what the web knows about you.
-  - [How to Remove Yourself From the Internet](https://www.myrecon.xyz/blog/how-to-remove-yourself-from-the-internet.html): Purging old accounts, Google search removals, and data broker opt-outs.
-  - [Doxxing Prevention Guide](https://www.myrecon.xyz/blog/doxxing-prevention-personal-cybersecurity-guide.html): Hardening your online identity and defending against harassment.
-  - [Reverse Phone Lookup & Number OSINT](https://www.myrecon.xyz/blog/reverse-phone-lookup-and-osint-techniques.html): Carrier detection, HLR lookups, and VoIP tracing.
-  - [How to Check Email Data Breaches](https://www.myrecon.xyz/blog/how-to-check-email-data-breaches.html): Credential compromise checks with k-anonymity.
 
 ## Username search and digital footprint tools
 
@@ -98,7 +89,7 @@ python myrecon.py --help
 | Password exposure check | Yes | No | Hashes in the browser and sends only a hash prefix to Pwned Passwords. |
 | Full-name and reverse-image web search | Yes | Yes | Requires Google Programmable Search credentials. |
 
-**Website access:** Guest login allows Quick scans across 100 platforms with no sign-up required. Only the first 2 result cards are visible; remaining cards are blurred. Standard scans require sign-in before they start. Signed-in free accounts get 5 standard 500+ platform scans per UTC day with complete results. The only paid plan is ₹99 for unlimited standard scans plus 10 Extended 3,000+ platform scans, with no expiry. Paid standard access remains unlimited after Extended credits are used. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
+**Website access:** Guests can run Quick across 100 platforms without sign-up. Only the first 2 result cards are visible; remaining cards are blurred. Standard requires sign-in. Sign in for 5 free standard 500+ platform scans per UTC day and complete results. The only paid plan is ₹99 for unlimited standard scans plus 10 Extended 3,000+ platform scans, with no expiry. Paid standard access remains unlimited after Extended credits are used. Check the [current plans](https://myrecon.xyz/pricing.html) before purchasing. Other core lookups are available without an account.
 
 The [Android app](https://myrecon.xyz/app.html) is maintained separately; its source is not in this repository.
 

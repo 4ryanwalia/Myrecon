@@ -1,0 +1,34 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const os = require('node:os');
+const vm = require('node:vm');
+const { optimizeAssets } = require('../scripts/optimize-assets');
+
+test('deployment assets preserve behavior, share fingerprints and refresh only after source changes', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'myrecon-assets-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  for (const kind of ['css', 'js']) fs.mkdirSync(path.join(root, 'assets', kind), { recursive: true });
+  fs.writeFileSync(path.join(root, 'assets/js/app.js'), '/* explanation */ window.result = 2 + 3;');
+  fs.writeFileSync(path.join(root, 'assets/css/style.css'), 'body { color: red; }');
+  fs.writeFileSync(path.join(root, 'assets/css/relative.css'), 'body { background: url(../img/test.png); }');
+  const html = '<link href="/assets/css/style.css?v=old"><link href="/assets/css/relative.css"><script src="/assets/js/env.js"></script><script defer src="/assets/js/app.js?v=old"></script>';
+  for (const page of ['index.html', 'other.html']) fs.writeFileSync(path.join(root, page), html);
+  const first = optimizeAssets(root);
+  const built = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert.equal(built, fs.readFileSync(path.join(root, 'other.html'), 'utf8'));
+  assert.match(built, /src="\/assets\/js\/env.js"/);
+  assert.match(built, /href="\/assets\/css\/relative.css"/);
+  assert.match(built, /script defer/);
+  const js = first.assets['/assets/js/app.js'];
+  const sandbox = { window: {} };
+  vm.runInNewContext(fs.readFileSync(path.join(root, js.output), 'utf8'), sandbox);
+  assert.equal(sandbox.window.result, 5);
+  assert.deepEqual(optimizeAssets(root), first);
+  fs.writeFileSync(path.join(root, 'assets/js/app.js'), 'window.result = 9;');
+  const next = optimizeAssets(root);
+  assert.notEqual(next.assets['/assets/js/app.js'].output, js.output);
+  assert.equal(next.assets['/assets/css/style.css'].output, first.assets['/assets/css/style.css'].output);
+  assert.ok(fs.existsSync(path.join(root, js.output)), 'old fingerprint remains valid during local rebuilds');
+});

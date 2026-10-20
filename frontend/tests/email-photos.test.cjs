@@ -7,7 +7,7 @@ const vm = require("node:vm");
 function runtime() {
   const scope = { location: { href: "https://myrecon.xyz/#tool=email", origin: "https://myrecon.xyz" } };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, "../assets/js/email-photos.js"), "utf8"),
-    { window: scope, URL, Set, WeakSet });
+    { window: scope, URL, Set, WeakSet, AbortController, setTimeout, clearTimeout, Blob, fetch: async () => ({ ok: true, headers: { get: n => n === "Content-Type" ? "image/png" : null }, blob: async () => new Blob(["image"], {type:"image/png"}) }) });
   return scope.EmailPhotos;
 }
 
@@ -19,11 +19,11 @@ function image(url, { complete = false, width = 0 } = {}) {
     fallbackText: "GH"
   };
   const img = {
-    complete, naturalWidth: width, parentElement: parent, removed: false,
+    isConnected: true, removeAttribute: name => attrs.delete(name), complete, naturalWidth: width, parentElement: parent, removed: false,
     addEventListener: (name, fn) => { const current = listeners.get(name) || []; current.push(fn); listeners.set(name, current); },
     getAttribute: name => attrs.get(name), setAttribute: (name, value) => attrs.set(name, value),
     remove() { this.removed = true; this.parentElement = null; },
-    emit(name) { for (const fn of listeners.get(name) || []) fn(); }
+    async emit(name) { for (const fn of listeners.get(name) || []) await fn(); }
   };
   Object.defineProperty(img, "src", { get: () => attrs.get("src"), set: value => attrs.set("src", value) });
   return { img, parent, classes, attrs, root: { querySelectorAll: () => [img] } };
@@ -43,14 +43,14 @@ test("unknown, private, credential-bearing and local fixture URLs stay direct", 
   }
 });
 
-test("direct failure retries once; final failure preserves fallback and removes broken image", () => {
+test("direct failure retries once; final failure preserves fallback and removes broken image", async () => {
   const api = runtime(), fixture = image("https://avatars.githubusercontent.com/u/42");
   api.wire(fixture.root, "http://localhost:5000");
-  fixture.img.emit("error");
-  assert.match(fixture.img.src, /^http:\/\/localhost:5000\/api\/email\/photo\?url=/);
-  assert.equal(fixture.attrs.get("crossorigin"), "anonymous");
+  await fixture.img.emit("error");
+  assert.match(fixture.img.src, /^blob:/);
+  assert.equal(fixture.attrs.get("crossorigin"), undefined);
   assert.equal(fixture.img.removed, false);
-  fixture.img.emit("error");
+  await fixture.img.emit("error");
   assert.equal(fixture.img.removed, true);
   assert.equal(fixture.parent.title, "Photo unavailable");
   assert.equal(fixture.parent.fallbackText, "GH");
@@ -72,24 +72,25 @@ test("cached completed image is shown without waiting for another load event", (
   assert.equal(fixture.classes.has("loaded"), true);
 });
 
-test("cached broken direct image is retried immediately", () => {
+test("cached broken direct image is retried immediately", async () => {
   const fixture = image("https://lh3.googleusercontent.com/a/fixture", { complete: true });
   runtime().wire(fixture.root, "");
-  assert.match(fixture.img.src, /\/api\/email\/photo\?url=/);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.match(fixture.img.src, /^blob:/);
 });
 
-test("duplicate wiring does not add multiple retry handlers", () => {
+test("duplicate wiring does not add multiple retry handlers", async () => {
   const api = runtime(), fixture = image("https://avatars.githubusercontent.com/u/42");
   api.wire(fixture.root, "");
   api.wire(fixture.root, "");
-  fixture.img.emit("error");
+  await fixture.img.emit("error");
   assert.equal(fixture.img.removed, false);
 });
 
-test("unsupported image failure does not call arbitrary upstream proxy", () => {
+test("unsupported image failure does not call arbitrary upstream proxy", async () => {
   const fixture = image("https://unknown.example/fixture.jpg");
   runtime().wire(fixture.root, "");
-  fixture.img.emit("error");
+  await fixture.img.emit("error");
   assert.equal(fixture.img.removed, true);
   assert.equal(fixture.img.src, "https://unknown.example/fixture.jpg");
 });

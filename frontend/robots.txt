@@ -1,127 +1,44 @@
-# Explicitly allow all AI Search Engines, LLM Training Crawlers, and AI Agents
-
-# DeepSeek
-User-agent: DeepSeekBot
-User-agent: deepseek-ai
-User-agent: DeepSeek
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Meta (Facebook, Instagram, Llama)
-User-agent: Meta-ExternalAgent
-User-agent: Meta-ExternalFetcher
-User-agent: FacebookBot
-User-agent: meta-externalagent
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# OpenAI (ChatGPT, GPTBot, SearchGPT)
-User-agent: GPTBot
-User-agent: ChatGPT-User
+# Public pages may be crawled for search, user-requested retrieval and AI training.
+# Named agents and the wildcard share one group and the same exclusions.
+# Google-Extended and Applebot-Extended are content-use controls, not
+# separate HTTP crawlers. Search access does not guarantee indexing or citations.
 User-agent: OAI-SearchBot
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Anthropic (Claude)
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
 User-agent: ClaudeBot
-User-agent: Claude-Web
-User-agent: anthropic-ai
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Perplexity AI
-User-agent: PerplexityBot
-User-agent: Perplexity-ai
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Google AI & Search Crawlers
-User-agent: Google-Extended
 User-agent: Googlebot
-User-agent: GoogleOther
-User-agent: GoogleOther-Image
-User-agent: GoogleOther-Video
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Apple (Applebot & Apple Intelligence)
-User-agent: Applebot
-User-agent: Applebot-Extended
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Amazon (Amazonbot & Alexa)
-User-agent: Amazonbot
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Mistral AI
-User-agent: MistralBot
-User-agent: mistral-ai
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Cohere
-User-agent: Cohere-ai
-User-agent: cohere-training-data-crawler
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# ByteDance / TikTok
-User-agent: Bytespider
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Common Crawl & Open Web Datasets
-User-agent: CCBot
-User-agent: Diffbot
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Microsoft / Bing / Copilot
-User-agent: Bingbot
-User-agent: msnbot
-User-agent: BingPreview
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# DuckDuckGo, You.com, Brave, and other AI Search Engines
+User-agent: Google-Extended
+User-agent: bingbot
 User-agent: DuckDuckBot
 User-agent: DuckAssistBot
-User-agent: YouBot
-User-agent: Bravebot
-User-agent: PetalBot
-User-agent: Timpibot
-User-agent: AndiBot
-User-agent: PhindBot
-User-agent: Omgilibot
-User-agent: Scrapy
-User-agent: SemanticScholarBot
-User-agent: ia_archiver
-Allow: /
-Disallow: /api/
-Disallow: /content/
-
-# Universal Rule: Allow all other web crawlers, search engines, and bots
+User-agent: YandexBot
+User-agent: Baiduspider
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Amazonbot
+User-agent: Amzn-SearchBot
+User-agent: Amzn-User
 User-agent: *
-Allow: /
-
-# Disallow non-rendering internal endpoints only
+# The API the front end calls. Nothing here renders, and every response is
+# JSON, so there is nothing for a crawler to index.
 Disallow: /api/
+# Editorial fragments that get inlined into the generated breach articles.
+# They have no <head>, no heading and no navigation, and their text already
+# appears in full on the article that includes them. These also 301 to
+# /breaches/ at the edge; the Disallow saves the crawl entirely.
 Disallow: /content/
+# Operator interface. This is also noindex at the page and response level;
+# access control is enforced by the service, not by robots.txt.
+Disallow: /worker-console/
+# Build sources and test fixtures have no public search content.
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /node_modules/
+Allow: /
 
 # NOTE: deliberately no "Disallow: /*?" here. Stylesheets and scripts are
 # cache-busted with ?v=N, so a blanket query-string rule would stop crawlers
@@ -129,13 +46,6 @@ Disallow: /content/
 
 Sitemap: https://www.myrecon.xyz/sitemap.xml
 Sitemap: https://www.myrecon.xyz/sitemap-index.xml
-Sitemap: https://www.myrecon.xyz/sitemap-core.xml
-Sitemap: https://www.myrecon.xyz/sitemap-blog.xml
-Sitemap: https://www.myrecon.xyz/sitemap-guides.xml
-Sitemap: https://www.myrecon.xyz/sitemap-find.xml
-Sitemap: https://www.myrecon.xyz/sitemap-privacy.xml
-Sitemap: https://www.myrecon.xyz/sitemap-vs.xml
-Sitemap: https://www.myrecon.xyz/sitemap-breaches.xml
 
 # Site documentation convention for LLMs:
 # https://www.myrecon.xyz/llms.txt

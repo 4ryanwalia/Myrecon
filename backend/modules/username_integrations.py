@@ -216,9 +216,7 @@ def probe(sweep, platform):
     handle = sweep.handle
     encoded = quote(handle, safe="")
     profile_url = platform["url"].replace("{username}", encoded)
-    endpoint = (platform.get("endpoint") or platform["url"]).replace("{username}", encoded)
-    if platform["name"] == "Character.AI":
-        endpoint = "https://character.ai/api/trpc/social.publicProfile?" + urlencode({"input": json.dumps({"json": {"username": handle}})})
+    endpoint = endpoint_url(platform, handle)
     def hit(verdict, code, reason, details=None):
         result = sweep._hit(platform, verdict, profile_url, code, "high" if verdict == "found" else "none" if verdict == "not_found" else "unverified", reason)
         if verdict == "found":
@@ -262,3 +260,10 @@ def probe(sweep, platform):
         return hit("unknown", locals().get("code", 0), "ambiguous")
     except Exception:
         return hit("unknown", 0, "transport")
+
+
+def endpoint_url(platform, handle):
+    """The exact, secret-free attribution URL shared with worker normalization."""
+    if platform["name"] == "Character.AI":
+        return "https://character.ai/api/trpc/social.publicProfile?" + urlencode({"input": json.dumps({"json": {"username": handle}})})
+    return (platform.get("endpoint") or platform["url"]).replace("{username}", quote(handle, safe=""))

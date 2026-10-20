@@ -1,8 +1,13 @@
-/* Paid Deep Search: public records, recent activity and indexed pages. */
+/* Deep Search: public records, recent activity and indexed pages. */
 (function () {
   "use strict";
   const CFG = { apiBase: "", ...window.MYRECON }, A = window.MyReconAccount;
   const $ = (s) => document.querySelector(s);
+  const embedded = !!$("#ds[data-embedded]");
+  let embeddedActive = false;
+  const inputNode = () => $(embedded ? "#queryInput" : "#dsInput");
+  const runNode = () => $(embedded ? "#runBtn" : "#dsRun");
+  const hintNode = () => $(embedded ? "#panelSub" : "#dsMode");
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   function safeUrl(raw) {
@@ -21,8 +26,47 @@
     const href = safeUrl(url);
     return href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer nofollow">${esc(label || href)} ↗</a>` : esc(label || "Unavailable link");
   }
-  let running = false, lastReport = null, activeUid = null, controller = null, renderedReport = null;
-  let linkedNotice = "", stoppedByUser = false, renderedLive = false;
+  let running = false, lastReport = null, activeUid = null, controller = null, renderedReport = null, stoppedByUser = false;
+  let guestReport = null, guestLive = false, restoring = false, restoreAttempt = "", reportVersion = 0;
+  let linkedNotice = "", renderedLive = false;
+  const GUEST_STORAGE = "myrecon-deep-search-guest-v1";
+  const accountState = () => A?.state?.() || { user: null, account: null };
+  const hasAccess = (state = accountState()) => !!(state.user && state.account?.deep_search_enabled);
+  const isLocked = (data) => !!data?.guest_access?.locked;
+  function saveGuestReport(data, live = false) {
+    guestReport = data;
+    guestLive = live;
+    try {
+      // This report contains backend-redacted section metadata only, never findings.
+      sessionStorage.setItem(GUEST_STORAGE, JSON.stringify({ data, live }));
+    } catch {}
+  }
+  function forgetGuestReport() {
+    guestReport = null;
+    guestLive = false;
+    restoreAttempt = "";
+    try { sessionStorage.removeItem(GUEST_STORAGE); } catch {}
+  }
+  function readGuestReport() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(GUEST_STORAGE) || "null");
+      if (!isLocked(saved?.data) || typeof saved.data.guest_access.report_token !== "string") return;
+      const complete = !!saved.data.guest_access.complete;
+      guestReport = { ...saved.data, partial: !!saved.data.partial || !complete };
+      guestLive = false;
+      if (saved.data.subject) inputNode().value = saved.data.subject + (saved.data.context ? ", " + saved.data.context : "");
+      render(guestReport, guestLive);
+      $("#dsConsole").hidden = false;
+      $("#dsConsole").className = complete ? "ds-console done" : "ds-console failed";
+      $("#dsBar").style.width = complete ? "100%" : "0%";
+      $("#dsCount").textContent = complete ? "100%" : "Partial";
+      $("#dsStatus").textContent = complete
+        ? "Retained guest investigation. Sign in with an eligible paid account to view findings."
+        : "Retained partial preview. Sign in to check the saved investigation; it may be incomplete.";
+      modeHint();
+    } catch {}
+  }
+
   const connectionLabels = {
     same_username: "Same username: handle matches; ownership is unverified.",
     profile_link: "Linked from this profile: the source profile contains this account link.",
@@ -59,7 +103,7 @@
   }
   function linkedProfiles(data, live) {
     const rows = Array.isArray(data.connections) ? data.connections : null;
-    const paid = !!A?.state()?.account?.deep_search_enabled;
+    const paid = hasAccess();
     let body = linkedNotice ? `<p class="hint" role="status">${esc(linkedNotice)}</p>` : "";
     if (!rows) body += `<p class="hint">${live ? "Loading linked-profile evidence…" : "Linked-profile discovery is unavailable in this response. Existing source results remain below."}</p>`;
     else if (!rows.length) body += `<p class="hint">${live ? "Looking for explicit account links…" : (data.source_checks || []).some((s) => s.state === "unavailable") ? "No linked-profile suggestions returned. Some sources were unavailable; this does not establish absence." : "No linked-profile suggestions returned. This does not prove that no linked accounts exist."}</p>`;
@@ -156,29 +200,38 @@
   }
 
   function renderAccess(state) {
-    const paid = !!(state?.user && state.account?.deep_search_enabled);
+    state ||= accountState();
+    const paid = hasAccess(state);
+    const guest = !state.user;
     const pending = !!(state?.user && !state.account);
     const preview = $("#dsPreview");
-    if (preview) preview.hidden = paid;
+    if (preview) preview.hidden = paid || guest;
     $("#dsAccess").className = "ds-access" + (paid ? " is-paid" : "");
-    $("#dsAccessTitle").textContent = paid ? "Deep Search is ready" : pending ? "Checking your plan" : "Included in the ₹99 paid plan";
+    $("#dsAccessTitle").textContent = paid ? "Deep Search is ready" : pending ? "Checking your plan" : guest ? "Run a guest investigation" : "Deep Search requires the ₹99 paid plan";
     $("#dsAccessNote").textContent = paid
       ? "Your paid account includes name, handle and public Google email research. Deep Search does not spend Extended scan credits."
       : pending ? "Waiting for your account details. Retry if your connection was interrupted."
-      : "Public comments, indexed mentions and links declared by account owners. Includes unlimited standard scans and 10 Extended scans. No renewal.";
-    $("#dsSignIn").hidden = !!state?.user;
-    $("#dsUpgrade").hidden = paid || pending;
-    $("#dsRetryAccess").hidden = !pending;
-    $("#dsRun").disabled = running || !paid;
+      : guest ? "Investigate public sources now. Section headings stay visible; sign in with an eligible paid account to view the findings."
+      : guestReport ? "Your investigation is retained temporarily. The ₹99 plan is required to reveal Deep Search findings. After upgrading, refresh access to open the retained results."
+      : "The ₹99 plan includes Deep Search, unlimited standard scans and 10 Extended scans. No renewal. Deep Search does not spend Extended credits.";
+    $("#dsSignIn").hidden = !!state.user || !A?.enabled;
+    $("#dsUpgrade").hidden = paid || pending || guest;
+    $("#dsRetryAccess").hidden = !pending && !(state.user && guestReport);
+    $("#dsRetryAccess").textContent = pending ? "Retry plan check" : paid && guestReport ? "Refresh retained results" : "Refresh access";
+    if (!embedded || embeddedActive) runNode().disabled = running || restoring || (!guest && !paid);
+    $("#dsExport").disabled = !paid || !lastReport || isLocked(lastReport);
+    $("#dsExportCsv").disabled = $("#dsExport").disabled;
+    if (!paid) { $("#dsExport").hidden = true; $("#dsExportCsv").hidden = true; }
     document.querySelectorAll("[data-ds-follow]").forEach((button) => {
-      button.disabled = running || renderedLive || !paid || !followBody(renderedReport?.connections?.[Number(button.dataset.dsFollow)]);
+      button.disabled = running || restoring || renderedLive || !paid || !followBody(renderedReport?.connections?.[Number(button.dataset.dsFollow)]);
     });
-    return paid;
+    return guest || paid;
   }
 
   function modeHint() {
-    const subject = $("#dsInput").value.trim().split(",")[0].trim();
-    $("#dsMode").textContent = !subject ? "Enter a name, handle or exact email. Add context after a comma for names and handles."
+    if (embedded && !embeddedActive) return;
+    const subject = inputNode().value.trim().split(",")[0].trim();
+    hintNode().textContent = !subject ? "Enter a name, handle or exact email. Add context after a comma for names and handles."
       : subject.includes("@") && !subject.startsWith("@")
         ? "Email search: public Google contributor profile and available Maps reviews. Use an exact email you own or have permission to check; no context is needed."
       : !subject.startsWith("@") && /\s/.test(subject)
@@ -208,6 +261,44 @@
   const googleSourceState = (status, name) => /reviews/i.test(name || "") && ["no_match", "not_found"].includes(status)
     ? ["No reviews returned", "The configured source returned no public reviews for this contributor."] : googleState(status);
   const count = (value) => typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
+  function lockedAction() {
+    const state = accountState();
+    if (!state.user) return A?.enabled
+      ? `<strong>Sign in to view the findings</strong><p>Deep Search findings require an eligible paid account.</p><button class="btn btn-sm" type="button" data-ds-unlock>Sign in to view findings</button>`
+      : `<strong>Sign in to view the findings</strong><p>Sign-in is temporarily unavailable. The investigation can still run; try signing in again shortly.</p>`;
+    if (!state.account) return `<strong>Checking your Deep Search access</strong><p>Your findings stay locked while your plan is checked.</p><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Retry plan check</button>`;
+    if (!hasAccess(state)) return `<strong>The ₹99 plan is required to view findings</strong><p>You are signed in. Upgrade your account, then refresh access to reveal this investigation.</p><a class="btn btn-sm" href="/pricing.html">Get the ₹99 plan</a><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Refresh access</button>`;
+    return `<strong>${restoring ? "Opening your findings…" : "View the retained findings"}</strong><p>Open the investigation already completed by the server.</p><button class="btn btn-sm" type="button" data-ds-reveal ${restoring ? "disabled" : ""}>View findings</button>`;
+  }
+  function renderLocked(data, live) {
+    const access = data.guest_access;
+    const sections = Array.isArray(access.sections) ? access.sections : [];
+    const total = sections.reduce((n, section) => n + (count(section.count) || 0), 0);
+    const out = [`<div class="ds-summary"><div><span class="ds-chip">${data.mode === "email" ? "Email" : data.mode === "name" ? "Name" : "Handle"} search${live ? " · live" : ""}</span><h2>${esc(data.subject)}</h2>${data.context ? `<p>Context: ${esc(data.context)}</p>` : ""}</div><p>${total} finding${total === 1 ? "" : "s"} returned${live ? " so far" : ""}</p></div>`];
+    for (const section of sections) {
+      const findings = count(section.count) || 0;
+      const status = section.status || (live ? "pending" : "unknown");
+      const description = findings ? `${findings} finding${findings === 1 ? "" : "s"} returned${live ? " so far" : ""}. Details are locked.`
+        : ["no_match", "not_found", "empty", "ok", "found"].includes(status)
+          ? "No public findings were returned for this section. This does not establish absence."
+          : ["partial", "unknown"].includes(status)
+            ? "The source response was incomplete or inconclusive. No conclusion can be drawn."
+            : status === "pending" ? live ? "This section is still being checked." : "This section had not finished when the last results were returned."
+              : "This source could not return usable findings. No conclusion can be drawn.";
+      const body = findings
+        ? `<div class="ds-locked-findings"><div class="ds-locked-placeholders" aria-hidden="true" inert>${Array.from({ length: Math.min(findings, 3) }, () => `<div class="ds-locked-placeholder"><span></span><span></span><span></span></div>`).join("")}</div><div class="ds-unlock-overlay">${lockedAction()}</div></div>`
+        : `<p class="hint">${esc(live && status === "pending" ? "This section is still being checked." : description)}</p>`;
+      out.push(block(section.label, findings ? description : "Public source availability and returned findings.", body));
+    }
+    if (!sections.length) out.push(`<div class="ds-panel"><p>${live ? "Checking public sources. Sections appear when the server returns them." : "No public findings were returned. This does not prove that no account or record exists."}</p></div>`);
+    if (data.partial) out.push(`<aside class="ds-panel" role="status"><strong>Partial investigation</strong><p>Some public sources could not finish or returned limited data. Available findings stay locked; unavailable checks do not establish absence.</p></aside>`);
+    if (access.report_token && total) out.push(`<p class="ds-retained-note">The server temporarily retains this investigation for up to 30 minutes. Sign in to reveal it without repeating the scan. A server restart can end retention sooner.</p>`);
+    $("#dsOut").innerHTML = out.join("");
+    $("#dsExport").hidden = true;
+    $("#dsExport").disabled = true;
+    $("#dsExportCsv").hidden = true;
+    $("#dsExportCsv").disabled = true;
+  }
   function googleLink(url, label) {
     const href = safeUrl(url);
     if (!href) return esc(label);
@@ -279,7 +370,68 @@
     }
     $("#dsOut").innerHTML = out.join("");
   }
+  async function revealGuestReport(force = false) {
+    const state = accountState(), token = guestReport?.guest_access?.report_token;
+    if (!token || !hasAccess(state) || running || restoring) return;
+    const attempt = `${state.user.uid}:${token}:${guestReport.guest_access.complete ? "complete" : "partial"}`;
+    if (!force && restoreAttempt === attempt) return;
+    restoreAttempt = attempt;
+    const uid = state.user.uid, version = reportVersion;
+    let errorMessage = "";
+    const restoreController = new AbortController();
+    const restoreTimer = setTimeout(() => restoreController.abort(), 20000);
+    restoring = true;
+    renderAccess(state);
+    renderLocked(guestReport, guestLive);
+    try {
+      const headers = await A.authHeaders();
+      if (accountState().user?.uid !== uid) return;
+      const res = await fetch(CFG.apiBase + "/api/guest-reports/reveal", {
+        method: "POST", cache: "no-store", headers: { "Content-Type": "application/json", ...headers },
+        body: JSON.stringify({ report_token: token }), signal: restoreController.signal,
+      });
+      const report = await res.json().catch(() => ({}));
+      if (version !== reportVersion || accountState().user?.uid !== uid) return;
+      if (!res.ok || report.tool !== "deep_search" || !report.data) {
+        if (report.account) renderAccess({ ...accountState(), account: report.account });
+        throw new Error(res.status === 410
+          ? "This retained investigation has expired or the server restarted. Investigate again to obtain fresh results."
+          : report.error || "Could not open the retained investigation. Try again shortly.");
+      }
+      if (!hasAccess()) return;
+      const failed = report.data.status === "error";
+      const complete = !!report.complete && !failed && report.data.status !== "pending";
+      lastReport = complete ? report.data : null;
+      render({ ...report.data, partial: !!report.data.partial || !complete });
+      $("#dsConsole").hidden = false;
+      $("#dsConsole").className = complete ? "ds-console done" : "ds-console failed";
+      $("#dsStatus").textContent = complete
+        ? report.data.partial ? "Retained investigation opened with source limits. Review unavailable sources below." : "Retained investigation opened. The scan was not repeated."
+        : failed ? "The retained investigation failed. Available partial findings are shown; the scan was not repeated."
+          : "Retained partial results opened. This snapshot is incomplete; refresh retained results to check for updates.";
+      if (failed) $("#dsOut").insertAdjacentHTML("afterbegin", `<div class="error-box" role="alert">${esc(report.data.error || "The investigation could not finish. Available partial findings are shown below.")}</div>`);
+      $("#dsBar").style.width = complete ? "100%" : "0%";
+      $("#dsCount").textContent = complete ? "100%" : "Partial";
+      $("#dsExport").hidden = !complete;
+      $("#dsExportCsv").hidden = !complete;
+    } catch (err) {
+      if (version === reportVersion && accountState().user?.uid === uid) {
+        errorMessage = err.name === "AbortError" ? "Opening the retained investigation timed out. Try View findings again." : err.message || "Could not open the retained investigation.";
+      }
+    } finally {
+      clearTimeout(restoreTimer);
+      restoring = false;
+      renderAccess(accountState());
+      if (isLocked(renderedReport)) renderLocked(renderedReport, guestLive);
+      if (errorMessage) {
+        $("#dsAccessNote").textContent = errorMessage;
+        $("#dsOut").insertAdjacentHTML("afterbegin", `<div class="error-box" role="alert">${esc(errorMessage)}</div>`);
+      }
+    }
+  }
   function resetConsole() {
+    reportVersion++;
+    forgetGuestReport();
     $("#dsConsole").hidden = false;
     $("#dsConsole").className = "ds-console running";
     $("#dsBar").style.width = "0%";
@@ -302,49 +454,54 @@
     else if (ev.type === "error") throw new Error(ev.error || "Deep Search failed.");
     else if (ev.type === "complete") {
       if (!ev.data || ev.data.status === "error") throw new Error(ev.data?.error || "Deep Search failed.");
-      lastReport = ev.data;
-      linkedNotice = "";
+      lastReport = isLocked(ev.data) ? null : ev.data;
       render(ev.data);
       $("#dsConsole").className = "ds-console done";
       $("#dsBar").style.width = "100%";
       $("#dsCount").textContent = "100%";
-      $("#dsStatus").textContent = ev.data.mode === "email"
+      const hasGuestFindings = ev.data.guest_access?.sections?.some((section) => (count(section.count) || 0) > 0);
+      $("#dsStatus").textContent = isLocked(ev.data)
+        ? !hasGuestFindings ? "Investigation finished without returned findings. Review source availability below; this does not establish absence."
+          : ev.data.partial ? "Investigation finished with source limits. Sign in with an eligible paid account to view returned findings." : "Investigation complete. Sign in with an eligible paid account to view the findings."
+        : ev.data.mode === "email"
         ? `Google lookup finished: ${googleState(ev.data.google_public_profiles?.status || ev.data.status)[0].toLowerCase()}.`
         : ev.data.partial ? "Complete with source limits. Review unavailable sources below." : "Deep Search complete.";
-      $("#dsExport").hidden = false;
-      $("#dsExportCsv").hidden = false;
+      $("#dsExport").hidden = isLocked(ev.data) || !hasAccess();
+      $("#dsExportCsv").hidden = $("#dsExport").hidden;
       return true;
     }
     return false;
   }
   async function run(requestBody = null) {
-    if (running) return;
+    if (running || restoring || (embedded && !embeddedActive)) return;
     await A?.ready;
-    if (running) return;
-    if (!A?.enabled || !renderAccess(A.state())) return;
-    const input = $("#dsInput"), query = input.value.trim();
+    if (running || restoring || (embedded && !embeddedActive)) return;
+    if (!renderAccess(accountState())) return;
+    if (requestBody && !hasAccess()) return;
+    const input = inputNode(), query = input.value.trim();
     if (!requestBody && !query) { input.focus(); return; }
-    const previousReport = requestBody ? lastReport : null;
-    linkedNotice = ""; stoppedByUser = false;
+    const previousReport = requestBody && !isLocked(lastReport) ? lastReport : null;
     running = true;
-    const uid = A.state().user.uid;
-    $("#dsRun").disabled = true;
+    stoppedByUser = false;
+    linkedNotice = "";
+    const uid = accountState().user?.uid || null;
+    runNode().disabled = true;
     $("#dsStop").hidden = false;
     resetConsole();
     if (previousReport) {
-      linkedNotice = "Checking this handle… Use Cancel to stop. Source evidence remains visible.";
+      linkedNotice = "Checking this handle… Source evidence remains visible while the new check runs.";
       render(previousReport);
-    } else {
-      const emailQuery = query.includes("@") && !query.startsWith("@");
-      render({ subject: query, mode: emailQuery ? "email" : undefined, connections: [], source_checks: [],
-        google_public_profiles: emailQuery ? { status: "pending", profiles: [], sources: [] } : undefined }, true);
     }
     controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 100000);
     let reader, completed = false, deniedAccount = null;
     try {
+      // Bind request authorization to the identity captured above. Signing in
+      // during a guest run must never turn that run into a private stream.
+      const authHeaders = uid && A ? await A.authHeaders() : {};
+      if (uid && accountState().user?.uid !== uid) throw new Error("Your account changed. Run a new search with your current account.");
       const res = await fetch(CFG.apiBase + "/api/investigate/stream", {
-        method: "POST", headers: { "Content-Type": "application/json", ...(await A.authHeaders()) },
+        method: "POST", headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify(requestBody || { query }), signal: controller.signal,
       });
       if (!res.ok || !res.body) {
@@ -355,10 +512,15 @@
       reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
-      const line = (s) => { if (s.trim()) completed = handleEvent(JSON.parse(s)) || completed; };
+      const line = (s) => {
+        if (uid && accountState().user?.uid !== uid) throw new Error("Your account changed. Run a new search with your current account.");
+        if (s.trim()) completed = handleEvent(JSON.parse(s)) || completed;
+      };
       for (;;) {
         const { done, value } = await reader.read();
-        if (A.state().user?.uid !== uid) throw new Error("Your account changed. Run a new search with your current account.");
+        // A guest may sign in while the redacted stream continues. Private streams
+        // stop as soon as their authenticated account changes.
+        if (uid && accountState().user?.uid !== uid) throw new Error("Your account changed. Run a new search with your current account.");
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
@@ -370,17 +532,21 @@
       if (!completed) throw new Error("The search ended before completion. Results shown so far may be incomplete.");
     } catch (err) {
       $("#dsConsole").className = "ds-console failed";
-      const message = err.name === "AbortError" ? (stoppedByUser ? "Search cancelled. Results shown so far may be incomplete." : "Search timed out. Results shown so far may be incomplete.") : err.message;
-      if (A.state().user?.uid !== uid) return;
+      const message = err.name === "AbortError"
+        ? (stoppedByUser ? "Search cancelled. Results shown so far may be incomplete." : "Search timed out. Results shown so far may be incomplete.") : err.message;
+      if (uid && accountState().user?.uid !== uid) return;
       if (previousReport) {
-        lastReport = previousReport; linkedNotice = "Handle check did not complete. The source report is shown; you can retry the check.";
+        lastReport = previousReport;
+        linkedNotice = "Handle check did not complete. The source report is shown; you can retry the check.";
         render(previousReport);
-        $("#dsExport").hidden = false; $("#dsExportCsv").hidden = false;
-      } else if (!completed && renderedReport?.mode === "email") {
+        $("#dsExport").hidden = !hasAccess();
+        $("#dsExportCsv").hidden = !hasAccess();
+      } else if (!completed && renderedReport?.mode === "email" && !isLocked(renderedReport) && accountState().user?.uid === uid) {
         const status = err.name === "AbortError" ? (stoppedByUser ? "unknown" : "timeout") : "unavailable";
         render({ ...renderedReport, status, partial: true,
           google_public_profiles: { ...renderedReport.google_public_profiles, status } });
       }
+      if (!previousReport && !completed && renderedReport && (isLocked(renderedReport) || renderedReport.mode !== "email")) render({ ...renderedReport, partial: true });
       $("#dsStatus").textContent = message || "Deep Search failed.";
       $("#dsOut").insertAdjacentHTML("afterbegin", `<div class="error-box" role="alert">${esc(message)}</div>`);
     } finally {
@@ -390,67 +556,115 @@
       $("#dsOut").setAttribute?.("aria-busy", "false");
       controller = null;
       $("#dsStop").hidden = true;
-      await A.refreshAccount().catch(() => {});
-      renderAccess(deniedAccount ? { ...A.state(), account: deniedAccount } : A.state());
+      if (A) await A.refreshAccount().catch(() => {});
+      renderAccess(deniedAccount ? { ...accountState(), account: deniedAccount } : accountState());
+      if (guestReport && hasAccess()) await revealGuestReport();
     }
   }
+  function initEmbedded() {
+    const section = $("#ds[data-embedded]");
+    if (!section) return false;
+    window.MyReconDeepSearch = {
+      run,
+      select(active) {
+        const wasActive = embeddedActive;
+        embeddedActive = active;
+        section.hidden = !active;
+        const lookupResults = $("#results")?.closest("section");
+        if (lookupResults) lookupResults.hidden = active;
+        $("#deepSearchEntry")?.setAttribute("aria-expanded", String(active));
+        if (active) {
+          if (!inputNode().value && typeof renderedReport?.subject === "string") {
+            inputNode().value = renderedReport.subject + (renderedReport.context ? ", " + renderedReport.context : "");
+          }
+          modeHint(); renderAccess(accountState());
+        }
+        else {
+          $("#dsStop").hidden = true;
+          if (running) { stoppedByUser = true; controller?.abort(); }
+          if (wasActive) runNode().disabled = false;
+        }
+      },
+    };
+    return true;
+  }
   document.addEventListener("DOMContentLoaded", async () => {
-    const initialQ = new URLSearchParams(location.search).get("q");
-    if (initialQ && $("#dsInput") && !$("#dsInput").value) {
-      $("#dsInput").value = initialQ;
+    if (!inputNode()) return;
+    if (!initEmbedded()) initChrome();
+    modeHint();
+    let launchQuery = "";
+    try {
+      const launch = JSON.parse(sessionStorage.getItem("myrecon.deep-search.launch") || "null");
+      sessionStorage.removeItem("myrecon.deep-search.launch");
+      if (typeof launch?.query === "string") launchQuery = launch.query.slice(0, 254).trim();
+    } catch {}
+    if (!launchQuery) readGuestReport();
+    else { inputNode().value = launchQuery; modeHint(); }
+    inputNode()?.addEventListener("input", modeHint);
+    if (!embedded) {
+      inputNode()?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); run(); } });
+      runNode()?.addEventListener("click", () => run());
     }
-    initChrome(); modeHint();
-    $("#dsInput")?.addEventListener("input", modeHint);
-    $("#dsInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); run(); } });
-    $("#dsRun")?.addEventListener("click", () => run());
     $("#dsStop")?.addEventListener("click", () => { stoppedByUser = true; controller?.abort(); });
-    $("#dsSignIn")?.addEventListener("click", async () => {
-      try { await A?.signIn(); await A?.refreshAccount(); renderAccess(A?.state()); }
-      catch (e) { $("#dsAccessNote").textContent = A?.friendly(e) || e.message; }
-    });
-    $("#dsRetryAccess")?.addEventListener("click", async () => {
-      try { await A?.refreshAccount(); renderAccess(A?.state()); }
+    const signIn = async () => {
+      if (!A?.enabled) { $("#dsAccessNote").textContent = "Sign-in is temporarily unavailable. Try again shortly."; return; }
+      try { await A.signIn(); await A.refreshAccount(); onState(A.state()); await revealGuestReport(true); }
+      catch (e) { $("#dsAccessNote").textContent = A.friendly(e) || e.message; }
+    };
+    const refreshAccess = async () => {
+      try { await A?.refreshAccount(); onState(accountState()); await revealGuestReport(true); }
       catch { $("#dsAccessNote").textContent = "Could not check your plan. Try again shortly."; }
-    });
+    };
+    $("#dsSignIn")?.addEventListener("click", signIn);
+    $("#dsRetryAccess")?.addEventListener("click", refreshAccess);
     $("#dsOut")?.addEventListener("click", (e) => {
+      if (e.target.closest("[data-ds-unlock]")) { signIn(); return; }
+      if (e.target.closest("[data-ds-refresh]")) { refreshAccess(); return; }
+      if (e.target.closest("[data-ds-reveal]")) { revealGuestReport(true); return; }
+      if (isLocked(renderedReport) || !hasAccess()) return;
       const follow = e.target.closest("[data-ds-follow]");
       if (follow) {
-        if (follow.disabled || running || renderedLive) return;
+        if (follow.disabled || running || restoring || renderedLive) return;
         const row = renderedReport?.connections?.[Number(follow.dataset.dsFollow)], body = followBody(row);
         if (!body) return;
-        $("#dsInput").value = "@" + row.destination.handle;
+        inputNode().value = "@" + row.destination.handle;
         modeHint(); run(body);
         $("#dsConsole").scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
       const b = e.target.closest("[data-ds-alias]");
       if (b && /^[A-Za-z0-9][A-Za-z0-9._-]{0,62}$/.test(b.dataset.dsAlias)) {
-        $("#dsInput").value = "@" + b.dataset.dsAlias;
+        inputNode().value = "@" + b.dataset.dsAlias;
         modeHint(); run();
-        $("#dsInput").scrollIntoView({ behavior: "smooth", block: "center" });
+        inputNode().scrollIntoView({ behavior: "smooth", block: "center" });
       }
     });
     $("#dsExport")?.addEventListener("click", () => {
-      if (!lastReport) return;
+      if (!lastReport || isLocked(lastReport) || !hasAccess() || running || restoring) return;
       download(JSON.stringify(exportReport(lastReport), null, 2), "application/json", "json");
     });
     $("#dsExportCsv")?.addEventListener("click", () => {
-      if (lastReport) download(reportCsv(exportReport(lastReport)), "text/csv;charset=utf-8", "csv");
+      if (!lastReport || isLocked(lastReport) || !hasAccess() || running || restoring) return;
+      download(reportCsv(exportReport(lastReport)), "text/csv;charset=utf-8", "csv");
     });
-    if (A) await A.ready;
-    if (!A?.enabled) {
-      $("#dsAccessTitle").textContent = "Sign-in is temporarily unavailable";
-      $("#dsAccessNote").textContent = "Deep Search needs your paid account. Try again shortly.";
-      $("#dsSignIn").hidden = true; return;
-    }
     const onState = (state) => {
       const uid = state?.user?.uid || null;
       if (activeUid && activeUid !== uid) {
+        reportVersion++;
         controller?.abort(); lastReport = null; renderedReport = null; linkedNotice = "";
+        forgetGuestReport();
         $("#dsOut").innerHTML = ""; $("#dsExport").hidden = true; $("#dsExportCsv").hidden = true;
+      } else if (!hasAccess(state) && renderedReport && !isLocked(renderedReport)) {
+        lastReport = null;
+        if (guestReport) { renderedReport = guestReport; renderLocked(guestReport, guestLive); }
+        else { renderedReport = null; $("#dsOut").innerHTML = ""; }
       }
       activeUid = uid; renderAccess(state);
+      if (isLocked(renderedReport)) renderLocked(renderedReport, guestLive);
+      if (hasAccess(state)) revealGuestReport();
     };
-    A.onChange(onState); onState(A.state());
+    if (A) { A.onChange(onState); await A.ready; }
+    onState(accountState());
+    if (launchQuery) { inputNode().value = launchQuery; modeHint(); run(); }
   });
 })();

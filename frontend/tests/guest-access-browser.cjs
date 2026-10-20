@@ -15,7 +15,7 @@ const fixtureProfiles = ['First', 'Second', 'Third', 'Fourth', 'Fifth'].map(plat
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;
   const json = (value) => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(value)); };
-  if (pathname === '/assets/js/account.js') {
+  if ((/^\/assets\/(?:optimized\/)?js\/account(?:\.[a-f0-9]{12})?\.js$/).test(pathname)) {
     res.setHeader('Content-Type', 'application/javascript');
     const state = { user: signedIn ? { uid: 'fixture-user', email: 'fixture@example.com' } : null,
       account: signedIn ? { standard_scans_left: 5, standard_scans_unlimited: false } : null };
@@ -39,7 +39,7 @@ const server = http.createServer((req, res) => {
       };
     })();`);
   }
-  if (pathname === '/assets/js/config.js') {
+  if ((/^\/assets\/(?:optimized\/)?js\/config(?:\.[a-f0-9]{12})?\.js$/).test(pathname)) {
     res.setHeader('Content-Type', 'application/javascript');
     return res.end('window.MYRECON_API_BASE=location.origin;\n' + fs.readFileSync(path.join(root, 'assets/js/config.js'), 'utf8'));
   }
@@ -167,9 +167,14 @@ const server = http.createServer((req, res) => {
         await page.goto(base + `/index.html?live=${width}-${isSignedIn}#tool=username`);
         await page.locator('#queryInput').fill('live-fixture');
         if (isSignedIn) await page.locator('input[value="full"]').check();
+        const streamStarted = page.waitForResponse(response => response.url().endsWith('/api/username/stream'));
         await page.locator('#runBtn').click();
-        await page.locator('#scanLog > div').first().waitFor();
-        assert.equal(await page.locator('.retro-title').isVisible(), true);
+        await streamStarted;
+        await page.locator('#scanPhase').waitFor();
+        assert.equal(await page.locator('.loading.scan .scan-head').isVisible(), true);
+        assert.equal(await page.locator('.retro-title, #scanLog').count(), 0);
+        assert.match(await page.locator('#scanPhase').textContent(), /Preparing scan/);
+        assert.equal(await page.locator('#scanPct').textContent(), '0%');
         assert.equal(await page.locator('#runBtn').isDisabled(), true);
         for (let index = 0; index < fixtureProfiles.length; index++) {
           pendingStream.emitCard(index);
@@ -180,7 +185,7 @@ const server = http.createServer((req, res) => {
         }
         assert.equal(await page.locator('#liveCount').textContent(), '5');
         assert.match(await page.locator('#scanTally').textContent(), /5 found/);
-        if (isSignedIn) assert.match(await page.locator('#scanLog').textContent(), /Fifth, found/);
+        if (isSignedIn) assert.match(await page.locator('#scanDetail').textContent(), /Fifth, found/);
         else {
           assert.doesNotMatch(await page.locator('#results').innerHTML(), /third\.example|fourth\.example|fifth\.example/);
           assert.equal(await page.locator('.locked-card-shape').first().evaluate(el => getComputedStyle(el).filter), 'blur(5px)');

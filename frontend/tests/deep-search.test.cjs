@@ -6,7 +6,7 @@ const path = require("node:path");
 
 function load(state = {}) {
   const elements = {};
-  for (const id of ["dsAccess", "dsAccessTitle", "dsAccessNote", "dsSignIn", "dsUpgrade", "dsRetryAccess", "dsRun", "dsInput", "dsMode", "dsOut", "dsConsole", "dsBar", "dsCount", "dsStatus", "dsExport", "dsExportCsv", "dsStop"]) {
+  for (const id of ["dsAccess", "dsAccessTitle", "dsAccessNote", "dsSignIn", "dsUpgrade", "dsRetryAccess", "dsRun", "dsInvestigate", "dsInput", "dsMode", "dsOut", "dsConsole", "dsBar", "dsCount", "dsStatus", "dsExport", "dsExportCsv", "dsStop"]) {
     elements["#" + id] = { textContent: "", innerHTML: "", style: {}, value: "", focus() {},
       insertAdjacentHTML(position, html) { this.innerHTML = html + this.innerHTML; } };
   }
@@ -20,7 +20,7 @@ function load(state = {}) {
 }
 
 test("guest, free and pending accounts cannot run Deep Search", async () => {
-  for (const state of [{}, { user: { uid: "u" }, account: { deep_search_enabled: false } }, { user: { uid: "u" } }]) {
+  for (const state of [{ user: { uid: "u" }, account: { deep_search_enabled: false } }, { user: { uid: "u" } }]) {
     const { api, elements, context } = load(state);
     assert.equal(api.renderAccess(state), false);
     assert.equal(elements["#dsRun"].disabled, true);

@@ -47,10 +47,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=c8dcbebe17">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=2e36ee7372">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=7a7a010a5e">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"eBay, 2014: 145 million users and a notice nobody saw","description":"Attackers used a handful of employees' credentials to reach eBay's user database and sat inside for months. The company then handled the announcement about as badly as it could.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/ebay-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"eBay data breach"},"wordCount":890}</script>
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"eBay, 2014: 145 million users and a notice nobody saw","description":"Attackers used a handful of employees' credentials to reach eBay's user database and sat inside for months. The company then handled the announcement about as badly as it could.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/ebay-2014.html","articleSection":"Case Files","about":{"@type":"Thing","name":"eBay data breach"},"wordCount":890}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"eBay data breach","item":"https://www.myrecon.xyz/breaches/case-files/ebay-2014.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was financial data stolen from eBay?","acceptedAnswer":{"@type":"Answer","text":"No. PayPal was a separate company operationally at the time, on separate infrastructure, and eBay stated repeatedly that payment data was unaffected. That was true and it was also used to make the breach sound smaller than it was. Name, address, phone number, date of birth and email for 145 million people is a better identity fraud dataset than a card number, because none of it can be cancelled."}},{"@type":"Question","name":"Were eBay passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"eBay described the passwords as encrypted and never published the algorithm used, which meant nobody outside could assess how much protection that offered. In the absence of that detail the safe assumption for users was that the passwords would eventually be recoverable, and anyone who had reused an eBay password elsewhere needed to change it everywhere, which is exactly what the company should have said plainly."}},{"@type":"Question","name":"Why was eBay criticised for its response?","acceptedAnswer":{"@type":"Answer","text":"The intrusion happened in late February or early March and was discovered in early May, and eBay disclosed on 21 May. When it did, the announcement went out awkwardly: a post appeared on the PayPal blog, the password reset prompt did not reach many users promptly, and there was no email to some account holders for days. For an event requiring 145 million people to take an action, the delivery of the message was the whole job."}},{"@type":"Question","name":"Should I still worry about the eBay breach?","acceptedAnswer":{"@type":"Answer","text":"Not about the password, if you changed it. The durable exposure is the combination of full name, postal address, phone number and date of birth, which is still a working identity package twelve years later and still appears in combined data sets sold today."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
@@ -61,7 +61,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a><a href="/about.html">About</a></nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -185,9 +185,9 @@
            the per-address one sends anything. -->
       <aside class="bx-offer">
         <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
         <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">View closed-testing listing →</a></p>
       </aside>
 
       <h2>Sources</h2>
@@ -199,8 +199,6 @@
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
-        <li><a href="/breaches/case-files/morrisons-2014.html">Morrisons, 2014: the auditor who published the payroll</a></li>
-        <li><a href="/breaches/case-files/target-2013.html">Target, 2013: 40 million cards, and the air-conditioning contractor</a></li>
         <li><a href="/breaches/case-files/linkedin-2012.html">LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</a></li>
         <li><a href="/breaches/case-files/yahoo-2013-2014.html">Yahoo, 2013–2014: three billion accounts, and three years of silence</a></li>
         <li><a href="/breaches/case-files/adobe-2013.html">Adobe, 2013: 153 million records and the world's worst crossword</a></li>
@@ -221,15 +219,15 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/free-osint-tool.html">Free OSINT tool</a></li><li><a href="/boost.html">Boost OSINT</a></li><li><a href="/browser.html">Browser OSINT</a></li><li><a href="/goal.html">Privacy goal</a></li><li><a href="/watch.html">Video walkthrough</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/features">Features</a></li><li><a href="/privacy-audit">Privacy audit</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li><li><a href="/enterprise-osint-api">Enterprise API</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/directory.html">Site directory</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned.html">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -249,9 +247,9 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=1a8f2b0e7d"></script>
-  <script src="/assets/js/breach-check.js?v=24a5435de2"></script>
-  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/app.js?v=dea8105323"></script>
+  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
+  <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
 </html>

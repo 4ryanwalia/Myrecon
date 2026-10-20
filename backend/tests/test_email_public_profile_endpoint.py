@@ -163,7 +163,7 @@ def test_public_profile_endpoint_validates_query_and_never_caches(monkeypatch):
     for _ in range(2):
         response = client.post("/api/email/public-profiles", json={"email": EMAIL})
         assert response.status_code == 200
-        assert response.headers["Cache-Control"] == "no-store"
+        assert response.headers["Cache-Control"] == "private, no-store"
         assert response.get_json()["status"] == "unconfigured"
     assert calls == [EMAIL, EMAIL]
     assert client.options("/api/email/public-profiles").status_code == 204

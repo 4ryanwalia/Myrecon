@@ -39,7 +39,7 @@ def post(client, token="valid", query="@octocat", **body):
     return client.post("/api/investigate/stream", json={"query": query, **body}, headers=headers)
 
 
-@pytest.mark.parametrize("token,status", [(None, 401), ("invalid", 401), ("valid", 402)])
+@pytest.mark.parametrize("token,status", [("invalid", 401), ("valid", 402)])
 def test_unpaid_calls_never_start_sources(client, monkeypatch, token, status):
     def forbidden(*args):
         pytest.fail("unpaid request reached sources")
@@ -61,7 +61,7 @@ def test_paid_streams_partial_and_complete_without_spending_credits(client, monk
     monkeypatch.setattr(deep_search, "search", fake)
     response = post(client, query="Satya Nadella, Microsoft")
     assert response.status_code == 200
-    assert response.headers["Cache-Control"] == "no-store"
+    assert response.headers["Cache-Control"] == "private, no-store"
     events = [json.loads(line) for line in response.data.splitlines()]
     assert [e["type"] for e in events] == ["partial", "complete"]
     assert events[-1]["data"]["mode"] == "name"

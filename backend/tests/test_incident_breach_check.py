@@ -46,7 +46,7 @@ def test_endpoint_validates_and_never_saves_history(monkeypatch):
     client = app.create_app().test_client()
     response = client.post('/api/breach-check', json={"email": "fixture@example.com", "targets": [TARGET]})
     assert response.status_code == 200
-    assert response.headers['Cache-Control'] == 'no-store'
+    assert response.headers['Cache-Control'] == 'private, no-store'
     assert 'history_id' not in response.json
     for bad in [None, {}, [{"name": "Adobe", "breach_date": "bad"}], [TARGET] * 4]:
         assert client.post('/api/breach-check', json={"email": "fixture@example.com", "targets": bad}).status_code == 422

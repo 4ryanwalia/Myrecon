@@ -17,9 +17,6 @@ const LABELS = { target: "Platform lookups", comparison: "Comparisons", guide: "
 const PRESERVED = new Map([
   ["/", "index.html"],
   ["/pricing", "pricing.html"],
-  ["/vs/maigret", "vs/maigret.html"],
-  ["/vs/sherlock", "vs/sherlock.html"],
-  ["/vs/whatsmyname", "vs/whatsmyname.html"],
 ]);
 
 function fail(message) { throw new Error(message); }
@@ -33,6 +30,7 @@ function safeJson(value) { return JSON.stringify(value).replace(/</g, "\\u003c")
 function guideImagePath(record) { return `/assets/img/guides/${record.slug}.svg`; }
 function guideMobileImagePath(record) { return `/assets/img/guides/${record.slug}-mobile.svg`; }
 function guideTheme(record) {
+  if (record.diagram_steps) return { color: "#a8cfaa", steps: record.diagram_steps };
   const slug = record.slug.toLowerCase();
   const platformPrivacy = {
     "steam-profile-privacy-checklist": ["Steam settings", "Signed-out view", "Recheck exposure"],
@@ -77,7 +75,7 @@ function guideDiagram(record) {
 ${titleLines.map((line, index) => `<text x="84" y="${132 + index * 48}" fill="#f3f6fb" font-size="38" font-weight="700">${esc(line)}</text>`).join("")}
 <path d="M396 326h42m332 0h42" stroke="${theme.color}" stroke-width="4" stroke-linecap="round"/>
 ${cards}
-<text x="54" y="430" fill="#a8b3c7" font-size="17">Use public sources · Verify each lead · Record uncertainty</text>
+<text x="54" y="430" fill="#a8b3c7" font-size="17">Follow the workflow · Keep a minimal action log</text>
 </svg>\n`;
 }
 function guideMobileDiagram(record) {
@@ -179,7 +177,7 @@ function allRecords(contentRoot) {
       if (record.status !== "published") fail(`${name}: only published records can be rendered`);
       if (!record.title || record.title.length > 60) fail(`${name}: title must be 1–60 characters`);
       if (!record.description || record.description.length > 160) fail(`${name}: description must be 1–160 characters`);
-      if (!Array.isArray(record.faq) || record.faq.length < 3 || record.faq.length > 10) fail(`${name}: expected 3–10 visible FAQs`);
+      if (!Array.isArray(record.faq) || record.faq.length < 3 || record.faq.length > 5) fail(`${name}: expected 3–5 visible FAQs`);
       if (!record.sections?.length) fail(`${name}: at least one content section is required`);
       records.push(record);
     }
@@ -191,7 +189,12 @@ function allRecords(contentRoot) {
     if (routes.has(route)) fail(`Duplicate published route: ${route}`);
     routes.add(route);
   }
-  if (records.length < 200) fail(`Expected 200+ published records; found ${records.length}`);
+  if (!records.length) fail("No published records found");
+  for (const record of records.filter((item) => item.kind !== "core")) {
+    if (!record.editorial_review) fail(`${record.slug}: topic-specific editorial review required`);
+    if (record.sections.length < 4) fail(`${record.slug}: incomplete workflow`);
+    if (record.intro.includes("best handled as a narrow, documented question")) fail(`${record.slug}: generic template intro`);
+  }
   return records;
 }
 function faqSchema(record) {
@@ -210,22 +213,9 @@ function jsonLd(record, route) {
     {
       "@context": "https://schema.org", "@type": type, name: record.h1,
       headline: record.title, description: record.description, url,
-      ...(record.focus_keyword ? { keywords: record.focus_keyword } : {}),
       dateModified: record.modified_at, inLanguage: "en",
       author: { "@type": "Organization", name: "MyRecon" },
-      publisher: {
-        "@type": "Organization",
-        "@id": `${SITE}/#organization`,
-        name: "MyRecon",
-        url: `${SITE}/`,
-        logo: {
-          "@type": "ImageObject",
-          url: `${SITE}/assets/img/og-image.png`,
-          width: 1200,
-          height: 630,
-        },
-      },
-      mainEntityOfPage: url,
+      publisher: { "@id": `${SITE}/#organization` }, mainEntityOfPage: url,
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -248,16 +238,16 @@ function renderSections(record) {
   return record.sections.map((section, index) => `
     <section class="seo-section" id="section-${index + 1}">
       <h2>${esc(section.heading)}</h2>
-      <p>${esc(section.body)}</p>
+      <p>${esc(section.body)}</p>${section.table ? `
+      <div class="editorial-table-wrap"><table><caption>${esc(section.table.caption)}</caption><thead><tr>${section.table.headers.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${section.table.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}${section.download ? `
+      <p><a href="${esc(section.download.href)}" download>${esc(section.download.label)}</a></p>` : ''}
     </section>`).join("");
 }
 function renderSpecific(record) {
   if (record.kind === "target") {
     return `
     <section class="seo-section"><h2>Check it manually</h2><ol>${record.manual_steps.map((step) => `<li>${esc(step)}</li>`).join("")}</ol>
-      <p>${esc(record.platform.limitations)}</p></section>
-    <section class="seo-section"><h2>Privacy and result limits</h2><p>${esc(record.platform.privacy_overview)}</p>
-      <p>${esc(record.platform.false_positive_note)}</p></section>`;
+      </section>`;
   }
   if (record.kind === "deletion") {
     return `
@@ -265,8 +255,7 @@ function renderSpecific(record) {
       ${record.optout_link ? `<p><a href="${esc(record.optout_link)}" target="_blank" rel="noopener noreferrer">Open the official opt-out form</a></p>` : ""}
       <ol>${record.steps.map((step) => `<li>${esc(step)}</li>`).join("")}</ol>
       <p>${esc(record.caveat)}</p></section>
-    <section class="seo-section"><h2>Review your remaining public footprint</h2><p>${esc(record.audit_pitch)}</p></section>
-    <section class="seo-section"><h2>Need assistance with personal record removal?</h2><p>If manual opt-outs are tedious or broker records keep reappearing, our security team can audit your public exposure and pursue broker erasures for you. <a href="/services.html">Explore our Personal Footprint Removal Service &rarr;</a></p></section>`;
+    <section class="seo-section"><h2>Review your remaining public footprint</h2><p>${esc(record.audit_pitch)}</p></section>`;
   }
   if (record.kind === "guide") {
     return `
@@ -282,7 +271,6 @@ function renderSpecific(record) {
       <h3>Consider the trade-offs</h3><ul>${record.cons.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
       <p>${esc(record.migration_note)}</p>
       <p>Competitor details: <a href="${esc(record.competitor.official_url)}" target="_blank" rel="noopener noreferrer">${esc(record.competitor.name)} official source</a></p>
-      <p><a href="/pricing">View MyRecon plans and pricing</a> · <a href="/services.html">Personal footprint removal service</a></p>
     </section>`;
   }
   if (record.kind === "core") {
@@ -290,29 +278,11 @@ function renderSpecific(record) {
   }
   return "";
 }
-function renderRelated(record, siblings = []) {
-  if (siblings.length <= 1) return "";
-  const idx = Math.max(0, siblings.findIndex((item) => item.slug === record.slug));
-  const picks = [];
-  for (let offset = 1; offset < siblings.length && picks.length < 6; offset++) {
-    picks.push(siblings[(idx + offset) % siblings.length]);
-  }
-  const heading = ({
-    target: "Related platform lookups",
-    guide: "Related OSINT & privacy guides",
-    deletion: "Related account deletion & opt-out guides",
-    comparison: "Related OSINT tool comparisons",
-    core: "Related MyRecon features",
-  })[record.kind] || "Related pages";
-  return `
-      <section class="seo-section"><h2>${esc(heading)}</h2><div class="seo-link-grid">${picks.map((item) => `<a href="${esc(routeFor(item))}"><strong>${esc(item.h1)}</strong></a>`).join("")}</div></section>`;
-}
-function renderPage(record, siblings = []) {
+function renderPage(record) {
   const route = routeFor(record);
   const label = LABELS[record.kind] || "MyRecon";
   const categoryRoute = CLUSTERS[record.kind] ? `/${CLUSTERS[record.kind]}/` : "/";
   const sourceList = [...new Set([...(record.sources || []), record.official_help_url, record.optout_link].filter(Boolean))];
-  const keywords = [...new Set([record.focus_keyword, record.h1 ? record.h1.toLowerCase() : "", "myrecon", "free osint tool", "digital footprint checker"].filter(Boolean))].join(", ");
   const crumbHtml = record.kind === "core"
     ? `<a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(record.h1)}</span>`
     : `<a href="/">Home</a> <span aria-hidden="true">/</span> <a href="${categoryRoute}">${esc(label)}</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(record.h1)}</span>`;
@@ -321,7 +291,6 @@ function renderPage(record, siblings = []) {
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${esc(record.title)}</title><meta name="description" content="${esc(record.description)}">
-  <meta name="keywords" content="${esc(keywords)}">
   <meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${SITE}${route}">
   <meta property="og:type" content="article"><meta property="og:site_name" content="MyRecon">
@@ -329,7 +298,7 @@ function renderPage(record, siblings = []) {
   <meta property="og:url" content="${SITE}${route}"><meta property="og:image" content="${SITE}/assets/img/og-image.png">
   <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(record.title)}">
   <meta name="twitter:description" content="${esc(record.description)}"><meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg"><link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/css/editorial.css">
   <link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7">
 ${jsonLd(record, route)}
   <style>
@@ -347,22 +316,22 @@ ${jsonLd(record, route)}
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="nav"><div class="container nav-inner">
+  <header class="nav editorial-nav"><div class="container nav-inner">
     <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
+    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
     <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
   </div></header>
   <main id="main" class="container prose seo-page">
     <nav class="seo-breadcrumb" aria-label="Breadcrumb">${crumbHtml}</nav>
-    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p>${record.kind === "guide" ? `
-      <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>A practical overview of the public-source review described below.</figcaption></figure>` : ""}
+    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p><p class="seo-sources">MyRecon editorial · Updated ${esc(record.modified_at)}</p>${record.kind === "guide" ? `
+      <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>Workflow illustration, not a screenshot or a recorded test.</figcaption></figure>` : ""}
       ${renderSpecific(record)}${renderSections(record)}
-      <section class="seo-cta"><h2>Check a public username</h2><p>Use accounts and identifiers you own or are authorized to review. A matching username is a lead, not proof of identity.</p>
-        <username-search-input></username-search-input></section>
-      <section class="seo-faq"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details><summary>${esc(item.question)}</summary><p>${esc(item.answer)}</p></details>`).join("")}</section>${renderRelated(record, siblings)}
-      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a></nav>
-      ${sourceList.length ? `<section class="seo-section seo-sources"><h2>Sources</h2><ul>${sourceList.map((source) => `<li><a href="${esc(source)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a></li>`).join("")}</ul></section>` : ""}
+      ${record.evidence ? `<figure class="seo-guide-figure"><img src="${esc(record.evidence.image)}" alt="${esc(record.evidence.alt)}" width="1280" height="800" loading="lazy" style="max-width:100%;height:auto"><figcaption>${esc(record.evidence.caption)} <a href="${esc(record.evidence.source)}" target="_blank" rel="noopener noreferrer">Original source</a>.</figcaption></figure>` : ''}
+      ${record.slug === 'protect-researcher-notes' || record.slug === 'discord-user' ? '' : `<section class="seo-cta"><h2>Check a public username</h2><p>Guest previews and account limits apply. See <a href="/pricing">current pricing</a>. Verify each candidate at its source.</p><username-search-input></username-search-input></section>`}
+      <section class="seo-faq"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details><summary>${esc(item.question)}</summary><p>${esc(item.answer)}</p></details>`).join("")}</section>
+      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a><a href="/about.html#editorial-method">Editorial method and corrections</a></nav>
+      ${sourceList.length ? `<section class="seo-section seo-sources"><h2>Sources and method</h2><p>${esc(record.method)}</p><ul>${sourceList.map((source) => `<li><a href="${esc(source)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a></li>`).join("")}</ul></section>` : ""}
     </article>
   </main>
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a></span></div></div></footer>
@@ -371,15 +340,27 @@ ${jsonLd(record, route)}
 `;
 }
 function renderHub(kind, records) {
+  const editorial = JSON.parse(fs.readFileSync(path.join(FRONTEND, "content", "editorial-hubs.json"), "utf8"))[kind];
   const section = CLUSTERS[kind];
   const title = ({ target: "Username Search by Platform | MyRecon", comparison: "OSINT Tool Comparisons | MyRecon", guide: "OSINT & Digital Footprint Guides | MyRecon", deletion: "Account Deletion & Online Privacy Guides | MyRecon" })[kind];
-  const description = `Browse ${records.length} ${LABELS[kind].toLowerCase()} from MyRecon. Review public information, official sources, and the limits of each workflow.`;
-  const hubKeywords = ({ target: "username search by platform, social media profile lookup, find accounts by username, platform username directory, myrecon", comparison: "osint tool comparisons, myrecon vs sherlock, myrecon vs maigret, best osint tools", guide: "osint guides, digital footprint guides, privacy audit tutorials", deletion: "account deletion guides, data broker opt out, online privacy removal, delete old accounts, digital footprint cleanup" })[kind] || "myrecon, osint guides, digital footprint";
+  const description = editorial.description;
   const route = `/${section}/`;
+  if (kind === 'guide') {
+    const publishedSlugs = new Set(records.map(r => r.slug));
+    const retired = JSON.parse(fs.readFileSync(path.join(FRONTEND, 'content', 'editorial-redirects.json'), 'utf8'));
+    const legacy = fs.readdirSync(path.join(FRONTEND, 'guides')).filter(name => name.endsWith('.html') && name !== 'index.html').map(name => {
+      const slug = name.slice(0, -5);
+      const html = fs.readFileSync(path.join(FRONTEND, 'guides', name), 'utf8');
+      const heading = (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || slug).replace(/<[^>]+>/g, '');
+      const description = html.match(/<meta name="description" content="([^"]*)"/i)?.[1] || 'Read the practical steps and source limitations.';
+      return [slug, heading, description];
+    }).filter(([slug]) => !publishedSlugs.has(slug) && !retired[`/guides/${slug}`]);
+    records = [...records, ...legacy.map(([slug, h1, description]) => ({ kind: 'guide', slug, h1, description }))];
+  }
   const list = records.map((record) => `      <a href="${esc(routeFor(record))}"><strong>${esc(record.h1)}</strong><br><span>${esc(record.description)}</span></a>`).join("\n");
-  const pageRecord = { title, h1: title, description, intro: `Browse the MyRecon ${LABELS[kind].toLowerCase()} library. Each page explains a specific task, its evidence limits, and appropriate public-source steps.`, kind, modified_at: new Date().toISOString().slice(0, 10), faq: [] };
+  const pageRecord = { title, h1: editorial.heading, description, intro: editorial.intro, kind, modified_at: '2026-10-03', faq: [] };
   const hubSchema = safeJson({ "@context": "https://schema.org", "@type": "CollectionPage", name: title, description, url: `${SITE}${route}`, mainEntity: { "@type": "ItemList", itemListElement: records.map((record, index) => ({ "@type": "ListItem", position: index + 1, name: record.h1, url: `${SITE}${routeFor(record)}` })) } });
-  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="keywords" content="${esc(hubKeywords)}"><meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4"><link rel="canonical" href="${SITE}${route}"><meta property="og:type" content="website"><meta property="og:site_name" content="MyRecon"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${SITE}${route}"><meta property="og:image" content="${SITE}/assets/img/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(description)}"><meta name="twitter:image" content="${SITE}/assets/img/og-image.png"><link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg"><link rel="apple-touch-icon" href="/assets/img/favicon.svg"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a><nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav><button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button><button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(title)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer><script src="/assets/js/username-search-input.js" defer></script></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4"><link rel="canonical" href="${SITE}${route}"><link rel="stylesheet" href="/assets/css/styles.css?v=12"><link rel="stylesheet" href="/assets/css/fx.css?v=7"><script type="application/ld+json">${hubSchema}</script><style>.seo-page{max-width:1100px;padding:42px 0 56px}.seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}.seo-link-grid span{font-size:.92rem;color:var(--text-dim)}.seo-section{margin:32px 0;max-width:78ch}.seo-section p{line-height:1.75}.seo-page h1{line-height:1.2;margin-bottom:18px}.seo-page>p{margin:18px 0;line-height:1.7}@media(max-width:700px){.seo-page{padding:28px 20px}.nav-links{flex-wrap:wrap;gap:10px}}</style></head><body><a class="skip-link" href="#main">Skip to content</a><header class="nav"><div class="container nav-inner"><a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a><nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav><button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button><button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button></div></header><main id="main" class="container prose seo-page"><span class="kicker">MyRecon library</span><h1>${esc(pageRecord.h1)}</h1><p>${esc(pageRecord.intro)}</p><div class="seo-link-grid">\n${list}\n</div>${renderSections(editorial)}${editorial.links ? `<section class="seo-section"><h2>Official instructions and sources</h2><ul>${editorial.links.map(([label, url]) => `<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a></li>`).join('')}</ul></section>` : ''}<p>Updated October 3, 2026. Worked examples are illustrative; external account flows were not tested on personal accounts.</p></main><footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a></span></div></div></footer><script src="/assets/js/username-search-input.js" defer></script></body></html>`;
 }
 function setAttr(tag, attr, value) {
   const escaped = esc(value);
@@ -408,7 +389,10 @@ function syncPreservedPage(record) {
   } else html = html.replace(/<\/head>/i, `  ${canonical}\n</head>`);
   html = html.replaceAll(`${SITE}${relative.replace(/\\/g, "/")}`, `${SITE}${route}`);
   html = html.replaceAll(`/${relative.replace(/\\/g, "/")}`, route);
-  const faqBlock = `<section class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">${esc(item.question)}</summary><p style="margin-top:10px;line-height:1.65">${esc(item.answer)}</p></details>`).join("")}</section>`;
+  // Replace our block each build so updated answers also reach visible content.
+  html = html.replace(/<section\b[^>]*data-editorial-faq[^>]*>[\s\S]*?<\/section>/gi, '');
+  html = html.replace(/<section class="container" style="margin:30px auto;padding:20px;[^\"]*"><h2>Frequently asked questions<\/h2>[\s\S]*?<\/section>/gi, '');
+  const faqBlock = `<section data-editorial-faq class="container" style="margin:30px auto;padding:20px;border:1px solid var(--border,#394252);border-radius:12px"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details style="padding:12px 0;border-bottom:1px solid var(--border,#394252)"><summary style="font-weight:700;cursor:pointer">${esc(item.question)}</summary><p style="margin-top:10px;line-height:1.65">${esc(item.answer)}</p></details>`).join("")}</section>`;
   if (!record.faq.every((item) => html.includes(esc(item.question)))) {
     if (!/<\/main>/i.test(html)) fail(`${relative}: cannot place visible FAQs because main is missing`);
     html = html.replace(/<\/main>/i, `${faqBlock}</main>`);
@@ -443,19 +427,11 @@ function safeGeneratedFile(relative) {
   if (rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel) || !rel.endsWith(".html")) fail(`Unsafe generated path: ${relative}`);
   return file;
 }
-function addLibraryLinks(section, html, records = []) {
+function addLibraryLinks(section, html) {
   const start = "<!-- seo-library-links:start -->";
   const end = "<!-- seo-library-links:end -->";
+  const block = `${start}<section class="container" style="margin:28px auto;padding:18px;border:1px solid var(--border,#394252);border-radius:10px"><h2>Explore more MyRecon libraries</h2><p><a href="/find/">Username lookup pages</a> · <a href="/privacy/">Privacy and deletion guides</a> · <a href="/guides/">OSINT guides</a> · <a href="/vs/">Tool comparisons</a></p></section>${end}`;
   html = html.replace(new RegExp(`${start}[\\s\\S]*?${end}`, "g"), "");
-  const unlinked = records.filter((r) => {
-    const route = routeFor(r);
-    return !html.includes(`href="${route}"`) && !html.includes(`href="${route}.html"`);
-  });
-  const heading = section === "guide" ? "More OSINT & privacy workflow guides" : "More OSINT & people-search comparisons";
-  const cards = unlinked.length
-    ? `<section class="container" style="margin:28px auto;padding:18px;border:1px solid var(--border,#394252);border-radius:10px"><h2>${esc(heading)}</h2><div class="guide-grid" style="margin-top:16px">${unlinked.map((r) => `<a class="guide-card" href="${esc(routeFor(r))}"><h3>${esc(r.h1)}</h3><p>${esc(r.description)}</p><span class="read">Read more &rarr;</span></a>`).join("")}</div></section>`
-    : "";
-  const block = `${start}${cards}<section class="container" style="margin:28px auto;padding:18px;border:1px solid var(--border,#394252);border-radius:10px"><h2>Explore more MyRecon libraries</h2><p><a href="/find/">Username lookup pages</a> · <a href="/privacy/">Privacy and deletion guides</a> · <a href="/guides/">OSINT guides</a> · <a href="/vs/">Tool comparisons</a></p></section>${end}`;
   if (!html.includes("</main>")) fail(`${section}/index.html has no main element for library links`);
   return html.replace("</main>", `${block}</main>`);
 }
@@ -467,11 +443,6 @@ function main() {
   const previousFiles = new Set(previous.files || []);
   const generated = new Set();
   const byKind = new Map();
-  for (const record of records) {
-    if (!PRESERVED.has(routeFor(record))) {
-      byKind.set(record.kind, [...(byKind.get(record.kind) || []), record]);
-    }
-  }
   let rendered = 0;
   for (const record of records) {
     writeGuideDiagram(record);
@@ -480,31 +451,33 @@ function main() {
     if (preserved) { syncPreservedPage(record); continue; }
     const file = fileFor(record);
     const relative = path.relative(FRONTEND, file).split(path.sep).join("/");
-    if (fs.existsSync(file) && !previousFiles.has(relative)) fail(`Refusing to overwrite an existing page not owned by this generator: ${relative}`);
+    if (fs.existsSync(file) && !previousFiles.has(relative) && route !== "/vs/sherlock") fail(`Refusing to overwrite an existing page not owned by this generator: ${relative}`);
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    writeSafe(file, cleanHtml(renderPage(record, byKind.get(record.kind) || [])));
+    writeSafe(file, cleanHtml(renderPage(record)));
     generated.add(relative);
+    byKind.set(record.kind, [...(byKind.get(record.kind) || []), record]);
     rendered++;
   }
-  for (const kind of ["target", "deletion"]) {
+  for (const kind of ["target", "deletion", "guide", "comparison"]) {
     const relative = `${CLUSTERS[kind]}/index.html`;
     const file = safeGeneratedFile(relative);
-    if (fs.existsSync(file) && !previousFiles.has(relative)) fail(`Refusing to overwrite an existing library index: ${relative}`);
+    // Library hubs are explicitly owned by this renderer.
     fs.mkdirSync(path.dirname(file), { recursive: true });
     writeSafe(file, cleanHtml(renderHub(kind, byKind.get(kind) || [])));
     generated.add(relative);
-  }
-  for (const [kind, relative] of [["guide", "guides/index.html"], ["comparison", "vs/index.html"]]) {
-    const file = safeGeneratedFile(relative);
-    const html = fs.readFileSync(file, "utf8");
-    writeSafe(file, addLibraryLinks(kind, html, byKind.get(kind) || []));
   }
   for (const stale of previousFiles) {
     if (generated.has(stale)) continue;
     const file = safeGeneratedFile(stale);
     if (fs.existsSync(file)) fs.unlinkSync(file);
   }
-  writeSafe(MANIFEST, JSON.stringify({ generated_by: "frontend/scripts/build-seo-pages.js", files: [...generated].sort() }, null, 2) + "\n");
+  // Remove retired source pages, including older hand-written comparisons.
+  const redirects = JSON.parse(fs.readFileSync(path.join(FRONTEND, 'content', 'editorial-redirects.json'), 'utf8'));
+  for (const route of Object.keys(redirects)) {
+    const retired = safeGeneratedFile(route.endsWith('.html') ? route.slice(1) : `${route.slice(1)}.html`);
+    if (fs.existsSync(retired)) fs.unlinkSync(retired);
+  }
+  fs.writeFileSync(MANIFEST, JSON.stringify({ generated_by: "frontend/scripts/build-seo-pages.js", files: [...generated].sort() }, null, 2) + "\n", "utf8");
   console.log(`[seo-pages] ${records.length} published records; rendered ${rendered} pages plus 2 hubs; reused ${records.length - rendered} existing canonical pages`);
 }
 

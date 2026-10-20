@@ -3,28 +3,7 @@
 The main Android variants now request exact-email Google public profiles from
 `https://myrecon.onrender.com`, then show the contributor's public Google Maps
 reviews. The hosted backend requires the production setup below. `phoneDebug`
-defaults to the hosted service too, and can use a local backend through the
-explicit build property below; its package is `com.Myrecon.osint.debug`.
-
-## October 20, 2026 lookup repair
-
-Email Deep Search had stopped invoking the public-profile endpoint and always
-initialized its resolved Google profiles to an empty list. The flow now starts
-the exact-email request alongside device lookups, validates the returned email
-and contributor through `EmailPublicProfiles`, and passes the resulting reviews
-to the existing Google Maps cards. Loading, source failure and explicit no-match
-states remain distinct. Declared contributor links remain a fallback.
-
-The phone test variant now defaults to the hosted endpoint, avoiding an implicit
-dependency on laptop port forwarding. Local testing still requires the explicit
-`-Pmyrecon.publicEmailApiBase=http://localhost:5000` override.
-
-A hosted request for a reserved fixture email returned `no_match`; this checks
-endpoint reachability, not live review coverage for an actual contributor.
-The user-provided reproduction email subsequently returned `ok`, one matching
-Google contributor and two public review records, both containing venue names
-and text. Source coverage reported two retrieved of two, with `limited: false`.
-No phone was connected for installation or visual verification.
+can still use the local backend; its package is `com.Myrecon.osint.debug`.
 
 The new `POST /api/email/public-profiles` route is separate from the full email
 intelligence route. Its service calls the existing isolated GHunt identity

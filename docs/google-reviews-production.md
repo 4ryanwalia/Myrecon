@@ -34,12 +34,5 @@ states remain explicit; a failed review request preserves the resolved profile.
 No result claims last-seen activity or proves that unavailable reviews do not
 exist.
 
-Production configuration was applied on October 7, 2026. Render reports
-`9f89b678ea82a6deb67a4dae02851d3410aad489` as live on `https://myrecon.onrender.com`.
-The authenticated session is mounted as `/etc/secrets/ghunt-creds.m` through
-`GHUNT_SESSION_FILE`; both Google flags and the new build command are saved.
-Mounted files and environment secrets both use private writable per-lookup
-copies, allowing GHunt's credential refresh without modifying hosting secrets.
-
-Deployment status was checked through Render only. No provider lookup probes,
-Android builds or tests were run. Manual Android verification remains user-owned.
+This patch was prepared without builds or tests. Hosting deployment and manual
+Android verification are separate from the source change.

@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-10-20",
+  "generated": "2026-10-17",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,79 +14,6 @@
   },
   "count": 10,
   "breaches": [
-    {
-      "name": "GitesDeFrance",
-      "title": "Gîtes de France",
-      "slug": "gitesdefrance",
-      "url": "https://www.myrecon.xyz/breaches/gitesdefrance.html",
-      "domain": "gites-de-france.com",
-      "breach_date": "2026-05-16",
-      "added_date": "2026-10-18T04:50:13Z",
-      "accounts": 117574,
-      "data_classes": [
-        "Booking details",
-        "Email addresses",
-        "Names",
-        "Phone numbers",
-        "Physical addresses"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/GitesDeFrance.png",
-      "severity": 49,
-      "band": "Serious",
-      "data_provider": null,
-      "summary": "In May 2026, the French holiday rental network Gîtes de France suffered a data breach affecting some of its departmental branches. The incident exposed hundreds of thousands of customer records, including 118k unique email addresses alongside names, phone numbers, postal addresses and booking details.",
-      "story": {
-        "background": [
-          "In May 2026, the French holiday rental network Gîtes de France suffered a data breach affecting some of its departmental branches. The incident exposed hundreds of thousands of customer records, including 118k unique email addresses alongside names, phone numbers, postal addresses and booking details."
-        ],
-        "how": [
-          "The published account does not explain the exact way the data was obtained."
-        ],
-        "motive": [],
-        "outcome": [
-          "117,574 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Booking details, Email addresses, Names, Phone numbers, Physical addresses."
-        ],
-        "editorial": []
-      },
-      "check_targets": [
-        {
-          "name": "GitesDeFrance",
-          "breach_date": "2026-05-16"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        },
-        {
-          "name": "Booking details",
-          "why": "Adds detail to a profile that can be assembled from several breaches at once."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": null
-    },
     {
       "name": "Crunchbase",
       "title": "Crunchbase",
@@ -643,7 +570,12 @@
           "423,947 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Salutations, Support tickets."
         ],
-        "editorial": []
+        "editorial": [
+          "The distinction in this record is between professional contact information and an assumption about medical records. Have I Been Pwned's description says the addresses belonged predominantly to healthcare professionals, staff and leads. Its listed fields include employers, job titles and support tickets. That does not establish that patient histories or clinical records were exposed, and this entry should not be read as making that additional claim.",
+          "Support-ticket context can make a fraudulent follow-up more convincing than a generic message. A sender may mention a product, workplace or earlier enquiry and ask the recipient to open an attachment or change payment instructions. This is a plausible risk from the listed fields, not evidence that such a campaign has been observed in this incident.",
+          "Verify an unexpected request using a contact route you already know rather than the number or link inside the message. For an organization, the useful response is to identify which business addresses and support interactions are affected, inform the appropriate internal security contact, and preserve suspicious messages through the normal reporting process. Do not circulate the leaked dataset to colleagues to look for their names.",
+          "A breach entry does not establish that your current account is compromised or that the affected service has reset its access controls. The source describes an extortion campaign and publication of allegedly obtained data. It does not document the exact intrusion path. Keep that unknown separate from the published contact-data description; guessing an unpatched system or stolen credential would add a causal story the available record does not support."
+        ]
       },
       "check_targets": [
         {
@@ -729,7 +661,13 @@
           "3,155,792 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Dates of birth, Email addresses, Genders, Geographic locations, Names, Phone numbers."
         ],
-        "editorial": []
+        "editorial": [
+          "The important boundary in this record is a marketing platform. Have I Been Pwned attributes the customer-data exposure to an attack on Mindbox and describes records spanning 2018 to August 2024. A person can appear in an old marketing dataset even if they no longer use the restaurant's account or app. The addition date in a breach index is also different from the date the incident occurred.",
+          "The source lists names, contact details, birthdays and approximate location, and reports the company's statement that payment and passport details were not included. That statement should not be expanded into either a guarantee that no other risk exists or a claim that cards were stolen. The listed fields can help make a fake loyalty reward or account-support message sound personal.",
+          "This is a risk interpretation, not a report of an observed follow-on scam. If you receive an unexpected reward or account message, open the official app or a known website yourself. A correct name or birthday does not authenticate the sender. Do not send a one-time code in reply or enter payment details through the message.",
+          "Report suspicious communication using the service's official support channel and your normal email or device reporting controls. For a company reviewing its own exposure, this case illustrates why account deletion and marketing-data retention need separate questions. Ask which provider holds historical contact records, what the retention policy covers and how a deletion request propagates to that provider. These are review questions, not a claim about the current Mindbox configuration.",
+          "The available description does not give the exact intrusion mechanism, so this article leaves that cause unresolved."
+        ]
       },
       "check_targets": [
         {
@@ -840,6 +778,101 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": "That is about 17% of the population of Australia."
+    },
+    {
+      "name": "McKesson",
+      "title": "McKesson",
+      "slug": "mckesson",
+      "url": "https://www.myrecon.xyz/breaches/mckesson.html",
+      "domain": "mckesson.com",
+      "breach_date": "2026-08-21",
+      "added_date": "2026-09-10T05:45:39Z",
+      "accounts": 6404340,
+      "data_classes": [
+        "Dates of birth",
+        "Email addresses",
+        "Employers",
+        "Genders",
+        "Names",
+        "Personal health data",
+        "Phone numbers",
+        "Physical addresses"
+      ],
+      "verified": true,
+      "sensitive": true,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/McKesson.png",
+      "severity": 73,
+      "band": "Severe",
+      "data_provider": null,
+      "summary": "In August 2026, healthcare and pharmaceutical company McKesson was targeted in a ShinyHunters \"pay or leak\" extortion campaign. The group subsequently published a substantial corpus of data they alleged was sourced from the company, which included 6.4M unique email addresses among other personal and corporate data attributes. The impacted data related to a range of individuals and roles…",
+      "story": {
+        "background": [
+          "In August 2026, healthcare and pharmaceutical company McKesson was targeted in a ShinyHunters \"pay or leak\" extortion campaign . The group subsequently published a substantial corpus of data they alleged was sourced from the company, which included 6.4M unique email addresses among other personal and corporate data attributes. The impacted data related to a range of individuals and roles, including marketing campaign recipients, patients, staff and healthcare provider contacts.",
+          "In McKesson's disclosure notice , the company advised it had identified unauthorised access to \"certain third-party applications and the exfiltration of certain data was associated with a subset of customers within our Oncology & Multispecialty and Medical-Surgical business units\", but had \"reasonable assurance of no ongoing unauthorized activity\"."
+        ],
+        "how": [
+          "In McKesson's disclosure notice , the company advised it had identified unauthorised access to \"certain third-party applications and the exfiltration of certain data was associated with a subset of customers within our Oncology & Multispecialty and Medical-Surgical business units\", but had \"reasonable assurance of no ongoing unauthorized activity\"."
+        ],
+        "motive": [
+          "In August 2026, healthcare and pharmaceutical company McKesson was targeted in a ShinyHunters \"pay or leak\" extortion campaign ."
+        ],
+        "outcome": [
+          "6,404,340 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Dates of birth, Email addresses, Employers, Genders, Names, Personal health data, Phone numbers, Physical addresses."
+        ],
+        "editorial": [
+          "Read the data classes rather than the headline. \"Personal health data\" sitting next to names, dates of birth, employers and addresses is the combination that makes a breach at a distributor behave like a breach at a hospital, and McKesson is a wholesaler, not a care provider. Most of the people in this file have never knowingly had a relationship with it.",
+          "That is the pattern worth internalising about healthcare supply chains. The companies holding your health data are rarely the ones you chose: they are the clearing houses, distributors, benefit administrators and billing intermediaries that sit behind the clinic. You cannot audit them, opt out of them, or in most cases name them. The practical consequence is narrow and specific.",
+          "Health-adjacent detail is what makes a fraudulent call convincing, a caller who knows your employer, your date of birth and something about your medication has not proved they are your pharmacy. Treat any unexpected contact referencing your care as unverified, and go back through a number you already had."
+        ]
+      },
+      "check_targets": [
+        {
+          "name": "McKesson",
+          "breach_date": "2026-08-21"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Employers",
+          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Personal health data",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Genders",
+          "why": "Small on its own; useful to anyone assembling a fuller profile."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": "That is about 24% of the population of Australia."
     }
   ]
 }

@@ -24,6 +24,7 @@ test("guest Standard requires sign-in while Quick requires no sign-up", async ()
   const guest = app({ user: null }, "full");
   await guest.api.refreshScopeNote(false);
   assert.match(guest.note.textContent, /Standard scans require sign-in/);
+  assert.match(guest.note.textContent, /Sign in with Google/);
   assert.match(guest.note.textContent, /5 free scans a day/);
   assert.doesNotMatch(guest.note.textContent, /Guests see|preview/);
   guest.api.setGate({ code: "sign_in_required", scope: "full" });

@@ -35,7 +35,7 @@ import string
 import threading
 import time
 from http.cookiejar import DefaultCookiePolicy
-from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from urllib.parse import urljoin, urlsplit
 
 import requests
@@ -48,6 +48,7 @@ _CATALOGUE_PATH = os.path.join(
 
 with open(_CATALOGUE_PATH, encoding="utf-8") as _fh:
     CATALOGUE: list = json.load(_fh)
+
 
 # The Extended scan's extra tier: sites from the Maigret list that passed this
 # engine's own test (a known-real handle FOUND, two impossible ones not). Built
@@ -62,8 +63,7 @@ except FileNotFoundError:
 
 from modules.username_integrations import append_missing
 
-# Reviewed additions share the same full and extended scan. Do not edit the
-# Android-exported catalogue to add web adapters.
+# Reviewed web account adapters stay separate from the Android-exported data.
 CATALOGUE = append_missing(CATALOGUE, EXTRA)
 TOTAL = len(CATALOGUE)
 EXTENDED = CATALOGUE + EXTRA
@@ -635,22 +635,20 @@ class Sweep:
 
         try:
             with ThreadPoolExecutor(max_workers=self.concurrency) as pool:
-                # Keep only the active window in memory. Submitting the whole
-                # extended catalogue creates thousands of futures and leaves
-                # work queued after a client disconnects or the budget expires.
-                remaining = iter(platforms)
                 pending = {}
-
-                def fill():
-                    while (len(pending) < self.concurrency and not self._stop.is_set()
-                           and time.monotonic() < self.deadline):
+                remaining = iter(platforms)
+                exhausted = False
+                while pending or not exhausted:
+                    if self._stop.is_set() or time.monotonic() >= self.deadline:
+                        break
+                    while not exhausted and len(pending) < self.concurrency:
                         p = next(remaining, None)
                         if p is None:
-                            break
-                        pending[pool.submit(guarded, p)] = p
-
-                fill()
-                while pending:
+                            exhausted = True
+                        else:
+                            pending[pool.submit(guarded, p)] = p
+                    if not pending:
+                        break
                     done, _ = wait(pending, timeout=0.5, return_when=FIRST_COMPLETED)
                     for fut in done:
                         pending.pop(fut)
@@ -659,20 +657,19 @@ class Sweep:
                         checked += 1
                         if on_result:
                             on_result(hit, checked, total)
-                    fill()
-                # Budget/cancellation omissions are unknown, never absent.
-                for p in remaining:
-                    hit = self._hit(p, UNKNOWN, self._url_for(p, self.handle), 0,
-                                    "unverified", "out_of_time")
-                    hits.append(hit)
-                    checked += 1
-                    if on_result:
-                        on_result(hit, checked, total)
+                for future in pending:
+                    future.cancel()
+                recorded = {h["platform"] for h in hits}
+                for p in platforms:
+                    if p["name"] not in recorded:
+                        hits.append(self._hit(p, UNKNOWN, self._url_for(p, self.handle), 0,
+                                              "unverified", "out_of_time"))
         finally:
             self.session.close()
 
         coverage = {
             "total": total,
+            "unchecked": sum(1 for h in hits if h.get("reason_code") == "out_of_time"),
             "found": sum(1 for h in hits if h["verdict"] == FOUND),
             "not_found": sum(1 for h in hits if h["verdict"] == NOT_FOUND),
             "undetermined": sum(1 for h in hits if h["verdict"] == UNKNOWN and not h["unreachable"]),

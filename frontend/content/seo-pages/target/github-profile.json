@@ -2,48 +2,57 @@
   "kind": "target",
   "slug": "github-profile",
   "status": "published",
-  "title": "GitHub profile Search by Username | MyRecon",
-  "description": "Look up a public GitHub profile by username. Check the official source, spot ambiguous matches and understand what MyRecon can verify.",
-  "h1": "Find a public GitHub profile by username",
+  "title": "Find a GitHub Profile: Search Syntax & Privacy Checks",
+  "description": "Use GitHub user search, distinguish personal and organization profiles, and audit profile email separately from public commit email.",
+  "h1": "Find a GitHub Profile: Search Syntax & Privacy Checks",
   "focus_keyword": "github profile username lookup",
-  "intro": "Search for a public GitHub profile using an exact username, then review the candidate at its official source. This guide covers public profile lookup, verification steps and the limits of a matching handle.",
+  "intro": "GitHub has separate personal and organization accounts, public repositories and profile fields. An exact handle URL is a useful starting point, but repository activity and a display name do not identify a person. This guide shows the GitHub search syntax and the fields worth checking in your own public profile.",
   "sections": [
     {
-      "heading": "What a public GitHub profile can show",
-      "body": "Use the official page to confirm the account type, current handle, and information the owner chose to publish. The GitHub profile is a distinct public page type; confirm that the resolved URL actually belongs to that page rather than a similarly named post, group, or search result. A username result is a starting point for a self-audit or authorized review, not a complete record of the person behind an account."
+      "heading": "Search a handle or restrict the account type",
+      "body": "Open https://github.com/HANDLE with the known handle, or use GitHub user search. The documented query user:octocat selects that username; octocat is GitHub's public example account. To restrict a broader search to personal accounts, add type:user. Use type:org for organizations. A query such as example in:login type:user searches username text; example in:name searches the displayed name. These fields answer different questions and a full-name result can contain many unrelated people."
     },
     {
-      "heading": "Coverage and limits for GitHub",
-      "body": "The checked-in MyRecon standard catalogue lists GitHub. This is a username-level check, not a guarantee that every request will resolve: service changes, rate limits, privacy controls, or temporary blocks can leave a result unknown. A missing or blocked result cannot establish that no account exists. Do not work around login walls, access controls, rate limits, or service restrictions to force a response."
+      "heading": "Read the profile separately from repositories",
+      "body": "Confirm the final URL and whether it is a personal or organization page. Review the public biography, self-linked website and profile README. A repository owned by an organization is not proof that every contributor represents it. Forks are copies of repositories; their presence does not establish original authorship. Contribution graphs can include activity whose underlying repository is private, so a graph cannot reveal the private code or project contents."
     },
     {
-      "heading": "Verify a candidate before you rely on it",
-      "body": "Open the canonical GitHub page, note the URL and observation date, and compare one or more independent details that are voluntarily public. A reused or renamed handle, a similarly named profile, a redirect, or a stale search snippet can create a false lead on GitHub. Open the official destination and compare independent public context before attributing it to anyone. Keep uncertain and unavailable outcomes marked as unknown."
+      "heading": "Audit your email exposure",
+      "body": "In your own GitHub settings review public profile email and commit email separately. Hiding your profile email does not remove an address embedded in old public commits. GitHub documents a no-reply commit address and controls for blocking command-line pushes that expose your email. Apply those settings for future commits, then inspect the public commit information in repositories you control. Rewriting shared history requires coordination; do not promise that removing an address from one repository removes every clone."
+    },
+    {
+      "heading": "Worked example and verification limits",
+      "body": "Reproduce the documented query user:octocat and compare its result with https://github.com/octocat. This is a provider-documented public example, not a claim that the account belongs to you. For a project account, a link from the official project website can support a public association. A same-name profile, similar avatar or repository star is weaker evidence. Record the final profile URL and observation date, and keep current control or legal identity outside the conclusion."
+    },
+    {
+      "heading": "What the MyRecon check covers",
+      "body": "The standard release catalogue includes GitHub. Its username check supplies a public profile lead, not repository secret scanning, private repository access or an audit of every commit. MyRecon checks a catalogue of 500+ platforms; guests get previews and signed-in free accounts have daily limits. Paid Extended scans have a separate scope. Challenges or rate limits can leave a check unknown, and a failed request is not proof the profile was deleted."
     }
   ],
   "sources": [
-    "https://github.com/",
-    "https://www.myrecon.xyz/"
+    "https://docs.github.com/en/search-github/searching-on-github/searching-users",
+    "https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address",
+    "https://github.com/octocat"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "reviewed_at": "2026-10-03",
+  "modified_at": "2026-10-03",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
   },
   "faq": [
     {
-      "question": "Can a GitHub username match prove who owns it?",
-      "answer": "No. Handles can be shared, changed, or reassigned. Open the public profile and look for independent, voluntarily published context before making an attribution; if evidence is inconclusive, leave the match unresolved."
+      "question": "How do I search only personal accounts?",
+      "answer": "Add type:user in GitHub user search. Use type:org for organizations and user:HANDLE for a known username."
     },
     {
-      "question": "Does this find private GitHub profiles?",
-      "answer": "No. This workflow is limited to supported checks and information available on public pages. Private accounts, login-only material, blocked requests, and hidden membership data are not exposed by a username lookup."
+      "question": "Does hiding my profile email hide old commit emails?",
+      "answer": "No. Profile and commit email exposure are separate. Review your public commits and future commit settings."
     },
     {
-      "question": "What should I do if a GitHub result is unavailable?",
-      "answer": "Record the check as unavailable or unknown, then use GitHub's official search directly if appropriate. A timeout, redirect, or access block is not proof that the profile is absent."
+      "question": "Does MyRecon inspect private repositories?",
+      "answer": "No. The public username check does not access private repositories or perform repository secret scanning."
     }
   ],
   "platform": {
@@ -55,9 +64,17 @@
     "false_positive_note": "A reused or renamed handle, a similarly named profile, a redirect, or a stale search snippet can create a false lead on GitHub. Open the official destination and compare independent public context before attributing it to anyone."
   },
   "manual_steps": [
-    "Open https://github.com/ and use its own public profile search or the exact handle URL when the service documents one. Search only a username you own or are authorized to review; this guide does not cover private-account discovery.",
-    "Open the candidate profile page and confirm the destination is a current GitHub account, not a generic error, unrelated result, or search-engine snippet. Save the canonical URL and the date if you need a reproducible self-audit.",
-    "Compare a separate, voluntarily public clue such as a self-linked site or matching biography before drawing a conclusion. A handle alone can be shared or reassigned, and blocked checks should stay unknown rather than being recorded as a negative."
+    "Open github.com/HANDLE or GitHub user search with user:HANDLE.",
+    "Confirm the resolved account type and current handle before reviewing repositories.",
+    "For your own account, review profile email and commit email settings separately."
   ],
-  "scan_trigger": "username"
+  "scan_trigger": "username",
+  "editorial_review": true,
+  "method": "The signed-out octocat page was opened and captured for this release. Other examples are illustrative and search syntax is attributed to GitHub documentation. Private-account settings and email-change flows were not exercised.",
+  "evidence": {
+    "image": "/assets/img/github-octocat-observed.png",
+    "alt": "Signed-out GitHub octocat profile showing the exact username and public example repositories.",
+    "caption": "Observed on October 3, 2026: the signed-out URL github.com/octocat displayed the octocat handle and public example repositories. This screenshot verifies that page view only; it does not test private access, identity or MyRecon detection accuracy.",
+    "source": "https://github.com/octocat"
+  }
 }

@@ -140,7 +140,7 @@ test("a failed profile source cannot produce a complete exposure score", () => {
   const { api, results } = browser();
   api.renderEmail(data);
   assert.doesNotMatch(results.innerHTML, /class="exposure"/);
-  assert.match(results.innerHTML, /profile-source coverage is incomplete/);
+  assert.match(results.innerHTML, /linked-account source coverage is incomplete/);
   const res = { tool: 'email', query: 'fixture@example.com', data };
   assert.doesNotMatch(api.buildTextSummary(res), /Exposure score: \d+/);
   assert.equal(api.exportData(res).summary.coverage_incomplete, true);

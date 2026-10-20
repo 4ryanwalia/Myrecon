@@ -126,6 +126,46 @@ def test_standard_platform_checks_cover_every_actual_outcome_with_truthful_verdi
     assert checks["Blocked platform"]["reason"] == "the platform blocked or rate-limited the check"
 
 
+
+
+def test_signed_in_full_response_preserves_every_platform_check(monkeypatch):
+    full = _full_result_with_every_check()
+    hidden_name = CATALOGUE[100]["name"]
+
+    monkeypatch.setattr(config, "CACHE_ENABLED", False)
+    monkeypatch.setattr(app_module, "_admit_scan", lambda *_args, **_kwargs: ("user-1", None))
+    monkeypatch.setattr(app_module, "_remember", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(search, "_run_full", lambda *_args, **_kwargs: full)
+
+    response = app_module.app.test_client().post(
+        "/api/username", json={"username": "octocat", "scope": "full"}
+    )
+
+    assert response.status_code == 200
+    checks = response.get_json()["platform_checks"]
+    assert len(checks) == len(CATALOGUE)
+    assert {row["platform"] for row in checks} == {platform["name"] for platform in CATALOGUE}
+    assert hidden_name in {row["platform"] for row in checks}
+
+
+
+
+def test_full_scan_keeps_blocked_platforms_out_of_rejected(monkeypatch):
+    import modules.sweep as sweep
+    hits = [dict(platform=name, platform_category="Social", url="https://example.com/"+name,
+                 verdict=verdict, exists=False, status_code=code, reason="fixture", unreachable=unreachable)
+            for name, verdict, code, unreachable in
+            [("Absent", "not_found", 404, False), ("Blocked", "unknown", 403, True),
+             ("Ambiguous", "unknown", 200, False)]]
+    monkeypatch.setattr(sweep.Sweep, "run", lambda *a, **k: (hits, {}))
+    monkeypatch.setattr(search, "_enrich_profiles", lambda *a, **k: None)
+    monkeypatch.setattr(search, "_code_exposure", lambda *a, **k: [])
+    monkeypatch.setattr(search, "IdentityCorrelator", lambda: _NoClusters())
+    out = search._run_full("fixture")
+    assert out["summary"]["rejected"] == 1
+    assert out["summary"]["unverified"] == 2
+    assert {r["platform"] for r in out["rejected"]} == {"Absent"}
+
 def test_guest_standard_requires_signin_without_exposing_platform_checks(monkeypatch):
     hidden_name = CATALOGUE[100]["name"]
 
@@ -147,23 +187,3 @@ def test_guest_standard_requires_signin_without_exposing_platform_checks(monkeyp
     assert body["code"] == "sign_in_required"
     assert "platform_checks" not in body
     assert hidden_name not in json.dumps(body)
-
-
-def test_signed_in_full_response_preserves_every_platform_check(monkeypatch):
-    full = _full_result_with_every_check()
-    hidden_name = CATALOGUE[100]["name"]
-
-    monkeypatch.setattr(config, "CACHE_ENABLED", False)
-    monkeypatch.setattr(app_module, "_admit_scan", lambda *_args, **_kwargs: ("user-1", None))
-    monkeypatch.setattr(app_module, "_remember", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr(search, "_run_full", lambda *_args, **_kwargs: full)
-
-    response = app_module.app.test_client().post(
-        "/api/username", json={"username": "octocat", "scope": "full"}
-    )
-
-    assert response.status_code == 200
-    checks = response.get_json()["platform_checks"]
-    assert len(checks) == len(CATALOGUE)
-    assert {row["platform"] for row in checks} == {platform["name"] for platform in CATALOGUE}
-    assert hidden_name in {row["platform"] for row in checks}

@@ -10,6 +10,45 @@
     "0.gravatar.com", "1.gravatar.com", "2.gravatar.com"
   ]);
   const wired = new WeakSet();
+  const retries = new Set();
+  const MAX_BYTES = 2 * 1024 * 1024;
+
+  function revoke(entry) {
+    if (entry?.objectUrl) {
+      URL.revokeObjectURL(entry.objectUrl);
+      entry.objectUrl = null;
+    }
+  }
+  function discard(entry, remove = false) {
+    entry.controller?.abort();
+    revoke(entry);
+    retries.delete(entry);
+    if (remove && entry.img.isConnected) failed(entry.img);
+  }
+  async function imageBlob(response) {
+    const type = (response.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+    if (!response.ok || !["image/png", "image/jpeg", "image/gif", "image/webp"].includes(type)) throw new Error("Photo unavailable");
+    const declared = response.headers.get("Content-Length");
+    if (declared !== null && (!Number.isFinite(Number(declared)) || Number(declared) < 0 || Number(declared) > MAX_BYTES)) throw new Error("Photo too large");
+    if (!response.body?.getReader) {
+      const blob = await response.blob();
+      if (!blob.size || blob.size > MAX_BYTES) throw new Error("Photo too large");
+      return blob;
+    }
+    const reader = response.body.getReader(), chunks = [];
+    let size = 0;
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > MAX_BYTES) throw new Error("Photo too large");
+        chunks.push(value);
+      }
+      if (!size) throw new Error("Photo unavailable");
+      return new Blob(chunks, { type });
+    } finally { await reader.cancel().catch(() => {}); }
+  }
 
   function source(url, apiBase) {
     try {
@@ -33,23 +72,45 @@
   }
 
   function wire(root, apiBase) {
+    for (const entry of retries) if (!entry.img.isConnected) discard(entry);
     root.querySelectorAll("img[data-email-photo]").forEach(img => {
       if (wired.has(img)) return;
       wired.add(img);
       const original = img.getAttribute("src") || "";
       let retried = false;
+      let entry = null;
       const loaded = () => {
         if (!img.naturalWidth) return;
+        revoke(entry);
         const parent = img.parentElement;
         if (parent) { parent.classList.add("loaded"); parent.removeAttribute("title"); }
       };
-      const error = () => {
+      const error = async () => {
         const retry = source(original, apiBase);
         if (!retried && retry && retry !== original) {
           retried = true;
-          img.setAttribute("crossorigin", "anonymous");
-          img.src = retry;
-        } else failed(img);
+          entry = { img, controller: new AbortController(), objectUrl: null };
+          retries.add(entry);
+          const timer = setTimeout(() => entry.controller?.abort(), 12000);
+          try {
+            if (!img.isConnected) { discard(entry); return; }
+            const response = await fetch(retry, { signal: entry.controller.signal,
+              cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", redirect: "error" });
+            const blob = await imageBlob(response);
+            if (!img.isConnected) { discard(entry); return; }
+            entry.objectUrl = URL.createObjectURL(blob);
+            img.removeAttribute("crossorigin");
+            img.src = entry.objectUrl;
+          } catch {
+            discard(entry, true);
+          } finally {
+            clearTimeout(timer);
+            entry.controller = null;
+          }
+        } else {
+          if (entry) discard(entry);
+          failed(img);
+        }
       };
       img.addEventListener("load", loaded);
       img.addEventListener("error", error);

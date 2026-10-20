@@ -5,6 +5,7 @@
   const CFG = window.MYRECON;
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const RESPONSE_UID = Symbol("responseUid");
 
   // ---------------------------------------------------------------- helpers
   const esc = (s) =>
@@ -167,15 +168,20 @@
 
   async function api(endpoint, body) {
     const url = CFG.apiBase + endpoint;
+    // Email reports and their public photos have no account access boundary.
+    const publicEmail = /^\/api\/email(?:\/|[?#]|$)/.test(endpoint);
     const ctrl = new AbortController();
     // The full sweep checks 561 platforms and can take well over a minute;
     // the extended one checks several times that.
-    const scopeWait = { full: 420000, extended: 1920000 };
+    const scopeWait = { full: 720000, extended: 2400000 };
     const timer = setTimeout(() => ctrl.abort(), (body && scopeWait[body.scope]) || (endpoint === CFG.endpoints.email ? 140000 : 90000));
     try {
+      const requestUid = publicEmail ? null : window.MyReconAccount?.state()?.user?.uid || null;
+      const headers = requestUid ? await authHeaders() : {};
+      if (requestUid && window.MyReconAccount?.state()?.user?.uid !== requestUid) throw new Error("Your account changed. Start this action again.");
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(await authHeaders()) },
+        headers: { "Content-Type": "application/json", ...headers },
         body: JSON.stringify(body),
         signal: ctrl.signal,
       });
@@ -183,6 +189,8 @@
       if (!res.ok || data.status === "error") {
         throw errorFrom(res, data);
       }
+      if (!publicEmail && !data.guest_access && (window.MyReconAccount?.state()?.user?.uid || null) !== requestUid) throw new Error("Your account changed before the report arrived. Start this action again.");
+      if (!publicEmail) Object.defineProperty(data, RESPONSE_UID, { value: requestUid });
       return data;
     } catch (e) {
       if (e.name === "AbortError") throw new Error("The scan took too long and was cancelled. Try again.");
@@ -204,8 +212,13 @@
     email: {
       label: "Email", icon: "mail", placeholder: "e.g. name@example.com",
       endpoint: CFG.endpoints.email, field: "email",
-      sub: "See which breaches name your email and what data was exposed. Optional public account checks.",
+      sub: "Free email results, no sign-in required. See reported breaches and exposed data, with optional public account checks.",
       examples: ["test@gmail.com", "contact@github.com"],
+    },
+    deepsearch: {
+      label: "Deep Search", icon: "search", placeholder: "Name, @handle or exact email",
+      sub: "Investigate public profiles, indexed mentions and Google reviews. Guests can run an investigation; sign in with an eligible plan to view findings.",
+      examples: [], route: "/#deep-search",
     },
     domain: {
       label: "Domain", icon: "globe", placeholder: "e.g. example.com",
@@ -234,17 +247,133 @@
       sub: "Checks a password against 900M+ credentials recovered from breach dumps. It is hashed in your browser, only the first 5 characters of the hash are ever sent.",
       examples: ["password", "qwerty123", "letmein"],
     },
-    deepsearch: {
-      label: "Deep Search", icon: "search", placeholder: "@torvalds, a full name or name@example.com",
-      external: "/deep-search.html", field: "query",
-      sub: "Go beyond usernames and profiles. Explore public comments, mentions, linked accounts, full names and Google contributor reviews.",
-      examples: ["@torvalds", "Linus Torvalds"],
-    },
   };
 
   let activeTool = "username";
   let lastResult = null;
   let lastExposure = null;
+  let guestSnapshot = null, resultUid = null, activeScanUid = null, revealingGuest = false;
+  const GUEST_REPORT_KEY = "myrecon.guest-report";
+
+  function rememberGuestReport(tool, query, data) {
+    if (tool === "email") {
+      resultUid = null;
+      return;
+    }
+    if (!data?.guest_access && data?.[RESPONSE_UID] !== undefined && (window.MyReconAccount?.state()?.user?.uid || null) !== data[RESPONSE_UID]) {
+      lastResult = null;
+      throw new Error("Your account changed before the report could be displayed.");
+    }
+    resultUid = data?.guest_access ? null : window.MyReconAccount?.state()?.user?.uid || null;
+    if (!data?.guest_access) return;
+    guestSnapshot = { tool, query, data };
+    try { sessionStorage.setItem(GUEST_REPORT_KEY, JSON.stringify(guestSnapshot)); } catch {}
+    if (signedIn() && data.guest_access.locked_count) Promise.resolve().then(revealGuestReport);
+  }
+
+  function lockedResults() {
+    return lastResult?.tool !== "email" && !!lastResult?.data?.guest_access?.locked_count;
+  }
+
+  function accountChanged(state) {
+    refreshScopeNote(false);
+    const uid = state.user?.uid || null;
+    if (activeScanUid && activeScanUid !== uid && activeTool !== "email") {
+      liveSeen = new Set();
+      lastResult = null;
+      lastExposure = null;
+      resultsEl().innerHTML = defaultEmpty();
+    }
+    if (lastResult && lastResult.tool !== "email" && resultUid && resultUid !== uid) {
+      lastResult = null;
+      lastExposure = null;
+      resultUid = null;
+      if (guestSnapshot && guestSnapshot.tool === activeTool) {
+        lastResult = guestSnapshot;
+        renderSafely(RENDERERS[activeTool], guestSnapshot.data);
+        bindActions();
+      } else resultsEl().innerHTML = defaultEmpty();
+    }
+    if (uid && lastResult?.tool !== "email" && lastResult?.data?.guest_access?.locked_count) revealGuestReport();
+  }
+
+  function guestPlaceholder() {
+    return `<div class="card guest-placeholder" aria-hidden="true" inert><div class="guest-placeholder-line"></div><div class="guest-placeholder-line short"></div><div class="guest-placeholder-line"></div></div>`;
+  }
+
+  function renderGuestResults(data) {
+    lastExposure = null;
+    const access = data.guest_access;
+    const cards = Array.isArray(data.cards) ? data.cards : [];
+    const title = `${TOOLS[lastResult?.tool || activeTool].label} results`;
+    let html = resultsHeader(title, `${Number(access.total_cards) || 0} result cards`);
+    html += (data.notices || []).map(n => `<p class="partial-notice" role="status">${esc(n)}</p>`).join("");
+    if (data.partial) html += `<p class="partial-notice" role="status">Some checks did not complete. Returned results are shown below; missing results remain inconclusive.</p>`;
+    if (!cards.length) html += `<div class="empty"><p>No result cards were returned. An empty response does not establish absence; some sources may be unavailable.</p></div>`;
+    html += `<div class="guest-visible-results">${cards.filter(c => !c.locked).map(guestCard).join("")}</div>`;
+    if (access.locked_count > 0) html += `<section class="guest-locked-results" aria-label="Locked results"><div class="card-grid">${cards.filter(c => c.locked).map(guestPlaceholder).join("")}</div><div class="guest-results-overlay"><strong>Sign in to view all results</strong><p>${Number(access.locked_count)} more result ${access.locked_count === 1 ? "card is" : "cards are"} available.</p><p>${access.report_token ? "Your scan is retained for up to 30 minutes. A restart or capacity limit can end retention sooner." : "This report could not be retained. Sign in, then run the lookup again to view all results."}</p>${access.report_token ? `<button type="button" class="btn" data-guest-reveal>${signedIn() ? "View all results" : "Sign in to view all results"}</button>` : `<button type="button" class="btn" data-gate="signin">Sign in and run again</button>`}<p class="hint" data-guest-reveal-status role="status"></p></div></section>`;
+    resultsEl().innerHTML = html;
+    if (access.locked_count > 0) $$(".results-actions button", resultsEl()).forEach(b => { b.disabled = true; b.title = "Sign in to view all results before exporting or sharing."; });
+  }
+
+  function guestCard(card) {
+    const d = card.data || {};
+    if (card.kind === "profile") return `<div class="guest-visible-card">${profileCard(d, true)}</div>`;
+    if (card.kind === "email_profile") return emailProfileCards({ evidence_report: { profiles: [d] } });
+    if (card.kind === "email_review") return emailProfileCollections({ platform: "Google", reviews: [d] });
+    if (card.kind === "email_position") return emailProfileCollections({ platform: "LinkedIn", positions: [d] });
+    if (card.kind === "email_education") return emailProfileCollections({ platform: "LinkedIn", education: [d] });
+    if (card.kind === "breach") return emailBreachList({ darkweb: { breaches: [d] } });
+    if (card.kind === "mail_security") return `<div class="guest-visible-card">${mailSecurityBlock(d)}</div>`;
+    if (card.kind === "dns") return `<div class="guest-visible-card">${renderDnsBlock(d)}</div>`;
+    if (card.kind === "ip") return `<div class="guest-visible-card"><div class="section-label">${esc(card.title || "IP intelligence")}</div>${ipDetails(d)}</div>`;
+    if (card.kind === "whois") return `<div class="guest-visible-card"><div class="section-label">Registration</div>${datalist([
+      ["Domain", esc(d.domain) || "-"], ["Registrar", esc(d.registrar) || "-"],
+      ["Created", esc(d.created) || "-"], ["Expires", esc(d.expires) || "-"],
+      ["Updated", esc(d.updated) || "-"], ["Registrant", esc(d.registrant) || "-"],
+      ["Country", esc(d.country) || "-"], ["Nameservers", (d.nameservers || []).map(esc).join("<br>") || "-"],
+      ["DNSSEC", d.dnssec == null ? "-" : d.dnssec ? "Enabled" : "Disabled"],
+      ["Status", (d.statuses || []).map(esc).join("<br>") || "-"],
+    ])}</div>`;
+    if (card.kind === "gravatar") return `<div class="card guest-visible-card"><div class="card-head">${avatarHTML(d, "G")}<div><div class="card-title">${esc(d.display_name || "Gravatar")}</div>${safeUrl(d.profile_url) ? `<a href="${esc(safeUrl(d.profile_url))}" target="_blank" rel="noopener nofollow">Open Gravatar profile ↗</a>` : ""}</div></div>${d.bio ? `<p class="card-bio">${esc(d.bio)}</p>` : ""}</div>`;
+    if (card.kind === "service") return linkedServices({ services: [d] });
+    if (card.kind === "github") return `<div class="card guest-visible-card"><div class="card-head">${avatarHTML(d, "GH")}<div><div class="card-title">${esc(d.username || "GitHub")}</div>${safeUrl(d.url) ? `<a href="${esc(safeUrl(d.url))}" target="_blank" rel="noopener nofollow">Open GitHub profile ↗</a>` : ""}</div></div><p class="card-bio">${esc(d.evidence || "Public GitHub evidence for this email")}</p>${safeUrl(d.evidence_url) ? `<p><a href="${esc(safeUrl(d.evidence_url))}" target="_blank" rel="noopener nofollow">View public commit evidence</a></p>` : ""}</div>`;
+    return `<article class="card guest-visible-card"><h3>${esc(card.title || "Result")}</h3>${guestCardDetails(d)}</article>`;
+  }
+
+  function guestCardDetails(value) {
+    if (value === null || value === undefined) return "";
+    if (Array.isArray(value)) return `<ul>${value.map(v => `<li>${guestCardDetails(v)}</li>`).join("")}</ul>`;
+    if (typeof value !== "object") return esc(value);
+    return `<dl class="guest-card-fields">${Object.entries(value).filter(([, v]) => v !== null && v !== undefined && v !== "").map(([k, v]) => `<div><dt>${esc(k.replace(/_/g, " "))}</dt><dd>${guestCardDetails(v)}</dd></div>`).join("")}</dl>`;
+  }
+
+  async function revealGuestReport() {
+    const snapshot = lastResult?.data?.guest_access ? lastResult : guestSnapshot;
+    if (snapshot?.tool === "email") return;
+    const token = snapshot?.data?.guest_access?.report_token;
+    if (!token || revealingGuest) return;
+    revealingGuest = true;
+    const revealUid = window.MyReconAccount?.state()?.user?.uid;
+    const status = $("[data-guest-reveal-status]");
+    if (status) status.textContent = "Opening your existing scan…";
+    try {
+      const response = await api("/api/guest-reports/reveal", { report_token: token });
+      if (!revealUid || window.MyReconAccount?.state()?.user?.uid !== revealUid || lastResult?.data?.guest_access?.report_token !== token) return;
+      const tool = response.tool;
+      if (!RENDERERS[tool] || !response.data) throw new Error("This report could not be opened.");
+      lastResult = { tool, query: snapshot.query, data: response.data };
+      resultUid = window.MyReconAccount.state().user.uid;
+      renderSafely(RENDERERS[tool], response.data);
+      bindActions();
+      toast("All results revealed. Nothing was rescanned.");
+    } catch (error) {
+      const message = error.code === "guest_report_expired" ? "This retained report has expired. Run a new lookup to continue." : error.message;
+      const current = $("[data-guest-reveal-status]");
+      if (current) current.textContent = message;
+      else toast(message, "err");
+    } finally { revealingGuest = false; }
+  }
 
   // ---------------------------------------------------------------- rendering
   const resultsEl = () => $("#results");
@@ -271,7 +400,7 @@
 
   // A result-view error must still leave a usable response and recovery path.
   function renderSafely(renderer, data) {
-    try { renderer(data); }
+    try { data?.guest_access ? renderGuestResults(data) : renderer(data); }
     catch {
       lastExposure = null;
       resultsEl().innerHTML = `<div class="error-box" role="alert">Results arrived, but this view could not be displayed. Download the response or try the search again.<p><button class="btn btn-ghost" data-export="json">Download JSON</button></p></div>`;
@@ -568,9 +697,8 @@
   // clean result means little if a third of the platforms never answered.
   function coverageLine(c) {
     const decided = (c.found || 0) + (c.not_found || 0);
-    return `<p class="coverage-line hint">Pro scan: ${c.total} platforms, ${decided} gave a definite answer,
-      ${c.undetermined || 0} could not tell, ${c.unreachable || 0} blocked or timed out from our server
-      (the <a href="/app.html">Android app</a> checks from your phone and gets through more of them).</p>`;
+    return `<p class="coverage-line hint">Full scan: ${c.total} platforms, ${decided} gave a definite answer,
+      ${c.undetermined || 0} could not tell, ${c.unreachable || 0} blocked or timed out from our server.</p>`;
   }
 
   // One row for every platform the selected scan actually reached. This is a
@@ -766,16 +894,7 @@
     return `<div class="card">${inner}</div>`;
   }
 
-  function lockedProfileCard(live = false) {
-    return `<div class="card card-locked" aria-label="Locked result card">
-      <div class="locked-card-shape" aria-hidden="true"><div class="card-head"><div class="avatar"></div><div class="locked-lines"><i></i><i></i></div></div><div class="locked-lines"><i></i><i></i><i></i></div></div>
-      <div class="locked-card-overlay">${icon("lock", 20)}<strong>Result locked</strong>${live
-        ? `<span class="hint">Sign in for Standard</span>`
-        : `<button type="button" class="btn btn-ghost btn-sm" data-gate="signin-full">Sign in for Standard</button>`}</div>
-    </div>`;
-  }
 
-  // -- Email results
   function emailQualityBadges(record, compact = false) {
     let html = "";
     const score = record?.confidence;
@@ -857,6 +976,7 @@
   }
 
   function emailProfileCollections(p, data = {}) {
+    if (p._guest_collections_locked) return `<p class="hint">Additional finding cards are listed separately below.</p>`;
     const reviews = p.reviews || [];
     const reviewState = window.MyReconEmailOutcome.reviews?.(p, data);
     const link = (label, value) => safeUrl(value) ? `<a href="${esc(safeUrl(value))}" target="_blank" rel="noopener nofollow">${label} ↗</a>` : "";
@@ -965,7 +1085,7 @@
     if (data.profile_enrichment?.sources?.length) html += `<details class="registration-coverage"><summary>Profile source coverage</summary><ul class="source-coverage">${data.profile_enrichment.sources.map(r => `<li><strong>${esc(r.name)}${r.provider ? " · " + esc(r.provider) : ""}</strong>: ${esc(r.status.replace(/_/g, " "))}${r.message || r.reason ? `<p class="hint">${esc(r.message || r.reason)}</p>` : ""}${Number.isFinite(r.returned) ? `<p class="hint">${esc(r.returned)} items returned${r.limit ? " · retrieval limit " + esc(r.limit) : ""}</p>` : ""}</li>`).join("")}</ul></details>`;
     html += linkedServices(data.linked_services, data.account_checks, data.registration_checks);
     if (exp) html += exposureGauge(exp);
-    else if (data.partial && !outcome.partial) html += `<p class="hint">Exposure score unavailable while profile-source coverage is incomplete.</p>`;
+    else if (data.partial && !outcome.partial) html += `<p class="hint">Exposure score unavailable while linked-account source coverage is incomplete.</p>`;
 
     // Straight under the verdict: it is what someone who just learned they
     // were breached needs next, and the evidence below can run to 30 cards.
@@ -1645,14 +1765,11 @@
   async function run() {
     clearTimeout(profileTimer); pendingProfileUrl = null;
     if ($("#runBtn").disabled) return;
+    if (activeTool !== "email") await window.MyReconAccount?.ready;
     const tool = TOOLS[activeTool];
     const input = $("#queryInput");
     // Never trim a secret, leading and trailing spaces are part of a password.
     let value = tool.secret ? input.value : input.value.trim();
-    if (tool.external) {
-      window.location.href = value ? `${tool.external}?q=${encodeURIComponent(value)}` : tool.external;
-      return;
-    }
     if (activeTool === "username") {
       const parsed = window.MyReconProfileInput.parse(value);
       profilePreview(parsed);
@@ -1660,6 +1777,15 @@
       value = parsed.handle;
     }
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
+    if (tool.route) {
+      if (window.MyReconDeepSearch) {
+        enterToolMode();
+        return window.MyReconDeepSearch.run();
+      }
+      try { sessionStorage.setItem("myrecon.deep-search.launch", JSON.stringify({ query: value })); } catch {}
+      location.assign(tool.route);
+      return;
+    }
     enterToolMode();
 
     // Local-only tools resolve in the browser. They deliberately clear
@@ -1681,7 +1807,8 @@
       } catch (e) {
         setError(e.message);
       } finally {
-        $("#runBtn").disabled = false;
+        if (activeTool === "deepsearch" && window.MyReconDeepSearch) window.MyReconDeepSearch.select(true);
+        else $("#runBtn").disabled = false;
       }
       return;
     }
@@ -1697,6 +1824,8 @@
 
     $("#runBtn").disabled = true;
     lastResult = null;
+    guestSnapshot = null;
+    try { sessionStorage.removeItem(GUEST_REPORT_KEY); } catch {}
     try {
       if (activeTool === "username") {
         if (body.scope === "full" || body.scope === "extended") {
@@ -1712,6 +1841,7 @@
         setLoading(activeTool);
         const data = await api(tool.endpoint, body);
         lastResult = { tool: activeTool, query: value, data };
+        rememberGuestReport(activeTool, value, data);
         renderSafely(RENDERERS[activeTool] || renderIp, data);
         pushHistory(activeTool, value);
         bindActions();
@@ -1719,8 +1849,10 @@
     } catch (e) {
       if (e instanceof GateError) setGate(e); else setError(e.message);
     } finally {
-      $("#runBtn").disabled = false;
-      refreshScopeNote(true);
+      activeScanUid = null;
+      if (activeTool === "deepsearch" && window.MyReconDeepSearch) window.MyReconDeepSearch.select(true);
+      else $("#runBtn").disabled = false;
+      refreshScopeNote(activeTool !== "email");
     }
   }
 
@@ -1803,6 +1935,34 @@
   let liveSeen = new Set();
   let liveLocked = 0;
 
+  function lockedProfileCard(live = false) {
+    return `<div class="card card-locked" aria-label="Locked result card">
+      <div class="locked-card-shape" aria-hidden="true"><div class="card-head"><div class="avatar"></div><div class="locked-lines"><i></i><i></i></div></div><div class="locked-lines"><i></i><i></i><i></i></div></div>
+      <div class="locked-card-overlay">${icon("lock", 20)}<strong>Result locked</strong>${live
+        ? `<span class="hint">Sign in for Standard</span>`
+        : `<button type="button" class="btn btn-ghost btn-sm" data-gate="signin-full">Sign in for Standard</button>`}</div>
+    </div>`;
+  }
+
+  function updateLiveTally() {
+    const visible = signedIn() ? liveSeen.size : Math.min(2, liveSeen.size);
+    const total = visible + liveLocked;
+    const count = $("#liveCount"), tally = $("#scanTally");
+    if (count) count.textContent = String(total);
+    if (tally) tally.textContent = `${total} found${liveLocked ? ` · ${liveLocked} locked` : ""}`;
+  }
+
+  function addLockedLiveCard(count) {
+    const grid = $("#liveGrid"), wrap = $("#liveFound");
+    if (!grid || !wrap || !Number.isInteger(count) || count <= liveLocked) return;
+    wrap.hidden = false;
+    while (liveLocked < count) {
+      grid.insertAdjacentHTML("beforeend", lockedProfileCard(true));
+      liveLocked++;
+    }
+    updateLiveTally();
+  }
+
   function setScanning(value, body) {
     liveSeen = new Set();
     liveLocked = 0;
@@ -1844,25 +2004,6 @@
     updateLiveTally();
   }
 
-  function updateLiveTally() {
-    const visible = signedIn() ? liveSeen.size : Math.min(2, liveSeen.size);
-    const total = visible + liveLocked;
-    const count = $("#liveCount"), tally = $("#scanTally");
-    if (count) count.textContent = String(total);
-    if (tally) tally.textContent = `${total} found${liveLocked ? ` · ${liveLocked} locked` : ""}`;
-  }
-
-  function addLockedLiveCard(count) {
-    const grid = $("#liveGrid"), wrap = $("#liveFound");
-    if (!grid || !wrap || !Number.isInteger(count) || count <= liveLocked) return;
-    wrap.hidden = false;
-    while (liveLocked < count) {
-      grid.insertAdjacentHTML("beforeend", lockedProfileCard(true));
-      liveLocked++;
-    }
-    updateLiveTally();
-  }
-
   function updateScanUI(ev) {
     const phaseText = String(ev.phase || "");
     const detailText = String(ev.detail || "");
@@ -1881,26 +2022,42 @@
   }
 
   async function runUsernameStream(value, body) {
+    body = { ...body, request_id: body.request_id || crypto.randomUUID() };
+    let jobId = null;
     const controller = new AbortController();
     profileController = controller;
     profileCancelled = false;
-    const wait = { full: 420000, extended: 1920000 };
-    const timer = setTimeout(() => controller.abort(), wait[body.scope] || 120000);
-    try { await consumeUsernameStream(value, body, controller.signal); }
+    const wait = { full: 720000, extended: 2400000 };
+    const timer = setTimeout(() => controller.abort(), wait[body.scope] || 240000);
+    try {
+      try {
+        await consumeUsernameStream(value, body, controller.signal, null, id => { jobId = id; });
+      } catch (error) {
+        // Only a durable-job acknowledgement permits a safe reconnect.
+        // GET resumes the same job and never admits or charges a new scan.
+        if (!jobId || error.name === "AbortError" || error instanceof GateError) throw error;
+        await consumeUsernameStream(value, body, controller.signal, jobId);
+      }
+    }
     catch (error) {
       if (error.name === "AbortError") throw new Error(profileCancelled ? "Scan cancelled; results are incomplete." : "The scan reached its time limit. Try again later.");
       throw error;
     } finally { clearTimeout(timer); profileController = null; }
   }
 
-  async function consumeUsernameStream(value, body, signal) {
+  async function consumeUsernameStream(value, body, signal, resumeJob = null, onJob = () => {}) {
     setScanning(value, body);
     let res;
+    const requestUid = window.MyReconAccount?.state()?.user?.uid || null;
+    activeScanUid = requestUid;
     try {
-      res = await fetch(CFG.apiBase + CFG.endpoints.usernameStream, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...(await authHeaders()) },
-        body: JSON.stringify(body),
+      const endpoint = resumeJob ? "/api/username/jobs/" + encodeURIComponent(resumeJob) + "/stream" : CFG.endpoints.usernameStream;
+      const headers = requestUid ? await authHeaders() : {};
+      if (requestUid && window.MyReconAccount?.state()?.user?.uid !== requestUid) throw new Error("Your account changed. Start this lookup again.");
+      res = await fetch(CFG.apiBase + endpoint, {
+        method: resumeJob ? "GET" : "POST",
+        headers: { "Content-Type": "application/json", ...headers },
+        body: resumeJob ? undefined : JSON.stringify(body),
         signal,
       });
     } catch (error) {
@@ -1909,7 +2066,7 @@
       if (error.name === "AbortError") throw error;
       throw new Error("Could not reach the MyRecon API. Check your connection or try later.");
     }
-    if (res.status === 404) return runUsernameFallback(value, body); // older backend
+    if (res.status === 404 && !resumeJob) return runUsernameFallback(value, body); // older backend
     if (!res.ok || !res.body) {
       let data = {};
       try { data = await res.json(); } catch {}
@@ -1923,10 +2080,12 @@
     let savedId = null;
 
     const handleLine = (line) => {
+      if (requestUid && window.MyReconAccount?.state()?.user?.uid !== requestUid) throw new Error("Your account changed before the scan finished. Start this lookup again.");
       line = line.trim();
       if (!line) return;
       let ev; try { ev = JSON.parse(line); } catch { return; }
-      if (ev.type === "progress") updateScanUI(ev);
+      if (ev.type === "job" && /^[a-f0-9]{32}$/.test(ev.job_id || "")) onJob(ev.job_id);
+      else if (ev.type === "progress") updateScanUI(ev);
       else if (ev.type === "found") addLiveCard(ev.result);
       else if (ev.type === "found_locked") addLockedLiveCard(ev.count);
       else if (ev.type === "complete") { finalData = ev.data; savedId = ev.history_id; }
@@ -1947,7 +2106,9 @@
     } finally { await reader.cancel().catch(() => {}); }
 
     if (!finalData) throw new Error("The scan did not complete. Please try again.");
+    if (!finalData.guest_access && (window.MyReconAccount?.state()?.user?.uid || null) !== requestUid) throw new Error("Your account changed before the report could be displayed.");
     lastResult = { tool: "username", query: value, data: finalData };
+    rememberGuestReport("username", value, finalData);
     renderSafely(renderUsername, finalData);
     if (savedId) toast("Saved to your scans.");
     pushHistory("username", value);
@@ -1963,16 +2124,21 @@
       if (!signedIn()) {
         throw new GateError("Sign in to open your saved scans.", "sign_in_required");
       }
+      const requestUid = window.MyReconAccount.state().user.uid;
+      const headers = await authHeaders();
+      if (window.MyReconAccount.state().user?.uid !== requestUid) throw new Error("Your account changed. Open this scan again.");
       const res = await fetch(CFG.apiBase + "/api/history/" + encodeURIComponent(id),
-        { headers: await authHeaders() });
+        { headers });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.status === "error") throw errorFrom(res, data);
+      if (window.MyReconAccount.state().user?.uid !== requestUid) throw new Error("Your account changed before the saved scan arrived.");
       const scan = data.scan;
       const q = scan.query || {};
       $("#queryInput").value = q.username || "";
       const radio = document.querySelector(`input[name="scope"][value="${q.scope === "full" || q.scope === "extended" ? q.scope : "standard"}"]`);
       if (radio) radio.checked = true;
       lastResult = { tool: "username", query: q.username || "", data: scan };
+      resultUid = window.MyReconAccount.state().user.uid;
       enterToolMode();
       renderSafely(renderUsername, scan);
       bindActions();
@@ -1987,6 +2153,7 @@
     setLoading("username");
     const data = await api(CFG.endpoints.username, body);
     lastResult = { tool: "username", query: value, data };
+    rememberGuestReport("username", value, data);
     renderSafely(renderUsername, data);
     pushHistory("username", value);
     bindActions();
@@ -2076,19 +2243,19 @@
   }
 
   function shareLink() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     copyText(shareUrl(), "Shareable link copied to clipboard.");
   }
 
   // Native share sheet (mobile + supported desktop browsers). Falls back to
   // copying the link when the Web Share API isn't available.
   async function shareNative() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     // lastExposure is only computed for username/email and is not cleared by the
     // other renderers, so gate on the tool or a stale score leaks into the text.
     const scored = lastResult.tool === "username" || lastResult.tool === "email";
     const scoreBit = scored && lastExposure ? `, exposure score ${lastExposure.score}/100 (${lastExposure.label})`
-      : lastResult.tool === "email" ? `, ${window.MyReconEmailOutcome(lastResult.data).label}` : "";
+      : lastResult.tool === "email" && !lastResult.data.guest_access ? `, ${window.MyReconEmailOutcome(lastResult.data).label}` : "";
     const preview = lastResult.tool === "username" ? previewMeta(lastResult.data) : null;
     const previewBit = preview
       ? `, guest preview: ${preview.visible} of ${preview.checked} platform verdicts visible` : "";
@@ -2105,12 +2272,12 @@
   }
 
   function copySummary() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     copyText(buildTextSummary(lastResult), "Summary copied to clipboard.");
   }
 
   function printReport() {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     const meta = $("#printMeta");
     const preview = lastResult.tool === "username" ? previewMeta(lastResult.data) : null;
     if (meta) meta.textContent = `${TOOLS[lastResult.tool].label} report · Target: ${lastResult.query} · ${new Date().toLocaleString()}`
@@ -2127,6 +2294,10 @@
   function buildTextSummary(res) {
     const d = window.MyReconMatchChoices?.annotate(res.data) || res.data;
     const L = [`MyRecon, ${TOOLS[res.tool].label} report`, `Target: ${res.query}`, `Generated: ${new Date().toLocaleString()}`, ""];
+    if (d.guest_access) {
+      for (const card of d.cards || []) if (!card.locked) L.push(card.title || "Result", JSON.stringify(card.data), "");
+      return L.join("\n");
+    }
     if (d.partial) {
       L.push("Search partially completed. Unavailable checks do not mean no match.");
       [...new Set((d.errors || []).map((error) => error.message || `${error.source || "A source"} unavailable`))]
@@ -2263,7 +2434,7 @@
     } catch { return []; }
   }
   function saveCurrent(btn) {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     let s = getSaved().filter((x) => !(x.tool === lastResult.tool && x.query === lastResult.query));
     s.unshift({ tool: lastResult.tool, query: lastResult.query, at: Date.now(), note: quickStat(lastResult) });
     if (!storageSet(SKEY, JSON.stringify(s.slice(0, 50)))) {
@@ -2276,6 +2447,7 @@
   }
   function quickStat(res) {
     const d = res.data;
+    if (d.guest_access) return `${d.guest_access.total_cards} result cards`;
     if (res.tool === "username") return `${(d.summary || {}).profiles || 0} profiles`;
     if (res.tool === "email") {
       const outcome = window.MyReconEmailOutcome(d);
@@ -2328,7 +2500,7 @@
   }
 
   function exportResult(kind) {
-    if (!lastResult) return;
+    if (!lastResult || lockedResults()) return;
     const base = `myrecon-${lastResult.tool}-${Date.now()}`;
     if (kind === "json") {
       download(base + ".json", JSON.stringify(exportData(lastResult), null, 2), "application/json");
@@ -2340,6 +2512,8 @@
 
   function exportData(res) {
     res = { ...res, data: window.MyReconMatchChoices?.annotate(res.data) || res.data };
+    if (res.data.guest_access) return { status: res.data.status, query: res.data.query, partial: res.data.partial,
+      notices: res.data.notices, cards: (res.data.cards || []).filter(c => !c.locked) };
     if (res.tool !== "email") return res.data;
     const outcome = window.MyReconEmailOutcome(res.data);
     const platforms = window.MyReconEmailOutcome.platforms?.(res.data);
@@ -2440,6 +2614,8 @@
     $("#profileInputPreview")?.remove();
     if (!TOOLS[name]) return;
     activeTool = name;
+    lastResult = null;
+    lastExposure = null;
     $$(".tab").forEach((t) => {
       const on = t.dataset.tool === name;
       t.setAttribute("aria-selected", String(on));
@@ -2470,6 +2646,7 @@
         : "";
     }
     resultsEl().innerHTML = defaultEmpty();
+    window.MyReconDeepSearch?.select(name === "deepsearch");
     updateDetectHint();
   }
 
@@ -2673,11 +2850,24 @@
       // Sign-in / upgrade prompts. Unlock uses the query from the rendered
       // preview so editing the input cannot silently unlock a different scan.
       resultsEl().addEventListener("click", async (e) => {
+        const unlock = e.target.closest("[data-guest-reveal]");
+        if (unlock) {
+          if (!signedIn()) {
+            try { await window.MyReconAccount.signIn(); }
+            catch (error) { toast(error.message || "Sign-in could not complete.", "err"); return; }
+          }
+          if (signedIn()) await revealGuestReport();
+          return;
+        }
         const el = e.target.closest("[data-gate]");
         if (!el) return;
         const want = el.dataset.gate;
         if (want === "signin" || want === "unlock" || want === "signin-full") {
           try { await window.MyReconAccount.signIn(); } catch { return; }
+          if (want === "signin-full") {
+            const full = document.querySelector('input[name="scope"][value="full"]');
+            if (full) full.checked = true;
+          }
           if (want === "unlock") {
             if (lastResult?.tool !== "username" || !previewMeta(lastResult.data)) return;
             $("#queryInput").value = lastResult.query;
@@ -2700,7 +2890,7 @@
         if (b) setResultsView(b.dataset.view);
       });
       $$('input[name="scope"]').forEach((el) => el.addEventListener("change", () => refreshScopeNote(false)));
-      if (window.MyReconAccount) window.MyReconAccount.onChange(() => refreshScopeNote(false));
+      if (window.MyReconAccount) window.MyReconAccount.onChange(accountChanged);
       refreshScopeNote(false);
       $("#revealBtn")?.addEventListener("click", () => {
         setReveal($("#queryInput").type === "password");
@@ -2710,11 +2900,30 @@
       // so a crafted link can never pre-fill, or auto-submit, a password.
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
       const linked = params.get("tool");
+      if (!linked) {
+        try {
+          const saved = JSON.parse(sessionStorage.getItem(GUEST_REPORT_KEY) || "null");
+          if (saved && saved.tool !== "email" && RENDERERS[saved.tool] && Array.isArray(saved.data?.cards) && saved.data?.guest_access?.report_token) {
+            switchTool(saved.tool);
+            $("#queryInput").value = saved.query || "";
+            guestSnapshot = lastResult = saved;
+            enterToolMode();
+            renderSafely(RENDERERS[saved.tool], saved.data);
+            bindActions();
+            window.MyReconAccount?.ready.then(() => { if (signedIn()) revealGuestReport(); });
+          }
+        } catch {}
+      }
       if (linked && TOOLS[linked] && !TOOLS[linked].secret) {
         switchTool(linked);
         if (params.get("scan")) openSavedScan(params.get("scan"));
         else if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); }
       }
+      if (location.hash === "#deep-search") switchTool("deepsearch");
+      window.addEventListener("hashchange", () => {
+        if (location.hash === "#deep-search" || location.hash === "#tool=deepsearch") switchTool("deepsearch");
+        else if (location.hash === "#tool" && activeTool === "deepsearch") switchTool("username");
+      });
     }
   });
 })();

@@ -202,8 +202,8 @@ def mastodon(h):
     fields = []
     for f in u.get("fields") or []:
         urls = bio_links(html.unescape(f.get("value") or ""))
-        # A field timestamp does not identify which URL was verified when
-        # several URLs occur in the same field. Keep those links unverified.
+        # A timestamp does not identify which URL was verified in a field
+        # containing several URLs. Those links remain unverified.
         verified_at = f.get("verified_at") if len([item for item in urls if item]) == 1 else None
         for item in urls:
             if item:

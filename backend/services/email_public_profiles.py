@@ -1,6 +1,6 @@
 """Google public-profile lookup for Android, independent of account/breach scans.
 
-The operator's GHunt session stays in its existing isolated worker. Only the
+The operator's GHunt session stays inside the isolated backend worker. Only the
 normalized public Google identity and that contributor's public reviews are
 returned. This service does not load account plans, save results or probe
 registration/recovery endpoints.

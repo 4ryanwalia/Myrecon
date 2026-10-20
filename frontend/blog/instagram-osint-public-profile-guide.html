@@ -18,8 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Instagram OSINT: Public Profile Self-Audit Guide | MyRecon</title>
   <meta name="description" content="Learn what Instagram OSINT can show in an authorised public-profile review, how to record evidence, and how to reduce your own account's exposure.">
-  <meta name="keywords" content="instagram osint: review your public profile with clear evidence, social media osint, myrecon blog, osint guide, digital footprint">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html">
   <meta property="og:type" content="article">
@@ -27,14 +26,14 @@
   <meta property="og:title" content="Instagram OSINT: Public Profile Self-Audit Guide | MyRecon">
   <meta property="og:description" content="Learn what Instagram OSINT can show in an authorised public-profile review, how to record evidence, and how to reduce your own account's exposure.">
   <meta property="og:url" content="https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html">
-  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="MyRecon: public-source research and online privacy">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/blog/social-profile-research.webp">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="900">
+  <meta property="og:image:alt" content="Illustrative smartphone with a generic public-profile layout beside a laptop and notes.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Instagram OSINT: Public Profile Self-Audit Guide | MyRecon">
   <meta name="twitter:description" content="Learn what Instagram OSINT can show in an authorised public-profile review, how to record evidence, and how to reduce your own account's exposure.">
-  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/blog/social-profile-research.webp">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
   <link rel="manifest" href="/site.webmanifest">
@@ -42,13 +41,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=c8dcbebe17">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=2e36ee7372">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
+  <link rel="stylesheet" href="/assets/css/blog.css?v=df327ebaac">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Instagram OSINT: Review Your Public Profile With Clear Evidence","description":"Learn what Instagram OSINT can show in an authorised public-profile review, how to record evidence, and how to reduce your own account's exposure.","datePublished":"2026-10-08","dateModified":"2026-10-08","articleSection":"Social media OSINT","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"mainEntityOfPage":"https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html"}</script>
+  <meta property="article:published_time" content="2026-10-08T00:00:00Z">
+  <meta property="article:modified_time" content="2026-10-08T00:00:00Z">
+  <meta property="article:section" content="Social media OSINT">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Instagram OSINT: Review Your Public Profile With Clear Evidence","description":"Learn what Instagram OSINT can show in an authorised public-profile review, how to record evidence, and how to reduce your own account's exposure.","datePublished":"2026-10-08","dateModified":"2026-10-08","articleSection":"Social media OSINT","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"mainEntityOfPage":"https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html","image":"https://www.myrecon.xyz/assets/img/blog/social-profile-research.webp","video":{"@id":"https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html#explainer"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.myrecon.xyz/blog/"},{"@type":"ListItem","position":3,"name":"Instagram OSINT: Review Your Public Profile With Clear Evidence","item":"https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Instagram OSINT?","acceptedAnswer":{"@type":"Answer","text":"Instagram OSINT is the assessment of information openly available on Instagram, such as a public profile or owner-published links, with attention to source context and uncertainty."}},{"@type":"Question","name":"Can Instagram OSINT identify an anonymous account owner?","acceptedAnswer":{"@type":"Answer","text":"A matching handle, photo or bio does not prove identity. Public clues can be copied or shared, so ownership can remain unresolved."}},{"@type":"Question","name":"What should I record during an Instagram self-audit?","acceptedAnswer":{"@type":"Answer","text":"Record the profile URL, review date, signed-in or signed-out context, visible detail and action you can take. Keep private messages, credentials and unrelated personal details out of the worksheet."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","@id":"https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html#explainer","name":"Keep an Instagram public-profile evidence record","description":"Record visible public observations with access context and distinguish source evidence from uncertain associations.","uploadDate":"2026-10-07T21:52:06.376Z","thumbnailUrl":"https://www.myrecon.xyz/assets/media/blog/instagram-osint-public-profile-guide-poster.jpg","contentUrl":"https://www.myrecon.xyz/assets/media/blog/instagram-osint-public-profile-guide.mp4","duration":"PT32S","inLanguage":"en","isFamilyFriendly":true,"isPartOf":{"@id":"https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html"},"transcript":"Define the public question. Keep the review limited to information you are authorized to inspect. Record the visible view. Note the profile URL, observation date and whether you are signed out or an approved follower. Separate evidence and inference. A visible link supports a public association. Similar names and photos can be copied. Keep restrictions intact. Private posts and messages remain outside public-source research. Preserve unresolved checks.","publisher":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","@id":"https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html#faq","mainEntity":[{"@type":"Question","name":"What is Instagram OSINT?","acceptedAnswer":{"@type":"Answer","text":"Instagram OSINT is the assessment of information openly available on Instagram, such as a public profile or owner-published links, with attention to source context and uncertainty."}},{"@type":"Question","name":"Can Instagram OSINT identify an anonymous account owner?","acceptedAnswer":{"@type":"Answer","text":"A matching handle, photo or bio does not prove identity. Public clues can be copied or shared, so ownership can remain unresolved."}},{"@type":"Question","name":"What should I record during an Instagram self-audit?","acceptedAnswer":{"@type":"Answer","text":"Record the profile URL, review date, signed-in or signed-out context, visible detail and action you can take. Keep private messages, credentials and unrelated personal details out of the worksheet."}}]}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
@@ -56,7 +60,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/">Blog</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/">Blog</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -72,19 +76,20 @@
     <article class="article">
       <span class="kicker">Social media OSINT</span>
       <h1>Instagram OSINT: Review Your Public Profile With Clear Evidence</h1>
-      <p class="meta"><time datetime="2026-10-08">8 October 2026</time> · MyRecon editorial</p>
+      <p class="meta">Updated <time datetime="2026-10-08">8 October 2026</time> · <a href="/about.html">MyRecon editorial</a></p>
       <h2 id="quick-answer">Quick answer: what Instagram OSINT can show</h2>
 <p class="lead">Instagram OSINT means assessing openly available Instagram information. For your own profile or an account you are authorised to manage, it can reveal which bio details, links and public posts expose more than intended. Public-source research cannot bypass a private account, and repeated handles or photos do not prove that accounts share an owner.</p>
 
-<h2>Choose a useful question before collecting anything</h2>
+<figure class="blog-photo"><img src="/assets/img/blog/social-profile-research.webp" alt="Illustrative smartphone with a generic public-profile layout beside a laptop and notes." width="1600" height="900" loading="lazy" decoding="async"><figcaption>AI-created editorial image. The devices and profile layout are illustrative.</figcaption></figure><nav class="blog-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#quick-answer">Quick answer: what Instagram OSINT can show</a></li><li><a href="#choose-a-useful-question-before-collecting-anything">Choose a useful question before collecting anything</a></li><li><a href="#separate-public-visibility-from-follower-access">Separate public visibility from follower access</a></li><li><a href="#review-exposure-in-three-passes">Review exposure in three passes</a></li><li><a href="#build-a-record-that-preserves-unknowns">Build a record that preserves unknowns</a></li><li><a href="#use-username-tools-for-leads-then-fix-the-source">Use username tools for leads, then fix the source</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li><li><a href="#continue-your-review">Continue your review</a></li></ul></nav>
+<h2 id="choose-a-useful-question-before-collecting-anything">Choose a useful question before collecting anything</h2>
 <p>A self-audit might ask whether a profile publishes a personal contact address, whether an old post discloses a routine, or whether your business links to the correct official account. These questions have actions you can complete. “Find everything about this person” has no sensible stopping point and encourages collecting information that does not serve the review.</p>
 <p>Write down the account and purpose you are authorised to review. Choose a small set of visible fields and a follow-up date. You do not need a follower database or a copy of every post to decide whether your own biography needs editing.</p>
 
-<h2>Separate public visibility from follower access</h2>
+<h2 id="separate-public-visibility-from-follower-access">Separate public visibility from follower access</h2>
 <p>Open your account in a signed-out browser if Instagram permits it, then compare that view with your normal app session. A login prompt is an access limitation, not evidence that the account is private. Content visible to you as an approved follower is not automatically public to a stranger.</p>
 <p>Meta's <a href="https://about.fb.com/news/2021/07/instagram-safe-and-private-for-young-people/" rel="noopener noreferrer">explanation of private accounts</a> describes controlling who can see or respond to account content. Treat the current app and <a href="https://help.instagram.com/" rel="noopener noreferrer">Instagram Help Center</a> as the source for available settings. A privacy change does not remove copies someone already saved or material published on another site.</p>
 
-<h2>Review exposure in three passes</h2>
+<h2 id="review-exposure-in-three-passes">Review exposure in three passes</h2>
 <ol>
   <li><strong>Profile basics:</strong> inspect your current handle, display name, photo, biography and outbound links. Check whether a link intended for business use leads to a page with personal contact details.</li>
   <li><strong>Content you control:</strong> review public posts and captions for details you no longer want to share. Focus on your own information and audience decisions rather than collecting other people's details in the background.</li>
@@ -92,15 +97,15 @@
 </ol>
 <p>For each issue, record the source URL and the smallest relevant description. “Bio lists my private contact email” gives you a clear editing task. A large collection of screenshots with unrelated faces, comments and addresses creates a harder cleanup job and another copy to secure.</p>
 
-<h2>Build a record that preserves unknowns</h2>
-<div class="table-wrap"><table class="data-table"><caption>Example evidence log for an authorised account review.</caption><thead><tr><th scope="col">Question</th><th scope="col">Observed evidence</th><th scope="col">Conclusion and action</th></tr></thead><tbody><tr><td>Is my personal email exposed?</td><td>The reviewed bio shows it</td><td>Confirmed in this view; edit the bio</td></tr><tr><td>Does an old handle still belong to me?</td><td>Another profile uses that string</td><td>Ownership unresolved; inspect my account records</td></tr><tr><td>Can a stranger view a particular post?</td><td>Signed-out page requires login</td><td>Unknown in this context; inspect current audience controls</td></tr></tbody></table></div>
+<h2 id="build-a-record-that-preserves-unknowns">Build a record that preserves unknowns</h2>
+<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table"><table class="data-table"><caption>Example evidence log for an authorised account review.</caption><thead><tr><th scope="col">Question</th><th scope="col">Observed evidence</th><th scope="col">Conclusion and action</th></tr></thead><tbody><tr><td>Is my personal email exposed?</td><td>The reviewed bio shows it</td><td>Confirmed in this view; edit the bio</td></tr><tr><td>Does an old handle still belong to me?</td><td>Another profile uses that string</td><td>Ownership unresolved; inspect my account records</td></tr><tr><td>Can a stranger view a particular post?</td><td>Signed-out page requires login</td><td>Unknown in this context; inspect current audience controls</td></tr></tbody></table></div>
 <p>The examples are illustrative. A URL and date make a finding easier to recheck, but they do not guarantee that a later visitor will see the same page. Profiles change, and access context affects the result. Keep the distinction between a source observation and your interpretation visible in every note.</p>
 
-<h2>Use username tools for leads, then fix the source</h2>
+<h2 id="use-username-tools-for-leads-then-fix-the-source">Use username tools for leads, then fix the source</h2>
 <p>MyRecon's <a href="/#tool">public username search</a> can help surface candidate profiles for handles you control, including an Instagram check in the release catalogue. Review the destination before attributing a result to yourself. An unavailable or inconclusive result is not evidence that you have no exposure.</p>
 <p>Prioritise editable details first: remove an unnecessary biography field, update an old website link, adjust your audience and review connected apps. For account security, Meta's <a href="https://about.fb.com/news/2021/07/keeping-instagram-safe-and-secure/" rel="noopener noreferrer">Security Checkup guidance</a> recommends reviewing login activity and recovery contact information and enabling two-factor authentication. Use official account controls, never a third-party page requesting your Instagram password.</p>
 
-<h2>Frequently asked questions</h2>
+<h2 id="frequently-asked-questions">Frequently asked questions</h2>
 <h3>What is Instagram OSINT?</h3>
 <p>Instagram OSINT is the assessment of information openly available on Instagram, such as a public profile or owner-published links, with attention to source context and uncertainty.</p>
 <h3>Can Instagram OSINT identify an anonymous account owner?</h3>
@@ -108,21 +113,13 @@
 <h3>What should I record during an Instagram self-audit?</h3>
 <p>Record the profile URL, review date, signed-in or signed-out context, visible detail and action you can take. Keep private messages, credentials and unrelated personal details out of the worksheet.</p>
 
-<h2>Continue your review</h2>
+<h2 id="continue-your-review">Continue your review</h2>
 <p>Use the <a href="/blog/instagram-username-search.html">Instagram username search workflow</a> for a single handle, the <a href="/blog/instagram-privacy-self-audit.html">Instagram privacy checklist</a> for account settings, and the <a href="/blog/digital-footprint-checker.html">digital footprint checker guide</a> for a wider cleanup plan.</p>
-      <div class="ad-blog-container" style="margin:28px 0;text-align:center">
-        <ins class="adsbygoogle"
-             style="display:block;text-align:center"
-             data-ad-layout="in-article"
-             data-ad-format="fluid"
-             data-ad-client="ca-pub-6109270472398539"
-             data-ad-slot="auto"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      </div>
+      <section class="blog-explainer" aria-labelledby="videoHeading"><span class="kicker">Watch the workflow</span><h2 id="videoHeading">Keep an Instagram public-profile evidence record</h2><p>Record visible public observations with access context and distinguish source evidence from uncertain associations.</p><video controls playsinline preload="none" width="1280" height="720" poster="/assets/media/blog/instagram-osint-public-profile-guide-poster.jpg" aria-label="Keep an Instagram public-profile evidence record"><source src="/assets/media/blog/instagram-osint-public-profile-guide.mp4" type="video/mp4"><track kind="captions" src="/assets/media/blog/instagram-osint-public-profile-guide.vtt" srclang="en" label="English" default><p><a href="/assets/media/blog/instagram-osint-public-profile-guide.mp4">Download the explainer video</a>.</p></video><p class="blog-media-note">32 seconds · Silent video with on-screen text and English captions.</p><details class="blog-transcript"><summary>Read the video transcript</summary><ol><li><strong>Define the public question.</strong> Keep the review limited to information you are authorized to inspect.</li><li><strong>Record the visible view.</strong> Note the profile URL, observation date and whether you are signed out or an approved follower.</li><li><strong>Separate evidence and inference.</strong> A visible link supports a public association. Similar names and photos can be copied.</li><li><strong>Keep restrictions intact.</strong> Private posts and messages remain outside public-source research. Preserve unresolved checks.</li></ol></details></section>
       <div class="callout">
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
       </div>
-      <section style="margin-top:28px"><h2>Related articles</h2><ul><li><a href="/blog/instagram-stalking-and-privacy.html">Instagram Stalking Concerns: Reduce Exposure and Report Unwanted Contact</a></li><li><a href="/blog/instagram-username-search.html">Instagram Username Search: Find and Verify a Public Profile</a></li><li><a href="/blog/osint-tools-for-journalists.html">OSINT Tools for Journalists: Sources, Media and Verification</a></li><li><a href="/blog/reverse-username-search.html">Reverse Username Search: From One Handle to Verifiable Leads</a></li></ul></section>
+      <aside class="blog-related" aria-label="Related articles"><h2>Continue your research</h2><ul><li><a href="/blog/doxxing-prevention-personal-cybersecurity-guide.html">Doxxing Prevention Guide: How to Protect Your Identity from Malicious Exposure</a></li><li><a href="/blog/how-to-find-someones-social-media-accounts.html">How to Find Someone's Social Media Accounts: The Complete Ethical OSINT Guide</a></li><li><a href="/blog/how-to-remove-yourself-from-the-internet.html">How to Remove Yourself From the Internet: Complete Opt-Out &amp; Deletion Guide</a></li></ul></aside>
       <p><a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
     </article>
   </main>
@@ -137,15 +134,15 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/free-osint-tool.html">Free OSINT tool</a></li><li><a href="/boost.html">Boost OSINT</a></li><li><a href="/browser.html">Browser OSINT</a></li><li><a href="/goal.html">Privacy goal</a></li><li><a href="/watch.html">Video walkthrough</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/features">Features</a></li><li><a href="/privacy-audit">Privacy audit</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li><li><a href="/enterprise-osint-api">Enterprise API</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/directory.html">Site directory</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned.html">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -163,9 +160,7 @@
     </div>
   </div>
 </footer>
-  <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=1a8f2b0e7d"></script>
+  <script src="/assets/js/editorial-shell.js" defer></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

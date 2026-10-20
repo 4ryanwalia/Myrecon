@@ -72,7 +72,7 @@ def enrich_ghunt_email(email):
     if not _WORKER_SLOT.acquire(blocking=False):
         return {"status": "rate_limited", "profiles": [], "registrations": [], "sources": [
             {"name": "Google public profile", "provider": "GHunt", "status": "rate_limited",
-             "reason": "A local GHunt lookup is already running; retry after it completes."}]}
+             "reason": "A Google lookup is already running; retry after it completes."}]}
     try:
         return _enrich_ghunt_email(email)
     finally:
@@ -83,7 +83,7 @@ def _enrich_ghunt_email(email):
     source = {"name": "Google public profile", "provider": "GHunt", "status": "disabled"}
     result = {"status": "disabled", "profiles": [], "registrations": [], "sources": [source]}
     if os.getenv("EMAIL_GHUNT_ENABLED", "false").lower() != "true":
-        source["reason"] = "Local GHunt adapter is disabled."
+        source["reason"] = "GHunt adapter is disabled on this backend."
         return result
     runtime_python = Path(__file__).resolve().parents[1] / ".venv" / "ghunt" / "bin" / "python"
     executable = Path(os.getenv("GHUNT_PYTHON_EXECUTABLE", "") or str(runtime_python))

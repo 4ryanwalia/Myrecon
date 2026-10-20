@@ -33,6 +33,7 @@
 const fs = require("fs");
 const path = require("path");
 const { breachStory, unknownMotive } = require('./breach-story');
+const { attribute, toUrlPath, fileForUrl } = require('./build-sitemap');
 
 const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "breaches");
@@ -323,10 +324,8 @@ function select(all) {
   // curation applies to the back catalogue, not to the news.
   const fresh = window.filter((b) => (b.AddedDate || "").slice(0, 10) >= TRACK_ADDED_SINCE);
 
-  const withEditorial = all.filter((b) => !b.IsFabricated && !b.IsRetired && readEditorial(b.Name));
-
   const byName = new Map();
-  [...named, ...aggregate, ...fresh, ...withEditorial].forEach((b) => byName.set(b.Name, b));
+  [...named, ...aggregate, ...fresh].forEach((b) => byName.set(b.Name, b));
   return [...byName.values()].sort((a, b) => (b.BreachDate || "").localeCompare(a.BreachDate || ""));
 }
 
@@ -575,18 +574,7 @@ function article(b, editorial, siblings) {
     datePublished: (b.AddedDate || b.BreachDate || "").slice(0, 10),
     dateModified: (b.ModifiedDate || b.AddedDate || "").slice(0, 10),
     author: { "@type": "Organization", name: "MyRecon" },
-    publisher: {
-      "@type": "Organization",
-      "@id": `${SITE}/#organization`,
-      name: "MyRecon",
-      url: `${SITE}/`,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE}/assets/img/og-image.png`,
-        width: 1200,
-        height: 630,
-      },
-    },
+    publisher: { "@type": "Organization", name: "MyRecon" },
     mainEntityOfPage: url,
     ...(logo ? { image: logo } : {}),
   });
@@ -732,9 +720,9 @@ ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
            does: only the per-address one sends anything. -->
       <aside class="bx-offer">
         <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The comparison runs on your phone: nothing is sent to do it, and there is no account to make.</p>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
         <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Google Play →</a></p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">View closed-testing listing →</a></p>
       </aside>
 
 ${guideLinks(b).length ? `      <h2>Read next</h2>
@@ -754,7 +742,33 @@ ${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${
   );
 }
 
-function index(items) {
+function earlierArchiveEntries(items, directory = OUT_DIR, root = ROOT) {
+  if (!fs.existsSync(directory)) return [];
+  const current = new Set(items.map(item => `/breaches/${slug(item.Name)}.html`));
+  const earlier = new Map();
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.html') || entry.name === 'index.html' || entry.name.startsWith('.')) continue;
+    const file = path.join(directory, entry.name);
+    const html = fs.readFileSync(file, 'utf8');
+    // Only full public articles belong here; source fragments and case-file
+    // subdirectories have their own discovery paths.
+    if (!/<!doctype\s+html\b/i.test(html) || !/<title\b[^>]*>[^<]+<\/title\s*>/i.test(html) || !/<article\b/i.test(html)) continue;
+    const blocked = [...html.matchAll(/<meta\b[^>]*>/gi)].some(([tag]) =>
+      (/^(?:robots|googlebot|bingbot|applebot)$/i.test(attribute(tag, 'name') || '') && /\b(?:noindex|none)\b/i.test(attribute(tag, 'content') || '')) ||
+      /^refresh$/i.test(attribute(tag, 'http-equiv') || ''));
+    if (blocked) continue;
+    const url = toUrlPath(file, html, root);
+    if (!url || !/^\/breaches\/[a-z0-9-]+\.html$/.test(url) || current.has(url) || fileForUrl(url, root) !== file) continue;
+    const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/i)?.[1];
+    if (!heading) continue;
+    const entities = { '&amp;': '&', '&quot;': '"', '&#39;': "'", '&apos;': "'", '&lt;': '<', '&gt;': '>' };
+    const title = heading.replace(/<[^>]+>/g, '').replace(/&(?:amp|quot|apos|lt|gt|#39);/gi, entity => entities[entity.toLowerCase()]).replace(/\s+/g, ' ').trim();
+    if (title) earlier.set(url, { url, title });
+  }
+  return [...earlier.values()].sort((a, b) => a.title.localeCompare(b.title) || a.url.localeCompare(b.url));
+}
+
+function index(items, earlier = earlierArchiveEntries(items)) {
   const total = items.reduce((s, b) => s + (b.PwnCount || 0), 0);
   const byYear = new Map();
   items.forEach((b) => {
@@ -794,7 +808,7 @@ function index(items) {
 
       <div class="bx-summary">
         <div class="bx-stat"><b>${num(total)}</b><span>Accounts exposed</span></div>
-        <div class="bx-stat"><b>${items.length}</b><span>Breaches in the archive</span></div>
+        <div class="bx-stat"><b>${items.length}</b><span>Breaches in the current feed</span></div>
         <div class="bx-stat"><b>${years.length}</b><span>Years covered</span></div>
       </div>
 
@@ -803,7 +817,7 @@ function index(items) {
            rather than buried in the footer, because a reader who wants the
            story of a breach will not find it in a record. -->
       <aside class="bx-offer">
-        <h2>Case Files: how the breaches that mattered actually happened</h2>
+        <h3>Case Files: how the breaches that mattered actually happened</h3>
         <p>In-depth write-ups of the landmark incidents, Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
         <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a></p>
       </aside>
@@ -814,7 +828,7 @@ function index(items) {
            their own site; a reader who only wanted to look something up
            scrolls straight past an aside. -->
       <aside class="bx-offer">
-        <h2>Building something? Take this data</h2>
+        <h3>Building something? Take this data</h3>
         <p>The whole archive is published as versioned JSON, no account, no API key, no rate limit, CORS enabled and rebuilt daily. There is a drop-in embed widget too, if you want a live breach list on your own page without writing the rendering. Free under CC BY 4.0, with credit to Have I Been Pwned.</p>
         <p><a class="btn btn-sm" href="/developers.html">Read the API documentation →</a></p>
       </aside>
@@ -853,6 +867,15 @@ ${items
   .join("\n")}
       </div>
 
+${earlier.length ? `      <section aria-labelledby="earlierArchiveHeading">
+        <h2 class="bx-h2" id="earlierArchiveHeading">Earlier archive entries</h2>
+        <p>These articles were published in earlier versions of the archive and remain available for context. They are outside the current feed and are not included in the totals above.</p>
+        <ul>
+${earlier.map(entry => `          <li><a href="${esc(entry.url)}">${esc(entry.title)}</a></li>`).join('\n')}
+        </ul>
+      </section>
+
+` : ''}
       <p class="bx-method">Breach records come from <a href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a> and are used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>. Severity scoring and the analysis of what each exposed field means are MyRecon's own, computed from the record so that every claim traces back to a value in it. Editorial commentary is marked as such on each article, and the long-form reporting lives in the <a href="/breaches/case-files/">case files</a>, where every page cites its sources.</p>
     </div>
   </main>` +
@@ -1026,9 +1049,11 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+if (require.main === module) main().catch((err) => {
   console.error(`[breaches] ${err.message}`);
   // A failed fetch must not take the whole site build down, the previously
   // generated pages are still on disk and still correct.
   process.exit(fs.existsSync(path.join(OUT_DIR, "index.html")) ? 0 : 1);
 });
+
+module.exports = { earlierArchiveEntries, index };

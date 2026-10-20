@@ -18,8 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>How to Find Your Own Old Social Media Accounts | MyRecon</title>
   <meta name="description" content="Use old inboxes, saved logins and your own usernames to locate forgotten accounts you control. Confirm ownership before changing or closing any profile.">
-  <meta name="keywords" content="how to find your own old social media accounts, self-audit, myrecon blog, osint guide, digital footprint">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/blog/find-your-own-old-accounts.html">
   <meta property="og:type" content="article">
@@ -42,11 +41,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=c8dcbebe17">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=2e36ee7372">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
+  <link rel="stylesheet" href="/assets/css/blog.css">
   <meta name="google-adsense-account" content="ca-pub-6109270472398539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Find Your Own Old Social Media Accounts","description":"Use old inboxes, saved logins and your own usernames to locate forgotten accounts you control. Confirm ownership before changing or closing any profile.","datePublished":"2026-09-27","dateModified":"2026-09-27","articleSection":"Self-audit","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"mainEntityOfPage":"https://www.myrecon.xyz/blog/find-your-own-old-accounts.html"}</script>
+  <meta property="article:published_time" content="2026-09-27T00:00:00Z">
+  <meta property="article:modified_time" content="2026-09-27T00:00:00Z">
+  <meta property="article:section" content="Self-audit">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Find Your Own Old Social Media Accounts","description":"Use old inboxes, saved logins and your own usernames to locate forgotten accounts you control. Confirm ownership before changing or closing any profile.","datePublished":"2026-09-27","dateModified":"2026-09-27","articleSection":"Self-audit","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"mainEntityOfPage":"https://www.myrecon.xyz/blog/find-your-own-old-accounts.html"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.myrecon.xyz/blog/"},{"@type":"ListItem","position":3,"name":"How to Find Your Own Old Social Media Accounts","item":"https://www.myrecon.xyz/blog/find-your-own-old-accounts.html"}]}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
@@ -55,7 +58,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/">Blog</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/">Blog</a><a href="/vs/">Compare</a><a href="/pricing.html">Pricing</a></nav>
       <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
@@ -71,10 +74,11 @@
     <article class="article">
       <span class="kicker">Self-audit</span>
       <h1>How to Find Your Own Old Social Media Accounts</h1>
-      <p class="meta"><time datetime="2026-09-27">27 September 2026</time> · MyRecon editorial</p>
+      <p class="meta">Updated <time datetime="2026-09-27">27 September 2026</time> · <a href="/about.html">MyRecon editorial</a></p>
       <p class="lead">Forgotten profiles often come from old email addresses, school-era handles or services you used once and never revisited. A careful self-audit can help you find accounts you control and decide whether to secure, update or close them.</p>
 
-<h2>Start with records only you can access</h2>
+<nav class="blog-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#start-with-records-only-you-can-access">Start with records only you can access</a></li><li><a href="#use-a-public-search-as-a-lead-not-a-verdict">Use a public search as a lead, not a verdict</a></li><li><a href="#decide-what-to-do-with-each-account">Decide what to do with each account</a></li></ul></nav>
+<h2 id="start-with-records-only-you-can-access">Start with records only you can access</h2>
 <ol>
   <li><strong>Check your password manager and browser logins.</strong> Search for old services and review entries you no longer recognise.</li>
   <li><strong>Search each of your inboxes.</strong> Terms like “welcome,” “confirm,” “verify,” “receipt” and “reset your password” can uncover sign-ups.</li>
@@ -83,28 +87,19 @@
   <li><strong>Review connected sign-ins.</strong> The account settings for an email or social login may list services that use it.</li>
 </ol>
 
-<h2>Use a public search as a lead, not a verdict</h2>
+<h2 id="use-a-public-search-as-a-lead-not-a-verdict">Use a public search as a lead, not a verdict</h2>
 <p>You can search your own handle in a search engine or use MyRecon's <a href="/#tool">public username search</a> to see which profile pages appear to use it. A username is not unique proof of identity: an unrelated person may have the same string. A useful lead still needs confirmation that you control the account.</p>
 <p>Confirm ownership by signing in or using the service's official account recovery flow. Do not try guessed passwords, use another person's recovery details or ask a tool to reveal private account information. If you cannot establish control, leave the account alone.</p>
 
-<h2>Decide what to do with each account</h2>
+<h2 id="decide-what-to-do-with-each-account">Decide what to do with each account</h2>
 <p>For each confirmed account, note whether you still use it, whether it contains information you need, and whether another service depends on it. Secure active accounts with unique passwords, current recovery methods and two-factor authentication. For accounts you no longer need, first export data, cancel billing and move linked sign-ins before requesting deletion.</p>
 <p>Keep a private record of the request date and confirmation. Search-engine caches and copies on other sites may need separate removal requests after the source profile is closed. The <a href="/blog/delete-old-online-accounts.html">account deletion checklist</a> explains that sequence.</p>
 
 <div class="callout"><p><strong>Keep the scope personal.</strong> These steps are for accounts you own or are authorised to manage. A matching handle does not make an account yours, and public-profile search cannot identify who operates a profile with certainty.</p></div>
-      <div class="ad-blog-container" style="margin:28px 0;text-align:center">
-        <ins class="adsbygoogle"
-             style="display:block;text-align:center"
-             data-ad-layout="in-article"
-             data-ad-format="fluid"
-             data-ad-client="ca-pub-6109270472398539"
-             data-ad-slot="auto"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      </div>
       <div class="callout">
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
       </div>
-      <section style="margin-top:28px"><h2>Related articles</h2><ul><li><a href="/blog/report-social-media-impersonation.html">How to Respond to a Social Media Impersonator</a></li><li><a href="/blog/instagram-privacy-self-audit.html">Instagram Privacy Audit: A Checklist for Your Own Account</a></li><li><a href="/blog/why-online-privacy-matters.html">Why Online Privacy Matters, Even When You Have Nothing to Hide</a></li><li><a href="/blog/doxxing-prevention-personal-cybersecurity-guide.html">Doxxing Prevention Guide: How to Protect Your Identity from Malicious Exposure</a></li></ul></section>
+      <aside class="blog-related" aria-label="Related articles"><h2>Continue your research</h2><ul><li><a href="/blog/own-footprint-audit-checklist.html">A Digital Footprint Audit Worksheet for Your Own Accounts</a></li><li><a href="/blog/doxxing-prevention-personal-cybersecurity-guide.html">Doxxing Prevention Guide: How to Protect Your Identity from Malicious Exposure</a></li><li><a href="/blog/how-to-find-someones-social-media-accounts.html">How to Find Someone's Social Media Accounts: The Complete Ethical OSINT Guide</a></li></ul></aside>
       <p><a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
     </article>
   </main>
@@ -119,15 +114,15 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/free-osint-tool.html">Free OSINT tool</a></li><li><a href="/boost.html">Boost OSINT</a></li><li><a href="/browser.html">Browser OSINT</a></li><li><a href="/goal.html">Privacy goal</a></li><li><a href="/watch.html">Video walkthrough</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/features">Features</a></li><li><a href="/privacy-audit">Privacy audit</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li><li><a href="/enterprise-osint-api">Enterprise API</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/directory.html">Site directory</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/maigret">MyRecon vs Maigret</a></li><li><a href="/vs/whatsmyname">MyRecon vs WhatsMyName</a></li><li><a href="/vs/have-i-been-pwned.html">MyRecon vs HIBP</a></li><li><a href="/vs/">All comparisons</a></li></ul>
+  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
@@ -145,9 +140,7 @@
     </div>
   </div>
 </footer>
-  <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=1a8f2b0e7d"></script>
+  <script src="/assets/js/editorial-shell.js" defer></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>

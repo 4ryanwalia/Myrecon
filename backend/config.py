@@ -146,12 +146,37 @@ FIREBASE_WEB_APP_ID = os.environ.get(
 )
 GUEST_SCANS_PER_DAY = _get_int("GUEST_SCANS_PER_DAY", 5)
 # Free accounts get five username scans per day; paid packs unlock unlimited standard scans.
-# Process-local limits: run one Gunicorn worker on small Render instances so
-# the scan slot is shared by all HTTP threads, rather than multiplied by workers.
-FULL_SCAN_SLOTS = max(1, _get_int("FULL_SCAN_SLOTS", 1))
-SWEEP_CONCURRENCY = max(1, min(96, _get_int("SWEEP_CONCURRENCY", 8)))
-FULL_SCAN_DEADLINE_SECONDS = max(30, _get_int("FULL_SCAN_DEADLINE_SECONDS", 300))
-EXTENDED_SCAN_DEADLINE_SECONDS = max(30, _get_int("EXTENDED_SCAN_DEADLINE_SECONDS", 1800))
+# Concurrent 560-platform sweeps per worker. Each one holds 24 sockets; more
+# than this on a 512 MB instance starves every other lookup.
+FULL_SCAN_SLOTS = _get_int("FULL_SCAN_SLOTS", 1)
+
+# External workers are opt-in. Production requires RTDB and a dedicated token.
+SCAN_OFFLOAD_ENABLED = _get_bool("SCAN_OFFLOAD_ENABLED", False)
+SCAN_WORKER_TOKEN = os.environ.get("SCAN_WORKER_TOKEN", "")
+# This token is deliberately separate from the token that can claim scan jobs.
+# It only reads a redacted worker-presence snapshot for the owner-run alert
+# script.  Never put either token in frontend JavaScript or a notebook file.
+SCAN_WORKER_STATUS_TOKEN = os.environ.get("SCAN_WORKER_STATUS_TOKEN", "")
+SCAN_WORKER_OPERATOR_EMAIL = os.environ.get("SCAN_WORKER_OPERATOR_EMAIL", "")
+SCAN_WORKER_LAUNCHER_URL = os.environ.get("SCAN_WORKER_LAUNCHER_URL", "")
+SCAN_WORKER_FRESH_SECONDS = max(15, min(120, _get_int("SCAN_WORKER_FRESH_SECONDS", 30)))
+SCAN_WORKER_OFFLINE_SECONDS = max(
+    SCAN_WORKER_FRESH_SECONDS + 30,
+    min(900, _get_int("SCAN_WORKER_OFFLINE_SECONDS", 180)),
+)
+SCAN_WORKER_RETENTION_SECONDS = max(
+    SCAN_WORKER_OFFLINE_SECONDS,
+    _get_int("SCAN_WORKER_RETENTION_SECONDS", 7 * 24 * 60 * 60),
+)
+# Five external workers, one bounded Render finalizer and two waiting jobs.
+# This admission bound does not increase Render's heavy-work concurrency.
+SCAN_JOB_LIMIT = max(1, min(8, _get_int("SCAN_JOB_LIMIT", 8)))
+SCAN_LEASE_SECONDS = max(30, _get_int("SCAN_LEASE_SECONDS", 90))
+SCAN_WORKER_WAIT_SECONDS = max(0, _get_int("SCAN_WORKER_WAIT_SECONDS", 20))
+SCAN_JOB_TTL_SECONDS = max(3600, _get_int("SCAN_JOB_TTL_SECONDS", 86400))
+SWEEP_CONCURRENCY = max(1, min(16, _get_int("SWEEP_CONCURRENCY", 8)))
+SWEEP_FULL_DEADLINE_SECONDS = max(30, _get_int("SWEEP_FULL_DEADLINE_SECONDS", 300))
+SWEEP_EXTENDED_DEADLINE_SECONDS = max(60, _get_int("SWEEP_EXTENDED_DEADLINE_SECONDS", 1800))
 
 # Razorpay (Extended scan packs). Key id is public; the two secrets are not.
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")
@@ -200,3 +225,6 @@ def public_config() -> dict:
         # It reports only whether a key was supplied, never the key.
         "secret_key_configured": not SECRET_KEY_IS_EPHEMERAL,
     }
+
+FULL_SCAN_DEADLINE_SECONDS = SWEEP_FULL_DEADLINE_SECONDS
+EXTENDED_SCAN_DEADLINE_SECONDS = SWEEP_EXTENDED_DEADLINE_SECONDS
