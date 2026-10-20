@@ -58,6 +58,8 @@ const scripts = [
   'enhance-site-footer.js',
   'build-discovery-pages.js',
   'finalize-editorial.js',
+  'build-watch-pages.js',
+  'build-visible-breadcrumbs.js',
   'version-site-assets.js',
   'install-google-tag.js',
   'install-adsense-tag.js',
