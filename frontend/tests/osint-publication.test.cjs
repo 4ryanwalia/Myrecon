@@ -65,7 +65,7 @@ test('new article media matches visible content and appears in the sitemap', () 
   const media = JSON.parse(fs.readFileSync(path.join(root, 'content/blog-media.json')));
   assert.equal(Object.keys(media).length, 12);
   const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-  assert.equal([...sitemap.matchAll(/<video:video>/g)].length, 12);
+  assert.equal([...sitemap.matchAll(/<video:video>/g)].length, Object.keys(media).length * 2, "articles and dedicated watch pages must both describe their videos");
   assert.equal([...sitemap.matchAll(/<image:image>/g)].length, 12);
   for (const [slug, item] of Object.entries(media)) {
     const html = fs.readFileSync(path.join(root, 'blog', `${slug}.html`), 'utf8');

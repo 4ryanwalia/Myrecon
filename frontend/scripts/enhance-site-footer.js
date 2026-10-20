@@ -13,7 +13,7 @@ const GROUPS = [
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [
-    ["OSINT cheat sheet", "/osint-cheat-sheet.html"], ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
+    ["Site directory", "/directory.html"], ["Watch MyRecon", "/watch.html"], ["Video guides", "/videos/"], ["OSINT cheat sheet", "/osint-cheat-sheet.html"], ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [

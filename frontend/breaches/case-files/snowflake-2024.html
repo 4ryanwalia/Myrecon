@@ -17,14 +17,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Snowflake Breaches 2024: Stolen Logins, No MFA | MyRecon</title>
-  <meta name="description" content="Ticketmaster, AT&amp;T, Santander and around 160 others lost data from their own cloud warehouses.">
+  <meta name="description" content="Around 165 companies including Ticketmaster and AT&amp;T lost data from cloud warehouses via credentials stolen by infostealer malware with no MFA.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Snowflake Breaches 2024: Stolen Logins, No MFA">
-  <meta property="og:description" content="Ticketmaster, AT&amp;T, Santander and around 160 others lost data from their own cloud warehouses.">
+  <meta property="og:description" content="Around 165 companies including Ticketmaster and AT&amp;T lost data from cloud warehouses via credentials stolen by infostealer malware with no MFA.">
   <meta property="og:url" content="https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -33,7 +33,7 @@
   <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Snowflake Breaches 2024: Stolen Logins, No MFA">
-  <meta name="twitter:description" content="Ticketmaster, AT&amp;T, Santander and around 160 others lost data from their own cloud warehouses.">
+  <meta name="twitter:description" content="Around 165 companies including Ticketmaster and AT&amp;T lost data from cloud warehouses via credentials stolen by infostealer malware with no MFA.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
@@ -47,14 +47,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=29ad63c44b">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Snowflake, 2024: 165 companies breached without anyone touching Snowflake","description":"Ticketmaster, AT&T, Santander and around 160 others lost data from their own cloud warehouses. The credentials came from infostealer malware, some of it years old.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html","articleSection":"Case Files","about":{"@type":"Thing","name":"Snowflake customer account compromises"},"wordCount":836}</script>
+  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
+  <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
+  <link rel="stylesheet" href="/assets/optimized/css/breaches.b2bc9c9f5dba.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Snowflake, 2024: 165 companies breached without anyone touching Snowflake","description":"Around 165 companies including Ticketmaster and AT&T lost data from cloud warehouses via credentials stolen by infostealer malware with no MFA.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"articleSection":"Case Files","about":{"@type":"Thing","name":"Snowflake customer account compromises"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html","wordCount":836}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Snowflake customer account compromises","item":"https://www.myrecon.xyz/breaches/case-files/snowflake-2024.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was Snowflake itself hacked?","acceptedAnswer":{"@type":"Answer","text":"No. Investigations by Snowflake and by Mandiant found no vulnerability in the platform and no compromise of Snowflake's own systems. The attacker logged into individual customer accounts using valid usernames and passwords, on accounts that did not require a second factor."}},{"@type":"Question","name":"Where did the credentials come from?","acceptedAnswer":{"@type":"Answer","text":"Infostealer malware on the computers of employees and contractors, in some cases years earlier. Infostealers harvest everything a browser has saved and sell the output as \"logs\". A credential stolen in 2020 still worked in 2024 because nobody had rotated it and nothing else was required to use it."}},{"@type":"Question","name":"Whose data was taken?","acceptedAnswer":{"@type":"Answer","text":"The list includes Ticketmaster, where the attacker claimed 560 million records; AT&T, where call and text metadata for nearly all of its mobile customers was taken; Santander; Advance Auto Parts; Neiman Marcus; and around 160 other Snowflake customer tenants. Each victim owned its own data and its own configuration."}},{"@type":"Question","name":"Whose fault was it?","acceptedAnswer":{"@type":"Answer","text":"The uncomfortable answer is that responsibility was shared and the model made that easy to miss. Customers chose not to enforce MFA and did not rotate credentials; the platform allowed single-factor access to bulk data by default. Snowflake subsequently moved to enforce MFA for new accounts, which is an admission that the default mattered."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -213,6 +213,8 @@
       </ul>
       <h2>Read next</h2>
       <ul class="bx-related">
+        <li><a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare, 2024: one login, and American healthcare stopped billing</a></li>
+        <li><a href="/breaches/case-files/british-library-2023.html">The British Library, 2023: the ransom was refused and the catalogue stayed dark</a></li>
         <li><a href="/breaches/case-files/att-2024.html">AT&amp;T, 2024: who called whom, for nearly every customer</a></li>
         <li><a href="/breaches/case-files/collection-1-2019.html">Collection #1, 2019: 773 million addresses, and nobody was breached</a></li>
         <li><a href="/breaches/case-files/capital-one-2019.html">Capital One, 2019: a firewall misconfiguration and 106 million applicants</a></li>
@@ -233,11 +235,11 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
@@ -260,10 +262,10 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=dea8105323"></script>
-  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
-  <script src="/assets/js/consent.js"></script>
-  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+  <script src="/assets/optimized/js/config.cbb669b0dfd9.js"></script>
+  <script src="/assets/optimized/js/app.96f1d0236592.js"></script>
+  <script src="/assets/optimized/js/breach-check.b26ea28a183c.js"></script>
+  <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
+  <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
 </body>
 </html>

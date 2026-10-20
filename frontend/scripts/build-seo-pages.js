@@ -177,7 +177,8 @@ function allRecords(contentRoot) {
       if (record.status !== "published") fail(`${name}: only published records can be rendered`);
       if (!record.title || record.title.length > 60) fail(`${name}: title must be 1–60 characters`);
       if (!record.description || record.description.length > 160) fail(`${name}: description must be 1–160 characters`);
-      if (!Array.isArray(record.faq) || record.faq.length < 3 || record.faq.length > 5) fail(`${name}: expected 3–5 visible FAQs`);
+      const maxFaqs = record.kind === "core" && record.slug === "home" ? 8 : 5;
+      if (!Array.isArray(record.faq) || record.faq.length < 3 || record.faq.length > maxFaqs) fail(`${name}: expected 3–${maxFaqs} visible FAQs`);
       if (!record.sections?.length) fail(`${name}: at least one content section is required`);
       records.push(record);
     }
@@ -215,7 +216,7 @@ function jsonLd(record, route) {
       headline: record.title, description: record.description, url,
       dateModified: record.modified_at, inLanguage: "en",
       author: { "@type": "Organization", name: "MyRecon" },
-      publisher: { "@id": `${SITE}/#organization` }, mainEntityOfPage: url,
+      publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } }, mainEntityOfPage: url,
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",

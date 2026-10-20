@@ -62,3 +62,13 @@ def test_invalid_worker_configuration_stops_instead_of_retrying(monkeypatch):
     assert clock.now == 0
     assert worker.http.closed
     assert worker.token == ''
+
+
+def test_worker_reports_the_result_of_its_live_presence_check(monkeypatch, capsys):
+    worker, _ = make_worker(monkeypatch)
+    worker.note_presence({'presence_recorded': True})
+    worker.note_presence({'presence_recorded': True})
+    worker.note_presence({'presence_recorded': False})
+    output = capsys.readouterr().out
+    assert output.count('Live status confirmed') == 1
+    assert 'could not save its live status' in output

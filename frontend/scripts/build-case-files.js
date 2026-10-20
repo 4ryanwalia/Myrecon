@@ -223,18 +223,22 @@ const factRow = (label, value) =>
 function relatedFor(c, all) {
   const bySlug = new Map(all.map((x) => [x.slug, x]));
   const picked = [];
+  const idx = Math.max(0, all.findIndex((x) => x.slug === c.slug));
+  for (let offset = 1; offset < all.length && picked.length < 2; offset += 1) {
+    const rot = all[(idx + offset) % all.length];
+    if (rot && rot.slug !== c.slug && !picked.includes(rot)) picked.push(rot);
+  }
   (c.related || []).forEach((s) => {
     const hit = bySlug.get(s);
     if (hit && hit.slug !== c.slug && !picked.includes(hit)) picked.push(hit);
   });
-  if (picked.length < 3) {
+  if (picked.length < 5) {
     const pool = all.filter((x) => x.slug !== c.slug && !picked.some((p) => p.slug === x.slug));
-    const start = Math.max(0, all.findIndex((x) => x.slug === c.slug));
-    for (let i = 0; picked.length < 3 && i < pool.length; i += 1) {
-      picked.push(pool[(start + i) % pool.length]);
+    for (let i = 0; picked.length < 5 && i < pool.length; i += 1) {
+      picked.push(pool[(idx + i) % pool.length]);
     }
   }
-  return picked.slice(0, 3);
+  return picked.slice(0, 5);
 }
 
 function article(c, all) {
@@ -262,10 +266,21 @@ function article(c, all) {
     datePublished: c.published,
     dateModified: c.updated || c.published,
     author: { "@type": "Organization", name: "MyRecon" },
-    publisher: { "@type": "Organization", name: "MyRecon" },
-    mainEntityOfPage: c.url,
+    publisher: {
+      "@type": "Organization",
+      "@id": `${SITE}/#organization`,
+      name: "MyRecon",
+      url: `${SITE}/`,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE}/assets/img/og-image.png`,
+        width: 1200,
+        height: 630,
+      },
+    },
     articleSection: "Case Files",
     ...(c.subject ? { about: { "@type": "Thing", name: c.subject } } : {}),
+    mainEntityOfPage: c.url,
     wordCount: wordsIn(c.body),
   });
 

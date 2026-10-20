@@ -31,6 +31,7 @@ function visit(directory) {
     if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
     const file = path.join(directory, entry.name);
     const html = fs.readFileSync(file, 'utf8');
+    if (/<meta\b[^>]*http-equiv=["']refresh["']/i.test(html)) continue;
     const head = /<head\b[^>]*>/i.exec(html);
     if (!head) continue;
     checked++;

@@ -845,3 +845,150 @@ def test_guest_quick_stream_still_works(client, monkeypatch, cached):
     assert shown["query"] == quick["query"]
     assert shown["guest_preview"] == {"visible_cards": 0, "hidden_cards": 0, "requires_sign_in": True}
     assert calls == ([] if cached else [("octocat", False, "standard")])
+
+
+@pytest.mark.parametrize("stream", [False, True])
+@pytest.mark.parametrize("cached", [False, True])
+def test_signed_in_standard_returns_complete_report(client, monkeypatch, stream, cached):
+    import services.search as search
+    full = _full_result()
+    calls = []
+    monkeypatch.setattr(config, "CACHE_ENABLED", True)
+    if cached:
+        app_module._cache.set(app_module._cache_key("username_full", "octocat"), full)
+
+    def run(*_args, **_kwargs):
+        calls.append(1)
+        return full
+
+    def events(*_args, **_kwargs):
+        calls.append(1)
+        yield {"type": "complete", "data": full}
+
+    monkeypatch.setattr(search, "_run_full", run)
+    monkeypatch.setattr(search, "stream_username", events)
+    endpoint = "/api/username/stream" if stream else "/api/username"
+    r = client.post(endpoint, json={"username": "octocat", "scope": "full"},
+                    headers={"Authorization": f"Bearer {_token()}"})
+    assert r.status_code == 200
+    result = json.loads(r.get_data(as_text=True))["data"] if stream else r.get_json()
+    assert "https://hidden.example/octocat" in json.dumps(result)
+    assert "preview" not in result
+    assert calls == ([] if cached else [1])
+    assert plans.get_account("user-1")["standard_scans_left"] == plans.FREE_STANDARD_SCANS_PER_DAY - 1
+
+
+def test_closing_queued_extended_stream_refunds_credit(client, monkeypatch):
+    import threading
+    slot = threading.BoundedSemaphore(1)
+    monkeypatch.setattr(app_module, "_full_slots", slot)
+    plans.grant_pass("user-1", "extended", "queued-pack")
+    slot.acquire()
+    try:
+        response = client.post("/api/username/stream",
+                               json={"username": "octocat", "scope": "extended"},
+                               headers=_auth(_token()), buffered=False)
+        assert b'Queued' in next(iter(response.response))
+        assert plans.get_account("user-1")["extended_scans_left"] == 9
+        response.close()
+        assert plans.get_account("user-1")["extended_scans_left"] == 10
+        assert not slot.acquire(blocking=False)
+    finally:
+        slot.release()
+
+
+def test_closing_running_stream_retains_slot_until_cleanup(client, monkeypatch):
+    import threading
+    import services.search as search
+    slot = threading.BoundedSemaphore(1)
+    monkeypatch.setattr(app_module, "_full_slots", slot)
+    plans.grant_pass("user-1", "extended", "running-pack")
+    cleaned = []
+
+    def events(*a, **k):
+        try:
+            yield {"type": "progress", "percent": 2}
+            yield {"type": "complete", "data": {"status": "ok"}}
+        finally:
+            assert not slot.acquire(blocking=False)
+            cleaned.append(True)
+
+    monkeypatch.setattr(search, "stream_username", events)
+    response = client.post("/api/username/stream",
+                           json={"username": "octocat", "scope": "extended"},
+                           headers=_auth(_token()), buffered=False)
+    assert b'progress' in next(iter(response.response))
+    response.close()
+    assert cleaned == [True]
+    assert slot.acquire(blocking=False)
+    slot.release()
+    assert plans.get_account("user-1")["extended_scans_left"] == 9
+
+
+def test_match_choices_are_private_persistent_and_revisable(client):
+    one = {"Authorization": f"Bearer {_token('choice-one')}"}
+    two = {"Authorization": f"Bearer {_token('choice-two')}"}
+    endpoint = "/api/match-choices"
+    assert client.get(endpoint).status_code == 401
+    for choice in ("mine", "not_mine", "unsure"):
+        response = client.post(endpoint, headers=one, json={"url": "https://example.com/Alice#bio", "choice": choice})
+        assert response.status_code == 200
+        saved = list(client.get(endpoint, headers=one).get_json()["choices"].values())
+        assert len(saved) == 1
+        assert saved[0]["choice"] == choice
+        assert saved[0]["url"] == "https://example.com/Alice"
+        assert saved[0]["basis"] == "user_assertion"
+        assert client.get(endpoint, headers=two).get_json()["choices"] == {}
+    assert client.post(endpoint, headers=one, json={"url": "https://example.com/alice", "choice": "mine"}).status_code == 200
+    assert len(client.get(endpoint, headers=one).get_json()["choices"]) == 2
+    client.post(endpoint, headers=one, json={"url": "https://example.com/Alice", "choice": ""})
+    assert len(client.get(endpoint, headers=one).get_json()["choices"]) == 1
+
+
+def test_match_choices_reject_invalid_input_and_volatile_storage(client, monkeypatch):
+    headers = {"Authorization": f"Bearer {_token()}"}
+    for body in ([1], {}, {"url": "javascript:alert(1)", "choice": "mine"},
+                 {"url": "https://example.com/a", "choice": "confirmed"}):
+        assert client.post("/api/match-choices", headers=headers, json=body).status_code == 400
+    monkeypatch.setattr(store, "persistent", lambda: False)
+    assert client.post("/api/match-choices", headers=headers,
+                       json={"url": "https://example.com/a", "choice": "mine"}).status_code == 503
+
+
+def test_shared_username_never_confirms_identity():
+    from modules.correlator import IdentityCorrelator
+    clusters = IdentityCorrelator().correlate([
+        {"username": "alice", "platform": name, "category": "profile", "url": f"https://{name}.com/alice",
+         "display_name": "Alice", "bio": "Example"} for name in ("first", "second", "third")], "alice")
+    assert clusters
+    assert all(c["identity_status"] == "unverified" and c["confidence_basis"] == "retrieval_quality_not_identity" for c in clusters)
+
+
+def test_discovery_cleanup_is_private_user_record_and_survives_reload(client):
+    headers = {"Authorization": f"Bearer {_token('cleanup-user')}"}
+    url = "https://github.com/alice/?utm_source=test"
+    endpoint = "/api/match-choices"
+    for cleanup in ("keep", "review", "requested", "completed"):
+        response = client.post(endpoint, headers=headers, json={"url": url, "choice": "mine", "cleanup": cleanup})
+        assert response.status_code == 200
+        row = list(client.get(endpoint, headers=headers).get_json()["choices"].values())[0]
+        assert row["url"] == "https://github.com/alice"
+        assert row["cleanup"] == cleanup
+        assert row["basis"] == "user_assertion"
+    client.post(endpoint, headers=headers, json={"url": url, "choice": "not_mine", "cleanup": "completed"})
+    row = list(client.get(endpoint, headers=headers).get_json()["choices"].values())[0]
+    assert row["cleanup"] == "review"
+    assert client.post(endpoint, headers=headers, json={"url": url, "choice": "mine", "cleanup": "verified_deleted"}).status_code == 400
+
+
+def test_discovery_history_retains_evidence_and_original_check_time():
+    from core.history import _trim
+    report = {"checked_at": "2026-10-12T00:00:00+00:00", "supplied_profile": "https://github.com/alice",
+              "results": {"profiles": [{"url": "https://github.com/alice", "exists": True, "evidence": "public API", "verdict": "found"}]},
+              "platform_checks": [{"platform": "Other", "verdict": "unknown", "reason": "blocked"}]}
+    saved = _trim(report)
+    assert saved["checked_at"] == report["checked_at"]
+    assert saved["supplied_profile"] == report["supplied_profile"]
+    assert saved["results"]["profiles"][0]["evidence"] == "public API"
+    assert saved["platform_checks"][0]["verdict"] == "unknown"
+    assert _trim({})["checked_at"] is None

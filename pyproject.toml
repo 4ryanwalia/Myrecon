@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myrecon"
+version = "1.0.0"
+description = "Open-source OSINT toolkit for authorized digital-footprint audits, username sweeps across 500+ platforms, and breach checks."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Aryan Walia", email = "aryan@bugsnaps.in" },
+]
+keywords = [
+  "osint",
+  "username-checker",
+  "digital-footprint",
+  "breach-checker",
+  "cybersecurity",
+  "reconnaissance",
+  "security-audit"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+]
+dependencies = [
+  "Flask>=3.0.0",
+  "requests>=2.31.0",
+  "urllib3>=2.0.0",
+  "beautifulsoup4>=4.12.0",
+]
+
+[project.urls]
+"Homepage" = "https://www.myrecon.xyz"
+"Documentation" = "https://www.myrecon.xyz/developers.html"
+"Repository" = "https://github.com/4ryanwalia/Myrecon"
+"Bug Tracker" = "https://github.com/4ryanwalia/Myrecon/issues"
+"Web App" = "https://www.myrecon.xyz"
+"OSINT Cheat Sheet" = "https://www.myrecon.xyz/osint-cheat-sheet.html"
+"Breach Archive" = "https://www.myrecon.xyz/breaches/"
+
+[project.scripts]
+myrecon = "cli.__main__:main"

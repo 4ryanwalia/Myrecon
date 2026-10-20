@@ -11,5 +11,18 @@
 useDefault = true
 
 [allowlist]
-description = "Public Firebase web API key (myrecon-bugsnaps)"
-regexes = ['''AIzaSyA8NWjy6WSCBSevzODJfosUqq05FbGV00M''']
+description = "Public identifiers and verified false positives"
+regexes = [
+  '''AIzaSyA8NWjy6WSCBSevzODJfosUqq05FbGV00M''',
+  '''ed34c84a1c19af372b78c1a66d636aaa''',
+  '''articleSection''',
+]
+paths = [
+  '''frontend/breaches/case-files/linkedin-2012\.html''',
+  '''frontend/scripts/indexnow\.js''',
+  '''frontend/ed34c84a1c19af372b78c1a66d636aaa\.txt''',
+]
+stopwords = [
+  "articleSection",
+  "ed34c84a1c19af372b78c1a66d636aaa",
+]
