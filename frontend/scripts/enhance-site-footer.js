@@ -45,6 +45,7 @@ function renderFooter() {
         <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=${logoHash}" width="36" height="36" alt=""> <span>MyRecon</span></a>
         <p>Public-source research tools for personal audits and authorized work.</p>
         <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
       </div>
       ${groups}
     </div>
