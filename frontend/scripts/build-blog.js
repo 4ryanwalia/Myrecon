@@ -125,21 +125,13 @@ function schema(article) {
     publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
     isPartOf: { "@id": `${SITE}/#website` },
     mainEntityOfPage: article.url,
-    ...(article.media ? { image: `${SITE}/assets/img/blog/${article.media.photo}.webp`, video: {'@id': `${article.url}#explainer`} } : {}),
+    ...(article.media ? { image: `${SITE}/assets/img/blog/${article.media.photo}.webp` } : {}),
   };
   return json(value);
 }
 
 function additionalSchema(article) {
   const values = [];
-  if (article.media) values.push({
-    '@context': 'https://schema.org', '@type': 'VideoObject', '@id': `${article.url}#explainer`,
-    name: article.media.title, description: article.media.description, uploadDate: article.media.uploadDate,
-    thumbnailUrl: `${SITE}/assets/media/blog/${article.slug}-poster.jpg`, contentUrl: `${SITE}/assets/media/blog/${article.slug}.mp4`,
-    duration: 'PT32S', inLanguage: 'en', isFamilyFriendly: true, isPartOf: {'@id': `${article.url}`},
-    transcript: article.media.steps.map(([heading, text]) => `${heading}. ${text}`).join(' '),
-    publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
-  });
   if (article.faq?.length) values.push({
     '@context': 'https://schema.org', '@type': 'FAQPage', '@id': `${article.url}#faq`,
     mainEntity: article.faq.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })),
@@ -254,7 +246,7 @@ function articlePage(article, articles = []) {
   const tocPosition = firstIsQuickAnswer ? content.indexOf('<h2', firstHeading + 4) : firstHeading;
   const photo = article.media ? `<figure class="blog-photo"><img src="/assets/img/blog/${article.media.photo}.webp" alt="${PHOTO_ALT[article.media.photo]}" width="1600" height="900" loading="lazy" decoding="async"><figcaption>AI-created editorial image. The devices and profile layout are illustrative.</figcaption></figure>` : '';
   const navigableContent = tocPosition >= 0 ? `${content.slice(0, tocPosition)}${photo}${toc}\n${content.slice(tocPosition)}` : content;
-  const explainer = article.media ? `<section class="blog-explainer" aria-labelledby="videoHeading"><span class="kicker">Watch the workflow</span><h2 id="videoHeading">${esc(article.media.title)}</h2><p>${esc(article.media.description)}</p><video controls playsinline preload="none" width="1280" height="720" poster="/assets/media/blog/${article.slug}-poster.jpg" aria-label="${esc(article.media.title)}"><source src="/assets/media/blog/${article.slug}.mp4" type="video/mp4"><track kind="captions" src="/assets/media/blog/${article.slug}.vtt" srclang="en" label="English" default><p><a href="/assets/media/blog/${article.slug}.mp4">Download the explainer video</a>.</p></video><p class="blog-media-note">32 seconds · Silent video with on-screen text and English captions.</p><details class="blog-transcript"><summary>Read the video transcript</summary><ol>${article.media.steps.map(([heading, text]) => `<li><strong>${esc(heading)}.</strong> ${esc(text)}</li>`).join('')}</ol></details></section>` : '';
+  const explainer = article.media ? `<section class="blog-explainer" aria-labelledby="videoHeading"><span class="kicker">Watch the workflow</span><h2 id="videoHeading">${esc(article.media.title)}</h2><p>${esc(article.media.description)}</p><a href="/videos/${article.slug}.html"><img src="/assets/media/blog/${article.slug}-poster.jpg" alt="Watch: ${esc(article.media.title)}" width="1280" height="720" loading="lazy"></a><p><a href="/videos/${article.slug}.html">Watch the 32-second explainer with captions and transcript</a></p></section>` : '';
   const related = articles.filter(item => item.slug !== article.slug).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 3);
   return `${shellHead({ title: article.title, description: article.description, url: article.url, article })}
   <main id="main" class="container">

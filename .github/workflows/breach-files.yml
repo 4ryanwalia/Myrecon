@@ -13,11 +13,8 @@ name: Breach Files
 
 on:
   schedule:
-    # Every six hours, off the hour. Whoever publishes the first useful page
-    # on a new breach collects the links, so being early matters more here
-    # than it does on evergreen pages — and GitHub queues scheduled jobs
-    # hardest exactly on the hour, where a delay costs exactly that lead.
-    - cron: "15 */6 * * *"
+    # Daily at 06:47 IST, away from the busiest scheduling boundary.
+    - cron: "17 1 * * *"
   workflow_dispatch:
 
 permissions:
@@ -33,6 +30,9 @@ jobs:
     # workflow code receives the direct-push permission.
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      MYRECON_REQUIRE_FRESH_BREACHES: "1"
     steps:
       - uses: actions/checkout@v5
         with:
@@ -47,17 +47,15 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Generate articles
+      - name: Generate site, case files and Android/public API feeds
+        working-directory: frontend
+        run: node scripts/build-site.js
+
+      - name: Verify feed parity and crawl discovery
         working-directory: frontend
         run: |
-          node scripts/build-breaches.js
-          node scripts/build-blog.js
-          node scripts/enhance-content-pages.js
-          node scripts/enhance-site-footer.js
-          node scripts/install-google-tag.js
-          node scripts/install-adsense-tag.js
-          node scripts/version-site-assets.js
-          node scripts/build-sitemap.js
+          node scripts/check-content-feeds.js
+          node --test tests/crawler-discovery.test.cjs tests/search-growth.test.cjs tests/daily-content.test.cjs
 
       - name: Commit and publish generated pages
         id: commit

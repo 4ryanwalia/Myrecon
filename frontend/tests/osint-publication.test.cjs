@@ -65,17 +65,20 @@ test('new article media matches visible content and appears in the sitemap', () 
   const media = JSON.parse(fs.readFileSync(path.join(root, 'content/blog-media.json')));
   assert.equal(Object.keys(media).length, 12);
   const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-  assert.equal([...sitemap.matchAll(/<video:video>/g)].length, Object.keys(media).length * 2, "articles and dedicated watch pages must both describe their videos");
+  assert.equal([...sitemap.matchAll(/<video:video>/g)].length, Object.keys(media).length, "only dedicated watch pages advertise video indexing");
   assert.equal([...sitemap.matchAll(/<image:image>/g)].length, 12);
   for (const [slug, item] of Object.entries(media)) {
-    const html = fs.readFileSync(path.join(root, 'blog', `${slug}.html`), 'utf8');
-    const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+    const article = fs.readFileSync(path.join(root, 'blog', `${slug}.html`), 'utf8');
+    assert.ok(!article.includes('<video ') && !article.includes('VideoObject'));
+    assert.ok(article.includes(`/videos/${slug}.html`));
+    const html = fs.readFileSync(path.join(root, 'videos', `${slug}.html`), 'utf8');
+    const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap(match => { const data = JSON.parse(match[1]); return data['@graph'] || [data]; });
     const video = schemas.find(value => value['@type'] === 'VideoObject');
     assert.equal(video.name, item.title);
     assert.equal(video.contentUrl, `${site}/assets/media/blog/${slug}.mp4`);
     assert.ok(sitemap.includes(`<video:content_loc>${video.contentUrl}</video:content_loc>`));
     assert.equal(video.duration, 'PT32S');
-    assert.ok(html.includes('preload="none"'));
+    assert.ok(html.includes('preload="metadata"'));
     assert.ok(!/<video[^>]*\bautoplay\b/.test(html));
     const captions = fs.readFileSync(path.join(root, 'assets/media/blog', `${slug}.vtt`), 'utf8');
     for (const [heading, text] of item.steps) {

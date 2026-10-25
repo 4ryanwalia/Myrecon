@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-10-20",
+  "generated": "2026-10-25",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,6 +14,100 @@
   },
   "count": 10,
   "breaches": [
+    {
+      "name": "AssuranceRetraite",
+      "title": "Assurance Retraite",
+      "slug": "assuranceretraite",
+      "url": "https://www.myrecon.xyz/breaches/assuranceretraite.html",
+      "domain": "lassuranceretraite.fr",
+      "breach_date": "2024-09-01",
+      "added_date": "2026-10-20T02:29:36Z",
+      "accounts": 70372,
+      "data_classes": [
+        "Dates of birth",
+        "Email addresses",
+        "Family members' names",
+        "Government issued IDs",
+        "Income levels",
+        "Marital statuses",
+        "Names",
+        "Phone numbers",
+        "Physical addresses"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/AssuranceRetraite.png",
+      "severity": 53,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In September 2024, the French national pension fund Assurance Retraite suffered a data breach affecting approximately 370k assistance beneficiaries. The data included 70k unique email addresses along with names, dates of birth, physical addresses, phone numbers, income levels, marital statuses, French social security numbers (NIR) and contact details of relatives or other nominated contacts. In…",
+      "story": {
+        "background": [
+          "In September 2024, the French national pension fund Assurance Retraite suffered a data breach affecting approximately 370k assistance beneficiaries . The data included 70k unique email addresses along with names, dates of birth, physical addresses, phone numbers, income levels, marital statuses, French social security numbers (NIR) and contact details of relatives or other nominated contacts. In its disclosure notice, Assurance Retraite attributed the breach to a compromised partner account ."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "70,372 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Dates of birth, Email addresses, Family members' names, Government issued IDs, Income levels, Marital statuses, Names, Phone numbers, Physical addresses."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "AssuranceRetraite",
+          "breach_date": "2024-09-01"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Government issued IDs",
+          "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+        },
+        {
+          "name": "Physical addresses",
+          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+        },
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Family members' names",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Income levels",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Marital statuses",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
+    },
     {
       "name": "GitesDeFrance",
       "title": "Gîtes de France",
@@ -698,54 +792,47 @@
       "scale_line": null
     },
     {
-      "name": "BurgerKingRussia",
-      "title": "Burger King Russia",
-      "slug": "burgerkingrussia",
-      "url": "https://www.myrecon.xyz/breaches/burgerkingrussia.html",
-      "domain": "burgerkingrus.ru",
-      "breach_date": "2024-08-25",
-      "added_date": "2026-09-21T13:54:00Z",
-      "accounts": 3155792,
+      "name": "LimeLeads",
+      "title": "LimeLeads",
+      "slug": "limeleads",
+      "url": "https://www.myrecon.xyz/breaches/limeleads.html",
+      "domain": "limeleads.com",
+      "breach_date": "2019-08-01",
+      "added_date": "2026-09-22T08:02:37Z",
+      "accounts": 17838396,
       "data_classes": [
-        "Dates of birth",
         "Email addresses",
-        "Genders",
+        "Employers",
         "Geographic locations",
-        "Names",
+        "Job titles",
         "Phone numbers"
       ],
       "verified": true,
       "sensitive": false,
       "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/BurgerKing.png",
-      "severity": 61,
+      "logo": "https://logos.haveibeenpwned.com/LimeLeads.png",
+      "severity": 64,
       "band": "Severe",
       "data_provider": null,
-      "summary": "In October 2024, news of a data breach exposing Burger King Russia customers broke following an August attack on the Mindbox marketing automation platform. The breach exposed 3.2M unique email addresses along with names, genders, dates of birth, phone numbers and approximate geolocations, with the data spanning 2018 to August 2024. Burger King Russia acknowledged the incident and advised it did…",
+      "summary": "In 2019, the now-defunct B2B marketing leads database service LimeLeads suffered a data breach due to an exposed, unsecured Elasticsearch server. The incident exposed tens of millions of records of largely corporate contact data containing 17.8M unique email addresses, along with phone numbers, employers, job titles and geographic locations including state, city and postcode.",
       "story": {
         "background": [
-          "In October 2024, news of a data breach exposing Burger King Russia customers broke following an August attack on the Mindbox marketing automation platform. The breach exposed 3.2M unique email addresses along with names, genders, dates of birth, phone numbers and approximate geolocations, with the data spanning 2018 to August 2024. Burger King Russia acknowledged the incident and advised it did not include payment or passport details."
+          "In 2019, the now-defunct B2B marketing leads database service LimeLeads suffered a data breach due to an exposed, unsecured Elasticsearch server. The incident exposed tens of millions of records of largely corporate contact data containing 17.8M unique email addresses, along with phone numbers, employers, job titles and geographic locations including state, city and postcode."
         ],
         "how": [
-          "The published account does not explain the exact way the data was obtained."
+          "In 2019, the now-defunct B2B marketing leads database service LimeLeads suffered a data breach due to an exposed, unsecured Elasticsearch server."
         ],
         "motive": [],
         "outcome": [
-          "3,155,792 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Dates of birth, Email addresses, Genders, Geographic locations, Names, Phone numbers."
+          "17,838,396 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Employers, Geographic locations, Job titles, Phone numbers."
         ],
-        "editorial": [
-          "The important boundary in this record is a marketing platform. Have I Been Pwned attributes the customer-data exposure to an attack on Mindbox and describes records spanning 2018 to August 2024. A person can appear in an old marketing dataset even if they no longer use the restaurant's account or app. The addition date in a breach index is also different from the date the incident occurred.",
-          "The source lists names, contact details, birthdays and approximate location, and reports the company's statement that payment and passport details were not included. That statement should not be expanded into either a guarantee that no other risk exists or a claim that cards were stolen. The listed fields can help make a fake loyalty reward or account-support message sound personal.",
-          "This is a risk interpretation, not a report of an observed follow-on scam. If you receive an unexpected reward or account message, open the official app or a known website yourself. A correct name or birthday does not authenticate the sender. Do not send a one-time code in reply or enter payment details through the message.",
-          "Report suspicious communication using the service's official support channel and your normal email or device reporting controls. For a company reviewing its own exposure, this case illustrates why account deletion and marketing-data retention need separate questions. Ask which provider holds historical contact records, what the retention policy covers and how a deletion request propagates to that provider. These are review questions, not a claim about the current Mindbox configuration.",
-          "The available description does not give the exact intrusion mechanism, so this article leaves that cause unresolved."
-        ]
+        "editorial": []
       },
       "check_targets": [
         {
-          "name": "BurgerKingRussia",
-          "breach_date": "2024-08-25"
+          "name": "LimeLeads",
+          "breach_date": "2019-08-01"
         }
       ],
       "fields": [
@@ -754,103 +841,27 @@
           "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
         },
         {
-          "name": "Dates of birth",
-          "why": "One of the three things call centres ask to verify identity, and it never changes."
-        },
-        {
           "name": "Geographic locations",
           "why": "Where the account was used, which narrows a person down further than most people expect."
         },
         {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+          "name": "Employers",
+          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
         },
         {
           "name": "Email addresses",
           "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
         },
         {
-          "name": "Genders",
-          "why": "Small on its own; useful to anyone assembling a fuller profile."
+          "name": "Job titles",
+          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
         }
       ],
       "actions": [
         "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
-      "scale_line": "That is about 12% of the population of Australia."
-    },
-    {
-      "name": "Chess2026",
-      "title": "Chess.com (2026)",
-      "slug": "chess2026",
-      "url": "https://www.myrecon.xyz/breaches/chess2026.html",
-      "domain": "chess.com",
-      "breach_date": "2026-08-03",
-      "added_date": "2026-09-13T13:09:11Z",
-      "accounts": 4653212,
-      "data_classes": [
-        "Email addresses",
-        "Geographic locations",
-        "Names",
-        "Usernames"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/Chess.png",
-      "severity": 50,
-      "band": "Serious",
-      "data_provider": null,
-      "summary": "In August 2026, millions of records allegedly sourced from Chess.com were posted online. The data contained 7.3M rows with 4.6M unique email addresses, along with usernames, names, countries and data relating to users' Chess.com accounts. Analysis of the data suggested it had been obtained by scraping. When loaded into HIBP, 99% of the email addresses had already appeared in previous data…",
-      "story": {
-        "background": [
-          "In August 2026, millions of records allegedly sourced from Chess.com were posted online . The data contained 7.3M rows with 4.6M unique email addresses, along with usernames, names, countries and data relating to users' Chess.com accounts. Analysis of the data suggested it had been obtained by scraping. When loaded into HIBP, 99% of the email addresses had already appeared in previous data breaches, further supporting the scraping theory.",
-          "Read more about scrapes and data breaches."
-        ],
-        "how": [
-          "Analysis of the data suggested it had been obtained by scraping.",
-          "When loaded into HIBP, 99% of the email addresses had already appeared in previous data breaches, further supporting the scraping theory."
-        ],
-        "motive": [],
-        "outcome": [
-          "4,653,212 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Geographic locations, Names, Usernames."
-        ],
-        "editorial": [
-          "Two details in this record deserve more weight than the total. The first is that analysis indicated the data was scraped rather than taken from a database, collected through interfaces that were working as designed, at a scale nobody intended. The second is that 99% of the addresses had already appeared in earlier breaches. Both facts cut the same way, and not in the direction most people assume.",
-          "A scrape means no password was exposed, so there is nothing to reset. A 99% overlap with previous incidents means almost nobody in this file is newly exposed. If you are in it, this is very unlikely to be the breach that matters to you, one of the earlier ones already was. What it does add is linkage.",
-          "A username joined to a real name, a country and a confirmed email address is exactly the material used to connect a pseudonymous account to a person. If your chess handle is one you also use elsewhere, that connection is now easier for anyone to make, and no password change undoes it."
-        ]
-      },
-      "check_targets": [
-        {
-          "name": "Chess2026",
-          "breach_date": "2026-08-03"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Geographic locations",
-          "why": "Where the account was used, which narrows a person down further than most people expect."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        },
-        {
-          "name": "Usernames",
-          "why": "A handle links this account to every other place the same handle is used."
-        }
-      ],
-      "actions": [
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": "That is about 17% of the population of Australia."
+      "scale_line": "That is about 66% of the population of Australia."
     }
   ]
 }

@@ -55,7 +55,6 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How were Dropbox and LinkedIn connected?","acceptedAnswer":{"@type":"Answer","text":"A Dropbox employee used the same password on LinkedIn and on a Dropbox corporate account. The LinkedIn breach put that password into circulation, someone tried it against Dropbox, and it worked. Dropbox itself was not vulnerable to anything except its employee's password habits."}},{"@type":"Question","name":"Were the Dropbox passwords cracked?","acceptedAnswer":{"@type":"Answer","text":"Largely not. About half the hashes used bcrypt, which is designed for password storage and resists large-scale cracking; the rest used SHA-1 with a salt, which is weaker but far better than the unsalted hashes of the era. This is a case where good storage choices materially limited the damage."}},{"@type":"Question","name":"Why did it take four years to learn the real scale?","acceptedAnswer":{"@type":"Answer","text":"In 2012 Dropbox disclosed that a stolen employee credential had exposed a document containing user email addresses, and users saw a wave of spam. The full credential file did not surface publicly until August 2016, when it appeared in the same wave of old datasets as LinkedIn and MySpace. Dropbox then forced a password reset for accounts that had not changed since 2012."}},{"@type":"Question","name":"What is the actual lesson?","acceptedAnswer":{"@type":"Answer","text":"That employee password reuse is a corporate risk, not a personal one. Enforcing a password manager, phishing-resistant multi-factor authentication and single sign-on for staff is the control, and it is cheaper than being the second victim of somebody else's breach."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -220,7 +219,7 @@
       </div>
       <nav class="site-footer__group" aria-label="Products">
   <h2 class="site-footer__heading">Products</h2>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features.html">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing.html">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>

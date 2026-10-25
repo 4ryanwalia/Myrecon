@@ -322,7 +322,7 @@ function select(all) {
 
   // From the cutoff onward everything is covered, whichever kind it is,
   // curation applies to the back catalogue, not to the news.
-  const fresh = window.filter((b) => (b.AddedDate || "").slice(0, 10) >= TRACK_ADDED_SINCE);
+  const fresh = all.filter(b => !b.IsFabricated && !b.IsRetired).filter((b) => (b.AddedDate || "").slice(0, 10) >= TRACK_ADDED_SINCE);
 
   const byName = new Map();
   const withEditorial = all.filter(b => !b.IsFabricated && !b.IsRetired && readEditorial(b.Name));
@@ -951,15 +951,23 @@ function readEditorial(name) {
 }
 
 async function main() {
-  const res = await fetch(SOURCE, {
-    headers: {
-      "User-Agent": "MyRecon-BreachFiles/1.0 (+https://www.myrecon.xyz)",
-      Accept: "application/json",
-    },
-  });
-  if (!res.ok) throw new Error(`HIBP returned HTTP ${res.status}`);
+  let res;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      res = await fetch(SOURCE, {
+        signal: AbortSignal.timeout(30000),
+        headers: {"User-Agent": "MyRecon-BreachFiles/1.0 (+https://www.myrecon.xyz)", Accept: "application/json"},
+      });
+      if (!res.ok) throw new Error(`HIBP returned HTTP ${res.status}`);
+      break;
+    } catch (error) {
+      if (attempt === 2) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+    }
+  }
   const all = await res.json();
 
+  if (!Array.isArray(all) || !all.length || all.some(b => !b.Name || !b.BreachDate || !Array.isArray(b.DataClasses))) throw new Error("invalid breach catalogue");
   const items = select(all);
   if (!items.length) throw new Error("no breaches selected, refusing to publish an empty archive");
 
@@ -1054,7 +1062,7 @@ if (require.main === module) main().catch((err) => {
   console.error(`[breaches] ${err.message}`);
   // A failed fetch must not take the whole site build down, the previously
   // generated pages are still on disk and still correct.
-  process.exit(fs.existsSync(path.join(OUT_DIR, "index.html")) ? 0 : 1);
+  process.exit(process.env.MYRECON_REQUIRE_FRESH_BREACHES === "1" || !fs.existsSync(path.join(OUT_DIR, "index.html")) ? 1 : 0);
 });
 
-module.exports = { earlierArchiveEntries, index };
+module.exports = { earlierArchiveEntries, index, select };

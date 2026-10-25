@@ -61,20 +61,10 @@ const server = http.createServer((req, res) => {
           await photo.scrollIntoViewIfNeeded();
           await photo.evaluate(image => image.complete ? null : new Promise(resolve => { image.onload=resolve; image.onerror=resolve; }));
           assert.equal(await photo.evaluate(image => image.naturalWidth), 1600, `${route}: photo loaded`);
-          const video = page.locator('.blog-explainer video');
-          assert.equal(await video.getAttribute('preload'), 'none', route);
-          assert.equal(await video.getAttribute('autoplay'), null, route);
-          assert.equal(await video.getAttribute('controls'), '', route);
-          await video.scrollIntoViewIfNeeded();
-          await video.evaluate(element => {element.muted=true; return element.play();});
-          await page.waitForFunction(() => document.querySelector('video')?.currentTime > .15);
-          const playback = await video.evaluate(element => {element.pause(); return {duration:element.duration,width:element.videoWidth,height:element.videoHeight,error:element.error?.code};});
-          assert.deepEqual(playback, {duration:32,width:1280,height:720,error:undefined}, `${route}: real MP4 playback`);
-          assert.equal(await video.locator('track[kind="captions"][srclang="en"]').count(), 1, route);
-          const transcript = page.locator('.blog-transcript');
-          await transcript.locator('summary').click();
-          assert.equal(await transcript.locator('li').count(), 4, route);
-          assert.ok(await transcript.locator('ol').isVisible(), `${route}: accessible transcript`);
+          assert.equal(await page.locator('.blog-explainer video').count(), 0, route);
+          const watchLink = page.locator('.blog-explainer a').first();
+          assert.equal(await watchLink.getAttribute('href'), route.replace('/blog/', '/videos/'), route);
+          assert.ok(await watchLink.isVisible(), `${route}: dedicated watch page link`);
           if (route === '/blog/instagram-username-search.html') {
             await page.locator('.blog-explainer').screenshot({path:path.join(output, `article-video-${base ? 'live' : 'local'}-${width}.png`)});
             await photo.screenshot({path:path.join(output, `article-photo-${base ? 'live' : 'local'}-${width}.png`)});

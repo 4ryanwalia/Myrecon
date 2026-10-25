@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breach Date vs Disclosure Date: Read the Timeline | MyRecon</title>
+  <meta name="description" content="Understand breach dates, disclosure dates and catalogue additions. Read a new breach alert without mistaking an older incident for a new intrusion.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/blog/breach-date-vs-disclosure-date.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Breach Date vs Disclosure Date: Read the Timeline | MyRecon">
+  <meta property="og:description" content="Understand breach dates, disclosure dates and catalogue additions. Read a new breach alert without mistaking an older incident for a new intrusion.">
+  <meta property="og:url" content="https://www.myrecon.xyz/blog/breach-date-vs-disclosure-date.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MyRecon: public-source research and online privacy">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Breach Date vs Disclosure Date: Read the Timeline | MyRecon">
+  <meta name="twitter:description" content="Understand breach dates, disclosure dates and catalogue additions. Read a new breach alert without mistaking an older incident for a new intrusion.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
+  <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
+  <link rel="stylesheet" href="/assets/optimized/css/blog.62494773bcc3.css">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <meta property="article:published_time" content="2026-10-25T00:00:00Z">
+  <meta property="article:modified_time" content="2026-10-25T00:00:00Z">
+  <meta property="article:section" content="Breach evidence and account checks">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Why a new breach alert can describe an old incident","description":"Understand breach dates, disclosure dates and catalogue additions. Read a new breach alert without mistaking an older incident for a new intrusion.","datePublished":"2026-10-25","dateModified":"2026-10-25","articleSection":"Breach evidence and account checks","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"mainEntityOfPage":"https://www.myrecon.xyz/blog/breach-date-vs-disclosure-date.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.myrecon.xyz/blog/"},{"@type":"ListItem","position":3,"name":"Why a new breach alert can describe an old incident","item":"https://www.myrecon.xyz/blog/breach-date-vs-disclosure-date.html"}]}</script>
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/">Blog</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:16px 0 20px;color:var(--text-dim)">
+      <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <a href="/blog/" style="color:var(--text-dim);text-decoration:none">Blog</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <span style="color:var(--text);font-weight:500" aria-current="page">Why a new breach alert can describe an old incident</span>
+    </nav>
+    <article class="article">
+      <span class="kicker">Breach evidence and account checks</span>
+      <h1>Why a new breach alert can describe an old incident</h1>
+      <p class="meta">Updated <time datetime="2026-10-25">25 October 2026</time> · <a href="/about.html">MyRecon editorial</a></p>
+      <p class="lead">A breach alert received today can refer to an incident from years ago. Before deciding what happened, separate the date of access, the date the organisation disclosed it, the date a breach catalogue added the record and the date you received an alert. Each answers a different question.</p>
+<nav class="blog-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#four-dates-four-meanings">Four dates, four meanings</a></li><li><a href="#read-an-alert-in-order">Read an alert in order</a></li><li><a href="#how-myrecon-labels-the-record">How MyRecon labels the record</a></li><li><a href="#turn-the-timeline-into-a-practical-decision">Turn the timeline into a practical decision</a></li></ul></nav>
+<h2 id="four-dates-four-meanings">Four dates, four meanings</h2><div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table"><table><thead><tr><th>Date</th><th>What it tells you</th><th>What it cannot prove</th></tr></thead><tbody><tr><td>Breach date</td><td>When the recorded incident occurred, sometimes approximately</td><td>The day your individual record was accessed</td></tr><tr><td>Disclosure date</td><td>When the organisation or source announced the incident</td><td>That access started on that day</td></tr><tr><td>Catalogue addition</td><td>When a provider added the incident to its searchable collection</td><td>That the organisation suffered another incident</td></tr><tr><td>Your notification</td><td>When you were informed or a monitor found a change</td><td>That your account was used by somebody else</td></tr></tbody></table></div>
+<h2 id="read-an-alert-in-order">Read an alert in order</h2><ol><li>Open the organisation's official notice independently of the message link.</li><li>Identify the incident period and whether the date is approximate.</li><li>Record which information categories the notice says concern you.</li><li>Compare the breach name and incident date with earlier notices before treating it as a second incident.</li><li>Write down the action you took and when you will recheck it.</li></ol><p>An illustrative example: a company reports a 2022 incident in 2026 and a catalogue adds the record a week later. A daily update should include that newly added record even though the underlying incident is old. Changing its breach date to 2026 would make the timeline less accurate.</p>
+<h2 id="how-myrecon-labels-the-record">How MyRecon labels the record</h2><p>The <a href="/developers.html">public breach API</a> keeps <code>breach_date</code> and <code>added_date</code> separate. The latest-record feed sorts by addition date, while an incident archive can sort by breach date. The feed's <code>generated</code> value describes the publication of that JSON response; it is not the date every incident happened.</p><p>These distinctions follow the <a href="https://haveibeenpwned.com/API/v3#BreachModel">Have I Been Pwned breach model</a>. Provider coverage is limited to records it has received and published. A daily refresh cannot discover an incident that no source has disclosed.</p>
+<h2 id="turn-the-timeline-into-a-practical-decision">Turn the timeline into a practical decision</h2><p>For an old password exposure, establish whether that password was still reused after the incident. For a personal-detail exposure, identify which accounts use those details for recovery. Keep uncertainty visible: an alert records known exposure, while unfamiliar sign-ins require a separate account review. Do not label every alert as a current account takeover.</p><p>Continue with <a href="/guides/read-a-breach-notification.html">reading a breach notification</a>, <a href="/guides/check-email-data-breach.html">checking your email</a>, or the <a href="/breaches/">breach archive</a>.</p>
+      <div class="callout">
+        <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
+      </div>
+      <aside class="blog-related" aria-label="Related articles"><h2>Continue your research</h2><ul><li><a href="/blog/breach-check-no-results-meaning.html">No breach found: what the result does and does not mean</a></li><li><a href="/blog/doxxing-prevention-personal-cybersecurity-guide.html">Doxxing Prevention Guide: How to Protect Your Identity from Malicious Exposure</a></li><li><a href="/blog/how-to-find-someones-social-media-accounts.html">How to Find Someone's Social Media Accounts: The Complete Ethical OSINT Guide</a></li></ul></aside>
+      <p><a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/optimized/js/editorial-shell.6d544da32afa.js" defer></script>
+  <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
+  <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
+</body>
+</html>

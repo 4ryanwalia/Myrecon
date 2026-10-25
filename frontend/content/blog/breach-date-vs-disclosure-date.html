@@ -1,0 +1,20 @@
+<!--
+{
+  "title": "Breach Date vs Disclosure Date: Read the Timeline | MyRecon",
+  "headline": "Why a new breach alert can describe an old incident",
+  "description": "Understand breach dates, disclosure dates and catalogue additions. Read a new breach alert without mistaking an older incident for a new intrusion.",
+  "category": "Breach evidence and account checks",
+  "datePublished": "2026-10-25",
+  "dateModified": "2026-10-25",
+  "keywords": [
+    "breach date vs disclosure date",
+    "old data breach new notification",
+    "data breach timeline"
+  ]
+}
+-->
+<p class="lead">A breach alert received today can refer to an incident from years ago. Before deciding what happened, separate the date of access, the date the organisation disclosed it, the date a breach catalogue added the record and the date you received an alert. Each answers a different question.</p>
+<h2>Four dates, four meanings</h2><table><thead><tr><th>Date</th><th>What it tells you</th><th>What it cannot prove</th></tr></thead><tbody><tr><td>Breach date</td><td>When the recorded incident occurred, sometimes approximately</td><td>The day your individual record was accessed</td></tr><tr><td>Disclosure date</td><td>When the organisation or source announced the incident</td><td>That access started on that day</td></tr><tr><td>Catalogue addition</td><td>When a provider added the incident to its searchable collection</td><td>That the organisation suffered another incident</td></tr><tr><td>Your notification</td><td>When you were informed or a monitor found a change</td><td>That your account was used by somebody else</td></tr></tbody></table>
+<h2>Read an alert in order</h2><ol><li>Open the organisation's official notice independently of the message link.</li><li>Identify the incident period and whether the date is approximate.</li><li>Record which information categories the notice says concern you.</li><li>Compare the breach name and incident date with earlier notices before treating it as a second incident.</li><li>Write down the action you took and when you will recheck it.</li></ol><p>An illustrative example: a company reports a 2022 incident in 2026 and a catalogue adds the record a week later. A daily update should include that newly added record even though the underlying incident is old. Changing its breach date to 2026 would make the timeline less accurate.</p>
+<h2>How MyRecon labels the record</h2><p>The <a href="/developers.html">public breach API</a> keeps <code>breach_date</code> and <code>added_date</code> separate. The latest-record feed sorts by addition date, while an incident archive can sort by breach date. The feed's <code>generated</code> value describes the publication of that JSON response; it is not the date every incident happened.</p><p>These distinctions follow the <a href="https://haveibeenpwned.com/API/v3#BreachModel">Have I Been Pwned breach model</a>. Provider coverage is limited to records it has received and published. A daily refresh cannot discover an incident that no source has disclosed.</p>
+<h2>Turn the timeline into a practical decision</h2><p>For an old password exposure, establish whether that password was still reused after the incident. For a personal-detail exposure, identify which accounts use those details for recovery. Keep uncertainty visible: an alert records known exposure, while unfamiliar sign-ins require a separate account review. Do not label every alert as a current account takeover.</p><p>Continue with <a href="/guides/read-a-breach-notification.html">reading a breach notification</a>, <a href="/guides/check-email-data-breach.html">checking your email</a>, or the <a href="/breaches/">breach archive</a>.</p>
