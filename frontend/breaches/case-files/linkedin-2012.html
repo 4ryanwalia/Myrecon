@@ -47,14 +47,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
-  <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
-  <link rel="stylesheet" href="/assets/optimized/css/breaches.b2bc9c9f5dba.css">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts","description":"LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"articleSection":"Case Files","about":{"@type":"Thing","name":"LinkedIn data breach"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html","wordCount":949}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"LinkedIn data breach","item":"https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many LinkedIn accounts were breached?","acceptedAnswer":{"@type":"Answer","text":"Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale."}},{"@type":"Question","name":"What is an unsalted SHA-1 hash, and why was it a problem?","acceptedAnswer":{"@type":"Answer","text":"SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords, modern hardware tests billions of candidates per second. \"Unsalted\" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless."}},{"@type":"Question","name":"Was the 2021 \"700 million LinkedIn records\" leak the same thing?","acceptedAnswer":{"@type":"Answer","text":"No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event, no security control was bypassed, which is what makes scraping so hard to prevent."}},{"@type":"Question","name":"Did the LinkedIn breach cause other breaches?","acceptedAnswer":{"@type":"Answer","text":"Directly. A Dropbox employee reused their LinkedIn password on a corporate account, which led to the theft of 68 million Dropbox credentials. Mark Zuckerberg's Twitter and Pinterest accounts were taken over in 2016 using a password from the LinkedIn set. Reuse is what turns one company's failure into everyone's."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -258,10 +258,10 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/optimized/js/config.cbb669b0dfd9.js"></script>
-  <script src="/assets/optimized/js/app.96f1d0236592.js"></script>
-  <script src="/assets/optimized/js/breach-check.b26ea28a183c.js"></script>
-  <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
-  <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=dea8105323"></script>
+  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
 </html>
