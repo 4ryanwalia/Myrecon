@@ -47,15 +47,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
+  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
+  <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
+  <link rel="stylesheet" href="/assets/optimized/css/breaches.b2bc9c9f5dba.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Okta, 2023: the breach arrived through the help desk, inside debugging files","description":"Attackers reached Okta's support case system and read HAR files customers had uploaded for troubleshooting. Those files contained live session tokens.","datePublished":"2026-09-15","dateModified":"2026-09-15","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"articleSection":"Case Files","about":{"@type":"Thing","name":"Okta customer support system breach"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/okta-support-2023.html","wordCount":1172}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"Okta customer support system breach","item":"https://www.myrecon.xyz/breaches/case-files/okta-support-2023.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a HAR file and why is it dangerous?","acceptedAnswer":{"@type":"Answer","text":"A HAR file is an HTTP Archive: a recording of everything a browser sent and received during a session, which support teams ask for because it shows exactly what went wrong. It records request headers, and request headers carry session cookies and authorisation tokens. So a HAR file captured from a logged-in session is a container holding live credentials, produced by a user who believes they are sending a log file."}},{"@type":"Question","name":"How did the attackers get into the support system?","acceptedAnswer":{"@type":"Answer","text":"Okta reported that a service account's credentials had been saved into an employee's personal Google profile while signed into Chrome on a company-managed laptop. Compromise of that personal account therefore exposed a corporate service credential. It is an unusually clean illustration of why browser profile sync across personal and work identities is a security boundary problem and not a convenience question."}},{"@type":"Question","name":"How was the attack detected?","acceptedAnswer":{"@type":"Answer","text":"By a customer. BeyondTrust identified suspicious activity against its own Okta tenant, traced it to a session token from a HAR file it had uploaded days earlier, and reported it to Okta. Cloudflare and 1Password identified related activity. The detection came from downstream organisations watching their own logs, not from the provider, which is a genuine argument for customers monitoring their identity provider's activity independently."}},{"@type":"Question","name":"Why did the number change from 134 customers to everyone?","acceptedAnswer":{"@type":"Answer","text":"Okta's initial disclosure described 134 customers whose uploaded files were accessed. A month later it disclosed that a report the attacker had run contained the names and email addresses of essentially all users of the customer support system, around 18,400. The first figure covered files retrieved; the second covered a report that had been overlooked in the initial analysis. Early breach numbers are almost always the floor."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
-</head>
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+<link rel="stylesheet" href="/assets/optimized/css/article-story.9be12881931d.css">
+<link rel="stylesheet" href="/assets/optimized/css/android-promo.05996c4d5089.css">
+<link rel="stylesheet" href="/assets/optimized/css/story-experience.9804136ec7b9.css"></head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
@@ -66,7 +68,7 @@
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
   </header>
-  <main id="main" class="container">
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container">
     <article class="article breach-article cf-article">
       <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
         <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="/breaches/case-files/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">Okta, 2023: the breach arrived through the help desk, inside debugging files</span>
@@ -78,7 +80,7 @@
           <h1>Okta, 2023: the breach arrived through the help desk, inside debugging files</h1>
           <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
         </div>
-      </header>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Okta customer support system breach</h2><p>Attackers reached Okta&#39;s support case system and read HAR files customers had uploaded for troubleshooting. Those files contained live session tokens.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>Initially reported as 134 customers; later disclosed as affecting the details of essentially all users of the support system, around 18,400</dd></div>
@@ -90,7 +92,7 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Session tokens and cookies in uploaded HAR files · Customer support case contents · Names and email addresses of support system users</p>
 
-      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>September 2023</summary><p>Attackers access Okta&#39;s customer support case management system using compromised service account credentials.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">02</span>Late September – October 2023</summary><p>HAR files uploaded by customers are retrieved and session tokens extracted.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">03</span>2 October 2023</summary><p>BeyondTrust detects anomalous activity in its own tenant and reports it to Okta.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">04</span>18–19 October 2023</summary><p>Cloudflare and 1Password identify related activity in their environments.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">05</span>20 October 2023</summary><p>Okta publicly confirms the incident, initially describing 134 affected customers.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">06</span>3 November 2023</summary><p>Okta publishes a root cause statement describing the service account credentials saved into a personal Google profile.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">07</span>29 November 2023</summary><p>Okta discloses that a report run by the attacker exposed the names and email addresses of essentially all support system users.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li></ol></section>
       <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>Okta sells identity. Its entire product is being the trusted place where a company's employees authenticate, which makes it one of the highest-value targets in enterprise software. In October 2023 it was breached, not through its authentication platform, but through the support portal where customers upload files to explain what is broken.</p></section>
       <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>A service account whose credentials had been saved into a personal Google profile on a managed device, used to access the customer support case management system and the HAR files stored in it</p></section>
       <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
@@ -190,7 +192,7 @@
         <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">View closed-testing listing →</a></p>
       </aside>
 
-      <h2>Sources</h2>
+      <h2 id="story-sources">Sources</h2>
       <ul class="cf-sources">
         <li><b>Okta security incident updates and root cause statements, October–November 2023</b></li>
         <li><b>BeyondTrust, public technical write-up of the October 2023 Okta support case incident</b></li>
@@ -210,7 +212,7 @@
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
-  </main>
+  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">READ THE FULL STORY</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>Real breaches.<br>Stories worth reading.</h2><p>Discover how major breaches happened, what was exposed and what came next. Turn on a daily story and breach alerts in the app.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Case files</li><li>Daily stories</li><li>Breach alerts</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Story reminders and security alerts are separate opt-ins.</small></div></aside></div></div><!-- app-promo-layout:end -->
   <footer class="site-footer">
   <div class="site-footer__panel">
     <div class="site-footer__top">
@@ -249,10 +251,11 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=dea8105323"></script>
-  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
-  <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+  <script src="/assets/optimized/js/config.cbb669b0dfd9.js"></script>
+  <script src="/assets/optimized/js/app.82c4e3b35d9f.js"></script>
+  <script src="/assets/optimized/js/breach-check.b26ea28a183c.js"></script>
+  <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
+  <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
+<script src="/assets/optimized/js/article-story.97bcbf6032be.js" defer></script>
 </body>
 </html>

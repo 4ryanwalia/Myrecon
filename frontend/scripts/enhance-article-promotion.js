@@ -51,6 +51,7 @@ function walk(dir) {
       html = html.replace(/<main\b/, '<!-- app-promo-layout:start --><div class="promo-layout"><main');
       html = html.replace('</main>', `</main><div class="promo-rail">${banner}</div></div><!-- app-promo-layout:end -->`);
     }
+    if (article) html = require('./article-story-design').designArticle(html, rel);
     if (!/\/assets\/(?:optimized\/)?css\/android-promo[.]/.test(html)) html = html.replace('</head>', '<link rel="stylesheet" href="/assets/css/android-promo.css">\n</head>');
     fs.writeFileSync(file, html.replace(/[ \t]+$/gm, ''));
     pages++;

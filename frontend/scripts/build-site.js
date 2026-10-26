@@ -80,6 +80,7 @@ try { for (const script of scripts) {
 fs.writeFileSync(homepagePath, homepageContents);
 }
 require('./enhance-article-promotion');
+require('./enrich-story-experience');
 require('./canonicalize-links').canonicalizeLinks(ROOT);
 
 const changed = changedHtmlPaths(before, publicHtmlHashes());

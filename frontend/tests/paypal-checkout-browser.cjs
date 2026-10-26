@@ -18,7 +18,7 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
       const url = new URL(route.request().url());
       if (url.origin !== base) return url.hostname === 'www.paypal.com'
         ? route.fulfill({ contentType: 'text/html', body: '<p>Fixture checkout</p>' }) : route.abort();
-      if (url.pathname === '/assets/js/account.js') return route.fulfill({ contentType: 'application/javascript', body: `
+      if (/^\/assets\/(?:optimized\/)?js\/account(?:\.[a-f0-9]+)?\.js$/.test(url.pathname)) return route.fulfill({ contentType: 'application/javascript', body: `
         let st={user:${options.signedOut ? 'null' : '{uid:"buyer",email:"buyer@example.com"}'},account:{standard_scans_left:5}};
         const listeners=[];
         window.MyReconAccount={enabled:true,ready:Promise.resolve(),state:()=>st,onChange:f=>listeners.push(f),
@@ -26,7 +26,7 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
           signIn:async()=>{st.user={uid:'buyer'};},signOut:async()=>{st.user=null;listeners.forEach(f=>f(st));},
           refreshAccount:async()=>{window.refreshed=true;st.account={standard_scans_unlimited:true,extended_pack_scans_left:10};listeners.forEach(f=>f(st));}};
       ` });
-      if (url.pathname === '/assets/js/config.js') return route.fulfill({ contentType: 'application/javascript', body: `window.MYRECON={apiBase:'${base}'};` });
+      if (/^\/assets\/(?:optimized\/)?js\/config(?:\.[a-f0-9]+)?\.js$/.test(url.pathname)) return route.fulfill({ contentType: 'application/javascript', body: `window.MYRECON={apiBase:'${base}'};` });
       if (url.pathname === '/api/plans') return route.fulfill({ json: { paypal_payments: { enabled }, payments_enabled: false, international_payments: { enabled: false } } });
       if (url.pathname === '/api/history') return route.fulfill({ json: { scans: [] } });
       if (url.pathname === '/api/billing/paypal/order') {
@@ -62,7 +62,8 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
     await returned.tab.waitForFunction(() => document.querySelector('#paypalStatus').textContent.includes('not confirmed'));
     assert.equal(await returned.tab.evaluate(() => window.refreshed), undefined);
     applied = true;
-    await returned.tab.locator('#checkPayPal').click();
+    assert.equal(await returned.tab.locator('#checkPayPal').count(), 0);
+    await returned.tab.reload();
     await returned.tab.waitForFunction(() => window.refreshed === true);
     assert.match(await returned.tab.locator('#paypalStatus').textContent(), /Payment confirmed/);
     assert.equal(new URL(returned.tab.url()).search, '');

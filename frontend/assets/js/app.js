@@ -2443,7 +2443,8 @@
     }
     renderSaved();
     if (btn) { btn.textContent = "Saved"; btn.disabled = true; }
-    toast("Saved to your investigations.");
+    const snapshot = lastResult.tool === "username" ? window.MyReconSnapshots?.capture(lastResult) : null;
+    toast(snapshot?.message || "Saved to your investigations.", snapshot && !snapshot.saved ? "err" : "ok");
   }
   function quickStat(res) {
     const d = res.data;

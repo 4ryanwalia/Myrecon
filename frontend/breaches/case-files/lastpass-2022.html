@@ -47,15 +47,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
+  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
+  <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
+  <link rel="stylesheet" href="/assets/optimized/css/breaches.b2bc9c9f5dba.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LastPass, 2022: the vaults were stolen, and then attacked offline","description":"An engineer's home media server was the way into a password manager's cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"articleSection":"Case Files","about":{"@type":"Thing","name":"LastPass data breach"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html","wordCount":907}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"LastPass data breach","item":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were LastPass passwords decrypted?","acceptedAnswer":{"@type":"Answer","text":"Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall."}},{"@type":"Question","name":"What was not encrypted?","acceptedAnswer":{"@type":"Answer","text":"Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with, including which cryptocurrency exchanges."}},{"@type":"Question","name":"How did they get in through someone's home computer?","acceptedAnswer":{"@type":"Answer","text":"The attackers used information from the earlier August incident to identify a senior DevOps engineer, then exploited a vulnerability in a third-party media software package running on that engineer's personal home computer. That gave them a keylogger, which captured the engineer's master password after multi-factor authentication, which opened a corporate vault holding the keys to cloud backups."}},{"@type":"Question","name":"Should I still use a password manager?","acceptedAnswer":{"@type":"Answer","text":"Yes. The alternative, reused passwords, or a notebook, fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
-</head>
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+<link rel="stylesheet" href="/assets/optimized/css/article-story.9be12881931d.css">
+<link rel="stylesheet" href="/assets/optimized/css/android-promo.05996c4d5089.css">
+<link rel="stylesheet" href="/assets/optimized/css/story-experience.9804136ec7b9.css"></head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
@@ -66,7 +68,7 @@
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
   </header>
-  <main id="main" class="container">
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container">
     <article class="article breach-article cf-article">
       <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
         <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="/breaches/case-files/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">LastPass, 2022: the vaults were stolen, and then attacked offline</span>
@@ -78,7 +80,7 @@
           <h1>LastPass, 2022: the vaults were stolen, and then attacked offline</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>LastPass data breach</h2><p>An engineer&#39;s home media server was the way into a password manager&#39;s cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>backups of customer vaults, affecting tens of millions of accounts</dd></div>
@@ -90,7 +92,7 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Encrypted password vaults · Website URLs stored in vaults (unencrypted) · Names · Billing addresses · Email addresses · Phone numbers · IP addresses</p>
 
-      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>The master password&#39;s strength.</summary><p>A long, random passphrase is out of reach. A reused or dictionary-derived password is not.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">02</span>The key-derivation iteration count.</summary><p>Higher counts make each guess more expensive. Accounts created years earlier were running far lower counts than the then-current default, and some legacy accounts were dramatically lower, those vaults are far cheaper to attack.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">03</span>Time.</summary><p>Which is entirely on the attacker&#39;s side, because the file does not expire.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li></ol></section>
       <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building, and why the encryption holding is not the same as being safe.</p></section>
       <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>A compromised developer account, then a vulnerability in third-party software on a senior engineer's home computer</p></section>
       <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
@@ -146,12 +148,12 @@
 
 <h2>If you were a LastPass user</h2>
 
-<ol class="bx-actions">
-  <li><strong>Assume your vault as of late 2022 is in someone's possession.</strong> That is the only safe assumption, and it does not change with time.</li>
-  <li><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.</li>
-  <li><strong>Then rotate by value: email, banking, anything holding payment details.</strong> Yes, it is a long weekend of work. It is also the only real remediation.</li>
-  <li><strong>Keep using a manager, with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</li>
-</ol></details>
+<fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
+  <label><input type="checkbox"><span><strong>Assume your vault as of late 2022 is in someone's possession.</strong> That is the only safe assumption, and it does not change with time.</span></label>
+  <label><input type="checkbox"><span><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.</span></label>
+  <label><input type="checkbox"><span><strong>Then rotate by value: email, banking, anything holding payment details.</strong> Yes, it is a long weekend of work. It is also the only real remediation.</span></label>
+  <label><input type="checkbox"><span><strong>Keep using a manager, with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</span></label>
+<output aria-live="polite">0 actions completed</output></fieldset></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
@@ -195,7 +197,7 @@
         <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">View closed-testing listing →</a></p>
       </aside>
 
-      <h2>Sources</h2>
+      <h2 id="story-sources">Sources</h2>
       <ul class="cf-sources">
         <li><b>LastPass security incident notices and updates, August 2022 – March 2023</b></li>
         <li><b>Analysis of cryptocurrency thefts linked to the breach by independent researchers, 2023–2024</b></li>
@@ -214,7 +216,7 @@
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
-  </main>
+  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">READ THE FULL STORY</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>Real breaches.<br>Stories worth reading.</h2><p>Discover how major breaches happened, what was exposed and what came next. Turn on a daily story and breach alerts in the app.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Case files</li><li>Daily stories</li><li>Breach alerts</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Story reminders and security alerts are separate opt-ins.</small></div></aside></div></div><!-- app-promo-layout:end -->
   <footer class="site-footer">
   <div class="site-footer__panel">
     <div class="site-footer__top">
@@ -253,10 +255,11 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=dea8105323"></script>
-  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
-  <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+  <script src="/assets/optimized/js/config.cbb669b0dfd9.js"></script>
+  <script src="/assets/optimized/js/app.82c4e3b35d9f.js"></script>
+  <script src="/assets/optimized/js/breach-check.b26ea28a183c.js"></script>
+  <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
+  <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
+<script src="/assets/optimized/js/article-story.97bcbf6032be.js" defer></script>
 </body>
 </html>

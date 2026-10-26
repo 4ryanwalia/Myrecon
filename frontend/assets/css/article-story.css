@@ -1,0 +1,14 @@
+/* Editorial rhythm: compact masthead, photographic opening, useful disclosures. */
+.breach-article .bx-head{display:block;margin-bottom:24px}
+.breach-article .bx-head h1{font-size:clamp(38px,5vw,68px);letter-spacing:-.055em;line-height:1.04;margin:10px 0 16px}
+.story-feature{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 0;margin:0 0 28px}
+.story-opening{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.story-eyebrow{font:11px var(--mono,monospace);letter-spacing:.14em;color:var(--text-dim)}
+.story-opening h2{font-size:clamp(26px,3vw,40px);line-height:1.12;letter-spacing:-.035em;margin:18px 0}
+.story-opening p,.story-context{font-size:16px;line-height:1.75;color:var(--text-dim)}
+.story-jump{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding:12px 0;border-top:1px solid var(--border);font-size:14px;text-decoration:none}
+.story-photo{margin:0;min-width:0}.story-photo img{display:block;width:100%;height:300px;object-fit:cover;border-radius:4px}.story-photo figcaption{font-size:10px;line-height:1.6;color:var(--text-dim);margin-top:8px}.story-photo a{color:inherit}
+.story-exposure{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 32px}.story-exposure details{border:1px solid var(--border);background:var(--surface);border-radius:6px;align-self:start}.story-exposure summary{display:flex;justify-content:space-between;gap:14px;padding:18px;cursor:pointer;font-weight:600;list-style:none}.story-exposure summary::-webkit-details-marker{display:none}.story-exposure details[open] summary span{transform:rotate(45deg)}.story-exposure p{padding:0 18px 18px;margin:0;line-height:1.7;color:var(--text-dim)}
+.story-checklist{border:1px solid var(--border);border-radius:8px;padding:22px;margin:24px 0}.story-checklist legend{font-weight:700;padding:0 8px}.story-checklist>p{font-size:12px;color:var(--text-dim);margin:0 0 16px}.story-checklist label{display:flex;align-items:flex-start;gap:12px;padding:14px 0;cursor:pointer;line-height:1.7}.story-checklist input{flex:none;width:19px;height:19px;margin-top:4px;accent-color:var(--accent)}.story-checklist label:has(input:checked) span{text-decoration:line-through;color:var(--text-dim)}.story-checklist output{display:block;border-top:1px solid var(--border);padding-top:16px;font:12px var(--mono,monospace)}
+.story-exposure summary:focus-visible,.story-jump:focus-visible{outline:2px solid var(--text);outline-offset:4px}
+@media(max-width:700px){.story-feature{grid-template-columns:1fr;gap:20px;padding:22px 0}.story-photo img{height:220px}.story-exposure{grid-template-columns:1fr}.story-opening h2{font-size:30px}.story-checklist{padding:16px}}

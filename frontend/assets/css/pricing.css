@@ -19,6 +19,15 @@
 .international-checkout a[aria-disabled="true"] { opacity: .6; cursor: default; }
 .signin-recovery { margin: 12px 0 20px; }
 .signin-recovery p { margin-bottom: 12px; line-height: 1.6; }
+/* Keep the provider's recognizable colors in both site themes. */
+.plan .btn[data-buy-paypal] { background: #ffc439; color: #003087; border-color: #ffc439; font-weight: 750; }
+.plan .btn[data-buy-paypal]:hover:not(:disabled) { background: #f2ba36; border-color: #f2ba36; color: #003087; }
+.plan .btn[data-buy-paypal]:focus-visible { outline: 3px solid #0070e0; outline-offset: 4px; }
+.plan .btn[data-buy-paypal]:disabled { background: #ffc439; color: #003087; opacity: .55; cursor: not-allowed; }
+/* Match PayPal's standard gold checkout button: "Pay with" + the PayPal wordmark. */
+.plan .paypal-btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 20px; border-radius: 6px; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 1.05rem; font-weight: 500; letter-spacing: 0; box-shadow: none; }
+.plan .paypal-btn .paypal-btn__label { color: #003087; line-height: 1; }
+.plan .paypal-btn .paypal-btn__logo { display: block; height: 24px; width: auto; }
 .plans { align-items: stretch; }
 .plan { padding: 24px; transition: border-color 0.16s ease, box-shadow 0.16s ease; }
 .plan.featured {

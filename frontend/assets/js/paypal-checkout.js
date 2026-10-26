@@ -12,14 +12,13 @@
   const message = (text) => { document.querySelector("#paypalStatus").textContent = text; };
   const update = () => {
     button().disabled = busy || !available || !A?.enabled;
-    document.querySelector("#checkPayPal").disabled = busy || !A?.state().user;
   };
 
   async function post(path, body) {
     const controller = new AbortController();
     let timer;
     const timeout = new Promise((_, reject) => {
-      timer = setTimeout(() => { controller.abort(); reject(new Error("Payment confirmation is taking too long. Check payment again; do not pay twice.")); }, 30000);
+      timer = setTimeout(() => { controller.abort(); reject(new Error("PayPal is taking too long. Refresh this page to check again; do not pay twice.")); }, 30000);
     });
     try {
       return await Promise.race([(async () => {
@@ -73,7 +72,7 @@
     const saved = read(savedKey);
     const query = new URLSearchParams(window.location.search);
     const orderId = query.get("paypal") === "return" ? query.get("token") : saved?.uid === uid ? saved.order_id : null;
-    if (!uid) { message("Sign in to the account used for checkout, then select Check PayPal payment."); return; }
+    if (!uid) { message("Sign in to the account used for checkout to confirm your PayPal payment."); return; }
     if (!orderId) { message("No PayPal checkout found in this tab. If you already paid, contact support with your receipt."); return; }
     busy = true;
     update();
@@ -90,17 +89,16 @@
         await A.refreshAccount();
       } else {
         save(savedKey, { uid, order_id: orderId });
-        message("PayPal has not confirmed a completed payment yet. Check again in a moment. If you paid, do not pay again.");
+        message("PayPal has not confirmed a completed payment yet. Refresh this page in a moment. If you paid, do not pay again.");
       }
     } catch (error) {
-      if (A.state().user?.uid === uid) message(A.friendly(error) + " If you already paid, check again; do not pay twice.");
+      if (A.state().user?.uid === uid) message(A.friendly(error) + " If you already paid, refresh this page to check again; do not pay twice.");
     } finally { busy = false; update(); }
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
     if (!button()) return;
     button().addEventListener("click", buy);
-    document.querySelector("#checkPayPal").addEventListener("click", check);
     if (!A) { message("Sign-in is unavailable."); return; }
     await A.ready;
     try {
@@ -108,7 +106,7 @@
       if (response.ok) available = !!(await response.json()).paypal_payments?.enabled;
     } catch {}
     const returned = new URLSearchParams(window.location.search).get("paypal");
-    message(returned === "cancel" ? "PayPal checkout was cancelled. If you already paid, check payment below."
+    message(returned === "cancel" ? "PayPal checkout was cancelled. You can try again."
       : available ? "One-time US$3.99 payment through PayPal. Sign in before checkout."
       : "PayPal checkout is temporarily unavailable.");
     function onState() {
@@ -125,6 +123,6 @@
     }
     A.onChange(onState);
     onState();
-    if (returned === "return" && !A.state().user) message("Sign in to the account used for checkout, then select Check PayPal payment.");
+    if (returned === "return" && !A.state().user) message("Sign in to the account used for checkout to confirm your PayPal payment.");
   });
 })();

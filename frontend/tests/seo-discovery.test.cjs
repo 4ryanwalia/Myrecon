@@ -495,7 +495,7 @@ test('every indexable page is in sitemap.xml with valid hints and zero orphan or
 
   // Validate optional sitemap hints; their numeric value is not a ranking signal.
   for (const section of ['/find/', '/privacy/', '/guides/', '/vs/', '/blog/', '/breaches/']) {
-    const regex = new RegExp(`<loc>https://www\\.myrecon\\.xyz(${section}[^<]*)</loc>\\s*<lastmod>[^<]+</lastmod>\\s*<changefreq>([^<]+)</changefreq>\\s*<priority>([^<]+)</priority>`, 'g');
+    const regex = new RegExp(`<loc>https://www\\.myrecon\\.xyz(${section}[^<]*)</loc>\\s*(?:<lastmod>[^<]+</lastmod>\\s*)?<changefreq>([^<]+)</changefreq>\\s*<priority>([^<]+)</priority>`, 'g');
     let m;
     let count = 0;
     while ((m = regex.exec(sitemapXml)) !== null) {

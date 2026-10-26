@@ -47,15 +47,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
-  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
-  <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
+  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
+  <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
+  <link rel="stylesheet" href="/assets/optimized/css/breaches.b2bc9c9f5dba.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts","description":"LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"articleSection":"Case Files","about":{"@type":"Thing","name":"LinkedIn data breach"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html","wordCount":949}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"LinkedIn data breach","item":"https://www.myrecon.xyz/breaches/case-files/linkedin-2012.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many LinkedIn accounts were breached?","acceptedAnswer":{"@type":"Answer","text":"Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale."}},{"@type":"Question","name":"What is an unsalted SHA-1 hash, and why was it a problem?","acceptedAnswer":{"@type":"Answer","text":"SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords, modern hardware tests billions of candidates per second. \"Unsalted\" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless."}},{"@type":"Question","name":"Was the 2021 \"700 million LinkedIn records\" leak the same thing?","acceptedAnswer":{"@type":"Answer","text":"No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event, no security control was bypassed, which is what makes scraping so hard to prevent."}},{"@type":"Question","name":"Did the LinkedIn breach cause other breaches?","acceptedAnswer":{"@type":"Answer","text":"Directly. A Dropbox employee reused their LinkedIn password on a corporate account, which led to the theft of 68 million Dropbox credentials. Mark Zuckerberg's Twitter and Pinterest accounts were taken over in 2016 using a password from the LinkedIn set. Reuse is what turns one company's failure into everyone's."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
-</head>
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+<link rel="stylesheet" href="/assets/optimized/css/article-story.9be12881931d.css">
+<link rel="stylesheet" href="/assets/optimized/css/android-promo.05996c4d5089.css">
+<link rel="stylesheet" href="/assets/optimized/css/story-experience.9804136ec7b9.css"></head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav">
@@ -66,7 +68,7 @@
       <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
     </div>
   </header>
-  <main id="main" class="container">
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container">
     <article class="article breach-article cf-article">
       <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
         <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <a href="/breaches/case-files/">Case Files</a> <span aria-hidden="true">/</span> <span aria-current="page">LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</span>
@@ -78,7 +80,7 @@
           <h1>LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>LinkedIn data breach</h2><p>LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1579869847557-1f67382cc158?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A phone displaying social media apps on a wooden table" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68" target="_blank" rel="noopener">dole777 / Unsplash</a> · Social accounts · context photograph, not incident evidence</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>165 million accounts (117 million with passwords)</dd></div>
@@ -90,7 +92,7 @@
       </dl>
       <p class="cf-exposed"><b>What was exposed:</b> Email addresses · Unsalted SHA-1 password hashes</p>
 
-      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#cfEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>5 June 2012</summary><p>6.5 million unsalted SHA-1 hashes are posted to a cracking forum.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">02</span>6 June 2012</summary><p>LinkedIn confirms the breach and begins resetting passwords.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">03</span>2012–2013</summary><p>LinkedIn moves to salted hashing and adds optional two-factor authentication.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">04</span>17 May 2016</summary><p>167 million accounts are listed for sale; the true scale becomes clear.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">05</span>June 2016</summary><p>Secondary account takeovers begin, including high-profile social media accounts.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">06</span>October 2016</summary><p>Yevgeniy Nikulin is arrested in Prague at the request of the United States.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li><li><details><summary><span class="timeline-number">07</span>2020</summary><p>Nikulin is convicted of the intrusions at LinkedIn, Dropbox and Formspring and sentenced to 88 months.</p><p class="timeline-source"><a href="#story-sources">Review the case-file sources</a></p></details></li></ol></section>
       <section class="bx-story-section"><h2 id="story">The story behind the breach</h2><p>On 5 June 2012 someone posted a file of 6.5 million password hashes to a Russian password-cracking forum and asked for help with the ones they could not solve. The hashes were unsalted SHA-1. Within days, most of them were cracked, and LinkedIn confirmed the file was its own. It took another four years for anyone to learn that 6.5 million was a fraction of what had been taken.</p></section>
       <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>Never fully detailed publicly; passwords stored as unsalted SHA-1</p></section>
       <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Claims and demands are reported as such; they do not establish every attacker's intention.</p></section>
@@ -150,12 +152,12 @@
 
 <h2>If you had a LinkedIn account before 2012</h2>
 
-<ol class="bx-actions">
-  <li><strong>The password is public.</strong> Assume it was cracked, because it almost certainly was. If any variation of it is still in use, replace it.</li>
-  <li><strong>Look for reuse, not just at LinkedIn.</strong> The value of this file to an attacker is what it opens elsewhere. Work through the accounts that matter, email first, then banking, then anything holding payment details.</li>
-  <li><strong>Turn on two-factor authentication.</strong> It is what makes a leaked password survivable. <a href="/guides/two-factor-authentication.html">The differences between SMS, app codes and security keys</a> matter here.</li>
-  <li><strong>Remember the scraped data is separate.</strong> Your public profile has also been copied wholesale into datasets that are traded openly; nothing about a password change touches that. Decide deliberately what your profile shows.</li>
-</ol></details>
+<fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
+  <label><input type="checkbox"><span><strong>The password is public.</strong> Assume it was cracked, because it almost certainly was. If any variation of it is still in use, replace it.</span></label>
+  <label><input type="checkbox"><span><strong>Look for reuse, not just at LinkedIn.</strong> The value of this file to an attacker is what it opens elsewhere. Work through the accounts that matter, email first, then banking, then anything holding payment details.</span></label>
+  <label><input type="checkbox"><span><strong>Turn on two-factor authentication.</strong> It is what makes a leaked password survivable. <a href="/guides/two-factor-authentication.html">The differences between SMS, app codes and security keys</a> matter here.</span></label>
+  <label><input type="checkbox"><span><strong>Remember the scraped data is separate.</strong> Your public profile has also been copied wholesale into datasets that are traded openly; nothing about a password change touches that. Decide deliberately what your profile shows.</span></label>
+<output aria-live="polite">0 actions completed</output></fieldset></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
            breach unfolded is far likelier to want the check than someone who
@@ -199,7 +201,7 @@
         <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">View closed-testing listing →</a></p>
       </aside>
 
-      <h2>Sources</h2>
+      <h2 id="story-sources">Sources</h2>
       <ul class="cf-sources">
         <li><b>LinkedIn security notices, June 2012 and May 2016</b></li>
         <li><b>US Department of Justice, conviction of Yevgeniy Nikulin, 2020</b></li>
@@ -219,7 +221,7 @@
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/case-files/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
-  </main>
+  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">READ THE FULL STORY</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>Real breaches.<br>Stories worth reading.</h2><p>Discover how major breaches happened, what was exposed and what came next. Turn on a daily story and breach alerts in the app.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Case files</li><li>Daily stories</li><li>Breach alerts</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Story reminders and security alerts are separate opt-ins.</small></div></aside></div></div><!-- app-promo-layout:end -->
   <footer class="site-footer">
   <div class="site-footer__panel">
     <div class="site-footer__top">
@@ -258,10 +260,11 @@
   </div>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=dea8105323"></script>
-  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
-  <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+  <script src="/assets/optimized/js/config.cbb669b0dfd9.js"></script>
+  <script src="/assets/optimized/js/app.82c4e3b35d9f.js"></script>
+  <script src="/assets/optimized/js/breach-check.b26ea28a183c.js"></script>
+  <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
+  <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
+<script src="/assets/optimized/js/article-story.97bcbf6032be.js" defer></script>
 </body>
 </html>
