@@ -79,6 +79,7 @@ try { for (const script of scripts) {
 } } finally {
 fs.writeFileSync(homepagePath, homepageContents);
 }
+require('./enhance-article-promotion');
 require('./canonicalize-links').canonicalizeLinks(ROOT);
 
 const changed = changedHtmlPaths(before, publicHtmlHashes());
