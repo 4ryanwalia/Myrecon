@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<!-- Google AdSense -->
+<meta name="google-adsense-account" content="ca-pub-6109270472398539">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AfD Data Breach: 345,439 Accounts Exposed | MyRecon</title>
+  <meta name="description" content="On 9 September 2026, AfD was breached. 345,439 accounts were exposed, including email addresses, email messages. MyRecon rates it 35/100, moderate.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/breaches/afd.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="AfD Data Breach">
+  <meta property="og:description" content="On 9 September 2026, AfD was breached. 345,439 accounts were exposed, including email addresses, email messages. MyRecon rates it 35/100, moderate.">
+  <meta property="og:url" content="https://www.myrecon.xyz/breaches/afd.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AfD Data Breach">
+  <meta name="twitter:description" content="On 9 September 2026, AfD was breached. 345,439 accounts were exposed, including email addresses, email messages. MyRecon rates it 35/100, moderate.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
+  <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"AfD data breach, 345,439 accounts exposed","description":"On 9 September 2026, AfD was breached. 345,439 accounts were exposed, including email addresses, email messages. MyRecon rates it 35/100, moderate.","datePublished":"2026-10-27","dateModified":"2026-10-27","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/afd.html","image":"https://logos.haveibeenpwned.com/AfD.png"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"AfD","item":"https://www.myrecon.xyz/breaches/afd.html"}]}</script>
+  <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
+<link rel="stylesheet" href="/assets/css/article-story.css">
+<link rel="stylesheet" href="/assets/css/android-promo.css">
+<link rel="stylesheet" href="/assets/css/story-experience.css"></head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container">
+    <article class="article breach-article">
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <span aria-current="page">AfD</span>
+      </nav>
+
+      <header class="bx-head">
+
+        <div>
+          <span class="kicker">2026 · Data breach</span>
+          <h1>AfD</h1>
+          <p class="meta">Breached 9 September 2026 · Published 27 October 2026 · afd.de</p>
+        </div>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">THE HUMAN IMPACT</span><h2>Behind the exposed accounts</h2><p>In September 2026, the German political party Alternative für Deutschland (AfD) suffered a data breach which exposed 345k unique email addresses.</p><a class="story-jump" href="#story">Follow the story <span aria-hidden="true">↓</span></a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+
+      <div class="bx-stats">
+        <div class="bx-stat"><b>345,439</b><span>Accounts exposed</span></div>
+        <div class="bx-stat sev-moderate"><b>35/100</b><span>Moderate severity</span></div>
+        <div class="bx-stat"><b>2</b><span>Types of data</span></div>
+        <div class="bx-stat"><b>Verified</b><span>By HIBP</span></div>
+      </div>
+
+      <p class="lead">On 9 September 2026, AfD was breached. 345,439 accounts were exposed, including email addresses, email messages. MyRecon rates it 35/100, moderate.</p>
+
+      <!-- Above the fold on purpose. Someone arriving from "was my email in
+           the X breach" wants the answer, not a link to it further down. -->
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>Reported breach date</summary><p>2026-09-09</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#AfD" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">02</span>Entry point</summary><p>The published account does not explain the exact way the data was obtained.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#AfD" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">03</span>Discovery and disclosure</summary><p>A separate discovery or company-disclosure date is not established by this feed record.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#AfD" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">04</span>Added to the breach catalogue</summary><p>2026-10-27. This is the catalogue date, not necessarily the disclosure date.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#AfD" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">05</span>Reported outcome</summary><p>345,439 accounts are listed in this breach. This is a count of accounts, not necessarily individual people. The reported exposed data includes Email addresses, Email messages.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#AfD" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li></ol></section>
+      <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;AfD&quot;,&quot;breach_date&quot;:&quot;2026-09-09&quot;}]">
+        <h2>Were you part of this breach?</h2>
+        <label for="bxEmail">Check your email for AfD</label>
+        <div class="bx-check-row">
+          <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@example.com" required aria-describedby="bxEmailNote">
+          <button class="btn btn-sm" type="submit">Check my address</button>
+        </div>
+        <p class="bx-check-note" id="bxEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Provider coverage can be incomplete.</p>
+        <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
+        <noscript><p>Enable JavaScript to check your email here.</p></noscript>
+      </form>
+
+
+      <h2 id="story">The story behind the breach</h2>
+      <div class="bx-source">
+        <p>In September 2026, the German political party Alternative für Deutschland (AfD) suffered a data breach which exposed 345k unique email addresses. The following month, hundreds of gigabytes of data containing hundreds of thousands of emails and attachments was published online, with searchable AI-generated summaries and downloadable original files.</p>
+<p>An analysis of the incident reported that the breach was detected as early as 9 September, with a subsequent intrusion occurring five days later. In its public statement , AfD attributed the breach to an attack on a hosting provider, identified in subsequent reporting as the party-owned Alternita Dienstleistungs GmbH.</p>
+        <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#AfD" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0 licence</a>.</p>
+      </div>
+      <p><a class="btn btn-ghost btn-sm" href="https://www.afd.de/afd-zum-daten-hack-angriff-auf-parteiensystem-und-demokratie/" target="_blank" rel="noopener nofollow">Read the original disclosure ↗</a></p>
+
+      <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>The published account does not explain the exact way the data was obtained.</p></section>
+      <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Reported demands or attempts to sell data describe what happened, rather than prove every attacker's intention.</p></section>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>345,439 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.</p>
+<p>The reported exposed data includes Email addresses, Email messages.</p></section>
+
+      <h2>What was exposed, and why it matters</h2>
+      <div class="story-exposure">
+        <details><summary>Email addresses<span aria-hidden="true">+</span></summary><p>The address becomes a confirmed, active target, expect more phishing, better aimed.</p></details>
+        <details><summary>Email messages<span aria-hidden="true">+</span></summary><p>Adds detail to a profile that can be assembled from several breaches at once.</p></details>
+      </div>
+
+      <h2>What to do if you were in it</h2>
+      <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
+        <label><input type="checkbox"><span>Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this.</span></label>
+      <output aria-live="polite">0 actions completed</output></fieldset>
+
+      <!-- After the advice, never before it. The reader has just been told
+           what to do; this is for the ones who read that list and realised
+           they do not actually know where all their accounts are. -->
+      <aside class="bx-offer">
+        <h3>Not sure where all your accounts are?</h3>
+        <p>Most people have a decade of forgotten signups behind an old address, plus data-broker listings they never created in the first place. We find them by hand, confirm which are genuinely yours, and work through getting them removed.</p>
+        <p class="bx-offer-note">A paid service, and only ever on identifiers you own and can verify.</p>
+        <p><a class="btn btn-sm" href="/contact.html#report">Ask about a personal report →</a></p>
+      </aside>
+
+      <h2>Questions people ask about this breach</h2>
+      <div class="bx-faq">
+        <h3>Was my email address in the AfD breach?</h3>
+        <p>Use the email box on this page. The result applies only to this incident. If the provider does not cover this breach, we say so. A missing match does not prove you were unaffected.</p>
+
+        <h3>What data was leaked in the AfD breach?</h3>
+        <p>email addresses, email messages. Each one is explained above, along with what it means for the person it belongs to.</p>
+
+        <h3>When did it happen, and when did it become public?</h3>
+        <p>The breach is dated 9 September 2026. It was published to Have I Been Pwned on 27 October 2026, a gap of 48 days during which the data was already out.</p>
+
+        <h3>Is the AfD breach real?</h3>
+        <p>Yes. Have I Been Pwned lists it as verified, meaning the data was checked against the source rather than taken on trust.</p>
+
+        <h3>How many people were affected?</h3>
+        <p>345,439 accounts. That is accounts rather than people, one person often has several.</p>
+      </div>
+
+      <!-- After the questions, once the reader is done with this breach. The
+           one thing a page about a past breach cannot do is tell them about
+           the next one. The note keeps the app's two alerts apart, as the app
+           does: only the per-address one sends anything. -->
+      <aside class="bx-offer">
+        <h3>Hear about the next breach</h3>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
+        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dbreach_page%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">View closed-testing listing →</a></p>
+      </aside>
+
+      <h2>Read next</h2>
+      <ul class="bx-related">
+        <li><a href="/guides/how-to-spot-phishing.html">How to spot the phishing that follows a breach</a></li>
+        <li><a href="/guides/check-email-data-breach.html">How to check whether your email is in a breach</a></li>
+      </ul>
+
+
+      <h2>Also in the archive</h2>
+      <ul class="bx-related"><li><a href="/breaches/medela.html">Medela</a>: 423,947 accounts</li><li><a href="/breaches/neogen.html">Neogen</a>: 435,963 accounts</li><li><a href="/breaches/mckesson.html">McKesson</a>: 6,404,340 accounts</li></ul>
+      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
+
+
+      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself, every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
+    </article>
+  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=490b8937e2"></script>
+  <script src="/assets/js/breach-check.js?v=445156aee6"></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+<script src="/assets/js/article-story.js" defer></script>
+</body>
+</html>

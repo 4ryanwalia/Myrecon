@@ -1,8 +1,8 @@
 {
-  "generated": "2026-10-27T06:22:15.415Z",
+  "generated": "2026-10-28T06:54:04.296Z",
   "source": "Have I Been Pwned",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
-  "total_accounts": 5947009160,
+  "total_accounts": 5947354599,
   "breaches": [
     {
       "name": "DoubleCounter",
@@ -64,6 +64,63 @@
         {
           "name": "Usernames",
           "why": "A handle links this account to every other place the same handle is used."
+        }
+      ],
+      "actions": [
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
+    },
+    {
+      "name": "AfD",
+      "title": "AfD",
+      "slug": "afd",
+      "url": "https://www.myrecon.xyz/breaches/afd.html",
+      "domain": "afd.de",
+      "breach_date": "2026-09-09",
+      "added_date": "2026-10-27T07:01:06Z",
+      "accounts": 345439,
+      "data_classes": [
+        "Email addresses",
+        "Email messages"
+      ],
+      "verified": true,
+      "sensitive": true,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/AfD.png",
+      "severity": 35,
+      "band": "Moderate",
+      "data_provider": null,
+      "summary": "In September 2026, the German political party Alternative für Deutschland (AfD) suffered a data breach which exposed 345k unique email addresses. The following month, hundreds of gigabytes of data containing hundreds of thousands of emails and attachments was published online, with searchable AI-generated summaries and downloadable original files. An analysis of the incident reported that the…",
+      "story": {
+        "background": [
+          "In September 2026, the German political party Alternative für Deutschland (AfD) suffered a data breach which exposed 345k unique email addresses. The following month, hundreds of gigabytes of data containing hundreds of thousands of emails and attachments was published online, with searchable AI-generated summaries and downloadable original files.",
+          "An analysis of the incident reported that the breach was detected as early as 9 September, with a subsequent intrusion occurring five days later. In its public statement , AfD attributed the breach to an attack on a hosting provider, identified in subsequent reporting as the party-owned Alternita Dienstleistungs GmbH."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "345,439 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Email messages."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "AfD",
+          "breach_date": "2026-09-09"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Email messages",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
         }
       ],
       "actions": [

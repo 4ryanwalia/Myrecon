@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-10-27",
+  "generated": "2026-10-28",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,6 +14,63 @@
   },
   "count": 10,
   "breaches": [
+    {
+      "name": "AfD",
+      "title": "AfD",
+      "slug": "afd",
+      "url": "https://www.myrecon.xyz/breaches/afd.html",
+      "domain": "afd.de",
+      "breach_date": "2026-09-09",
+      "added_date": "2026-10-27T07:01:06Z",
+      "accounts": 345439,
+      "data_classes": [
+        "Email addresses",
+        "Email messages"
+      ],
+      "verified": true,
+      "sensitive": true,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/AfD.png",
+      "severity": 35,
+      "band": "Moderate",
+      "data_provider": null,
+      "summary": "In September 2026, the German political party Alternative für Deutschland (AfD) suffered a data breach which exposed 345k unique email addresses. The following month, hundreds of gigabytes of data containing hundreds of thousands of emails and attachments was published online, with searchable AI-generated summaries and downloadable original files. An analysis of the incident reported that the…",
+      "story": {
+        "background": [
+          "In September 2026, the German political party Alternative für Deutschland (AfD) suffered a data breach which exposed 345k unique email addresses. The following month, hundreds of gigabytes of data containing hundreds of thousands of emails and attachments was published online, with searchable AI-generated summaries and downloadable original files.",
+          "An analysis of the incident reported that the breach was detected as early as 9 September, with a subsequent intrusion occurring five days later. In its public statement , AfD attributed the breach to an attack on a hosting provider, identified in subsequent reporting as the party-owned Alternita Dienstleistungs GmbH."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "345,439 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Email messages."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "AfD",
+          "breach_date": "2026-09-09"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Email addresses",
+          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        },
+        {
+          "name": "Email messages",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      ],
+      "scale_line": null
+    },
     {
       "name": "AssuranceRetraite",
       "title": "Assurance Retraite",
@@ -790,78 +847,6 @@
         "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
       ],
       "scale_line": null
-    },
-    {
-      "name": "LimeLeads",
-      "title": "LimeLeads",
-      "slug": "limeleads",
-      "url": "https://www.myrecon.xyz/breaches/limeleads.html",
-      "domain": "limeleads.com",
-      "breach_date": "2019-08-01",
-      "added_date": "2026-09-22T08:02:37Z",
-      "accounts": 17838396,
-      "data_classes": [
-        "Email addresses",
-        "Employers",
-        "Geographic locations",
-        "Job titles",
-        "Phone numbers"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/LimeLeads.png",
-      "severity": 64,
-      "band": "Severe",
-      "data_provider": null,
-      "summary": "In 2019, the now-defunct B2B marketing leads database service LimeLeads suffered a data breach due to an exposed, unsecured Elasticsearch server. The incident exposed tens of millions of records of largely corporate contact data containing 17.8M unique email addresses, along with phone numbers, employers, job titles and geographic locations including state, city and postcode.",
-      "story": {
-        "background": [
-          "In 2019, the now-defunct B2B marketing leads database service LimeLeads suffered a data breach due to an exposed, unsecured Elasticsearch server. The incident exposed tens of millions of records of largely corporate contact data containing 17.8M unique email addresses, along with phone numbers, employers, job titles and geographic locations including state, city and postcode."
-        ],
-        "how": [
-          "In 2019, the now-defunct B2B marketing leads database service LimeLeads suffered a data breach due to an exposed, unsecured Elasticsearch server."
-        ],
-        "motive": [],
-        "outcome": [
-          "17,838,396 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Employers, Geographic locations, Job titles, Phone numbers."
-        ],
-        "editorial": []
-      },
-      "check_targets": [
-        {
-          "name": "LimeLeads",
-          "breach_date": "2019-08-01"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Geographic locations",
-          "why": "Where the account was used, which narrows a person down further than most people expect."
-        },
-        {
-          "name": "Employers",
-          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
-        },
-        {
-          "name": "Email addresses",
-          "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
-        },
-        {
-          "name": "Job titles",
-          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
-      ],
-      "scale_line": "That is about 66% of the population of Australia."
     }
   ]
 }
