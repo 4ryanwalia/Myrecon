@@ -313,13 +313,24 @@ function buildSitemap(options = {}) {
   // whole file as changed on every build.
   writeIfChanged('sitemap.xml', xml.replace(/\r\n/g, '\n'));
 
-  // A stable index can accommodate additional sitemaps as the library grows.
-  // Omit lastmod here: a build does not necessarily change the child sitemap.
-  writeIfChanged('sitemap-index.xml',
+  // Both index URLs have been published. Keep the old underscore spelling
+  // current too, since it may still be submitted in search tools.
+  const index =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     `  <sitemap><loc>${SITE}/sitemap.xml</loc></sitemap>\n` +
-    `</sitemapindex>\n`);
+    `</sitemapindex>\n`;
+  writeIfChanged('sitemap-index.xml', index);
+  writeIfChanged('sitemap_index.xml', index);
+
+  // Historical section sitemap URLs may also remain submitted independently.
+  // Derive them from the same canonical inventory so they never advertise
+  // deleted pages, redirects, or obsolete freshness dates.
+  const sections = ['blog', 'breaches', 'find', 'guides', 'privacy', 'vs'];
+  for (const section of sections) {
+    writeIfChanged(`sitemap-${section}.xml`, renderSitemap(entries.filter(e => e.url.startsWith(`/${section}/`))));
+  }
+  writeIfChanged('sitemap-core.xml', renderSitemap(entries.filter(e => !sections.some(section => e.url.startsWith(`/${section}/`)))));
 
   console.log(`[sitemap] ${entries.length} URLs written`);
   if (skipped.length) console.log(`[sitemap] skipped ${skipped.length}: ${skipped.join(", ")}`);

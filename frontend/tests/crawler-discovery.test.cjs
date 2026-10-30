@@ -77,7 +77,7 @@ test('unchanged sitemap rebuild preserves the child and index artifacts', t => {
   write(root, 'index.html', page('/'));
   const options = { root, environment: {}, today, gitDateFor: () => '' };
   buildSitemap(options);
-  const targets = ['sitemap.xml', 'sitemap-index.xml'].map(name => path.join(root, name));
+  const targets = ['sitemap.xml', 'sitemap-index.xml', 'sitemap_index.xml', 'sitemap-core.xml', 'sitemap-blog.xml', 'sitemap-breaches.xml', 'sitemap-find.xml', 'sitemap-guides.xml', 'sitemap-privacy.xml', 'sitemap-vs.xml'].map(name => path.join(root, name));
   for (const target of targets) fs.utimesSync(target, new Date('2020-01-01'), new Date('2020-01-01'));
   const stamps = targets.map(target => fs.statSync(target).mtimeMs);
   buildSitemap(options);
@@ -85,6 +85,26 @@ test('unchanged sitemap rebuild preserves the child and index artifacts', t => {
   const index = fs.readFileSync(targets[1], 'utf8');
   assert.match(index, /<loc>https:\/\/www\.myrecon\.xyz\/sitemap\.xml<\/loc>/);
   assert.ok(!index.includes('<lastmod>'));
+});
+
+test('legacy sitemap URLs are refreshed from the current canonical inventory', t => {
+  const root = fixture(t);
+  write(root, 'index.html', page('/'));
+  write(root, 'blog/article.html', page('/blog/article.html'));
+  write(root, 'blog/old.html', page('/blog/old.html'));
+  write(root, 'find/private.html', page('/find/private.html', '<meta name="robots" content="noindex">'));
+  write(root, 'vercel.json', JSON.stringify({ redirects: [{ source: '/blog/old.html', destination: '/blog/article.html' }] }));
+  write(root, 'sitemap-blog.xml', '<urlset><loc>https://www.myrecon.xyz/blog/old.html</loc></urlset>');
+  write(root, 'sitemap_index.xml', 'stale index');
+  buildSitemap({ root, environment: {}, today, gitDateFor: () => '' });
+  const blog = fs.readFileSync(path.join(root, 'sitemap-blog.xml'), 'utf8');
+  const core = fs.readFileSync(path.join(root, 'sitemap-core.xml'), 'utf8');
+  const find = fs.readFileSync(path.join(root, 'sitemap-find.xml'), 'utf8');
+  assert.match(blog, /\/blog\/article\.html/);
+  assert.doesNotMatch(blog, /old\.html/);
+  assert.doesNotMatch(core, /\/blog\//);
+  assert.doesNotMatch(find, /private\.html/);
+  assert.equal(fs.readFileSync(path.join(root, 'sitemap_index.xml'), 'utf8'), fs.readFileSync(path.join(root, 'sitemap-index.xml'), 'utf8'));
 });
 
 test('llms navigation follows redirects and stays deterministic after article additions', t => {
