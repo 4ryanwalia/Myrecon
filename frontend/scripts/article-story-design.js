@@ -13,7 +13,8 @@ function designArticle(html, route) {
     const source = html.match(/<div class="bx-source">\s*<p>([\s\S]*?)<\/p>/)?.[1] || html.match(/<h2 id="story">[\s\S]*?<\/h2>\s*<p>([\s\S]*?)<\/p>/)?.[1] || '';
     const opening = source.replace(/<[^>]*>/g, '').split(/(?<=\.)\s+/)[0];
     const doubleCounter = route === 'breaches/doublecounter.html';
-    const title = doubleCounter ? 'A server safeguard. An exposed analytics tool.' : 'Behind the exposed accounts';
+    const emailCollection = route === 'breaches/linkedinscrape.html' || route === 'breaches/thepostmillennial.html';
+    const title = doubleCounter ? 'A server safeguard. An exposed analytics tool.' : emailCollection ? 'Behind the collected records' : 'Behind the exposed accounts';
     const intro = doubleCounter ? 'Double Counter helps protect Discord servers. Its breach account points to a vulnerability in Metabase, an analytics tool. The published data connected email addresses with Discord usernames.' : opening;
     const feature = `<section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">THE HUMAN IMPACT</span><h2>${title}</h2><p>${intro}</p><a class="story-jump" href="#story">Follow the story <span aria-hidden="true">↓</span></a></div>${image}</section>`;
     html = html.replace(/(<header class="bx-head">[\s\S]*?<\/header>)/, `$1${feature}`);

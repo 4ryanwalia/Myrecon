@@ -23,13 +23,17 @@ const caseMotiveEvidence = s => motiveEvidence(s) && /ransom demand|demanded.{0,
 function breachStory(b, editorial) {
   const text = plain(b.Description);
   const mechanism = sentences(text).filter(s => /SQL injection|unsecured|unprotected|misconfigur|without authentication|unauthenticated|vulnerab|phishing|social engineering|credential stuffing|stolen credentials|information.steal|malware|scrap(?:ed|ing)|unauthori[sz]ed access|exposed (?:API|database)|compromised (?:credentials|account)/i.test(s));
+  const emailCollection = b.Name === 'LinkedInScrape' || b.Name === 'ThePostMillennial';
+  const count = Number(b.PwnCount || 0).toLocaleString('en-GB');
   return {
     background: paragraphs(text),
     how: mechanism.length ? mechanism : [b.IsStealerLog
       ? "The records came from information-stealing malware on people's devices, rather than a single company database."
       : 'The published account does not explain the exact way the data was obtained.'],
     motive: sentences(text).filter(motiveEvidence).slice(0, 3),
-    outcome: [`${Number(b.PwnCount || 0).toLocaleString('en-GB')} accounts are listed in this breach. This is a count of accounts, not necessarily individual people.`,
+    outcome: [emailCollection
+      ? `${count} email addresses are listed in the collection. This does not establish the number of people or service accounts affected.`
+      : `${count} accounts are listed in this breach. This is a count of accounts, not necessarily individual people.`,
       (b.DataClasses || []).length ? `The reported exposed data includes ${b.DataClasses.join(', ')}.` : 'The source does not list the exposed fields.'],
     editorial: editorial ? paragraphs(editorial) : [],
   };
