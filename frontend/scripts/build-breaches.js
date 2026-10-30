@@ -127,8 +127,8 @@ const DATA_CLASSES = {
   "Phone numbers": { weight: 18, why: "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely." },
   "Dates of birth": { weight: 16, why: "One of the three things call centres ask to verify identity, and it never changes." },
   "Names": { weight: 10, why: "Turns an anonymous address into an identified person, which is what makes targeted phishing possible." },
-  "Email addresses": { weight: 8, why: "The address becomes a confirmed, active target, expect more phishing, better aimed." },
-  "Usernames": { weight: 8, why: "A handle links this account to every other place the same handle is used." },
+  "Email addresses": { weight: 8, why: "An exposed address may be used in phishing attempts. Treat unexpected messages with caution." },
+  "Usernames": { weight: 8, why: "A matching handle can be a lead to other profiles, but does not prove shared ownership." },
   "IP addresses": { weight: 10, why: "Approximate location at the time of use, and a way to correlate accounts across services." },
   "Geographic locations": { weight: 12, why: "Where the account was used, which narrows a person down further than most people expect." },
   "Genders": { weight: 4, why: "Small on its own; useful to anyone assembling a fuller profile." },
@@ -240,7 +240,7 @@ function actions(b) {
   if (has("Physical addresses")) {
     out.push("Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.");
   }
-  out.push("Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this.");
+  out.push("Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly.");
   return out;
 }
 
@@ -546,16 +546,19 @@ function article(b, editorial, siblings) {
   const scale = scaleLine(b.PwnCount);
   const acts = actions(b);
   const year = (b.BreachDate || "").slice(0, 4);
+  const isProfileScrape = b.Name === "LinkedInScrape";
+  const isPostMillennial = b.Name === "ThePostMillennial";
+  const emailCollection = isProfileScrape || isPostMillennial;
 
-  const lead =
-    `On ${prettyDate(b.BreachDate)}, ${b.Title} was breached. ` +
-    `${num(b.PwnCount)} accounts were exposed` +
-    (classes.length
-      ? `, including ${classes.slice(0, 3).map((c) => c.name.toLowerCase()).join(", ")}`
-      : "") +
-    `. MyRecon rates it ${sev.score}/100, ${sev.band.toLowerCase()}.`;
+  const lead = isProfileScrape
+    ? `In 2021, public LinkedIn profile data was scraped and circulated. HIBP lists ${num(b.PwnCount)} unique email addresses in the collection.`
+    : isPostMillennial
+    ? `In May 2024, The Post Millennial was defaced and several datasets circulated. HIBP lists ${num(b.PwnCount)} email addresses across the collection, including mailing lists.`
+    : `On ${prettyDate(b.BreachDate)}, ${b.Title} was breached. ${num(b.PwnCount)} accounts were exposed` +
+      (classes.length ? `, including ${classes.slice(0, 3).map((c) => c.name.toLowerCase()).join(", ")}` : "") +
+      `. MyRecon rates it ${sev.score}/100, ${sev.band.toLowerCase()}.`;
 
-  const phrase = breachPhrase(b.Title);
+  const phrase = isProfileScrape ? "LinkedIn Scraped Data (2021)" : breachPhrase(b.Title);
 
   const crumbs = JSON.stringify({
     "@context": "https://schema.org",
@@ -570,7 +573,7 @@ function article(b, editorial, siblings) {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
-    headline: `${b.Title} data breach, ${num(b.PwnCount)} accounts exposed`,
+    headline: emailCollection ? `${phrase}: ${num(b.PwnCount)} email addresses listed` : `${b.Title} data breach, ${num(b.PwnCount)} accounts exposed`,
     description: lead,
     datePublished: (b.AddedDate || b.BreachDate || "").slice(0, 10),
     dateModified: (b.ModifiedDate || b.AddedDate || "").slice(0, 10),
@@ -597,7 +600,7 @@ function article(b, editorial, siblings) {
 
   return (
     HEAD({
-      title: fitTitle([
+      title: isProfileScrape ? "LinkedIn Public Profile Scrape (2021) | MyRecon" : isPostMillennial ? "The Post Millennial Breach and Mailing Lists | MyRecon" : fitTitle([
         `${phrase}: ${num(b.PwnCount)} Accounts Exposed | MyRecon`,
         `${phrase}: ${num(b.PwnCount)} Accounts Exposed`,
         `${phrase}: ${num(b.PwnCount)} Accounts | MyRecon`,
@@ -626,26 +629,26 @@ function article(b, editorial, siblings) {
       <header class="bx-head">
         ${logo ? `<img class="bx-logo" src="${esc(logo)}" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">` : ""}
         <div>
-          <span class="kicker">${esc(year)} · Data breach</span>
+          <span class="kicker">${esc(year)} · ${isProfileScrape ? "Public data scrape" : "Data breach"}</span>
           <h1>${esc(b.Title)}</h1>
-          <p class="meta">Breached ${esc(prettyDate(b.BreachDate))} · Published ${esc(prettyDate(b.AddedDate))}${b.Domain ? ` · ${esc(b.Domain)}` : ""}</p>
+          <p class="meta">${isProfileScrape ? "Incident date" : "Breached"} ${esc(prettyDate(b.BreachDate))} · Added to HIBP ${esc(prettyDate(b.AddedDate))}${b.Domain ? ` · ${esc(b.Domain)}` : ""}</p>
         </div>
       </header>
 
       <div class="bx-stats">
-        <div class="bx-stat"><b>${num(b.PwnCount)}</b><span>Accounts exposed</span></div>
+        <div class="bx-stat"><b>${num(b.PwnCount)}</b><span>${emailCollection ? "Email addresses listed" : "Accounts exposed"}</span></div>
         <div class="bx-stat ${bandClass(sev.band)}"><b>${sev.score}/100</b><span>${esc(sev.band)} severity</span></div>
         <div class="bx-stat"><b>${classes.length}</b><span>Types of data</span></div>
         <div class="bx-stat"><b>${b.IsVerified ? "Verified" : "Unverified"}</b><span>By HIBP</span></div>
       </div>
 
-      <p class="lead">${esc(lead)}${scale ? " " + esc(scale) : ""}</p>
+      <p class="lead">${esc(lead)}${!emailCollection && scale ? " " + esc(scale) : ""}</p>
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
       <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav>
       <form class="bx-check" data-breach-check data-targets="${esc(JSON.stringify([{name: b.Name, breach_date: b.BreachDate}]))}">
-        <h2>Were you part of this breach?</h2>
+        <h2>Was your email in this ${isProfileScrape ? "collection" : "breach"}?</h2>
         <label for="bxEmail">Check your email for ${esc(b.Title)}</label>
         <div class="bx-check-row">
           <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -661,7 +664,7 @@ ${editorial ? `      <section class="bx-editorial">
         <span class="bx-byline">MyRecon's take</span>
 ${editorial}
       </section>\n` : ""}
-      <h2 id="story">The story behind the breach</h2>
+      <h2 id="story">The story behind the ${isProfileScrape ? "scrape" : "breach"}</h2>
       <div class="bx-source">
         ${storyParagraphs(story.background)}
         <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#${esc(b.Name)}" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>.${b.Attribution ? ` Data provided to HIBP by ${esc(b.Attribution)}.` : ""}</p>
@@ -691,28 +694,24 @@ ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
         <p><a class="btn btn-sm" href="/contact.html#report">Ask about a personal report →</a></p>
       </aside>
 
-      <h2>Questions people ask about this breach</h2>
+      <h2>Questions people ask about this ${isProfileScrape ? "incident" : "breach"}</h2>
       <div class="bx-faq">
-        <h3>Was my email address in the ${esc(b.Title)} breach?</h3>
+        <h3>Was my email address in the ${esc(b.Title)} ${isProfileScrape ? "collection" : "breach"}?</h3>
         <p>Use the email box on this page. The result applies only to this incident. If the provider does not cover this breach, we say so. A missing match does not prove you were unaffected.</p>
 
-        <h3>What data was leaked in the ${esc(b.Title)} breach?</h3>
+        <h3>What data was included in the ${esc(b.Title)} ${isProfileScrape ? "collection" : "breach"}?</h3>
         <p>${classes.length ? esc(classes.map((c) => c.name.toLowerCase()).join(", ")) + "." : "No field list has been published for this breach."} ${classes.length ? "Each one is explained above, along with what it means for the person it belongs to." : ""}</p>
 
-        <h3>When did it happen, and when did it become public?</h3>
-        <p>The breach is dated ${esc(prettyDate(b.BreachDate))}. It was published to Have I Been Pwned on ${esc(prettyDate(b.AddedDate))}${
-          b.BreachDate && b.AddedDate && b.AddedDate.slice(0, 10) > b.BreachDate
-            ? `, a gap of ${Math.round((new Date(b.AddedDate) - new Date(b.BreachDate)) / 86400000)} days during which the data was already out`
-            : ""
-        }.</p>
+        <h3>When did it happen, and when was it added to HIBP?</h3>
+        <p>The ${isProfileScrape ? "incident" : "breach"} is dated ${esc(prettyDate(b.BreachDate))}. It was added to Have I Been Pwned on ${esc(prettyDate(b.AddedDate))}. The catalogue date does not establish when the data first became public.</p>
 
-        <h3>Is the ${esc(b.Title)} breach real?</h3>
+        <h3>Is the ${esc(b.Title)} ${isProfileScrape ? "collection" : "breach"} real?</h3>
         <p>${b.IsVerified
           ? "Yes. Have I Been Pwned lists it as verified, meaning the data was checked against the source rather than taken on trust."
           : "It is listed as unverified. The data exists and has been indexed, but it has not been confirmed against the named source, so treat the origin as unproven."}</p>
 
         <h3>How many people were affected?</h3>
-        <p>${num(b.PwnCount)} accounts.${scale ? " " + esc(scale) : ""} That is accounts rather than people, one person often has several.</p>
+        <p>${num(b.PwnCount)} ${emailCollection ? "email addresses" : "accounts"} are listed. This count does not necessarily equal the number of people affected.</p>
       </div>
 
       <!-- After the questions, once the reader is done with this breach. The
@@ -1065,4 +1064,4 @@ if (require.main === module) main().catch((err) => {
   process.exit(process.env.MYRECON_REQUIRE_FRESH_BREACHES === "1" || !fs.existsSync(path.join(OUT_DIR, "index.html")) ? 1 : 0);
 });
 
-module.exports = { earlierArchiveEntries, index, select };
+module.exports = { article, earlierArchiveEntries, index, select };
