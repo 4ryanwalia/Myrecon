@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-10-30",
+  "generated": "2026-10-31",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -51,13 +51,12 @@
       ],
       "motive": [],
       "outcome": [
-        "125,698,496 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "125,698,496 email addresses are listed in the collection. This does not establish the number of people or service accounts affected.",
         "The reported exposed data includes Education levels, Email addresses, Genders, Geographic locations, Job titles, Names, Social media profiles."
       ],
       "editorial": [
-        "LinkedIn's position was that this was not a breach, and on the narrow question the company is right: nothing was accessed that was not already public on a profile, and no system failed. The record here says the same thing. It is also, for the person in the file, an entirely academic distinction. The profile you made public was made public one reader at a time.",
-        "That is a different thing from 125 million profiles compiled into a single file, sorted by employer and job title, and sold. Aggregation is the step that creates the capability, a recruiter reading your page is the intended use, a targeted phishing campaign against everyone with \"finance\" in their title at one company is what the compiled version enables.",
-        "This is the same argument that runs through the 2021 Facebook scrape and the Clearview AI case file . Public and harmless are not the same word, and scale is what separates them."
+        "Have I Been Pwned describes this collection as scraped public profile data, not a breach of private LinkedIn data. That distinction matters when explaining how the records were obtained, even though their collection and circulation can still create privacy concerns. The profile you made public was made public one reader at a time. That is a different thing from public data collected at scale and circulated.",
+        "HIBP's record describes approximately 400 million records and 125 million unique email addresses; the two counts are not counts of individual people. Aggregated contact and employment details can help make phishing messages more targeted. This is the same argument that runs through the 2021 Facebook scrape and the Clearview AI case file . Public and harmless are not the same word, and scale is what separates them."
       ]
     },
     "check_targets": [
@@ -77,7 +76,7 @@
       },
       {
         "name": "Email addresses",
-        "why": "The address becomes a confirmed, active target, expect more phishing, better aimed."
+        "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
       },
       {
         "name": "Job titles",
@@ -97,7 +96,7 @@
       }
     ],
     "actions": [
-      "Expect better-aimed phishing. A message that already knows your name and where you have an account is the whole point of a breach like this."
+      "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
     ],
     "scale_line": "That is roughly everyone in Japan."
   }
