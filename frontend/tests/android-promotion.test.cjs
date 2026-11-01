@@ -18,5 +18,11 @@ test('promotion survives repeat generation with one banner and page-specific cop
  for(const route of Object.keys(routes)){const file=path.join(tmp,route);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,'<html><head></head><body><main><h1>Original page</h1><p>Original content</p></main></body></html>');}
  const run=()=>execFileSync(process.execPath,[path.join(tmp,'scripts/enhance-article-promotion.js')]);run();run();
  for(const [route,copy] of Object.entries(routes)){const html=fs.readFileSync(path.join(tmp,route),'utf8');assert.equal((html.match(/class="android-promo"/g)||[]).length,1,route);assert.ok(html.includes(copy),route);assert.ok(html.includes('Original content'));assert.ok(html.includes('id=com.Myrecon.osint'));assert.equal((html.match(/class="promo-layout"/g)||[]).length,route==='index.html'?0:1);}
+ const breach=fs.readFileSync(path.join(tmp,'breaches/example.html'),'utf8');
+ const research=fs.readFileSync(path.join(tmp,'blog/example.html'),'utf8');
+ assert.match(breach, /utm_campaign%3Dwebsite_breach/);
+ assert.match(research, /utm_campaign%3Dwebsite_research/);
+ assert.match(research, /unlock requirements are shown in the app/);
+ assert.doesNotMatch(research, /Everything in the app is free for a limited time|DEEP SEARCH INCLUDED/);
  } finally {fs.rmSync(tmp,{recursive:true,force:true});}
 });

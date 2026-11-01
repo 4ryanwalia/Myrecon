@@ -1262,9 +1262,8 @@
   // retry, not a sales line. The app has two alerts and the copy keeps them
   // apart: the new-breach alert compares on the phone and sends nothing;
   // watching an address sends it to LeakCheck.
-  // The link opens the Play custom listing that leads with alerts (Play shows
-  // the main listing until it exists); the UTM tags are for Play Console.
-  const PLAY_ALERTS_URL = "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts"
+  // Open the default Play listing with an attribution tag for this result CTA.
+  const PLAY_ALERTS_URL = "https://play.google.com/store/apps/details?id=com.Myrecon.osint"
     + "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Demail_result%26utm_campaign%3Dbreach_alerts";
   function breachAlertCta(outcome) {
     if (!outcome.found && outcome.state !== "no_match") return "";

@@ -43,12 +43,9 @@ const DATA_DIR = path.join(ROOT, "assets", "data");
 const SITE = "https://www.myrecon.xyz";
 const BASE = "/breaches/case-files";
 
-// The same Play custom listing the breach pages use (it leads with breach
-// alerts), tagged so Play Console can tell case-file installs apart. Play
-// shows the main listing until that custom one exists, and the app reads only
-// `invite_code` from the referrer, so the UTM tags can never count as an invite.
+// Use the default Play listing with a case-file referrer for attribution.
 const PLAY_ALERTS =
-  "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts" +
+  "https://play.google.com/store/apps/details?id=com.Myrecon.osint" +
   "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts";
 
 const esc = (s) =>
@@ -371,9 +368,9 @@ ${c.faq.map((f) => `        <h3>${esc(f.q)}</h3>\n        <p>${f.a}</p>`).join("
            the per-address one sends anything. -->
       <aside class="bx-offer">
         <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. Enable breach alerts in the app to follow new reports.</p>
         <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">View closed-testing listing →</a></p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Android →</a></p>
       </aside>
 
 ${(c.sources || []).length ? `      <h2>Sources</h2>
