@@ -1,16 +1,21 @@
 <!--
 {
-  "title": "How to Find Your Own Old Social Media Accounts | MyRecon",
+  "title": "Find Your Old Accounts: Inbox and Username Walkthrough | MyRecon",
   "headline": "How to Find Your Own Old Social Media Accounts",
-  "description": "Use old inboxes, saved logins and your own usernames to locate forgotten accounts you control. Confirm ownership before changing or closing any profile.",
+  "description": "Find forgotten accounts using inbox searches, saved logins and public username leads. Follow a practical walkthrough with current MyRecon limits.",
   "category": "Self-audit",
   "datePublished": "2026-09-27",
-  "dateModified": "2026-09-27"
+  "dateModified": "2026-11-01",
+  "faq": [
+    {"question": "Can MyRecon find every account linked to my email?", "answer": "No. Email findings cover supported sources, not every registration. Review your own inbox, saved logins and connected sign-ins for accounts without public profiles."},
+    {"question": "Does removing Sign in with Google delete the old account?", "answer": "No. Removing the connection stops that sign-in link; it does not delete your data at the other service. Review recovery and deletion with that service first."},
+    {"question": "Can I find forgotten accounts without paying?", "answer": "You can review your own records for free. MyRecon offers guest Quick previews and a signed-in daily Standard allowance; email findings are visible without a paid plan. Source and account-access limits still apply."}
+  ]
 }
 -->
-<p class="lead">Forgotten profiles often come from old email addresses, school-era handles or services you used once and never revisited. A careful self-audit can help you find accounts you control and decide whether to secure, update or close them.</p>
+<p class="lead">Start with your password manager, signup messages and remembered usernames. MyRecon can help locate public profile candidates for an old handle. Confirm control through each provider before treating a candidate as your account, changing it or closing it.</p>
 
-<h2>Start with records only you can access</h2>
+<h2 id="records-first">Start with account records you already have</h2>
 <ol>
   <li><strong>Check your password manager and browser logins.</strong> Search for old services and review entries you no longer recognise.</li>
   <li><strong>Search each of your inboxes.</strong> Terms like “welcome,” “confirm,” “verify,” “receipt” and “reset your password” can uncover sign-ups.</li>
@@ -19,12 +24,50 @@
   <li><strong>Review connected sign-ins.</strong> The account settings for an email or social login may list services that use it.</li>
 </ol>
 
+<h2 id="inbox-demo">Practical demonstration: repeat these searches in your own inbox</h2>
+<p>In Gmail, try the queries below one at a time. They use Google's documented <a href="https://support.google.com/mail/answer/7190?hl=en">search operators</a>. Run them inside your own mailbox; MyRecon does not need inbox access. These are reproducible exercises, not a claim that we searched a reader's private messages.</p>
+<table>
+  <caption>Queries to uncover signup and billing records. A matching message does not prove an account is still active.</caption>
+  <thead><tr><th scope="col">Paste into Gmail search</th><th scope="col">What to review</th><th scope="col">Next step</th></tr></thead>
+  <tbody>
+    <tr><th scope="row"><code>{subject:welcome subject:verify subject:confirm}</code></th><td>Possible signup or verification messages.</td><td>Record the service and which of your addresses received the message.</td></tr>
+    <tr><th scope="row"><code>{subject:receipt subject:subscription subject:invoice} older_than:1y</code></th><td>Older billing records and forgotten services.</td><td>Check current billing inside the provider before deleting anything.</td></tr>
+    <tr><th scope="row"><code>"your_old_handle"</code></th><td>Replace the example with a handle you remember.</td><td>Keep the relevant service name and source message in your private notes.</td></tr>
+  </tbody>
+</table>
+<p>False matches are normal: “confirm” could refer to an order, and a receipt can survive after an account closes. Deleted messages, inaccessible old inboxes and services without signup emails leave gaps. Other mail providers have different syntax. Open a service directly instead of using an old email's sign-in link.</p>
+<p>Google documents how to <a href="https://support.google.com/accounts/answer/13533235?hl=en">review third-party connections</a>. Removing Sign in with Google does not delete the other service's data. Check how you will access that service before unlinking it.</p>
+
+<h2 id="username-demo">Real public example: a handle match still needs a source check</h2>
+<p>In MyRecon's <a href="/data/username-benchmark.json">recorded 30 September 2026 case</a>, the publisher's handle <code>4ryanwalia</code> produced a GitHub account object, a Clubhouse HTTP 404 and an unresolved Reddit challenge. The first supported profile existence; the second described an absent path at check time; the challenge established neither existence nor absence. None authenticated ownership.</p>
+<ol>
+  <li>Open the <a href="/username-checker.html">browser username walkthrough</a> and enter one of your remembered handles.</li>
+  <li>Review available result cards and open relevant original sources. Record unknown or blocked checks separately.</li>
+  <li>Compare candidates with saved logins, signup messages and links you published yourself.</li>
+  <li>Use a recognized session or the official provider's recovery flow to confirm your own account. If control remains uncertain, leave ownership unconfirmed.</li>
+</ol>
+<p>MyRecon is useful when you remember a handle but cannot recall which public communities used it. For a private shopping account, a renamed profile or an unsupported service, your own records may be more useful than a public scan.</p>
+
+<h2 id="access-limits">Current MyRecon access limits</h2>
+<p>Reviewed 1 November 2026: guests get 5 Quick scans per day across 100 platforms, with only the first 2 result cards visible. Signed-in free accounts get 5 Standard scans daily across 500+ platforms with complete results; Quick and Standard share the account allowance. Resets are midnight UTC (05:30 India).</p>
+<p>Optional paid features include unlimited Standard scans, Deep Search and 10 Extended scans over a separate 3,000+ catalogue. See <a href="/pricing">current pricing</a>. Email findings are visible without sign-in or payment and do not use the username allowance. A breach result can remind you of a service, but it cannot prove that your account is still open; use the <a href="/guides/check-email-data-breach.html">email-breach walkthrough</a> to interpret source status.</p>
+
 <h2>Use a public search as a lead, not a verdict</h2>
 <p>You can search your own handle in a search engine or use MyRecon's <a href="/#tool">public username search</a> to see which profile pages appear to use it. A username is not unique proof of identity: an unrelated person may have the same string. A useful lead still needs confirmation that you control the account.</p>
 <p>Confirm ownership by signing in or using the service's official account recovery flow. Do not try guessed passwords, use another person's recovery details or ask a tool to reveal private account information. If you cannot establish control, leave the account alone.</p>
 
-<h2>Decide what to do with each account</h2>
+<h2>Turn each confirmed account into one action</h2>
+<p>Keep a small private log: service, source URL, address or handle used, evidence of control, desired action and follow-up date. Mark candidates as unconfirmed, control confirmed, action requested or action verified. A larger match count is less useful than a completed security or privacy change.</p>
 <p>For each confirmed account, note whether you still use it, whether it contains information you need, and whether another service depends on it. Secure active accounts with unique passwords, current recovery methods and two-factor authentication. For accounts you no longer need, first export data, cancel billing and move linked sign-ins before requesting deletion.</p>
 <p>Keep a private record of the request date and confirmation. Search-engine caches and copies on other sites may need separate removal requests after the source profile is closed. The <a href="/blog/delete-old-online-accounts.html">account deletion checklist</a> explains that sequence.</p>
 
 <div class="callout"><p><strong>Keep the scope personal.</strong> These steps are for accounts you own or are authorised to manage. A matching handle does not make an account yours, and public-profile search cannot identify who operates a profile with certainty.</p></div>
+
+<h2>Frequently asked questions</h2>
+<h3>Can MyRecon find every account linked to my email?</h3>
+<p>No. Email findings cover supported sources, not every registration. Review your own inbox, saved logins and connected sign-ins for accounts without public profiles.</p>
+<h3>Does removing Sign in with Google delete the old account?</h3>
+<p>No. Removing the connection stops that sign-in link; it does not delete your data at the other service. Review recovery and deletion with that service first.</p>
+<h3>Can I find forgotten accounts without paying?</h3>
+<p>You can review your own records for free. MyRecon offers guest Quick previews and a signed-in daily Standard allowance; email findings are visible without a paid plan. Source and account-access limits still apply.</p>
+<p>Continue with the <a href="/digital-footprint-checker.html">digital-footprint cleanup workflow</a>. MyRecon publishes this guide. Public examples come from the linked dated measurement; inbox exercises use official documentation. No private inbox search, recovery or deletion is claimed as completed here. Updated 1 November 2026.</p>

@@ -16,8 +16,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Check If Your Email Was in a Data Breach | MyRecon</title>
-  <meta name="description" content="Learn what a data breach is, how to check whether your email address was exposed, and the exact steps to protect your accounts if it turns out that it was.">
+  <title>Email Breach Check: Real Demo, Results &amp; Limits | MyRecon</title>
+  <meta name="description" content="Check email breach exposure with a real incomplete-result demonstration. Learn current MyRecon access limits, source statuses and account-security next steps.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/guides/check-email-data-breach.html">
@@ -25,8 +25,8 @@
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
-  <meta property="og:title" content="How to Check If Your Email Was in a Data Breach">
-  <meta property="og:description" content="What a breach is, how to check your exposure safely, and what to do if your email turns up in one.">
+  <meta property="og:title" content="Email Breach Check: Real Demo, Results &amp; Limits | MyRecon">
+  <meta property="og:description" content="Check email breach exposure with a real incomplete-result demonstration. Learn current MyRecon access limits, source statuses and account-security next steps.">
   <meta property="og:url" content="https://www.myrecon.xyz/guides/check-email-data-breach.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -34,8 +34,8 @@
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="How to Check If Your Email Was in a Data Breach">
-  <meta name="twitter:description" content="What a breach is, how to check your exposure safely, and what to do if your email turns up in one.">
+  <meta name="twitter:title" content="Email Breach Check: Real Demo, Results &amp; Limits | MyRecon">
+  <meta name="twitter:description" content="Check email breach exposure with a real incomplete-result demonstration. Learn current MyRecon access limits, source statuses and account-security next steps.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
@@ -52,10 +52,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
   <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"How to Check If Your Email Was in a Data Breach","description":"What a data breach is, how to check whether your email was exposed, and what to do about it.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","mainEntityOfPage":"https://www.myrecon.xyz/guides/check-email-data-breach.html"}
-  </script>
-  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"How to Check If Your Email Was in a Data Breach","item":"https://www.myrecon.xyz/guides/check-email-data-breach.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Check your email for breach exposure and read the result", "description": "Check email breach exposure with a real incomplete-result demonstration. Learn current MyRecon access limits, source statuses and account-security next steps.", "author": {"@type": "Organization", "name": "MyRecon"}, "publisher": {"@type": "Organization", "name": "MyRecon"}, "datePublished": "2026-07-12", "mainEntityOfPage": "https://www.myrecon.xyz/guides/check-email-data-breach.html", "dateModified": "2026-11-01"}</script>
+  <script type="application/ld+json">{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MyRecon", "item": "https://www.myrecon.xyz/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://www.myrecon.xyz/guides/"}, {"@type": "ListItem", "position": 3, "name": "How to Check If Your Email Was in a Data Breach", "item": "https://www.myrecon.xyz/guides/check-email-data-breach.html"}], "@context": "https://schema.org"}</script>
   <link rel="stylesheet" href="/assets/optimized/css/content-app-promo.04abf7e3cbae.css">
   <link rel="stylesheet" href="/assets/optimized/css/content-app-context.b4c142ec5e5a.css">
   <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
@@ -64,7 +62,9 @@
   <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
 <link rel="stylesheet" href="/assets/optimized/css/article-story.9be12881931d.css">
 <link rel="stylesheet" href="/assets/optimized/css/android-promo.05996c4d5089.css">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is MyRecon's email breach check free?", "acceptedAnswer": {"@type": "Answer", "text": "Returned email findings are visible without sign-in or payment and do not spend the username scan allowance. Provider availability and rate limits still apply."}}, {"@type": "Question", "name": "Does zero named breaches mean my email is safe?", "acceptedAnswer": {"@type": "Answer", "text": "No. Check coverage and source status first. Even completed checks only cover the records those sources can return at that time."}}, {"@type": "Question", "name": "Does a breach match mean someone can access my mailbox now?", "acceptedAnswer": {"@type": "Answer", "text": "No. It reports source-linked historical exposure, not proof of current mailbox access. Review affected credentials and the provider's security information."}}]}</script>
+<link rel="stylesheet" href="/assets/optimized/css/article-story.9be12881931d.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -79,98 +79,74 @@
 
   <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container"><nav class="search-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="https://www.myrecon.xyz/">MyRecon</a></li><li><a href="https://www.myrecon.xyz/guides/">Guides</a></li><li><span aria-current="page">How to Check If Your Email Was in a Data Breach</span></li></ol></nav>
     <article class="article">
-      <span class="kicker">Email intelligence</span>
-      <h1>How to Check If Your Email Was in a Data Breach</h1>
+  <span class="kicker">Email intelligence</span>
+  <h1>Check your email for breach exposure and read the result</h1>
+  <p class="meta">Updated 1 November 2026 · MyRecon editorial</p>
+  <p class="lead">Use an address you control to check supported breach sources. Review the named incidents, exposed data categories and source status before choosing an account-security action. An email match does not prove your mailbox is currently compromised, and no returned match does not prove the address has never leaked.</p>
+  <p><a class="btn btn-primary" href="/#tool=email">Open the email breach checker</a></p>
 
-      <p class="meta">Updated 12 July 2026 · 7 min read</p>
+  <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="email-walkthrough">Run an email breach check step by step</h2>
+  <ol>
+    <li><strong>Select Email in the tool.</strong> Enter an address you own or are authorized to check. Do not put a password in the email field.</li>
+    <li><strong>Choose the scope.</strong> Leave “Check linked accounts” off for this breach-focused walkthrough. Turning it on sends the address to additional responding services for account signals; it is a separate check.</li>
+    <li><strong>Press Investigate.</strong> Read source status as well as returned findings. A rate limit, disabled source or failed request leaves a coverage gap.</li>
+    <li><strong>Review any named incident.</strong> Record the provider, breach name, incident date, reported data categories and review date. Compilations and historical associations require context.</li>
+    <li><strong>Open the affected service directly.</strong> Confirm your account, inspect security settings and follow its official incident advice. Keep a lookup result separate from proof of a live account takeover.</li>
+  </ol>
+  <p>MyRecon is useful when you want supported email findings and source-status context alongside a broader <a href="/digital-footprint-checker.html">footprint review</a>. For provider-specific breach details or verified-owner views, consult the source service itself. Public username discovery is a separate workflow in the <a href="/username-checker.html">browser username guide</a>.</p>
 
-      <p class="lead">If you have used the same email address for more than a year or two, the odds are high that it appears in at least one data breach. That is not a reason to panic, but it is a reason to check, and to know what to do next.</p>
+  <h2 id="observed-demo">Real demonstration: zero findings with incomplete coverage</h2>
+  <p>On 1 November 2026 we ran the live browser Email lookup without signing in, using <code>myrecon-demo-20261101@example.com</code> and leaving linked-account checks off. The address uses an <a href="https://www.iana.org/help/example-domains">IANA example domain</a>; this demonstrates the interface without disclosing a reader's real mailbox.</p>
+  <div class="table-wrap" tabindex="0" role="region" aria-label="Observed email lookup source status"><table class="data-table">
+    <caption>Recorded interface observations from this demonstration, not a clean bill of health or a report about a real mailbox.</caption>
+    <thead><tr><th scope="col">Displayed item</th><th scope="col">Observed result</th><th scope="col">Interpretation</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Named breaches</th><td>0 returned</td><td>No named breach evidence was returned in this lookup.</td></tr>
+      <tr><th scope="row">Breach coverage</th><td>1 of 3 attempted source checks completed</td><td>The breach check was incomplete.</td></tr>
+      <tr><th scope="row">Source statuses</th><td>LeakCheck unavailable; XposedOrNot analytics checked; fallback unavailable</td><td>Unavailable sources could not establish an absence of exposure.</td></tr>
+      <tr><th scope="row">Exposure score</th><td>Unavailable until all attempted sources respond</td><td>The tool withheld a misleading clean-looking score.</td></tr>
+    </tbody>
+  </table></div>
+  <p><a href="/downloads/email-breach-demo-2026-11-01.json" download>Download the recorded example report (JSON)</a>. A later run may have different source availability. This is an observed incomplete-result demonstration; it does not claim a real breached-account match. To practice with your own address, use the steps above and record the statuses actually returned.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>What a data breach actually is</h2>
-      <p>A data breach happens when information a company stored about its users is exposed to people who were not supposed to see it. This can be the result of hacking, a misconfigured database left open on the internet, a malicious insider, or a third-party supplier being compromised. When it happens, the stolen data, often millions of records, is frequently traded or dumped publicly.</p>
-      <p>The records usually contain an email address as the primary identifier, alongside whatever else the service held: a password (sometimes as plain text, sometimes hashed), a username, a phone number, an IP address, a date of birth, or a physical address. Once a dataset like this is circulating, it does not disappear, copies persist indefinitely.</p>
+  <h2 id="access-limits">Current access and source limits</h2>
+  <p>Reviewed 1 November 2026: email lookup results are visible without sign-in or a paid plan and do not spend your username scan allowance. Source rate limits and outages still apply. Optional integrations depend on configuration and provider access; buying a username scan pack does not guarantee that every email source will respond. See <a href="/pricing">current product access</a>.</p>
+  <p>MyRecon's email workflow uses supported sources including LeakCheck and XposedOrNot. <a href="https://haveibeenpwned.com/FAQs">Have I Been Pwned</a> is a separate service to consult directly, not a promise that MyRecon uses its paid email API. Its FAQ explains that sensitive breaches require verified-owner access. <a href="https://xposedornot.com/faq">XposedOrNot's FAQ</a> describes its own coverage and privacy controls. Different sources can return different sets of records.</p>
+  <p>An email lookup sends the address to the providers needed for the chosen checks. It is different from a password-range lookup that sends a hash prefix. Read <a href="/privacy.html">MyRecon's privacy policy</a> before submitting an identifier. A public breach catalogue lists incidents; browsing that catalogue does not check whether your individual address appears.</p>
 
-      <h2>Why it matters even if "it's just an old account"</h2>
-      <p>The single biggest risk from breaches is <strong>password reuse</strong>. If your email and password leaked from a forum you forgot about in 2016, and you used that same password on your email or bank, attackers can try those exact credentials everywhere else. This automated technique is called <strong>credential stuffing</strong>, and it works because most people reuse passwords.</p>
-      <p>Beyond passwords, exposed data fuels targeted phishing. An attacker who knows your name, the services you use, and your phone number can craft a message that looks convincingly real. The more of your data is out there, the easier you are to impersonate or deceive.</p>
+  <h2 id="interpret-results">Read the result before choosing an action</h2>
+  <ul>
+    <li><strong>Named breach:</strong> the source reports an association with that dataset. Review its provenance and data categories. Historical exposure is not proof that an account is still open or that your current password leaked.</li>
+    <li><strong>No match after completed checks:</strong> no match was returned by the checked sources at that time. Unpublished, unindexed, restricted or privacy-suppressed records can be missing.</li>
+    <li><strong>Partial, unavailable or rate-limited:</strong> retain completed findings, but record the failed checks separately. Retry later or review a provider directly; do not label the address safe.</li>
+    <li><strong>Linked-service or registration signal:</strong> this is a different evidence type. A historical service name, a public profile and a registration response do not all establish the same thing or authenticate ownership.</li>
+  </ul>
+  <p>Dates describe different events: the incident, public disclosure and addition to a provider's catalogue can happen at different times. Prioritize the exposed fields and whether you still reuse an affected credential. An old password still in use can matter more than a newer email-only record.</p>
 
-      <h2>How to check your exposure</h2>
-      <p>You can check whether your email appears in known breaches using free, reputable breach-notification services. MyRecon's <a href="/#tool">email tool</a> queries public breach databases and shows you how many breaches your address appears in, along with the categories of data that were exposed (passwords, phone numbers, and so on).</p>
-      <div class="callout">
-        <p><strong>Do this safely.</strong> Only ever check <em>your own</em> email addresses, and only use services that look up an address against known breaches, never a site that asks you to enter your current password to "test" it. A legitimate checker never needs your password.</p>
-      </div>
-      <p>When you run a check, focus on two things: how recent the breaches are, and whether any of them exposed passwords. A recent breach that leaked passwords is far more urgent than a decade-old one that only exposed email addresses.</p>
+  <h2 id="security-actions">What to do with a supported breach finding</h2>
+  <ol>
+    <li><strong>Review the provider's incident advice.</strong> Navigate to the official service independently. Be cautious of messages demanding payment or a login through an unfamiliar link.</li>
+    <li><strong>Replace affected reused passwords.</strong> Use unique passwords on the affected service and elsewhere you reused that credential. A reported password data category does not reveal your actual current password.</li>
+    <li><strong>Review stronger sign-in options.</strong> Enable available multifactor authentication or passkeys. Inspect active sessions, recovery details and forwarding rules where relevant.</li>
+    <li><strong>Match the response to the exposed information.</strong> Contact details call for phishing awareness; other sensitive fields may require the affected provider's specific response process.</li>
+    <li><strong>Record the action and follow up.</strong> Note what changed and when. A breach record may remain after you secure or close an account.</li>
+  </ol>
+  <p>A separate password-exposure check answers whether that password has appeared in supported leak data; it does not identify which email or service used it. Do not share your password in this guide, a report or an email lookup.</p>
 
-      <h2>What to do if your email was breached</h2>
-      <ol>
-        <li><strong>Change the password on the breached service</strong>: and on any other account where you used the same or a similar password. This is the most important step.</li>
-        <li><strong>Use a password manager</strong> so every account gets a long, unique password you never have to remember. This single change eliminates the credential-stuffing risk entirely.</li>
-        <li><strong>Turn on two-factor authentication (2FA)</strong> everywhere it is offered, especially on your email, banking, and primary social accounts. Prefer an authenticator app or a hardware key over SMS.</li>
-        <li><strong>Watch for phishing</strong> in the weeks after a breach. Be sceptical of unexpected messages that reference real details about you or create urgency.</li>
-        <li><strong>Consider a fresh email</strong> for sensitive accounts (banking, government) that is different from the one you hand out publicly.</li>
-      </ol>
+  <h2 id="faq">Email breach questions</h2>
+  <h3>Is MyRecon's email breach check free?</h3>
+  <p>Returned email findings are visible without sign-in or payment and do not spend the username scan allowance. Provider availability and rate limits still apply.</p>
+  <h3>Does zero named breaches mean my email is safe?</h3>
+  <p>No. Check coverage and source status first. Even completed checks only cover the records those sources can return at that time.</p>
+  <h3>Does a breach match mean someone can access my mailbox now?</h3>
+  <p>No. It reports source-linked historical exposure, not proof of current mailbox access. Review affected credentials and the provider's security information.</p>
 
-      <h2>Reading a breach result properly</h2>
-      <p>A breach checker returns a list of names and dates, and most people stop at the count. The count is the least useful part. What matters is <em>which fields</em> were exposed, because that determines what an attacker can actually do.</p>
-      <p>Sorted by how much trouble each one causes:</p>
-      <ul>
-        <li><strong>Plaintext passwords or weak hashes.</strong> The worst case. Anything hashed with MD5 or unsalted SHA-1 should be treated as plaintext, those are cracked in bulk. If a password appears here, every account where you reused it is compromised, not just the breached one.</li>
-        <li><strong>Security questions and answers.</strong> Underrated and often ignored. Your mother's maiden name does not change after a breach, and the same answers are used across many services. Where you cannot remove them, put random text in the answer field and store it in your password manager.</li>
-        <li><strong>Phone numbers.</strong> The route to SIM-swap attacks, which defeat SMS-based two-factor authentication. A breach exposing your number alongside your email is a reason to move off SMS codes for anything financial.</li>
-        <li><strong>Physical address, date of birth, government identifiers.</strong> Cannot be rotated. These feed identity fraud and, combined across several breaches, are enough to pass many "verify your identity" phone checks.</li>
-        <li><strong>Email address only.</strong> The mildest outcome. It means more targeted phishing, not account compromise.</li>
-      </ul>
-      <p>Dates matter too. A breach from 2013 that exposed a password you have since changed is history. One from last year exposing a password you still use is an emergency. Work the list newest-first and by field severity, not alphabetically.</p>
-
-      <h2>Checking a password without handing it over</h2>
-      <p>There is an obvious objection to password-checking services: to find out whether your password leaked, you appear to have to give it to a website. You do not, and the method that avoids it is worth understanding because it tells you which services to trust.</p>
-      <p>The technique is called <strong>k-anonymity</strong>. Your browser hashes the password with SHA-1 locally, then sends only the <em>first five characters</em> of that hash. The server replies with every leaked hash beginning with those five characters, typically a few hundred, and your browser checks the rest of the match locally.</p>
-      <p>The server therefore learns five hexadecimal characters, which correspond to hundreds of thousands of possible passwords. It never sees your password, never sees the full hash, and cannot determine which of the returned candidates was yours. If a password checker does not work this way, do not use it.</p>
-
-      <h2>What "not found" does and does not mean</h2>
-      <p>A clean result is good news, with three caveats worth holding onto.</p>
-      <p>First, it means your address is not in the breaches that particular service has indexed. No service has all of them. Many breaches are never published, traded privately, or published years after the fact, the average gap between a breach happening and becoming public is measured in months, sometimes years.</p>
-      <p>Second, checking one address checks one address. Most people have several: an old school or university address, a throwaway used for signups, a work address. Forgotten addresses are the highest-risk ones precisely because you are not watching them, and they are often the recovery address on accounts you still use.</p>
-      <p>Third, a failed check is not a clean check. If a service is rate-limited or unreachable and reports nothing, that is the absence of evidence and not evidence of absence, a distinction that matters more than it sounds, because a silent failure looks exactly like good news.</p>
-
-      <h2>Monitoring without giving your address away</h2>
-      <p>Checking once tells you about today. The useful version is being told when something new appears, and there are two ways to do that with very different privacy costs.</p>
-      <p><strong>The catalogue approach.</strong> The list of known breaches, names, dates, how many accounts, which fields, is public. A tool can download that list and compare it against what it showed you last time, entirely on your own device. Nothing about you is transmitted, no account is required, and you learn immediately when a breach is published so you can check whether you used the service.</p>
-      <p><strong>The per-address approach.</strong> Genuinely answering "was I in it" requires sending your address to a service that holds breach records. That is a real disclosure, and any service offering it should say so plainly rather than burying it. It gives you a definite answer where the catalogue approach only gives you a prompt to go and check.</p>
-      <p>Neither is wrong; they are different trades. What matters is that a service tells you which one it is doing. Anything advertising "we never send your data anywhere" while also telling you which specific breaches you appear in is describing something impossible.</p>
-
-      <h2>How to reduce future exposure</h2>
-      <p>You cannot un-leak data that is already out, but you can limit how much new data accumulates. Use unique passwords, delete accounts you no longer need, and think twice before handing your real email to every website that asks. Email aliases and "plus addressing" (for example, <span style="font-family:var(--mono)">you+shop@gmail.com</span>) can help you compartmentalise and even trace which service leaked or sold your address.</p>
-
-      <div class="callout">
-        <p>Want the full routine? Read our guide on <a href="/guides/reduce-your-digital-footprint.html">how to reduce your digital footprint</a>, or run a quick self-check with the <a href="/#tool">MyRecon email tool</a>.</p>
-      </div>
-
-      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">Browse The Breach Files →</a></p>
-      <!-- After the guide, never inside it. Someone who has just read how to
-           do this by hand is the reader most likely to want it done for them. -->
-      <aside class="app-cta">
-        <div class="app-cta-text">
-          <strong>Run these checks on your phone</strong>
-          <p>MyRecon for Android checks your username across hundreds of sites, your email against published breaches, and whether a password has leaked. The password check runs on the phone. Free, no account.</p>
-        </div>
-        <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dcheck_email_data_breach" target="_blank" rel="noopener">Get it on Google Play</a>
-      </aside>
-
-            <h2>Related guides</h2>
-      <ul class="related-guides">
-        <li><a href="/guides/strong-passwords-guide.html">creating passwords worth having, and managing them</a></li>
-        <li><a href="/guides/two-factor-authentication.html">which two-factor methods actually stop account takeover</a></li>
-        <li><a href="/guides/how-data-brokers-work.html">how data brokers collect and sell your personal data</a></li>
-        <li><a href="/breaches/">the archive of breaches we track, and what each one exposed</a></li>
-        <li><a href="/guides/what-is-osint.html">what OSINT is and how it works</a></li>
-      </ul>
-
-      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
-
+  <h2>Sources and method</h2>
+  <p>MyRecon publishes this guide. The linked reserved-address report records an observed browser lookup on 1 November 2026. No private mailbox was searched and no account-recovery, password change or deletion was performed. Provider documentation supports the access and interpretation guidance; source coverage may change.</p>
+  <p><a href="https://haveibeenpwned.com/FAQs">HIBP FAQ</a> · <a href="https://xposedornot.com/faq">XposedOrNot FAQ</a> · <a href="/privacy.html">MyRecon data handling</a> · <a href="/blog/find-your-own-old-accounts.html">Find forgotten accounts</a> · <a href="/breaches/">Browse incident records</a></p>
 </article>
-<p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>
-</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
+<p class="content-app-context" data-content-app-context>Follow breach reports and alerts on Android. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_guides_breach">Get it on Google Play</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_breach">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
 
   <footer class="site-footer">
   <div class="site-footer__panel">
@@ -211,7 +187,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/optimized/js/config.cbb669b0dfd9.js"></script>
-  <script src="/assets/optimized/js/app.82c4e3b35d9f.js"></script>
+  <script src="/assets/optimized/js/app.a214012ba47e.js"></script>
   <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
   <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
 
