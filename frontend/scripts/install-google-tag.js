@@ -3,7 +3,9 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const TAG_ID = 'G-3L8YYC6NKF';
-const TAG = `<!-- Google tag (gtag.js) -->
+const ATTRIBUTION = '<script src="/assets/js/recommendation-analytics.js?v=1"></script>';
+const TAG = `${ATTRIBUTION}
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${TAG_ID}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -13,7 +15,8 @@ const TAG = `<!-- Google tag (gtag.js) -->
   var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
   gtag('config', '${TAG_ID}', {
     page_location: analyticsPage.origin + analyticsPage.pathname,
-    page_referrer: analyticsReferrer
+    page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
   });
 </script>`;
 
@@ -41,6 +44,14 @@ function visit(directory) {
       if (loaders !== 1 || configs !== 1 || !html.includes(`id=${TAG_ID}`) || !html.includes(`'${TAG_ID}'`)) {
         throw new Error(`Unexpected or duplicate Google tag in ${path.relative(ROOT, file)}`);
       }
+      let next = html;
+      if (!/\/assets\/(?:optimized\/)?js\/recommendation-analytics(?:\.[a-f0-9]{12})?\.js/.test(next)) {
+        const insertion = head.index + head[0].length;
+        next = next.slice(0, insertion) + '\n' + ATTRIBUTION + next.slice(insertion);
+      }
+      if (!next.includes('send_page_view:')) next = next.replace('page_referrer: analyticsReferrer',
+        'page_referrer: analyticsReferrer,\n    send_page_view: !window.MyReconAnalytics?.isBenchmark()');
+      if (next !== html) { fs.writeFileSync(file, next, 'utf8'); updated++; }
       continue;
     }
     const insertion = head.index + head[0].length;

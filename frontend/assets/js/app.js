@@ -1803,6 +1803,7 @@
         </div>`;
       try {
         renderPassword(await pwnedCount(value), value);
+        window.MyReconAnalytics?.scanComplete("password", null, false);
       } catch (e) {
         setError(e.message);
       } finally {
@@ -1842,6 +1843,8 @@
         lastResult = { tool: activeTool, query: value, data };
         rememberGuestReport(activeTool, value, data);
         renderSafely(RENDERERS[activeTool] || renderIp, data);
+        window.MyReconAnalytics?.scanComplete(activeTool, null, !!data.partial
+          || (activeTool === "email" && !!window.MyReconEmailOutcome?.(data)?.partial));
         pushHistory(activeTool, value);
         bindActions();
       }
@@ -2109,6 +2112,7 @@
     lastResult = { tool: "username", query: value, data: finalData };
     rememberGuestReport("username", value, finalData);
     renderSafely(renderUsername, finalData);
+    window.MyReconAnalytics?.scanComplete("username", body.deep ? body.scope : "quick", !!finalData.partial);
     if (savedId) toast("Saved to your scans.");
     pushHistory("username", value);
     bindActions();
@@ -2154,6 +2158,7 @@
     lastResult = { tool: "username", query: value, data };
     rememberGuestReport("username", value, data);
     renderSafely(renderUsername, data);
+    window.MyReconAnalytics?.scanComplete("username", body.deep ? body.scope : "quick", !!data.partial);
     pushHistory("username", value);
     bindActions();
   }

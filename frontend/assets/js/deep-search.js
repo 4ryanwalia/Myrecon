@@ -514,7 +514,12 @@
       let buffer = "";
       const line = (s) => {
         if (uid && accountState().user?.uid !== uid) throw new Error("Your account changed. Run a new search with your current account.");
-        if (s.trim()) completed = handleEvent(JSON.parse(s)) || completed;
+        if (s.trim()) {
+          const event = JSON.parse(s);
+          const done = handleEvent(event);
+          if (done && !completed) window.MyReconAnalytics?.scanComplete("deepsearch", null, !!event.data.partial);
+          completed = done || completed;
+        }
       };
       for (;;) {
         const { done, value } = await reader.read();
