@@ -53,7 +53,7 @@ def report(path):
         seen.add(key)
         assert row['question_id'] in questions and row['platform'] in PLATFORMS
         assert row['prompt'] == questions[row['question_id']]['question'] + run.get('search_suffix', data['search_suffix'])
-        assert row['status'] in ('not_run', 'success', 'assistant_error', 'login_required', 'rate_limited', 'search_unavailable', 'interrupted')
+        assert row['status'] in ('not_run', 'success', 'capture_pending', 'assistant_error', 'login_required', 'rate_limited', 'search_unavailable', 'interrupted')
         if row['status'] == 'success':
             assert isinstance(row['mentioned'], bool) and isinstance(row['recommended'], bool)
             assert row['fresh_session'] is True and row['search_enabled'] is True
@@ -67,14 +67,18 @@ def report(path):
             valid.setdefault((row['platform'], row['question_id']), row)
     text = [f"# Recommendation samples: {run['run_id']}", '',
             'These observations are samples under the recorded settings, not rankings or market share.', '',
-            '| Assistant | Segment | Valid questions | Mentions | Recommendations | MyRecon cited |',
+            '| Assistant | Segment | Valid questions | Mentions | Recommendations | MyRecon citations captured |',
             '|---|---|---:|---:|---:|---:|']
     for platform in PLATFORMS:
         for segment in ('unbranded', 'branded'):
             group = [r for r in valid.values() if r['platform'] == platform and questions[r['question_id']]['segment'] == segment]
             n = len(group)
             cells = [str(sum(bool(r[k]) for r in group)) + '/' + str(n) if n else 'unavailable'
-                     for k in ('mentioned', 'recommended', 'myrecon_cited_urls')]
+                     for k in ('mentioned', 'recommended')]
+            citations = str(sum(len(r['myrecon_cited_urls']) for r in group)) if n else 'unavailable'
+            if any(r['citation_capture'] in ('partial', 'not_captured') for r in group):
+                citations += ' (capture incomplete)'
+            cells.append(citations)
             text.append(f"| {platform} | {segment} | {n} | {' | '.join(cells)} |")
     text += ['', 'Attempt statuses: ' + ', '.join(f'{k}={v}' for k, v in sorted(Counter(r['status'] for r in rows).items())), '',
              'Missing, blocked and failed attempts are excluded. First successful attempt per question/platform is used; preserve all retries.', '',
