@@ -11,6 +11,7 @@ The developer's affiliation must remain visible in every submission.
 | OSINT Newsletter / OSINT Tools Library | Reviewed directory and tool coverage. [Submission guide](https://tools.osintnewsletter.com/submission-guide) links its [tool form](https://forms.gle/kFE3Ddj4rbzsnxyUA). | Submitted 1 Nov 2026; form confirmed "Your response has been recorded." [Exact submission](osint-newsletter-submission-2026-11-01.json), [receipt](osint-newsletter-receipt-2026-11-01.jpg). Editorial decision pending. |
 | OSINT Framework | Public/free OSINT discovery. [Repository guidelines](https://github.com/lockfale/OSINT-Framework#contribute-with-a-github-pull-request) welcome a PR or issue. | Submitted 1 Nov 2026: [issue #880](https://github.com/lockfale/OSINT-Framework/issues/880), open and awaiting evaluation. Hosted freemium limits and affiliation disclosed. |
 | Sector035 | Researcher and Week in OSINT publisher. [Homepage](https://sector035.nl/) invites useful tips at sector035@pm.me. | Invitation sent 1 Nov 2026 at 22:20 IST; Gmail displayed "Message sent" and the sent conversation was verified. No reply/publication yet. Current publishing cadence is unconfirmed (visible archive includes 2024). |
+| My OSINT Training / instructor team | Security educators, including WhatsMyName creator Micah Hoffman. [Company contact](https://sg.linkedin.com/company/my-osint-training) lists support@myosint.training; [instructor page](https://www.myosint.training/pages/instructors) establishes fit. | Invitation sent 1 Nov 2026; Gmail confirmed "Message sent." [Exact invitation](my-osint-training-invitation-2026-11-01.md). Response/publication pending. |
 | Sofia Santos / Gralhix | Educator and researcher; [about page](https://gralhix.com/aboutme/) links LinkedIn, Mastodon and Bluesky private messages. | Draft ready. LinkedIn message and connection routes displayed a Premium reactivation upsell. No message or invitation sent and no purchase made. No guessed email used. |
 | Awesome OSINT | [Contribution rules](https://github.com/jivoi/awesome-osint/blob/master/CONTRIBUTING.md) require affiliation disclosure and explicitly prohibit LLM/agent-submitted PRs. | Excluded from agent submission. A human may independently evaluate whether to submit. |
 | Bellingcat toolkit | [Official introduction](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/) links its [contribution form](https://forms.gle/dZvsJzuEjTNjJ9HWA). | Excluded: the live form says not to suggest your own tools. Toolkit email also excludes tool suggestions. |
@@ -59,35 +60,15 @@ free and paid limits. Verify account matches at the original source.
 
 ## Sector035 invitation sent
 
-To: sector035@pm.me
+The [exact invitation](sector035-invitation-2026-11-01.md) was sent on 1 November
+2026 at 22:20 IST. The sent Gmail conversation was verified. Receipt stays local.
 
-Subject: MyRecon: reproducible username-verdict tests for your evaluation
+## My OSINT Training invitation sent
 
-Hi Sector035,
-
-I am Aryan Walia, the developer of MyRecon at BugSnaps. Your homepage invites
-useful research tips, so I wanted to offer a small review kit focused on a
-username-research problem: distinguishing profile evidence from blocked or
-inconclusive responses.
-
-The MIT-licensed CLI and web source are at https://github.com/4ryanwalia/Myrecon.
-The hosted site has separate free and paid limits. This review kit provides
-source-pinned reproduction commands, raw first-party measurements and a blank
-worksheet for your own tests:
-https://github.com/4ryanwalia/Myrecon/blob/97f976bd120488c7ddd26ce444b88f7931a31ed1/docs/review-kit/README.md
-
-The supplied sample covers only ten fixed usernames on three platforms and
-shares some API evidence with the reference; it is not an independent accuracy
-audit. If the topic is useful, would you test your own cases and share any
-failures, unknowns and practical limitations? You control whether to publish
-and what to conclude. No payment or positive coverage is offered or requested.
-Matching usernames remain leads, not identity proof.
-
-This invitation and its documentation were prepared with AI assistance. There
-is no need to reply if this is outside your current interests.
-
-Aryan Walia
-MyRecon / BugSnaps
+The [exact invitation](my-osint-training-invitation-2026-11-01.md) asks the
+instructor team to evaluate the exercise's teaching value and limitations. The
+public contact address was verified on the company's own LinkedIn profile.
+Gmail confirmed sending. No response or publication has been confirmed.
 
 ## Sofia Santos professional-message draft
 
@@ -109,10 +90,9 @@ is outside your interests, no reply is needed.
 
 ## Current outcome
 
-Three invitations/suggestions were sent: the OSINT Tools Library form, OSINT
-Framework issue, and Sector035 email. No independent review, accepted listing,
-endorsement or publication has been confirmed. The educator invitation remains
-unsent. Gmail browser access was used for the email; no new email connection was
+Four invitations/suggestions were sent: the OSINT Tools Library form, OSINT
+Framework issue, Sector035 email, and My OSINT Training email. No independent review, accepted listing,
+endorsement or publication has been confirmed. Sofia Santos's optional invitation remains unsent; My OSINT Training received the educator request. Gmail browser access was used for the email; no new email connection was
 required. Its receipt stays local so unrelated account details are not published.
 
 The kit and evidence were published on `main` in commit
