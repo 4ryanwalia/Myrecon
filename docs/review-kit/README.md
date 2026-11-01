@@ -81,6 +81,28 @@ This small regression sample is not independent ground truth or a full-catalogue
 accuracy estimate. The HTTP baseline uses different request work and is not a
 named competitor. The timings cannot rank whole tools.
 
+## Additional dated study with measured comparator tools
+
+A separate publisher-run study is now available: **35 platform-specific controls
+across eight developer/community platforms**, with actual pinned MyRecon,
+Sherlock and Maigret runs. It is separate from the three-platform snapshot above;
+the unavailable comparator results in that earlier snapshot remain unavailable.
+
+Use the immutable [evidence bundle and reproduction instructions](https://github.com/4ryanwalia/Myrecon/tree/1da82d7b8541cff254a44d7b63bae4fb6ca5b1d0/frontend/assets/downloads/username-controls-2026-11-01)
+or the [readable study](https://www.myrecon.xyz/blog/username-search-controlled-study-2026.html).
+The ZIP includes the harness, predeclared manifest, 105-row CSV, raw JSON,
+upstream license notices and checksums. It records the same MyRecon engine
+revision as above, with a separate Python 3.12 environment and observation window.
+
+Eleven reference observations remained unresolved. MyRecon and Maigret each had
+24/35 scored controls; Sherlock had 15/35, including nine controls excluded by
+its captured upstream policy. Unknown predictions and native claims remain in
+the evidence. Public upstream fixtures are not accounts owned by the developer,
+and repeated handles do not represent independent people. These fixtures and
+shared API references still do not provide an independent or held-out audit.
+Please choose additional cases and your own reference method. No population
+accuracy claim or whole-tool ranking follows from the supplied observations.
+
 ## Add independently checked cases
 
 Use accounts you control or have permission to test. Establish expected results
