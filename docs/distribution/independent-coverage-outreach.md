@@ -129,7 +129,8 @@ date here is guidance, not an automatically scheduled message.
 The initial requests were sent on 1 November 2026. The first follow-up window is
 11-15 November 2026, subject to the recipient's rules and any response. Response
 checks before then should not trigger additional messages merely because no
-reply has arrived. No monitor or scheduled email has been created.
+reply has arrived. Monitoring does not authorize sending follow-up email; any
+monitoring schedules and private correspondence stay outside the public tracker.
 
 Record submitted date, exact recipient, evidence permalink, receipt/PR URL,
 response, and any requested correction. Keep private correspondence out of the
