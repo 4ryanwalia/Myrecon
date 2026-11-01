@@ -1,0 +1,3370 @@
+{
+  "schema_version": 1,
+  "id": "username-controls-2026-11-01",
+  "started_at_utc": "2026-11-01T16:39:28Z",
+  "status": "measured",
+  "manifest_sha256": "adf056ed4ae83ff418c7be076b081645b51ac4ad3336a4040247eaf4e5e410a2",
+  "manifest": {
+    "schema_version": 1,
+    "id": "username-controls-2026-11-01",
+    "created_at_utc": "2026-11-01T16:39:22Z",
+    "selection": "Eight developer/community platforms with explicit upstream fixtures and reviewable public references. Every fixture stays on its source platform. Two deterministic synthetic candidates per platform. Sample fixed before predictions.",
+    "ownership": "Published upstream testing fixtures, not accounts owned by MyRecon or the user. Account existence does not establish identity. No personal social-media handles or customer history are included.",
+    "reference_policy": "Fixture labels and generated randomness are expectations only. Current exact account evidence or explicit absence supplies the reference; failures stay unknown.",
+    "platforms": [
+      "GitHub",
+      "GitLab",
+      "Hacker News",
+      "Docker Hub",
+      "Dev.to",
+      "npm",
+      "Keybase",
+      "PyPI"
+    ],
+    "cases": [
+      {
+        "platform": "GitHub",
+        "handle": "blue",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "GitHub",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          },
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "GitHub",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C01"
+      },
+      {
+        "platform": "GitHub",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "GitHub",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C02"
+      },
+      {
+        "platform": "GitHub",
+        "handle": "mr2631dca0640c",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitHub/0)",
+        "id": "C03"
+      },
+      {
+        "platform": "GitHub",
+        "handle": "mr266fca2f9c9b",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitHub/1)",
+        "id": "C04"
+      },
+      {
+        "platform": "GitLab",
+        "handle": "blue",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "GitLab",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          },
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "GitLab",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C05"
+      },
+      {
+        "platform": "GitLab",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "GitLab",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C06"
+      },
+      {
+        "platform": "GitLab",
+        "handle": "mr26ffdf1cdcf0",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitLab/0)",
+        "id": "C07"
+      },
+      {
+        "platform": "GitLab",
+        "handle": "mr262594155896",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitLab/1)",
+        "id": "C08"
+      },
+      {
+        "platform": "Hacker News",
+        "handle": "blue",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "HackerNews",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          }
+        ],
+        "id": "C09"
+      },
+      {
+        "platform": "Hacker News",
+        "handle": "pg",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "HackerNews",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C10"
+      },
+      {
+        "platform": "Hacker News",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "HackerNews",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C11"
+      },
+      {
+        "platform": "Hacker News",
+        "handle": "mr26a5262ed92a",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Hacker News/0)",
+        "id": "C12"
+      },
+      {
+        "platform": "Hacker News",
+        "handle": "mr26addcf71f1b",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Hacker News/1)",
+        "id": "C13"
+      },
+      {
+        "platform": "Docker Hub",
+        "handle": "blue",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "Docker Hub",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          },
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "Docker Hub",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C14"
+      },
+      {
+        "platform": "Docker Hub",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "Docker Hub",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C15"
+      },
+      {
+        "platform": "Docker Hub",
+        "handle": "mr2601a3dfd80e",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Docker Hub/0)",
+        "id": "C16"
+      },
+      {
+        "platform": "Docker Hub",
+        "handle": "mr26c93fc4743b",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Docker Hub/1)",
+        "id": "C17"
+      },
+      {
+        "platform": "Dev.to",
+        "handle": "blue",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "DEV Community",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          },
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "DEV Community",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C18"
+      },
+      {
+        "platform": "Dev.to",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "DEV Community",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C19"
+      },
+      {
+        "platform": "Dev.to",
+        "handle": "mr26534c469177",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Dev.to/0)",
+        "id": "C20"
+      },
+      {
+        "platform": "Dev.to",
+        "handle": "mr2608fdaeabff",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Dev.to/1)",
+        "id": "C21"
+      },
+      {
+        "platform": "npm",
+        "handle": "kennethsweezy",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "npm",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          }
+        ],
+        "id": "C22"
+      },
+      {
+        "platform": "npm",
+        "handle": "sindresorhus",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "NPM",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C23"
+      },
+      {
+        "platform": "npm",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "NPM",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C24"
+      },
+      {
+        "platform": "npm",
+        "handle": "mr266aca0fe160",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/npm/0)",
+        "id": "C25"
+      },
+      {
+        "platform": "npm",
+        "handle": "mr266911d1a5a3",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/npm/1)",
+        "id": "C26"
+      },
+      {
+        "platform": "Keybase",
+        "handle": "blue",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "Keybase",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          },
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "Keybase",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C27"
+      },
+      {
+        "platform": "Keybase",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "Keybase",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C28"
+      },
+      {
+        "platform": "Keybase",
+        "handle": "mr2610af8a707d",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Keybase/0)",
+        "id": "C29"
+      },
+      {
+        "platform": "Keybase",
+        "handle": "mr263360af2165",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Keybase/1)",
+        "id": "C30"
+      },
+      {
+        "platform": "PyPI",
+        "handle": "Blue",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "sherlock",
+            "field": "username_claimed",
+            "site_name": "PyPi",
+            "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+          }
+        ],
+        "id": "C31"
+      },
+      {
+        "platform": "PyPI",
+        "handle": "adam",
+        "cohort": "upstream_claimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameClaimed",
+            "site_name": "PyPi",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C32"
+      },
+      {
+        "platform": "PyPI",
+        "handle": "noonewouldeverusethis7",
+        "cohort": "upstream_unclaimed_fixture",
+        "fixture_sources": [
+          {
+            "tool": "maigret",
+            "field": "usernameUnclaimed",
+            "site_name": "PyPi",
+            "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+          }
+        ],
+        "id": "C33"
+      },
+      {
+        "platform": "PyPI",
+        "handle": "mr264407671dfd",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/PyPI/0)",
+        "id": "C34"
+      },
+      {
+        "platform": "PyPI",
+        "handle": "mr266f2a56ce0e",
+        "cohort": "synthetic_negative_candidate",
+        "fixture_sources": [],
+        "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/PyPI/1)",
+        "id": "C35"
+      }
+    ],
+    "rules": {
+      "GitHub": {
+        "sherlock": {
+          "site_name": "GitHub",
+          "rule": {
+            "errorType": "status_code",
+            "regexCheck": "^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$",
+            "url": "https://www.github.com/{}",
+            "urlMain": "https://www.github.com/",
+            "username_claimed": "blue"
+          },
+          "sha256": "21c0b84107a6a838ee8d1dc27ee834a162848a93ef8a97ed13d28dec50035134",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "GitHub",
+          "rule": {
+            "tags": [
+              "business",
+              "coding",
+              "networking"
+            ],
+            "regexCheck": "^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$",
+            "urlProbe": "https://api.github.com/users/{username}",
+            "checkType": "status_code",
+            "alexaRank": 10,
+            "urlMain": "https://www.github.com/",
+            "url": "https://github.com/{username}",
+            "usernameClaimed": "blue",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "3ae976f420695ebd5f1feb9fd8ee6c61eeaac2d249767db34e66601598a22adb",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      },
+      "GitLab": {
+        "sherlock": {
+          "site_name": "GitLab",
+          "rule": {
+            "errorMsg": "[]",
+            "errorType": "message",
+            "url": "https://gitlab.com/{}",
+            "urlMain": "https://gitlab.com/",
+            "urlProbe": "https://gitlab.com/api/v4/users?username={}",
+            "username_claimed": "blue"
+          },
+          "sha256": "ab907f1abc9ab91de2bfbf20f6e877f03b9e30ea33238540e1928d14266452d8",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "GitLab",
+          "rule": {
+            "tags": [
+              "business",
+              "coding",
+              "tech"
+            ],
+            "urlProbe": "https://gitlab.com/api/v4/users?username={username}",
+            "checkType": "message",
+            "absenceStrs": [
+              "[]"
+            ],
+            "alexaRank": 155,
+            "urlMain": "https://gitlab.com/",
+            "url": "https://gitlab.com/{username}",
+            "usernameClaimed": "blue",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "f930446a66fd07bc9a8965346c53bbb877dd9265b45fafd8b2e41ec79686d048",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      },
+      "Hacker News": {
+        "sherlock": {
+          "site_name": "HackerNews",
+          "rule": {
+            "__comment__": "First errMsg invalid, second errMsg rate limited. Not ideal. Adjust for better rate limit filtering.",
+            "errorMsg": [
+              "No such user.",
+              "Sorry."
+            ],
+            "errorType": "message",
+            "url": "https://news.ycombinator.com/user?id={}",
+            "urlMain": "https://news.ycombinator.com/",
+            "username_claimed": "blue"
+          },
+          "sha256": "572eb3b15da823003f5e02b131431c274f7c5dd90563eef121113dbaa3d0474d",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "HackerNews",
+          "rule": {
+            "tags": [
+              "discussion",
+              "news",
+              "tech"
+            ],
+            "checkType": "message",
+            "presenseStrs": [
+              "\"created\""
+            ],
+            "urlMain": "https://news.ycombinator.com/",
+            "url": "https://news.ycombinator.com/user?id={username}",
+            "urlProbe": "https://hacker-news.firebaseio.com/v0/user/{username}.json?shallow=true",
+            "usernameClaimed": "pg",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "27411827b7d86452eac6f0d5eeb0829cb142a5207cc3ef44efd1bba1734e902d",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      },
+      "Docker Hub": {
+        "sherlock": {
+          "site_name": "Docker Hub",
+          "rule": {
+            "errorType": "status_code",
+            "url": "https://hub.docker.com/u/{}/",
+            "urlMain": "https://hub.docker.com/",
+            "urlProbe": "https://hub.docker.com/v2/users/{}/",
+            "username_claimed": "blue"
+          },
+          "sha256": "9bfc825e1a00995134a4ba58b3a1fa060805c89869d1f6d6b058dfe0cb5a6dfd",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "Docker Hub",
+          "rule": {
+            "tags": [
+              "apps",
+              "coding",
+              "tech"
+            ],
+            "urlProbe": "https://hub.docker.com/v2/users/{username}/",
+            "checkType": "status_code",
+            "urlMain": "https://hub.docker.com/",
+            "url": "https://hub.docker.com/u/{username}/",
+            "usernameClaimed": "blue",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "efb8d6e7c39283b2d8b4a15a751eebdc99971730d8846706d3739829d2ebbcdb",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      },
+      "Dev.to": {
+        "sherlock": {
+          "site_name": "DEV Community",
+          "rule": {
+            "errorType": "status_code",
+            "regexCheck": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+            "url": "https://dev.to/{}",
+            "urlMain": "https://dev.to/",
+            "username_claimed": "blue"
+          },
+          "sha256": "2b099182aa2899d288de70c453c9c018af1666ba6753032cded89218410339b2",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "DEV Community",
+          "rule": {
+            "tags": [
+              "career",
+              "coding",
+              "discussion"
+            ],
+            "regexCheck": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+            "checkType": "status_code",
+            "alexaRank": 1119,
+            "urlMain": "https://dev.to/",
+            "url": "https://dev.to/{username}",
+            "usernameClaimed": "blue",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "aeba319e0a6a04fed1cbd476499a5d59727103692ecff30656d1df94d4f3e524",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      },
+      "npm": {
+        "sherlock": {
+          "site_name": "npm",
+          "rule": {
+            "errorType": "status_code",
+            "url": "https://www.npmjs.com/~{}",
+            "urlMain": "https://www.npmjs.com/",
+            "username_claimed": "kennethsweezy"
+          },
+          "sha256": "b770e7bd24a5bcba45203072f15a8cc0238bf09fd92d8a4ea59df7c1f158343d",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "NPM",
+          "rule": {
+            "tags": [
+              "apps",
+              "coding",
+              "tech"
+            ],
+            "checkType": "message",
+            "presenseStrs": [
+              "\"objects\":[{"
+            ],
+            "absenceStrs": [
+              "\"total\":0"
+            ],
+            "alexaRank": 590,
+            "urlMain": "https://www.npmjs.com/",
+            "url": "https://www.npmjs.com/~{username}",
+            "urlProbe": "https://registry.npmjs.org/-/v1/search?text=maintainer:{username}&size=1",
+            "usernameClaimed": "sindresorhus",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "63613edc7c6447ada684c6381c2853de85a036fda2cc6744647e8faccfe026d8",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      },
+      "Keybase": {
+        "sherlock": {
+          "site_name": "Keybase",
+          "rule": {
+            "errorType": "status_code",
+            "url": "https://keybase.io/{}",
+            "urlMain": "https://keybase.io/",
+            "username_claimed": "blue"
+          },
+          "sha256": "001b2b1e1c74ae90c29aed4f0e252af64ca7570bdb906c049d58274f4a0a0c59",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "Keybase",
+          "rule": {
+            "tags": [
+              "business",
+              "crypto",
+              "messaging"
+            ],
+            "urlProbe": "https://keybase.io/_/api/1.0/user/lookup.json?usernames={username}",
+            "checkType": "message",
+            "absenceStrs": [
+              "them\":[null]",
+              "bad list value"
+            ],
+            "alexaRank": 2645,
+            "urlMain": "https://keybase.io/",
+            "url": "https://keybase.io/{username}",
+            "usernameClaimed": "blue",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "8c5a7478ffb531e5893fb3fd9f31e9f2c5c1e88c6bbfdfdb1c5640f0b1f82d24",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      },
+      "PyPI": {
+        "sherlock": {
+          "site_name": "PyPi",
+          "rule": {
+            "errorType": "status_code",
+            "url": "https://pypi.org/user/{}",
+            "urlProbe": "https://pypi.org/_includes/administer-user-include/{}",
+            "urlMain": "https://pypi.org",
+            "username_claimed": "Blue"
+          },
+          "sha256": "61d0e3a0769cc976042dee204d53b086cb719a24aaaed23c0e2bfa03eb871c61",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        "maigret": {
+          "site_name": "PyPi",
+          "rule": {
+            "disabled": true,
+            "protection": [
+              "custom_bot_protection"
+            ],
+            "tags": [
+              "apps",
+              "coding",
+              "tech"
+            ],
+            "errors": {
+              "Please enable JavaScript to proceed": "Scraping protection"
+            },
+            "checkType": "status_code",
+            "alexaRank": 897,
+            "urlMain": "https://pypi.org/",
+            "url": "https://pypi.org/user/{username}",
+            "usernameClaimed": "adam",
+            "usernameUnclaimed": "noonewouldeverusethis7"
+          },
+          "sha256": "e8482bed75ff096715b73599f8a21473c967083ae5b0adc054dd6544998651f0",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      }
+    },
+    "tool_pins": {
+      "sherlock": {
+        "label": "Sherlock",
+        "package": "sherlock-project",
+        "version": "0.16.2",
+        "repository": "https://github.com/sherlock-project/sherlock",
+        "commit": "e40a45ec2a074b90703b3b4b842c8a3adbd6ada3"
+      },
+      "maigret": {
+        "label": "Maigret",
+        "package": "maigret",
+        "version": "0.6.6",
+        "repository": "https://github.com/soxoj/maigret",
+        "commit": "b6642744988e7e6c2d21f75db60ec3093019ba25"
+      }
+    },
+    "sherlock_exclusions": {
+      "url": "https://raw.githubusercontent.com/sherlock-project/sherlock/refs/heads/exclusions/false_positive_exclusions.txt",
+      "checked_at_utc": "2026-11-01T16:39:27Z",
+      "sha256": "5fd2a17d192005843487f8d8a2fc6fef4d77631d94e47e1f81afd5e40da96799",
+      "sites": [
+        "Airliners",
+        "Apple Developer",
+        "Apple Discussions",
+        "Archive.org",
+        "Championat",
+        "Chatujme.cz",
+        "Codolio",
+        "DEV Community",
+        "DeviantArt",
+        "Discord.bio",
+        "GaiaOnline",
+        "GeeksforGeeks",
+        "HackerNews",
+        "Hashnode",
+        "Hubski",
+        "Instapaper",
+        "Minecraft",
+        "ObservableHQ",
+        "Odysee",
+        "PCGamer",
+        "Rarible",
+        "Realmeye",
+        "Reddit",
+        "ReverbNation",
+        "RocketTube",
+        "Scribd",
+        "Shelf",
+        "SlideShare",
+        "Splice",
+        "Spotify",
+        "Trakt",
+        "TryHackMe",
+        "Venmo",
+        "Vero",
+        "YandexMusic",
+        "authorSTREAM",
+        "dailykos",
+        "fixya",
+        "hunting",
+        "interpals",
+        "mercadolivre",
+        "opennet",
+        "phpRU",
+        "social.tchncs.de",
+        "svidbook"
+      ]
+    },
+    "maigret_engines": {
+      "XenForo": {
+        "name": "XenForo",
+        "site": {
+          "ignore403": true,
+          "absenceStrs": [
+            "The requested page could not be found.",
+            "The specified member cannot be found. Please enter a member",
+            "Указанный пользователь не найден. Пожалуйста, введите другое имя.",
+            "Le membre spécifié est introuvable. Veuillez saisir le nom complet d'un membre.",
+            "Belirtilen üye bulunamadı. Lütfen bir üyenin tam adını giriniz."
+          ],
+          "presenseStrs": [
+            "Вы должны быть авторизованы, чтобы выполнить это действие или просмотреть эту страницу.",
+            "Для того, чтобы это сделать, нужно сначала войти на форум.",
+            "You must be logged-in to do that.",
+            "You must be logged in to do that.",
+            "הינך נדרש להתחבר כדי לבצע פעולה זו.",
+            "برای انجام این کار باید به انجمن ورود کنید",
+            "memberHeader-content",
+            "profilePage"
+          ],
+          "checkType": "message",
+          "url": "{urlMain}{urlSubpath}/members/?username={username}"
+        },
+        "presenseStrs": [
+          "XenForo"
+        ]
+      },
+      "phpBB/Search": {
+        "name": "phpBB/Search",
+        "site": {
+          "absenceStrs": [
+            "Подходящих тем или сообщений не найдено."
+          ],
+          "presenseStrs": [
+            "postprofile",
+            " username-coloured"
+          ],
+          "checkType": "message",
+          "url": "{urlMain}{urlSubpath}/search.php?author={username}"
+        },
+        "presenseStrs": [
+          "./memberlist.php?mode=viewprofile"
+        ]
+      },
+      "phpBB": {
+        "name": "phpBB",
+        "site": {
+          "absenceStrs": [
+            "No members found for this search criterion.",
+            "Не найдено ни одного пользователя по заданным критериям"
+          ],
+          "presenseStrs": [
+            "You must be logged in to do that.",
+            "./memberlist.php?mode=viewprofile"
+          ],
+          "checkType": "message",
+          "url": "{urlMain}{urlSubpath}/memberlist.php?username={username}"
+        },
+        "presenseStrs": [
+          "phpBB"
+        ]
+      },
+      "phpBB2/Search": {
+        "name": "phpBB2/Search",
+        "site": {
+          "absenceStrs": [
+            "Подходящих тем или сообщений не найдено"
+          ],
+          "presenseStrs": [
+            "\"postdetails"
+          ],
+          "checkType": "message",
+          "url": "{urlMain}{urlSubpath}/search.php?search_author={username}"
+        },
+        "presenseStrs": [
+          "phpBB 2.0"
+        ]
+      },
+      "uCoz": {
+        "name": "uCoz",
+        "site": {
+          "absenceStrs": [
+            "<title>HTTP 404",
+            "Пользователь не найден"
+          ],
+          "presenseStrs": [
+            "udtlb\">Пользователь:</div>",
+            "Гостям запрещено просматривать данную страницу, пожалуйста войдите на сайт как пользователь.",
+            "<center><b>Личные данные</b>",
+            "Гостям запрещено просматривать данную страницу, пожалуйста, войдите на сайт как пользователь.",
+            "<img alt=\"\" name=\"rankimg\" border=\"0\" src=\"/.s/rnk/",
+            "Гостям запрещено просматривать персональные страницы пользователей.",
+            "profile-section-name",
+            "webo4ka_dannii",
+            "Дата регистрации"
+          ],
+          "checkType": "message",
+          "regexCheck": "^[^\\.\\-]+$",
+          "url": "{urlMain}/index/8-0-{username}"
+        }
+      },
+      "vBulletin": {
+        "name": "vBulletin",
+        "site": {
+          "absenceStrs": [
+            "Пользователь не зарегистрирован и не имеет профиля для просмотра.",
+            "Bu Üye kayıtlı Üyemiz değildir. Bu sebebten dolayı Üyeye ait Profil gösterilemiyor.",
+            "This user has not registered and therefore does not have a profile to view.",
+            "Користувач не зареєстрований і не має профілю, який можна переглянути.",
+            "Deze gebruiker is niet geregistreerd, zodat je zijn of haar profiel niet kunt bekijken.",
+            "Этот пользователь ещё не зарегистрирован, поэтому его профиль недоступен."
+          ],
+          "checkType": "message",
+          "errors": {
+            "Простите, но ваш IP в списке запрещенных администрацией форума": "IP ban",
+            "You have been banned": "IP ban",
+            "The administrator has banned your IP address": "IP ban",
+            "Извините, сервер перегружен. Пожалуйста, попробуйте зайти позже.": "Server is overloaded"
+          },
+          "url": "{urlMain}{urlSubpath}/member.php?username={username}"
+        },
+        "presenseStrs": [
+          "content=\"vBulletin "
+        ]
+      },
+      "Discourse": {
+        "name": "Discourse",
+        "site": {
+          "presenseStrs": [
+            "<meta name=\"generator\" content=\"Discourse"
+          ],
+          "absenceStrs": [
+            "Oops! That page doesn’t exist or is private.",
+            "wrap not-found-container"
+          ],
+          "checkType": "message",
+          "url": "{urlMain}/u/{username}/summary"
+        },
+        "presenseStrs": [
+          "<meta name=\"generator\" content=\"Discourse"
+        ]
+      },
+      "DiscourseJson": {
+        "name": "DiscourseJson",
+        "site": {
+          "checkType": "status_code",
+          "url": "{urlMain}/u/{username}",
+          "urlProbe": "{urlMain}/u/{username}.json"
+        }
+      },
+      "Mastodon": {
+        "name": "Mastodon",
+        "site": {
+          "checkType": "status_code",
+          "url": "{urlMain}/@{username}",
+          "urlProbe": "{urlMain}/api/v1/accounts/lookup?acct={username}"
+        }
+      },
+      "Wordpress/Author": {
+        "name": "Wordpress/Author",
+        "site": {
+          "presenseStrs": [
+            "author-",
+            "author/"
+          ],
+          "absenceStrs": [
+            "error404"
+          ],
+          "checkType": "message",
+          "requestHeadOnly": false,
+          "url": "{urlMain}{urlSubpath}/author/{username}/"
+        },
+        "presenseStrs": [
+          "/wp-admin",
+          "/wp-includes/wlwmanifest.xml"
+        ]
+      },
+      "Flarum": {
+        "name": "Flarum",
+        "site": {
+          "presenseStrs": [
+            "\"attributes\":{\"username\""
+          ],
+          "absenceStrs": [
+            "NotFound"
+          ],
+          "checkType": "message",
+          "url": "{urlMain}/u/{username}"
+        },
+        "presenseStrs": [
+          "flarum-loading-error"
+        ]
+      },
+      "engine404": {
+        "name": "engine404",
+        "site": {
+          "checkType": "status_code"
+        }
+      },
+      "engineRedirect": {
+        "name": "engineRedirect",
+        "site": {
+          "checkType": "response_url"
+        }
+      },
+      "engine404get": {
+        "name": "engine404get",
+        "site": {
+          "checkType": "status_code",
+          "requestHeadOnly": false
+        }
+      },
+      "engine404message": {
+        "name": "engine404message",
+        "site": {
+          "checkType": "message",
+          "absenceStrs": [
+            "404"
+          ]
+        }
+      },
+      "op.gg": {
+        "name": "op.gg",
+        "site": {
+          "checkType": "message",
+          "absenceStrs": [
+            ">“No search results for"
+          ],
+          "urlMain": "https://www.op.gg/",
+          "alexaRank": 331
+        }
+      },
+      "Vanilla": {
+        "name": "Vanilla",
+        "site": {
+          "url": "{urlMain}{urlSubpath}/profile/{username}",
+          "checkType": "message",
+          "presenseStrs": [
+            "Dashboard Profile",
+            "\"DefaultAbout\"",
+            "Section-Entry"
+          ],
+          "absenceStrs": [
+            "filenotfound"
+          ]
+        },
+        "presenseStrs": [
+          "gdn.meta"
+        ]
+      },
+      "MediaWiki": {
+        "name": "MediaWiki",
+        "site": {
+          "url": "{urlMain}{urlSubpath}/User:{username}",
+          "checkType": "message",
+          "presenseStrs": [
+            "ns-2",
+            "mw-body-content"
+          ],
+          "absenceStrs": [
+            "mw-userpage-userdoesnotexist"
+          ]
+        },
+        "presenseStrs": [
+          "wgCanonicalNamespace",
+          "mw-body-content"
+        ]
+      },
+      "MediaWikiJson": {
+        "name": "MediaWikiJson",
+        "site": {
+          "url": "{urlMain}{urlSubpath}/User:{username}",
+          "urlProbe": "{urlMain}/api.php?action=query&list=users&ususers={username}&usprop=editcount|registration|groups|gender&format=json",
+          "checkType": "message",
+          "presenseStrs": [
+            "\"userid\":"
+          ],
+          "absenceStrs": [
+            "\"missing\":",
+            "\"invalid\":"
+          ]
+        }
+      },
+      "MediaWikiJson/w": {
+        "name": "MediaWikiJson/w",
+        "site": {
+          "url": "{urlMain}{urlSubpath}/User:{username}",
+          "urlProbe": "{urlMain}/w/api.php?action=query&list=users&ususers={username}&usprop=editcount|registration|groups|gender&format=json",
+          "checkType": "message",
+          "presenseStrs": [
+            "\"userid\":"
+          ],
+          "absenceStrs": [
+            "\"missing\":",
+            "\"invalid\":"
+          ]
+        }
+      },
+      "MediaWikiJson/wiki": {
+        "name": "MediaWikiJson/wiki",
+        "site": {
+          "url": "{urlMain}{urlSubpath}/User:{username}",
+          "urlProbe": "{urlMain}/wiki/api.php?action=query&list=users&ususers={username}&usprop=editcount|registration|groups|gender&format=json",
+          "checkType": "message",
+          "presenseStrs": [
+            "\"userid\":"
+          ],
+          "absenceStrs": [
+            "\"missing\":",
+            "\"invalid\":"
+          ]
+        }
+      },
+      "MediaWikiJson/mediawiki": {
+        "name": "MediaWikiJson/mediawiki",
+        "site": {
+          "url": "{urlMain}{urlSubpath}/User:{username}",
+          "urlProbe": "{urlMain}/mediawiki/api.php?action=query&list=users&ususers={username}&usprop=editcount|registration|groups|gender&format=json",
+          "checkType": "message",
+          "presenseStrs": [
+            "\"userid\":"
+          ],
+          "absenceStrs": [
+            "\"missing\":",
+            "\"invalid\":"
+          ]
+        }
+      },
+      "Lemmy": {
+        "name": "Lemmy",
+        "site": {
+          "url": "{urlMain}/u/{username}",
+          "urlProbe": "{urlMain}/api/v3/user?username={username}",
+          "checkType": "status_code"
+        }
+      },
+      "GitLab": {
+        "name": "GitLab",
+        "site": {
+          "url": "{urlMain}/{username}",
+          "checkType": "message",
+          "presenseStrs": [
+            "js-user-profile-actions"
+          ]
+        }
+      },
+      "Gitea": {
+        "name": "Gitea",
+        "site": {
+          "url": "{urlMain}/{username}",
+          "checkType": "status_code"
+        }
+      }
+    }
+  },
+  "source_hashes": {
+    "backend/modules/sweep.py": "5b270cdcf8f9ed2490f26084e420ab83b70f13444253d069ca24e7eb31729d39",
+    "backend/modules/profile_identity.py": "779a47d78a469c503a2863af92eeda85cb078b3fd9d90994c51494efe549ad94",
+    "backend/modules/username_integrations.py": "dc5e4c44258ae68a0cc3e7bbe95af16bfa76b1acf82d7185e24685a222e4377f",
+    "backend/data/platforms_full.json": "4ee39fe92fc0e56e40c5eb910823d92d330be63c573e6f4aa57e727a2d97206e",
+    "backend/data/platforms_extra.json": "817de0c83fb1fc86ff73515e1e757c00b1e5ef941d0c77dc36d9ec617bf73533",
+    "backend/tools/expanded_username_study.py": "0bfe427d32f605eadfbc4f29ee21ddb520d07e8ad192e6b86d0e131a5c49128a",
+    "backend/tools/benchmark_worker.py": "c64b856c78a3d542785318b1e616c16ac4f1bf19849642d024aabf22a4bfde67",
+    "backend/tools/daily_benchmark.py": "29455351a933956bf7bd5ba1799fc7f9bafc2ee5bda54c5fd777c01c333b2e5d"
+  },
+  "tool_metadata": {
+    "myrecon": {
+      "label": "MyRecon",
+      "version": "9491be66",
+      "commit": "9491be6683cfd329a33e6c38682a7bc83a81032f",
+      "scope": "Web engine; eight selected platforms; Android and hosted UI not measured",
+      "status": "measured",
+      "max_connections": 1,
+      "deadline_seconds": 45,
+      "connect_timeout_seconds": 6,
+      "read_timeout_seconds": 8,
+      "python_version": "3.12.14",
+      "requests_version": "2.34.2",
+      "selected_catalogue_sha256": "1c58ba2291268402aa1ac2801d9ce31aeea7fba492a90742343eedf2949f06b6",
+      "started_at_utc": "2026-11-01T16:39:58Z",
+      "finished_at_utc": "2026-11-01T16:40:32Z"
+    },
+    "sherlock": {
+      "label": "Sherlock",
+      "package": "sherlock-project",
+      "version": "0.16.2",
+      "repository": "https://github.com/sherlock-project/sherlock",
+      "commit": "e40a45ec2a074b90703b3b4b842c8a3adbd6ada3",
+      "status": "measured",
+      "timeout_seconds": 8,
+      "max_connections": 1,
+      "parsing": false,
+      "enrichment": false,
+      "retries": 0,
+      "python_version": "3.12.14",
+      "requests_version": "2.34.2",
+      "selected_rules_sha256": "fcc608f68c2c017993e5612056686509554f779b3c499cca9407c5d5d5b6b244",
+      "started_at_utc": "2026-11-01T16:40:32Z",
+      "finished_at_utc": "2026-11-01T16:41:02Z"
+    },
+    "maigret": {
+      "label": "Maigret",
+      "package": "maigret",
+      "version": "0.6.6",
+      "repository": "https://github.com/soxoj/maigret",
+      "commit": "b6642744988e7e6c2d21f75db60ec3093019ba25",
+      "status": "measured",
+      "timeout_seconds": 8,
+      "max_connections": 1,
+      "parsing": false,
+      "enrichment": false,
+      "retries": 0,
+      "python_version": "3.12.14",
+      "requests_version": "2.34.2",
+      "selected_rules_sha256": "e12b50a3a08894710e2f98264ad48ab8fcfdfbe0e46bc35c2a3846b2c74de364",
+      "started_at_utc": "2026-11-01T16:41:02Z",
+      "finished_at_utc": "2026-11-01T16:41:33Z"
+    }
+  },
+  "environment": {
+    "network": "local Windows workstation",
+    "platform_concurrency": 1,
+    "order": "All reference observations first, then MyRecon, Sherlock, Maigret in sequence",
+    "cache": "Application cache bypassed; upstream/provider caches not controlled",
+    "authentication": "No supplied credentials, cookies, proxies or block bypass. Native response cookies may be handled by upstream libraries.",
+    "retries": 0,
+    "parsing": false,
+    "enrichment": false
+  },
+  "checks": [
+    {
+      "platform": "GitHub",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "GitHub",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "GitHub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C01",
+      "reference": {
+        "url": "https://api.github.com/users/blue",
+        "started_at_utc": "2026-11-01T16:39:28Z",
+        "verdict": "found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "login": "blue",
+          "id": 2706214,
+          "type": "Organization"
+        },
+        "final_url": "https://api.github.com/users/blue",
+        "body_sha256": "8219f7536aef5583eaacdbe3ae4603c501a1bcc57a38a7ec67387e749bff6a4c",
+        "body_bytes": 1160,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:29Z"
+      },
+      "myrecon": {
+        "verdict": "found",
+        "url": "https://github.com/blue",
+        "status_code": 200,
+        "confidence": "high",
+        "reason_code": "api_user",
+        "duration_seconds": 0.437,
+        "started_at_utc": "2026-11-01T16:39:58Z",
+        "finished_at_utc": "2026-11-01T16:39:59Z",
+        "outcome": "supported_match"
+      },
+      "sherlock": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://www.github.com/blue",
+        "similar_search": false,
+        "duration_seconds": 8.125,
+        "started_at_utc": "2026-11-01T16:40:32Z",
+        "finished_at_utc": "2026-11-01T16:40:40Z",
+        "outcome": "supported_match"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://github.com/blue",
+        "similar_search": false,
+        "duration_seconds": 0.719,
+        "started_at_utc": "2026-11-01T16:41:02Z",
+        "finished_at_utc": "2026-11-01T16:41:03Z",
+        "outcome": "supported_match"
+      }
+    },
+    {
+      "platform": "GitHub",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "GitHub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C02",
+      "reference": {
+        "url": "https://api.github.com/users/noonewouldeverusethis7",
+        "started_at_utc": "2026-11-01T16:39:29Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 404,
+        "facts": {},
+        "final_url": "https://api.github.com/users/noonewouldeverusethis7",
+        "body_sha256": "3a32eab6ffbfd1cf2684b1a409bf40db46e46c5eaff44de656e499df05d92730",
+        "body_bytes": 89,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:29Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://github.com/noonewouldeverusethis7",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.406,
+        "started_at_utc": "2026-11-01T16:39:59Z",
+        "finished_at_utc": "2026-11-01T16:39:59Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://www.github.com/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.515,
+        "started_at_utc": "2026-11-01T16:40:41Z",
+        "finished_at_utc": "2026-11-01T16:40:41Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://github.com/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.453,
+        "started_at_utc": "2026-11-01T16:41:03Z",
+        "finished_at_utc": "2026-11-01T16:41:03Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "GitHub",
+      "handle": "mr2631dca0640c",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitHub/0)",
+      "id": "C03",
+      "reference": {
+        "url": "https://api.github.com/users/mr2631dca0640c",
+        "started_at_utc": "2026-11-01T16:39:30Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 404,
+        "facts": {},
+        "final_url": "https://api.github.com/users/mr2631dca0640c",
+        "body_sha256": "3a32eab6ffbfd1cf2684b1a409bf40db46e46c5eaff44de656e499df05d92730",
+        "body_bytes": 89,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:30Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://github.com/mr2631dca0640c",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.407,
+        "started_at_utc": "2026-11-01T16:40:00Z",
+        "finished_at_utc": "2026-11-01T16:40:00Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://www.github.com/mr2631dca0640c",
+        "similar_search": false,
+        "duration_seconds": 0.562,
+        "started_at_utc": "2026-11-01T16:40:41Z",
+        "finished_at_utc": "2026-11-01T16:40:42Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://github.com/mr2631dca0640c",
+        "similar_search": false,
+        "duration_seconds": 0.438,
+        "started_at_utc": "2026-11-01T16:41:04Z",
+        "finished_at_utc": "2026-11-01T16:41:04Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "GitHub",
+      "handle": "mr266fca2f9c9b",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitHub/1)",
+      "id": "C04",
+      "reference": {
+        "url": "https://api.github.com/users/mr266fca2f9c9b",
+        "started_at_utc": "2026-11-01T16:39:30Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 404,
+        "facts": {},
+        "final_url": "https://api.github.com/users/mr266fca2f9c9b",
+        "body_sha256": "3a32eab6ffbfd1cf2684b1a409bf40db46e46c5eaff44de656e499df05d92730",
+        "body_bytes": 89,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:31Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://github.com/mr266fca2f9c9b",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.406,
+        "started_at_utc": "2026-11-01T16:40:00Z",
+        "finished_at_utc": "2026-11-01T16:40:01Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://www.github.com/mr266fca2f9c9b",
+        "similar_search": false,
+        "duration_seconds": 0.547,
+        "started_at_utc": "2026-11-01T16:40:42Z",
+        "finished_at_utc": "2026-11-01T16:40:43Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://github.com/mr266fca2f9c9b",
+        "similar_search": false,
+        "duration_seconds": 0.453,
+        "started_at_utc": "2026-11-01T16:41:04Z",
+        "finished_at_utc": "2026-11-01T16:41:05Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "GitLab",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "GitLab",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "GitLab",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C05",
+      "reference": {
+        "url": "https://gitlab.com/api/v4/users?username=blue",
+        "started_at_utc": "2026-11-01T16:39:31Z",
+        "verdict": "found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "users": [
+            {
+              "id": 49491,
+              "username": "Blue"
+            }
+          ]
+        },
+        "final_url": "https://gitlab.com/api/v4/users?username=blue",
+        "body_sha256": "0a2e53b6e78cf5c3fcb4ffa8732ceda458088724f2837306b259606f144071f9",
+        "body_bytes": 273,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:32Z"
+      },
+      "myrecon": {
+        "verdict": "found",
+        "url": "https://gitlab.com/blue",
+        "status_code": 200,
+        "confidence": "high",
+        "reason_code": "api_user",
+        "duration_seconds": 0.421,
+        "started_at_utc": "2026-11-01T16:40:01Z",
+        "finished_at_utc": "2026-11-01T16:40:02Z",
+        "outcome": "supported_match"
+      },
+      "sherlock": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://gitlab.com/blue",
+        "similar_search": false,
+        "duration_seconds": 0.375,
+        "started_at_utc": "2026-11-01T16:40:43Z",
+        "finished_at_utc": "2026-11-01T16:40:44Z",
+        "outcome": "supported_match"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://gitlab.com/blue",
+        "similar_search": false,
+        "duration_seconds": 0.453,
+        "started_at_utc": "2026-11-01T16:41:05Z",
+        "finished_at_utc": "2026-11-01T16:41:06Z",
+        "outcome": "supported_match"
+      }
+    },
+    {
+      "platform": "GitLab",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "GitLab",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C06",
+      "reference": {
+        "url": "https://gitlab.com/api/v4/users?username=noonewouldeverusethis7",
+        "started_at_utc": "2026-11-01T16:39:32Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "users": []
+        },
+        "final_url": "https://gitlab.com/api/v4/users?username=noonewouldeverusethis7",
+        "body_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "body_bytes": 2,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:32Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://gitlab.com/noonewouldeverusethis7",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.39,
+        "started_at_utc": "2026-11-01T16:40:02Z",
+        "finished_at_utc": "2026-11-01T16:40:02Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://gitlab.com/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.406,
+        "started_at_utc": "2026-11-01T16:40:44Z",
+        "finished_at_utc": "2026-11-01T16:40:44Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://gitlab.com/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.546,
+        "started_at_utc": "2026-11-01T16:41:06Z",
+        "finished_at_utc": "2026-11-01T16:41:07Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "GitLab",
+      "handle": "mr26ffdf1cdcf0",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitLab/0)",
+      "id": "C07",
+      "reference": {
+        "url": "https://gitlab.com/api/v4/users?username=mr26ffdf1cdcf0",
+        "started_at_utc": "2026-11-01T16:39:33Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "users": []
+        },
+        "final_url": "https://gitlab.com/api/v4/users?username=mr26ffdf1cdcf0",
+        "body_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "body_bytes": 2,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:33Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://gitlab.com/mr26ffdf1cdcf0",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.375,
+        "started_at_utc": "2026-11-01T16:40:03Z",
+        "finished_at_utc": "2026-11-01T16:40:03Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://gitlab.com/mr26ffdf1cdcf0",
+        "similar_search": false,
+        "duration_seconds": 0.407,
+        "started_at_utc": "2026-11-01T16:40:45Z",
+        "finished_at_utc": "2026-11-01T16:40:45Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://gitlab.com/mr26ffdf1cdcf0",
+        "similar_search": false,
+        "duration_seconds": 0.437,
+        "started_at_utc": "2026-11-01T16:41:07Z",
+        "finished_at_utc": "2026-11-01T16:41:07Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "GitLab",
+      "handle": "mr262594155896",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitLab/1)",
+      "id": "C08",
+      "reference": {
+        "url": "https://gitlab.com/api/v4/users?username=mr262594155896",
+        "started_at_utc": "2026-11-01T16:39:33Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "users": []
+        },
+        "final_url": "https://gitlab.com/api/v4/users?username=mr262594155896",
+        "body_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "body_bytes": 2,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:34Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://gitlab.com/mr262594155896",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.406,
+        "started_at_utc": "2026-11-01T16:40:03Z",
+        "finished_at_utc": "2026-11-01T16:40:04Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://gitlab.com/mr262594155896",
+        "similar_search": false,
+        "duration_seconds": 0.375,
+        "started_at_utc": "2026-11-01T16:40:45Z",
+        "finished_at_utc": "2026-11-01T16:40:46Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://gitlab.com/mr262594155896",
+        "similar_search": false,
+        "duration_seconds": 0.422,
+        "started_at_utc": "2026-11-01T16:41:08Z",
+        "finished_at_utc": "2026-11-01T16:41:08Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "HackerNews",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        }
+      ],
+      "id": "C09",
+      "reference": {
+        "url": "https://hacker-news.firebaseio.com/v0/user/blue.json",
+        "started_at_utc": "2026-11-01T16:39:34Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "response": null
+        },
+        "final_url": "https://hacker-news.firebaseio.com/v0/user/blue.json",
+        "body_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "body_bytes": 4,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:35Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://news.ycombinator.com/user?id=blue",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.671,
+        "started_at_utc": "2026-11-01T16:40:04Z",
+        "finished_at_utc": "2026-11-01T16:40:05Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:46Z",
+        "finished_at_utc": "2026-11-01T16:40:46Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://news.ycombinator.com/user?id=blue",
+        "similar_search": false,
+        "duration_seconds": 0.765,
+        "started_at_utc": "2026-11-01T16:41:08Z",
+        "finished_at_utc": "2026-11-01T16:41:09Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "pg",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "HackerNews",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C10",
+      "reference": {
+        "url": "https://hacker-news.firebaseio.com/v0/user/pg.json",
+        "started_at_utc": "2026-11-01T16:39:35Z",
+        "verdict": "found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "id": "pg",
+          "created": 1160418092
+        },
+        "final_url": "https://hacker-news.firebaseio.com/v0/user/pg.json",
+        "body_sha256": "ffb065ab9c2ed319c24f12e88aa764e8ab3a53f4d3bd32befc69b5c1e27c9e92",
+        "body_bytes": 114543,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:36Z"
+      },
+      "myrecon": {
+        "verdict": "found",
+        "url": "https://news.ycombinator.com/user?id=pg",
+        "status_code": 200,
+        "confidence": "high",
+        "reason_code": "api_user",
+        "duration_seconds": 1.937,
+        "started_at_utc": "2026-11-01T16:40:05Z",
+        "finished_at_utc": "2026-11-01T16:40:07Z",
+        "outcome": "supported_match"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:46Z",
+        "finished_at_utc": "2026-11-01T16:40:46Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://news.ycombinator.com/user?id=pg",
+        "similar_search": false,
+        "duration_seconds": 0.765,
+        "started_at_utc": "2026-11-01T16:41:09Z",
+        "finished_at_utc": "2026-11-01T16:41:10Z",
+        "outcome": "supported_match"
+      }
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "HackerNews",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C11",
+      "reference": {
+        "url": "https://hacker-news.firebaseio.com/v0/user/noonewouldeverusethis7.json",
+        "started_at_utc": "2026-11-01T16:39:36Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "response": null
+        },
+        "final_url": "https://hacker-news.firebaseio.com/v0/user/noonewouldeverusethis7.json",
+        "body_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "body_bytes": 4,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:37Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://news.ycombinator.com/user?id=noonewouldeverusethis7",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.703,
+        "started_at_utc": "2026-11-01T16:40:07Z",
+        "finished_at_utc": "2026-11-01T16:40:08Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:47Z",
+        "finished_at_utc": "2026-11-01T16:40:47Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://news.ycombinator.com/user?id=noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.672,
+        "started_at_utc": "2026-11-01T16:41:11Z",
+        "finished_at_utc": "2026-11-01T16:41:11Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "mr26a5262ed92a",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Hacker News/0)",
+      "id": "C12",
+      "reference": {
+        "url": "https://hacker-news.firebaseio.com/v0/user/mr26a5262ed92a.json",
+        "started_at_utc": "2026-11-01T16:39:37Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "response": null
+        },
+        "final_url": "https://hacker-news.firebaseio.com/v0/user/mr26a5262ed92a.json",
+        "body_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "body_bytes": 4,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:38Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://news.ycombinator.com/user?id=mr26a5262ed92a",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.703,
+        "started_at_utc": "2026-11-01T16:40:08Z",
+        "finished_at_utc": "2026-11-01T16:40:09Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:47Z",
+        "finished_at_utc": "2026-11-01T16:40:47Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://news.ycombinator.com/user?id=mr26a5262ed92a",
+        "similar_search": false,
+        "duration_seconds": 0.687,
+        "started_at_utc": "2026-11-01T16:41:11Z",
+        "finished_at_utc": "2026-11-01T16:41:12Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "mr26addcf71f1b",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Hacker News/1)",
+      "id": "C13",
+      "reference": {
+        "url": "https://hacker-news.firebaseio.com/v0/user/mr26addcf71f1b.json",
+        "started_at_utc": "2026-11-01T16:39:38Z",
+        "verdict": "not_found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "response": null
+        },
+        "final_url": "https://hacker-news.firebaseio.com/v0/user/mr26addcf71f1b.json",
+        "body_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "body_bytes": 4,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:39Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://news.ycombinator.com/user?id=mr26addcf71f1b",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.734,
+        "started_at_utc": "2026-11-01T16:40:09Z",
+        "finished_at_utc": "2026-11-01T16:40:10Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:47Z",
+        "finished_at_utc": "2026-11-01T16:40:47Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://news.ycombinator.com/user?id=mr26addcf71f1b",
+        "similar_search": false,
+        "duration_seconds": 0.672,
+        "started_at_utc": "2026-11-01T16:41:13Z",
+        "finished_at_utc": "2026-11-01T16:41:13Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "Docker Hub",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "Docker Hub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C14",
+      "reference": {
+        "url": "https://hub.docker.com/v2/users/blue/",
+        "started_at_utc": "2026-11-01T16:39:39Z",
+        "verdict": "found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "id": "95ae08ca74c011e4bea40242ac11001b",
+          "username": "blue"
+        },
+        "final_url": "https://hub.docker.com/v2/users/blue/",
+        "body_sha256": "caa528c1431c9a1fcd00622ac17f4a3084b2c4ecbd0cf235d99b689b9aef6809",
+        "body_bytes": 260,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:40Z"
+      },
+      "myrecon": {
+        "verdict": "found",
+        "url": "https://hub.docker.com/u/blue",
+        "status_code": 200,
+        "confidence": "high",
+        "reason_code": "api_user",
+        "duration_seconds": 1.203,
+        "started_at_utc": "2026-11-01T16:40:10Z",
+        "finished_at_utc": "2026-11-01T16:40:11Z",
+        "outcome": "supported_match"
+      },
+      "sherlock": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://hub.docker.com/u/blue/",
+        "similar_search": false,
+        "duration_seconds": 0.407,
+        "started_at_utc": "2026-11-01T16:40:48Z",
+        "finished_at_utc": "2026-11-01T16:40:48Z",
+        "outcome": "supported_match"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://hub.docker.com/u/blue/",
+        "similar_search": false,
+        "duration_seconds": 0.5,
+        "started_at_utc": "2026-11-01T16:41:14Z",
+        "finished_at_utc": "2026-11-01T16:41:14Z",
+        "outcome": "supported_match"
+      }
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "Docker Hub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C15",
+      "reference": {
+        "url": "https://hub.docker.com/v2/users/noonewouldeverusethis7/",
+        "started_at_utc": "2026-11-01T16:39:41Z",
+        "verdict": "not_found",
+        "evidence": "explicit_api_absence",
+        "status_code": 404,
+        "facts": {
+          "status": 404
+        },
+        "final_url": "https://hub.docker.com/v2/users/noonewouldeverusethis7/",
+        "body_sha256": "ce647ba212528d494aa70ae747eb5b6fb7c0d1e6564b0e0df7614cd85dae8b87",
+        "body_bytes": 77,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:41Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://hub.docker.com/u/noonewouldeverusethis7",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.36,
+        "started_at_utc": "2026-11-01T16:40:12Z",
+        "finished_at_utc": "2026-11-01T16:40:12Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://hub.docker.com/u/noonewouldeverusethis7/",
+        "similar_search": false,
+        "duration_seconds": 0.375,
+        "started_at_utc": "2026-11-01T16:40:48Z",
+        "finished_at_utc": "2026-11-01T16:40:49Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://hub.docker.com/u/noonewouldeverusethis7/",
+        "similar_search": false,
+        "duration_seconds": 0.422,
+        "started_at_utc": "2026-11-01T16:41:14Z",
+        "finished_at_utc": "2026-11-01T16:41:15Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "mr2601a3dfd80e",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Docker Hub/0)",
+      "id": "C16",
+      "reference": {
+        "url": "https://hub.docker.com/v2/users/mr2601a3dfd80e/",
+        "started_at_utc": "2026-11-01T16:39:41Z",
+        "verdict": "not_found",
+        "evidence": "explicit_api_absence",
+        "status_code": 404,
+        "facts": {
+          "status": 404
+        },
+        "final_url": "https://hub.docker.com/v2/users/mr2601a3dfd80e/",
+        "body_sha256": "f629d5b5b3e00931411c3de3e7b9a567568f39aa033cbe46958e1010158346a7",
+        "body_bytes": 69,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:42Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://hub.docker.com/u/mr2601a3dfd80e",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.36,
+        "started_at_utc": "2026-11-01T16:40:12Z",
+        "finished_at_utc": "2026-11-01T16:40:13Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://hub.docker.com/u/mr2601a3dfd80e/",
+        "similar_search": false,
+        "duration_seconds": 0.39,
+        "started_at_utc": "2026-11-01T16:40:49Z",
+        "finished_at_utc": "2026-11-01T16:40:49Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://hub.docker.com/u/mr2601a3dfd80e/",
+        "similar_search": false,
+        "duration_seconds": 0.453,
+        "started_at_utc": "2026-11-01T16:41:15Z",
+        "finished_at_utc": "2026-11-01T16:41:15Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "mr26c93fc4743b",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Docker Hub/1)",
+      "id": "C17",
+      "reference": {
+        "url": "https://hub.docker.com/v2/users/mr26c93fc4743b/",
+        "started_at_utc": "2026-11-01T16:39:42Z",
+        "verdict": "not_found",
+        "evidence": "explicit_api_absence",
+        "status_code": 404,
+        "facts": {
+          "status": 404
+        },
+        "final_url": "https://hub.docker.com/v2/users/mr26c93fc4743b/",
+        "body_sha256": "a077a7a0e646c04a71353fcfe957b9b721fe84b78667cf51fa61359c8c1bc970",
+        "body_bytes": 69,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:43Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://hub.docker.com/u/mr26c93fc4743b",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.391,
+        "started_at_utc": "2026-11-01T16:40:13Z",
+        "finished_at_utc": "2026-11-01T16:40:14Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://hub.docker.com/u/mr26c93fc4743b/",
+        "similar_search": false,
+        "duration_seconds": 0.375,
+        "started_at_utc": "2026-11-01T16:40:50Z",
+        "finished_at_utc": "2026-11-01T16:40:50Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://hub.docker.com/u/mr26c93fc4743b/",
+        "similar_search": false,
+        "duration_seconds": 0.484,
+        "started_at_utc": "2026-11-01T16:41:16Z",
+        "finished_at_utc": "2026-11-01T16:41:16Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "DEV Community",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "DEV Community",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C18",
+      "reference": {
+        "url": "https://dev.to/api/users/by_username?url=blue",
+        "started_at_utc": "2026-11-01T16:39:43Z",
+        "verdict": "found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "id": 128560,
+          "username": "blue",
+          "type_of": "user"
+        },
+        "final_url": "https://dev.to/api/users/by_username?url=blue",
+        "body_sha256": "108106b0708f1a419c94aef206dd0d95e339d287dc8ea4133ae362cac1cf8a2a",
+        "body_bytes": 503,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:43Z"
+      },
+      "myrecon": {
+        "verdict": "found",
+        "url": "https://dev.to/blue",
+        "status_code": 200,
+        "confidence": "high",
+        "reason_code": "api_user",
+        "duration_seconds": 1.875,
+        "started_at_utc": "2026-11-01T16:40:14Z",
+        "finished_at_utc": "2026-11-01T16:40:16Z",
+        "outcome": "supported_match"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:50Z",
+        "finished_at_utc": "2026-11-01T16:40:50Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://dev.to/blue",
+        "similar_search": false,
+        "duration_seconds": 0.594,
+        "started_at_utc": "2026-11-01T16:41:17Z",
+        "finished_at_utc": "2026-11-01T16:41:17Z",
+        "outcome": "supported_match"
+      }
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "DEV Community",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C19",
+      "reference": {
+        "url": "https://dev.to/api/users/by_username?url=noonewouldeverusethis7",
+        "started_at_utc": "2026-11-01T16:39:44Z",
+        "verdict": "not_found",
+        "evidence": "explicit_api_absence",
+        "status_code": 404,
+        "facts": {
+          "status": 404
+        },
+        "final_url": "https://dev.to/api/users/by_username?url=noonewouldeverusethis7",
+        "body_sha256": "e8c770f12b137822dd89ccdb021c5358339cfd167b630a350e7949b82ab42a01",
+        "body_bytes": 34,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:44Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://dev.to/noonewouldeverusethis7",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.187,
+        "started_at_utc": "2026-11-01T16:40:16Z",
+        "finished_at_utc": "2026-11-01T16:40:16Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:51Z",
+        "finished_at_utc": "2026-11-01T16:40:51Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://dev.to/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 1.078,
+        "started_at_utc": "2026-11-01T16:41:18Z",
+        "finished_at_utc": "2026-11-01T16:41:19Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "mr26534c469177",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Dev.to/0)",
+      "id": "C20",
+      "reference": {
+        "url": "https://dev.to/api/users/by_username?url=mr26534c469177",
+        "started_at_utc": "2026-11-01T16:39:45Z",
+        "verdict": "not_found",
+        "evidence": "explicit_api_absence",
+        "status_code": 404,
+        "facts": {
+          "status": 404
+        },
+        "final_url": "https://dev.to/api/users/by_username?url=mr26534c469177",
+        "body_sha256": "e8c770f12b137822dd89ccdb021c5358339cfd167b630a350e7949b82ab42a01",
+        "body_bytes": 34,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:45Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://dev.to/mr26534c469177",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.109,
+        "started_at_utc": "2026-11-01T16:40:17Z",
+        "finished_at_utc": "2026-11-01T16:40:17Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:51Z",
+        "finished_at_utc": "2026-11-01T16:40:51Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://dev.to/mr26534c469177",
+        "similar_search": false,
+        "duration_seconds": 1.047,
+        "started_at_utc": "2026-11-01T16:41:19Z",
+        "finished_at_utc": "2026-11-01T16:41:20Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "mr2608fdaeabff",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Dev.to/1)",
+      "id": "C21",
+      "reference": {
+        "url": "https://dev.to/api/users/by_username?url=mr2608fdaeabff",
+        "started_at_utc": "2026-11-01T16:39:45Z",
+        "verdict": "not_found",
+        "evidence": "explicit_api_absence",
+        "status_code": 404,
+        "facts": {
+          "status": 404
+        },
+        "final_url": "https://dev.to/api/users/by_username?url=mr2608fdaeabff",
+        "body_sha256": "e8c770f12b137822dd89ccdb021c5358339cfd167b630a350e7949b82ab42a01",
+        "body_bytes": 34,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:46Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://dev.to/mr2608fdaeabff",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.062,
+        "started_at_utc": "2026-11-01T16:40:17Z",
+        "finished_at_utc": "2026-11-01T16:40:17Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "reason_code": "upstream_excluded",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:40:51Z",
+        "finished_at_utc": "2026-11-01T16:40:51Z",
+        "outcome": "unresolved_prediction"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://dev.to/mr2608fdaeabff",
+        "similar_search": false,
+        "duration_seconds": 1.062,
+        "started_at_utc": "2026-11-01T16:41:20Z",
+        "finished_at_utc": "2026-11-01T16:41:22Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "npm",
+      "handle": "kennethsweezy",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "npm",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        }
+      ],
+      "id": "C22",
+      "reference": {
+        "url": "https://registry.npmjs.org/-/user/org.couchdb.user:kennethsweezy",
+        "started_at_utc": "2026-11-01T16:39:47Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 401,
+        "facts": {},
+        "final_url": "https://registry.npmjs.org/-/user/org.couchdb.user:kennethsweezy",
+        "body_sha256": "38667e60226bf99701916900a2a265233dcc014e1206c173ade921d608824b53",
+        "body_bytes": 12,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:47Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://www.npmjs.com/~kennethsweezy",
+        "status_code": 403,
+        "confidence": "unverified",
+        "reason_code": "http_denial_or_error",
+        "duration_seconds": 0.359,
+        "started_at_utc": "2026-11-01T16:40:17Z",
+        "finished_at_utc": "2026-11-01T16:40:18Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "native_status": "AVAILABLE",
+        "status_code": 403,
+        "reason_code": "http_denial_or_error",
+        "url": "https://www.npmjs.com/~kennethsweezy",
+        "similar_search": false,
+        "duration_seconds": 0.109,
+        "started_at_utc": "2026-11-01T16:40:52Z",
+        "finished_at_utc": "2026-11-01T16:40:52Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://www.npmjs.com/~kennethsweezy",
+        "similar_search": false,
+        "duration_seconds": 1.078,
+        "started_at_utc": "2026-11-01T16:41:22Z",
+        "finished_at_utc": "2026-11-01T16:41:23Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "npm",
+      "handle": "sindresorhus",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "NPM",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C23",
+      "reference": {
+        "url": "https://registry.npmjs.org/-/user/org.couchdb.user:sindresorhus",
+        "started_at_utc": "2026-11-01T16:39:47Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 401,
+        "facts": {},
+        "final_url": "https://registry.npmjs.org/-/user/org.couchdb.user:sindresorhus",
+        "body_sha256": "38667e60226bf99701916900a2a265233dcc014e1206c173ade921d608824b53",
+        "body_bytes": 12,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:48Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://www.npmjs.com/~sindresorhus",
+        "status_code": 403,
+        "confidence": "unverified",
+        "reason_code": "http_denial_or_error",
+        "duration_seconds": 0.391,
+        "started_at_utc": "2026-11-01T16:40:18Z",
+        "finished_at_utc": "2026-11-01T16:40:18Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "native_status": "AVAILABLE",
+        "status_code": 403,
+        "reason_code": "http_denial_or_error",
+        "url": "https://www.npmjs.com/~sindresorhus",
+        "similar_search": false,
+        "duration_seconds": 0.047,
+        "started_at_utc": "2026-11-01T16:40:52Z",
+        "finished_at_utc": "2026-11-01T16:40:52Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://www.npmjs.com/~sindresorhus",
+        "similar_search": false,
+        "duration_seconds": 0.391,
+        "started_at_utc": "2026-11-01T16:41:23Z",
+        "finished_at_utc": "2026-11-01T16:41:24Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "npm",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "NPM",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C24",
+      "reference": {
+        "url": "https://registry.npmjs.org/-/user/org.couchdb.user:noonewouldeverusethis7",
+        "started_at_utc": "2026-11-01T16:39:48Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 401,
+        "facts": {},
+        "final_url": "https://registry.npmjs.org/-/user/org.couchdb.user:noonewouldeverusethis7",
+        "body_sha256": "38667e60226bf99701916900a2a265233dcc014e1206c173ade921d608824b53",
+        "body_bytes": 12,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:48Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://www.npmjs.com/~noonewouldeverusethis7",
+        "status_code": 403,
+        "confidence": "unverified",
+        "reason_code": "http_denial_or_error",
+        "duration_seconds": 1.078,
+        "started_at_utc": "2026-11-01T16:40:19Z",
+        "finished_at_utc": "2026-11-01T16:40:20Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "native_status": "AVAILABLE",
+        "status_code": 403,
+        "reason_code": "http_denial_or_error",
+        "url": "https://www.npmjs.com/~noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.047,
+        "started_at_utc": "2026-11-01T16:40:52Z",
+        "finished_at_utc": "2026-11-01T16:40:53Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://www.npmjs.com/~noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.359,
+        "started_at_utc": "2026-11-01T16:41:24Z",
+        "finished_at_utc": "2026-11-01T16:41:24Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "npm",
+      "handle": "mr266aca0fe160",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/npm/0)",
+      "id": "C25",
+      "reference": {
+        "url": "https://registry.npmjs.org/-/user/org.couchdb.user:mr266aca0fe160",
+        "started_at_utc": "2026-11-01T16:39:49Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 401,
+        "facts": {},
+        "final_url": "https://registry.npmjs.org/-/user/org.couchdb.user:mr266aca0fe160",
+        "body_sha256": "38667e60226bf99701916900a2a265233dcc014e1206c173ade921d608824b53",
+        "body_bytes": 12,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:49Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://www.npmjs.com/~mr266aca0fe160",
+        "status_code": 403,
+        "confidence": "unverified",
+        "reason_code": "http_denial_or_error",
+        "duration_seconds": 0.406,
+        "started_at_utc": "2026-11-01T16:40:20Z",
+        "finished_at_utc": "2026-11-01T16:40:21Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "native_status": "AVAILABLE",
+        "status_code": 403,
+        "reason_code": "http_denial_or_error",
+        "url": "https://www.npmjs.com/~mr266aca0fe160",
+        "similar_search": false,
+        "duration_seconds": 0.062,
+        "started_at_utc": "2026-11-01T16:40:53Z",
+        "finished_at_utc": "2026-11-01T16:40:53Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://www.npmjs.com/~mr266aca0fe160",
+        "similar_search": false,
+        "duration_seconds": 0.594,
+        "started_at_utc": "2026-11-01T16:41:25Z",
+        "finished_at_utc": "2026-11-01T16:41:25Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "npm",
+      "handle": "mr266911d1a5a3",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/npm/1)",
+      "id": "C26",
+      "reference": {
+        "url": "https://registry.npmjs.org/-/user/org.couchdb.user:mr266911d1a5a3",
+        "started_at_utc": "2026-11-01T16:39:49Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 401,
+        "facts": {},
+        "final_url": "https://registry.npmjs.org/-/user/org.couchdb.user:mr266911d1a5a3",
+        "body_sha256": "38667e60226bf99701916900a2a265233dcc014e1206c173ade921d608824b53",
+        "body_bytes": 12,
+        "content_type": "application/json",
+        "finished_at_utc": "2026-11-01T16:39:49Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://www.npmjs.com/~mr266911d1a5a3",
+        "status_code": 403,
+        "confidence": "unverified",
+        "reason_code": "http_denial_or_error",
+        "duration_seconds": 0.375,
+        "started_at_utc": "2026-11-01T16:40:21Z",
+        "finished_at_utc": "2026-11-01T16:40:21Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "unknown",
+        "native_status": "AVAILABLE",
+        "status_code": 403,
+        "reason_code": "http_denial_or_error",
+        "url": "https://www.npmjs.com/~mr266911d1a5a3",
+        "similar_search": false,
+        "duration_seconds": 0.078,
+        "started_at_utc": "2026-11-01T16:40:53Z",
+        "finished_at_utc": "2026-11-01T16:40:53Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://www.npmjs.com/~mr266911d1a5a3",
+        "similar_search": false,
+        "duration_seconds": 0.422,
+        "started_at_utc": "2026-11-01T16:41:26Z",
+        "finished_at_utc": "2026-11-01T16:41:26Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "Keybase",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "Keybase",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "Keybase",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C27",
+      "reference": {
+        "url": "https://keybase.io/_/api/1.0/user/lookup.json?username=blue",
+        "started_at_utc": "2026-11-01T16:39:50Z",
+        "verdict": "found",
+        "evidence": "typed_official_api",
+        "status_code": 200,
+        "facts": {
+          "id": "56c31aab0d677b3d59e2f2a709461500",
+          "username": "blue"
+        },
+        "final_url": "https://keybase.io/_/api/1.0/user/lookup.json?username=blue",
+        "body_sha256": "2d784c657a5d72cb61069978f715c6d41dc6be47e11d8bf318e4472de5295f46",
+        "body_bytes": 12577,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:51Z"
+      },
+      "myrecon": {
+        "verdict": "found",
+        "url": "https://keybase.io/blue",
+        "status_code": 200,
+        "confidence": "medium",
+        "reason_code": "differential",
+        "duration_seconds": 1.375,
+        "started_at_utc": "2026-11-01T16:40:22Z",
+        "finished_at_utc": "2026-11-01T16:40:23Z",
+        "outcome": "supported_match"
+      },
+      "sherlock": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://keybase.io/blue",
+        "similar_search": false,
+        "duration_seconds": 0.75,
+        "started_at_utc": "2026-11-01T16:40:54Z",
+        "finished_at_utc": "2026-11-01T16:40:54Z",
+        "outcome": "supported_match"
+      },
+      "maigret": {
+        "verdict": "found",
+        "native_status": "CLAIMED",
+        "status_code": 200,
+        "url": "https://keybase.io/blue",
+        "similar_search": false,
+        "duration_seconds": 0.797,
+        "started_at_utc": "2026-11-01T16:41:26Z",
+        "finished_at_utc": "2026-11-01T16:41:27Z",
+        "outcome": "supported_match"
+      }
+    },
+    {
+      "platform": "Keybase",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "Keybase",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C28",
+      "reference": {
+        "url": "https://keybase.io/_/api/1.0/user/lookup.json?username=noonewouldeverusethis7",
+        "started_at_utc": "2026-11-01T16:39:51Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 200,
+        "facts": {},
+        "final_url": "https://keybase.io/_/api/1.0/user/lookup.json?username=noonewouldeverusethis7",
+        "body_sha256": "3784c2f280f6e7b3bf79281d59b36d60500cf8a8e8c15bef93ede371b34423b9",
+        "body_bytes": 103,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:52Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://keybase.io/noonewouldeverusethis7",
+        "status_code": 404,
+        "confidence": "none",
+        "reason_code": "status_absent",
+        "duration_seconds": 1.172,
+        "started_at_utc": "2026-11-01T16:40:23Z",
+        "finished_at_utc": "2026-11-01T16:40:24Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://keybase.io/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.703,
+        "started_at_utc": "2026-11-01T16:40:55Z",
+        "finished_at_utc": "2026-11-01T16:40:55Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://keybase.io/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.844,
+        "started_at_utc": "2026-11-01T16:41:27Z",
+        "finished_at_utc": "2026-11-01T16:41:28Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "Keybase",
+      "handle": "mr2610af8a707d",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Keybase/0)",
+      "id": "C29",
+      "reference": {
+        "url": "https://keybase.io/_/api/1.0/user/lookup.json?username=mr2610af8a707d",
+        "started_at_utc": "2026-11-01T16:39:52Z",
+        "verdict": "not_found",
+        "evidence": "typed_api_absence",
+        "status_code": 200,
+        "facts": {
+          "status_code": 205,
+          "them": null
+        },
+        "final_url": "https://keybase.io/_/api/1.0/user/lookup.json?username=mr2610af8a707d",
+        "body_sha256": "cee6105ccabe20886e18d8a79450ff9d87314c0284b35873fff374e47c67eb43",
+        "body_bytes": 82,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:53Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://keybase.io/mr2610af8a707d",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.797,
+        "started_at_utc": "2026-11-01T16:40:25Z",
+        "finished_at_utc": "2026-11-01T16:40:25Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://keybase.io/mr2610af8a707d",
+        "similar_search": false,
+        "duration_seconds": 0.687,
+        "started_at_utc": "2026-11-01T16:40:56Z",
+        "finished_at_utc": "2026-11-01T16:40:56Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://keybase.io/mr2610af8a707d",
+        "similar_search": false,
+        "duration_seconds": 0.937,
+        "started_at_utc": "2026-11-01T16:41:29Z",
+        "finished_at_utc": "2026-11-01T16:41:29Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "Keybase",
+      "handle": "mr263360af2165",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Keybase/1)",
+      "id": "C30",
+      "reference": {
+        "url": "https://keybase.io/_/api/1.0/user/lookup.json?username=mr263360af2165",
+        "started_at_utc": "2026-11-01T16:39:53Z",
+        "verdict": "not_found",
+        "evidence": "typed_api_absence",
+        "status_code": 200,
+        "facts": {
+          "status_code": 205,
+          "them": null
+        },
+        "final_url": "https://keybase.io/_/api/1.0/user/lookup.json?username=mr263360af2165",
+        "body_sha256": "6513446ecafd12a01fcfbf7f98f500c1117ccc905ef43d1b6b6aea8553b34b1d",
+        "body_bytes": 82,
+        "content_type": "application/json; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:54Z"
+      },
+      "myrecon": {
+        "verdict": "not_found",
+        "url": "https://keybase.io/mr263360af2165",
+        "status_code": 200,
+        "confidence": "none",
+        "reason_code": "api_absent",
+        "duration_seconds": 0.859,
+        "started_at_utc": "2026-11-01T16:40:26Z",
+        "finished_at_utc": "2026-11-01T16:40:27Z",
+        "outcome": "supported_absence"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://keybase.io/mr263360af2165",
+        "similar_search": false,
+        "duration_seconds": 0.75,
+        "started_at_utc": "2026-11-01T16:40:57Z",
+        "finished_at_utc": "2026-11-01T16:40:57Z",
+        "outcome": "supported_absence"
+      },
+      "maigret": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 200,
+        "url": "https://keybase.io/mr263360af2165",
+        "similar_search": false,
+        "duration_seconds": 0.812,
+        "started_at_utc": "2026-11-01T16:41:30Z",
+        "finished_at_utc": "2026-11-01T16:41:31Z",
+        "outcome": "supported_absence"
+      }
+    },
+    {
+      "platform": "PyPI",
+      "handle": "Blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "PyPi",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        }
+      ],
+      "id": "C31",
+      "reference": {
+        "url": "https://pypi.org/user/Blue/",
+        "started_at_utc": "2026-11-01T16:39:55Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 200,
+        "facts": {
+          "title": "Client Challenge"
+        },
+        "final_url": "https://pypi.org/user/Blue/",
+        "body_sha256": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+        "body_bytes": 3038,
+        "content_type": "text/html; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:55Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://pypi.org/user/Blue/",
+        "status_code": 200,
+        "confidence": "unverified",
+        "reason_code": "echo_only",
+        "duration_seconds": 0.765,
+        "started_at_utc": "2026-11-01T16:40:27Z",
+        "finished_at_utc": "2026-11-01T16:40:28Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://pypi.org/user/Blue",
+        "similar_search": false,
+        "duration_seconds": 0.422,
+        "started_at_utc": "2026-11-01T16:40:58Z",
+        "finished_at_utc": "2026-11-01T16:40:58Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "unknown",
+        "reason_code": "unsupported_disabled_or_protected",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:41:31Z",
+        "finished_at_utc": "2026-11-01T16:41:31Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "PyPI",
+      "handle": "adam",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "PyPi",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C32",
+      "reference": {
+        "url": "https://pypi.org/user/adam/",
+        "started_at_utc": "2026-11-01T16:39:55Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 200,
+        "facts": {
+          "title": "Client Challenge"
+        },
+        "final_url": "https://pypi.org/user/adam/",
+        "body_sha256": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+        "body_bytes": 3038,
+        "content_type": "text/html; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:56Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://pypi.org/user/adam/",
+        "status_code": 200,
+        "confidence": "unverified",
+        "reason_code": "echo_only",
+        "duration_seconds": 0.656,
+        "started_at_utc": "2026-11-01T16:40:28Z",
+        "finished_at_utc": "2026-11-01T16:40:29Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://pypi.org/user/adam",
+        "similar_search": false,
+        "duration_seconds": 0.484,
+        "started_at_utc": "2026-11-01T16:40:58Z",
+        "finished_at_utc": "2026-11-01T16:40:59Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "unknown",
+        "reason_code": "unsupported_disabled_or_protected",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:41:31Z",
+        "finished_at_utc": "2026-11-01T16:41:31Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "PyPI",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "PyPi",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C33",
+      "reference": {
+        "url": "https://pypi.org/user/noonewouldeverusethis7/",
+        "started_at_utc": "2026-11-01T16:39:56Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 200,
+        "facts": {
+          "title": "Client Challenge"
+        },
+        "final_url": "https://pypi.org/user/noonewouldeverusethis7/",
+        "body_sha256": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+        "body_bytes": 3038,
+        "content_type": "text/html; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:56Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://pypi.org/user/noonewouldeverusethis7/",
+        "status_code": 200,
+        "confidence": "unverified",
+        "reason_code": "echo_only",
+        "duration_seconds": 0.86,
+        "started_at_utc": "2026-11-01T16:40:29Z",
+        "finished_at_utc": "2026-11-01T16:40:30Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://pypi.org/user/noonewouldeverusethis7",
+        "similar_search": false,
+        "duration_seconds": 0.562,
+        "started_at_utc": "2026-11-01T16:40:59Z",
+        "finished_at_utc": "2026-11-01T16:41:00Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "unknown",
+        "reason_code": "unsupported_disabled_or_protected",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:41:32Z",
+        "finished_at_utc": "2026-11-01T16:41:32Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "PyPI",
+      "handle": "mr264407671dfd",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/PyPI/0)",
+      "id": "C34",
+      "reference": {
+        "url": "https://pypi.org/user/mr264407671dfd/",
+        "started_at_utc": "2026-11-01T16:39:57Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 200,
+        "facts": {
+          "title": "Client Challenge"
+        },
+        "final_url": "https://pypi.org/user/mr264407671dfd/",
+        "body_sha256": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+        "body_bytes": 3038,
+        "content_type": "text/html; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:57Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://pypi.org/user/mr264407671dfd/",
+        "status_code": 200,
+        "confidence": "unverified",
+        "reason_code": "echo_only",
+        "duration_seconds": 0.735,
+        "started_at_utc": "2026-11-01T16:40:30Z",
+        "finished_at_utc": "2026-11-01T16:40:31Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://pypi.org/user/mr264407671dfd",
+        "similar_search": false,
+        "duration_seconds": 0.515,
+        "started_at_utc": "2026-11-01T16:41:00Z",
+        "finished_at_utc": "2026-11-01T16:41:01Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "unknown",
+        "reason_code": "unsupported_disabled_or_protected",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:41:32Z",
+        "finished_at_utc": "2026-11-01T16:41:32Z",
+        "outcome": "unscored_reference"
+      }
+    },
+    {
+      "platform": "PyPI",
+      "handle": "mr266f2a56ce0e",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/PyPI/1)",
+      "id": "C35",
+      "reference": {
+        "url": "https://pypi.org/user/mr266f2a56ce0e/",
+        "started_at_utc": "2026-11-01T16:39:57Z",
+        "verdict": "unknown",
+        "evidence": "reference_unresolved",
+        "status_code": 200,
+        "facts": {
+          "title": "Client Challenge"
+        },
+        "final_url": "https://pypi.org/user/mr266f2a56ce0e/",
+        "body_sha256": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+        "body_bytes": 3038,
+        "content_type": "text/html; charset=utf-8",
+        "finished_at_utc": "2026-11-01T16:39:58Z"
+      },
+      "myrecon": {
+        "verdict": "unknown",
+        "url": "https://pypi.org/user/mr266f2a56ce0e/",
+        "status_code": 200,
+        "confidence": "unverified",
+        "reason_code": "echo_only",
+        "duration_seconds": 0.688,
+        "started_at_utc": "2026-11-01T16:40:31Z",
+        "finished_at_utc": "2026-11-01T16:40:32Z",
+        "outcome": "unscored_reference"
+      },
+      "sherlock": {
+        "verdict": "not_found",
+        "native_status": "AVAILABLE",
+        "status_code": 404,
+        "url": "https://pypi.org/user/mr266f2a56ce0e",
+        "similar_search": false,
+        "duration_seconds": 0.547,
+        "started_at_utc": "2026-11-01T16:41:01Z",
+        "finished_at_utc": "2026-11-01T16:41:02Z",
+        "outcome": "unscored_reference"
+      },
+      "maigret": {
+        "verdict": "unknown",
+        "reason_code": "unsupported_disabled_or_protected",
+        "duration_seconds": 0.0,
+        "started_at_utc": "2026-11-01T16:41:32Z",
+        "finished_at_utc": "2026-11-01T16:41:32Z",
+        "outcome": "unscored_reference"
+      }
+    }
+  ],
+  "finished_at_utc": "2026-11-01T16:41:33Z",
+  "summaries": {
+    "myrecon": {
+      "TP": 6,
+      "TN": 18,
+      "FP": 0,
+      "FN": 0,
+      "unknown": 0,
+      "unscored": 11,
+      "unknown_negative": 0,
+      "total": 35,
+      "scored": 24,
+      "negative_denominator": 18,
+      "false_positive_rate_percent": 0.0,
+      "accuracy_percent": 100.0,
+      "coverage_percent": 68.57,
+      "reported_claims": 6,
+      "source_supported_claims": 6,
+      "source_contradicted_claims": 0,
+      "unresolved_claims": 0,
+      "unknown_predictions": 10,
+      "unresolved_checks": 11
+    },
+    "sherlock": {
+      "TP": 4,
+      "TN": 11,
+      "FP": 0,
+      "FN": 0,
+      "unknown": 9,
+      "unscored": 11,
+      "unknown_negative": 7,
+      "total": 35,
+      "scored": 15,
+      "negative_denominator": 11,
+      "false_positive_rate_percent": 0.0,
+      "accuracy_percent": 100.0,
+      "coverage_percent": 42.86,
+      "reported_claims": 4,
+      "source_supported_claims": 4,
+      "source_contradicted_claims": 0,
+      "unresolved_claims": 0,
+      "unknown_predictions": 14,
+      "unresolved_checks": 20
+    },
+    "maigret": {
+      "TP": 6,
+      "TN": 18,
+      "FP": 0,
+      "FN": 0,
+      "unknown": 0,
+      "unscored": 11,
+      "unknown_negative": 0,
+      "total": 35,
+      "scored": 24,
+      "negative_denominator": 18,
+      "false_positive_rate_percent": 0.0,
+      "accuracy_percent": 100.0,
+      "coverage_percent": 68.57,
+      "reported_claims": 8,
+      "source_supported_claims": 6,
+      "source_contradicted_claims": 0,
+      "unresolved_claims": 2,
+      "unknown_predictions": 5,
+      "unresolved_checks": 11
+    }
+  }
+}

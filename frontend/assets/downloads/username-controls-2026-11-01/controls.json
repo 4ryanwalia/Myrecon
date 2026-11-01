@@ -1,0 +1,750 @@
+{
+  "schema_version": 1,
+  "id": "username-controls-2026-11-01",
+  "created_at_utc": "2026-11-01T16:39:22Z",
+  "selection": "Eight developer/community platforms with explicit upstream fixtures and reviewable public references. Every fixture stays on its source platform. Two deterministic synthetic candidates per platform. Sample fixed before predictions.",
+  "ownership": "Published upstream testing fixtures, not accounts owned by MyRecon or the user. Account existence does not establish identity. No personal social-media handles or customer history are included.",
+  "reference_policy": "Fixture labels and generated randomness are expectations only. Current exact account evidence or explicit absence supplies the reference; failures stay unknown.",
+  "platforms": [
+    "GitHub",
+    "GitLab",
+    "Hacker News",
+    "Docker Hub",
+    "Dev.to",
+    "npm",
+    "Keybase",
+    "PyPI"
+  ],
+  "cases": [
+    {
+      "platform": "GitHub",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "GitHub",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "GitHub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C01"
+    },
+    {
+      "platform": "GitHub",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "GitHub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C02"
+    },
+    {
+      "platform": "GitHub",
+      "handle": "mr2631dca0640c",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitHub/0)",
+      "id": "C03"
+    },
+    {
+      "platform": "GitHub",
+      "handle": "mr266fca2f9c9b",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitHub/1)",
+      "id": "C04"
+    },
+    {
+      "platform": "GitLab",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "GitLab",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "GitLab",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C05"
+    },
+    {
+      "platform": "GitLab",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "GitLab",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C06"
+    },
+    {
+      "platform": "GitLab",
+      "handle": "mr26ffdf1cdcf0",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitLab/0)",
+      "id": "C07"
+    },
+    {
+      "platform": "GitLab",
+      "handle": "mr262594155896",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/GitLab/1)",
+      "id": "C08"
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "HackerNews",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        }
+      ],
+      "id": "C09"
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "pg",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "HackerNews",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C10"
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "HackerNews",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C11"
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "mr26a5262ed92a",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Hacker News/0)",
+      "id": "C12"
+    },
+    {
+      "platform": "Hacker News",
+      "handle": "mr26addcf71f1b",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Hacker News/1)",
+      "id": "C13"
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "Docker Hub",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "Docker Hub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C14"
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "Docker Hub",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C15"
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "mr2601a3dfd80e",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Docker Hub/0)",
+      "id": "C16"
+    },
+    {
+      "platform": "Docker Hub",
+      "handle": "mr26c93fc4743b",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Docker Hub/1)",
+      "id": "C17"
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "DEV Community",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "DEV Community",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C18"
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "DEV Community",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C19"
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "mr26534c469177",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Dev.to/0)",
+      "id": "C20"
+    },
+    {
+      "platform": "Dev.to",
+      "handle": "mr2608fdaeabff",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Dev.to/1)",
+      "id": "C21"
+    },
+    {
+      "platform": "npm",
+      "handle": "kennethsweezy",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "npm",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        }
+      ],
+      "id": "C22"
+    },
+    {
+      "platform": "npm",
+      "handle": "sindresorhus",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "NPM",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C23"
+    },
+    {
+      "platform": "npm",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "NPM",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C24"
+    },
+    {
+      "platform": "npm",
+      "handle": "mr266aca0fe160",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/npm/0)",
+      "id": "C25"
+    },
+    {
+      "platform": "npm",
+      "handle": "mr266911d1a5a3",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/npm/1)",
+      "id": "C26"
+    },
+    {
+      "platform": "Keybase",
+      "handle": "blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "Keybase",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        },
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "Keybase",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C27"
+    },
+    {
+      "platform": "Keybase",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "Keybase",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C28"
+    },
+    {
+      "platform": "Keybase",
+      "handle": "mr2610af8a707d",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Keybase/0)",
+      "id": "C29"
+    },
+    {
+      "platform": "Keybase",
+      "handle": "mr263360af2165",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/Keybase/1)",
+      "id": "C30"
+    },
+    {
+      "platform": "PyPI",
+      "handle": "Blue",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "sherlock",
+          "field": "username_claimed",
+          "site_name": "PyPi",
+          "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+        }
+      ],
+      "id": "C31"
+    },
+    {
+      "platform": "PyPI",
+      "handle": "adam",
+      "cohort": "upstream_claimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameClaimed",
+          "site_name": "PyPi",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C32"
+    },
+    {
+      "platform": "PyPI",
+      "handle": "noonewouldeverusethis7",
+      "cohort": "upstream_unclaimed_fixture",
+      "fixture_sources": [
+        {
+          "tool": "maigret",
+          "field": "usernameUnclaimed",
+          "site_name": "PyPi",
+          "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+        }
+      ],
+      "id": "C33"
+    },
+    {
+      "platform": "PyPI",
+      "handle": "mr264407671dfd",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/PyPI/0)",
+      "id": "C34"
+    },
+    {
+      "platform": "PyPI",
+      "handle": "mr266f2a56ce0e",
+      "cohort": "synthetic_negative_candidate",
+      "fixture_sources": [],
+      "generation": "mr26 + first 10 hex SHA256(username-controls-2026-11-01/PyPI/1)",
+      "id": "C35"
+    }
+  ],
+  "rules": {
+    "GitHub": {
+      "sherlock": {
+        "site_name": "GitHub",
+        "rule": {
+          "errorType": "status_code",
+          "regexCheck": "^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$",
+          "url": "https://www.github.com/{}",
+          "urlMain": "https://www.github.com/",
+          "username_claimed": "blue"
+        },
+        "sha256": "21c0b84107a6a838ee8d1dc27ee834a162848a93ef8a97ed13d28dec50035134",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "GitHub",
+        "rule": {
+          "tags": [
+            "business",
+            "coding",
+            "networking"
+          ],
+          "regexCheck": "^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$",
+          "urlProbe": "https://api.github.com/users/{username}",
+          "checkType": "status_code",
+          "alexaRank": 10,
+          "urlMain": "https://www.github.com/",
+          "url": "https://github.com/{username}",
+          "usernameClaimed": "blue",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "3ae976f420695ebd5f1feb9fd8ee6c61eeaac2d249767db34e66601598a22adb",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    },
+    "GitLab": {
+      "sherlock": {
+        "site_name": "GitLab",
+        "rule": {
+          "errorMsg": "[]",
+          "errorType": "message",
+          "url": "https://gitlab.com/{}",
+          "urlMain": "https://gitlab.com/",
+          "urlProbe": "https://gitlab.com/api/v4/users?username={}",
+          "username_claimed": "blue"
+        },
+        "sha256": "ab907f1abc9ab91de2bfbf20f6e877f03b9e30ea33238540e1928d14266452d8",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "GitLab",
+        "rule": {
+          "tags": [
+            "business",
+            "coding",
+            "tech"
+          ],
+          "urlProbe": "https://gitlab.com/api/v4/users?username={username}",
+          "checkType": "message",
+          "absenceStrs": [
+            "[]"
+          ],
+          "alexaRank": 155,
+          "urlMain": "https://gitlab.com/",
+          "url": "https://gitlab.com/{username}",
+          "usernameClaimed": "blue",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "f930446a66fd07bc9a8965346c53bbb877dd9265b45fafd8b2e41ec79686d048",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    },
+    "Hacker News": {
+      "sherlock": {
+        "site_name": "HackerNews",
+        "rule": {
+          "__comment__": "First errMsg invalid, second errMsg rate limited. Not ideal. Adjust for better rate limit filtering.",
+          "errorMsg": [
+            "No such user.",
+            "Sorry."
+          ],
+          "errorType": "message",
+          "url": "https://news.ycombinator.com/user?id={}",
+          "urlMain": "https://news.ycombinator.com/",
+          "username_claimed": "blue"
+        },
+        "sha256": "572eb3b15da823003f5e02b131431c274f7c5dd90563eef121113dbaa3d0474d",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "HackerNews",
+        "rule": {
+          "tags": [
+            "discussion",
+            "news",
+            "tech"
+          ],
+          "checkType": "message",
+          "presenseStrs": [
+            "\"created\""
+          ],
+          "urlMain": "https://news.ycombinator.com/",
+          "url": "https://news.ycombinator.com/user?id={username}",
+          "urlProbe": "https://hacker-news.firebaseio.com/v0/user/{username}.json?shallow=true",
+          "usernameClaimed": "pg",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "27411827b7d86452eac6f0d5eeb0829cb142a5207cc3ef44efd1bba1734e902d",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    },
+    "Docker Hub": {
+      "sherlock": {
+        "site_name": "Docker Hub",
+        "rule": {
+          "errorType": "status_code",
+          "url": "https://hub.docker.com/u/{}/",
+          "urlMain": "https://hub.docker.com/",
+          "urlProbe": "https://hub.docker.com/v2/users/{}/",
+          "username_claimed": "blue"
+        },
+        "sha256": "9bfc825e1a00995134a4ba58b3a1fa060805c89869d1f6d6b058dfe0cb5a6dfd",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "Docker Hub",
+        "rule": {
+          "tags": [
+            "apps",
+            "coding",
+            "tech"
+          ],
+          "urlProbe": "https://hub.docker.com/v2/users/{username}/",
+          "checkType": "status_code",
+          "urlMain": "https://hub.docker.com/",
+          "url": "https://hub.docker.com/u/{username}/",
+          "usernameClaimed": "blue",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "efb8d6e7c39283b2d8b4a15a751eebdc99971730d8846706d3739829d2ebbcdb",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    },
+    "Dev.to": {
+      "sherlock": {
+        "site_name": "DEV Community",
+        "rule": {
+          "errorType": "status_code",
+          "regexCheck": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+          "url": "https://dev.to/{}",
+          "urlMain": "https://dev.to/",
+          "username_claimed": "blue"
+        },
+        "sha256": "2b099182aa2899d288de70c453c9c018af1666ba6753032cded89218410339b2",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "DEV Community",
+        "rule": {
+          "tags": [
+            "career",
+            "coding",
+            "discussion"
+          ],
+          "regexCheck": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+          "checkType": "status_code",
+          "alexaRank": 1119,
+          "urlMain": "https://dev.to/",
+          "url": "https://dev.to/{username}",
+          "usernameClaimed": "blue",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "aeba319e0a6a04fed1cbd476499a5d59727103692ecff30656d1df94d4f3e524",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    },
+    "npm": {
+      "sherlock": {
+        "site_name": "npm",
+        "rule": {
+          "errorType": "status_code",
+          "url": "https://www.npmjs.com/~{}",
+          "urlMain": "https://www.npmjs.com/",
+          "username_claimed": "kennethsweezy"
+        },
+        "sha256": "b770e7bd24a5bcba45203072f15a8cc0238bf09fd92d8a4ea59df7c1f158343d",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "NPM",
+        "rule": {
+          "tags": [
+            "apps",
+            "coding",
+            "tech"
+          ],
+          "checkType": "message",
+          "presenseStrs": [
+            "\"objects\":[{"
+          ],
+          "absenceStrs": [
+            "\"total\":0"
+          ],
+          "alexaRank": 590,
+          "urlMain": "https://www.npmjs.com/",
+          "url": "https://www.npmjs.com/~{username}",
+          "urlProbe": "https://registry.npmjs.org/-/v1/search?text=maintainer:{username}&size=1",
+          "usernameClaimed": "sindresorhus",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "63613edc7c6447ada684c6381c2853de85a036fda2cc6744647e8faccfe026d8",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    },
+    "Keybase": {
+      "sherlock": {
+        "site_name": "Keybase",
+        "rule": {
+          "errorType": "status_code",
+          "url": "https://keybase.io/{}",
+          "urlMain": "https://keybase.io/",
+          "username_claimed": "blue"
+        },
+        "sha256": "001b2b1e1c74ae90c29aed4f0e252af64ca7570bdb906c049d58274f4a0a0c59",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "Keybase",
+        "rule": {
+          "tags": [
+            "business",
+            "crypto",
+            "messaging"
+          ],
+          "urlProbe": "https://keybase.io/_/api/1.0/user/lookup.json?usernames={username}",
+          "checkType": "message",
+          "absenceStrs": [
+            "them\":[null]",
+            "bad list value"
+          ],
+          "alexaRank": 2645,
+          "urlMain": "https://keybase.io/",
+          "url": "https://keybase.io/{username}",
+          "usernameClaimed": "blue",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "8c5a7478ffb531e5893fb3fd9f31e9f2c5c1e88c6bbfdfdb1c5640f0b1f82d24",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    },
+    "PyPI": {
+      "sherlock": {
+        "site_name": "PyPi",
+        "rule": {
+          "errorType": "status_code",
+          "url": "https://pypi.org/user/{}",
+          "urlProbe": "https://pypi.org/_includes/administer-user-include/{}",
+          "urlMain": "https://pypi.org",
+          "username_claimed": "Blue"
+        },
+        "sha256": "61d0e3a0769cc976042dee204d53b086cb719a24aaaed23c0e2bfa03eb871c61",
+        "source_url": "https://github.com/sherlock-project/sherlock/blob/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3/sherlock_project/resources/data.json"
+      },
+      "maigret": {
+        "site_name": "PyPi",
+        "rule": {
+          "disabled": true,
+          "protection": [
+            "custom_bot_protection"
+          ],
+          "tags": [
+            "apps",
+            "coding",
+            "tech"
+          ],
+          "errors": {
+            "Please enable JavaScript to proceed": "Scraping protection"
+          },
+          "checkType": "status_code",
+          "alexaRank": 897,
+          "urlMain": "https://pypi.org/",
+          "url": "https://pypi.org/user/{username}",
+          "usernameClaimed": "adam",
+          "usernameUnclaimed": "noonewouldeverusethis7"
+        },
+        "sha256": "e8482bed75ff096715b73599f8a21473c967083ae5b0adc054dd6544998651f0",
+        "source_url": "https://github.com/soxoj/maigret/blob/b6642744988e7e6c2d21f75db60ec3093019ba25/maigret/resources/data.json"
+      }
+    }
+  },
+  "tool_pins": {
+    "sherlock": {
+      "label": "Sherlock",
+      "package": "sherlock-project",
+      "version": "0.16.2",
+      "repository": "https://github.com/sherlock-project/sherlock",
+      "commit": "e40a45ec2a074b90703b3b4b842c8a3adbd6ada3"
+    },
+    "maigret": {
+      "label": "Maigret",
+      "package": "maigret",
+      "version": "0.6.6",
+      "repository": "https://github.com/soxoj/maigret",
+      "commit": "b6642744988e7e6c2d21f75db60ec3093019ba25"
+    }
+  }
+}
