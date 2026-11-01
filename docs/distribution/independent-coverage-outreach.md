@@ -115,6 +115,10 @@ The existing requests are awaiting external evaluation; no repeat email was sent
 The newer study's loose-file and archive checksums, 35-case manifest, eight-platform
 scope, 105 CSV rows and outcome summaries were checked before linking it here.
 It supplements the original 30-pair evidence; the original records are unchanged.
+The body of [OSINT Framework issue #880](https://github.com/lockfale/OSINT-Framework/issues/880)
+was updated in place with the additional immutable evidence link and its
+limitations. No duplicate issue or follow-up email was sent. The request remains
+open and awaits an external decision.
 
 ## Follow-up and outcome recording
 
