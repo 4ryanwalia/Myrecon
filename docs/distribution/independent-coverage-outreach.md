@@ -8,10 +8,10 @@ The developer's affiliation must remain visible in every submission.
 
 | Recipient | Fit and public route | Status / constraint |
 | --- | --- | --- |
-| OSINT Newsletter / OSINT Tools Library | Reviewed directory and tool coverage. [Submission guide](https://tools.osintnewsletter.com/submission-guide) links its [tool form](https://forms.gle/kFE3Ddj4rbzsnxyUA). | Prepared; submit once through the form. A reviewed listing is not necessarily a hands-on review. |
-| OSINT Framework | Public/free OSINT discovery. [Repository guidelines](https://github.com/lockfale/OSINT-Framework#contribute-with-a-github-pull-request) welcome a PR or issue. | Prepared; one suggestion with reproducibility links. Hosted freemium access must be clear. |
-| Sector035 | Researcher and Week in OSINT publisher. [Homepage](https://sector035.nl/) invites useful tips at sector035@pm.me. | Draft ready; no message sent. Contact is publicly listed, but a current publishing cadence is unconfirmed (visible archive includes 2024). |
-| Sofia Santos / Gralhix | Educator and researcher; [about page](https://gralhix.com/aboutme/) links LinkedIn, Mastodon and Bluesky private messages. | Draft ready; no message sent. Use only her listed professional route; no guessed email. |
+| OSINT Newsletter / OSINT Tools Library | Reviewed directory and tool coverage. [Submission guide](https://tools.osintnewsletter.com/submission-guide) links its [tool form](https://forms.gle/kFE3Ddj4rbzsnxyUA). | Submitted 1 Nov 2026; form confirmed "Your response has been recorded." [Exact submission](osint-newsletter-submission-2026-11-01.json), [receipt](osint-newsletter-receipt-2026-11-01.jpg). Editorial decision pending. |
+| OSINT Framework | Public/free OSINT discovery. [Repository guidelines](https://github.com/lockfale/OSINT-Framework#contribute-with-a-github-pull-request) welcome a PR or issue. | Submitted 1 Nov 2026: [issue #880](https://github.com/lockfale/OSINT-Framework/issues/880), open and awaiting evaluation. Hosted freemium limits and affiliation disclosed. |
+| Sector035 | Researcher and Week in OSINT publisher. [Homepage](https://sector035.nl/) invites useful tips at sector035@pm.me. | Invitation sent 1 Nov 2026 at 22:20 IST; Gmail displayed "Message sent" and the sent conversation was verified. No reply/publication yet. Current publishing cadence is unconfirmed (visible archive includes 2024). |
+| Sofia Santos / Gralhix | Educator and researcher; [about page](https://gralhix.com/aboutme/) links LinkedIn, Mastodon and Bluesky private messages. | Draft ready. LinkedIn message and connection routes displayed a Premium reactivation upsell. No message or invitation sent and no purchase made. No guessed email used. |
 | Awesome OSINT | [Contribution rules](https://github.com/jivoi/awesome-osint/blob/master/CONTRIBUTING.md) require affiliation disclosure and explicitly prohibit LLM/agent-submitted PRs. | Excluded from agent submission. A human may independently evaluate whether to submit. |
 | Bellingcat toolkit | [Official introduction](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/) links its [contribution form](https://forms.gle/dZvsJzuEjTNjJ9HWA). | Excluded: the live form says not to suggest your own tools. Toolkit email also excludes tool suggestions. |
 
@@ -31,7 +31,7 @@ later suggestion. Do not submit both a form and PR for the same recipient.
 The kit is first-party. Publication by the developer on GitHub is not independent
 coverage. No independent review or endorsement is claimed by this tracker.
 
-## OSINT Framework suggestion text
+## Submitted OSINT Framework suggestion text
 
 Title: Consider MyRecon for public username research
 
@@ -45,7 +45,7 @@ matching handles are leads, not identity proof or registration availability.
 
 Source: https://github.com/4ryanwalia/Myrecon
 
-Review kit: https://github.com/4ryanwalia/Myrecon/blob/main/docs/review-kit/README.md
+Review kit: https://github.com/4ryanwalia/Myrecon/blob/97f976bd120488c7ddd26ce444b88f7931a31ed1/docs/review-kit/README.md
 
 The kit includes source-pinned commands, raw first-party results for ten fixed
 usernames on three platforms, synthetic offline examples, and a worksheet for
@@ -57,7 +57,7 @@ Suggested concise entry: MyRecon - Public username leads and domain/DNS/IP
 lookups through an MIT-licensed CLI and hosted web interface; hosted access has
 free and paid limits. Verify account matches at the original source.
 
-## Sector035 email draft
+## Sector035 invitation sent
 
 To: sector035@pm.me
 
@@ -74,7 +74,7 @@ The MIT-licensed CLI and web source are at https://github.com/4ryanwalia/Myrecon
 The hosted site has separate free and paid limits. This review kit provides
 source-pinned reproduction commands, raw first-party measurements and a blank
 worksheet for your own tests:
-https://github.com/4ryanwalia/Myrecon/blob/main/docs/review-kit/README.md
+https://github.com/4ryanwalia/Myrecon/blob/97f976bd120488c7ddd26ce444b88f7931a31ed1/docs/review-kit/README.md
 
 The supplied sample covers only ten fixed usernames on three platforms and
 shares some API evidence with the reference; it is not an independent accuracy
@@ -99,13 +99,26 @@ Would you be interested in testing a short exercise using MyRecon's synthetic
 offline verdict examples, then accounts you control? The code is MIT-licensed;
 the hosted site has separate free and paid limits. The review kit has
 source-pinned commands, raw first-party data, a blank worksheet and limitations:
-https://github.com/4ryanwalia/Myrecon/blob/main/docs/review-kit/README.md
+https://github.com/4ryanwalia/Myrecon/blob/97f976bd120488c7ddd26ce444b88f7931a31ed1/docs/review-kit/README.md
 
 The supplied three-platform sample is not an independent accuracy audit. I
 would value any failures and teaching limitations you find. You choose your
 cases, conclusions and whether to publish. No payment or positive coverage is
 offered or requested. This invitation was prepared with AI assistance. If it
 is outside your interests, no reply is needed.
+
+## Current outcome
+
+Three invitations/suggestions were sent: the OSINT Tools Library form, OSINT
+Framework issue, and Sector035 email. No independent review, accepted listing,
+endorsement or publication has been confirmed. The educator invitation remains
+unsent. Gmail browser access was used for the email; no new email connection was
+required. Its receipt stays local so unrelated account details are not published.
+
+The kit and evidence were published on `main` in commit
+`97f976bd120488c7ddd26ce444b88f7931a31ed1`. GitHub backend/security checks and the
+Vercel deployment passed for that commit. Local validation covered 21 benchmark
+tests, the synthetic demo, live raw JSON, evidence hashes and local document links.
 
 ## Follow-up and outcome recording
 
