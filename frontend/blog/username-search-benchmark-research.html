@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Username Search Benchmark: MyRecon, Sherlock and Maigret | MyRecon</title>
+  <meta name="description" content="Recorded MyRecon, Sherlock and Maigret results for 4ryanwalia, with full and shared-address tables, run dates, source reviews, reproducible methods and limitations.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/blog/username-search-benchmark-research.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Username Search Benchmark: MyRecon, Sherlock and Maigret | MyRecon">
+  <meta property="og:description" content="Recorded MyRecon, Sherlock and Maigret results for 4ryanwalia, with full and shared-address tables, run dates, source reviews, reproducible methods and limitations.">
+  <meta property="og:url" content="https://www.myrecon.xyz/blog/username-search-benchmark-research.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MyRecon: public-source research and online privacy">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Username Search Benchmark: MyRecon, Sherlock and Maigret | MyRecon">
+  <meta name="twitter:description" content="Recorded MyRecon, Sherlock and Maigret results for 4ryanwalia, with full and shared-address tables, run dates, source reviews, reproducible methods and limitations.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=2">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=2">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css">
+  <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
+  <link rel="stylesheet" href="/assets/optimized/css/blog.62494773bcc3.css">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <meta property="article:published_time" content="2026-11-01T00:00:00Z">
+  <meta property="article:modified_time" content="2026-11-01T00:00:00Z">
+  <meta property="article:section" content="Research">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Username search benchmark: findings, evidence and limitations","description":"Recorded MyRecon, Sherlock and Maigret results for 4ryanwalia, with full and shared-address tables, run dates, source reviews, reproducible methods and limitations.","datePublished":"2026-11-01","dateModified":"2026-11-01","articleSection":"Research","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"mainEntityOfPage":"https://www.myrecon.xyz/blog/username-search-benchmark-research.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.myrecon.xyz/blog/"},{"@type":"ListItem","position":3,"name":"Username search benchmark: findings, evidence and limitations","item":"https://www.myrecon.xyz/blog/username-search-benchmark-research.html"}]}</script>
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+<link rel="stylesheet" href="/assets/optimized/css/android-promo.05996c4d5089.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=2" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/">Blog</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:16px 0 20px;color:var(--text-dim)">
+      <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <a href="/blog/" style="color:var(--text-dim);text-decoration:none">Blog</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <span style="color:var(--text);font-weight:500" aria-current="page">Username search benchmark: findings, evidence and limitations</span>
+    </nav>
+    <article class="article">
+      <span class="kicker">Research</span>
+      <h1>Username search benchmark: findings, evidence and limitations</h1>
+      <p class="meta">Updated <time datetime="2026-11-01">1 November 2026</time> · <a href="/about.html">MyRecon editorial</a></p>
+      <p class="lead">In a recorded search for <code>4ryanwalia</code> on <strong>30 September 2026</strong>, MyRecon reported 12 hits, Sherlock 19 and Maigret 35. Reviewing the unique profile addresses supported 12, 11 and 10 leads respectively. On the 210 exact addresses checked by all three engines, the supported counts were 8, 9 and 9. Those two views answer different questions; neither establishes an overall accuracy ranking.</p>
+<p><strong>Published and reviewed:</strong> <time datetime="2026-11-01">1 November 2026</time> by MyRecon. This is a publisher-run study of our own product and competing tools. The September observations are historical; publishing this article did not rerun those scans. A separate daily control sample is dated below. A supported public profile is a research lead, not proof of ownership or username availability.</p>
+
+<nav class="blog-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#findings">Findings from the full-catalogue case study</a></li><li><a href="#shared-addresses">Results on 210 shared profile addresses</a></li><li><a href="#dates-and-configuration">Observation dates, versions and configuration</a></li><li><a href="#preview">What the OSINTsearch preview exposed</a></li><li><a href="#methodology">Methodology and evidence rules</a></li><li><a href="#corrections">Corrections retained in the evidence</a></li><li><a href="#daily-controls">Separate daily controls: 1 November 2026 snapshot</a></li><li><a href="#limitations">Limitations and interpretation</a></li><li><a href="#reproduce">Reproduce and inspect the evidence</a></li></ul></nav>
+<h2 id="findings">Findings from the full-catalogue case study</h2>
+<p>The same owner-supplied handle was searched using each engine's recorded catalogue configuration. Catalogue sizes and detection rules differ. The table counts native reported hits, including positive outcomes later quarantined by HTTP-error normalization. Source review counts each profile address once, so Sherlock's duplicate is separated from its 18 unique leads.</p>
+<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table"><table id="full-catalogue-results">
+  <caption>Full-catalogue results for 4ryanwalia, 30 September 2026. All values are counts.</caption>
+  <thead><tr><th scope="col">Engine</th><th scope="col">Checks</th><th scope="col">Reported hits</th><th scope="col">Unique URLs</th><th scope="col">Duplicates</th><th scope="col">Supported</th><th scope="col">Contradicted</th><th scope="col">Unverified leads</th><th scope="col">Unknown checks</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>561</td><td>12</td><td>12</td><td>0</td><td>12</td><td>0</td><td>0</td><td>244</td></tr>
+    <tr><th scope="row">Sherlock</th><td>430</td><td>19</td><td>18</td><td>1</td><td>11</td><td>2</td><td>5</td><td>127</td></tr>
+    <tr><th scope="row">Maigret</th><td>5257</td><td>35</td><td>35</td><td>0</td><td>10</td><td>9</td><td>16</td><td>945</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Supported</strong> means the recorded source evidence supports that exact public profile. <strong>Contradicted</strong> means evidence such as explicit absence or a different handle contradicts the reported lead; these are observed false positives. <strong>Unverified leads</strong> remain unresolved and are not counted as false positives. <strong>Unknown checks</strong> describe engine outcomes across the catalogue, including blocked or failed requests; they are a different population from unverified reported leads.</p>
+<p>Maigret returned the most unique leads, with 16 still unresolved. MyRecon had no source-contradicted reported leads in its final recorded run, but 244 checks remained unknown. The source review does not establish a truth label for every catalogue negative, so this table cannot support a whole-catalogue accuracy, recall or false-positive rate. The <a href="/data/username-benchmark.json">normalized evidence file</a> contains individual checks, reported addresses, reference observations and their timestamps.</p>
+
+<h2 id="shared-addresses">Results on 210 shared profile addresses</h2>
+<p>This view intersects exact profile addresses checked by MyRecon, Sherlock and Maigret. It reuses the full-run measurements; it is not another scan. Normalization removes <code>www</code> and trailing slashes and recognizes the recorded Buy Me a Coffee redirect. Different URL schemes and endpoint paths are not assumed equivalent. Repeated checks of an address are consolidated in the checked-address total.</p>
+<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table"><table id="shared-address-results">
+  <caption>Same 210 exact profile addresses, 30 September 2026. OSINTsearch is excluded because its preview hides profile URLs.</caption>
+  <thead><tr><th scope="col">Engine</th><th scope="col">Addresses checked</th><th scope="col">Reported hits</th><th scope="col">Unique URLs</th><th scope="col">Duplicates</th><th scope="col">Supported</th><th scope="col">Contradicted</th><th scope="col">Unverified leads</th><th scope="col">Unknown checks</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>210</td><td>8</td><td>8</td><td>0</td><td>8</td><td>0</td><td>0</td><td>53</td></tr>
+    <tr><th scope="row">Sherlock</th><td>210</td><td>12</td><td>11</td><td>1</td><td>9</td><td>1</td><td>1</td><td>31</td></tr>
+    <tr><th scope="row">Maigret</th><td>210</td><td>10</td><td>10</td><td>0</td><td>9</td><td>1</td><td>0</td><td>25</td></tr>
+  </tbody>
+</table></div>
+<p>Sherlock and Maigret each returned one more supported lead than MyRecon on these shared addresses. For example, both reported the OpenStreetMap profile, while MyRecon's full scan received HTTP 429 and kept that check unknown. A separate source review supported the profile's existence. That review does not retroactively turn the blocked engine result into a successful detection.</p>
+
+<h2 id="dates-and-configuration">Observation dates, versions and configuration</h2>
+<p>All three local engines ran on the same workstation on 30 September 2026. Some runs overlapped. The source reviews were also recorded on that date, at different times from the scans. The following durations are recorded measurements, not a speed ranking; catalogue sizes, concurrency and responses differed.</p>
+<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table"><table id="case-run-dates">
+  <caption>Recorded engine windows in UTC on 30 September 2026. Durations come from the run records.</caption>
+  <thead><tr><th scope="col">Engine</th><th scope="col">Start (UTC)</th><th scope="col">Finish (UTC)</th><th scope="col">Duration (seconds)</th><th scope="col">Configuration</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>16:40:59</td><td>16:41:39</td><td>39.484</td><td>Standard 561-entry catalogue; up to 24 connections; 90-second deadline.</td></tr>
+    <tr><th scope="row">Sherlock 0.16.2</th><td>15:42:02</td><td>15:42:59</td><td>45.906</td><td>430 checks after the recorded upstream exclusions; up to 20 connections; 8-second timeout.</td></tr>
+    <tr><th scope="row">Maigret 0.6.6</th><td>15:37:37</td><td>15:51:36</td><td>824.547</td><td>5257 recorded checks; enabled, unprotected username entries; up to 24 connections; 8-second timeout.</td></tr>
+  </tbody>
+</table></div>
+<p>The MyRecon run records commit <a href="https://github.com/4ryanwalia/Myrecon/commit/0749d334e4fcb6195e30469aadc391e1a1dc97a1"><code>0749d334</code></a> and separate engine, profile-identity and database SHA-256 hashes. Sherlock is pinned to <a href="https://github.com/sherlock-project/sherlock/tree/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3"><code>e40a45ec</code></a>; Maigret to <a href="https://github.com/soxoj/maigret/tree/b6642744988e7e6c2d21f75db60ec3093019ba25"><code>b6642744</code></a>. The third-party runs record Python 3.12.14 and Requests 2.34.2, with parsing, enrichment and retries disabled. Full revisions and database hashes are retained in the evidence.</p>
+<p>The main Sherlock comparison honors the upstream exclusion list recorded with SHA-256 <code>afe72771173260f71c1dc965b4dfeb503060e15406e75e0c815b608efd2e722d</code>. A separate unfiltered diagnostic reported 59 hits, 40 on sites removed by that list. Its 481 checks and 58 unique leads belong to the diagnostic and are not substituted into the main table. A future upstream exclusion list can change the result even with the same pinned engine.</p>
+
+<h2 id="preview">What the OSINTsearch preview exposed</h2>
+<p>The public OSINTsearch preview was observed at <time datetime="2026-09-30T15:35:44Z">15:35:44 UTC on 30 September 2026</time>, with the user completing the CAPTCHA. It displayed <strong>753 endpoints checked, 21 endpoint hits and 19 grouped matches</strong>. These are different units. It named 14 platforms and hid five matches; every profile URL was hidden. Those results cannot be scored as supported or contradicted, or placed in the shared-address comparison.</p>
+<p>The named platforms were Instagram, GitHub, YouTube, Pinterest, Twitter (X), Reddit, Buy Me a Coffee, Periscope, HackerOne, Hacker News, Docker Hub, Product Hunt, VirusTotal and Replit. The displayed 15 seconds was the provider's timer, not an independently measured result. See the <a href="/data/benchmark-evidence/osintsearch-4ryanwalia.jpg">captured preview</a> and the <a href="https://osintsearch.org/?q=4ryanwalia">original query</a>; the current service may differ from the capture.</p>
+
+<h2 id="methodology">Methodology and evidence rules</h2>
+<ol>
+  <li><strong>Use one explicitly supplied public handle.</strong> Run the standard MyRecon catalogue, Sherlock with its recorded upstream exclusions, Maigret's enabled unprotected username catalogue, and the separately observed OSINTsearch free preview. No customer history, private content, credentials or breach data enter this case study.</li>
+  <li><strong>Keep native outcomes.</strong> Preserve positive native verdicts, duplicates, normalized unknown outcomes and HTTP status codes. A tool's reported hit remains visible even when HTTP-error normalization quarantines it.</li>
+  <li><strong>Review sources separately.</strong> Use typed official API account objects, explicit missing responses, a different account handle, or separately recorded profile identity and missing-control observations. HTTP 200, agreement between tools, a challenge and a login wall do not establish existence. Parking destinations contradict a public-profile lead, without establishing whether an account ever existed.</li>
+  <li><strong>Score only supported evidence.</strong> Classify each unique reported address as supported, contradicted or unverified. Keep duplicates separate. Contradicted counts are observed lower bounds on false positives, and unresolved results remain unresolved. Do not infer common ownership.</li>
+  <li><strong>Compare both scopes.</strong> Show each complete recorded run and the exact-address intersection. Keep the hidden preview results outside address-level scoring.</li>
+</ol>
+
+<h2 id="corrections">Corrections retained in the evidence</h2>
+<p>The initial MyRecon run reported 13 hits, with 12 supported leads and one contradicted lead: the requested RubyGems URL resolved to the <code>fermion</code> profile. A digit-prefixed path could be interpreted as a numeric account ID. An exact-handle check was added and the full engine rerun. The final RubyGems check remained ambiguous rather than being reported as a match. The original error remains in the recorded inputs.</p>
+<p>A subsequent run before recovery reported 11 supported hits. General rules were added for exact active Buy Me a Coffee creator records, exact OpenStreetMap profile identity, and typed Reddit account objects. The final full run recovered Buy Me a Coffee, bringing the supported total to 12. OpenStreetMap passed a direct check but was blocked during the full run; Reddit was challenged locally. Those engine outcomes remain unknown even where a separate source review supports the profiles. The rules apply to arbitrary handles and do not use a saved result for this account.</p>
+
+<h2 id="daily-controls">Separate daily controls: 1 November 2026 snapshot</h2>
+<p>The scheduled regression sample is a different experiment: ten fixed usernames across GitHub, GitLab and Hacker News, for 30 username-platform checks per engine. This article freezes the run from <time datetime="2026-11-01T10:38:27Z">10:38:27</time> to <time datetime="2026-11-01T10:39:01Z">10:39:01 UTC on 1 November 2026</time>. It ran on GitHub Actions with the application cache bypassed. Future daily updates do not change this dated table.</p>
+<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table"><table id="daily-control-results">
+  <caption>Thirty-check regression snapshot, 1 November 2026. TP/TN are correct positive/negative predictions; FP/FN are incorrect positive/negative predictions.</caption>
+  <thead><tr><th scope="col">Engine / heuristic</th><th scope="col">TP</th><th scope="col">TN</th><th scope="col">FP</th><th scope="col">FN</th><th scope="col">Unknown</th><th scope="col">Unscored</th><th scope="col">Scored / total</th><th scope="col">Accuracy</th><th scope="col">Coverage</th><th scope="col">FP / scored negatives</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>11</td><td>19</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30 / 30</td><td>100%</td><td>100%</td><td>0 / 19 (0%)</td></tr>
+    <tr><th scope="row">Sherlock</th><td>11</td><td>12</td><td>7</td><td>0</td><td>0</td><td>0</td><td>30 / 30</td><td>76.67%</td><td>100%</td><td>7 / 19 (36.84%)</td></tr>
+    <tr><th scope="row">Maigret</th><td>11</td><td>19</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30 / 30</td><td>100%</td><td>100%</td><td>0 / 19 (0%)</td></tr>
+    <tr><th scope="row">HTTP 200 heuristic</th><td>8</td><td>5</td><td>1</td><td>0</td><td>16</td><td>0</td><td>14 / 30</td><td>92.86%</td><td>46.67%</td><td>1 / 6 (16.67%)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Accuracy</strong> = (TP + TN) / (TP + TN + FP + FN). <strong>Coverage</strong> = scored checks / all 30 checks. <strong>False-positive rate</strong> = FP / (FP + TN), using only definitive predictions on known reference negatives. Unknown predictions and unknown reference truth do not enter accuracy; unknown reference truth is unscored. The HTTP 200 heuristic had 13 unknown reference-negative predictions, outside its six scored negatives. Read accuracy alongside coverage. A status-only heuristic is not a named competitor engine.</p>
+<p>The controls are <code>torvalds</code>, <code>octocat</code>, <code>defunkt</code>, <code>mojombo</code>, <code>sindresorhus</code>, and five synthetic handles: <code>mrbench-a7b32c91d8e04f6a</code>, <code>mrbench-b9e61d03a4c72f85</code>, <code>mrbench-c4f82a16b9d03e57</code>, <code>mrbench-d6a91e38c2b74f05</code> and <code>mrbench-e2c57b90d4a16f83</code>. Reference truth is checked from typed official API objects or explicit absence, rather than assuming the synthetic handles must be absent.</p>
+<p>This run records MyRecon commit <code>c7519795</code>, the same pinned Sherlock and Maigret revisions linked above, up to three concurrent platform checks, and an eight-second timeout for the third-party engines. MyRecon uses six-second connect and eight-second read timeouts with a 45-second sweep deadline. Endpoints, headers and validation differ. Some reference evidence is shared with MyRecon's production API logic, so this is a small regression sample, not an independent accuracy audit. The 100% values describe only these definitive checks. See the <a href="https://github.com/4ryanwalia/Myrecon/blob/8391002cc7167653abe3a39b28df29ef733d266a/frontend/data/benchmarks.json">frozen daily evidence revision</a> or the <a href="/data/benchmarks.json">latest daily data and history</a>.</p>
+
+<h2 id="limitations">Limitations and interpretation</h2>
+<ul>
+  <li><strong>Selection and publisher bias:</strong> one owner-requested handle and a small fixed control set do not represent all usernames, services or network conditions. MyRecon runs and publishes this comparison.</li>
+  <li><strong>Missing truth and blocked checks:</strong> no contradicted reported leads is not a zero-error guarantee. Unknown engine outcomes can conceal missed profiles, and unverified leads may later be supported or contradicted.</li>
+  <li><strong>Time and configuration:</strong> platform responses may change between scans and verification. Catalogue coverage, exclusions, endpoints, concurrency and overlapping local runs prevent a controlled speed ranking.</li>
+  <li><strong>Corrections used this case:</strong> the final MyRecon run follows fixes informed by the observed handle mismatch and missing profiles. It is not an untouched, held-out evaluation. Earlier results are retained for review.</li>
+  <li><strong>Hidden preview evidence:</strong> five OSINTsearch matches and all its profile URLs were hidden. No accuracy or identity inference is made for them.</li>
+  <li><strong>Scope of a lead:</strong> a matching public handle does not confirm identity, common ownership, registration availability or access to private information.</li>
+</ul>
+
+<h2 id="reproduce">Reproduce and inspect the evidence</h2>
+<p>Use Python 3.12 in an isolated environment and install Requests plus <a href="https://github.com/4ryanwalia/Myrecon/blob/be21d6730486c6550483dddc3f8a8d9083dd1747/backend/tools/requirements-benchmark.txt"><code>backend/tools/requirements-benchmark.txt</code></a>. The requirements pin the third-party source revisions. Run the following from the repository root:</p>
+<pre><code>python backend/tools/username_benchmark.py --username 4ryanwalia --output-dir output/benchmark-4ryanwalia
+python backend/tools/review_username_benchmark.py --username 4ryanwalia --output-dir output/benchmark-4ryanwalia
+python backend/tools/review_profile_controls.py --username 4ryanwalia --output-dir output/benchmark-4ryanwalia
+python backend/tools/build_username_benchmark.py --input-dir output/benchmark-4ryanwalia --output frontend/data/username-benchmark.json</code></pre>
+<p>The builder also needs the <a href="/data/benchmark-evidence/recorded-inputs.json">recorded auxiliary inputs</a>: the OSINTsearch preview, earlier MyRecon runs, source-review observations and unfiltered Sherlock diagnostic. Save each top-level item using its corresponding JSON filename in the output directory. Preserve fresh measurements when rerunning engines. Reusing a recorded review preserves its original date and does not constitute fresh verification. No authentication, proxies, retries or block bypass were used in the recorded local comparison.</p>
+<p>For the separate daily sample, run <code>python backend/tools/daily_benchmark.py --require-named-tools</code> after installing its dependencies; the <a href="https://github.com/4ryanwalia/Myrecon/blob/8391002cc7167653abe3a39b28df29ef733d266a/.github/workflows/daily-benchmarks.yml">recorded workflow</a> documents the GitHub Actions environment. New runs may differ as services and exclusion lists change.</p>
+<p>Evidence and source code: <a href="https://github.com/4ryanwalia/Myrecon/blob/be21d6730486c6550483dddc3f8a8d9083dd1747/frontend/data/username-benchmark.json">frozen case-study evidence revision</a> · <a href="/data/username-benchmark.json">public normalized case-study data</a> · <a href="/data/benchmark-evidence/index.html">reproduction notes and downloads</a> · <a href="/#benchmarks">interactive homepage comparison</a>. The findings and tables on this page are included in the HTML and can be read without running JavaScript.</p>
+      <div class="callout">
+        <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
+      </div>
+      <aside class="blog-related" aria-label="Related articles"><h2>Continue your research</h2><ul><li><a href="/blog/breach-check-no-results-meaning.html">No breach found: what the result does and does not mean</a></li><li><a href="/blog/breach-date-vs-disclosure-date.html">Why a new breach alert can describe an old incident</a></li><li><a href="/blog/ahold-delhaize-october-2026-cyber-incident.html">Ahold Delhaize October 2026 cyber incident: disruption versus data theft</a></li></ul></aside>
+      <p><a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
+    </article>
+  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">USERNAME SEARCH ON ANDROID</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>From reading.<br>To discovering.</h2><p>Try username search on your Android phone. Review public profile leads and open their sources to verify them.</p><ul class="promo-features"><li>Username search</li><li>Public profile leads</li><li>Breach checks</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_research">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Use for your own accounts or authorized research.</small></div></aside></div></div><!-- app-promo-layout:end -->
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/optimized/js/editorial-shell.6d544da32afa.js" defer></script>
+  <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
+  <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!--
+{
+  "title": "Username Search Benchmark: MyRecon, Sherlock and Maigret | MyRecon",
+  "headline": "Username search benchmark: findings, evidence and limitations",
+  "description": "Recorded MyRecon, Sherlock and Maigret results for 4ryanwalia, with full and shared-address tables, run dates, source reviews, reproducible methods and limitations.",
+  "category": "Research",
+  "datePublished": "2026-11-01",
+  "dateModified": "2026-11-01",
+  "editorial_review": "2026-11-01"
+}
+-->
+<p class="lead">In a recorded search for <code>4ryanwalia</code> on <strong>30 September 2026</strong>, MyRecon reported 12 hits, Sherlock 19 and Maigret 35. Reviewing the unique profile addresses supported 12, 11 and 10 leads respectively. On the 210 exact addresses checked by all three engines, the supported counts were 8, 9 and 9. Those two views answer different questions; neither establishes an overall accuracy ranking.</p>
+<p><strong>Published and reviewed:</strong> <time datetime="2026-11-01">1 November 2026</time> by MyRecon. This is a publisher-run study of our own product and competing tools. The September observations are historical; publishing this article did not rerun those scans. A separate daily control sample is dated below. A supported public profile is a research lead, not proof of ownership or username availability.</p>
+
+<h2 id="findings">Findings from the full-catalogue case study</h2>
+<p>The same owner-supplied handle was searched using each engine's recorded catalogue configuration. Catalogue sizes and detection rules differ. The table counts native reported hits, including positive outcomes later quarantined by HTTP-error normalization. Source review counts each profile address once, so Sherlock's duplicate is separated from its 18 unique leads.</p>
+<table id="full-catalogue-results">
+  <caption>Full-catalogue results for 4ryanwalia, 30 September 2026. All values are counts.</caption>
+  <thead><tr><th scope="col">Engine</th><th scope="col">Checks</th><th scope="col">Reported hits</th><th scope="col">Unique URLs</th><th scope="col">Duplicates</th><th scope="col">Supported</th><th scope="col">Contradicted</th><th scope="col">Unverified leads</th><th scope="col">Unknown checks</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>561</td><td>12</td><td>12</td><td>0</td><td>12</td><td>0</td><td>0</td><td>244</td></tr>
+    <tr><th scope="row">Sherlock</th><td>430</td><td>19</td><td>18</td><td>1</td><td>11</td><td>2</td><td>5</td><td>127</td></tr>
+    <tr><th scope="row">Maigret</th><td>5257</td><td>35</td><td>35</td><td>0</td><td>10</td><td>9</td><td>16</td><td>945</td></tr>
+  </tbody>
+</table>
+<p><strong>Supported</strong> means the recorded source evidence supports that exact public profile. <strong>Contradicted</strong> means evidence such as explicit absence or a different handle contradicts the reported lead; these are observed false positives. <strong>Unverified leads</strong> remain unresolved and are not counted as false positives. <strong>Unknown checks</strong> describe engine outcomes across the catalogue, including blocked or failed requests; they are a different population from unverified reported leads.</p>
+<p>Maigret returned the most unique leads, with 16 still unresolved. MyRecon had no source-contradicted reported leads in its final recorded run, but 244 checks remained unknown. The source review does not establish a truth label for every catalogue negative, so this table cannot support a whole-catalogue accuracy, recall or false-positive rate. The <a href="/data/username-benchmark.json">normalized evidence file</a> contains individual checks, reported addresses, reference observations and their timestamps.</p>
+
+<h2 id="shared-addresses">Results on 210 shared profile addresses</h2>
+<p>This view intersects exact profile addresses checked by MyRecon, Sherlock and Maigret. It reuses the full-run measurements; it is not another scan. Normalization removes <code>www</code> and trailing slashes and recognizes the recorded Buy Me a Coffee redirect. Different URL schemes and endpoint paths are not assumed equivalent. Repeated checks of an address are consolidated in the checked-address total.</p>
+<table id="shared-address-results">
+  <caption>Same 210 exact profile addresses, 30 September 2026. OSINTsearch is excluded because its preview hides profile URLs.</caption>
+  <thead><tr><th scope="col">Engine</th><th scope="col">Addresses checked</th><th scope="col">Reported hits</th><th scope="col">Unique URLs</th><th scope="col">Duplicates</th><th scope="col">Supported</th><th scope="col">Contradicted</th><th scope="col">Unverified leads</th><th scope="col">Unknown checks</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>210</td><td>8</td><td>8</td><td>0</td><td>8</td><td>0</td><td>0</td><td>53</td></tr>
+    <tr><th scope="row">Sherlock</th><td>210</td><td>12</td><td>11</td><td>1</td><td>9</td><td>1</td><td>1</td><td>31</td></tr>
+    <tr><th scope="row">Maigret</th><td>210</td><td>10</td><td>10</td><td>0</td><td>9</td><td>1</td><td>0</td><td>25</td></tr>
+  </tbody>
+</table>
+<p>Sherlock and Maigret each returned one more supported lead than MyRecon on these shared addresses. For example, both reported the OpenStreetMap profile, while MyRecon's full scan received HTTP 429 and kept that check unknown. A separate source review supported the profile's existence. That review does not retroactively turn the blocked engine result into a successful detection.</p>
+
+<h2 id="dates-and-configuration">Observation dates, versions and configuration</h2>
+<p>All three local engines ran on the same workstation on 30 September 2026. Some runs overlapped. The source reviews were also recorded on that date, at different times from the scans. The following durations are recorded measurements, not a speed ranking; catalogue sizes, concurrency and responses differed.</p>
+<table id="case-run-dates">
+  <caption>Recorded engine windows in UTC on 30 September 2026. Durations come from the run records.</caption>
+  <thead><tr><th scope="col">Engine</th><th scope="col">Start (UTC)</th><th scope="col">Finish (UTC)</th><th scope="col">Duration (seconds)</th><th scope="col">Configuration</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>16:40:59</td><td>16:41:39</td><td>39.484</td><td>Standard 561-entry catalogue; up to 24 connections; 90-second deadline.</td></tr>
+    <tr><th scope="row">Sherlock 0.16.2</th><td>15:42:02</td><td>15:42:59</td><td>45.906</td><td>430 checks after the recorded upstream exclusions; up to 20 connections; 8-second timeout.</td></tr>
+    <tr><th scope="row">Maigret 0.6.6</th><td>15:37:37</td><td>15:51:36</td><td>824.547</td><td>5257 recorded checks; enabled, unprotected username entries; up to 24 connections; 8-second timeout.</td></tr>
+  </tbody>
+</table>
+<p>The MyRecon run records commit <a href="https://github.com/4ryanwalia/Myrecon/commit/0749d334e4fcb6195e30469aadc391e1a1dc97a1"><code>0749d334</code></a> and separate engine, profile-identity and database SHA-256 hashes. Sherlock is pinned to <a href="https://github.com/sherlock-project/sherlock/tree/e40a45ec2a074b90703b3b4b842c8a3adbd6ada3"><code>e40a45ec</code></a>; Maigret to <a href="https://github.com/soxoj/maigret/tree/b6642744988e7e6c2d21f75db60ec3093019ba25"><code>b6642744</code></a>. The third-party runs record Python 3.12.14 and Requests 2.34.2, with parsing, enrichment and retries disabled. Full revisions and database hashes are retained in the evidence.</p>
+<p>The main Sherlock comparison honors the upstream exclusion list recorded with SHA-256 <code>afe72771173260f71c1dc965b4dfeb503060e15406e75e0c815b608efd2e722d</code>. A separate unfiltered diagnostic reported 59 hits, 40 on sites removed by that list. Its 481 checks and 58 unique leads belong to the diagnostic and are not substituted into the main table. A future upstream exclusion list can change the result even with the same pinned engine.</p>
+
+<h2 id="preview">What the OSINTsearch preview exposed</h2>
+<p>The public OSINTsearch preview was observed at <time datetime="2026-09-30T15:35:44Z">15:35:44 UTC on 30 September 2026</time>, with the user completing the CAPTCHA. It displayed <strong>753 endpoints checked, 21 endpoint hits and 19 grouped matches</strong>. These are different units. It named 14 platforms and hid five matches; every profile URL was hidden. Those results cannot be scored as supported or contradicted, or placed in the shared-address comparison.</p>
+<p>The named platforms were Instagram, GitHub, YouTube, Pinterest, Twitter (X), Reddit, Buy Me a Coffee, Periscope, HackerOne, Hacker News, Docker Hub, Product Hunt, VirusTotal and Replit. The displayed 15 seconds was the provider's timer, not an independently measured result. See the <a href="/data/benchmark-evidence/osintsearch-4ryanwalia.jpg">captured preview</a> and the <a href="https://osintsearch.org/?q=4ryanwalia">original query</a>; the current service may differ from the capture.</p>
+
+<h2 id="methodology">Methodology and evidence rules</h2>
+<ol>
+  <li><strong>Use one explicitly supplied public handle.</strong> Run the standard MyRecon catalogue, Sherlock with its recorded upstream exclusions, Maigret's enabled unprotected username catalogue, and the separately observed OSINTsearch free preview. No customer history, private content, credentials or breach data enter this case study.</li>
+  <li><strong>Keep native outcomes.</strong> Preserve positive native verdicts, duplicates, normalized unknown outcomes and HTTP status codes. A tool's reported hit remains visible even when HTTP-error normalization quarantines it.</li>
+  <li><strong>Review sources separately.</strong> Use typed official API account objects, explicit missing responses, a different account handle, or separately recorded profile identity and missing-control observations. HTTP 200, agreement between tools, a challenge and a login wall do not establish existence. Parking destinations contradict a public-profile lead, without establishing whether an account ever existed.</li>
+  <li><strong>Score only supported evidence.</strong> Classify each unique reported address as supported, contradicted or unverified. Keep duplicates separate. Contradicted counts are observed lower bounds on false positives, and unresolved results remain unresolved. Do not infer common ownership.</li>
+  <li><strong>Compare both scopes.</strong> Show each complete recorded run and the exact-address intersection. Keep the hidden preview results outside address-level scoring.</li>
+</ol>
+
+<h2 id="corrections">Corrections retained in the evidence</h2>
+<p>The initial MyRecon run reported 13 hits, with 12 supported leads and one contradicted lead: the requested RubyGems URL resolved to the <code>fermion</code> profile. A digit-prefixed path could be interpreted as a numeric account ID. An exact-handle check was added and the full engine rerun. The final RubyGems check remained ambiguous rather than being reported as a match. The original error remains in the recorded inputs.</p>
+<p>A subsequent run before recovery reported 11 supported hits. General rules were added for exact active Buy Me a Coffee creator records, exact OpenStreetMap profile identity, and typed Reddit account objects. The final full run recovered Buy Me a Coffee, bringing the supported total to 12. OpenStreetMap passed a direct check but was blocked during the full run; Reddit was challenged locally. Those engine outcomes remain unknown even where a separate source review supports the profiles. The rules apply to arbitrary handles and do not use a saved result for this account.</p>
+
+<h2 id="daily-controls">Separate daily controls: 1 November 2026 snapshot</h2>
+<p>The scheduled regression sample is a different experiment: ten fixed usernames across GitHub, GitLab and Hacker News, for 30 username-platform checks per engine. This article freezes the run from <time datetime="2026-11-01T10:38:27Z">10:38:27</time> to <time datetime="2026-11-01T10:39:01Z">10:39:01 UTC on 1 November 2026</time>. It ran on GitHub Actions with the application cache bypassed. Future daily updates do not change this dated table.</p>
+<table id="daily-control-results">
+  <caption>Thirty-check regression snapshot, 1 November 2026. TP/TN are correct positive/negative predictions; FP/FN are incorrect positive/negative predictions.</caption>
+  <thead><tr><th scope="col">Engine / heuristic</th><th scope="col">TP</th><th scope="col">TN</th><th scope="col">FP</th><th scope="col">FN</th><th scope="col">Unknown</th><th scope="col">Unscored</th><th scope="col">Scored / total</th><th scope="col">Accuracy</th><th scope="col">Coverage</th><th scope="col">FP / scored negatives</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>11</td><td>19</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30 / 30</td><td>100%</td><td>100%</td><td>0 / 19 (0%)</td></tr>
+    <tr><th scope="row">Sherlock</th><td>11</td><td>12</td><td>7</td><td>0</td><td>0</td><td>0</td><td>30 / 30</td><td>76.67%</td><td>100%</td><td>7 / 19 (36.84%)</td></tr>
+    <tr><th scope="row">Maigret</th><td>11</td><td>19</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30 / 30</td><td>100%</td><td>100%</td><td>0 / 19 (0%)</td></tr>
+    <tr><th scope="row">HTTP 200 heuristic</th><td>8</td><td>5</td><td>1</td><td>0</td><td>16</td><td>0</td><td>14 / 30</td><td>92.86%</td><td>46.67%</td><td>1 / 6 (16.67%)</td></tr>
+  </tbody>
+</table>
+<p><strong>Accuracy</strong> = (TP + TN) / (TP + TN + FP + FN). <strong>Coverage</strong> = scored checks / all 30 checks. <strong>False-positive rate</strong> = FP / (FP + TN), using only definitive predictions on known reference negatives. Unknown predictions and unknown reference truth do not enter accuracy; unknown reference truth is unscored. The HTTP 200 heuristic had 13 unknown reference-negative predictions, outside its six scored negatives. Read accuracy alongside coverage. A status-only heuristic is not a named competitor engine.</p>
+<p>The controls are <code>torvalds</code>, <code>octocat</code>, <code>defunkt</code>, <code>mojombo</code>, <code>sindresorhus</code>, and five synthetic handles: <code>mrbench-a7b32c91d8e04f6a</code>, <code>mrbench-b9e61d03a4c72f85</code>, <code>mrbench-c4f82a16b9d03e57</code>, <code>mrbench-d6a91e38c2b74f05</code> and <code>mrbench-e2c57b90d4a16f83</code>. Reference truth is checked from typed official API objects or explicit absence, rather than assuming the synthetic handles must be absent.</p>
+<p>This run records MyRecon commit <code>c7519795</code>, the same pinned Sherlock and Maigret revisions linked above, up to three concurrent platform checks, and an eight-second timeout for the third-party engines. MyRecon uses six-second connect and eight-second read timeouts with a 45-second sweep deadline. Endpoints, headers and validation differ. Some reference evidence is shared with MyRecon's production API logic, so this is a small regression sample, not an independent accuracy audit. The 100% values describe only these definitive checks. See the <a href="https://github.com/4ryanwalia/Myrecon/blob/8391002cc7167653abe3a39b28df29ef733d266a/frontend/data/benchmarks.json">frozen daily evidence revision</a> or the <a href="/data/benchmarks.json">latest daily data and history</a>.</p>
+
+<h2 id="limitations">Limitations and interpretation</h2>
+<ul>
+  <li><strong>Selection and publisher bias:</strong> one owner-requested handle and a small fixed control set do not represent all usernames, services or network conditions. MyRecon runs and publishes this comparison.</li>
+  <li><strong>Missing truth and blocked checks:</strong> no contradicted reported leads is not a zero-error guarantee. Unknown engine outcomes can conceal missed profiles, and unverified leads may later be supported or contradicted.</li>
+  <li><strong>Time and configuration:</strong> platform responses may change between scans and verification. Catalogue coverage, exclusions, endpoints, concurrency and overlapping local runs prevent a controlled speed ranking.</li>
+  <li><strong>Corrections used this case:</strong> the final MyRecon run follows fixes informed by the observed handle mismatch and missing profiles. It is not an untouched, held-out evaluation. Earlier results are retained for review.</li>
+  <li><strong>Hidden preview evidence:</strong> five OSINTsearch matches and all its profile URLs were hidden. No accuracy or identity inference is made for them.</li>
+  <li><strong>Scope of a lead:</strong> a matching public handle does not confirm identity, common ownership, registration availability or access to private information.</li>
+</ul>
+
+<h2 id="reproduce">Reproduce and inspect the evidence</h2>
+<p>Use Python 3.12 in an isolated environment and install Requests plus <a href="https://github.com/4ryanwalia/Myrecon/blob/be21d6730486c6550483dddc3f8a8d9083dd1747/backend/tools/requirements-benchmark.txt"><code>backend/tools/requirements-benchmark.txt</code></a>. The requirements pin the third-party source revisions. Run the following from the repository root:</p>
+<pre><code>python backend/tools/username_benchmark.py --username 4ryanwalia --output-dir output/benchmark-4ryanwalia
+python backend/tools/review_username_benchmark.py --username 4ryanwalia --output-dir output/benchmark-4ryanwalia
+python backend/tools/review_profile_controls.py --username 4ryanwalia --output-dir output/benchmark-4ryanwalia
+python backend/tools/build_username_benchmark.py --input-dir output/benchmark-4ryanwalia --output frontend/data/username-benchmark.json</code></pre>
+<p>The builder also needs the <a href="/data/benchmark-evidence/recorded-inputs.json">recorded auxiliary inputs</a>: the OSINTsearch preview, earlier MyRecon runs, source-review observations and unfiltered Sherlock diagnostic. Save each top-level item using its corresponding JSON filename in the output directory. Preserve fresh measurements when rerunning engines. Reusing a recorded review preserves its original date and does not constitute fresh verification. No authentication, proxies, retries or block bypass were used in the recorded local comparison.</p>
+<p>For the separate daily sample, run <code>python backend/tools/daily_benchmark.py --require-named-tools</code> after installing its dependencies; the <a href="https://github.com/4ryanwalia/Myrecon/blob/8391002cc7167653abe3a39b28df29ef733d266a/.github/workflows/daily-benchmarks.yml">recorded workflow</a> documents the GitHub Actions environment. New runs may differ as services and exclusion lists change.</p>
+<p>Evidence and source code: <a href="https://github.com/4ryanwalia/Myrecon/blob/be21d6730486c6550483dddc3f8a8d9083dd1747/frontend/data/username-benchmark.json">frozen case-study evidence revision</a> · <a href="/data/username-benchmark.json">public normalized case-study data</a> · <a href="/data/benchmark-evidence/index.html">reproduction notes and downloads</a> · <a href="/#benchmarks">interactive homepage comparison</a>. The findings and tables on this page are included in the HTML and can be read without running JavaScript.</p>

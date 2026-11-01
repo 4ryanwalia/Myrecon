@@ -126,7 +126,7 @@
       const data = await response.json(); if (!validCase(data)) throw new Error("Invalid case study");
       render(data); target.hidden = false;
     } catch {
-      put("usernameCaseTakeaway", "Case-study evidence is unavailable. No comparison or winner can be inferred from missing measurements.");
+      put("usernameCaseTakeaway", "The interactive chart is unavailable. Read the research article below for the recorded results and limitations.");
     } finally { clearTimeout(timeout); }
   }
   load();

@@ -2,6 +2,8 @@
 const photo = 'https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&fit=crop&w=1200&q=80';
 const credit = '<a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Photo: Logan Jeffrey / Unsplash</a> · Context photograph';
 function designArticle(html, route) {
+  // Research articles lead with their evidence and retain authored figures.
+  if (/"articleSection"\s*:\s*"Research"/.test(html)) return html;
   // Remove the old generated filler, including copies produced by build-blog.
   html = html.replace(/<figure class="(?:editorial-photo|blog-photo)"[\s\S]*?<\/figure>/g, '');
   if (html.includes('class="story-feature"') || html.includes('class="story-photo"')) return html;
