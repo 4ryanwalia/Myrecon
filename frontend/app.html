@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+<script src="/assets/js/recommendation-analytics.js?v=1"></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -11,7 +12,8 @@
     var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
-      page_referrer: analyticsReferrer
+      page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
     });
   </script>
   <meta charset="UTF-8">

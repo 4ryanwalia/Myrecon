@@ -4,6 +4,7 @@
 <!-- Google AdSense -->
 <meta name="google-adsense-account" content="ca-pub-6109270472398539">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+<script src="/assets/js/recommendation-analytics.js?v=1"></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -14,7 +15,8 @@
     var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
-      page_referrer: analyticsReferrer
+      page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
     });
   </script>
   <meta charset="UTF-8">
@@ -197,9 +199,9 @@ the business.</p>
            does: only the per-address one sends anything. -->
       <aside class="bx-offer">
         <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. Enable breach alerts in the app to follow new reports.</p>
         <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;listing=breach-alerts&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dbreach_page%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">View closed-testing listing →</a></p>
+        <p><a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dbreach_page%26utm_campaign%3Dbreach_alerts" target="_blank" rel="noopener">Get breach alerts on Android →</a></p>
       </aside>
 
       <h2>Read next</h2>
@@ -220,7 +222,7 @@ the business.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
-  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
+  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_breach">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
   <footer class="site-footer">
   <div class="site-footer__panel">
     <div class="site-footer__top">
@@ -260,7 +262,7 @@ the business.</p>
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=490b8937e2"></script>
+  <script src="/assets/js/app.js?v=d736e16381"></script>
   <script src="/assets/js/breach-check.js?v=445156aee6"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>

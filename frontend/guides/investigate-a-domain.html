@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+<script src="/assets/js/recommendation-analytics.js?v=1"></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -11,7 +12,8 @@
     var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
-      page_referrer: analyticsReferrer
+      page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
     });
   </script>
   <meta charset="UTF-8">
@@ -185,8 +187,8 @@
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
 
 </article>
-<p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>
-</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">TOOLS THAT TRAVEL WITH YOU</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>A closer look.<br>Wherever you are.</h2><p>Explore domain and DNS information, review device privacy and follow public profile leads from your phone.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Domain + DNS</li><li>Device privacy</li><li>Deep Search</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Research infrastructure you own or have permission to check.</small></div></aside></div></div><!-- app-promo-layout:end -->
+<p class="content-app-context" data-content-app-context>Try MyRecon username search on Android. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_guides">Get it on Google Play</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">TOOLS THAT TRAVEL WITH YOU</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>A closer look.<br>Wherever you are.</h2><p>Explore domain and DNS information, review device privacy and follow public profile leads from your phone.</p><ul class="promo-features"><li>Domain + DNS</li><li>Device privacy</li><li>Deep Search</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_technical">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Research infrastructure you own or have permission to check.</small></div></aside></div></div><!-- app-promo-layout:end -->
 
   <footer class="site-footer">
   <div class="site-footer__panel">
