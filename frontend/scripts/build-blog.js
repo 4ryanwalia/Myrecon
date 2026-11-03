@@ -247,7 +247,12 @@ function articlePage(article, articles = []) {
   const photo = article.media ? `<figure class="blog-photo"><img src="/assets/img/blog/${article.media.photo}.webp" alt="${PHOTO_ALT[article.media.photo]}" width="1600" height="900" loading="lazy" decoding="async"><figcaption>AI-created editorial image. The devices and profile layout are illustrative.</figcaption></figure>` : '';
   const navigableContent = tocPosition >= 0 ? `${content.slice(0, tocPosition)}${photo}${toc}\n${content.slice(tocPosition)}` : content;
   const explainer = article.media ? `<section class="blog-explainer" aria-labelledby="videoHeading"><span class="kicker">Watch the workflow</span><h2 id="videoHeading">${esc(article.media.title)}</h2><p>${esc(article.media.description)}</p><a href="/videos/${article.slug}.html"><img src="/assets/media/blog/${article.slug}-poster.jpg" alt="Watch: ${esc(article.media.title)}" width="1280" height="720" loading="lazy"></a><p><a href="/videos/${article.slug}.html">Watch the 32-second explainer with captions and transcript</a></p></section>` : '';
-  const related = articles.filter(item => item.slug !== article.slug).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 3);
+  const selfIdx = Math.max(0, articles.findIndex(item => item.slug === article.slug));
+  const rotatedAll = Array.from({ length: Math.max(0, articles.length - 1) }, (_, i) => articles[(selfIdx + 1 + i) % articles.length]);
+  const related = [
+    ...rotatedAll.filter(item => item.category === article.category),
+    ...rotatedAll.filter(item => item.category !== article.category),
+  ].slice(0, 3);
   return `${shellHead({ title: article.title, description: article.description, url: article.url, article })}
   <main id="main" class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:16px 0 20px;color:var(--text-dim)">

@@ -230,7 +230,7 @@
     }
     if (user) {
       const tier = account && account.standard_scans_unlimited ? "Extended" : "Free";
-      btn.href = "/pricing.html#account";
+      btn.href = "/pricing#account";
       btn.removeAttribute("role");
       btn.onclick = null;
       btn.innerHTML = avatarHtml(state().user)

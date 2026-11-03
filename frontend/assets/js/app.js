@@ -426,7 +426,7 @@
       case "standard_daily_limit":
         title = "You have used today's 5 standard scans";
         body = "Your free allowance resets at midnight UTC. The ₹99 plan unlocks unlimited standard scans and includes 10 Extended scans across 3,000+ platforms.";
-        action = `<a class="btn btn-primary" href="/pricing.html">Get unlimited standard scans for ₹99</a>`;
+        action = `<a class="btn btn-primary" href="/pricing">Get unlimited standard scans for ₹99</a>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
@@ -441,7 +441,7 @@
       case "upgrade_required": {
         title = "Get more Extended scans";
         body = "₹99 gives you 10 Extended scans across 3,000+ platforms each, with no expiry. Signed-in free accounts get 5 standard scans daily; the ₹99 plan includes unlimited standard scans.";
-        action = `<a class="btn btn-primary" href="/pricing.html">Get the ₹99 plan</a>
+        action = `<a class="btn btn-primary" href="/pricing">Get the ₹99 plan</a>
           <button type="button" class="btn btn-ghost" data-gate="full">Run a free standard scan</button>`;
         break;
       }

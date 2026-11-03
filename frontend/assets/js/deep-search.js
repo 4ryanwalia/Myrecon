@@ -267,7 +267,7 @@
       ? `<strong>Sign in to view the findings</strong><p>Deep Search findings require an eligible paid account.</p><button class="btn btn-sm" type="button" data-ds-unlock>Sign in to view findings</button>`
       : `<strong>Sign in to view the findings</strong><p>Sign-in is temporarily unavailable. The investigation can still run; try signing in again shortly.</p>`;
     if (!state.account) return `<strong>Checking your Deep Search access</strong><p>Your findings stay locked while your plan is checked.</p><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Retry plan check</button>`;
-    if (!hasAccess(state)) return `<strong>The ₹99 plan is required to view findings</strong><p>You are signed in. Upgrade your account, then refresh access to reveal this investigation.</p><a class="btn btn-sm" href="/pricing.html">Get the ₹99 plan</a><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Refresh access</button>`;
+    if (!hasAccess(state)) return `<strong>The ₹99 plan is required to view findings</strong><p>You are signed in. Upgrade your account, then refresh access to reveal this investigation.</p><a class="btn btn-sm" href="/pricing">Get the ₹99 plan</a><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Refresh access</button>`;
     return `<strong>${restoring ? "Opening your findings…" : "View the retained findings"}</strong><p>Open the investigation already completed by the server.</p><button class="btn btn-sm" type="button" data-ds-reveal ${restoring ? "disabled" : ""}>View findings</button>`;
   }
   function renderLocked(data, live) {

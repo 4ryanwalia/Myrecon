@@ -282,8 +282,9 @@ function main() {
 `;
 
   fs.writeFileSync(path.join(ROOT, 'directory.html'), html, 'utf8');
-  fs.writeFileSync(path.join(ROOT, 'sitemap.html'), html, 'utf8');
-  console.log(`[html-sitemap] Built directory.html & sitemap.html with ${allPages.length} public URLs across 8 categories`);
+  const legacySitemapHtml = path.join(ROOT, 'sitemap.html');
+  if (fs.existsSync(legacySitemapHtml)) fs.unlinkSync(legacySitemapHtml);
+  console.log(`[html-sitemap] Built directory.html with ${allPages.length} public URLs across 8 categories`);
 }
 
 if (require.main === module) main();

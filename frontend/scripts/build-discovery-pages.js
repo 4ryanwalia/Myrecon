@@ -285,10 +285,14 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
       <li><a href="/browser.html">Browser OSINT tool &amp; web username scanner</a></li>
       <li><a href="/goal.html">Digital footprint goal &amp; privacy audit roadmap</a></li>
       <li><a href="/deep-search.html">Deep Search: public comments and mentions</a></li>
+      <li><a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search workflow comparison</a></li>
       <li><a href="/blog/reverse-username-lookup-guide.html">Complete reverse username lookup guide (2026)</a></li>
       <li><a href="/blog/best-osint-tools-username-search-comparison.html">Top 8 OSINT username tools compared</a></li>
-      <li><a href="/vs/sherlock.html">MyRecon vs Sherlock comparison</a></li>
-      <li><a href="/vs/maigret.html">MyRecon vs Maigret comparison</a></li>
+      <li><a href="/vs/sherlock">MyRecon vs Sherlock comparison</a></li>
+      <li><a href="/vs/dehashed">MyRecon vs DeHashed comparison</a></li>
+      <li><a href="/vs/leakcheck">MyRecon vs LeakCheck comparison</a></li>
+      <li><a href="/vs/intelx">MyRecon vs Intelligence X comparison</a></li>
+      <li><a href="/vs/beenverified">MyRecon vs BeenVerified comparison</a></li>
     </ul>
   </section>
   <section>
@@ -438,9 +442,9 @@ const browserBody = `<main id="main" class="container prose discovery-page">
     <h2>Browser OSINT scanner vs terminal CLI tools</h2>
     <p>Compare how a browser-native workflow stacks up against traditional terminal scripts:</p>
     <ul>
-      <li><strong>MyRecon vs Sherlock:</strong> Read our <a href="/vs/sherlock.html">Sherlock comparison</a> to see how browser-based synthetic control checks prevent false positives.</li>
-      <li><strong>MyRecon vs Maigret:</strong> Read our <a href="/vs/maigret.html">Maigret comparison</a> for speed, false-positive filtering, and multi-tool integration.</li>
-      <li><strong>MyRecon vs WhatsMyName:</strong> Read our <a href="/vs/whatsmyname.html">WhatsMyName comparison</a> and explore <a href="/vs/">all OSINT tool comparisons</a>.</li>
+      <li><strong>MyRecon vs Sherlock:</strong> Read our <a href="/vs/sherlock">Sherlock comparison</a> to see how browser-based synthetic control checks prevent false positives.</li>
+      <li><strong>Username Sweep vs Deep Search:</strong> Read our <a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search guide</a> for choosing between direct profile checks and indexed mentions.</li>
+      <li><strong>Breach &amp; people-search comparisons:</strong> Compare <a href="/vs/dehashed">DeHashed</a>, <a href="/vs/leakcheck">LeakCheck</a>, <a href="/vs/intelx">Intelligence X</a>, <a href="/vs/beenverified">BeenVerified</a>, and <a href="/vs/">all OSINT tool comparisons</a>.</li>
     </ul>
   </section>
   <section>
