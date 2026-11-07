@@ -1,6 +1,8 @@
 """PayPal grants require account ownership and provider-confirmed exact payment."""
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
+from datetime import date, timedelta
+from decimal import Decimal
 
 import pytest
 import app as app_module
@@ -158,3 +160,89 @@ def test_secrets_not_in_plans():
     assert info["paypal_payments"]["enabled"]
     assert "test-secret" not in str(info)
     assert "test-client" not in str(info)
+
+
+def test_currency_quote_and_capture_are_server_owned(monkeypatch):
+    monkeypatch.setattr(paypal, "_rates", lambda: {"EUR": Decimal("0.9"), "JPY": Decimal("150")})
+    client = app_module.app.test_client()
+    response = client.get("/api/billing/paypal/quotes")
+    assert response.status_code == 200
+    assert "no-store" in response.headers["Cache-Control"]
+    choices = {choice["code"]: choice for choice in response.get_json()["currencies"]}
+    assert choices["EUR"]["amount"] == "3.59"
+    assert choices["JPY"]["amount"] == "599"
+    captured = {}
+    def call(method, path, **kwargs):
+        captured.update(kwargs["json"])
+        return {"id": ORDER, "links": [{"rel": "payer-action", "href": "https://www.sandbox.paypal.com/checkoutnow?token=" + ORDER}]}
+    monkeypatch.setattr(paypal, "_call", call)
+    response = client.post("/api/billing/paypal/order", json={"plan": "extended", "currency": "EUR",
+                           "quote": choices["EUR"]["quote"], "amount": "0.01"})
+    assert response.status_code == 200
+    assert captured["purchase_units"][0]["amount"] == {"currency_code": "EUR", "value": "3.59"}
+    intent = store.store.get(paypal._path(ORDER))
+    assert intent["amount"] == "3.59" and intent["currency"] == "EUR"
+    result = paid()
+    unit = result["purchase_units"][0]
+    unit["custom_id"] = intent["binding"]
+    unit["amount"] = {"currency_code": "EUR", "value": "3.59"}
+    unit["payments"]["captures"][0]["amount"] = {"currency_code": "EUR", "value": "3.59"}
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: result)
+    assert paypal.settle(ORDER, uid="dev-test-user")["applied"]
+    assert plans.get_account("dev-test-user")["extended_pack_scans_left"] == 10
+
+
+@pytest.mark.parametrize("bad", ["different_user", "currency", "tamper", "expired", "unsupported"])
+def test_invalid_quote_never_creates_order(monkeypatch, bad):
+    monkeypatch.setattr(paypal.time, "time", lambda: 100000)
+    token = paypal._sign_quote("dev-test-user", "EUR", "3.59")
+    uid, currency = "dev-test-user", "EUR"
+    if bad == "different_user": uid = "other-user"
+    if bad == "currency": currency = "GBP"
+    if bad == "tamper": token += "x"
+    if bad == "unsupported": currency = "CNY"
+    if bad == "expired": monkeypatch.setattr(paypal.time, "time", lambda: 100000 + paypal.QUOTE_TTL_SECONDS)
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: pytest.fail("Invalid quote must not create an order"))
+    with pytest.raises(ValueError):
+        paypal.checkout(uid, currency, token)
+
+
+def test_quote_endpoint_requires_login(monkeypatch):
+    monkeypatch.setattr(config, "DEV_TEST_ACCOUNT", False)
+    assert app_module.app.test_client().get("/api/billing/paypal/quotes").status_code == 401
+
+
+@pytest.mark.parametrize("bad_field", ["currency", "amount"])
+def test_partial_stored_quote_never_grants(monkeypatch, bad_field):
+    intent = {"uid": "dev-test-user", "binding": "binding", "applied": False,
+              "currency": "EUR", "amount": "3.59"}
+    del intent[bad_field]
+    store.store.set(paypal._path(ORDER), intent)
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: paid())
+    assert not paypal.settle(ORDER, uid="dev-test-user")["applied"]
+
+
+def test_reference_rate_outage_preserves_usd(monkeypatch):
+    def unavailable(*args, **kwargs):
+        raise paypal.requests.Timeout()
+    monkeypatch.setattr(paypal.requests, "get", unavailable)
+    monkeypatch.setattr(paypal, "_fx_cache", {"until": 0, "rates": {}})
+    assert [item["code"] for item in paypal.quotes("dev-test-user")["currencies"]] == ["USD"]
+
+
+def test_reference_rates_filter_stale_invalid_and_restricted_currencies(monkeypatch):
+    import json
+    today = date.today()
+    rows = [
+        {"base": "USD", "quote": "EUR", "date": str(today), "rate": 0.9},
+        {"base": "USD", "quote": "GBP", "date": str(today - timedelta(days=8)), "rate": 0.8},
+        {"base": "USD", "quote": "AUD", "date": str(today), "rate": -1},
+        {"base": "USD", "quote": "CNY", "date": str(today), "rate": 7},
+    ]
+    class Response:
+        def raise_for_status(self): pass
+        def iter_content(self, _): yield json.dumps(rows).encode()
+        def close(self): pass
+    monkeypatch.setattr(paypal.requests, "get", lambda *a, **k: Response())
+    monkeypatch.setattr(paypal, "_fx_cache", {"until": 0, "rates": {}})
+    assert paypal._rates() == {"EUR": Decimal("0.9")}

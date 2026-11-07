@@ -53,7 +53,7 @@
   <link rel="stylesheet" href="/assets/optimized/css/pricing.78ddc20a772b.css">
   <link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"MyRecon Pricing: Free Standard and Extended Scan Pack","url":"https://www.myrecon.xyz/pricing","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Pricing","item":"https://www.myrecon.xyz/pricing"}]}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does MyRecon provide for OSINT lookup pricing?","acceptedAnswer":{"@type":"Answer","text":"Guests get 5 free scans daily without sign-in and see the first 100 platform verdicts. Signed-in free accounts get 5 standard 500+ platform scans per day with complete results. The paid pack is ₹99 through Indian checkout, or US$3.99 through PayPal or Buy Me a Coffee when the chosen checkout is enabled: unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms each. Paid standard and Deep Search access continue after the Extended credits are used. Credits never expire and nothing auto-renews. Daily allowances reset at midnight UTC."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can MyRecon see private accounts?","acceptedAnswer":{"@type":"Answer","text":"No. Public username checks do not grant access to private accounts or restricted content. Use service-approved access and consent, and do not bypass login walls or platform controls to complete a search."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does MyRecon provide for OSINT lookup pricing?","acceptedAnswer":{"@type":"Answer","text":"Guests get 5 free scans daily without sign-in and see the first 100 platform verdicts. Signed-in free accounts get 5 standard 500+ platform scans per day with complete results. The paid pack is ₹99 through Indian checkout, or US$3.99 through international checkout, when enabled. PayPal may offer other currencies at the price shown before checkout. The pack includes unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms each. Paid standard and Deep Search access continue after the Extended credits are used. Credits never expire and nothing auto-renews. Daily allowances reset at midnight UTC."}},{"@type":"Question","name":"Does a missing username result prove no account exists?","acceptedAnswer":{"@type":"Answer","text":"No. A site may block, rate-limit, rename, or restrict a profile, and some services may not be supported. Treat an unavailable or missing result as inconclusive unless the source provides a verifiable reason."}},{"@type":"Question","name":"Can MyRecon see private accounts?","acceptedAnswer":{"@type":"Answer","text":"No. Public username checks do not grant access to private accounts or restricted content. Use service-approved access and consent, and do not bypass login walls or platform controls to complete a search."}}]}</script>
   <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
   <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
   <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
@@ -81,7 +81,7 @@
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">Pricing</span></nav>
     <h1 style="font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em">Pricing</h1>
     <p style="color:var(--text-dim);font-size:1.05rem;margin-top:12px;line-height:1.65;max-width:720px">
-      Every tool on MyRecon is free to start. Guest login needs no sign-up. Quick scans check 100 platforms and show the first 2 result cards; the rest are blurred. Standard requires sign-in. Signed-in free accounts get 5 standard 500+ platform scans a day with complete results. The paid pack is ₹99 through Indian checkout, or US$3.99 through PayPal or Buy Me a Coffee when the chosen checkout is enabled, for unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms.
+      Every tool on MyRecon is free to start. Guest login needs no sign-up. Quick scans check 100 platforms and show the first 2 result cards; the rest are blurred. Standard requires sign-in. Signed-in free accounts get 5 standard 500+ platform scans a day with complete results. The paid pack is ₹99 through Indian checkout or US$3.99 through international checkout when enabled. PayPal may offer other currencies at the price shown before checkout. The pack includes unlimited standard scans, Deep Search and 10 Extended scans across 3,000+ platforms.
       Email lookup is free for everyone. All returned breach, profile and optional linked-account findings are visible without sign-in or a paid plan. Email lookups do not use your username scan allowance. Source outages can still leave a lookup incomplete.
     </p>
 
@@ -133,7 +133,7 @@
       </div>
       <div class="panel plan featured" data-plan-card="extended">
         <h3>Extended Scan Pack</h3>
-        <div class="price">₹99 <small>or US$3.99, one-time</small></div>
+        <div class="price">₹99 <small>or US$3.99 with international checkout, one-time</small></div>
         <ul>
           <li>Unlimited standard 500+ platform scans</li>
           <li><a href="/deep-search.html">Deep Search</a>: public activity, linked accounts and name research</li>
@@ -143,7 +143,12 @@
           <li>Credits never expire; buy again to add 10 more</li>
           <li>One-time payment, no auto-renew</li>
         </ul>
-        <button type="button" class="btn btn-primary paypal-btn" data-buy-paypal disabled aria-label="Pay with PayPal: US$3.99"><span class="paypal-btn__label" aria-hidden="true">Pay with</span><img class="paypal-btn__logo" src="/assets/img/paypal-logo.svg" alt="" width="101" height="32"></button>
+        <div class="paypal-currency" id="paypalCurrencyControl" hidden>
+          <label for="paypalCurrency">PayPal currency</label>
+          <select id="paypalCurrency" aria-describedby="paypalCurrencyHelp"></select>
+          <p class="hint" id="paypalCurrencyHelp">Select the currency to charge. Your price is shown before you continue to PayPal.</p>
+        </div>
+        <button type="button" class="btn btn-primary paypal-btn" data-buy-paypal disabled aria-label="Pay with PayPal"><span class="paypal-btn__label" aria-hidden="true">Pay with</span><img class="paypal-btn__logo" src="/assets/img/paypal-logo.svg" alt="" width="101" height="32"></button>
         <p class="hint" id="paypalStatus" role="status" aria-live="polite">Checking PayPal availability…</p>
         <button type="button" class="btn btn-ghost" data-buy-international disabled>Buy Me a Coffee: US$3.99</button>
         <p class="hint" id="internationalStatus" aria-live="polite">Checking payment availability…</p>

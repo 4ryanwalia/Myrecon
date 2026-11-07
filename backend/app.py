@@ -1063,6 +1063,19 @@ def _register_routes(app: Flask) -> None:
             "plan": plan, "email": user.get("email", ""), "name": user.get("name", ""),
         })
 
+    @app.route("/api/billing/paypal/quotes", methods=["GET", "OPTIONS"])
+    def api_paypal_quotes():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        from core import paypal
+        user = _require_user()
+        if not paypal.enabled():
+            return responses.error("PayPal checkout is unavailable.", status=503,
+                                   code="payments_unavailable")
+        response, status = responses.ok(paypal.quotes(user["sub"]))
+        response.headers["Cache-Control"] = "no-store"
+        return response, status
+
     @app.route("/api/billing/paypal/order", methods=["POST", "OPTIONS"])
     @app.route("/api/billing/paypal/capture", methods=["POST", "OPTIONS"])
     def api_paypal_checkout():
@@ -1078,7 +1091,7 @@ def _register_routes(app: Flask) -> None:
             if request.path.endswith("/order"):
                 if body.get("plan") != "extended":
                     raise ValueError("Unknown plan.")
-                return responses.ok(paypal.checkout(user["sub"]))
+                return responses.ok(paypal.checkout(user["sub"], body.get("currency", "USD"), body.get("quote")))
             result = paypal.settle(body.get("order_id"), uid=user["sub"], capture=True)
             return responses.ok({**result, "account": plans.get_account(user["sub"])})
         except ValueError as exc:
