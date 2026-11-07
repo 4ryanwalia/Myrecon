@@ -9,12 +9,33 @@
   const save = (key, data) => { try { data ? sessionStorage.setItem(key, JSON.stringify(data)) : sessionStorage.removeItem(key); } catch {} };
   let available = false, busy = false, resumed = false;
   let currencies = [{ code: "USD", amount: "3.99" }], quoteUser = null, quoteTime = 0, quotePromise = null;
+  let explicitCurrency = null, localPricesUnavailable = false, unavailablePreferred = null;
   const button = () => document.querySelector("[data-buy-paypal]");
   const selector = () => document.querySelector("#paypalCurrency");
+  const retry = () => document.querySelector("#retryPayPalCurrencies");
   const message = (text) => { document.querySelector("#paypalStatus").textContent = text; };
   const selected = () => currencies.find((item) => item.code === selector()?.value) || currencies[0];
   const priceText = (item) => `${item.code} ${item.amount}`;
-  const readyMessage = () => `One-time ${priceText(selected())} payment through PayPal. Review the total at PayPal.`;
+  const readyMessage = () => localPricesUnavailable
+    ? "Local-currency prices are temporarily unavailable. Pay USD 3.99 or refresh to try again."
+    : unavailablePreferred && selected().code === "USD"
+      ? `${unavailablePreferred} is temporarily unavailable. Choose another currency or continue with USD.`
+      : `One-time ${priceText(selected())} payment through PayPal. Review the total at PayPal.`;
+  // Language is only a starting preference, not proof of the buyer's location.
+  const defaultCurrency = () => {
+    const locale = (window.navigator?.language || "").replace(/_/g, "-");
+    let region = "";
+    try { region = new Intl.Locale(locale).region || ""; } catch {}
+    const byRegion = {
+      JP: "JPY", GB: "GBP", US: "USD", AU: "AUD", CA: "CAD", CH: "CHF", CZ: "CZK",
+      DK: "DKK", HK: "HKD", HU: "HUF", IL: "ILS", MX: "MXN", NO: "NOK", NZ: "NZD",
+      PH: "PHP", PL: "PLN", SE: "SEK", SG: "SGD", TH: "THB", TW: "TWD",
+      AT: "EUR", BE: "EUR", HR: "EUR", CY: "EUR", EE: "EUR", FI: "EUR", FR: "EUR",
+      DE: "EUR", GR: "EUR", IE: "EUR", IT: "EUR", LV: "EUR", LT: "EUR", LU: "EUR",
+      MT: "EUR", NL: "EUR", PT: "EUR", SK: "EUR", SI: "EUR", ES: "EUR"
+    };
+    return byRegion[region.toUpperCase()] || (!region && /^ja$/i.test(locale) ? "JPY" : "USD");
+  };
   const update = () => {
     button().disabled = busy || !available || !A?.enabled;
     if (selector()) selector().disabled = busy;
@@ -42,10 +63,10 @@
     if (quotePromise && quoteUser === uid) return quotePromise;
     quoteUser = uid;
     const pending = (async () => {
-      const preferred = selector()?.value || read(intentKey)?.currency || "USD";
+      const preferred = explicitCurrency || read(intentKey)?.currency || defaultCurrency();
       let items = [{ code: "USD", amount: "3.99" }];
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 8000);
+      const timer = setTimeout(() => controller.abort(), 35000);
       try {
         const headers = await A.authHeaders();
         const response = await fetch(base + "/api/billing/paypal/quotes", { headers, signal: controller.signal });
@@ -57,8 +78,14 @@
         if (offered.some((item) => item.code === "USD")) items = offered;
       } catch {} finally { clearTimeout(timer); } // USD remains available if local-currency quotes cannot be loaded.
       if (A.state().user?.uid !== uid) return;
-      renderCurrencies(items, preferred);
-      quoteTime = Date.now();
+      localPricesUnavailable = items.length < 2;
+      if (localPricesUnavailable) items = [{ code: "USD", amount: "3.99" }];
+      const currentPreference = explicitCurrency || preferred;
+      unavailablePreferred = currentPreference !== "USD" && !items.some((item) => item.code === currentPreference) ? currentPreference : null;
+      renderCurrencies(items, currentPreference);
+      if (retry()) retry().hidden = !localPricesUnavailable && !unavailablePreferred;
+      // A failed refresh is not a valid cached quote; retry can fetch fresh rates.
+      quoteTime = localPricesUnavailable ? 0 : Date.now();
     })();
     quotePromise = pending;
     try { await pending; } finally { if (quotePromise === pending) quotePromise = null; }
@@ -96,18 +123,23 @@
     update();
     try {
       if (!A.state().user) {
-        save(intentKey, { at: Date.now(), currency: selected().code });
+        save(intentKey, { at: Date.now(), currency: explicitCurrency });
         message("Sign in with Google to see your PayPal currency options.");
         await A.signIn();
         const uid = A.state().user?.uid;
         if (!uid) { save(intentKey, null); message("Sign-in was cancelled. You can try again."); return; }
-        await loadQuotes(uid, true);
+        message("Signed in. Checking local-currency prices; USD is available while you wait.");
+        loadQuotes(uid, true).then(() => {
+          if (!busy && A.state().user?.uid === uid) message(readyMessage());
+        });
         save(intentKey, null);
-        message(`Signed in. ${readyMessage()}`);
         return;
       }
       const uid = A.state().user?.uid;
-      if (quoteUser !== uid || !quoteTime || Date.now() - quoteTime >= 10 * 60 * 1000) {
+      // The server accepts the existing USD price without a quote, including
+      // while local prices are loading or unavailable.
+      const usingUsdFallback = selected().code === "USD" && !selected().quote;
+      if (!usingUsdFallback && (quoteUser !== uid || !quoteTime || Date.now() - quoteTime >= 10 * 60 * 1000)) {
         await loadQuotes(uid, true);
         message(`Prices refreshed. ${readyMessage()}`);
         return;
@@ -166,8 +198,18 @@
     if (!button()) return;
     button().addEventListener("click", buy);
     selector()?.addEventListener("change", () => {
+      explicitCurrency = selector().value;
       button().setAttribute("aria-label", `Pay ${priceText(selected())} with PayPal`);
       message(readyMessage());
+    });
+    retry()?.addEventListener("click", async () => {
+      const uid = A?.state().user?.uid;
+      if (!uid) { message("Sign in with Google to see your PayPal currency options."); return; }
+      retry().disabled = true;
+      message("Checking local-currency prices; USD is available while you wait.");
+      try { await loadQuotes(uid, true); }
+      finally { retry().disabled = false; }
+      if (!busy && A.state().user?.uid === uid) message(readyMessage());
     });
     if (!A) { message("Sign-in is unavailable."); return; }
     await A.ready;
@@ -186,11 +228,15 @@
       if (!uid && quoteUser) {
         quoteUser = null;
         quoteTime = 0;
+        explicitCurrency = null;
+        localPricesUnavailable = false;
+        unavailablePreferred = null;
+        if (retry()) retry().hidden = true;
         renderCurrencies([{ code: "USD", amount: "3.99" }], "USD");
       }
-      if (uid && quoteUser !== uid) {
+      if (uid && available && quoteUser !== uid) {
         loadQuotes(uid).then(() => {
-          if (!busy && A.state().user?.uid === uid && !returned) message(readyMessage());
+          if (available && !busy && A.state().user?.uid === uid && !returned) message(readyMessage());
         });
       }
       if (uid && !resumed && !busy && returned !== "cancel" && (returned === "return" || read(savedKey)?.uid === uid)) {

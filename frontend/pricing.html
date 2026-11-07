@@ -143,11 +143,13 @@
           <li>Credits never expire; buy again to add 10 more</li>
           <li>One-time payment, no auto-renew</li>
         </ul>
+        <p class="hint">To pay in Japanese yen (JPY) or another available currency, sign in and choose your PayPal currency before checkout.</p>
         <div class="paypal-currency" id="paypalCurrencyControl" hidden>
           <label for="paypalCurrency">PayPal currency</label>
           <select id="paypalCurrency" aria-describedby="paypalCurrencyHelp"></select>
           <p class="hint" id="paypalCurrencyHelp">Select the currency to charge. Your price is shown before you continue to PayPal.</p>
         </div>
+        <button type="button" class="btn btn-ghost" id="retryPayPalCurrencies" hidden>Retry currency prices</button>
         <button type="button" class="btn btn-primary paypal-btn" data-buy-paypal disabled aria-label="Pay with PayPal"><span class="paypal-btn__label" aria-hidden="true">Pay with</span><img class="paypal-btn__logo" src="/assets/img/paypal-logo.svg" alt="" width="101" height="32"></button>
         <p class="hint" id="paypalStatus" role="status" aria-live="polite">Checking PayPal availability…</p>
         <button type="button" class="btn btn-ghost" data-buy-international disabled>Buy Me a Coffee: US$3.99</button>

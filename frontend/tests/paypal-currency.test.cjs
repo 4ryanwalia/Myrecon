@@ -6,10 +6,10 @@ const path = require('node:path');
 
 const source = fs.readFileSync(path.join(__dirname, '../assets/js/paypal-checkout.js'), 'utf8');
 
-async function setup({ quotes, order, signedIn = true } = {}) {
+async function setup({ quotes, order, signedIn = true, locale = 'en-US' } = {}) {
   const callbacks = {};
   const elements = {};
-  for (const name of ['[data-buy-paypal]', '#paypalStatus', '#paypalCurrency', '#paypalCurrencyControl']) {
+  for (const name of ['[data-buy-paypal]', '#paypalStatus', '#paypalCurrency', '#paypalCurrencyControl', '#retryPayPalCurrencies']) {
     elements[name] = { disabled: false, hidden: false, value: '', children: [], listeners: {}, attrs: {},
       addEventListener(event, cb) { this.listeners[event] = cb; },
       setAttribute(key, value) { this.attrs[key] = value; },
@@ -23,14 +23,14 @@ async function setup({ quotes, order, signedIn = true } = {}) {
     authHeaders: async () => ({ Authorization: 'Bearer test' }),
     signIn: async () => { user = { uid: 'user-1' }; },
     onChange() {}, friendly: (e) => e.message, refreshAccount: async () => {} };
-  const window = { MyReconAccount: account, MYRECON: {}, location: { search: '', href: 'https://myrecon.xyz/pricing',
+  const window = { navigator: { language: locale }, MyReconAccount: account, MYRECON: {}, location: { search: '', href: 'https://myrecon.xyz/pricing',
     assign(url) { this.assigned = url; } }, history: { replaceState() {} } };
   const document = { querySelector: (name) => elements[name], createElement: () => ({ value: '', textContent: '' }),
     addEventListener: (event, callback) => { callbacks[event] = callback; } };
   const fetch = async (url, options = {}) => {
     requests.push({ url, options });
     if (url.endsWith('/api/plans')) return { ok: true, json: async () => ({ paypal_payments: { enabled: true } }) };
-    if (url.endsWith('/quotes')) return quotes instanceof Error ? Promise.reject(quotes) : { ok: true, json: async () => quotes };
+    if (url.endsWith('/quotes')) { const result = typeof quotes === 'function' ? quotes() : quotes; return result instanceof Error ? Promise.reject(result) : { ok: true, json: async () => result }; }
     if (url.endsWith('/order')) return { ok: true, json: async () => order };
     throw new Error('Unexpected request: ' + url);
   };
@@ -82,6 +82,70 @@ test('sign-in shows prices and requires explicit checkout confirmation', async (
   const page = await setup({ quotes: { currencies }, signedIn: false });
   await page.elements['[data-buy-paypal]'].listeners.click();
   assert.equal(page.requests.some((item) => item.url.endsWith('/order')), false);
-  assert.match(page.elements['#paypalStatus'].textContent, /Signed in/);
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.match(page.elements['#paypalStatus'].textContent, /(?:Signed in|One-time)/);
   assert.equal(page.elements['#paypalCurrencyControl'].hidden, false);
+});
+
+
+const yenQuotes = { currencies: [...currencies, { code: 'JPY', amount: '631', quote: 'yen-token' }] };
+
+test('Japanese locale selects a whole-yen quote and sends that quote', async () => {
+  const page = await setup({ quotes: yenQuotes, locale: 'ja-JP', order: { currency: 'JPY', amount_value: '631',
+    order_id: 'ORDER123456789', url: 'https://www.paypal.com/checkoutnow?token=ORDER123456789' } });
+  assert.equal(page.elements['#paypalCurrency'].value, 'JPY');
+  assert.match(page.elements['#paypalStatus'].textContent, /JPY 631/);
+  await page.elements['[data-buy-paypal]'].listeners.click();
+  assert.deepEqual(JSON.parse(page.requests.find((item) => item.url.endsWith('/order')).options.body),
+    { plan: 'extended', currency: 'JPY', quote: 'yen-token' });
+});
+
+test('currency choice survives retry after user chooses another currency', async () => {
+  const page = await setup({ quotes: yenQuotes, locale: 'ja-JP' });
+  const select = page.elements['#paypalCurrency'];
+  select.value = 'EUR';
+  select.listeners.change();
+  await page.elements['#retryPayPalCurrencies'].listeners.click();
+  assert.equal(select.value, 'EUR');
+});
+
+test('failed local currency lookup offers retry and retry restores yen', async () => {
+  let calls = 0;
+  const page = await setup({ locale: 'ja-JP', quotes: () => ++calls === 1 ? new Error('offline') : yenQuotes });
+  assert.equal(page.elements['#retryPayPalCurrencies'].hidden, false);
+  assert.match(page.elements['#paypalStatus'].textContent, /temporarily unavailable/);
+  await page.elements['#retryPayPalCurrencies'].listeners.click();
+  assert.equal(page.elements['#paypalCurrency'].value, 'JPY');
+  assert.equal(page.elements['#retryPayPalCurrencies'].hidden, true);
+  assert.equal(calls, 2);
+});
+
+test('unsupported locale remains USD, with an explicit choice of other currencies', async () => {
+  const page = await setup({ locale: 'en-IN', quotes: yenQuotes });
+  assert.equal(page.elements['#paypalCurrency'].value, 'USD');
+  assert.equal(page.elements['#paypalCurrencyControl'].hidden, false);
+});
+
+
+test('signed USD-only quote response still permits fallback checkout', async () => {
+  const page = await setup({ locale: 'ja-JP', quotes: { currencies: [currencies[0]] },
+    order: { currency: 'USD', amount_value: '3.99', order_id: 'ORDER123456789',
+      url: 'https://www.paypal.com/checkoutnow?token=ORDER123456789' } });
+  await page.elements['[data-buy-paypal]'].listeners.click();
+  assert.deepEqual(JSON.parse(page.requests.find((item) => item.url.endsWith('/order')).options.body),
+    { plan: 'extended', currency: 'USD' });
+  assert.match(page.window.location.assigned, /^https:\/\/www\.paypal\.com/);
+});
+
+test('retry does not override a currency chosen while quotes are loading', async () => {
+  let calls = 0, resolveNext;
+  const delayed = new Promise((resolve) => { resolveNext = resolve; });
+  const page = await setup({ locale: 'ja-JP', quotes: () => ++calls === 1 ? yenQuotes : delayed });
+  const retry = page.elements['#retryPayPalCurrencies'].listeners.click();
+  const select = page.elements['#paypalCurrency'];
+  select.value = 'EUR';
+  select.listeners.change();
+  resolveNext(yenQuotes);
+  await retry;
+  assert.equal(select.value, 'EUR');
 });

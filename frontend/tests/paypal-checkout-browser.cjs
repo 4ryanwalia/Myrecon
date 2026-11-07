@@ -13,7 +13,7 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
 (async () => {
   const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
   async function page(options = {}) {
-    const context = await browser.newContext({ viewport: options.mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 } });
+    const context = await browser.newContext({ viewport: options.mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 }, ...(options.locale ? {locale: options.locale} : {}) });
     const tab = await context.newPage();
     await tab.route('**/*', async route => {
       const url = new URL(route.request().url());
@@ -32,7 +32,7 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
       if (/^\/assets\/(?:optimized\/)?css\/pricing(?:\.[a-f0-9]+)?\.css$/.test(url.pathname)) return route.fulfill({ contentType: 'text/css', body: fs.readFileSync(path.join(root, 'assets/css/pricing.css')) });
       if (url.pathname === '/api/plans') return route.fulfill({ json: { paypal_payments: { enabled }, payments_enabled: false, international_payments: { enabled: false } } });
       if (url.pathname === '/api/billing/paypal/quotes') return route.fulfill({ json: { currencies: [
-        { code: 'USD', amount: '3.99', quote: 'usd-token' }, { code: 'EUR', amount: '3.70', quote: 'eur-token' }
+        { code: 'USD', amount: '3.99', quote: 'usd-token' }, { code: 'EUR', amount: '3.70', quote: 'eur-token' }, { code: 'JPY', amount: '631', quote: 'jpy-token' }
       ], expires_in: 900 } });
       if (url.pathname === '/api/history') return route.fulfill({ json: { scans: [] } });
       if (url.pathname === '/api/billing/paypal/order') {
@@ -40,7 +40,7 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
         const body = route.request().postDataJSON();
         created.push(body);
         assert.equal(body.plan, 'extended');
-        const amount = body.currency === 'EUR' ? '3.70' : '3.99';
+        const amount = body.currency === 'EUR' ? '3.70' : body.currency === 'JPY' ? '631' : '3.99';
         return route.fulfill({ json: { order_id: order, url: approval, currency: body.currency, amount_value: mismatch ? '8.00' : amount } });
       }
       if (url.pathname === '/api/billing/paypal/capture') {
@@ -61,8 +61,8 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
     await first.tab.waitForFunction(() => !document.querySelector('[data-buy-paypal]').disabled);
     assert.equal(await first.tab.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await first.tab.locator('[data-buy-paypal]').click();
-    await first.tab.waitForFunction(() => document.querySelector('#paypalStatus').textContent.includes('Signed in'));
     assert.equal(createCalls, 0);
+    await first.tab.waitForFunction(() => !document.querySelector('#paypalCurrencyControl').hidden);
     await first.tab.selectOption('#paypalCurrency', 'EUR');
     assert.match(await first.tab.locator('#paypalStatus').textContent(), /EUR 3\.70/);
     await first.tab.locator('[data-buy-paypal]').click();
@@ -71,6 +71,15 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
     assert.deepEqual(created.at(-1), {plan:'extended',currency:'EUR',quote:'eur-token'});
     assert.equal(captureCalls, 0);
     await first.context.close();
+
+    const japanese = await page({locale: 'ja-JP'});
+    await japanese.tab.goto(base + '/pricing.html');
+    await japanese.tab.waitForFunction(() => document.querySelector('#paypalCurrency').value === 'JPY');
+    assert.match(await japanese.tab.locator('#paypalStatus').textContent(), /JPY 631/);
+    await japanese.tab.locator('[data-buy-paypal]').click();
+    await japanese.tab.waitForURL('https://www.paypal.com/**');
+    assert.deepEqual(created.at(-1), {plan:'extended',currency:'JPY',quote:'jpy-token'});
+    await japanese.context.close();
 
     const returned = await page();
     await returned.tab.goto(base + '/pricing.html?paypal=return&token=' + order);
