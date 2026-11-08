@@ -7,3 +7,6 @@ python -m pip install -r requirements.txt
 python -m venv .venv/ghunt
 .venv/ghunt/bin/python -m pip install --upgrade pip==26.2.1
 .venv/ghunt/bin/python -m pip install -r requirements-ghunt.txt
+
+python -m venv .venv/colab
+.venv/colab/bin/python -m pip install -r tools/requirements-colab-controller.txt
