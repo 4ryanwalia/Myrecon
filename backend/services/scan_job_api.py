@@ -367,6 +367,15 @@ def register(app, api):
         except (ValueError, TypeError):
             return responses.error("Invalid worker payload or catalogue version.", 422)
 
+    @app.route("/api/operator/colab-recovery")
+    def colab_recovery_status():
+        if not worker_status_authenticated():
+            return responses.error("Operator authentication failed.", 401)
+        from services.colab_recovery import status
+        response, code = responses.ok(status())
+        response.headers["Cache-Control"] = "no-store"
+        return response, code
+
     @app.route("/api/operator/scan-workers")
     def worker_status():
         """Token-only status for the owner Apps Script health monitor."""

@@ -77,6 +77,7 @@ def run():
     client = Client(Prod(), session)
     endpoint = None
     try:
+        print("authorizing", flush=True)
         balance = client.get_consumption_user_info().paid_compute_units_balance
         if balance <= 0:
             return 75  # Wait for included units; never purchase or change accounts.
@@ -91,12 +92,21 @@ def run():
             assignment = client.assign(notebook_id(token), variant=Variant.DEFAULT,
                                        accelerator=Accelerator.NONE)
             endpoint = assignment.endpoint
+        print("assigned", flush=True)
         with tempfile.TemporaryDirectory(prefix="myrecon-colab-") as directory:
             archive = build(Path(directory)).read_bytes()
         proxy = assignment.runtime_proxy_info
         runtime = ColabRuntime(proxy.url, proxy.token)
+        def observe(output):
+            if output.get("output_type") == "stream":
+                message = output.get("text", "")
+                if "Live status confirmed for Auto CPU worker." in message:
+                    print("worker-live", flush=True)
+                elif "Render is temporarily unavailable" in message:
+                    print("render-unavailable", flush=True)
+        print("bootstrapping", flush=True)
         # No CLI history logger or file containing remote code/worker credentials.
-        outputs = runtime.execute_code(bootstrap(archive, origin, token), timeout=0)
+        outputs = runtime.execute_code(bootstrap(archive, origin, token), timeout=0, output_hook=observe)
         return 1 if any(item.get("output_type") == "error" for item in outputs) else 0
     except Exception as error:
         from google.auth.exceptions import RefreshError

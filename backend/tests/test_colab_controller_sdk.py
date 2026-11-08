@@ -56,7 +56,8 @@ class ControllerSDKTests(unittest.TestCase):
         self.assertEqual(client.assign.call_args.kwargs,
                          {"variant": Variant.DEFAULT, "accelerator": Accelerator.NONE})
         client.unassign.assert_called_once_with("owned")
-        self.assertEqual(runtime.execute_code.call_args.kwargs, {"timeout": 0})
+        self.assertEqual(runtime.execute_code.call_args.kwargs["timeout"], 0)
+        self.assertTrue(callable(runtime.execute_code.call_args.kwargs["output_hook"]))
         self.assertNotIn("refresh", runtime.execute_code.call_args.args[0])
 
     def test_reused_assignment_reaps_only_its_own_runtime(self):

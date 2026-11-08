@@ -28,6 +28,9 @@ only, and sends the matching source-only worker bundle plus dedicated worker
 token to Colab. Firebase, payment, search and Google OAuth credentials are
 never sent to the worker. The controller suppresses provider error bodies,
 remote source and CLI execution histories because they can contain secrets.
+The authenticated `/api/operator/colab-recovery` endpoint reports only a fixed
+startup/retry stage and timestamp. Unlike the full worker console snapshot it
+does not read the scan queue. Only allowlisted child stage messages are logged.
 
 An HMAC-derived stable notebook identity lets a replacement controller reclaim
 its own orphaned assignment. It never stops unrelated manually opened notebooks.

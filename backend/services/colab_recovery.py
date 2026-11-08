@@ -15,6 +15,26 @@ ROOT = "web/colab_controller"
 LEASE_SECONDS = 120
 _started = False
 _lock = threading.Lock()
+_status = {"stage": "disabled", "updated_at": 0}
+_STAGES = {"authorizing", "assigned", "bootstrapping", "worker-live", "render-unavailable"}
+
+
+def note(stage):
+    with _lock:
+        _status.update(stage=stage, updated_at=int(time.time()))
+
+
+def status():
+    with _lock:
+        return dict(_status)
+
+
+def read_stages(child):
+    for line in iter(lambda: child.stdout.readline(4096), ""):
+        stage = line.strip()
+        if stage in _STAGES:
+            note(stage)
+            log.info("Colab recovery: %s", stage)
 
 
 def renew(owner, now=None):
@@ -52,6 +72,7 @@ def supervise():
         child = None
         try:
             if not renew(owner):
+                note("waiting-for-controller-lease")
                 time.sleep(30)
                 continue
             # The scanner child receives no Firebase, payment or search secrets.
@@ -60,9 +81,11 @@ def supervise():
                        "COLAB_API_ORIGIN")
             env = {key: os.environ[key] for key in allowed if key in os.environ}
             env["PYTHONUNBUFFERED"] = "1"
+            note("starting")
             child = subprocess.Popen([str(executable), "tools/colab_controller.py"],
                 cwd=backend, env=env, stdin=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+            threading.Thread(target=read_stages, args=(child,), daemon=True).start()
             started = time.monotonic()
             while child.poll() is None:
                 time.sleep(20)
@@ -71,13 +94,16 @@ def supervise():
                     break
             code = child.returncode
             if code == 78:
+                note("needs-authorization")
                 log.error("Colab recovery needs Google/worker credential configuration; disabled until restart.")
                 return
             delay = 1800 if code == 75 else min(900, delay * 2)
             if code == 0:
                 delay = 30
+            note("waiting-for-compute-units" if code == 75 else "retrying")
             log.info("Colab controller finished (code %s); retrying in %ss. Render fallback remains available.", code, delay)
         except Exception:
+            note("controller-error")
             # Never log provider exception text, tokens or source sent to Jupyter.
             log.warning("Colab recovery paused after a controller/lease failure.")
             delay = min(900, delay * 2)

@@ -59,3 +59,22 @@ def test_child_termination_waits_before_releasing_control():
 
     recovery.stop_child(Child())
     assert events == ["terminate", "wait"]
+
+
+def test_child_status_discards_provider_text_and_credentials():
+    from types import SimpleNamespace
+    recovery.read_stages(SimpleNamespace(stdout=io.StringIO(
+        "authorizing\nprovider error containing secret\nworker-live\n")))
+    assert recovery.status()["stage"] == "worker-live"
+
+
+def test_recovery_status_requires_operator_token(monkeypatch):
+    import app as api
+    import config
+    monkeypatch.setattr(config, "SCAN_WORKER_STATUS_TOKEN", "status-token-" * 4)
+    client = api.app.test_client()
+    assert client.get("/api/operator/colab-recovery").status_code == 401
+    response = client.get("/api/operator/colab-recovery", headers={
+        "Authorization": "Bearer " + config.SCAN_WORKER_STATUS_TOKEN})
+    assert response.status_code == 200
+    assert "secret" not in response.get_data(as_text=True)
