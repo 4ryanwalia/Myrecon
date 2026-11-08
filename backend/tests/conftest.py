@@ -3,7 +3,10 @@ import sys
 
 import pytest
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_BACKEND = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# CLI integration tests also run from backend/ in CI.
+sys.path.insert(0, os.path.dirname(_BACKEND))
+sys.path.insert(0, _BACKEND)
 
 
 @pytest.fixture(autouse=True)
