@@ -3,3 +3,8 @@
 *.png binary
 *.jpg binary
 *.ico binary
+
+# Dated study downloads and their prepared manifest are hashed as exact bytes.
+# Preserve them across Windows/Linux checkouts so published checksums stay valid.
+backend/data/username-study-controls.json -text
+frontend/assets/downloads/username-controls-2026-11-01/* -text

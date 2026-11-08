@@ -7,12 +7,13 @@ const root = path.resolve(__dirname, '..');
 const base = 'http://127.0.0.1:8765';
 const order = 'TESTORDER123456789';
 let enabled = true, applied = false, captureCalls = 0, createCalls = 0;
+let created = [], mismatch = false;
 let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
 
 (async () => {
   const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
   async function page(options = {}) {
-    const context = await browser.newContext({ viewport: options.mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 } });
+    const context = await browser.newContext({ viewport: options.mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 }, ...(options.locale ? {locale: options.locale} : {}) });
     const tab = await context.newPage();
     await tab.route('**/*', async route => {
       const url = new URL(route.request().url());
@@ -27,12 +28,20 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
           refreshAccount:async()=>{window.refreshed=true;st.account={standard_scans_unlimited:true,extended_pack_scans_left:10};listeners.forEach(f=>f(st));}};
       ` });
       if (/^\/assets\/(?:optimized\/)?js\/config(?:\.[a-f0-9]+)?\.js$/.test(url.pathname)) return route.fulfill({ contentType: 'application/javascript', body: `window.MYRECON={apiBase:'${base}'};` });
+      if (/^\/assets\/(?:optimized\/)?js\/paypal-checkout(?:\.[a-f0-9]+)?\.js$/.test(url.pathname)) return route.fulfill({ contentType: 'application/javascript', body: fs.readFileSync(path.join(root, 'assets/js/paypal-checkout.js')) });
+      if (/^\/assets\/(?:optimized\/)?css\/pricing(?:\.[a-f0-9]+)?\.css$/.test(url.pathname)) return route.fulfill({ contentType: 'text/css', body: fs.readFileSync(path.join(root, 'assets/css/pricing.css')) });
       if (url.pathname === '/api/plans') return route.fulfill({ json: { paypal_payments: { enabled }, payments_enabled: false, international_payments: { enabled: false } } });
+      if (url.pathname === '/api/billing/paypal/quotes') return route.fulfill({ json: { currencies: [
+        { code: 'USD', amount: '3.99', quote: 'usd-token' }, { code: 'EUR', amount: '3.70', quote: 'eur-token' }, { code: 'JPY', amount: '631', quote: 'jpy-token' }
+      ], expires_in: 900 } });
       if (url.pathname === '/api/history') return route.fulfill({ json: { scans: [] } });
       if (url.pathname === '/api/billing/paypal/order') {
         createCalls++;
-        assert.deepEqual(route.request().postDataJSON(), { plan: 'extended' });
-        return route.fulfill({ json: { order_id: order, url: approval } });
+        const body = route.request().postDataJSON();
+        created.push(body);
+        assert.equal(body.plan, 'extended');
+        const amount = body.currency === 'EUR' ? '3.70' : body.currency === 'JPY' ? '631' : '3.99';
+        return route.fulfill({ json: { order_id: order, url: approval, currency: body.currency, amount_value: mismatch ? '8.00' : amount } });
       }
       if (url.pathname === '/api/billing/paypal/capture') {
         captureCalls++;
@@ -52,10 +61,25 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
     await first.tab.waitForFunction(() => !document.querySelector('[data-buy-paypal]').disabled);
     assert.equal(await first.tab.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await first.tab.locator('[data-buy-paypal]').click();
+    assert.equal(createCalls, 0);
+    await first.tab.waitForFunction(() => !document.querySelector('#paypalCurrencyControl').hidden);
+    await first.tab.selectOption('#paypalCurrency', 'EUR');
+    assert.match(await first.tab.locator('#paypalStatus').textContent(), /EUR 3\.70/);
+    await first.tab.locator('[data-buy-paypal]').click();
     await first.tab.waitForURL('https://www.paypal.com/**');
     assert.equal(createCalls, 1);
+    assert.deepEqual(created.at(-1), {plan:'extended',currency:'EUR',quote:'eur-token'});
     assert.equal(captureCalls, 0);
     await first.context.close();
+
+    const japanese = await page({locale: 'ja-JP'});
+    await japanese.tab.goto(base + '/pricing.html');
+    await japanese.tab.waitForFunction(() => document.querySelector('#paypalCurrency').value === 'JPY');
+    assert.match(await japanese.tab.locator('#paypalStatus').textContent(), /JPY 631/);
+    await japanese.tab.locator('[data-buy-paypal]').click();
+    await japanese.tab.waitForURL('https://www.paypal.com/**');
+    assert.deepEqual(created.at(-1), {plan:'extended',currency:'JPY',quote:'jpy-token'});
+    await japanese.context.close();
 
     const returned = await page();
     await returned.tab.goto(base + '/pricing.html?paypal=return&token=' + order);
@@ -67,9 +91,6 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
     await returned.tab.waitForFunction(() => window.refreshed === true);
     assert.match(await returned.tab.locator('#paypalStatus').textContent(), /Payment confirmed/);
     assert.equal(new URL(returned.tab.url()).search, '');
-    const out = path.resolve(root, '../output/paypal-checkout');
-    fs.mkdirSync(out, { recursive: true });
-    await returned.tab.screenshot({ path: path.join(out, 'pricing-confirmed.png'), fullPage: true });
     await returned.context.close();
 
     const before = captureCalls;
@@ -88,12 +109,24 @@ let approval = 'https://www.paypal.com/checkoutnow?token=' + order;
     assert.equal(new URL(invalid.tab.url()).origin, base);
     await invalid.context.close();
 
+    approval = 'https://www.paypal.com/checkoutnow?token=' + order;
+    mismatch = true;
+    const changed = await page();
+    await changed.tab.goto(base + '/pricing.html');
+    await changed.tab.waitForFunction(() => !document.querySelector('#paypalCurrencyControl').hidden);
+    await changed.tab.selectOption('#paypalCurrency', 'EUR');
+    await changed.tab.locator('[data-buy-paypal]').click();
+    await changed.tab.waitForFunction(() => document.querySelector('#paypalStatus').textContent.includes('price changed'));
+    assert.equal(new URL(changed.tab.url()).origin, base);
+    await changed.context.close();
+    mismatch = false;
+
     enabled = false;
     const disabled = await page();
     await disabled.tab.goto(base + '/pricing.html');
     await disabled.tab.waitForFunction(() => document.querySelector('#paypalStatus').textContent.includes('temporarily unavailable'));
     assert.equal(await disabled.tab.locator('[data-buy-paypal]').isDisabled(), true);
     await disabled.context.close();
-    console.log('PayPal browser checks passed: mobile layout, sign-in, approved redirect, pending/retry, confirmed account refresh, cancellation, unsafe URL and disabled configuration.');
+    console.log('PayPal browser checks passed: mobile layout, sign-in and currency review, EUR checkout, mismatched quote, pending/retry, confirmed account refresh, cancellation, unsafe URL and disabled configuration.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
