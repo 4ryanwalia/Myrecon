@@ -9,6 +9,7 @@ from importlib import resources
 import json
 import os
 from pathlib import Path
+import time
 
 
 def main():
@@ -16,19 +17,36 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
+    parser.add_argument("--code-file", help="Read the one-time code from a private local file")
     args = parser.parse_args()
     destination = Path(args.output).resolve()
     if destination.exists():
         raise SystemExit("Choose a new output path; existing credentials are not overwritten.")
     config = json.loads(resources.files("colab_cli").joinpath("oauth_config.json").read_text())
-    scopes = ["https://www.googleapis.com/auth/userinfo.email",
+    scopes = ["openid", "https://www.googleapis.com/auth/userinfo.email",
               "https://www.googleapis.com/auth/colaboratory"]
     flow = InstalledAppFlow.from_client_config(config, scopes=scopes,
         redirect_uri="https://sdk.cloud.google.com/applicationdefaultauthcode.html")
     url, _ = flow.authorization_url(access_type="offline", prompt="consent", token_usage="remote")
     print("Open this Google authorization URL with the account that owns your Colab units:")
     print(url)
-    flow.fetch_token(code=getpass.getpass("Google authorization code (hidden): ").strip())
+    if args.code_file:
+        code_path = Path(args.code_file).resolve()
+        deadline = time.monotonic() + 600
+        while not code_path.exists():
+            if time.monotonic() >= deadline:
+                raise SystemExit("Authorization timed out; start a new flow.")
+            time.sleep(0.5)
+        authorization_code = code_path.read_text(encoding="utf-8").strip()
+        code_path.unlink()
+    else:
+        authorization_code = getpass.getpass("Google authorization code (hidden): ").strip()
+    try:
+        flow.fetch_token(code=authorization_code)
+    except Exception:
+        raise SystemExit("Google authorization exchange failed; start a fresh flow.") from None
+    finally:
+        authorization_code = ""
     credentials = flow.credentials
     if not credentials.refresh_token:
         raise SystemExit("No refresh token returned; authorization was not saved.")
