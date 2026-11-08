@@ -58,27 +58,53 @@ function renderFooter() {
 </footer>`;
 }
 
+function deduplicateAssetTags(html) {
+  const seenCss = new Set();
+  html = html.replace(
+    /(?:^[ \t]*<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']\/assets\/(?:optimized\/)?css\/([\w-]+)(?:\.[a-f0-9]{12})?\.css(?:\?[^"']*)?["'][^>]*>[ \t]*\r?\n|<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']\/assets\/(?:optimized\/)?css\/([\w-]+)(?:\.[a-f0-9]{12})?\.css(?:\?[^"']*)?["'][^>]*>)/gim,
+    (match, nameLine, nameInline) => {
+      const key = (nameLine || nameInline).toLowerCase();
+      if (seenCss.has(key)) return "";
+      seenCss.add(key);
+      return match;
+    }
+  );
+  const seenJs = new Set();
+  html = html.replace(
+    /(?:^[ \t]*<script\b[^>]*\bsrc=["']\/assets\/(?:optimized\/)?js\/([\w-]+)(?:\.[a-f0-9]{12})?\.js(?:\?[^"']*)?["'][^>]*><\/script>[ \t]*\r?\n|<script\b[^>]*\bsrc=["']\/assets\/(?:optimized\/)?js\/([\w-]+)(?:\.[a-f0-9]{12})?\.js(?:\?[^"']*)?["'][^>]*><\/script>)/gim,
+    (match, nameLine, nameInline) => {
+      const key = (nameLine || nameInline).toLowerCase();
+      if (seenJs.has(key)) return "";
+      seenJs.add(key);
+      return match;
+    }
+  );
+  return html;
+}
+
 function enhance(file) {
-  if (file === path.join(ROOT, 'index.html')) return false;
   let html = fs.readFileSync(file, "utf8");
   const before = html;
   if (!/<html\b/i.test(html) || !/<\/body>/i.test(html)) return false;
-  const footer = renderFooter();
-  if (/<footer\b[^>]*>[\s\S]*?<\/footer>/i.test(html)) {
-    html = html.replace(/<footer\b[^>]*>[\s\S]*?<\/footer>/i, footer);
-  } else {
-    html = html.replace(/<\/body>/i, `${footer}\n</body>`);
+  if (file !== path.join(ROOT, 'index.html')) {
+    const footer = renderFooter();
+    if (/<footer\b[^>]*>[\s\S]*?<\/footer>/i.test(html)) {
+      html = html.replace(/<footer\b[^>]*>[\s\S]*?<\/footer>/i, footer);
+    } else {
+      html = html.replace(/<\/body>/i, `${footer}\n</body>`);
+    }
+    if (!/\/assets\/(?:optimized\/)?css\/site-footer(?:\.[a-f0-9]{12})?\.css/.test(html)) {
+      html = html.replace(/<\/head>/i, `  <link rel="stylesheet" href="/assets/css/site-footer.css?v=${footerHash}">\n</head>`);
+    }
   }
-  if (!html.includes("/assets/css/site-footer.css")) {
-    html = html.replace(/<\/head>/i, `  <link rel="stylesheet" href="/assets/css/site-footer.css?v=${footerHash}">\n</head>`);
-  }
+  html = deduplicateAssetTags(html);
   if (html === before) return false;
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       fs.writeFileSync(file, html, "utf8");
       return true;
     } catch (error) {
-      if (error.code !== "UNKNOWN" || attempt === 2) throw error;
+      if (error.code !== "UNKNOWN" || attempt === 4) throw error;
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150 * (attempt + 1));
     }
   }

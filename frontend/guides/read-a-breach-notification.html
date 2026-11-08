@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+<script src="/assets/optimized/js/recommendation-analytics.b6a9b3253ae5.js"></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -11,7 +12,8 @@
     var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
-      page_referrer: analyticsReferrer
+      page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
     });
   </script>
   <meta charset="UTF-8">
@@ -59,13 +61,10 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this breach notification email real or phishing?","acceptedAnswer":{"@type":"Answer","text":"Do not use any link or phone number in the message to check. Open a new tab, type the company's address yourself, and look for the notice on their site, real breaches are almost always posted publicly as well as emailed. A genuine notice also never asks you to confirm a password, a full card number or a one-time code. Breach notices are one of the most impersonated email types there is, precisely because the recipient is alarmed and expecting to take action."}},{"@type":"Question","name":"What does \"we have no evidence of misuse\" actually mean?","acceptedAnswer":{"@type":"Answer","text":"It means nobody has reported harm yet, not that the data is safe. Breached records are often held or traded for months before they are used, and misuse by a third party is largely invisible to the breached company. Treat it as a statement about what they can see, not as reassurance."}},{"@type":"Question","name":"Which exposed data types are the most serious?","acceptedAnswer":{"@type":"Answer","text":"Roughly in order: government identity numbers and financial account details, because they are hard or impossible to change; passwords, especially if unhashed or weakly hashed, because they unlock other accounts; date of birth combined with full name and address, because that trio passes most identity checks; then phone numbers and email addresses, which mainly raise your risk of targeted phishing. An email address alone is the least severe and the most common."}},{"@type":"Question","name":"Should I accept the free credit monitoring they offer?","acceptedAnswer":{"@type":"Answer","text":"It is usually worth taking since it costs nothing, but understand what it does: it tells you after something has happened, it does not prevent it. Where your jurisdiction offers a credit freeze, that is the stronger measure because it blocks new accounts being opened rather than reporting them afterwards. Check whether accepting the offer requires waiving any right to join a claim, in some jurisdictions it has."}},{"@type":"Question","name":"What should I do in the first hour?","acceptedAnswer":{"@type":"Answer","text":"Verify the notice is genuine by going to the company's site directly. Change the password on that account and on any other account where you reused it, which is the step that actually limits damage. Turn on two-factor authentication there. Then check whether the breach included anything you cannot change, such as an identity number, and act on that separately."}}]}</script>
   <link rel="stylesheet" href="/assets/optimized/css/content-app-promo.04abf7e3cbae.css">
   <link rel="stylesheet" href="/assets/optimized/css/content-app-context.b4c142ec5e5a.css">
-  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
-<link rel="stylesheet" href="/assets/optimized/css/search-discovery.7094297ff1d5.css">  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
-  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
-  <link rel="stylesheet" href="/assets/optimized/css/site-footer.45cc97682382.css">
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.ad4e4469bd27.css">
+<link rel="stylesheet" href="/assets/optimized/css/search-discovery.7094297ff1d5.css">
 <link rel="stylesheet" href="/assets/optimized/css/article-story.9be12881931d.css">
 <link rel="stylesheet" href="/assets/optimized/css/android-promo.05996c4d5089.css">
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -192,11 +191,11 @@
         <li><a href="/breaches/">the breach archive, incident by incident</a></li>
       </ul>
 
-      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a></p>
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a> <a class="btn btn-ghost" href="/#tool=email">Check an email for breach exposure →</a></p>
 
 </article>
-<p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>
-</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
+<p class="content-app-context" data-content-app-context>Follow breach reports and alerts on Android. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_guides_breach">Get it on Google Play</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_breach">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
 
   <footer class="site-footer">
   <div class="site-footer__panel">
@@ -237,7 +236,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/optimized/js/config.cbb669b0dfd9.js"></script>
-  <script src="/assets/optimized/js/app.82c4e3b35d9f.js"></script>
+  <script src="/assets/optimized/js/app.813cccd8981c.js"></script>
   <script src="/assets/optimized/js/consent.498f56c2b80c.js"></script>
   <script src="/assets/optimized/js/fx.8304528e50c5.js" defer></script>
 

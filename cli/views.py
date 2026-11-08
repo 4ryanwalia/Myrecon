@@ -434,47 +434,112 @@ def image_report(data: dict, show_all: bool = False) -> None:
             ui.line("+ " + str(len(results) - 20) + " more (--all)", indent=4, style="grey")
 
 
+def password_report(data: dict) -> None:
+    prefix = str(data.get("sha1_prefix") or "*****")
+    ui.heading("Password exposure", "Pwned Passwords (k-anonymity)")
+    ui.line("Hashed locally with SHA-1; only prefix " + prefix + " was sent.",
+            indent=2, style="grey")
+
+    breached = bool(data.get("breached"))
+    count = int(data.get("count") or 0)
+    if breached:
+        times = "1 time" if count == 1 else str(_num(count)) + " times"
+        ui.line(
+            ui.paint(ui.glyph("cross") + " Found in breach data — seen " + times, "red")
+        )
+    else:
+        ui.line(
+            ui.paint(ui.glyph("tick") + " Not found in breach data", "green")
+        )
+
+    if data.get("advice"):
+        ui.wrapped(str(data["advice"]), indent=2)
+
+    strength = data.get("strength") or {}
+    if strength:
+        ui.section("Brute-force resistance")
+        bits = strength.get("bits")
+        label = str(strength.get("label") or "")
+        ui.kv(
+            "strength",
+            (label + ", " + str(bits) + " bits of entropy") if bits is not None else label,
+            indent=4,
+        )
+        if strength.get("pool") is not None:
+            ui.kv("character pool",
+                  str(strength["pool"]) + " possible characters per position",
+                  indent=4)
+        if strength.get("length") is not None:
+            ui.kv("length", str(strength["length"]) + " characters", indent=4)
+        ui.kv("offline crack time", strength.get("crack"), indent=4)
+        ui.line("Estimated against ~100 billion guesses/s (a mid-range GPU rig attacking a fast hash).",
+                indent=4, style="grey")
+
+
 def forensics_report(data: dict) -> None:
     file_info = data.get("file") or {}
-    ui.heading("Image forensics", str(file_info.get("filename") or ""),)
+    doc = data.get("document")
+    is_doc = isinstance(doc, dict)
+    ui.heading("Document forensics" if is_doc else "Image forensics",
+               str(file_info.get("filename") or ""))
     ui.line("Computed from the file bytes. No network call, no third party.",
             indent=2, style="grey")
 
     ui.section("File")
-    for key in ("format", "mime", "mode", "width", "height", "megapixels",
-                "aspect_ratio", "animated", "size_bytes", "md5", "sha256"):
+    for key in ("format", "mime", "pdf_version", "mode", "width", "height",
+                "megapixels", "aspect_ratio", "animated", "size_bytes", "md5", "sha256"):
         ui.kv(key.replace("_", " "), file_info.get(key), indent=4)
 
-    perceptual = data.get("perceptual") or {}
-    if perceptual:
-        ui.section("Perceptual hashes")
-        for key in ("ahash", "dhash", "phash"):
-            ui.kv(key, perceptual.get(key), indent=4)
-        if perceptual.get("note"):
-            ui.line(str(perceptual["note"]), indent=4, style="grey")
-
-    exif = data.get("exif") or {}
-    ui.section("EXIF")
-    if not exif.get("present"):
-        ui.line("No EXIF metadata — stripped on upload, or never written.",
-                indent=4, style="grey")
+    if is_doc:
+        ui.section("Document metadata")
+        if not doc.get("present"):
+            ui.line("No document metadata — stripped or never written.",
+                    indent=4, style="grey")
+        else:
+            for key in ("author", "last_modified_by", "creator_software",
+                        "producer_software", "software", "company", "template",
+                        "title", "subject", "description", "keywords",
+                        "category", "language", "revision", "pages",
+                        "created", "modified", "encrypted"):
+                val = doc.get(key)
+                if key == "software" and (doc.get("creator_software") or doc.get("producer_software")):
+                    continue
+                if key == "encrypted" and not val:
+                    continue
+                ui.kv(key.replace("_", " "),
+                      val if isinstance(val, (int, bool)) else _truncate(val, 56),
+                      indent=4)
     else:
-        ui.kv("tags", exif.get("raw_tag_count"), indent=4)
-        ui.kv("software", _truncate(exif.get("software"), 56), indent=4)
-        for block in ("camera", "capture"):
-            for key, value in (exif.get(block) or {}).items():
-                ui.kv(key.replace("_", " "), _truncate(value, 56), indent=4)
+        perceptual = data.get("perceptual") or {}
+        if perceptual:
+            ui.section("Perceptual hashes")
+            for key in ("ahash", "dhash", "phash"):
+                ui.kv(key, perceptual.get(key), indent=4)
+            if perceptual.get("note"):
+                ui.line(str(perceptual["note"]), indent=4, style="grey")
 
-    gps = exif.get("gps") or {}
-    if gps.get("present"):
-        ui.section("GPS")
-        for key, value in gps.items():
-            if key == "present":
-                continue
-            ui.kv(key.replace("_", " "), _truncate(value, 56), indent=4)
-        if gps.get("latitude") is not None:
-            ui.line("Resolve it:  myrecon geo " + str(gps.get("latitude")) +
-                    " " + str(gps.get("longitude")), indent=4, style="grey")
+        exif = data.get("exif") or {}
+        ui.section("EXIF")
+        if not exif.get("present"):
+            ui.line("No EXIF metadata — stripped on upload, or never written.",
+                    indent=4, style="grey")
+        else:
+            ui.kv("tags", exif.get("raw_tag_count"), indent=4)
+            ui.kv("software", _truncate(exif.get("software"), 56), indent=4)
+            for block in ("camera", "capture"):
+                for key, value in (exif.get(block) or {}).items():
+                    ui.kv(key.replace("_", " "), _truncate(value, 56), indent=4)
+
+        gps = exif.get("gps") or {}
+        if gps.get("present"):
+            ui.section("GPS")
+            for key, value in gps.items():
+                if key == "present":
+                    continue
+                ui.kv(key.replace("_", " "), _truncate(value, 56), indent=4)
+            if gps.get("latitude") is not None:
+                ui.line("Resolve it:  myrecon geo " + str(gps.get("latitude")) +
+                        " " + str(gps.get("longitude")), indent=4, style="grey")
 
     signals = data.get("signals") or []
     if signals:

@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
@@ -108,14 +110,36 @@ def test_disabled_and_unconfigured_do_not_spawn(monkeypatch):
     assert enrich_ghunt_email(EMAIL)["status"] == "unconfigured"
 
 
-def test_concurrent_worker_is_bounded(monkeypatch):
-    from modules.email_ghunt import _WORKER_SLOT
-    monkeypatch.setenv("EMAIL_GHUNT_ENABLED", "true")
-    _WORKER_SLOT.acquire()
-    try:
-        assert enrich_ghunt_email(EMAIL)["status"] == "rate_limited"
-    finally:
-        _WORKER_SLOT.release()
+def test_concurrent_workers_keep_sessions_and_results_isolated(monkeypatch, tmp_path):
+    configure(monkeypatch, tmp_path)
+    monkeypatch.delenv("GHUNT_SESSION_B64", raising=False)
+    barrier = threading.Barrier(2)
+    sessions = []
+
+    def run(command, **kwargs):
+        email = json.loads(kwargs["input"])["email"]
+        session = Path(command[5])
+        assert session.read_text(encoding="utf-8") == "e30="
+        sessions.append(session)
+        session.write_text(email, encoding="utf-8")
+        barrier.wait(timeout=5)
+        assert session.read_text(encoding="utf-8") == email
+        data = payload()
+        data["query"] = email
+        data["profile"]["emails"]["PROFILE"]["value"] = email
+        data["profile"]["names"]["PROFILE"]["fullname"] = email
+        Path(command[4]).write_text(json.dumps(data), encoding="utf-8")
+        return subprocess.CompletedProcess(command, 0)
+
+    monkeypatch.setattr("modules.email_ghunt.subprocess.run", run)
+    emails = [EMAIL, "other@example.com"]
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        results = list(executor.map(enrich_ghunt_email, emails))
+    assert all(result["status"] == "ok" for result in results)
+    assert [result["profiles"][0]["display_name"] for result in results] == emails
+    assert len(set(sessions)) == 2
+    assert all(not session.parent.exists() for session in sessions)
+    assert (tmp_path / "session.m").read_text(encoding="utf-8") == "e30="
 
 
 def test_bounded_process_and_cleanup(monkeypatch, tmp_path):

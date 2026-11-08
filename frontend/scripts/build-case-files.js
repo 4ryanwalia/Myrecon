@@ -43,12 +43,9 @@ const DATA_DIR = path.join(ROOT, "assets", "data");
 const SITE = "https://www.myrecon.xyz";
 const BASE = "/breaches/case-files";
 
-// The same Play custom listing the breach pages use (it leads with breach
-// alerts), tagged so Play Console can tell case-file installs apart. Play
-// shows the main listing until that custom one exists, and the app reads only
-// `invite_code` from the referrer, so the UTM tags can never count as an invite.
+// Use the default Play listing with a case-file referrer for attribution.
 const PLAY_ALERTS =
-  "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts" +
+  "https://play.google.com/store/apps/details?id=com.Myrecon.osint" +
   "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dcase_file%26utm_campaign%3Dbreach_alerts";
 
 const esc = (s) =>
@@ -60,20 +57,22 @@ const esc = (s) =>
 
 const num = (n) => Number(n || 0).toLocaleString("en-GB");
 
-/** Titles over ~60 characters get truncated in results; try shorter forms. */
+/** Titles over ~60 characters get truncated in results; prefer 40–60 characters. */
 function fitTitle(candidates) {
   const list = candidates.filter(Boolean);
-  return list.find((c) => c.length <= 60) || list[list.length - 1];
+  return list.find((c) => c.length >= 40 && c.length <= 60) || list.find((c) => c.length <= 60) || list[list.length - 1];
 }
 
-/** Meta descriptions are cut around 158 characters. */
+/** Meta descriptions are bounded between 110 and 160 characters. */
 function fitDescription(text) {
   const clean = String(text || "").replace(/\s+/g, " ").trim();
   if (clean.length <= 158) return clean;
   const cut = clean.slice(0, 158);
   const stop = cut.lastIndexOf(". ");
-  if (stop > 90) return cut.slice(0, stop + 1).trim();
-  return cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:.\s]+$/, "") + "…";
+  if (stop >= 110) return cut.slice(0, stop + 1).trim();
+  const space = cut.lastIndexOf(" ");
+  if (space >= 110) return cut.slice(0, space).replace(/[,;:.\s]+$/, "") + "…";
+  return cut.replace(/[,;:.\s]+$/, "") + "…";
 }
 
 function prettyDate(iso) {
@@ -371,9 +370,9 @@ ${c.faq.map((f) => `        <h3>${esc(f.q)}</h3>\n        <p>${f.a}</p>`).join("
            the per-address one sends anything. -->
       <aside class="bx-offer">
         <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. Enable breach alerts in the app to follow new reports.</p>
         <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">View closed-testing listing →</a></p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Android →</a></p>
       </aside>
 
 ${(c.sources || []).length ? `      <h2>Sources</h2>
@@ -465,6 +464,16 @@ ${c.records ? `            <span class="cf-card-count">${esc(c.records)}</span>\
     })),
   });
 
+  const crumbLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
+      { "@type": "ListItem", position: 2, name: "The Breach Files", item: `${SITE}/breaches/` },
+      { "@type": "ListItem", position: 3, name: "Case Files", item: url },
+    ],
+  });
+
   return (
     HEAD({
       title: fitTitle([
@@ -481,10 +490,11 @@ ${c.records ? `            <span class="cf-card-count">${esc(c.records)}</span>\
         url,
       }),
       extraLd: itemList,
+      faqLd: crumbLd,
     }) +
       `  <main id="main" class="section">
     <div class="container bx-page">
-      <p class="bx-crumb"><a href="/breaches/">← The Breach Files</a></p>
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/breaches/">The Breach Files</a> <span aria-hidden="true">/</span> <span aria-current="page">Case Files</span></nav>
       <span class="kicker">Case Files</span>
       <h1 class="bx-title">How the breaches that mattered actually happened</h1>
       <p class="sub">The archive tells you what was taken. These tell you how, the unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures, and sourced at the foot of every page.</p>
@@ -509,7 +519,7 @@ ${b.items.map(card).join("\n")}
 
       <p class="bx-method">Every case file is sourced. Where a headline figure was later revised, and it usually is, these pages use the number the organisation or its regulator finally settled on, and say what it was first reported as. Claims that remain disputed are labelled as disputed.</p>
 
-      <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">The live breach archive →</a> <a class="btn btn-ghost" href="/guides/">Guides →</a></p>
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/#tool=email">Check an email for breach exposure →</a> <a class="btn btn-ghost" href="/breaches/">The live breach archive →</a> <a class="btn btn-ghost" href="/guides/">Guides →</a></p>
     </div>
   </main>` +
       FOOT

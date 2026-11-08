@@ -60,6 +60,7 @@ Run `python myrecon.py <command> --help` for options. Example addresses and doma
 | --- | --- | --- |
 | `username` | `python myrecon.py username yourhandle --deep` | Public username search; `--all` shows every row, including rejections. |
 | `email` | `python myrecon.py email you@example.com` | Supported breach exposure and public email signals. |
+| `password` | `python myrecon.py password` | Password exposure check via Pwned Passwords SHA-1 k-anonymity (prompts via `getpass`). |
 | `domain` | `python myrecon.py domain example.com` | Registration, DNS and hosting in one report. |
 | `dns` | `python myrecon.py dns example.com` | DNS records through DNS-over-HTTPS. |
 | `whois` | `python myrecon.py whois example.com` | RDAP registration data with a WHOIS fallback. |
@@ -68,7 +69,7 @@ Run `python myrecon.py <command> --help` for options. Example addresses and doma
 | `enrich` | `python myrecon.py enrich GitHub yourhandle` | Public details for a supported platform profile. |
 | `wayback` | `python myrecon.py wayback https://example.com` | URL archive history and latest capture. |
 | `investigate` | `python myrecon.py investigate yourhandle` | Entity graph and assessment; relationships require verification. |
-| `forensics` | `python myrecon.py forensics ./photo.jpg` | Local image metadata, hashes and provenance signals. |
+| `forensics` | `python myrecon.py forensics ./photo.jpg` | Local image and document (`.pdf`, `.docx`, `.xlsx`, `.pptx`) metadata, hashes and provenance signals. |
 | `geo` | `python myrecon.py geo 51.5074 -0.1278 --radius 1000` | Public place information around coordinates. |
 | `name` | `python myrecon.py name "Example Person"` | Full-name web search; requires Google search credentials. |
 | `image` | `python myrecon.py image https://example.com/photo.jpg` | Reverse-image web search by URL; requires Google search credentials. |
@@ -142,9 +143,9 @@ No dependencies, account, API key, or network needed. Four **synthetic examples*
 | Email and breach exposure | Yes | Yes | Checks supported public sources; source availability can vary. |
 | Domain, DNS, RDAP/WHOIS, IP, and certificate-transparency subdomains | Yes | Yes | Public infrastructure data. |
 | Investigation graph and profile enrichment | Yes | Yes | Relationships are leads to verify, not identity claims. |
-| Local image metadata and hashes | No | Yes | Reads a local file without uploading it; install `Pillow` and `numpy` for image decoding. |
+| Local image and document metadata and hashes | No | Yes | Reads a local image, PDF or Office document (`.docx`, `.xlsx`, `.pptx`) without uploading it; install `Pillow` and `numpy` for image decoding. |
 | Place lookup from GPS coordinates | No | Yes | Uses public geodata sources to describe coordinates; it does not recognize landmarks in a picture. |
-| Password exposure check | Yes | No | Hashes in the browser and sends only a hash prefix to Pwned Passwords. |
+| Password exposure check | Yes | Yes | Hashes locally and sends only a 5-character SHA-1 prefix to Pwned Passwords (`myrecon password`). |
 | Full-name and reverse-image web search | Yes | Yes | Requires Google Programmable Search credentials. |
 
 **Open-source software and hosted access are different.** This repository is MIT-licensed. Hosted web features have their own guest, signed-in and paid limits, and the CLI, website and Android app do not have identical coverage. See the [current web plans](https://www.myrecon.xyz/pricing) and [Android details](https://www.myrecon.xyz/app.html) for current availability.

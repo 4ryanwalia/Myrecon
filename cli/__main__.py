@@ -5,11 +5,13 @@ Each subcommand is a thin shell around the same `backend/services` function the
 matching Flask route calls, so there is one implementation of every lookup and
 the CLI cannot answer differently from myrecon.xyz.
 
-Two commands exist here that the web API has no route for, because they only
-make sense with a filesystem and a shell:
+Commands that run locally from the terminal:
 
-    forensics   read a local image file's own bytes (EXIF, GPS, hashes)
+    forensics   read a local image or document file's own bytes (EXIF, GPS,
+                hashes, Office/PDF metadata)
     geo         resolve coordinates — including ones `forensics` just found
+    password    check a password against Pwned Passwords via SHA-1 k-anonymity
+                (prompted via getpass so it never appears in shell history)
 
 Exit codes: 0 success, 1 a lookup failed, 2 bad input, 130 interrupted.
 """
@@ -17,6 +19,7 @@ Exit codes: 0 success, 1 a lookup failed, 2 bad input, 130 interrupted.
 from __future__ import annotations
 
 import argparse
+import getpass
 import os
 import sys
 
@@ -44,7 +47,7 @@ _COMMAND_HELP: dict = {}
 # under "Other" — forgetting to list a new one costs a heading, not its listing.
 _GROUPS = (
     ("Identity", ("username", "name", "enrich", "investigate")),
-    ("Email", ("email",)),
+    ("Email", ("email", "password")),
     ("Infrastructure", ("domain", "dns", "whois", "ip", "subdomains")),
     ("Images and places", ("image", "forensics", "geo")),
     ("Web history", ("wayback",)),
@@ -64,14 +67,17 @@ EPILOG = """\
 examples:
   myrecon username torvalds --deep
   myrecon email someone@example.com
+  myrecon password
   myrecon domain example.com
   myrecon investigate torvalds
   myrecon forensics ./photo.jpg
+  myrecon forensics ./report.pdf
   myrecon username torvalds --json > scan.json
 
 Every source is free and keyless except `name` and `image`, which need a
 Google Custom Search key (GOOGLE_API_KEY and GOOGLE_CX_ID) on the machine
-running the scan. `forensics` needs Pillow and numpy: pip install Pillow numpy
+running the scan. Document `forensics` (.pdf, .docx, .xlsx, .pptx) needs no
+extra packages; image `forensics` needs Pillow and numpy: pip install Pillow numpy
 """
 
 
@@ -130,6 +136,22 @@ def _cmd_email(args) -> tuple:
 
     address = validation.email(args.email)
     return scan_email(address), views.email_report
+
+
+def _cmd_password(args) -> tuple:
+    """Prompt via getpass and check Pwned Passwords using SHA-1 k-anonymity."""
+    from core.validation import ValidationError
+    from services.password import check_password
+
+    try:
+        secret = getpass.getpass("Password: ")
+    except EOFError as exc:
+        raise ValidationError("Password is required.") from exc
+
+    if not secret:
+        raise ValidationError("Password is required.")
+
+    return check_password(secret), views.password_report
 
 
 def _cmd_domain(args) -> tuple:
@@ -206,7 +228,7 @@ def _cmd_investigate(args) -> tuple:
 
 
 def _cmd_forensics(args) -> tuple:
-    """Local image analysis — the one command that reads from disk."""
+    """Local image and document analysis — the one command that reads from disk."""
     path = args.path
     if not os.path.isfile(path):
         raise FileNotFoundError("No such file: " + path)
@@ -224,6 +246,11 @@ def _cmd_forensics(args) -> tuple:
 
     try:
         data = analyse(raw, filename=os.path.basename(path))
+    except ImportError as exc:
+        raise RuntimeError(
+            "Image forensics needs Pillow and numpy, which the API does not "
+            "install by default.  pip install Pillow numpy  (" + str(exc) + ")"
+        ) from exc
     except ImageForensicsError as exc:
         raise ValueError(str(exc)) from exc
     return data, views.forensics_report
@@ -310,6 +337,9 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("email")
     p.set_defaults(func=_cmd_email)
 
+    p = add("password", "Check a password against Pwned Passwords via SHA-1 k-anonymity.")
+    p.set_defaults(func=_cmd_password)
+
     p = add("domain", "Registration, DNS and hosting for a domain, in one report.")
     p.add_argument("domain")
     p.set_defaults(func=_cmd_domain)
@@ -346,8 +376,8 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--all", action="store_true")
     p.set_defaults(func=_cmd_image)
 
-    p = add("forensics", "Analyse a local image file: EXIF, GPS, hashes, provenance.")
-    p.add_argument("path", help="path to an image on this machine")
+    p = add("forensics", "Analyse a local image or document (.pdf, .docx, .xlsx, .pptx) for metadata and hashes.")
+    p.add_argument("path", help="path to an image or document (.pdf, .docx, .xlsx, .pptx) on this machine")
     p.set_defaults(func=_cmd_forensics)
 
     p = add("geo", "Resolve GPS coordinates to a place, keyless.")

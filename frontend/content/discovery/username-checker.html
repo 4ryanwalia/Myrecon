@@ -1,0 +1,54 @@
+<main id="main" class="container prose discovery-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Username checker</span></nav>
+  <h1>Browser username search: check public profile leads</h1>
+  <p class="sub">Enter a handle in MyRecon to look for public profiles without installing software. Use the results to revisit your own old accounts or review an authorized public-source question, then open each relevant source.</p>
+  <a class="btn btn-primary" href="/#tool=username">Search a username in your browser</a>
+  <p class="discovery-note">Guest Quick: 100 platforms, first 2 result cards visible. Standard: sign-in required, 500+ platforms. Access reviewed 1 November 2026; <a href="/pricing">current plans</a>.</p>
+
+  <section id="browser-walkthrough"><h2>Try a browser username search step by step</h2>
+    <ol>
+      <li><strong>Choose one known handle.</strong> Enter a username you own or are authorized to research. Use an old spelling separately if you remember changing it.</li>
+      <li><strong>Choose an available scope.</strong> As a guest, select Quick and press Investigate. Sign in before choosing Standard for the larger catalogue and complete result cards.</li>
+      <li><strong>Inspect the labels.</strong> Open visible profile links and compare the exact handle with the source page. Keep a found profile separate from confirmed ownership.</li>
+      <li><strong>Resolve your own accounts.</strong> Check saved logins or signup records and sign in through the provider. Record an account action only after confirming control.</li>
+    </ol>
+    <p>MyRecon is useful when you have a handle and want several public-source leads in one browser session. For a single known service, opening its official profile directly may be quicker. A <a href="/vs/sherlock">local Sherlock workflow</a> may fit better when you need repeatable terminal commands.</p>
+  </section>
+
+  <section id="observed-demo"><h2>Real demonstration: a guest Quick scan</h2>
+    <p>On 1 November 2026 we entered the publisher's public handle, <code>4ryanwalia</code>, in the live browser tool without signing in. Quick checked 100 platforms and the report displayed 22 findings, with only the Twitter / X and TikTok cards visible. The other cards were locked. The report showed <strong>0 accounts confirmed by you</strong>; we made no ownership selections.</p>
+    <p>The X card said “Account found · ownership unverified”; the TikTok card said “Unconfirmed.” These are the tool's observations, not independent verification of either account. This example demonstrates the guest interface and its limit. It does not measure accuracy or promise that a new run will return the same cards or count.</p>
+    <p><a href="/downloads/username-quick-demo-2026-11-01.json" download>Download the recorded guest report (JSON)</a>. It contains the public demo query and returned preview, with no hidden-card details.</p>
+  </section>
+
+  <section id="source-review"><h2>Real source-review example: found, absent and unknown</h2>
+    <p>A separate <a href="/#benchmarks">recorded Standard case from 30 September 2026</a> used the same handle. These rows come from the <a href="/data/username-benchmark.json">published measurement data</a>, not today's Quick scan.</p>
+    <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Recorded username check examples"><table>
+      <caption>Historical check observations for 4ryanwalia; source access can change.</caption>
+      <thead><tr><th scope="col">Source</th><th scope="col">Recorded evidence</th><th scope="col">Interpretation</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">GitHub</th><td>Found; <code>api_user</code></td><td>An account object supported profile existence. It did not establish ownership.</td></tr>
+        <tr><th scope="row">Clubhouse</th><td>Not found; HTTP 404</td><td>The requested profile path was absent in that check. Registration availability was not tested.</td></tr>
+        <tr><th scope="row">Gab</th><td>Unknown; HTTP 403, blocked</td><td>Access was blocked. No account-existence conclusion followed.</td></tr>
+        <tr><th scope="row">Reddit</th><td>Unknown; challenge response</td><td>The challenge prevented a reliable check.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="access-limits"><h2>Current browser access and scan limits</h2>
+    <ul>
+      <li><strong>Guest:</strong> 5 Quick scans per day without signup, across 100 platforms. Only the first 2 result cards are visible.</li>
+      <li><strong>Signed-in free account:</strong> 5 Standard scans per day across 500+ platforms with complete results. Quick and Standard share that account allowance.</li>
+      <li><strong>Optional paid pack:</strong> ₹99 through Indian checkout, or US$3.99 through an enabled international checkout, for unlimited Standard scans, Deep Search and 10 Extended scans across a separate 3,000+ catalogue. No automatic renewal; credits do not expire.</li>
+    </ul>
+    <p>Daily allowances reset at midnight UTC, which is 05:30 in India. Catalogue sizes describe supported checks, not confirmed accounts or successful responses. Website limits are described here; Android access is shown in the app. Check <a href="/pricing">pricing</a> before choosing a paid scope.</p>
+  </section>
+
+  <section><h2>What a username search can leave unresolved</h2>
+    <p>Private pages, login requirements, challenges, rate limits, renamed handles and unsupported services can leave gaps. An unknown check is not a negative result. A missing public profile does not guarantee that a name is available to register; confirm availability in the platform's own signup or settings flow.</p>
+    <p>Matching handles, photos and display names can belong to unrelated people or be copied. Use the <a href="/guides/verify-osint-account-matches">account-match verification guide</a>. For your own cleanup, continue with <a href="/blog/find-your-own-old-accounts.html">forgotten-account discovery</a>, a <a href="/digital-footprint-checker.html">digital-footprint review</a> or a separate <a href="/guides/check-email-data-breach.html">email-breach check</a>.</p>
+  </section>
+
+  <section><h2>Username checker questions</h2><div class="faq"><!-- faq --></div></section>
+  <section><h2>Sources and review</h2><p>MyRecon publishes this page. The live guest report demonstrates interface behavior; the historical benchmark documents a separate run with its own methodology. Neither proves general accuracy. Use the <a href="/privacy.html">privacy policy</a> and <a href="/terms.html">terms</a> to review data handling and authorized use. Updated 1 November 2026.</p></section>
+</main>

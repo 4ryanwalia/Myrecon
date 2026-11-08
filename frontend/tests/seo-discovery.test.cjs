@@ -329,12 +329,35 @@ test('reverse username lookup landing page exposes valid local links and matchin
   assert.ok(fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8').includes('https://www.myrecon.xyz/reverse-username-lookup.html'));
 });
 
-test('boost, browser, and goal pages are standalone discovery pages with canonical references', () => {
+test('boost, browser, and goal pages are standalone discovery pages with canonical references, editorial shell, and intent features', () => {
   for (const page of ['boost.html', 'browser.html', 'goal.html']) {
     const html = fs.readFileSync(path.join(root, page), 'utf8');
     assert.ok(html.includes(`canonical" href="https://www.myrecon.xyz/${page}"`));
     assert.ok(!html.includes('http-equiv="refresh"'));
+    assert.ok(!/src="[^"]*\/app(?:\.[a-f0-9]{12})?\.js"/i.test(html), `${page} should not load 119KB app.js`);
+    assert.ok(/src="[^"]*editorial-shell(?:\.[a-f0-9]{12})?\.js"/i.test(html), `${page} should load lightweight editorial-shell.js`);
+    assert.ok(/<script\b[^>]*src="[^"]*recommendation-analytics[^"]*"[^>]*\bdefer\b/i.test(html), `${page} recommendation-analytics must be deferred`);
   }
+
+  // browser.html interactive search intent & WebApplication schema
+  const browserHtml = fs.readFileSync(path.join(root, 'browser.html'), 'utf8');
+  assert.ok(/<username-search-input\b/i.test(browserHtml), 'browser.html must include <username-search-input> web component');
+  const browserSchemas = [...browserHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  const browserWebApp = browserSchemas.flatMap(s => s['@graph'] || [s]).find(s => s['@type'] === 'WebApplication');
+  assert.ok(browserWebApp, 'browser.html must include WebApplication schema in JSON-LD graph');
+  assert.equal(browserWebApp.url, 'https://www.myrecon.xyz/browser.html');
+
+  // boost.html empirical benchmark comparison table
+  const boostHtml = fs.readFileSync(path.join(root, 'boost.html'), 'utf8');
+  assert.ok(boostHtml.includes('id="benchmarks"'), 'boost.html must contain #benchmarks section');
+  assert.ok(boostHtml.includes('0.0% (0 / 19)'), 'boost.html must display 0% false positives for MyRecon');
+  assert.ok(boostHtml.includes('0.25s (sub-second)'), 'boost.html must display sub-second parallel latency');
+  assert.ok(boostHtml.includes('href="/data/benchmarks.json"'), 'boost.html must link to verified benchmarks.json');
+
+  // site-footer.css touch targets
+  const footerCss = fs.readFileSync(path.join(root, 'assets/css/site-footer.css'), 'utf8');
+  assert.ok(/\.site-footer__social a\b[^}]*min-height:\s*44px/i.test(footerCss), 'site-footer.css .site-footer__social a must have min-height: 44px');
+  assert.ok(/@media\s*\(max-width:\s*620px\)[\s\S]*?\.site-footer__group a\b[^}]*min-height:\s*44px/i.test(footerCss), 'site-footer.css mobile .site-footer__group a must have min-height: 44px');
 });
 
 test('homepage structured data contains valid Organization, WebApplication, and no fake aggregateRating', () => {
@@ -528,6 +551,16 @@ test('boost, browser, and goal routes and redirect pages are configured across H
     assert.ok(vercelRewrite && vercelRewrite.destination === `/${alias}.html`, `vercel.json missing rewrite for /${alias}`);
   }
 
+  const intentRewrites = [
+    { source: '/plan', destination: '/pricing.html' },
+    { source: '/learn', destination: '/guides/index.html' },
+    { source: '/teamwork', destination: '/contact.html' },
+  ];
+  for (const expected of intentRewrites) {
+    const rewrite = vercel.rewrites.find(r => r.source === expected.source);
+    assert.ok(rewrite && rewrite.destination === expected.destination, `vercel.json missing rewrite ${expected.source} -> ${expected.destination}`);
+  }
+
   // Verify osint-cheat-sheet.html FAQPage schema matches visible FAQ items
   const csHtml = fs.readFileSync(path.join(root, 'osint-cheat-sheet.html'), 'utf8');
   const csSchemas = [...csHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
@@ -537,3 +570,95 @@ test('boost, browser, and goal routes and redirect pages are configured across H
     assert.ok(csHtml.includes(`<summary>${q.name}</summary>`), `osint-cheat-sheet.html missing visible summary for: ${q.name}`);
   }
 });
+
+test('5-pillar SEO regression: zero duplicate assets, 40-60 char titles, 110-160 char descriptions, BreadcrumbList coverage, in-main CTAs, and schema sync', () => {
+  function decodeHtmlEntities(str) {
+    return str
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;|&apos;/g, "'")
+      .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+      .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
+  }
+
+  const skipRedirect = new Set(['404.html', 'ops.html']);
+  const allFiles = walkAllHtml(root);
+  const ctaTargets = ['/', '/#tool', '/#tool=email', '/username-checker.html', '/digital-footprint-checker.html', '/reverse-username-lookup.html', '/deep-search.html', '/pricing', '/pricing.html', '/services.html', '/free-osint-tool.html', '/developers.html'];
+
+  const seenTitles = new Map();
+  const seenDescs = new Map();
+
+  for (const file of allFiles) {
+    const rel = path.relative(root, file).replace(/\\/g, '/');
+    const html = fs.readFileSync(file, 'utf8');
+
+    // 1. No duplicate stylesheet or JS assets on any HTML page, and no accumulated blank lines
+    const cssMatches = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']\/assets\/(?:optimized\/)?css\/([\w-]+)(?:\.[a-f0-9]{12})?\.css(?:\?[^"']*)?["'][^>]*>/gi)].map(m => m[1].toLowerCase());
+    const jsMatches = [...html.matchAll(/<script\b[^>]*\bsrc=["']\/assets\/(?:optimized\/)?js\/([\w-]+)(?:\.[a-f0-9]{12})?\.js(?:\?[^"']*)?["'][^>]*><\/script>/gi)].map(m => m[1].toLowerCase());
+    assert.equal(cssMatches.length, new Set(cssMatches).size, `${rel} has duplicate stylesheet link(s): ${cssMatches.join(', ')}`);
+    assert.equal(jsMatches.length, new Set(jsMatches).size, `${rel} has duplicate script tag(s): ${jsMatches.join(', ')}`);
+    assert.ok(!/\n{4,}/.test(html), `${rel} has accumulated 4+ consecutive blank lines`);
+
+    if (skipRedirect.has(rel) || isNoindex(html)) continue;
+
+    // 2. Decoded <title> between 40 and 60 chars and unique across all indexable pages
+    const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+    assert.ok(titleMatch, `${rel} missing <title>`);
+    const decodedTitle = decodeHtmlEntities(titleMatch[1].trim());
+    assert.ok(decodedTitle.length >= 40 && decodedTitle.length <= 60, `${rel} decoded title length ${decodedTitle.length} outside [40, 60]: "${decodedTitle}"`);
+    assert.ok(!seenTitles.has(decodedTitle), `${rel} duplicates <title> with ${seenTitles.get(decodedTitle)}: "${decodedTitle}"`);
+    seenTitles.set(decodedTitle, rel);
+
+    // 3. Decoded <meta name="description"> between 110 and 160 chars and unique across all indexable pages
+    const descMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i) || html.match(/<meta\s+content="([^"]+)"\s+name="description"/i);
+    assert.ok(descMatch, `${rel} missing meta description`);
+    const decodedDesc = decodeHtmlEntities(descMatch[1].trim());
+    assert.ok(decodedDesc.length >= 110 && decodedDesc.length <= 160, `${rel} decoded description length ${decodedDesc.length} outside [110, 160]: "${decodedDesc}"`);
+    assert.ok(!seenDescs.has(decodedDesc), `${rel} duplicates meta description with ${seenDescs.get(decodedDesc)}`);
+    seenDescs.set(decodedDesc, rel);
+
+    // 4. All non-homepage indexable pages have BreadcrumbList JSON-LD and visible breadcrumb nav
+    if (rel !== 'index.html') {
+      assert.ok(html.includes('"BreadcrumbList"'), `${rel} missing BreadcrumbList JSON-LD`);
+      assert.ok(/aria-label=["']Breadcrumb["']/i.test(html), `${rel} missing visible Breadcrumb navigation`);
+    }
+
+    // 5. All informational pages include an in-<main> commercial or tool CTA
+    if (/^(blog|guides|find|privacy|vs|videos|breaches)\//.test(rel)) {
+      const mainMatch = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i);
+      assert.ok(mainMatch, `${rel} missing <main>`);
+      const mainHtml = mainMatch[1];
+      const hrefs = [...mainHtml.matchAll(/<a\b[^>]*href=["']([^"']+)["']/gi)].map(m => m[1]);
+      const hasCta = hrefs.some(h => h.startsWith('/#tool') || ctaTargets.includes(h)) || /<username-search-input\b/i.test(mainHtml);
+      assert.ok(hasCta, `${rel} missing in-<main> commercial/tool CTA`);
+    }
+  }
+
+  // 6. Structured data & directory.html checks
+  const founderHtml = fs.readFileSync(path.join(root, 'founder.html'), 'utf8');
+  const founderSchemas = [...founderHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  const founderPersons = founderSchemas.flatMap(s => s['@graph'] || [s]).filter(n => n['@type'] === 'Person');
+  assert.equal(founderPersons.length, 1, 'founder.html must have a single unified Person JSON-LD node');
+  assert.equal(founderPersons[0]['@id'], 'https://www.myrecon.xyz/founder.html#person');
+
+  const aboutHtml = fs.readFileSync(path.join(root, 'about.html'), 'utf8');
+  const aboutTitle = decodeHtmlEntities(aboutHtml.match(/<title>([^<]+)<\/title>/i)[1].trim());
+  const aboutDesc = decodeHtmlEntities(aboutHtml.match(/<meta\s+name="description"\s+content="([^"]+)"/i)[1].trim());
+  const aboutSchemas = [...aboutHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  const aboutPageNode = aboutSchemas.flatMap(s => s['@graph'] || [s]).find(n => n['@type'] === 'AboutPage');
+  assert.equal(aboutPageNode.name, aboutTitle, 'about.html AboutPage JSON-LD name must match <title>');
+  assert.equal(aboutPageNode.description, aboutDesc, 'about.html AboutPage JSON-LD description must match meta description');
+
+  const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const indexSchemas = [...indexHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  const orgNode = indexSchemas.flatMap(s => s['@graph'] || [s]).find(n => n['@type'] === 'Organization');
+  assert.ok(Array.isArray(orgNode.sameAs) && orgNode.sameAs.length >= 2, 'index.html Organization JSON-LD must include sameAs links');
+
+  const dirHtml = fs.readFileSync(path.join(root, 'directory.html'), 'utf8');
+  assert.ok(dirHtml.includes('id="videos"'), 'directory.html must include dedicated #videos cluster');
+  assert.ok(dirHtml.includes('id="navToggle"'), 'directory.html must include responsive #navToggle');
+  assert.ok(dirHtml.includes('<style>*{box-sizing:border-box;margin:0;padding:0}</style>'), 'directory.html must include inline CLS reset');
+});
+

@@ -21,7 +21,7 @@ for (const file of walk(root)) {
   const items = crumbs.itemListElement;
   const nav = `<nav class="search-breadcrumbs" aria-label="Breadcrumb"><ol>${items.map((item, i) => `<li>${i === items.length - 1 ? `<span aria-current="page">${esc(item.name)}</span>` : `<a href="${esc(item.item)}">${esc(item.name)}</a>`}</li>`).join('')}</ol></nav>`;
   html = html.replace(/(<main\b[^>]*>)/, '$1' + nav);
-  if (!html.includes('/assets/css/search-discovery.css')) html = html.replace('</head>', '<link rel="stylesheet" href="/assets/css/search-discovery.css"></head>');
+  if (!/\/assets\/(?:optimized\/)?css\/search-discovery(?:\.[a-f0-9]{12})?\.css/.test(html)) html = html.replace('</head>', '<link rel="stylesheet" href="/assets/css/search-discovery.css"></head>');
   fs.writeFileSync(file, html); count++;
 }
 console.log(`[breadcrumbs] Added visible trails to ${count} pages`);

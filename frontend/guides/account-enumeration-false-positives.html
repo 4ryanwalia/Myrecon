@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en" data-theme="light">
 <head>
+<script src="/assets/optimized/js/recommendation-analytics.b6a9b3253ae5.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
 <script>
@@ -11,7 +12,8 @@
   var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
   gtag('config', 'G-3L8YYC6NKF', {
     page_location: analyticsPage.origin + analyticsPage.pathname,
-    page_referrer: analyticsReferrer
+    page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
   });
 </script>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,8 +25,10 @@
   <meta property="og:url" content="https://www.myrecon.xyz/guides/account-enumeration-false-positives"><meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Username Checker False Positives: A Review Workflow">
   <meta name="twitter:description" content="Recognize soft errors, generic login pages and ambiguous responses. Use verified controls and distinguish found, not found and unknown."><meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/css/editorial.css">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=1e3e885103"><link rel="stylesheet" href="/assets/css/fx.css?v=15c4d3ae20">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9"><link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="stylesheet" href="/assets/optimized/css/editorial.04c84b2bd4ef.css">
+  <link rel="stylesheet" href="/assets/optimized/css/styles.87f0ded81371.css"><link rel="stylesheet" href="/assets/optimized/css/fx.886abbac627c.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","name":"Username Checker False Positives: A Review Workflow","headline":"Username Checker False Positives: A Review Workflow","description":"Recognize soft errors, generic login pages and ambiguous responses. Use verified controls and distinguish found, not found and unknown.","url":"https://www.myrecon.xyz/guides/account-enumeration-false-positives","dateModified":"2026-10-03","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/guides/account-enumeration-false-positives"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Username Checker False Positives: A Review Workflow","item":"https://www.myrecon.xyz/guides/account-enumeration-false-positives"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does HTTP 200 mean an account exists?","acceptedAnswer":{"@type":"Answer","text":"No. Generic shells and soft-error pages can return 200. Check profile-specific evidence."}},{"@type":"Question","name":"Can not found establish username availability?","acceptedAnswer":{"@type":"Answer","text":"No. Reserved, suspended or otherwise unavailable handles may have no public profile. Check official signup settings."}},{"@type":"Question","name":"Can one benchmark prove overall accuracy?","acceptedAnswer":{"@type":"Answer","text":"No. It only supports conclusions about its recorded sample and conditions."}}]}</script>
@@ -40,9 +44,9 @@
     .seo-library-link{margin-top:32px}.seo-library-link a{margin-right:12px}
     .seo-guide-figure{margin:28px 0 34px}.seo-guide-figure img{display:block;width:100%;height:auto;border-radius:12px}.seo-guide-figure figcaption{margin-top:9px;color:var(--text-dim);font-size:.88rem;line-height:1.5}
   </style>
-  <link rel="stylesheet" href="/assets/css/site-footer.css?v=b6f2ac10fe">
-<link rel="stylesheet" href="/assets/css/article-story.css">
-<link rel="stylesheet" href="/assets/css/android-promo.css">
+  <link rel="stylesheet" href="/assets/optimized/css/site-footer.ad4e4469bd27.css">
+<link rel="stylesheet" href="/assets/optimized/css/article-story.9be12881931d.css">
+<link rel="stylesheet" href="/assets/optimized/css/android-promo.05996c4d5089.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -95,11 +99,11 @@
 
       <section class="seo-cta"><h2>Check a public username</h2><p>Guest previews and account limits apply. See <a href="/pricing">current pricing</a>. Verify each candidate at its source.</p><username-search-input></username-search-input></section>
       <section class="seo-faq"><h2>Frequently asked questions</h2><details><summary>Does HTTP 200 mean an account exists?</summary><p>No. Generic shells and soft-error pages can return 200. Check profile-specific evidence.</p></details><details><summary>Can not found establish username availability?</summary><p>No. Reserved, suspended or otherwise unavailable handles may have no public profile. Check official signup settings.</p></details><details><summary>Can one benchmark prove overall accuracy?</summary><p>No. It only supports conclusions about its recorded sample and conditions.</p></details></section>
-      <nav class="seo-library-link" aria-label="Related libraries"><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a><a href="/about.html#editorial-method">Editorial method and corrections</a></nav>
+      <nav class="seo-library-link" aria-label="Related libraries"><a href="/guides/brand-impersonation-monitoring">Brand Impersonation: Review, Evidence &amp; Reporting</a><a href="/guides/digital-footprint-audit-checklist">Digital Footprint Audit: A Practical Action Checklist</a><a href="/guides/protect-researcher-notes">Protect Research Notes: Storage, Sharing &amp; Retention</a><a href="/username-checker.html">Username checker</a><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a><a href="/pricing">Pricing</a><a href="/about.html#editorial-method">Editorial method and corrections</a></nav>
       <section class="seo-section seo-sources"><h2>Sources and method</h2><p>Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested.</p><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200" target="_blank" rel="noopener noreferrer">https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200</a></li><li><a href="/#benchmarks" target="_blank" rel="noopener noreferrer">/#benchmarks</a></li><li><a href="/assets/data/benchmark-observation-2026-10-02.json" target="_blank" rel="noopener noreferrer">/assets/data/benchmark-observation-2026-10-02.json</a></li><li><a href="https://docs.gitlab.com/api/users/#list-users" target="_blank" rel="noopener noreferrer">https://docs.gitlab.com/api/users/#list-users</a></li></ul></section>
     </article>
-<p class="content-app-context" data-content-app-context>MyRecon Android is in closed testing for eligible testers. <a href="/app.html">App availability and details</a>.</p>
-</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon Android limited-time offer"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">DEEP SEARCH INCLUDED</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Free for a limited time</span><h2>From reading.<br>To discovering.</h2><p>Put the guide into practice. Explore public usernames, follow profile leads and try Deep Search from your Android phone.</p><p class="promo-free"><strong>Everything in the app is free for a limited time. Deep Search included.</strong></p><ul class="promo-features"><li>Deep Search</li><li>Username search</li><li>Breach checks</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dandroid_promotion">Download free now <span aria-hidden="true">↗</span></a><small>Android only for now. Sorry, fellow iOS users!<br>Google Play · Android 11+ · Contains ads<br>Use for your own accounts or authorized research.</small></div></aside></div></div><!-- app-promo-layout:end -->
+<p class="content-app-context" data-content-app-context>Try MyRecon username search on Android. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_guides">Get it on Google Play</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">USERNAME SEARCH ON ANDROID</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>From reading.<br>To discovering.</h2><p>Try username search on your Android phone. Review public profile leads and open their sources to verify them.</p><ul class="promo-features"><li>Username search</li><li>Public profile leads</li><li>Breach checks</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_research">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Use for your own accounts or authorized research.</small></div></aside></div></div><!-- app-promo-layout:end -->
   <footer class="site-footer">
   <div class="site-footer__panel">
     <div class="site-footer__top">
@@ -137,5 +141,5 @@
     </div>
   </div>
 </footer>
-  <script src="/assets/js/username-search-input.js?v=33e4d38081" defer></script>
+  <script src="/assets/optimized/js/username-search-input.7f86fb270b84.js" defer></script>
 </body></html>

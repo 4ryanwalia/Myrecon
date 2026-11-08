@@ -39,7 +39,17 @@ function optimizeAssets(root = ROOT) {
       }
       return `${attr}=${quote}${assets.get(source).output}${quote}`;
     });
-    if (before !== after) fs.writeFileSync(file, after);
+    if (before !== after) {
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+          fs.writeFileSync(file, after);
+          break;
+        } catch (err) {
+          if (attempt === 4) throw err;
+          Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150 * (attempt + 1));
+        }
+      }
+    }
   }
   const report = { pages: pages.length, assets: Object.fromEntries(assets) };
   fs.writeFileSync(path.join(root, '.asset-optimization.json'), JSON.stringify(report, null, 2) + '\n');

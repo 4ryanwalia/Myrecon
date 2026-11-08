@@ -426,7 +426,7 @@
       case "standard_daily_limit":
         title = "You have used today's 5 standard scans";
         body = "Your free allowance resets at midnight UTC. The ₹99 plan unlocks unlimited standard scans and includes 10 Extended scans across 3,000+ platforms.";
-        action = `<a class="btn btn-primary" href="/pricing.html">Get unlimited standard scans for ₹99</a>`;
+        action = `<a class="btn btn-primary" href="/pricing">Get unlimited standard scans for ₹99</a>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
@@ -441,7 +441,7 @@
       case "upgrade_required": {
         title = "Get more Extended scans";
         body = "₹99 gives you 10 Extended scans across 3,000+ platforms each, with no expiry. Signed-in free accounts get 5 standard scans daily; the ₹99 plan includes unlimited standard scans.";
-        action = `<a class="btn btn-primary" href="/pricing.html">Get the ₹99 plan</a>
+        action = `<a class="btn btn-primary" href="/pricing">Get the ₹99 plan</a>
           <button type="button" class="btn btn-ghost" data-gate="full">Run a free standard scan</button>`;
         break;
       }
@@ -1262,9 +1262,8 @@
   // retry, not a sales line. The app has two alerts and the copy keeps them
   // apart: the new-breach alert compares on the phone and sends nothing;
   // watching an address sends it to LeakCheck.
-  // The link opens the Play custom listing that leads with alerts (Play shows
-  // the main listing until it exists); the UTM tags are for Play Console.
-  const PLAY_ALERTS_URL = "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts"
+  // Open the default Play listing with an attribution tag for this result CTA.
+  const PLAY_ALERTS_URL = "https://play.google.com/store/apps/details?id=com.Myrecon.osint"
     + "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Demail_result%26utm_campaign%3Dbreach_alerts";
   function breachAlertCta(outcome) {
     if (!outcome.found && outcome.state !== "no_match") return "";
@@ -1804,6 +1803,7 @@
         </div>`;
       try {
         renderPassword(await pwnedCount(value), value);
+        window.MyReconAnalytics?.scanComplete("password", null, false);
       } catch (e) {
         setError(e.message);
       } finally {
@@ -1843,6 +1843,8 @@
         lastResult = { tool: activeTool, query: value, data };
         rememberGuestReport(activeTool, value, data);
         renderSafely(RENDERERS[activeTool] || renderIp, data);
+        window.MyReconAnalytics?.scanComplete(activeTool, null, !!data.partial
+          || (activeTool === "email" && !!window.MyReconEmailOutcome?.(data)?.partial));
         pushHistory(activeTool, value);
         bindActions();
       }
@@ -2110,6 +2112,7 @@
     lastResult = { tool: "username", query: value, data: finalData };
     rememberGuestReport("username", value, finalData);
     renderSafely(renderUsername, finalData);
+    window.MyReconAnalytics?.scanComplete("username", body.deep ? body.scope : "quick", !!finalData.partial);
     if (savedId) toast("Saved to your scans.");
     pushHistory("username", value);
     bindActions();
@@ -2155,6 +2158,7 @@
     lastResult = { tool: "username", query: value, data };
     rememberGuestReport("username", value, data);
     renderSafely(renderUsername, data);
+    window.MyReconAnalytics?.scanComplete("username", body.deep ? body.scope : "quick", !!data.partial);
     pushHistory("username", value);
     bindActions();
   }

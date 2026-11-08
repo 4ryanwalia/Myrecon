@@ -44,13 +44,10 @@ const SITE = "https://www.myrecon.xyz";
 const SOURCE = "https://haveibeenpwned.com/api/v3/breaches";
 const LICENCE = "https://creativecommons.org/licenses/by/4.0/";
 
-// The Play custom store listing that leads with breach alerts rather than
-// WHOIS. Until that listing exists Play ignores an unknown `listing` key and
-// shows the main one, so this link is safe to ship first. The referrer holds
-// UTM tags for Play Console's acquisition report; the app reads only
-// `invite_code` from it, so they can never count as an invite.
+// Use the default Play listing; this referrer distinguishes breach pages in
+// acquisition reports without being interpreted as an app invite.
 const PLAY_ALERTS =
-  "https://play.google.com/store/apps/details?id=com.Myrecon.osint&listing=breach-alerts" +
+  "https://play.google.com/store/apps/details?id=com.Myrecon.osint" +
   "&referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dbreach_page%26utm_campaign%3Dbreach_alerts";
 
 /** How far back the archive reaches. */
@@ -362,8 +359,10 @@ const slug = (s) =>
 const breachPhrase = (title) =>
   /\bdata$/i.test(title.trim()) ? `${title} Breach` : `${title} Data Breach`;
 
+const TITLE_MIN = 40;
 const TITLE_MAX = 60;
 function fitTitle(candidates) {
+  for (const c of candidates) if (c.length >= TITLE_MIN && c.length <= TITLE_MAX) return c;
   for (const c of candidates) if (c.length <= TITLE_MAX) return c;
   // Every phrasing is still over: the name alone is enormous. Cut on a word
   // boundary and mark the cut rather than slicing through a word.
@@ -720,9 +719,9 @@ ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
            does: only the per-address one sends anything. -->
       <aside class="bx-offer">
         <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. The app is in closed testing for eligible testers. Review app availability and data handling before using it.</p>
+        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. Enable breach alerts in the app to follow new reports.</p>
         <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">View closed-testing listing →</a></p>
+        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Android →</a></p>
       </aside>
 
 ${guideLinks(b).length ? `      <h2>Read next</h2>
@@ -799,9 +798,18 @@ function index(items, earlier = earlierArchiveEntries(items)) {
         description,
         url,
       }),
+      extraLd: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
+          { "@type": "ListItem", position: 2, name: "The Breach Files", item: url },
+        ],
+      }),
     }) +
 `  <main id="main" class="section">
     <div class="container bx-page">
+      <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">The Breach Files</span></nav>
       <span class="kicker">The Breach Files</span>
       <h1 class="bx-title">Every breach worth understanding</h1>
       <p class="sub">Who was hit, what was taken, how many people it reached, and what it means for you. Built from public breach records and updated every day.</p>
@@ -819,7 +827,7 @@ function index(items, earlier = earlierArchiveEntries(items)) {
       <aside class="bx-offer">
         <h2>Case Files: how the breaches that mattered actually happened</h2>
         <p>In-depth write-ups of the landmark incidents, Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
-        <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a></p>
+        <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a> <a class="btn btn-ghost btn-sm" href="/#tool=email">Check an email for breach exposure →</a></p>
       </aside>
 
       <!-- The archive is also a dataset, and saying so here is what turns it

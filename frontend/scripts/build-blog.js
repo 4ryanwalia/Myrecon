@@ -247,7 +247,12 @@ function articlePage(article, articles = []) {
   const photo = article.media ? `<figure class="blog-photo"><img src="/assets/img/blog/${article.media.photo}.webp" alt="${PHOTO_ALT[article.media.photo]}" width="1600" height="900" loading="lazy" decoding="async"><figcaption>AI-created editorial image. The devices and profile layout are illustrative.</figcaption></figure>` : '';
   const navigableContent = tocPosition >= 0 ? `${content.slice(0, tocPosition)}${photo}${toc}\n${content.slice(tocPosition)}` : content;
   const explainer = article.media ? `<section class="blog-explainer" aria-labelledby="videoHeading"><span class="kicker">Watch the workflow</span><h2 id="videoHeading">${esc(article.media.title)}</h2><p>${esc(article.media.description)}</p><a href="/videos/${article.slug}.html"><img src="/assets/media/blog/${article.slug}-poster.jpg" alt="Watch: ${esc(article.media.title)}" width="1280" height="720" loading="lazy"></a><p><a href="/videos/${article.slug}.html">Watch the 32-second explainer with captions and transcript</a></p></section>` : '';
-  const related = articles.filter(item => item.slug !== article.slug).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 3);
+  const selfIdx = Math.max(0, articles.findIndex(item => item.slug === article.slug));
+  const rotatedAll = Array.from({ length: Math.max(0, articles.length - 1) }, (_, i) => articles[(selfIdx + 1 + i) % articles.length]);
+  const related = [
+    ...rotatedAll.filter(item => item.category === article.category),
+    ...rotatedAll.filter(item => item.category !== article.category),
+  ].slice(0, 3);
   return `${shellHead({ title: article.title, description: article.description, url: article.url, article })}
   <main id="main" class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:16px 0 20px;color:var(--text-dim)">
@@ -266,7 +271,7 @@ function articlePage(article, articles = []) {
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
       </div>
       ${related.length ? `<aside class="blog-related" aria-label="Related articles"><h2>Continue your research</h2><ul>${related.map(item => `<li><a href="/blog/${item.slug}.html">${esc(item.headline)}</a></li>`).join('')}</ul></aside>` : ''}
-      <p><a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
+      <p><a href="/#tool">Try the MyRecon OSINT tool</a> · <a href="/username-checker.html">Username checker</a> · <a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
     </article>
   </main>
 ${shellFoot()}`;
@@ -282,6 +287,13 @@ function indexPage(articles) {
   const list = JSON.stringify({
     "@context": "https://schema.org", "@type": "ItemList", name: "MyRecon OSINT and privacy articles",
     itemListElement: articles.map((article, i) => ({ "@type": "ListItem", position: i + 1, name: article.headline, url: article.url })),
+  }).replace(/</g, "\\u003c");
+  const crumbs = JSON.stringify({
+    "@context": "https://schema.org", "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "MyRecon", item: `${SITE}/` },
+      { "@type": "ListItem", position: 2, name: "Blog", item: url },
+    ],
   }).replace(/</g, "\\u003c");
   const categories = [...new Set(articles.map(article => article.category))];
   const categoryId = category => `topic-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
@@ -309,6 +321,7 @@ function indexPage(articles) {
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <script type="application/ld+json">${list}</script>
+    <script type="application/ld+json">${crumbs}</script>
     <nav class="blog-topics" aria-label="Article topics">${categories.map(category => `<a href="#${categoryId(category)}">${esc(category)}</a>`).join('')}</nav>
 ${categories.map(category => `<section class="blog-category" aria-labelledby="${categoryId(category)}"><h2 id="${categoryId(category)}">${esc(category)}</h2><div class="guide-grid">${articles.filter(article => article.category === category).map(article => `<a class="guide-card" href="/blog/${article.slug}.html"><h3>${esc(article.headline)}</h3><p>${esc(article.description)}</p><span class="read">Read article →</span></a>`).join('\n')}</div></section>`).join('\n')}
     <h2 style="font-size:1.2rem;font-weight:700;margin:40px 0 10px">Explore MyRecon</h2>

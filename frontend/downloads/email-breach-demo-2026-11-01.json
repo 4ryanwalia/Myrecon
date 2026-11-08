@@ -1,0 +1,384 @@
+{
+  "account_checks": {
+    "enabled": false,
+    "sources": [
+      {
+        "name": "GitHub",
+        "status": "skipped"
+      },
+      {
+        "name": "Gravatar",
+        "status": "skipped"
+      },
+      {
+        "name": "OpenPGP",
+        "status": "skipped"
+      },
+      {
+        "name": "Profile enrichment",
+        "status": "skipped"
+      }
+    ]
+  },
+  "analysis": {
+    "deliverable": false,
+    "disposable": false,
+    "domain": "example.com",
+    "email": "myrecon-demo-20261101@example.com",
+    "format": "generic",
+    "has_mx": false,
+    "local_part": "myrecon-demo-20261101",
+    "mail_routing": "Domain rejects mail (null MX)",
+    "mx_hosts": [
+      "0 ."
+    ],
+    "mx_records": [
+      {
+        "host": ".",
+        "priority": 0
+      }
+    ],
+    "plus_addressing": false,
+    "provider": "Custom / corporate domain",
+    "provider_type": "custom",
+    "smtp": {
+      "detail": "SMTP mailbox verification has not run.",
+      "status": "not_checked"
+    }
+  },
+  "breach_details": {
+    "breached": false,
+    "checked": false,
+    "records": [],
+    "status": "skipped"
+  },
+  "breaches": {
+    "breached": false,
+    "checked": false,
+    "count": 0,
+    "error": "Breach service was unreachable or returned an unreadable reply.",
+    "fields": [],
+    "source_api": "LeakCheck",
+    "sources": [],
+    "status": "unavailable"
+  },
+  "darkweb": {
+    "breached": false,
+    "breaches": [],
+    "checked": true,
+    "count": 0,
+    "exposed_data": [],
+    "password_strength": {},
+    "pastes": 0,
+    "records_exposed": 0,
+    "risk_label": "",
+    "risk_score": 0,
+    "source_api": "XposedOrNot",
+    "status": "ok",
+    "timeline": []
+  },
+  "errors": [
+    {
+      "code": "unavailable",
+      "message": "LeakCheck is currently unavailable. Displaying other results.",
+      "retry_after": null,
+      "retryable": true,
+      "source": "LeakCheck"
+    },
+    {
+      "code": "unavailable",
+      "message": "XposedOrNot fallback is currently unavailable. Displaying other results.",
+      "retry_after": null,
+      "retryable": true,
+      "source": "XposedOrNot fallback"
+    }
+  ],
+  "evidence_report": {
+    "breach_date_note": "Breach dates describe the reported incident, not when this email was first seen. Compatible source dates are merged at their best reported precision; conflicting dates remain separate. Historical exposure does not establish a current account.",
+    "confidence_note": "Evidence strength uses fixed rules on a 0-4 scale, not a calibrated probability or identity verification. 4: exact email published on a profile; 3: exact-query provider or email-hash association; 2: public link, historical commit or review venue; 1: historical breach/link or registration signal; 0: association basis unknown. Conflicting field values cap strength at 1. Source count does not increase the score.",
+    "counts": {
+      "historical_services": 0,
+      "named_breaches": 0,
+      "public_profiles": 0,
+      "registration_signals": 0
+    },
+    "counts_note": "Counts describe returned evidence. Categories can overlap; zero does not prove no account or exposure.",
+    "date_note": "Earliest and latest refer only to dated evidence returned by these sources. They are not first or last use of this email.",
+    "earliest": null,
+    "freshness_note": "Potentially outdated means the reported recency signal is over 365 days old. Profile creation, breach and review dates describe events, not present-day whereabouts or ownership.",
+    "generated_at": "2026-11-01T16:43:31.863695Z",
+    "identity": {
+      "display_name": [],
+      "location": [],
+      "username": []
+    },
+    "identity_note": "Names and usernames are source-reported. Locations include profile fields and review venues; a reviewed venue is not a home address.",
+    "latest": null,
+    "locations": [],
+    "profiles": [],
+    "quality_version": 1,
+    "registrations": [],
+    "timeline": [],
+    "undated_events": [],
+    "version": 2
+  },
+  "fallback": {
+    "breached": false,
+    "checked": false,
+    "count": 0,
+    "fields": [],
+    "source": "XposedOrNot",
+    "sources": [],
+    "status": "ok"
+  },
+  "github": null,
+  "gravatar": {
+    "accounts": [],
+    "exists": false,
+    "status": "skipped"
+  },
+  "linked_services": {
+    "compilations_skipped": 0,
+    "count": 0,
+    "from_breaches": 0,
+    "from_profiles": 0,
+    "from_registration": 0,
+    "services": []
+  },
+  "partial": true,
+  "pgp": {
+    "exists": false,
+    "status": "skipped"
+  },
+  "platform_summary": {
+    "counts": {
+      "historical_only_platforms": 0,
+      "historical_platforms": 0,
+      "linked_platforms": 0,
+      "owner_declared_platforms": 0,
+      "public_profile_platforms": 0,
+      "registration_platforms": 0,
+      "total_platforms": 0
+    },
+    "coverage": {
+      "attempted": 0,
+      "catalogue_platforms": 2,
+      "checked": 0,
+      "found": 0,
+      "not_found": 0,
+      "skipped": 2,
+      "source_count": 4,
+      "sources": [
+        {
+          "name": "GitHub",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        },
+        {
+          "name": "Gravatar",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        },
+        {
+          "name": "OpenPGP",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        },
+        {
+          "name": "Profile enrichment",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        }
+      ],
+      "unknown": 0
+    },
+    "enabled": false,
+    "note": "Distinct platforms with returned evidence; categories overlap. Linked means a source-associated profile or positive registration signal, not verified active ownership. Historical and owner-declared-only associations are counted separately. A missing match or no registration signal does not prove no account.",
+    "platforms": [
+      {
+        "basis": [],
+        "check_status": "skipped",
+        "checks": [
+          {
+            "reason": "",
+            "source": "GitHub",
+            "source_status": "skipped",
+            "status": "skipped"
+          }
+        ],
+        "domain": "",
+        "evidence": [],
+        "historical": false,
+        "historical_only": false,
+        "id": "github",
+        "kinds": [],
+        "linked": false,
+        "name": "GitHub",
+        "owner_declared": false,
+        "sources": [],
+        "status": "skipped",
+        "url": ""
+      },
+      {
+        "basis": [],
+        "check_status": "skipped",
+        "checks": [
+          {
+            "reason": "",
+            "source": "Gravatar",
+            "source_status": "skipped",
+            "status": "skipped"
+          }
+        ],
+        "domain": "",
+        "evidence": [],
+        "historical": false,
+        "historical_only": false,
+        "id": "gravatar",
+        "kinds": [],
+        "linked": false,
+        "name": "Gravatar",
+        "owner_declared": false,
+        "sources": [],
+        "status": "skipped",
+        "url": ""
+      }
+    ],
+    "status": "skipped",
+    "version": 1
+  },
+  "profile_enrichment": {
+    "profiles": [],
+    "registrations": [],
+    "sources": [],
+    "status": "skipped"
+  },
+  "query": {
+    "email": "myrecon-demo-20261101@example.com"
+  },
+  "registration_checks": {
+    "attempted": 0,
+    "checked": 0,
+    "services": [],
+    "status": "skipped"
+  },
+  "status": "ok",
+  "summary": {
+    "breach_count": 0,
+    "breach_coverage": {
+      "completed": 1,
+      "attempted": 3,
+      "sources": [
+        {
+          "checked": false,
+          "error": "Breach service was unreachable or returned an unreadable reply.",
+          "name": "LeakCheck",
+          "retry_after": null,
+          "status": "unavailable"
+        },
+        {
+          "checked": true,
+          "error": null,
+          "name": "XposedOrNot analytics",
+          "retry_after": null,
+          "status": "ok"
+        },
+        {
+          "checked": false,
+          "error": null,
+          "name": "XposedOrNot fallback",
+          "retry_after": null,
+          "status": "unavailable"
+        }
+      ]
+    },
+    "breach_outcome": "incomplete",
+    "breach_status": "partial_unavailable",
+    "breached": false,
+    "deliverable": false,
+    "disposable": false,
+    "linked_accounts": [],
+    "linked_platforms_count": 0,
+    "linked_services_count": 0,
+    "records_exposed": 0,
+    "records_found": 0,
+    "retry_after": null,
+    "risk_label": "",
+    "risk_score": 0,
+    "coverage_incomplete": true,
+    "interpretation": "Some sources could not be checked. This result cannot establish that this address has no breach exposure.",
+    "platform_coverage": {
+      "enabled": false,
+      "status": "off",
+      "attempted": 0,
+      "completed": 0,
+      "unavailable": 0,
+      "unconfigured": 0,
+      "skipped": 2,
+      "sources": [
+        {
+          "name": "GitHub",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        },
+        {
+          "name": "Gravatar",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        },
+        {
+          "name": "OpenPGP",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        },
+        {
+          "name": "Profile enrichment",
+          "provider": "",
+          "scope": "profiles",
+          "status": "skipped"
+        }
+      ]
+    },
+    "platform_coverage_incomplete": false,
+    "review_coverage": [],
+    "review_coverage_incomplete": false
+  },
+  "user_scanner": {
+    "checks": [
+      {
+        "category": "social",
+        "id": "email.gravatar",
+        "license": "MIT",
+        "metadata": {},
+        "platform": "Gravatar",
+        "reason": "Optional module is not enabled for this scan",
+        "reference_module": "user_scanner/email_scan/social/gravatar.py",
+        "scan_type": "email",
+        "service": "Gravatar",
+        "source": "https://github.com/kaifcodec/user-scanner",
+        "status": "skipped",
+        "status_code": 0,
+        "url": ""
+      }
+    ],
+    "counts": {
+      "found": 0,
+      "no_match": 0,
+      "not_found": 0,
+      "rate_limited": 0,
+      "skipped": 1,
+      "timeout": 0,
+      "unavailable": 0
+    },
+    "engine": "User Scanner adapter",
+    "partial": false,
+    "status": "skipped"
+  }
+}

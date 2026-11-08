@@ -13,12 +13,10 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
-import threading
 from urllib.parse import urlsplit
 
 MAX_BYTES = 2_000_000
 TIMEOUT_SECONDS = 40
-_WORKER_SLOT = threading.BoundedSemaphore(1)
 
 
 def _dict(value):
@@ -67,19 +65,8 @@ def normalize_ghunt(payload, email):
 
 
 def enrich_ghunt_email(email):
-    if os.getenv("EMAIL_GHUNT_ENABLED", "false").lower() != "true":
-        return _enrich_ghunt_email(email)
-    if not _WORKER_SLOT.acquire(blocking=False):
-        return {"status": "rate_limited", "profiles": [], "registrations": [], "sources": [
-            {"name": "Google public profile", "provider": "GHunt", "status": "rate_limited",
-             "reason": "A Google lookup is already running; retry after it completes."}]}
-    try:
-        return _enrich_ghunt_email(email)
-    finally:
-        _WORKER_SLOT.release()
-
-
-def _enrich_ghunt_email(email):
+    # Each lookup owns its subprocess and temporary session/output files, so
+    # concurrent requests do not need a shared single-worker gate.
     source = {"name": "Google public profile", "provider": "GHunt", "status": "disabled"}
     result = {"status": "disabled", "profiles": [], "registrations": [], "sources": [source]}
     if os.getenv("EMAIL_GHUNT_ENABLED", "false").lower() != "true":

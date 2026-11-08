@@ -102,6 +102,11 @@ function main() {
       description: 'Original research articles on digital privacy, threat intelligence, and OSINT techniques.',
       pages: [],
     },
+    videos: {
+      name: 'OSINT Video Walkthroughs & Explainers',
+      description: 'Short captioned video walkthroughs covering public username checks, profile verification, and digital footprint cleanup.',
+      pages: [],
+    },
   };
 
   for (const page of allPages) {
@@ -120,6 +125,8 @@ function main() {
       categories.vs.pages.push(page);
     } else if (u.startsWith('/blog/')) {
       categories.blog.pages.push(page);
+    } else if (u.startsWith('/videos/') || u === '/watch.html') {
+      categories.videos.pages.push(page);
     } else {
       categories.core.pages.push(page);
     }
@@ -160,9 +167,9 @@ function main() {
         '@type': 'WebPage',
         '@id': `${SITE}/directory.html#page`,
         url: `${SITE}/directory.html`,
-        name: 'MyRecon Complete Site Directory & All Research Hubs',
-        description: 'Complete directory of public OSINT tools, username lookup guides, data breach investigations, privacy audit checklists, and comparison articles on MyRecon.',
-        dateModified: new Date().toISOString().slice(0, 10),
+        name: 'MyRecon Site Directory & OSINT Research Guides | MyRecon',
+        description: 'Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.',
+        dateModified: '2026-11-01',
         inLanguage: 'en',
         isPartOf: { '@id': `${SITE}/#website` },
         publisher: {
@@ -218,48 +225,61 @@ function main() {
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyRecon Site Directory &amp; OSINT Research Guides</title>
+  <title>MyRecon Site Directory &amp; OSINT Research Guides | MyRecon</title>
   <meta name="description" content="Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
   <meta name="keywords" content="myrecon directory, all osint tools, osint site map, public intelligence directory, username lookup list, breach archive, privacy guides, osint comparisons">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${SITE}/directory.html">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="MyRecon Complete Site Directory &amp; All Research Hubs">
-  <meta property="og:description" content="Explore public OSINT scanner tools, username search guides, data breach archives, and privacy audit checklists.">
+  <meta property="og:title" content="MyRecon Site Directory &amp; OSINT Research Guides | MyRecon">
+  <meta property="og:description" content="Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
   <meta property="og:url" content="${SITE}/directory.html">
   <meta property="og:image" content="${SITE}/assets/img/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MyRecon Site Directory &amp; All Research Hubs">
-  <meta name="twitter:description" content="Explore public OSINT tools, username guides, breach archives, and privacy checklists.">
+  <meta name="twitter:title" content="MyRecon Site Directory &amp; OSINT Research Guides | MyRecon">
+  <meta name="twitter:description" content="Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
   <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
   <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/fx.css">
   <link rel="stylesheet" href="/assets/css/site-footer.css">
   <link rel="stylesheet" href="/assets/css/discovery.css">
   <style>
     .directory-hero { padding: 48px 0 24px; text-align: left; }
-    .directory-hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
-    .directory-hero p { font-size: 1.1rem; color: #666; max-width: 800px; line-height: 1.6; }
+    .directory-hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+    .directory-hero p { font-size: 1.1rem; color: var(--text-dim); max-width: 800px; line-height: 1.6; }
     .directory-stats { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
-    .directory-stat { background: #f4f4f2; padding: 12px 20px; border-radius: 8px; font-size: 0.95rem; }
-    .directory-stat strong { font-size: 1.3rem; color: #111; display: block; }
-    .directory-section { margin-top: 48px; border-top: 1px solid #e5e5e0; padding-top: 32px; }
-    .directory-section h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 6px; }
-    .directory-count { font-size: 1rem; color: #888; font-weight: 400; }
-    .directory-section-desc { font-size: 0.95rem; color: #666; margin-bottom: 20px; }
+    .directory-stat { background: var(--surface); border: 1px solid var(--border); padding: 12px 20px; border-radius: 8px; font-size: 0.95rem; color: var(--text-dim); }
+    .directory-stat strong { font-size: 1.3rem; color: var(--text); display: block; }
+    .directory-section { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 32px; }
+    .directory-section h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .directory-count { font-size: 1rem; color: var(--text-dim); font-weight: 400; }
+    .directory-section-desc { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 20px; }
     .directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
-    .directory-item { background: #fff; border: 1px solid #e8e8e4; border-radius: 8px; padding: 16px; transition: border-color 0.2s, box-shadow 0.2s; }
-    .directory-item:hover { border-color: #0066cc; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .directory-item a { font-weight: 600; color: #0066cc; text-decoration: none; display: block; margin-bottom: 6px; line-height: 1.4; }
+    .directory-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; transition: border-color 0.2s, box-shadow 0.2s; }
+    .directory-item:hover { border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .directory-item a { font-weight: 600; color: var(--accent); text-decoration: none; display: block; margin-bottom: 6px; line-height: 1.4; }
     .directory-item a:hover { text-decoration: underline; }
-    .directory-item-desc { font-size: 0.85rem; color: #777; line-height: 1.4; margin: 0; }
+    .directory-item-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.4; margin: 0; }
   </style>
   <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/blog/">Blog</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
   <main id="main" class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">MyRecon</a> / <span aria-current="page">Site Directory</span>
@@ -277,13 +297,19 @@ function main() {
 
     ${categoryCards}
   </main>
+  <script src="/assets/js/env.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/consent.js"></script>
+  <script src="/assets/js/fx.js" defer></script>
 </body>
 </html>
 `;
 
   fs.writeFileSync(path.join(ROOT, 'directory.html'), html, 'utf8');
-  fs.writeFileSync(path.join(ROOT, 'sitemap.html'), html, 'utf8');
-  console.log(`[html-sitemap] Built directory.html & sitemap.html with ${allPages.length} public URLs across 8 categories`);
+  const legacySitemapHtml = path.join(ROOT, 'sitemap.html');
+  if (fs.existsSync(legacySitemapHtml)) fs.unlinkSync(legacySitemapHtml);
+  console.log(`[html-sitemap] Built directory.html with ${allPages.length} public URLs across 9 categories`);
 }
 
 if (require.main === module) main();

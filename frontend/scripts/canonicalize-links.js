@@ -24,8 +24,24 @@ function canonicalizeLinks(root = ROOT) {
       if (entry.isDirectory()) walk(file);
       else if (entry.name.endsWith('.html')) {
         const before = fs.readFileSync(file, 'utf8');
-        const after = before.replace(/(<a\b[^>]*?\bhref=)(['"])([^'"]*)\2/gi, (all, prefix, quote, href) => `${prefix}${quote}${canonicalHref(href, redirects)}${quote}`);
-        if (before !== after) { fs.writeFileSync(file, after); count++; }
+        const after = before
+          .replace(/(<a\b[^>]*?\bhref=)(['"])([^'"]*)\2/gi, (all, prefix, quote, href) => `${prefix}${quote}${canonicalHref(href, redirects)}${quote}`)
+          // Absolute self-references (JSON-LD ItemList/BreadcrumbList urls, og:url,
+          // canonical) must not point at a redirect either, or Search Console
+          // reports the target as "Page with redirect".
+          .replace(/(["'])https:\/\/www\.myrecon\.xyz(\/[^"'\s<>]*)\1/g, (all, quote, href) => `${quote}https://www.myrecon.xyz${canonicalHref(href, redirects)}${quote}`);
+        if (before !== after) {
+          for (let attempt = 0; attempt < 5; attempt++) {
+            try {
+              fs.writeFileSync(file, after);
+              break;
+            } catch (err) {
+              if (attempt === 4) throw err;
+              Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150 * (attempt + 1));
+            }
+          }
+          count++;
+        }
       }
     }
   }

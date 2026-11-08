@@ -1,39 +1,31 @@
 # SEO overhaul — myrecon.xyz
 
-## Current site (27 September 2026)
+## Current site (8 November 2026)
 
 The production site is the static `frontend/` project on Vercel. Its build
-command is `node scripts/build-site.js`. The build renders 208 published SEO
-records, the breach archive, case files, and nine original privacy blog
-articles, then applies the shared footer and asset versions before creating
-the sitemap. The generated sitemap currently lists 373 indexable URLs. The
-Next.js kit under `docs/nextjs-seo-kit/` is a source and export kit; it is not
-the production router. These counts describe the current generated output and
-will change when content is added or removed.
+command is `npm run build` (`node scripts/build-site.js && node scripts/optimize-assets.js`).
+The build renders:
+- **18 published SEO records** (`build-seo-pages.js`) across `/find/`, `/guides/`, `/privacy/`, and `/vs/` plus 4 topical hubs (`find/index.html`, `guides/index.html`, `privacy/index.html`, `vs/index.html`)
+- **61 breach archive articles** (57 current feed + 4 earlier archive entries) plus `/breaches/` (`build-breaches.js`)
+- **60 historical breach case files** plus `/breaches/case-files/` (`build-case-files.js`)
+- **39 original investigative blog articles** plus `/blog/` (`build-blog.js`)
+- **12 captioned video walkthrough pages** plus `/videos/` and `/watch.html` (`build-watch-pages.js`)
+- **8 high-intent discovery landing pages** (`username-checker.html`, `free-osint-tool.html`, `digital-footprint-checker.html`, `reverse-username-lookup.html`, `boost.html`, `browser.html`, `goal.html`, `watch.html` via `build-discovery-pages.js`), with clean route support in `frontend/vercel.json` for `/boost`, `/browser`, `/goal`, `/watch`, `/plan`, `/learn`, and `/teamwork`
+- **9-cluster HTML directory** (`frontend/directory.html` via `build-html-sitemap.js`) indexing 249 peer canonical pages across `core`, `breaches`, `caseFiles`, `find`, `guides`, `privacy`, `vs`, `blog`, and `videos`
+- **250 indexable canonical URLs** in `frontend/sitemap.xml` (`build-sitemap.js`), plus 7 section sitemaps (`sitemap-blog.xml`, `sitemap-breaches.xml`, `sitemap-core.xml`, `sitemap-find.xml`, `sitemap-guides.xml`, `sitemap-privacy.xml`, `sitemap-vs.xml`) and `sitemap-index.xml` / `sitemap_index.xml`
 
-The audit below is preserved as a historical snapshot. Its original 43-page
-counts, branch names, and deployment notes no longer describe production.
+### November 2026 5-Pillar SEO Verification Summary
+1. **Search Intent & Discovery Route Parity**: Mixed-format SERP coverage across interactive tools (`/#tool`, `/osint-cheat-sheet.html`), long-form guides, listicles (`/blog/top-10-osint-tools.html`), benchmark studies (`/blog/username-search-benchmark-research.html`), and 32-second captioned MP4 explainers (`/videos/*`), plus clean rewrites for `/boost`, `/browser`, `/goal`, `/watch`, `/plan`, `/learn`, and `/teamwork`.
+2. **On-Page Title & Meta Description Bounds**: All 250 indexable pages carry a single `<h1>`, a decoded `<title>` between **40 and 60 characters**, and a `<meta name="description">` between **110 and 160 characters** with zero duplicates.
+3. **Topical Clusters & In-`<main>` Commercial/Tool CTAs**: Every informational article, guide, case file, video walkthrough, and topical hub links to peer cluster pages and includes at least one natural in-`<main>` commercial or tool CTA (`/#tool`, `/username-checker.html`, `/digital-footprint-checker.html`, `/pricing`, or `/services.html`).
+4. **Technical SEO, CLS Reset & Deduplicated Asset Pipeline**: Inline CLS reset (`*{box-sizing:border-box;margin:0;padding:0}`) across generated pages, hubs, and `directory.html`; responsive mobile navigation and theme-aware CSS variables on `directory.html`; asset URL normalization in `build-site.js` before `changedHtmlPaths` comparison; and automatic deduplication of `/assets/` and `/assets/optimized/` stylesheet and script tags across all 252 HTML files.
+5. **Structured Data & Off-Page Authority Signals**: Valid JSON-LD across all 250 indexable pages, including `BreadcrumbList` on all 249 non-homepage indexable pages, unified `Person` (`#person`) and `ProfilePage` schema on `founder.html`, synced `AboutPage` schema on `about.html`, and `Organization` `sameAs` authority links (`https://github.com/4ryanwalia/Myrecon`, `https://play.google.com/store/apps/details?id=com.Myrecon.osint`) on `index.html`.
 
-The root `vercel.json` points at `web_main.py`; that is a legacy Python target
-and **not** what serves the live site. Confirmed against production:
-`www.myrecon.xyz/about.html` serves `frontend/about.html`.
+The Next.js kit under `docs/nextjs-seo-kit/` is a source and export kit; it is not
+the production router. The root `vercel.json` points at `web_main.py`; that is a
+legacy Python target and **not** what serves the live site.
 
----
-
-## Content and sitemap refresh — 27 September 2026
-
-The 43-page figure and deployment notes below are the original audit snapshot,
-not the current page count. The frontend's generated sitemap now contains 168
-indexable URLs: the previous 158 plus `/blog/` and nine original privacy and
-account-cleanup articles. The new articles are hand-written source files under
-`frontend/content/blog/`; `scripts/build-blog.js` renders them, and
-`scripts/build-sitemap.js` discovers the resulting public pages. The scheduled
-content workflow now rebuilds the blog and sitemap as well as the breach feed.
-
-This is a local working-tree result. Publishing the changes and requesting
-crawls still requires the normal deployment and search-engine account access.
-A sitemap helps discovery but does not guarantee crawling, indexing or a
-ranking position.
+The original September 2026 audit below is preserved as a historical snapshot.
 
 ---
 

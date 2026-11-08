@@ -4,7 +4,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const site = 'https://www.myrecon.xyz';
 
-function buildDiscoveryPage({ title, description, keywords, url, outFileName, crumbLabel, questions, bodyHtml, videoObject, modifiedAt = '2026-10-18' }) {
+function buildDiscoveryPage({ title, description, keywords, url, outFileName, crumbLabel, questions, bodyHtml, videoObject, webApplication, modifiedAt = '2026-10-18' }) {
   let html = fs.readFileSync(path.join(root, 'about.html'), 'utf8');
   html = html.replace(/<title>.*?<\/title>/s, `<title>${title.replace(/&/g, '&amp;')}</title>`);
   html = html.replace(/(<meta\b[^>]*(?:name="(?:description|twitter:description)"|property="og:description")[^>]*content=")[^"]*/g, `$1${description}`);
@@ -71,8 +71,23 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
   if (videoObject) {
     graph['@graph'].push(videoObject);
   }
-  html = html.replace('</head>', `<link rel="stylesheet" href="/assets/css/discovery.css">\n<script type="application/ld+json">${JSON.stringify(graph).replace(/</g, '\\u003c')}</script>\n</head>`);
+  if (webApplication) {
+    graph['@graph'].push(webApplication);
+  }
+  const discoveryCss = /\/assets\/(?:optimized\/)?css\/discovery(?:\.[a-f0-9]{12})?\.css/.test(html) ? '' : '<link rel="stylesheet" href="/assets/css/discovery.css">\n';
+  html = html.replace('</head>', `${discoveryCss}<script type="application/ld+json">${JSON.stringify(graph).replace(/</g, '\\u003c')}</script>\n</head>`);
   html = html.replace(/<main\b[^>]*>.*?<\/main>/s, bodyHtml);
+
+  // Defuse render-blocking recommendation-analytics.js in <head>
+  html = html.replace(/(<script\b(?![^>]*\bdefer\b)[^>]*src="[^"]*recommendation-analytics[^"]*")/i, '$1 defer');
+
+  // Replace heavy search application with lightweight editorial shell
+  html = html.replace(/<script\b[^>]*src="[^"]*\/(?:assets\/(?:optimized\/)?js\/)?app(?:\.[a-f0-9]{12})?\.js(?:\?[^"]*)?"[^>]*><\/script>/gi, '<script src="/assets/js/editorial-shell.js" defer></script>');
+  html = html.replace(/<script\b[^>]*src="[^"]*\/(?:assets\/(?:optimized\/)?js\/)?(?:env|config)(?:\.[a-f0-9]{12})?\.js(?:\?[^"]*)?"[^>]*><\/script>\s*/gi, '');
+
+  if (/<username-search-input\b/i.test(bodyHtml) && !/username-search-input\.js/i.test(html)) {
+    html = html.replace(/<\/body>/i, '  <script src="/assets/js/username-search-input.js" defer></script>\n</body>');
+  }
 
   const outPath = path.join(root, outFileName);
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -93,36 +108,13 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
 const usernameQuestions = [
   ['What is a username checker?', 'A username checker searches supported services for public profiles using a handle. MyRecon returns profile leads for source review. A matching handle does not prove who owns an account.'],
   ['Can I check username availability with MyRecon?', 'MyRecon checks public profile presence. A not-found result does not guarantee that a username is available to register. A platform may reserve a name, suspend an account or restrict its visibility. Confirm availability in the official signup or account settings flow.'],
-  ['Is the username checker free?', 'MyRecon offers free guest Quick scans across 100 platforms with no sign-up required. Only the first 2 result cards are visible; remaining cards are blurred. Standard scans across 500+ platforms require sign-in. Paid plans add features such as Deep Search and Extended scans; check the current pricing page for limits.'],
+  ['Is the username checker free?', 'MyRecon offers free guest Quick scans across 100 platforms with no sign-up required. Guests get 5 Quick scans daily with only the first 2 result cards visible. Signed-in free accounts get 5 Standard scans daily across 500+ platforms; Quick and Standard share that account allowance. Paid plans add features such as Deep Search and Extended scans; check the current pricing page for limits.'],
   ['Can I search every social media platform?', 'No. MyRecon checks a supported catalogue of more than 500 platforms, not every website. Login walls, anti-bot controls, timeouts and platform changes can leave a check unknown.'],
   ['How do I find my old accounts by username?', 'Search handles you remember using, then open each candidate profile and compare it with your own records. Use saved passwords, signup emails and the official account recovery process to confirm ownership.'],
 ];
 
-const usernameBody = `<main id="main" class="container prose discovery-page">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Username checker</span></nav>
-  <h1>Username checker and social media username search</h1>
-  <p class="sub">MyRecon searches a public username across a supported catalogue of 500+ platforms. Use it to review your own digital footprint or accounts you are authorized to investigate. Verify each profile at its source.</p>
-  <a class="btn btn-primary" href="/#tool=username">Check a username</a>
-  <p class="discovery-note">Free guest Quick scans. Standard scans require sign-in. Account and plan limits apply. No private-profile access or guaranteed username availability.</p>
-  <section><h2>How to search a username across platforms</h2>
-  <ol><li>Enter a handle you use or have permission to research in the <a href="/#tool=username">username search tool</a>.</li><li>Run the standard sweep. Try another known spelling separately if you have used different handles.</li><li>Review found, not found and unknown checks. Open reported profile URLs before drawing conclusions.</li><li>For your own accounts, compare the result with signup emails and saved logins. Secure or close accounts through the official service.</li></ol>
-  <p>A username lookup searches a handle, not a personal name. Different people can use the same handle on different sites. Read the <a href="/guides/verify-osint-account-matches">account-match verification guide</a> before linking profiles.</p></section>
-  <section><h2>Social media checker: find accounts by username</h2>
-  <p>A social media checker can help you find public profile candidates associated with a handle. Start with your current username, then check older handles individually. This also covers a reverse username lookup: you start with a handle and work back to possible public accounts, without assuming they all belong to one person.</p>
-  <p>For example, if you once used <code>sample_handle</code> for gaming and later changed it on social media, check both known handles. Compare links you published yourself, account history you recognize and saved logins. A matching photo or display name alone can be copied.</p>
-  <p>For a single network, use the <a href="/find/instagram-account">Instagram OSINT and username lookup guide</a>. For broader cleanup, follow the <a href="/digital-footprint-checker.html">email and username footprint audit</a>.</p></section>
-  <section><h2>Username search vs username availability</h2>
-  <p>People searching for a social media username checker often want either existing profile links or a handle they can register. These are different questions. MyRecon supports public profile research. For a brand name or creator handle, check registration directly with each platform.</p>
-  <dl><dt><strong>Found</strong></dt><dd>A supported check found evidence of a public profile. Review the source; ownership remains unconfirmed.</dd><dt><strong>Not found</strong></dt><dd>The check did not find the expected public profile. This does not establish registration availability or rule out other handles.</dd><dt><strong>Unknown</strong></dt><dd>The check could not reach a reliable conclusion, for example because of a block, timeout or ambiguous response. Retry or check manually.</dd></dl>
-  <p>Reserved names, renamed profiles and suspended accounts can remain unavailable even when a public page is missing. <a href="/guides/why-username-checkers-report-fake-accounts.html">Learn why username checkers can report false matches</a>.</p></section>
-  <section><h2>Platform-specific username lookup guides</h2>
-  <p>Platform rules and public visibility differ. Use the relevant guide to understand what can be checked.</p>
-  <ul><li><a href="/find/instagram-account">Instagram username lookup</a></li><li><a href="/find/tiktok-profile">TikTok username lookup</a></li><li><a href="/find/github-profile">GitHub profile lookup</a></li><li><a href="/find/reddit-activity">Reddit username lookup</a></li><li><a href="/find/">All platform lookup guides</a></li></ul></section>
-  <section><h2>Review your digital footprint</h2><p>Start with usernames you own, record the public profiles you recognize and review what each profile exposes. A username scan is one part of an audit: breach exposure, old accounts and profile visibility need separate checks.</p>
-  <ul><li><a href="/free-osint-tool.html">Free OSINT tool and investigation features</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker &amp; exposure audit</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup across 500+ platforms</a></li><li><a href="/boost.html">Boost OSINT investigations &amp; parallel username sweeps</a></li><li><a href="/browser.html">Browser OSINT tool &amp; web username scanner</a></li><li><a href="/goal.html">Digital footprint goal &amp; privacy audit roadmap</a></li><li><a href="/blog/find-your-own-old-accounts.html">Find your own old social media accounts</a></li><li><a href="/guides/check-email-data-breach.html">Check whether your email appeared in a data breach</a></li><li><a href="/services.html">Personal footprint removal service</a></li><li><a href="/blog/own-footprint-audit-checklist.html">Use a digital footprint audit checklist</a></li><li><a href="/username-sweep-vs-deep-search.html">Compare a username sweep with Deep Search</a></li><li><a href="/vs/">Compare MyRecon with other OSINT tools</a></li></ul></section>
-  <section><h2>Username checker questions</h2><div class="faq">${usernameQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div><p><a href="/pricing">Current plans and limits</a> · <a href="/privacy.html">Privacy and data handling</a></p></section>
-  <section><h2>Evidence and responsible use</h2><p>MyRecon publishes a <a href="/#benchmarks">recorded username comparison</a> with methodology and uncertainty. A single case study does not establish overall accuracy. Use public-source checks for your own accounts and authorized research, following the <a href="/terms.html">terms of use</a>.</p><p>Reviewed for this release: October 20, 2026.</p></section>
-</main>`;
+const usernameBody = fs.readFileSync(path.join(root, 'content/discovery/username-checker.html'), 'utf8')
+  .replace('<!-- faq -->', usernameQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
   title: 'Username Lookup & Social Media Username Checker | MyRecon',
@@ -133,7 +125,7 @@ buildDiscoveryPage({
   crumbLabel: 'Username checker',
   questions: usernameQuestions,
   bodyHtml: usernameBody,
-  modifiedAt: '2026-10-20',
+  modifiedAt: '2026-11-01',
 });
 
 // 2. Free OSINT tool discovery page
@@ -244,89 +236,13 @@ const footprintQuestions = [
   ['Can I completely clear my digital footprint?', 'You can reduce public exposure by deleting accounts, removing published details and requesting eligible removals. You cannot guarantee complete erasure of backups, archived copies or third-party records. Verify each removal at its source and check again later.'],
   ['What is a digital footprint checker?', 'A digital footprint checker helps you review parts of your online exposure. MyRecon can find public username profile leads and check an email against supported breach sources. Results may be incomplete, so verify matches and review your own account records.'],
   ['How do I check my digital footprint for free?', 'Choose a username check for public profile leads or an email check for supported breach exposure. Free guest Quick username scans cover 100 platforms with limited visible results; Standard scans require sign-in. Review current plan limits and verify each result at its source.'],
-  ['What is the difference between active and passive digital footprints?', 'An active digital footprint consists of data you intentionally post online, such as social media posts, public profiles, and forum discussions. A passive digital footprint includes data collected about you without your direct action, such as data broker listings, breach corpora, and server logs. MyRecon helps audit both public profiles and historical breach leaks.'],
+  ['What is the difference between active and passive digital footprints?', 'An active digital footprint consists of data you intentionally post online, such as social media posts, public profiles, and forum discussions. A passive digital footprint includes data collected about you without your direct action, such as data broker listings, breach corpora, and server logs. MyRecon checks supported public profiles and breach sources; it cannot audit every passive record or server log.'],
   ['How can I clean up or reduce my digital footprint?', 'Start by reviewing public profile leads and supported email breach results with MyRecon, then confirm your own accounts using saved logins and signup messages. Delete dormant accounts, request opt-outs from people-search data brokers, enable two-factor authentication on critical services, and replace breached passwords. Follow our digital footprint reduction guide for step-by-step instructions.'],
   ['Does a digital footprint check affect my credit score or alert anyone?', 'MyRecon checks supported public sources and breach data; it is not a credit check. Requests can be logged by source services, so do not assume research is invisible. It does not grant access to private accounts.'],
 ];
 
-const footprintBody = `<main id="main" class="container prose discovery-page">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Digital footprint checker</span></nav>
-  <h1>Free digital footprint checker and online exposure audit</h1>
-  <p class="sub">Audit your public online exposure with MyRecon's free digital footprint scanner. Search usernames across 500+ platforms, review supported email breach exposure, and plan your cleanup.</p>
-  <a class="btn btn-primary" href="/#tool">Check your digital footprint</a>
-  <p class="discovery-note">Zero installation. Free guest Quick scans across 100 platforms. Standard scans cover 500+ platforms. Ethical public-source research only.</p>
-  <section>
-    <h2>What is a digital footprint and why should you audit it?</h2>
-    <p>Every time you sign up for a web service, post on social media, register a domain, or submit your email address, you leave behind digital traces. Over time, these traces accumulate into a substantial digital footprint. Dormant accounts, old forum handles, and forgotten registrations create an attack surface for credential stuffing, impersonation, and identity theft.</p>
-    <p>A digital footprint audit allows you to catalog your active public footprint, identify which accounts are still accessible, and discover where your personal data has been exposed through third-party data breaches.</p>
-  </section>
-  <section>
-    <h2>How to conduct a free digital footprint check</h2>
-    <ol>
-      <li><strong>Gather your identifiers:</strong> List the primary handles, legacy screen names, and personal or work email addresses you have used over the years.</li>
-      <li><strong>Scan usernames across 500+ platforms:</strong> Enter your handle into the <a href="/#tool=username">MyRecon username scanner</a> to see where public profiles are found.</li>
-      <li><strong>Audit email breach exposure:</strong> Enter your email address to check against historical corporate breaches and security compromises. Read our <a href="/guides/check-email-data-breach.html">breach checking guide</a>.</li>
-      <li><strong>Inspect password leaks:</strong> Verify whether any reused passwords have surfaced in credential dumps using our zero-knowledge k-anonymity checker.</li>
-      <li><strong>Review domain and DNS exposure:</strong> If you own a personal domain or website, check WHOIS records and email spoofing defenses (SPF, DMARC) via the <a href="/#tool=domain">domain lookup tool</a>.</li>
-    </ol>
-  </section>
-  <section>
-    <h2>Core components of MyRecon's digital footprint checker</h2>
-    <dl>
-      <dt><strong>Reverse username enumeration</strong></dt>
-      <dd>Simultaneously inspect 500+ social networks, developer hubs, gaming communities, and streaming services. MyRecon uses synthetic controls to help reduce false positives; source review is still necessary.</dd>
-      <dt><strong>Data breach intelligence</strong></dt>
-      <dd>Query billions of compromised records from verified historical data breaches to identify compromised accounts and leaked personal data fields.</dd>
-      <dt><strong>Credential exposure checks</strong></dt>
-      <dd>Evaluate password hygiene safely using SHA-1 hash prefixes. Your plaintext password never leaves your browser.</dd>
-      <dt><strong>Infrastructure and domain recon</strong></dt>
-      <dd>Analyze domain registration data, IP geolocation, ASN infrastructure, and mail security records to identify exposed assets.</dd>
-    </dl>
-  </section>
-  <section>
-    <h2>Digital footprint checker by email: what it can tell you</h2>
-    <p>Use the <a href="/#tool=email">email breach checker</a> for an address you control. Review the reported breach name, affected data categories and source context. A historical breach result is different from a currently accessible account, and an empty result does not establish that the address has never been exposed.</p>
-    <p>To find accounts linked to your own email, review saved passwords and search your inbox for welcome, verification and subscription messages. Open the official service directly before recovering an account. An email address alone cannot reveal every social profile or private registration.</p>
-    <p>Use the <a href="/guides/username-search-vs-email-search">username search vs email search guide</a> to choose the right check. Never paste passwords into a username or email field.</p>
-  </section>
-  <section>
-    <h2>How to clear your digital footprint: a practical cleanup order</h2>
-    <p>Start with accounts you can verify as yours. Record the source URL, the exposed detail, the action requested and a recheck date. Remove information at the source first; a search-result removal does not delete the original page. Follow the <a href="/guides/reduce-your-digital-footprint.html">step-by-step digital footprint cleanup guide</a>.</p>
-    <p>Once you have identified your public exposure, take proactive steps to reduce risk:</p>
-    <ul>
-      <li><strong>Close dormant accounts:</strong> Visit old accounts discovered during your scan, export any personal data you wish to keep, and permanently delete the accounts. Read our guide on <a href="/blog/find-your-own-old-accounts.html">finding your old accounts</a>.</li>
-      <li><strong>Remove personal information from data brokers:</strong> Many people-search sites scrape public records. Request removal using our <a href="/privacy/">data broker removal guides</a>.</li>
-      <li><strong>Update compromised credentials:</strong> If an email or password appeared in breach corpora, immediately change passwords on all associated accounts and enable multi-factor authentication (MFA).</li>
-      <li><strong>Reduce social media visibility:</strong> Adjust privacy settings on active profiles to limit what public search engines and strangers can view. See our <a href="/guides/reduce-your-digital-footprint.html">footprint reduction checklist</a>.</li>
-    </ul>
-  </section>
-  <section>
-    <h2>Featured digital footprint and OSINT resources</h2>
-    <ul>
-      <li><a href="/free-osint-tool.html">Free OSINT tool and online investigation platform</a></li>
-      <li><a href="/username-checker.html">Username checker and public profile search</a></li>
-      <li><a href="/reverse-username-lookup.html">Reverse username lookup across 500+ platforms</a></li>
-      <li><a href="/goal.html">Digital footprint goal &amp; privacy audit roadmap</a></li>
-      <li><a href="/boost.html">Boost OSINT investigations &amp; parallel sweeps</a></li>
-      <li><a href="/browser.html">Browser OSINT tool &amp; web username scanner</a></li>
-      <li><a href="/osint-cheat-sheet.html">OSINT cheat sheet &amp; Google dork generator</a></li>
-      <li><a href="/blog/digital-footprint-checker-guide.html">Digital footprint checker guide (2026)</a></li>
-      <li><a href="/guides/build-a-breach-monitor.html">Build a personal data breach monitor</a></li>
-      <li><a href="/guides/photo-metadata-exif.html">Inspect EXIF and photo metadata exposure</a></li>
-      <li><a href="/guides/read-an-email-header.html">Read email headers to verify sender authenticity</a></li>
-      <li><a href="/services.html">Personal footprint removal service</a></li>
-    </ul>
-  </section>
-  <section>
-    <h2>Frequently asked questions</h2>
-    <div class="faq">${footprintQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
-  </section>
-  <section>
-    <h2>Ethical and responsible use</h2>
-    <p>MyRecon provides digital footprint auditing tools strictly for personal privacy reviews and authorized security research. We only query public endpoints and transparently distinguish found, not found, and unknown states. Review our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Reviewed for this release: October 2026.</p>
-  </section>
-</main>`;
+const footprintBody = fs.readFileSync(path.join(root, 'content/discovery/digital-footprint-checker.html'), 'utf8')
+  .replace('<!-- faq -->', footprintQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
   title: 'Digital Footprint Checker by Email & Username | MyRecon',
@@ -337,7 +253,7 @@ buildDiscoveryPage({
   crumbLabel: 'Digital footprint checker',
   questions: footprintQuestions,
   bodyHtml: footprintBody,
-  modifiedAt: '2026-10-20',
+  modifiedAt: '2026-11-01',
 });
 
 // 4. Reverse username lookup discovery page
@@ -384,10 +300,14 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
       <li><a href="/browser.html">Browser OSINT tool &amp; web username scanner</a></li>
       <li><a href="/goal.html">Digital footprint goal &amp; privacy audit roadmap</a></li>
       <li><a href="/deep-search.html">Deep Search: public comments and mentions</a></li>
+      <li><a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search workflow comparison</a></li>
       <li><a href="/blog/reverse-username-lookup-guide.html">Complete reverse username lookup guide (2026)</a></li>
       <li><a href="/blog/best-osint-tools-username-search-comparison.html">Top 8 OSINT username tools compared</a></li>
-      <li><a href="/vs/sherlock.html">MyRecon vs Sherlock comparison</a></li>
-      <li><a href="/vs/maigret.html">MyRecon vs Maigret comparison</a></li>
+      <li><a href="/vs/sherlock">MyRecon vs Sherlock comparison</a></li>
+      <li><a href="/vs/dehashed">MyRecon vs DeHashed comparison</a></li>
+      <li><a href="/vs/leakcheck">MyRecon vs LeakCheck comparison</a></li>
+      <li><a href="/vs/intelx">MyRecon vs Intelligence X comparison</a></li>
+      <li><a href="/vs/beenverified">MyRecon vs BeenVerified comparison</a></li>
     </ul>
   </section>
   <section>
@@ -439,6 +359,60 @@ const boostBody = `<main id="main" class="container prose discovery-page">
       <dt><strong>Three-state evidence classification</strong></dt>
       <dd>Results are separated cleanly into <em>Found</em>, <em>Not found</em>, and <em>Unknown</em> (rate-limited or blocked), preventing false assumptions when a site throttles requests.</dd>
     </dl>
+  </section>
+  <section id="benchmarks">
+    <h2>Empirical benchmarks: parallel scanning vs CLI baselines</h2>
+    <p>We measure parallel scan latency and verdict accuracy against standard command-line tools and sequential status-only baselines across controlled datasets. All runs use synthetic control handles to detect soft 404s and prevent false positives.</p>
+    <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Empirical benchmark comparison">
+      <table>
+        <caption>Daily control benchmark results from verified dataset (public-controls-v1). Accuracy, false positives, and median latency. Source: <a href="/data/benchmarks.json">benchmarks.json</a>.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Tool / Baseline</th>
+            <th scope="col">Architecture</th>
+            <th scope="col">Median Latency (p50)</th>
+            <th scope="col">False Positive Rate</th>
+            <th scope="col">Accuracy</th>
+            <th scope="col">Coverage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">MyRecon</th>
+            <td>Parallel cloud sweep</td>
+            <td>0.25s (sub-second)</td>
+            <td>0.0% (0 / 19)</td>
+            <td>100.0%</td>
+            <td>100.0%</td>
+          </tr>
+          <tr>
+            <th scope="row">Maigret</th>
+            <td>CLI concurrent script</td>
+            <td>0.26s</td>
+            <td>0.0% (0 / 19)</td>
+            <td>100.0%</td>
+            <td>100.0%</td>
+          </tr>
+          <tr>
+            <th scope="row">Sherlock</th>
+            <td>CLI concurrent script</td>
+            <td>0.52s</td>
+            <td>36.8% (7 / 19)</td>
+            <td>76.7%</td>
+            <td>100.0%</td>
+          </tr>
+          <tr>
+            <th scope="row">Sequential HTTP 200 Baseline</th>
+            <td>Sequential CLI requests</td>
+            <td>0.67s – 2.18s</td>
+            <td>16.7% – 44.4%</td>
+            <td>77.8% – 92.9%</td>
+            <td>46.7% – 60.0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Unlike sequential CLI scripts that burn your home IP and produce soft-404 false positives on nonexistent profiles, MyRecon delivers sub-second parallel latency with 0% false positives on scored controls. Read our detailed methodology in the <a href="/blog/username-search-benchmark-research.html">controlled study report</a>.</p>
   </section>
   <section>
     <h2>4-step workflow to accelerate your reconnaissance</h2>
@@ -508,7 +482,8 @@ const browserBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Browser OSINT tool</span></nav>
   <h1>Browser OSINT tool and web username scanner</h1>
   <p class="sub">Run open-source intelligence investigations directly in your web browser with zero CLI setup. Sweep usernames across 500+ platforms, check email breaches, and audit DNS security from any device.</p>
-  <a class="btn btn-primary" href="/#tool">Open browser OSINT scanner</a>
+  <username-search-input></username-search-input>
+  <a class="btn btn-primary" href="/#tool" style="margin-top:16px">Open browser OSINT scanner</a>
   <p class="discovery-note">No Python, Git, or browser extensions required. Works in any modern desktop or mobile browser. Ethical public-source research only.</p>
   <section>
     <h2>Why use a browser-based OSINT platform?</h2>
@@ -537,9 +512,9 @@ const browserBody = `<main id="main" class="container prose discovery-page">
     <h2>Browser OSINT scanner vs terminal CLI tools</h2>
     <p>Compare how a browser-native workflow stacks up against traditional terminal scripts:</p>
     <ul>
-      <li><strong>MyRecon vs Sherlock:</strong> Read our <a href="/vs/sherlock.html">Sherlock comparison</a> to see how browser-based synthetic control checks prevent false positives.</li>
-      <li><strong>MyRecon vs Maigret:</strong> Read our <a href="/vs/maigret.html">Maigret comparison</a> for speed, false-positive filtering, and multi-tool integration.</li>
-      <li><strong>MyRecon vs WhatsMyName:</strong> Read our <a href="/vs/whatsmyname.html">WhatsMyName comparison</a> and explore <a href="/vs/">all OSINT tool comparisons</a>.</li>
+      <li><strong>MyRecon vs Sherlock:</strong> Read our <a href="/vs/sherlock">Sherlock comparison</a> to see how browser-based synthetic control checks prevent false positives.</li>
+      <li><strong>Username Sweep vs Deep Search:</strong> Read our <a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search guide</a> for choosing between direct profile checks and indexed mentions.</li>
+      <li><strong>Breach &amp; people-search comparisons:</strong> Compare <a href="/vs/dehashed">DeHashed</a>, <a href="/vs/leakcheck">LeakCheck</a>, <a href="/vs/intelx">Intelligence X</a>, <a href="/vs/beenverified">BeenVerified</a>, and <a href="/vs/">all OSINT tool comparisons</a>.</li>
     </ul>
   </section>
   <section>
@@ -577,6 +552,23 @@ buildDiscoveryPage({
   crumbLabel: 'Browser OSINT tool',
   questions: browserQuestions,
   bodyHtml: browserBody,
+  webApplication: {
+    '@type': 'WebApplication',
+    '@id': `${site}/browser.html#app`,
+    url: `${site}/browser.html`,
+    name: 'MyRecon Browser OSINT Tool',
+    description: 'Instant web-based OSINT scanner to sweep usernames across 500+ platforms directly from your browser with zero CLI setup.',
+    applicationCategory: 'SecurityApplication',
+    operatingSystem: 'All',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    publisher: {
+      '@id': `${site}/#organization`,
+    },
+  },
 });
 
 // 7. Digital footprint goal & privacy audit checklist page (/goal.html)

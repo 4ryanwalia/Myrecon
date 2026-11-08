@@ -2,6 +2,8 @@
 const photo = 'https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&fit=crop&w=1200&q=80';
 const credit = '<a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Photo: Logan Jeffrey / Unsplash</a> · Context photograph';
 function designArticle(html, route) {
+  // Research articles lead with their evidence and retain authored figures.
+  if (/"articleSection"\s*:\s*"Research"/.test(html)) return html;
   // Remove the old generated filler, including copies produced by build-blog.
   html = html.replace(/<figure class="(?:editorial-photo|blog-photo)"[\s\S]*?<\/figure>/g, '');
   if (html.includes('class="story-feature"') || html.includes('class="story-photo"')) return html;
@@ -31,8 +33,8 @@ function designArticle(html, route) {
     if (html.includes('<nav class="blog-toc"')) html = html.replace('<nav class="blog-toc"', `${image}<nav class="blog-toc"`);
     else html = html.replace(/(<article\b[\s\S]*?)(<h2\b)/, `$1${image}$2`);
   }
-  if (!html.includes('/assets/css/article-story.css')) html = html.replace('</head>', '<link rel="stylesheet" href="/assets/css/article-story.css">\n</head>');
-  if (breach && !html.includes('/assets/js/article-story.js')) html = html.replace('</body>', '<script src="/assets/js/article-story.js" defer></script>\n</body>');
+  if (!/\/assets\/(?:optimized\/)?css\/article-story(?:\.[a-f0-9]{12})?\.css/.test(html)) html = html.replace('</head>', '<link rel="stylesheet" href="/assets/css/article-story.css">\n</head>');
+  if (breach && !/\/assets\/(?:optimized\/)?js\/article-story(?:\.[a-f0-9]{12})?\.js/.test(html)) html = html.replace('</body>', '<script src="/assets/js/article-story.js" defer></script>\n</body>');
   return html;
 }
 module.exports = { designArticle };

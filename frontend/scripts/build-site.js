@@ -11,6 +11,13 @@ const SKIP_DIRS = new Set(['.git', '.vercel', 'content', 'data', 'node_modules',
  * publish an honest lastmod when a generator changes a rendered page without
  * changing that generated HTML file in Git.
  */
+function normalizeAssetUrls(html) {
+  return html.replace(
+    /\b(src|href)=(['"])\/assets\/(?:optimized\/)?(css|js)\/([\w-]+)(?:\.[a-f0-9]{12})?\.(css|js)(?:\?[^'"]*)?\2/g,
+    '$1=$2/assets/$3/$4.$5$2'
+  );
+}
+
 function publicHtmlHashes(dir = ROOT, hashes = new Map()) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.name.startsWith('.') || SKIP_DIRS.has(entry.name)) continue;
@@ -18,7 +25,8 @@ function publicHtmlHashes(dir = ROOT, hashes = new Map()) {
     if (entry.isDirectory()) publicHtmlHashes(full, hashes);
     else if (entry.name.endsWith('.html')) {
       const rel = path.relative(ROOT, full).split(path.sep).join('/');
-      hashes.set(rel, crypto.createHash('sha256').update(fs.readFileSync(full)).digest('hex'));
+      const normalized = normalizeAssetUrls(fs.readFileSync(full, 'utf8'));
+      hashes.set(rel, crypto.createHash('sha256').update(normalized).digest('hex'));
     }
   }
   return hashes;

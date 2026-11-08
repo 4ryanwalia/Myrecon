@@ -75,7 +75,9 @@
       }));
       mod = authMod;
       // Completes a redirect sign-in (the popup fallback) if one is pending.
-      authMod.getRedirectResult(auth).catch((e) => console.warn("[account] redirect:", e.code || e));
+      authMod.getRedirectResult(auth).then((cred) => {
+        if (cred) window.MyReconAnalytics?.signUp(authMod.getAdditionalUserInfo(cred)?.isNewUser);
+      }).catch((e) => console.warn("[account] redirect:", e.code || e));
       await new Promise((resolve) => {
         authMod.onAuthStateChanged(auth, async (u) => {
           user = u || null;
@@ -133,6 +135,7 @@
         // Set now rather than waiting for onAuthStateChanged, so a scan the
         // caller starts on the next line already carries the token.
         if (cred && cred.user) { user = cred.user; hint(true); }
+        window.MyReconAnalytics?.signUp(mod.getAdditionalUserInfo(cred)?.isNewUser);
         return cred;
       }).catch((e) => {
         if (e && (e.code === "auth/popup-blocked"
@@ -227,7 +230,7 @@
     }
     if (user) {
       const tier = account && account.standard_scans_unlimited ? "Extended" : "Free";
-      btn.href = "/pricing.html#account";
+      btn.href = "/pricing#account";
       btn.removeAttribute("role");
       btn.onclick = null;
       btn.innerHTML = avatarHtml(state().user)

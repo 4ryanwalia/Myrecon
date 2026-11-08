@@ -12,6 +12,16 @@
 .blog-table-wrap th, .blog-table-wrap td { padding: 12px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); line-height: 1.6; }
 .blog-table-wrap th { background: var(--surface); color: var(--text); }
 .blog-table-wrap td { color: var(--text-dim); }
+/* The control study retains all outcomes; scroll wide tables at narrow widths. */
+.blog-table-wrap #study-results { min-width: 1040px; }
+.blog-table-wrap #native-claims-results { min-width: 760px; }
+.blog-table-wrap #control-matrix { min-width: 1000px; }
+.blog-table-wrap #tool-versions { min-width: 960px; }
+.blog-table-wrap :is(#study-results, #native-claims-results, #control-matrix, #tool-versions) :is(th, td, caption) { overflow-wrap: normal; word-break: normal; }
+.blog-table-wrap :is(#study-results, #native-claims-results) th[scope="row"] { min-width: 112px; }
+.blog-table-wrap :is(#study-results, #native-claims-results) tbody td { white-space: nowrap; }
+.blog-table-wrap #control-matrix th[scope="row"] { min-width: 190px; }
+.blog-table-wrap #tool-versions code { overflow-wrap: anywhere; }
 .blog-related { border-top: 1px solid var(--border); margin-top: 34px; }
 .blog-topics { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0; }
 .blog-topics a { border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; font-size: .9rem; }

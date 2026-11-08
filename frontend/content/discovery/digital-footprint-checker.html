@@ -1,0 +1,55 @@
+<main id="main" class="container prose discovery-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Digital footprint checker</span></nav>
+  <h1>Check your digital footprint and build a cleanup list</h1>
+  <p class="sub">Start with a username or email you control. MyRecon can surface public profile leads and supported breach exposure; your own account records and source checks turn those leads into actions.</p>
+  <a class="btn btn-primary" href="/#tool=username">Check a public username</a>
+  <p><a href="/#tool=email">Check email breach exposure</a> · <a href="/downloads/digital-footprint-worksheet.txt" download>Download the private audit worksheet</a></p>
+  <p class="discovery-note">Username scans and email lookups have different access rules. Reviewed 1 November 2026; <a href="/pricing">current plans</a>.</p>
+
+  <section><h2>Choose a question you can act on</h2>
+    <p>A useful first goal is “find old profiles where I still publish contact details” or “review services named in my email's breach results.” A scan cannot inventory every private account, tracking record, data-broker entry, server log or copy of your information.</p>
+    <p>MyRecon is useful for collecting public leads across supported sources in a browser. Use your password manager, inbox and provider settings for records that a public checker cannot see. A footprint review needs both, especially when a handle has changed or a service has no public profile.</p>
+  </section>
+
+  <section id="footprint-walkthrough"><h2>Run a footprint check in four passes</h2>
+    <ol>
+      <li><strong>Build a private starting list.</strong> Record current and remembered handles, email addresses and recognized services. Keep passwords, recovery codes and identity documents out of your audit notes.</li>
+      <li><strong>Search public handles.</strong> Use the <a href="/username-checker.html">browser username workflow</a>, open candidate URLs and note what a signed-out visitor can see. Confirm your own account through saved records or a recognized provider session.</li>
+      <li><strong>Review email exposure separately.</strong> Follow the <a href="/guides/check-email-data-breach.html">email-breach guide</a>. A named dataset can prompt a security review; it does not establish an active account or a leaked current password.</li>
+      <li><strong>Make and verify one change.</strong> Edit a public bio, update account security or follow the provider's deletion process. Reopen the source in a signed-out window and record whether the exposed detail changed.</li>
+    </ol>
+  </section>
+
+  <section id="real-demonstration"><h2>Real demonstration: turn an unresolved result into an audit task</h2>
+    <p>In the <a href="/data/username-benchmark.json">30 September 2026 public case</a> for <code>4ryanwalia</code>, MyRecon recorded a GitHub account object as found and a Reddit challenge as unknown. The GitHub observation supported profile existence; the Reddit response did not answer whether the requested profile existed. Neither observation authenticated who controlled an account.</p>
+    <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Demonstration of footprint audit decisions"><table>
+      <caption>Observed inputs from the recorded case, followed by possible next steps. No account settings were changed for this demonstration.</caption>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Next check</th><th scope="col">Record in your audit</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">GitHub: found, <code>api_user</code></th><td>Review the public profile; confirm your own control through the official service.</td><td>Profile exists; ownership remains unconfirmed until checked.</td></tr>
+        <tr><th scope="row">Reddit: unknown, challenge</th><td>Review through an ordinary provider-approved browser session or your own saved records.</td><td>Unresolved source. Keep it on the follow-up list.</td></tr>
+        <tr><th scope="row">A detail changed after your own edit</th><td>Revisit the exact source signed out.</td><td>Only mark completed after observing the change. This row is a practice step, not an observed removal.</td></tr>
+      </tbody>
+    </table></div>
+    <p>To repeat the exercise, use a handle you control and the <a href="/downloads/digital-footprint-worksheet.txt" download>blank worksheet</a>. Record the source URL, review date, ownership basis, exposed detail, chosen action and recheck date. Downloading the blank worksheet does not send your completed notes to MyRecon.</p>
+  </section>
+
+  <section id="access-limits"><h2>Current access limits for a footprint review</h2>
+    <p><strong>Username checks:</strong> guests get 5 Quick scans per day across 100 platforms with only the first 2 result cards visible. Signed-in free accounts get 5 Standard scans daily across 500+ platforms; Quick and Standard share this allowance. Daily resets are midnight UTC (05:30 India).</p>
+    <p><strong>Email checks:</strong> returned findings are visible without sign-in or payment and do not spend the username allowance. Optional sources may be unconfigured, blocked, rate-limited or unavailable. Check the source status before interpreting an empty result.</p>
+    <p><strong>Paid username scope:</strong> the optional pack adds unlimited Standard, Deep Search and 10 Extended scans across 3,000+ platforms. A larger catalogue does not authenticate account ownership or grant private access. See <a href="/pricing">current pricing and credit rules</a>; Android access is described in the app.</p>
+  </section>
+
+  <section><h2>Prioritize changes you can verify</h2>
+    <ul>
+      <li><strong>Account security:</strong> replace a reused password, review sessions and recovery settings, and enable available stronger sign-in protection.</li>
+      <li><strong>Public details:</strong> remove an unnecessary phone number, old employer or location from a profile you control, then inspect the signed-out page.</li>
+      <li><strong>Forgotten accounts:</strong> confirm control, export needed data, settle billing and linked logins, then use the <a href="/blog/delete-old-online-accounts.html">deletion checklist</a>.</li>
+      <li><strong>Other sites and search results:</strong> record the exact URL and request correction or removal through the relevant process. Track submitted and completed separately.</li>
+    </ul>
+    <p>Google's <a href="https://support.google.com/websearch/answer/9673730?hl=en">personal-information removal guidance</a> distinguishes removing a result from Search from removing the source page. Search removal can leave the original online. MyRecon does not automatically delete accounts or guarantee complete erasure.</p>
+  </section>
+
+  <section><h2>Digital footprint questions</h2><div class="faq"><!-- faq --></div></section>
+  <section><h2>Continue your review</h2><p>Follow the <a href="/blog/find-your-own-old-accounts.html">forgotten-account walkthrough</a>, compare <a href="/vs/sherlock">browser and local username research</a>, or use the longer <a href="/blog/digital-footprint-checker.html">footprint cleanup guide</a>. Review <a href="/privacy.html">data handling</a> before entering identifiers. MyRecon publishes this guide; updated 1 November 2026.</p></section>
+</main>

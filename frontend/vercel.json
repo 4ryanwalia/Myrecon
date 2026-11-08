@@ -4,8 +4,54 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "myrecon.xyz"
+        }
+      ],
+      "destination": "https://www.myrecon.xyz/:path*",
+      "permanent": true
+    },
+    {
       "source": "/index.html",
       "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap.html",
+      "destination": "/directory.html",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap",
+      "destination": "/directory.html",
+      "permanent": true
+    },
+    {
+      "source": "/videos/index.html",
+      "destination": "/videos/",
+      "permanent": true
+    },
+    {
+      "source": "/vs/beenverified.html",
+      "destination": "/vs/beenverified",
+      "permanent": true
+    },
+    {
+      "source": "/vs/dehashed.html",
+      "destination": "/vs/dehashed",
+      "permanent": true
+    },
+    {
+      "source": "/vs/intelx.html",
+      "destination": "/vs/intelx",
+      "permanent": true
+    },
+    {
+      "source": "/vs/leakcheck.html",
+      "destination": "/vs/leakcheck",
       "permanent": true
     },
     {
@@ -3228,6 +3274,18 @@
     {
       "source": "/username-checker",
       "destination": "/username-checker.html"
+    },
+    {
+      "source": "/plan",
+      "destination": "/pricing.html"
+    },
+    {
+      "source": "/learn",
+      "destination": "/guides/index.html"
+    },
+    {
+      "source": "/teamwork",
+      "destination": "/contact.html"
     }
   ],
   "installCommand": "npm ci --include=dev"
