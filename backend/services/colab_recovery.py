@@ -20,6 +20,7 @@ _last_error = None
 _last_stdout_line = None
 _last_code = None
 _last_stderr = None
+_last_lease = None
 _lock = threading.Lock()
 _status = {"stage": "disabled", "updated_at": 0}
 _STAGES = {"authorizing", "assigned", "bootstrapping", "worker-live", "render-unavailable"}
@@ -72,7 +73,7 @@ def status():
         "thread_stack": stack,
         "child_running": bool(_child and _child.poll() is None),
         "all_threads": all_threads,
-        "lease": storage.store.get(ROOT),
+        "lease": _last_lease,
         "server_now": int(time.time()),
     }
     return data
@@ -89,9 +90,12 @@ def read_stages(child):
 
 
 def renew(owner, now=None):
+    global _last_lease
     now = time.time() if now is None else now
 
     def change(current):
+        global _last_lease
+        _last_lease = dict(current) if isinstance(current, dict) else current
         current = current or {}
         expires_at = current.get("expires_at", 0)
         if current.get("owner") != owner and now < expires_at <= now + LEASE_SECONDS * 2:
