@@ -1,25 +1,27 @@
 /* ==========================================================================
    MyRecon, Design System
-   Graphite and off-white. Green is reserved for status cues. Dark by default, full light theme.
+   Black and white with restrained burgundy accents. Semantic colors indicate status. Dark by default, full light theme.
    ========================================================================== */
 
 :root {
   color-scheme: dark;
-  /* Solid neutral surfaces; primary controls invert with the theme. */
-  --bg: #111111;
+  /* Neutral surfaces; burgundy is reserved for primary actions and small details. */
+  --burgundy: #6d001a;
+  --burgundy-hover: #850022;
+  --bg: #000000;
   --bg-soft: #181818;
   --surface: #1d1d1d;
   --surface-2: #272727;
   --border: #353535;
   --border-strong: #525252;
-  --text: #f2f2ee;
-  --text-dim: #c5c5c0;
-  --text-mute: #a2a29c;
-  --accent: #e8e8e1;
-  --accent-text: #eeeee8;
-  --accent-2: #e8e8e1;
-  --on-accent: #171717;
-  --border-control: #73736e;
+  --text: #ffffff;
+  --text-dim: #c5c5c5;
+  --text-mute: #a3a3a3;
+  --accent: #ffffff;
+  --accent-text: #ffffff;
+  --accent-2: var(--burgundy);
+  --on-accent: #ffffff;
+  --border-control: #737373;
   --ring: rgba(232, 232, 225, 0.2);
   --shadow: none;
   --shadow-sm: none;
@@ -42,20 +44,20 @@
 
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f7f7f4;
-  --bg-soft: #eeeee9;
+  --bg: #ffffff;
+  --bg-soft: #f5f5f5;
   --surface: #ffffff;
-  --surface-2: #f0f0eb;
-  --border: #d7d7d0;
-  --border-strong: #b4b4aa;
-  --text: #191919;
-  --text-dim: #4d4d48;
-  --text-mute: #63635c;
-  --accent: #252525;
-  --accent-text: #252525;
-  --accent-2: #252525;
+  --surface-2: #f5f5f5;
+  --border: #d7d7d7;
+  --border-strong: #b4b4b4;
+  --text: #000000;
+  --text-dim: #4d4d4d;
+  --text-mute: #636363;
+  --accent: #6d001a;
+  --accent-text: #6d001a;
+  --accent-2: var(--burgundy);
   --on-accent: #ffffff;
-  --border-control: #7c7c73;
+  --border-control: #767676;
   --ring: rgba(37, 37, 37, 0.2);
   --shadow: none;
   --shadow-sm: none;
@@ -1344,7 +1346,7 @@ img.nav-avatar, img.acct-avatar { object-fit: cover; background: var(--border-co
 .email-quality-method p, .email-field-conflicts li { overflow-wrap: anywhere; }
 
 /* Search goal cards retain the existing shared lookup flow. */
-.lookup-intents { --intent-accent: #7ddce9; --intent-tint: rgba(82,190,215,.1); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:24px 0 20px; }
+.lookup-intents { --intent-accent: var(--text); --intent-tint: rgba(109,0,26,.16); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:24px 0 20px; }
 .lookup-intents[hidden] { display:none !important; }
 .lookup-intents-heading { grid-column:1/-1; display:flex; justify-content:space-between; gap:12px; font-size:.7rem; letter-spacing:.12em; font-weight:700; color:var(--intent-accent); }
 .lookup-intents-heading span { letter-spacing:0; font-weight:400; color:var(--text-dim); }
@@ -1358,7 +1360,7 @@ img.nav-avatar, img.acct-avatar { object-fit: cover; background: var(--border-co
 .lookup-intent-copy > span { font-size:.76rem; line-height:1.5; color:var(--text-dim); }
 .lookup-intent-arrow { position:absolute; right:16px; top:18px; color:var(--intent-accent); }
 .lookup-intent-note { grid-column:1/-1; margin:2px 0 0; padding:10px 14px; border-left:2px solid var(--intent-accent); color:var(--text-dim); font-size:.82rem; line-height:1.65; background:var(--intent-tint); border-radius:0 8px 8px 0; }
-:root[data-theme="light"] .lookup-intents { --intent-accent:#086979; --intent-tint:rgba(8,105,121,.07); }
+:root[data-theme="light"] .lookup-intents { --intent-accent:#6d001a; --intent-tint:rgba(109,0,26,.06); }
 @media(max-width:620px) {
 .lookup-intents { grid-template-columns:1fr; gap:8px; }
 .lookup-intents-heading { flex-direction:column; gap:5px; margin-bottom:4px; }
@@ -1397,3 +1399,12 @@ img.nav-avatar, img.acct-avatar { object-fit: cover; background: var(--border-co
   color: var(--text);
   font-weight: 500;
 }
+
+/* Restrained brand details: monochrome content, burgundy actions and markers. */
+.nav-links a.active { box-shadow: inset 0 -2px var(--burgundy); }
+.btn:not(.btn-ghost):not(:disabled):hover { background: var(--burgundy-hover); }
+.hero .eyebrow { border-left: 3px solid var(--burgundy); }
+.article .callout, .legal-callout { border-left-color: var(--burgundy); }
+.plan.featured { border-color: var(--burgundy); }
+.lookup-intent[aria-pressed="true"] { border-bottom: 3px solid var(--burgundy); }
+::selection { background: var(--burgundy); color: #fff; }
