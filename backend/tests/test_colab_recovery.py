@@ -78,3 +78,21 @@ def test_recovery_status_requires_operator_token(monkeypatch):
         "Authorization": "Bearer " + config.SCAN_WORKER_STATUS_TOKEN})
     assert response.status_code == 200
     assert "secret" not in response.get_data(as_text=True)
+    payload = response.get_json()
+    assert "diagnostics" in payload
+    assert "enabled" in payload["diagnostics"]
+
+
+def test_is_enabled_respects_flags_and_credentials(monkeypatch):
+    monkeypatch.delenv("COLAB_AUTO_RECOVERY_ENABLED", raising=False)
+    monkeypatch.delenv("COLAB_GOOGLE_CREDENTIALS_JSON", raising=False)
+    assert not recovery._is_enabled()
+
+    monkeypatch.setenv("COLAB_GOOGLE_CREDENTIALS_JSON", '{"type":"authorized_user"}')
+    assert recovery._is_enabled()
+
+    monkeypatch.setenv("COLAB_AUTO_RECOVERY_ENABLED", "false")
+    assert not recovery._is_enabled()
+
+    monkeypatch.setenv("COLAB_AUTO_RECOVERY_ENABLED", "true")
+    assert recovery._is_enabled()

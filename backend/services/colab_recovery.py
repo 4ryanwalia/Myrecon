@@ -24,9 +24,27 @@ def note(stage):
         _status.update(stage=stage, updated_at=int(time.time()))
 
 
+def _is_enabled():
+    val = os.getenv("COLAB_AUTO_RECOVERY_ENABLED", "").strip().lower()
+    if val in ("true", "1", "yes", "on"):
+        return True
+    if val in ("false", "0", "no", "off"):
+        return False
+    return bool(os.getenv("COLAB_GOOGLE_CREDENTIALS_JSON"))
+
+
 def status():
+    ensure_started()
     with _lock:
-        return dict(_status)
+        data = dict(_status)
+    from core.scan_jobs import available
+    data["diagnostics"] = {
+        "enabled": _is_enabled(),
+        "storage_backend": storage.store.backend,
+        "jobs_available": available(),
+        "has_google_credentials": bool(os.getenv("COLAB_GOOGLE_CREDENTIALS_JSON")),
+    }
+    return data
 
 
 def read_stages(child):
@@ -114,7 +132,7 @@ def supervise():
 
 def ensure_started():
     global _started
-    if os.getenv("COLAB_AUTO_RECOVERY_ENABLED", "").lower() != "true":
+    if not _is_enabled():
         return
     from core.scan_jobs import available
     if not available() or storage.store.backend != "rtdb":

@@ -32,9 +32,11 @@ services:
         value: "8"
       - key: SCAN_JOB_LIMIT
         value: "8"
-      # Enable only after configuring the dedicated token and testing Colab.
+      # Scan worker offload and automatic Colab CPU recovery.
       - key: SCAN_OFFLOAD_ENABLED
-        value: "false"
+        value: "true"
+      - key: COLAB_AUTO_RECOVERY_ENABLED
+        value: "true"
       # Exact-email Google identity with bounded anonymous public Maps reviews.
       # The operator-authenticated GHunt session belongs only in hosting secrets.
       - key: EMAIL_GHUNT_ENABLED
