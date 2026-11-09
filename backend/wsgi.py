@@ -1,6 +1,6 @@
 """Gunicorn entry point for Render: `gunicorn wsgi:app`."""
 
-from app import app
+from app import app as flask_app
 
 _recovery_started = False
 
@@ -14,7 +14,7 @@ def application(environ, start_response):
             ensure_started()
         except Exception:
             pass
-    return app(environ, start_response)
+    return flask_app(environ, start_response)
 
 
 class _AppProxy:
@@ -28,6 +28,6 @@ class _AppProxy:
         return getattr(self._inner, name)
 
 
-app = _AppProxy(app)
+app = _AppProxy(flask_app)
 
 __all__ = ["app"]
