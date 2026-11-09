@@ -362,13 +362,63 @@ def deep_sections(data):
     return sections
 
 
+def _deep_preview(data):
+    """One actual finding; never send nested collections of locked findings."""
+    profiles = _rows((data.get("google_public_profiles") or {}).get("profiles"))
+    if profiles:
+        cards = standard_cards("email", {"evidence_report": {"profiles": profiles}})
+        card = next((row for row in cards if row["kind"] == "email_review"), None)
+        card = card or next((row for row in cards if row["kind"] == "email_profile"), None)
+        if card:
+            return {**card, "section": "Google Reviews" if card["kind"] == "email_review" else "Public Profiles"}
+    for key, label in (("activity", "Public accounts & recent activity"),
+                       ("accounts", "Name matches"), ("people", "Public figure records")):
+        rows = _rows(data.get(key))
+        if rows:
+            row = rows[0]
+            shown = {key: deepcopy(row[key]) for key in
+                     ("platform", "handle", "name", "display_name", "url", "bio", "description", "detail", "source")
+                     if key in row}
+            return {"kind": "public_result", "title": "Public profile", "section": label, "data": shown}
+    from modules.deep_search_plan import LABELS
+    for section in _rows(data.get("sections")):
+        rows = _rows(section.get("hits"))
+        if rows and section.get("section") in LABELS:
+            row = rows[0]
+            return {"kind": "public_result", "title": "Indexed public result",
+                    "section": LABELS[section["section"]], "data": {
+                        key: deepcopy(row[key]) for key in ("title", "url", "snippet", "source") if key in row}}
+    for key, label in (("owner_links", "Links declared by account owners"),
+                       ("connections", "Explore linked profiles")):
+        rows = _rows(data.get(key))
+        if rows:
+            row = rows[0]
+            if key == "connections":
+                row = row.get("destination") or {}
+            return {"kind": "public_result", "title": "Public profile link", "section": label,
+                    "data": {key: deepcopy(row[key]) for key in ("url", "label", "handle", "platform", "source") if key in row}}
+    proofs = _rows((data.get("identity") or {}).get("proofs"))
+    if proofs:
+        row = proofs[0]
+        return {"kind": "public_result", "title": "Keybase published proof", "section": "Keybase published proofs",
+                "data": {key: deepcopy(row[key]) for key in ("url", "platform", "handle") if key in row}}
+    return None
+
+
 def deep(data, *, token=None, complete=False):
     data = data if isinstance(data, dict) else {"status": "error"}
+    sections = deep_sections(data)
+    # Reveal only on completion so successive partial snapshots cannot expose
+    # a different free finding each time a faster source returns.
+    preview = _deep_preview(data) if complete else None
+    total = sum(section["count"] for section in sections)
     return {"status": _state(data.get("status", "pending")),
             "subject": data.get("subject", ""), "mode": data.get("mode", "handle"),
             "context": data.get("context"), "partial": bool(data.get("partial")),
             "guest_access": {**retain("deep_search", data, token=token, complete=complete),
-                             "locked": True, "sections": deep_sections(data)}}
+                             "locked": True, "sections": sections, "preview": preview,
+                             "visible_count": int(preview is not None),
+                             "locked_count": max(0, total - int(preview is not None))}}
 
 
 def progress(event, *, deep_search=False):
@@ -379,5 +429,5 @@ def progress(event, *, deep_search=False):
     return {"type": "progress", "percent": percent,
             "phase": "Queued" if queued else "Investigating" if deep_search else "Scanning",
             "detail": "Waiting for a scan slot." if queued else
-            "Checking public sources. Finding details appear after sign-in." if deep_search else
+            "Checking public sources. One returned finding will be shown as a free preview." if deep_search else
             "Checking platforms and preparing result cards."}

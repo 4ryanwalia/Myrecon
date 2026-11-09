@@ -37,7 +37,7 @@
     guestReport = data;
     guestLive = live;
     try {
-      // This report contains backend-redacted section metadata only, never findings.
+      // The server permits one preview finding; all other details stay redacted.
       sessionStorage.setItem(GUEST_STORAGE, JSON.stringify({ data, live }));
     } catch {}
   }
@@ -61,7 +61,7 @@
       $("#dsBar").style.width = complete ? "100%" : "0%";
       $("#dsCount").textContent = complete ? "100%" : "Partial";
       $("#dsStatus").textContent = complete
-        ? "Retained guest investigation. Sign in with an eligible paid account to view findings."
+        ? "Saved investigation. Preview one returned finding below; sign in with an eligible paid account to unlock the rest."
         : "Retained partial preview. Sign in to check the saved investigation; it may be incomplete.";
       modeHint();
     } catch {}
@@ -211,7 +211,7 @@
     $("#dsAccessNote").textContent = paid
       ? "Your paid account includes name, handle and public Google email research. Deep Search does not spend Extended scan credits."
       : pending ? "Waiting for your account details. Retry if your connection was interrupted."
-      : guest ? "Investigate public sources now. Section headings stay visible; sign in with an eligible paid account to view the findings."
+      : guest ? "Investigate public sources now. Preview one returned finding free; sign in with an eligible paid account to unlock the rest."
       : guestReport ? "Your investigation is retained temporarily. The ₹99 plan is required to reveal Deep Search findings. After upgrading, refresh access to open the retained results."
       : "The ₹99 plan includes Deep Search, unlimited standard scans and 10 Extended scans. No renewal. Deep Search does not spend Extended credits.";
     $("#dsSignIn").hidden = !!state.user || !A?.enabled;
@@ -264,40 +264,55 @@
   function lockedAction() {
     const state = accountState();
     if (!state.user) return A?.enabled
-      ? `<strong>Sign in to view the findings</strong><p>Deep Search findings require an eligible paid account.</p><button class="btn btn-sm" type="button" data-ds-unlock>Sign in to view findings</button>`
+      ? `<strong>Unlock the remaining findings</strong><p>One returned finding is shown free. Sign in with an eligible paid account to view the rest.</p><button class="btn btn-sm" type="button" data-ds-unlock>Sign in to unlock the rest</button>`
       : `<strong>Sign in to view the findings</strong><p>Sign-in is temporarily unavailable. The investigation can still run; try signing in again shortly.</p>`;
     if (!state.account) return `<strong>Checking your Deep Search access</strong><p>Your findings stay locked while your plan is checked.</p><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Retry plan check</button>`;
     if (!hasAccess(state)) return `<strong>The ₹99 plan is required to view findings</strong><p>You are signed in. Upgrade your account, then refresh access to reveal this investigation.</p><a class="btn btn-sm" href="/pricing">Get the ₹99 plan</a><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Refresh access</button>`;
     return `<strong>${restoring ? "Opening your findings…" : "View the retained findings"}</strong><p>Open the investigation already completed by the server.</p><button class="btn btn-sm" type="button" data-ds-reveal ${restoring ? "disabled" : ""}>View findings</button>`;
   }
   function renderLocked(data, live) {
+    renderedReport = data; renderedLive = live;
     const access = data.guest_access;
-    const sections = Array.isArray(access.sections) ? access.sections : [];
+    const preview = access.preview;
+    const sections = (Array.isArray(access.sections) ? [...access.sections] : [])
+      .sort((a, b) => Number(b.label === preview?.section) - Number(a.label === preview?.section));
     const total = sections.reduce((n, section) => n + (count(section.count) || 0), 0);
-    const out = [`<div class="ds-summary"><div><span class="ds-chip">${data.mode === "email" ? "Email" : data.mode === "name" ? "Name" : "Handle"} search${live ? " · live" : ""}</span><h2>${esc(data.subject)}</h2>${data.context ? `<p>Context: ${esc(data.context)}</p>` : ""}</div><p>${total} finding${total === 1 ? "" : "s"} returned${live ? " so far" : ""}</p></div>`];
+    const out = [`<div class="ds-summary"><div><span class="ds-chip">${data.mode === "email" ? "Email" : data.mode === "name" ? "Name" : "Handle"} search${live ? " · live" : ""}</span><h2>${esc(data.subject)}</h2>${data.context ? `<p>Context: ${esc(data.context)}</p>` : ""}</div><p>${total} finding${total === 1 ? "" : "s"} returned${live ? " so far" : ""}${preview ? ` · 1 shown free · ${Math.max(0, total - 1)} more locked` : ""}</p></div>`];
     for (const section of sections) {
       const findings = count(section.count) || 0;
+      const shown = preview?.section === section.label ? 1 : 0;
+      const hidden = Math.max(0, findings - shown);
       const status = section.status || (live ? "pending" : "unknown");
-      const description = findings ? `${findings} finding${findings === 1 ? "" : "s"} returned${live ? " so far" : ""}. Details are locked.`
+      const description = findings ? `${findings} finding${findings === 1 ? "" : "s"} returned${live ? " so far" : ""}.${shown ? " One real finding is shown below." : ""}${hidden ? ` ${hidden} locked.` : ""}`
         : ["no_match", "not_found", "empty", "ok", "found"].includes(status)
           ? "No public findings were returned for this section. This does not establish absence."
           : ["partial", "unknown"].includes(status)
             ? "The source response was incomplete or inconclusive. No conclusion can be drawn."
             : status === "pending" ? live ? "This section is still being checked." : "This section had not finished when the last results were returned."
               : "This source could not return usable findings. No conclusion can be drawn.";
-      const body = findings
-        ? `<div class="ds-locked-findings"><div class="ds-locked-placeholders" aria-hidden="true" inert>${Array.from({ length: Math.min(findings, 3) }, () => `<div class="ds-locked-placeholder"><span></span><span></span><span></span></div>`).join("")}</div><div class="ds-unlock-overlay">${lockedAction()}</div></div>`
-        : `<p class="hint">${esc(live && status === "pending" ? "This section is still being checked." : description)}</p>`;
+      const body = (shown ? renderGuestPreview(preview) : "") + (hidden
+        ? `<div class="ds-locked-findings"><div class="ds-locked-placeholders" aria-hidden="true" inert>${Array.from({ length: Math.min(hidden, 3) }, () => `<div class="ds-locked-placeholder"><span></span><span></span><span></span></div>`).join("")}</div><div class="ds-unlock-overlay">${lockedAction()}</div></div>`
+        : findings ? "" : `<p class="hint">${esc(live && status === "pending" ? "This section is still being checked." : description)}</p>`);
       out.push(block(section.label, findings ? description : "Public source availability and returned findings.", body));
     }
     if (!sections.length) out.push(`<div class="ds-panel"><p>${live ? "Checking public sources. Sections appear when the server returns them." : "No public findings were returned. This does not prove that no account or record exists."}</p></div>`);
-    if (data.partial) out.push(`<aside class="ds-panel" role="status"><strong>Partial investigation</strong><p>Some public sources could not finish or returned limited data. Available findings stay locked; unavailable checks do not establish absence.</p></aside>`);
-    if (access.report_token && total) out.push(`<p class="ds-retained-note">The server temporarily retains this investigation for up to 30 minutes. Sign in to reveal it without repeating the scan. A server restart can end retention sooner.</p>`);
+    if (data.partial) out.push(`<aside class="ds-panel" role="status"><strong>Partial investigation</strong><p>Some public sources could not finish or returned limited data. ${preview ? "One returned finding is shown; additional findings stay locked." : "Available findings stay locked until the preview is ready."} Unavailable checks do not establish absence.</p></aside>`);
+    if (access.report_token && total) out.push(`<p class="ds-retained-note">The server temporarily retains this investigation for up to 30 minutes. Sign in to reveal the remaining findings without repeating the scan. A server restart can end retention sooner.</p>`);
     $("#dsOut").innerHTML = out.join("");
     $("#dsExport").hidden = true;
     $("#dsExport").disabled = true;
     $("#dsExportCsv").hidden = true;
     $("#dsExportCsv").disabled = true;
+  }
+  function renderGuestPreview(preview) {
+    const row = preview.data || {};
+    const title = row.name || row.title || row.display_name || row.label ||
+      [row.platform, row.handle || row.username].filter(Boolean).join(" · ") || preview.title;
+    if (preview.kind === "email_review") {
+      const rating = typeof row.rating === "number" && row.rating >= 1 && row.rating <= 5 ? `★ ${row.rating} / 5` : "";
+      return `<article class="ds-evidence ds-google-review"><span class="ds-chip">Free preview · Google review</span><h3>${googleLink(row.maps_url, title || "Reviewed place")}</h3>${row.address ? `<p class="hint">${esc(row.address)}</p>` : ""}<p class="hint">${esc([rating, row.date_label || row.date].filter(Boolean).join(" · "))}</p><p class="ds-google-text">${esc(row.text || "Rating only; no review text returned.")}</p><p>${googleLink(row.source_url || row.maps_url, "View public source")}</p></article>`;
+    }
+    return `<article class="ds-evidence ds-result-card"><span class="ds-chip">Free preview · Public result</span><h3>${link(row.url, title || "Public result")}</h3><p>${esc(row.bio || row.description || row.detail || row.snippet || row.evidence || "This public result was returned by the source.")}</p><p class="hint">${esc(row.source || row.platform || "Public source")} · Review the source before linking identities.</p><p>${link(row.url, "Open public source")}</p></article>`;
   }
   function googleLink(url, label) {
     const href = safeUrl(url);
@@ -333,6 +348,7 @@
     return block("Google Maps contributor & public reviews", "Exact-email public Google research. Only public contributor data and reviews returned by the source are shown.", `<p class="ds-google-status" role="status"><span class="ds-chip">${esc(label)}</span> ${esc(message)}</p>${cards}${checks}`);
   }
   function render(data, live = false) {
+    if (isLocked(data)) { saveGuestReport(data, live); renderLocked(data, live); return; }
     renderedReport = data; renderedLive = live;
     const activity = data.activity || [], accounts = data.accounts || [], people = data.people || [], sections = (data.sections || []).map(s => ({ ...s, hits: (s.hits || []).filter(h => safeUrl(h.url)) }));
     const pages = sections.reduce((n, s) => n + (s.hits || []).length, 0);
@@ -462,7 +478,8 @@
       const hasGuestFindings = ev.data.guest_access?.sections?.some((section) => (count(section.count) || 0) > 0);
       $("#dsStatus").textContent = isLocked(ev.data)
         ? !hasGuestFindings ? "Investigation finished without returned findings. Review source availability below; this does not establish absence."
-          : ev.data.partial ? "Investigation finished with source limits. Sign in with an eligible paid account to view returned findings." : "Investigation complete. Sign in with an eligible paid account to view the findings."
+          : ev.data.guest_access.preview ? "Investigation complete. One real finding is shown below; sign in with an eligible paid account to unlock any remaining findings."
+            : "Investigation complete. Sign in with an eligible paid account to view the returned findings."
         : ev.data.mode === "email"
         ? `Google lookup finished: ${googleState(ev.data.google_public_profiles?.status || ev.data.status)[0].toLowerCase()}.`
         : ev.data.partial ? "Complete with source limits. Review unavailable sources below." : "Deep Search complete.";

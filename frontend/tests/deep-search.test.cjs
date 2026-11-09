@@ -19,6 +19,37 @@ function load(state = {}) {
   return { elements, api: context.adapter, context };
 }
 
+test("guest reports show the real preview and lock additional findings without false zero counts", () => {
+  const { api, elements } = load();
+  api.handleEvent({ type: "complete", data: { status: "ok", mode: "handle", subject: "example",
+    guest_access: { locked: true, complete: true, sections: [
+      { label: "Public accounts & recent activity", count: 3, status: "found" }],
+      preview: { section: "Public accounts & recent activity", kind: "public_result", data: {
+        platform: "GitHub", handle: "example", url: "https://github.com/example", bio: "A returned profile bio" } } } } });
+  const html = elements["#dsOut"].innerHTML;
+  assert.match(html, /A returned profile bio/);
+  assert.match(html, /https:\/\/github.com\/example/);
+  assert.match(html, /3 findings returned/);
+  assert.match(html, /2 more locked/);
+  assert.match(html, /ds-unlock-overlay/);
+  assert.doesNotMatch(html, /0 public accounts|No public results were returned/);
+  assert.match(elements["#dsStatus"].textContent, /One real finding is shown/);
+  assert.equal(elements["#dsExport"].hidden, true);
+});
+
+test("guest Google review preview escapes source text and rejects unsafe links", () => {
+  const { api, elements } = load();
+  api.render({ mode: "email", subject: "owner@example.com", guest_access: { locked: true,
+    sections: [{ label: "Google Reviews", count: 2, status: "found" }], preview: {
+      section: "Google Reviews", kind: "email_review", data: { name: "Real place", rating: 4,
+        text: '<script>alert("unsafe")</script>', maps_url: 'javascript:alert(1)' } } } });
+  const html = elements["#dsOut"].innerHTML;
+  assert.match(html, /Real place/);
+  assert.match(html, /4 \/ 5/);
+  assert.match(html, /&lt;script&gt;/);
+  assert.doesNotMatch(html, /<script>|href="javascript:/);
+});
+
 test("guest, free and pending accounts cannot run Deep Search", async () => {
   for (const state of [{ user: { uid: "u" }, account: { deep_search_enabled: false } }, { user: { uid: "u" } }]) {
     const { api, elements, context } = load(state);
