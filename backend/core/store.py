@@ -21,6 +21,7 @@ reset by a restart, which errs toward the visitor).
 
 import json
 import base64
+import os
 import threading
 import time
 from typing import Any, Callable, Optional, Tuple
@@ -40,10 +41,19 @@ class _MemoryStore:
 
     def __init__(self):
         self._data: dict = {}
-        self._lock = threading.RLock()
         self._seq = 0
+        self._init_process()
+
+    def _init_process(self) -> None:
+        self._pid = os.getpid()
+        self._lock = threading.RLock()
+
+    def _check_process(self) -> None:
+        if getattr(self, "_pid", None) != os.getpid():
+            self._init_process()
 
     def get(self, path: str) -> Any:
+        self._check_process()
         with self._lock:
             if path in self._data:
                 return json.loads(json.dumps(self._data[path]))
@@ -57,6 +67,7 @@ class _MemoryStore:
 
     def push(self, path: str, value: Any) -> str:
         """Store under a new chronologically sortable child id."""
+        self._check_process()
         with self._lock:
             self._seq += 1
             key = f"{int(time.time() * 1000):013d}{self._seq:06d}"
@@ -64,10 +75,12 @@ class _MemoryStore:
             return key
 
     def set(self, path: str, value: Any) -> None:
+        self._check_process()
         with self._lock:
             self._data[path] = json.loads(json.dumps(value))
 
     def transaction(self, path: str, fn: Callable[[Any], Any]) -> Any:
+        self._check_process()
         with self._lock:
             current = json.loads(json.dumps(self._data.get(path)))
             new = fn(current)
@@ -78,6 +91,7 @@ class _MemoryStore:
             return new
 
     def delete(self, path: str) -> None:
+        self._check_process()
         with self._lock:
             for key in [k for k in self._data if k == path or k.startswith(path + "/")]:
                 self._data.pop(key, None)
@@ -93,13 +107,22 @@ class _RTDBStore:
     def __init__(self, db_url: str, service_account: dict):
         self._db = db_url.rstrip("/")
         self._sa = service_account
+        self._init_process()
+
+    def _init_process(self) -> None:
+        self._pid = os.getpid()
         self._token: Optional[str] = None
         self._token_exp = 0.0
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self._http = requests.Session()
+
+    def _check_process(self) -> None:
+        if getattr(self, "_pid", None) != os.getpid():
+            self._init_process()
 
     def _access_token(self) -> str:
         """OAuth2 token for the service account, via a signed JWT assertion."""
+        self._check_process()
         with self._lock:
             if self._token and time.time() < self._token_exp - 300:
                 return self._token
@@ -139,29 +162,34 @@ class _RTDBStore:
         return h
 
     def _get_with_etag(self, path: str) -> Tuple[Any, str]:
+        self._check_process()
         resp = self._http.get(self._url(path), timeout=10,
                               headers=self._headers({"X-Firebase-ETag": "true"}))
         resp.raise_for_status()
         return resp.json(), resp.headers.get("ETag", "")
 
     def get(self, path: str) -> Any:
+        self._check_process()
         resp = self._http.get(self._url(path), timeout=10, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
 
     def push(self, path: str, value: Any) -> str:
         """POST creates a child with a server-generated, chronological id."""
+        self._check_process()
         resp = self._http.post(self._url(path), data=json.dumps(value),
                                timeout=10, headers=self._headers())
         resp.raise_for_status()
         return resp.json()["name"]
 
     def set(self, path: str, value: Any) -> None:
+        self._check_process()
         resp = self._http.put(self._url(path), data=json.dumps(value),
                               timeout=10, headers=self._headers())
         resp.raise_for_status()
 
     def transaction(self, path: str, fn: Callable[[Any], Any], retries: int = 10) -> Any:
+        self._check_process()
         for _ in range(retries):
             current, etag = self._get_with_etag(path)
             new = fn(current)
@@ -178,6 +206,7 @@ class _RTDBStore:
         raise RuntimeError("store transaction kept conflicting")
 
     def delete(self, path: str) -> None:
+        self._check_process()
         self._http.delete(self._url(path), timeout=10, headers=self._headers()).raise_for_status()
 
 
@@ -198,6 +227,13 @@ def _build():
 
 
 store = _build()
+
+
+if hasattr(os, "register_at_fork"):
+    def _reset_stores_after_fork():
+        if hasattr(store, "_init_process"):
+            store._init_process()
+    os.register_at_fork(after_in_child=_reset_stores_after_fork)
 
 
 def persistent() -> bool:

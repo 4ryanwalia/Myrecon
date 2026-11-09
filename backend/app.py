@@ -150,6 +150,11 @@ def _register_hooks(app: Flask) -> None:
             from core.scan_jobs import available
             if available():
                 scan_job_runner.ensure_started()
+                try:
+                    from services.colab_recovery import ensure_started as ensure_colab_started
+                    ensure_colab_started()
+                except Exception:
+                    pass
             if request.path.startswith("/api/scan-worker/") and worker_authenticated():
                 allowed, retry_after = _worker_limiter.check("scan-worker")
                 if not allowed:
