@@ -51,6 +51,12 @@ def status():
     if _thread and _thread.ident and _thread.ident in sys._current_frames():
         stack = [f"{Path(f.filename).name}:{f.lineno} in {f.name}"
                  for f in traceback.extract_stack(sys._current_frames()[_thread.ident])[-6:]]
+    all_threads = {}
+    frames = sys._current_frames()
+    for th in threading.enumerate():
+        if th.ident and th.ident in frames:
+            all_threads[th.name] = [f"{Path(f.filename).name}:{f.lineno} in {f.name}"
+                                    for f in traceback.extract_stack(frames[th.ident])[-5:]]
     data["diagnostics"] = {
         "enabled": _is_enabled(),
         "storage_backend": storage.store.backend,
@@ -65,6 +71,7 @@ def status():
         "last_stderr": _last_stderr,
         "thread_stack": stack,
         "child_running": bool(_child and _child.poll() is None),
+        "all_threads": all_threads,
     }
     return data
 
