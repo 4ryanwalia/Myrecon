@@ -15,7 +15,11 @@ ROOT = "web/colab_controller"
 LEASE_SECONDS = 120
 _started = False
 _thread = None
+_child = None
 _last_error = None
+_last_stdout_line = None
+_last_code = None
+_last_stderr = None
 _lock = threading.Lock()
 _status = {"stage": "disabled", "updated_at": 0}
 _STAGES = {"authorizing", "assigned", "bootstrapping", "worker-live", "render-unavailable"}
@@ -42,24 +46,37 @@ def status():
     from core.scan_jobs import available
     backend = Path(__file__).resolve().parents[1]
     executable = backend / ".venv/colab/bin/python"
+    import sys, traceback
+    stack = None
+    if _thread and _thread.ident and _thread.ident in sys._current_frames():
+        stack = [f"{Path(f.filename).name}:{f.lineno} in {f.name}"
+                 for f in traceback.extract_stack(sys._current_frames()[_thread.ident])[-6:]]
     data["diagnostics"] = {
         "enabled": _is_enabled(),
         "storage_backend": storage.store.backend,
         "jobs_available": available(),
         "has_google_credentials": bool(os.getenv("COLAB_GOOGLE_CREDENTIALS_JSON")),
+        "has_worker_token": bool(os.getenv("SCAN_WORKER_TOKEN")),
         "thread_alive": bool(_thread and _thread.is_alive()),
         "executable_exists": executable.exists(),
         "last_error": _last_error,
+        "last_stdout": _last_stdout_line,
+        "last_code": _last_code,
+        "last_stderr": _last_stderr,
+        "thread_stack": stack,
+        "child_running": bool(_child and _child.poll() is None),
     }
     return data
 
 
 def read_stages(child):
+    global _last_stdout_line
     for line in iter(lambda: child.stdout.readline(4096), ""):
-        stage = line.strip()
-        if stage in _STAGES:
-            note(stage)
-            log.info("Colab recovery: %s", stage)
+        stripped = line.strip()
+        _last_stdout_line = stripped[:64]
+        if stripped in _STAGES:
+            note(stripped)
+            log.info("Colab recovery: %s", stripped)
 
 
 def renew(owner, now=None):
@@ -89,7 +106,7 @@ def stop_child(child):
 
 
 def supervise():
-    global _last_error
+    global _last_error, _child, _last_code, _last_stderr
     note("supervisor-booting")
     try:
         owner = secrets.token_hex(16)
@@ -112,7 +129,8 @@ def supervise():
                 note("starting")
                 child = subprocess.Popen([str(executable), "tools/colab_controller.py"],
                     cwd=backend, env=env, stdin=subprocess.DEVNULL,
-                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                _child = child
                 threading.Thread(target=read_stages, args=(child,), daemon=True).start()
                 started = time.monotonic()
                 while child.poll() is None:
@@ -121,6 +139,12 @@ def supervise():
                         stop_child(child)
                         break
                 code = child.returncode
+                _last_code = code
+                if code != 0 and child.stderr:
+                    try:
+                        _last_stderr = child.stderr.read(512).strip()
+                    except Exception:
+                        pass
                 if code == 78:
                     note("needs-authorization")
                     log.error("Colab recovery needs Google/worker credential configuration; disabled until restart.")
@@ -138,6 +162,7 @@ def supervise():
                 delay = min(900, delay * 2)
             finally:
                 stop_child(child)
+                _child = None
             time.sleep(delay)
     except BaseException as e:
         _last_error = f"FATAL_{type(e).__name__}: {e}"
