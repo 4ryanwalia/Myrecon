@@ -23,7 +23,7 @@ def test_memory_store_fork_safety():
 def test_rtdb_store_fork_safety(monkeypatch):
     rtdb = storage._RTDBStore("https://example.firebaseio.com", {
         "client_email": "test@example.com",
-        "private_key": "-----BEGIN PRIVATE KEY-----\nMIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEA0Z3\n-----END PRIVATE KEY-----\n",
+        "private_key": "unused-fork-test-placeholder",
         "private_key_id": "k1"
     })
     # Pre-fork lock acquired
