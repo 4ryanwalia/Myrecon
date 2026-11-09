@@ -72,6 +72,8 @@ def status():
         "thread_stack": stack,
         "child_running": bool(_child and _child.poll() is None),
         "all_threads": all_threads,
+        "lease": storage.store.get(ROOT),
+        "server_now": int(time.time()),
     }
     return data
 
@@ -91,7 +93,8 @@ def renew(owner, now=None):
 
     def change(current):
         current = current or {}
-        if current.get("owner") != owner and current.get("expires_at", 0) > now:
+        expires_at = current.get("expires_at", 0)
+        if current.get("owner") != owner and now < expires_at <= now + LEASE_SECONDS * 2:
             raise Abort()
         return {"owner": owner, "expires_at": now + LEASE_SECONDS}
 
