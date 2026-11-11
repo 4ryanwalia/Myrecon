@@ -25,23 +25,26 @@
     }
   }
   function rotate() {
-    const next = (index + 1) % slots[0].children.length;
+    const previousIndex = index;
+    index = (index + 1) % slots[0].children.length;
     const run = ++revision;
-    slots.forEach((slot, row) => {
-      const previous = slot.children[index], incoming = slot.children[next];
+    slots.forEach(slot => {
+      const row = Number(slot.closest('[data-hero-row]').dataset.heroRow);
+      const previous = slot.children[previousIndex], incoming = slot.children[index];
       later(() => {
         if (run !== revision) return;
         slot.classList.add('is-rewriting');
+        previous.classList.remove('is-current');
         previous.classList.add('is-leaving');
-      }, row * 180);
+      }, row * 80);
       later(() => {
         if (run !== revision) return;
-        previous.classList.remove('is-current', 'is-leaving');
         incoming.classList.add('is-current', 'is-entering');
-      }, 260 + row * 180);
+      }, 140 + row * 80);
+      later(() => previous.classList.remove('is-leaving'), 440 + row * 80);
     });
-    later(() => { index = next; settle(); }, 1360);
-    timer = setTimeout(rotate, 6000);
+    later(settle, 1200);
+    timer = setTimeout(rotate, 4400);
   }
   function sync() {
     clearTimeout(timer);
@@ -51,7 +54,7 @@
       index = 0;
       settle();
     } else if (!paused && visible && !busy && !document.hidden) {
-      timer = setTimeout(rotate, 5200);
+      timer = setTimeout(rotate, 4200);
     }
   }
   toggle?.addEventListener('click', () => {
