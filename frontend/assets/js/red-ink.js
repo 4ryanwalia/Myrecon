@@ -24,7 +24,7 @@
   let nib=pt(innerWidth-45,150),marks=[],job=null,roam=null,blocks=[],textBoxes=[],raf=0,lastScroll=-9999,next=performance.now()+1400,roamNext=0,lastZone=-1,lastShape=-1,refresh=0,engaged=false,hinted=false,park=null,hintRead=0,lastFrame=performance.now(),shapeBag=[];
   const used=new WeakMap();
   const doodleNames=['magnifier','question','connections','profile','case-file','email','fingerprint','radar','chain-link','shield','globe','key','database','map-pin','eye','lead-arrow'];
-  let handwriting=null,lastDoodle=-1;
+  let handwriting=null,lastDoodle=-1,cueDrawn=false;
   const ease=t=>t*t*t*(10+t*(-15+6*t));
   function curve(a,b,c,d){return Array.from({length:65},(_,i)=>{const t=i/64,u=1-t;return pt(u*u*u*a.x+3*u*u*t*b.x+3*u*t*t*c.x+t*t*t*d.x,u*u*u*a.y+3*u*u*t*b.y+3*u*t*t*c.y+t*t*t*d.y);});}
   function arrow(a,b,c,tip,size=9){
@@ -54,7 +54,7 @@
     }
     const nodes=[from,to];
     for(let y=90;y<innerHeight-12;y+=32)for(let x=8;x<innerWidth-46;x+=32){const p=pt(x,y);if(allowed(p))nodes.push(p);}
-    for(let y=90;y<innerHeight-12;y+=32)for(const x of [12,innerWidth-12]){const p=pt(x,y);if(allowed(p))nodes.push(p);}
+    for(let y=90;y<innerHeight-12;y+=32)for(const x of [8,innerWidth-8]){const p=pt(x,y);if(allowed(p))nodes.push(p);}
     const clear=(a,b)=>{const n=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/8);for(let i=0;i<=n;i++)if(!allowed(pt(a.x+(b.x-a.x)*i/(n||1),a.y+(b.y-a.y)*i/(n||1))))return false;return true;};
     const queue=[0],previous=new Map([[0,-1]]);
     for(let k=0;k<queue.length;k++){
@@ -93,9 +93,10 @@
   function measure(){const rect=el=>Object.assign(el.getBoundingClientRect(),{inkElement:el});blocks=[...document.querySelectorAll(controls)].map(rect).filter(r=>r.width&&r.height&&r.bottom>0&&r.top<innerHeight);textBoxes=[...document.querySelectorAll('h1,h2,h3,p,li,img,video,.lookup-intent-note')].map(rect).filter(r=>r.width&&r.height&&r.bottom>0&&r.top<innerHeight);}
   function paintWriting(){
     if(!handwriting)return;
-    const angle=(handwriting.vertical?-45:45)+(handwriting.lifted?Math.sin(performance.now()/650)*1.8:Math.sin(performance.now()/280)*1.2);
-    pen.style.opacity='.95';pen.style.transform=`translate(${nib.x}px,${nib.y-40}px) rotate(${angle}deg) scale(.78)`;
-    host.dataset.mode=(handwriting.excursion?'doodle':'headline')+(handwriting.lifted?'-lift':'-writing');
+    const tilt=handwriting.sidePen?.7:handwriting.lifted?1.8:1.2;
+    const angle=(handwriting.sidePen?135:handwriting.vertical?-45:handwriting.guide?50:45)+Math.sin(performance.now()/(handwriting.lifted?650:280))*tilt;
+    pen.style.opacity='.95';pen.style.transform=`translate(${nib.x}px,${nib.y-40}px) rotate(${angle}deg) scale(${handwriting.sidePen?.58:.78})`;
+    host.dataset.mode=(handwriting.guide?'deep-search':handwriting.excursion?'doodle':'headline')+(handwriting.lifted?'-lift':'-writing');
     pen.dataset.tipX=String(nib.x);pen.dataset.tipY=String(nib.y);
   }
   // One pen coordinates headline writing, lifted travel, and short doodle trips.
@@ -108,17 +109,17 @@
     const state={owner,lifted:true,active:true,api:null};handwriting=state;
     job=null;roam=null;
     const allowed=p=>{
-      const b=state.vertical?{left:p.x-6,right:p.x+6,top:p.y-42,bottom:p.y+4}:{left:p.x-3,right:p.x+45,top:p.y-8,bottom:p.y+4};
+      const b=state.sidePen?{left:p.x-4,right:p.x+4,top:p.y-3,bottom:p.y+28}:state.vertical?{left:p.x-6,right:p.x+6,top:p.y-42,bottom:p.y+4}:state.guide?{left:p.x-3,right:p.x+45,top:p.y-4,bottom:p.y+9}:{left:p.x-3,right:p.x+45,top:p.y-8,bottom:p.y+4};
       const outside=r=>r.inkElement!==owner&&!owner.contains(r.inkElement);
-      return b.left>=2&&b.right<=innerWidth-2&&b.top>=0&&b.bottom<=innerHeight-2&&!blocks.some(r=>outside(r)&&overlap(b,r,3))&&!textBoxes.some(r=>outside(r)&&!departure.has(r.inkElement)&&overlap(b,r,2))&&(!state.excursion||!occupied(b,state.mark));
+      return b.left>=2&&b.right<=innerWidth-2&&b.top>=0&&b.bottom<=innerHeight-2&&!blocks.some(r=>outside(r)&&overlap(b,r,3))&&!textBoxes.some(r=>outside(r)&&!departure.has(r.inkElement)&&overlap(b,r,2))&&(!state.excursion||!occupied(b,state.mark))&&(!state.guide||!state.mark?.cue||!overlap(b,hook.getBoundingClientRect(),1));
     };
     const api={
       get active(){return state.active;},
       move(p,lifted=false){if(!state.active||!allowed(p))return false;nib={...p};state.lifted=lifted;paintWriting();return true;},
-      async travelTo(target,{signal,duration}={}){
+      async travelTo(target,{signal,duration,horizontal=false}={}){
         if(!state.active||signal?.aborted)return Promise.resolve(false);
         const distance=Math.hypot(target.x-nib.x,target.y-nib.y),bend=Math.min(22,distance*.12);
-        state.vertical=distance>80||(state.excursion&&innerWidth<600);
+        state.vertical=!horizontal&&(distance>80||(state.excursion&&!state.guide&&innerWidth<600));
         const header=document.querySelector('header')?.getBoundingClientRect();
         const landing=state.vertical?pt(target.x,Math.max(target.y,(header?.bottom||0)+48)):target;
         const route=travel(nib,landing,allowed,[bend,-bend,0,65,-65]);
@@ -133,18 +134,23 @@
           frame=requestAnimationFrame(step);
         });
         if(!arrived)return false;
-        state.vertical=state.excursion&&innerWidth<600;
+        state.vertical=state.excursion&&!state.guide&&innerWidth<600;
         if(Math.hypot(landing.x-target.x,landing.y-target.y)>1)return api.travelTo(target,{signal,duration:110});
         return api.move(target,true);
       },
-      async excursion({signal}={}){
+      async guide({signal}={}){return api.excursion({signal,guide:true});},
+      async excursion({signal,guide=false}={}){
         if(!state.active||signal?.aborted||engaged)return false;
-        state.excursion=true;state.lifted=true;state.vertical=false;measure();
+        const operation=state.operation=(state.operation||0)+1;
+        state.excursion=true;state.guide=guide;state.lifted=true;measure();
         marks=marks.filter(mark=>performance.now()-mark.born<(mark.life||24000));
-        let m=null;
+        let m=null,completeGuide=false,staging=null;
+        const abortGuide=()=>{if(guide&&m&&!completeGuide)marks=marks.filter(mark=>mark!==m);};
+        signal?.addEventListener('abort',abortGuide,{once:true});
         try{
-          m=doodle(true);
+          m=guide?hint():doodle(true);
           if(!m){
+            if(guide)return false;
             state.vertical=true;const heading=owner.getBoundingClientRect(),destinations=[];
             for(let y=122;y<innerHeight-30;y+=32)for(const x of [8,innerWidth-8,innerWidth*.28,innerWidth*.72]){
               const p=pt(x,y),distance=Math.hypot(p.x-nib.x,p.y-nib.y);
@@ -154,7 +160,17 @@
             for(const p of destinations.slice(0,6))if(await api.travelTo(p,{signal,duration:1100}))return true;
             return false;
           }
-          m.compact=true;m.life=8500;m.fade=3500;m.born=performance.now();m.drawn=[];state.mark=m;marks.push(m);
+          m.compact=!guide;m.life=guide?24000:8500;m.fade=guide?11000:3500;m.born=performance.now();m.drawn=[];state.mark=m;marks.push(m);
+          if(guide){
+            const o=origin(m);if(!o)return false;
+            hook.style.left=(o.x+m.cue.x)+'px';hook.style.top=(o.y+m.cue.y)+'px';
+            host.dataset.arrowPoints='0';host.dataset.arrowComplete='false';
+            // Approach beside the label upright, then rotate below its text.
+            staging=pt(Math.max(8,o.x+m.cue.x-14),o.y+m.lines[0][0].y);
+            const upright={left:nib.x-6,right:nib.x+6,top:nib.y-42,bottom:nib.y+4};
+            if(!await api.travelTo(staging,{signal,horizontal:overlap(upright,hook.getBoundingClientRect(),1)}))return false;
+            state.sidePen=!!m.side;
+          }
           for(const raw of m.lines){
             const o=origin(m);if(!o)return false;
             const line=raw.flatMap((p,i)=>{if(!i)return [p];const a=raw[i-1],n=Math.max(1,Math.ceil(Math.hypot(p.x-a.x,p.y-a.y)));return Array.from({length:n},(_,k)=>pt(a.x+(p.x-a.x)*(k+1)/n,a.y+(p.y-a.y)*(k+1)/n));});
@@ -176,19 +192,25 @@
                 if(!api.move(pt(at.x+p.x,at.y+p.y))){finish(false);return;}
                 ctx.globalAlpha=m.alpha;ctx.strokeStyle='#e14959';ctx.lineWidth=m.width;ctx.lineCap=ctx.lineJoin='round';ctx.stroke();
                 host.dataset.inkX=String(at.x+p.x);host.dataset.inkY=String(at.y+p.y);
+                if(guide)host.dataset.arrowPoints=String(m.drawn.reduce((sum,line)=>sum+line.length,0));
                 if(t===1)finish(true);else frame=requestAnimationFrame(step);
               };
               frame=requestAnimationFrame(step);
             });
             if(!complete)return false;
           }
-          host.dataset.doodleCount=String((Number(host.dataset.doodleCount)||0)+1);
+          if(guide){
+            cueDrawn=true;completeGuide=true;host.dataset.arrowComplete='true';state.lifted=true;
+            await api.travelTo(staging,{signal,duration:420,horizontal:true});return !signal?.aborted;
+          }
+          else host.dataset.doodleCount=String((Number(host.dataset.doodleCount)||0)+1);
           state.lifted=true;
           const rest=pt(Math.min(innerWidth-49,nib.x+random(12,28)),nib.y+random(-12,12));
           await api.travelTo(rest,{signal,duration:280});return !signal?.aborted;
         }finally{
-          if(m&&!m.drawn.some(line=>line.length))marks=marks.filter(mark=>mark!==m);
-          state.mark=null;state.excursion=false;state.lifted=true;paintWriting();
+          signal?.removeEventListener('abort',abortGuide);
+          if(m&&((guide&&!completeGuide)||!m.drawn.some(line=>line.length)))marks=marks.filter(mark=>mark!==m);
+          if(state.operation===operation){state.mark=null;state.guide=false;state.sidePen=false;state.excursion=false;state.lifted=true;paintWriting();}
         }
       },
       release(){if(!state.active)return;state.active=false;if(handwriting===state)handwriting=null;next=performance.now()+1600;refresh=0;}
@@ -196,16 +218,22 @@
     state.api=api;return api;
   }};
   function hint(){
-    if(hintRead>=14000||marks.some(m=>m.cue))return null;
+    if(cueDrawn||hintRead>=14000||marks.some(m=>m.cue))return null;
     const anchor=document.querySelector('#tab-deepsearch');
     if(!anchor||!margin.isConnected)return null;
-    const r=anchor.getBoundingClientRect(),space=margin.getBoundingClientRect();
+    const r=anchor.getBoundingClientRect(),panel=tool.getBoundingClientRect();
     if(!r.width||r.top<165||r.top>innerHeight-45||r.left<0||r.right>innerWidth)return null;
     const x=r.width/2,left=Math.max(16,Math.min(innerWidth-236,r.left+x-70));
-    const labelY=r.top-100,label={left,right:left+220,top:labelY,bottom:labelY+49};
+    const labelY=panel.top-94,label={left,right:left+220,top:labelY,bottom:labelY+49};
     if(label.top<85||blocked(label))return null;
-    const sx=left+30-r.left,sy=labelY+55-r.top;
-    return {anchor,alpha:.85,width:1.65,cue:{x:left-r.left,y:labelY-r.top},lines:arrow(pt(sx,sy),pt(sx+(x-sx)*.5,sy+4),pt(x,-57),pt(x,-33),9)};
+    const sx=left+30-r.left,sy=labelY+59-r.top,side=r.top>panel.top+20;
+    if(side){
+      const lane=8-r.left,tip=pt(panel.left-8-r.left,r.height/2),turn=pt(lane,tip.y-8);
+      const [bend,head]=arrow(turn,pt(lane,tip.y-2),pt(lane,tip.y),tip,5);
+      const start=curve(pt(sx,sy),pt(lane+8,sy),pt(lane,sy),pt(lane,panel.top-22-r.top));
+      return {anchor,side:true,alpha:.85,width:1.65,cue:{x:left-r.left,y:labelY-r.top},lines:[[...start,turn,...bend.slice(1)],head]};
+    }
+    return {anchor,alpha:.85,width:1.65,cue:{x:left-r.left,y:labelY-r.top},lines:arrow(pt(sx,sy),pt(sx+(x-sx)*.5,sy+4),pt(x,-49),pt(x,-33),9)};
   }
   function wordMark(){
     const choices=[];
@@ -279,7 +307,7 @@
     return null;
   }
   function plan(now,scrolling){
-    const m=(!scrolling&&hint())||(!scrolling&&Math.random()<.3&&wordMark())||doodle();
+    const m=(!scrolling&&Math.random()<.3&&wordMark())||doodle();
     if(!m){next=now+1300;return;}
     const o=origin(m),b=bounds(m.lines,o);if(blocked(b)){next=now+1000;return;}
     if(m.cue){host.dataset.mode='deep-search';}
@@ -307,8 +335,6 @@
     const scrolling=now-lastScroll<240;
     if(now>refresh){measure();refresh=now+180;}
     ctx.clearRect(0,0,innerWidth,innerHeight);hook.style.opacity='0';
-    if(handwriting&&!scrolling&&hintRead<14000&&!marks.some(m=>m.cue)){const cue=hint();if(cue)marks.push({...cue,born:now,drawn:cue.lines});}
-    if(!handwriting&&!job&&!engaged&&!scrolling&&hintRead<14000&&!marks.some(m=>m.cue)&&hint())next=Math.min(next,now);
     marks=marks.filter(m=>now-m.born<(m.life||24000)&&origin(m));let lifted=true;
     if(!handwriting&&job){
       const j=job,o=origin(j.m),line=j.m.lines[j.line];
@@ -321,10 +347,10 @@
           if(!j.route){marks=marks.filter(m=>m!==j.m);job=null;next=now+1800;}
           else{const progress=Math.min(1,(now-j.start)/j.duration),e=progress*progress*(3-2*progress);nib=along(j.route,e);if(progress===1){j.lift=false;j.route=null;j.start=now;j.duration=random(800,1650);j.m.drawn.push([]);}}
         }
-        else{lifted=false;const end=Math.min(line.length-1,Math.floor((t+Math.sin(t*Math.PI*4)*.018)*(line.length-1))),drawn=j.m.drawn.at(-1);for(;j.index<=end;j.index++)drawn.push(line[j.index]);const p=drawn.at(-1)||line[0];nib=pt(o.x+p.x,o.y+p.y);if(t===1){j.line++;if(j.line===j.m.lines.length){job=null;next=now+random(4500,9500);}else{j.lift=true;j.from={...nib};j.start=now;j.duration=random(280,520);j.index=0;}}}
+        else{lifted=false;const end=Math.min(line.length-1,Math.floor((t+Math.sin(t*Math.PI*4)*.018)*(line.length-1))),drawn=j.m.drawn.at(-1);for(;j.index<=end;j.index++)drawn.push(line[j.index]);const p=drawn.at(-1)||line[0];nib=pt(o.x+p.x,o.y+p.y);if(t===1){j.line++;if(j.line===j.m.lines.length){if(j.m.cue)cueDrawn=true;job=null;next=now+random(4500,9500);}else{j.lift=true;j.from={...nib};j.start=now;j.duration=random(280,520);j.index=0;}}}
       }
     }else if(!handwriting&&!engaged){if(now>next)plan(now,scrolling);if(!job)wander(now);}
-    for(const m of marks){const o=origin(m);if(!m.word&&!m.cue&&(blocked(bounds(m.lines,o))||textBoxes.some(t=>overlap(bounds(m.lines,o),t,8))||(m.compact&&occupied(bounds(m.lines,o),m))))continue;const fade=Math.min(1,Math.max(0,((m.life||24000)-(now-m.born))/(m.fade||11000)));ctx.globalAlpha=m.alpha*fade;ctx.strokeStyle='#e14959';ctx.lineWidth=m.width;ctx.lineCap='round';ctx.lineJoin='round';for(const line of m.drawn){ctx.beginPath();line.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](o.x+p.x,o.y+p.y));ctx.stroke();}
+    for(const m of marks){const o=origin(m);if(!m.word&&!m.cue&&(blocked(bounds(m.lines,o))||textBoxes.some(t=>overlap(bounds(m.lines,o),t,8))||(m.compact&&occupied(bounds(m.lines,o),m))))continue;const fade=Math.min(1,Math.max(0,((m.life||24000)-(now-m.born))/(m.fade||11000)));ctx.globalAlpha=m.alpha*fade;ctx.strokeStyle='#e14959';ctx.lineWidth=m.width;ctx.lineCap='round';ctx.lineJoin='round';if(!m.side)for(const line of m.drawn){ctx.beginPath();line.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](o.x+p.x,o.y+p.y));ctx.stroke();}
       if(m.note&&m.drawn.length===m.lines.length&&!blocked(noteBounds(m,o))&&!occupied(noteBounds(m,o),m)&&!textBoxes.some(t=>overlap(noteBounds(m,o),t,8))){ctx.font="italic 14px 'Segoe Print', cursive";ctx.fillStyle='#e14959';ctx.globalAlpha=.7*fade;ctx.fillText(m.note.text,o.x+m.note.x,o.y+m.note.y+14,210);}
       if(m.cue&&!scrolling){const x=o.x+m.cue.x,y=o.y+m.cue.y,b={left:x,right:x+220,top:y,bottom:y+49};if(y>85&&y+49<innerHeight&&!blocked(b)){
         hook.style.left=x+'px';hook.style.top=y+'px';hook.style.opacity=String(Math.min(1,(now-m.born)/450,Math.max(0,(16000-hintRead)/2000)));
@@ -332,6 +358,17 @@
       }}
     }
     for(const b of blocks)ctx.clearRect(b.left-14,b.top-14,b.width+28,b.height+28);
+    // Wrapped tabs get a side arrow in the gutter, clipped outside the panel.
+    if(marks.some(m=>m.side&&m.cue)){
+      const panel=tool.getBoundingClientRect(),top=Math.max(0,panel.top-3);
+      ctx.save();ctx.beginPath();ctx.rect(0,0,innerWidth,top);ctx.rect(0,top,Math.max(0,panel.left-3),innerHeight-top);ctx.clip();
+      for(const m of marks.filter(m=>m.side&&m.cue)){
+        const o=origin(m);if(!o)continue;ctx.globalAlpha=m.alpha*Math.min(1,Math.max(0,(24000-(now-m.born))/11000));ctx.strokeStyle='#e14959';ctx.lineWidth=m.width;ctx.lineCap=ctx.lineJoin='round';
+        for(const line of m.drawn){ctx.beginPath();line.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](o.x+p.x,o.y+p.y));ctx.stroke();}
+      }
+      ctx.restore();
+      for(const b of blocks){if(b.inkElement===tool)continue;const pad=tool.contains(b.inkElement)?3:14;ctx.clearRect(b.left-pad,b.top-pad,b.width+pad*2,b.height+pad*2);}
+    }
     if(handwriting){paintWriting();raf=requestAnimationFrame(tick);return;}
     if(engaged&&park){if(park.route){const t=Math.min(1,(now-park.start)/1200),e=t*t*(3-2*t);nib=along(park.route,e);}}
     nib.x=Math.max(8,Math.min(innerWidth-33,nib.x));nib.y=Math.max(80,Math.min(innerHeight-12,nib.y));

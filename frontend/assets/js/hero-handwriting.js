@@ -140,7 +140,7 @@
   }
   async function betweenChanges(delay){
     parking?.abort();const controller=parking=new AbortController(),started=performance.now();
-    if(lease)await lease.excursion({signal:controller.signal});
+    if(lease){const guided=await lease.guide({signal:controller.signal});if(!guided&&!controller.signal.aborted)await lease.excursion({signal:controller.signal});}
     if(controller.signal.aborted||parking!==controller)return;
     timer=setTimeout(rotate,Math.max(650,delay-(performance.now()-started)));
   }
