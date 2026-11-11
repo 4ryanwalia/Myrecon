@@ -193,3 +193,51 @@ def test_no_sandbox_sales_or_in_memory_production(monkeypatch):
     monkeypatch.setattr(config, "RAZORPAY_KEY_ID", "rzp_live_test")
     monkeypatch.setattr(store, "persistent", lambda: False)
     assert not sub.enabled("paypal") and not sub.enabled("razorpay")
+
+@pytest.mark.parametrize('provider,plan', [('paypal','monthly'),('paypal','yearly'),('razorpay','inr_monthly')])
+def test_cancelled_trial_expires_at_exact_deadline(monkeypatch,provider,plan):
+    sid=seed(provider,plan)
+    obj=remote() if provider=='paypal' else {'id':sid,'plan_id':'provider-plan','notes':{'binding':'binding'},'status':'authenticated','paid_count':0}
+    module=paypal if provider=='paypal' else razorpay
+    monkeypatch.setattr(module,'_call',lambda method,*a,**k: obj if method=='GET' else {})
+    assert sub.cancel(UID)['status']=='cancelled'
+    deadline=plans.get_account(UID)['subscription_until']
+    monkeypatch.setattr(plans,'_now_ms',lambda:deadline-1)
+    assert plans.get_account(UID)['subscription_scans_left']==3
+    monkeypatch.setattr(plans,'_now_ms',lambda:deadline)
+    assert plans.get_account(UID)['subscription_scans_left']==0
+    assert not plans.get_account(UID)['standard_scans_unlimited']
+
+
+def test_razorpay_renewal_failure_and_retry_do_not_stack(monkeypatch):
+    sid=seed('razorpay','inr_monthly')
+    obj={'id':sid,'plan_id':'provider-plan','notes':{'binding':'binding'},'status':'active','paid_count':1,'current_start':NOW,'current_end':NOW+30*86400}
+    monkeypatch.setattr(razorpay,'_call',lambda *a,**k:obj)
+    sub.sync('razorpay',sid,UID)
+    plans.consume_extended_scan(UID)
+    sub.sync('razorpay',sid,UID)
+    assert plans.get_account(UID)['subscription_scans_left']==9
+    obj.update(status='halted')
+    sub.sync('razorpay',sid,UID)
+    assert not plans.get_account(UID)['standard_scans_unlimited']
+
+@pytest.mark.parametrize('provider,plan', [('paypal','monthly'),('razorpay','inr_monthly')])
+def test_interrupted_checkout_resumes_same_subscription(monkeypatch,provider,plan):
+    sid=seed(provider,plan)
+    obj=remote('APPROVAL_PENDING') if provider=='paypal' else {'id':sid,'plan_id':'provider-plan','notes':{'binding':'binding'},'status':'created','paid_count':0}
+    module=paypal if provider=='paypal' else razorpay
+    def provider_call(method,*args,**kwargs):
+        assert method=='GET'
+        return obj
+    monkeypatch.setattr(module,'_call',provider_call)
+    result=sub.checkout(UID,plan)
+    assert result['id']==sid
+    assert result['trial'] is True
+    assert plans.get_account(UID)['extended_scans_left']==0
+
+
+def test_unapproved_paypal_checkout_has_clear_cancellation_message(monkeypatch):
+    seed()
+    monkeypatch.setattr(paypal,'_call',lambda method,*a,**k:remote('APPROVAL_PENDING'))
+    with pytest.raises(ValueError,match='no recurring payment is authorized'):
+        sub.cancel(UID)

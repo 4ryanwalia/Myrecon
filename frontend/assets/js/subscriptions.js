@@ -34,7 +34,17 @@
     $("#basicPlan").disabled = busy;
     $("#manageSubscription").hidden = !A?.state().user;
     $("#refreshSubscription").disabled = busy;
-    $("#cancelSubscription").hidden = !subscription?.id || ["cancelled", "expired", "completed"].includes(subscription.status);
+    $("#cancelSubscription").hidden = !subscription?.id || ["cancelled", "expired", "completed", "approval_pending"].includes(subscription.status);
+    const resume = $("#resumeSubscription");
+    if (resume) {
+      resume.hidden = true; resume.removeAttribute("href");
+      if (subscription?.approval_url && subscription.status === "approval_pending") {
+        const url = new URL(subscription.approval_url);
+        if (url.protocol === "https:" && ["www.paypal.com", "www.sandbox.paypal.com"].includes(url.hostname) && !url.username && !url.password && (!url.port || url.port === "443")) {
+          resume.href = url.href; resume.hidden = false;
+        }
+      }
+    }
     $("#cancelSubscription").disabled = busy;
     $("#subscriptionDetails").textContent = !subscription ? "No Basic subscription on this account."
       : `Basic ${labels[subscription.plan] || ""} · ${subscription.status}. `
@@ -72,6 +82,16 @@
       if (!A.state().user) await A.signIn();
       const uid = A.state().user?.uid;
       if (!uid) return;
+      // Sign-in may reveal that this account has already used its trial.
+      // Reconfirm the displayed terms before creating a billable contract.
+      const offeredTrial = subscription?.trial_eligible !== false;
+      await refresh();
+      if (A.state().user?.uid !== uid) return;
+      if (offeredTrial !== (subscription?.trial_eligible !== false)) {
+        $("#basicConsent").checked = false;
+        say("Your account has already used its trial. Review the updated billing terms and select Subscribe to Basic to continue.");
+        return;
+      }
       const key = selected();
       if (key === "inr_monthly") await loadRazorpay();
       say("Preparing your subscription approval…");

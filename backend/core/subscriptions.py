@@ -173,6 +173,14 @@ def checkout(uid, key):
     if not enabled(provider):
         raise ValueError("This subscription checkout is temporarily unavailable.")
     existing = store.store.get(_user(uid)) or {}
+    pending = existing.get("subscription") or {}
+    if pending.get("id") and pending.get("plan") == key and pending.get("provider") == provider:
+        refreshed = sync(provider, pending["id"], uid)
+        if refreshed["status"] in ("pending", "approval_pending", "created"):
+            intent = store.store.get(_path(provider, pending["id"]))
+            return {"id": pending["id"], "provider": provider, "url": intent.get("url"),
+                    "key_id": config.RAZORPAY_KEY_ID if provider == "razorpay" else None,
+                    "trial": intent["trial"], "trial_until": intent.get("trial_until"), **CATALOG[key]}
     trial = not bool(existing.get("basic_trial_used"))
     plan_id = _plan(provider, key, trial)
     binding = uuid.uuid4().hex
@@ -290,7 +298,10 @@ def sync(provider, sid, uid=None):
         cur["subscription"] = sub
         return cur
     record = store.store.transaction(_user(intent["uid"]), apply)
-    return public(record)
+    result = public(record)
+    if result and provider == "paypal" and status == "approval_pending":
+        result["approval_url"] = intent.get("url")
+    return result
 
 
 def public(record):
@@ -318,6 +329,8 @@ def cancel(uid):
     if sub["status"] in TERMINAL:
         return sub
     provider, sid = sub["provider"], sub["id"]
+    if provider == "paypal" and sub["status"] == "approval_pending":
+        raise ValueError("PayPal checkout has not been approved; no recurring payment is authorized. Resume the pending checkout to finish approval. Active subscriptions can be cancelled here.")
     if provider == "paypal":
         paypal._call("POST", "/v1/billing/subscriptions/" + sid + "/cancel",
                      json={"reason": "Cancelled by the account owner"})
