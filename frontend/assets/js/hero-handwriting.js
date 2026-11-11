@@ -5,7 +5,7 @@
   if(!title)return;
   const slots=[...title.querySelectorAll('[data-hero-slot]')],toggle=document.querySelector('.hero-rotate-toggle');
   const motion=matchMedia('(prefers-reduced-motion: reduce)'),cache=new Map();
-  let index=0,paused=false,visible=true,busy=false,timer=0,run=null,lease=null,parking=null;
+  let index=0,paused=false,visible=true,busy=false,timer=0,run=null,lease=null,parking=null,fontsReady=false;
   const point=(x,y)=>({x,y});
   function animate(duration,paint,signal){
     return new Promise(resolve=>{
@@ -138,20 +138,26 @@
     const word=slots.at(-1).children[index],range=document.createRange();range.selectNodeContents(word);const r=range.getBoundingClientRect();
     lease.travelTo(point(Math.min(innerWidth-49,r.right+8),r.top+r.height*.74),{signal:parking.signal,duration:400});
   }
+  async function betweenChanges(delay){
+    parking?.abort();const controller=parking=new AbortController(),started=performance.now();
+    if(lease)await lease.excursion({signal:controller.signal});
+    if(controller.signal.aborted||parking!==controller)return;
+    timer=setTimeout(rotate,Math.max(650,delay-(performance.now()-started)));
+  }
   async function rotate(){
     parking?.abort();parking=null;
     lease??=window.MyReconPen?.claim(title);if(!lease){timer=setTimeout(rotate,2000);return;}
     const previousIndex=index;index=(index+1)%slots[0].children.length;
     const controller=run=new AbortController();
     try{for(const slot of slots)if(!await writeRow(slot,previousIndex,controller.signal))break;}
-    finally{if(run===controller){run=null;settle();if(!paused&&visible&&!busy&&!document.hidden&&!motion.matches)timer=setTimeout(rotate,3800);}}
+    finally{if(run===controller){run=null;settle();if(!paused&&visible&&!busy&&!document.hidden&&!motion.matches)betweenChanges(4600);}}
   }
   function sync(){
     clearTimeout(timer);parking?.abort();run?.abort();run=null;settle();if(toggle)toggle.hidden=motion.matches;
     if(motion.matches){index=0;settle();}
     if(motion.matches||!visible||busy||document.hidden){lease?.release();lease=null;return;}
-    lease??=window.MyReconPen?.claim(title);if(lease)parkInitial();
-    if(!paused)timer=setTimeout(rotate,4200);
+    lease??=window.MyReconPen?.claim(title);
+    if(paused||!fontsReady){if(lease)parkInitial();}else betweenChanges(4200);
   }
   toggle?.addEventListener('click',()=>{
     paused=!paused;toggle.setAttribute('aria-pressed',String(paused));const label=`${paused?'Resume':'Pause'} headline animation`;
@@ -164,5 +170,5 @@
   addEventListener('scroll',()=>{clearTimeout(scrollTimer);clearTimeout(timer);parking?.abort();run?.abort();run=null;settle();lease?.release();lease=null;scrollTimer=setTimeout(sync,500);},{passive:true});
   addEventListener('resize',()=>{cache.clear();lease?.release();lease=null;sync();},{passive:true});
   document.addEventListener('visibilitychange',sync);motion.addEventListener('change',sync);
-  sync();document.fonts.ready.then(()=>{cache.clear();sync();});
+  sync();document.fonts.ready.then(()=>requestAnimationFrame(()=>{fontsReady=true;cache.clear();sync();}));
 })();
