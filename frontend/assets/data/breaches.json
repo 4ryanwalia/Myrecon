@@ -1,8 +1,8 @@
 {
-  "generated": "2026-11-10T08:28:01.616Z",
+  "generated": "2026-11-11T07:47:08.506Z",
   "source": "Have I Been Pwned",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
-  "total_accounts": 5948205136,
+  "total_accounts": 5958654696,
   "breaches": [
     {
       "name": "DoubleCounter",
@@ -3341,6 +3341,78 @@
       "scale_line": "That is about 25% of the population of Australia."
     },
     {
+      "name": "SberSpasibo",
+      "title": "СберСпасибо (SberSpasibo)",
+      "slug": "sberspasibo",
+      "url": "https://www.myrecon.xyz/breaches/sberspasibo.html",
+      "domain": "spasibosberbank.ru",
+      "breach_date": "2023-03-09",
+      "added_date": "2026-11-11T01:44:58Z",
+      "accounts": 3288711,
+      "data_classes": [
+        "Bank card numbers",
+        "Dates of birth",
+        "Email addresses",
+        "Loyalty program details",
+        "Phone numbers"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/SberSpasibo.png",
+      "severity": 58,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In March 2023, data allegedly taken from СберСпасибо (SberSpasibo), the loyalty program of Russian bank Сбербанк (Sberbank), was published online. The data contained records relating to 48M users, including 3.3M unique email addresses alongside phone numbers and dates of birth. Data also included bank card numbers stored as unsalted SHA-1 hashes, plus loyalty program details such as membership…",
+      "story": {
+        "background": [
+          "In March 2023, data allegedly taken from СберСпасибо (SberSpasibo), the loyalty program of Russian bank Сбербанк (Sberbank), was published online . The data contained records relating to 48M users, including 3.3M unique email addresses alongside phone numbers and dates of birth. Data also included bank card numbers stored as unsalted SHA-1 hashes, plus loyalty program details such as membership dates and the redemption of bonus points for partner offers."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "3,288,711 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Bank card numbers, Dates of birth, Email addresses, Loyalty program details, Phone numbers."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "SberSpasibo",
+          "breach_date": "2023-03-09"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        },
+        {
+          "name": "Bank card numbers",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Loyalty program details",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": "That is about 12% of the population of Australia."
+    },
+    {
       "name": "Eye4Fraud",
       "title": "Eye4Fraud",
       "slug": "eye4fraud",
@@ -4754,6 +4826,73 @@
         "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
       ],
       "scale_line": "That is about 66% of the population of Australia."
+    },
+    {
+      "name": "YouHack",
+      "title": "YouHack",
+      "slug": "youhack",
+      "url": "https://www.myrecon.xyz/breaches/youhack.html",
+      "domain": "youhack.ru",
+      "breach_date": "2013-05-29",
+      "added_date": "2026-11-11T07:29:19Z",
+      "accounts": 7160849,
+      "data_classes": [
+        "Email addresses",
+        "IP addresses",
+        "Passwords",
+        "Usernames"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/YouHack.png",
+      "severity": 70,
+      "band": "Severe",
+      "data_provider": null,
+      "summary": "In May 2013, the Russian-language hacking forum YouHack suffered a data breach that was later redistributed as part of a larger corpus of data. The breach exposed 107k forum members' email addresses, usernames, IP addresses and MD5 password hashes, most of which were unsalted. Forum posts also contained email address and password pairs belonging to other victims, bringing the total to 7.2M unique…",
+      "story": {
+        "background": [
+          "In May 2013, the Russian-language hacking forum YouHack suffered a data breach that was later redistributed as part of a larger corpus of data . The breach exposed 107k forum members' email addresses, usernames, IP addresses and MD5 password hashes, most of which were unsalted. Forum posts also contained email address and password pairs belonging to other victims, bringing the total to 7.2M unique email addresses."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "7,160,849 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, IP addresses, Passwords, Usernames."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "YouHack",
+          "breach_date": "2013-05-29"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Passwords",
+          "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+        },
+        {
+          "name": "IP addresses",
+          "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        },
+        {
+          "name": "Usernames",
+          "why": "A matching handle can be a lead to other profiles, but does not prove shared ownership."
+        }
+      ],
+      "actions": [
+        "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": "That is about 27% of the population of Australia."
     }
   ]
 }

@@ -1,0 +1,87 @@
+{
+  "api_version": 1,
+  "generated": "2026-11-11",
+  "documentation": "https://www.myrecon.xyz/developers.html",
+  "licence": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": {
+    "required": true,
+    "source": "Have I Been Pwned",
+    "source_url": "https://haveibeenpwned.com/",
+    "distributor": "MyRecon",
+    "distributor_url": "https://www.myrecon.xyz",
+    "licence": "https://creativecommons.org/licenses/by/4.0/",
+    "notice": "Breach data originates from Have I Been Pwned and is licensed CC BY 4.0. If you publish it you must credit Have I Been Pwned. A link to https://www.myrecon.xyz/breaches/ is appreciated but not required by the licence."
+  },
+  "breach": {
+    "name": "SberSpasibo",
+    "title": "СберСпасибо (SberSpasibo)",
+    "slug": "sberspasibo",
+    "url": "https://www.myrecon.xyz/breaches/sberspasibo.html",
+    "domain": "spasibosberbank.ru",
+    "breach_date": "2023-03-09",
+    "added_date": "2026-11-11T01:44:58Z",
+    "accounts": 3288711,
+    "data_classes": [
+      "Bank card numbers",
+      "Dates of birth",
+      "Email addresses",
+      "Loyalty program details",
+      "Phone numbers"
+    ],
+    "verified": true,
+    "sensitive": false,
+    "stealer_log": false,
+    "logo": "https://logos.haveibeenpwned.com/SberSpasibo.png",
+    "severity": 58,
+    "band": "Serious",
+    "data_provider": null,
+    "summary": "In March 2023, data allegedly taken from СберСпасибо (SberSpasibo), the loyalty program of Russian bank Сбербанк (Sberbank), was published online. The data contained records relating to 48M users, including 3.3M unique email addresses alongside phone numbers and dates of birth. Data also included bank card numbers stored as unsalted SHA-1 hashes, plus loyalty program details such as membership…",
+    "story": {
+      "background": [
+        "In March 2023, data allegedly taken from СберСпасибо (SberSpasibo), the loyalty program of Russian bank Сбербанк (Sberbank), was published online . The data contained records relating to 48M users, including 3.3M unique email addresses alongside phone numbers and dates of birth. Data also included bank card numbers stored as unsalted SHA-1 hashes, plus loyalty program details such as membership dates and the redemption of bonus points for partner offers."
+      ],
+      "how": [
+        "The published account does not explain the exact way the data was obtained."
+      ],
+      "motive": [],
+      "outcome": [
+        "3,288,711 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Bank card numbers, Dates of birth, Email addresses, Loyalty program details, Phone numbers."
+      ],
+      "editorial": []
+    },
+    "check_targets": [
+      {
+        "name": "SberSpasibo",
+        "breach_date": "2023-03-09"
+      }
+    ],
+    "fields": [
+      {
+        "name": "Phone numbers",
+        "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+      },
+      {
+        "name": "Dates of birth",
+        "why": "One of the three things call centres ask to verify identity, and it never changes."
+      },
+      {
+        "name": "Email addresses",
+        "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+      },
+      {
+        "name": "Bank card numbers",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Loyalty program details",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      }
+    ],
+    "actions": [
+      "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+      "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+    ],
+    "scale_line": "That is about 12% of the population of Australia."
+  }
+}

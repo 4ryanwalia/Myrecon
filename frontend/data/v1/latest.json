@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-11-10",
+  "generated": "2026-11-11",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,6 +14,145 @@
   },
   "count": 10,
   "breaches": [
+    {
+      "name": "YouHack",
+      "title": "YouHack",
+      "slug": "youhack",
+      "url": "https://www.myrecon.xyz/breaches/youhack.html",
+      "domain": "youhack.ru",
+      "breach_date": "2013-05-29",
+      "added_date": "2026-11-11T07:29:19Z",
+      "accounts": 7160849,
+      "data_classes": [
+        "Email addresses",
+        "IP addresses",
+        "Passwords",
+        "Usernames"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/YouHack.png",
+      "severity": 70,
+      "band": "Severe",
+      "data_provider": null,
+      "summary": "In May 2013, the Russian-language hacking forum YouHack suffered a data breach that was later redistributed as part of a larger corpus of data. The breach exposed 107k forum members' email addresses, usernames, IP addresses and MD5 password hashes, most of which were unsalted. Forum posts also contained email address and password pairs belonging to other victims, bringing the total to 7.2M unique…",
+      "story": {
+        "background": [
+          "In May 2013, the Russian-language hacking forum YouHack suffered a data breach that was later redistributed as part of a larger corpus of data . The breach exposed 107k forum members' email addresses, usernames, IP addresses and MD5 password hashes, most of which were unsalted. Forum posts also contained email address and password pairs belonging to other victims, bringing the total to 7.2M unique email addresses."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "7,160,849 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, IP addresses, Passwords, Usernames."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "YouHack",
+          "breach_date": "2013-05-29"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Passwords",
+          "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+        },
+        {
+          "name": "IP addresses",
+          "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        },
+        {
+          "name": "Usernames",
+          "why": "A matching handle can be a lead to other profiles, but does not prove shared ownership."
+        }
+      ],
+      "actions": [
+        "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": "That is about 27% of the population of Australia."
+    },
+    {
+      "name": "SberSpasibo",
+      "title": "СберСпасибо (SberSpasibo)",
+      "slug": "sberspasibo",
+      "url": "https://www.myrecon.xyz/breaches/sberspasibo.html",
+      "domain": "spasibosberbank.ru",
+      "breach_date": "2023-03-09",
+      "added_date": "2026-11-11T01:44:58Z",
+      "accounts": 3288711,
+      "data_classes": [
+        "Bank card numbers",
+        "Dates of birth",
+        "Email addresses",
+        "Loyalty program details",
+        "Phone numbers"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/SberSpasibo.png",
+      "severity": 58,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In March 2023, data allegedly taken from СберСпасибо (SberSpasibo), the loyalty program of Russian bank Сбербанк (Sberbank), was published online. The data contained records relating to 48M users, including 3.3M unique email addresses alongside phone numbers and dates of birth. Data also included bank card numbers stored as unsalted SHA-1 hashes, plus loyalty program details such as membership…",
+      "story": {
+        "background": [
+          "In March 2023, data allegedly taken from СберСпасибо (SberSpasibo), the loyalty program of Russian bank Сбербанк (Sberbank), was published online . The data contained records relating to 48M users, including 3.3M unique email addresses alongside phone numbers and dates of birth. Data also included bank card numbers stored as unsalted SHA-1 hashes, plus loyalty program details such as membership dates and the redemption of bonus points for partner offers."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "3,288,711 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Bank card numbers, Dates of birth, Email addresses, Loyalty program details, Phone numbers."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "SberSpasibo",
+          "breach_date": "2023-03-09"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Dates of birth",
+          "why": "One of the three things call centres ask to verify identity, and it never changes."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        },
+        {
+          "name": "Bank card numbers",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Loyalty program details",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": "That is about 12% of the population of Australia."
+    },
     {
       "name": "Harvard",
       "title": "Harvard",
@@ -736,163 +875,6 @@
         "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
       ],
       "scale_line": null
-    },
-    {
-      "name": "DoubleCounter",
-      "title": "Double Counter",
-      "slug": "doublecounter",
-      "url": "https://www.myrecon.xyz/breaches/doublecounter.html",
-      "domain": "doublecounter.gg",
-      "breach_date": "2026-10-04",
-      "added_date": "2026-10-07T05:42:24Z",
-      "accounts": 274922,
-      "data_classes": [
-        "Email addresses",
-        "Geographic locations",
-        "Names",
-        "Usernames"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/DoubleCounter.png",
-      "severity": 39,
-      "band": "Moderate",
-      "data_provider": null,
-      "summary": "In October 2026, the Discord server protection service Double Counter suffered a data breach attributed to a vulnerability in the Metabase analytics tool. In its disclosure notice, Double Counter advised that attackers gained access to a subset of its data. A corpus of data was subsequently published publicly and contained 275k unique email addresses and Discord usernames. A small number of…",
-      "story": {
-        "background": [
-          "In October 2026, the Discord server protection service Double Counter suffered a data breach attributed to a vulnerability in the Metabase analytics tool . In its disclosure notice, Double Counter advised that attackers gained access to a subset of its data. A corpus of data was subsequently published publicly and contained 275k unique email addresses and Discord usernames.",
-          "A small number of records belonging to paying subscribers whose purchases were processed via Stripe were also present and included names, countries and postcodes."
-        ],
-        "how": [
-          "In October 2026, the Discord server protection service Double Counter suffered a data breach attributed to a vulnerability in the Metabase analytics tool ."
-        ],
-        "motive": [],
-        "outcome": [
-          "274,922 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Geographic locations, Names, Usernames."
-        ],
-        "editorial": []
-      },
-      "check_targets": [
-        {
-          "name": "DoubleCounter",
-          "breach_date": "2026-10-04"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Geographic locations",
-          "why": "Where the account was used, which narrows a person down further than most people expect."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
-        },
-        {
-          "name": "Usernames",
-          "why": "A matching handle can be a lead to other profiles, but does not prove shared ownership."
-        }
-      ],
-      "actions": [
-        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
-      ],
-      "scale_line": null
-    },
-    {
-      "name": "AngelOne",
-      "title": "Angel One",
-      "slug": "angelone",
-      "url": "https://www.myrecon.xyz/breaches/angelone.html",
-      "domain": "angelone.in",
-      "breach_date": "2023-04-01",
-      "added_date": "2026-10-07T03:45:31Z",
-      "accounts": 6765054,
-      "data_classes": [
-        "Bank account numbers",
-        "Dates of birth",
-        "Email addresses",
-        "Financial investments",
-        "Government issued IDs",
-        "Names",
-        "Phone numbers",
-        "Physical addresses"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/AngelOne.png",
-      "severity": 70,
-      "band": "Severe",
-      "data_provider": "cyberbandhu.in",
-      "summary": "In July 2024, the Indian stock brokerage firm Angel One confirmed that data leaked online related to a breach that occurred in April 2023. The leaked data included 7.9M user records containing 6.8M unique email addresses, along with names, physical addresses, phone numbers, bank account numbers, Permanent Account Numbers (PANs) and portfolio holdings. Angel One emphasised that the breach \"has no…",
-      "story": {
-        "background": [
-          "In July 2024, the Indian stock brokerage firm Angel One confirmed that data leaked online related to a breach that occurred in April 2023 . The leaked data included 7.9M user records containing 6.8M unique email addresses, along with names, physical addresses, phone numbers, bank account numbers, Permanent Account Numbers (PANs) and portfolio holdings. Angel One emphasised that the breach \"has no impact on client securities, funds, or credentials\"."
-        ],
-        "how": [
-          "The published account does not explain the exact way the data was obtained."
-        ],
-        "motive": [],
-        "outcome": [
-          "6,765,054 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Bank account numbers, Dates of birth, Email addresses, Financial investments, Government issued IDs, Names, Phone numbers, Physical addresses."
-        ],
-        "editorial": []
-      },
-      "check_targets": [
-        {
-          "name": "AngelOne",
-          "breach_date": "2023-04-01"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Government issued IDs",
-          "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
-        },
-        {
-          "name": "Bank account numbers",
-          "why": "Enables direct-debit fraud and gives a caller the detail needed to sound like the bank."
-        },
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Dates of birth",
-          "why": "One of the three things call centres ask to verify identity, and it never changes."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
-        },
-        {
-          "name": "Financial investments",
-          "why": "Adds detail to a profile that can be assembled from several breaches at once."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Check statements for the months after the breach date and ask your bank for a replacement card if the number was full.",
-        "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
-      ],
-      "scale_line": "That is about 25% of the population of Australia."
     }
   ]
 }
