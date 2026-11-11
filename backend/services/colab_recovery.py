@@ -79,12 +79,14 @@ def status():
     return data
 
 
-def read_stages(child):
+def read_stages(child, healthy=None):
     global _last_stdout_line
     for line in iter(lambda: child.stdout.readline(4096), ""):
         stripped = line.strip()
         _last_stdout_line = stripped[:64]
         if stripped in _STAGES:
+            if stripped == "worker-live" and healthy is not None:
+                healthy.set()
             note(stripped)
             log.info("Colab recovery: %s", stripped)
 
@@ -119,6 +121,15 @@ def stop_child(child):
             child.wait(timeout=5)
 
 
+def retry_delay(previous, code, healthy=False):
+    """Back off consecutive failures, not failures separated by a live worker."""
+    if code == 75:
+        return 1800
+    if code == 0 or healthy:
+        return 30
+    return min(900, previous * 2)
+
+
 def supervise():
     global _last_error, _child, _last_code, _last_stderr
     note("supervisor-booting")
@@ -145,7 +156,8 @@ def supervise():
                     cwd=backend, env=env, stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 _child = child
-                threading.Thread(target=read_stages, args=(child,), daemon=True).start()
+                healthy = threading.Event()
+                threading.Thread(target=read_stages, args=(child, healthy), daemon=True).start()
                 started = time.monotonic()
                 while child.poll() is None:
                     time.sleep(20)
@@ -163,9 +175,7 @@ def supervise():
                     note("needs-authorization")
                     log.error("Colab recovery needs Google/worker credential configuration; disabled until restart.")
                     return
-                delay = 1800 if code == 75 else min(900, delay * 2)
-                if code == 0:
-                    delay = 30
+                delay = retry_delay(delay, code, healthy.is_set())
                 note("waiting-for-compute-units" if code == 75 else "retrying")
                 log.info("Colab controller finished (code %s); retrying in %ss. Render fallback remains available.", code, delay)
             except Exception as e:

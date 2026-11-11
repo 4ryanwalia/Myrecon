@@ -96,3 +96,16 @@ def test_is_enabled_respects_flags_and_credentials(monkeypatch):
 
     monkeypatch.setenv("COLAB_AUTO_RECOVERY_ENABLED", "true")
     assert recovery._is_enabled()
+
+
+def test_recovery_backoff_resets_after_live_worker():
+    import threading
+    from types import SimpleNamespace
+    healthy = threading.Event()
+    recovery.read_stages(SimpleNamespace(stdout=io.StringIO("worker-live\n")), healthy)
+    assert healthy.is_set()
+    assert recovery.retry_delay(900, 1, healthy.is_set()) == 30
+    assert recovery.retry_delay(60, 1) == 120
+    assert recovery.retry_delay(900, 1) == 900
+    assert recovery.retry_delay(900, 0) == 30
+    assert recovery.retry_delay(900, 75, True) == 1800

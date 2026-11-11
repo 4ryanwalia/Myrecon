@@ -112,7 +112,7 @@ class Worker:
                     del batch[:32]
                     sequence += 1
                     flushed = time.monotonic()
-                if batch and time.monotonic() - flushed >= 10:
+                if batch and (sequence == 0 or time.monotonic() - flushed >= 10):
                     self.call("checkpoint", {**lease, "sequence": sequence, "rows": batch})
                     batch, sequence, flushed = [], sequence + 1, time.monotonic()
                 if lost.is_set():
@@ -171,7 +171,7 @@ class Worker:
                               "while this session remains active.")
                         time.sleep(min(10, max(0, end - time.monotonic())))
                 else:
-                    time.sleep(min(10, max(0, end - time.monotonic())))
+                    time.sleep(min(2, max(0, end - time.monotonic())))
         finally:
             try:
                 self.call("stopped", {"worker_id": self.worker_id})

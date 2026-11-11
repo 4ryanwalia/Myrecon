@@ -72,3 +72,31 @@ def test_worker_reports_the_result_of_its_live_presence_check(monkeypatch, capsy
     output = capsys.readouterr().out
     assert output.count('Live status confirmed') == 1
     assert 'could not save its live status' in output
+
+
+def test_idle_worker_claims_within_two_seconds(monkeypatch):
+    worker, clock = make_worker(monkeypatch)
+    calls = []
+    def claim(action, payload):
+        if action == 'claim':
+            calls.append(clock.now)
+        return {'job': None}
+    monkeypatch.setattr(worker, 'call', claim)
+    worker.run(duration_minutes=1)
+    assert len(calls) == 30
+    assert max(b - a for a, b in zip(calls, calls[1:])) <= 2
+
+
+def test_first_completed_batch_is_uploaded_before_enumeration_finishes(monkeypatch):
+    worker, clock = make_worker(monkeypatch)
+    actions = []
+    monkeypatch.setattr(worker, 'call', lambda action, payload: actions.append(action) or {})
+    def batches(*args):
+        yield [{'platform': 'Example', 'exists': False}]
+        assert actions == ['checkpoint']
+        yield [{'platform': 'Second', 'exists': False}]
+    monkeypatch.setattr(colab_worker.scan_engine, 'enumerate_batches', batches)
+    worker.execute({'id': 'test', 'token': 'lease', 'username': 'fixture',
+                    'scope': 'standard', 'deep': False,
+                    'fingerprint': worker.catalogues['standard']})
+    assert actions == ['checkpoint', 'checkpoint', 'complete']
