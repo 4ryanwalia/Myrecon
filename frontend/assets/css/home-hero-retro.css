@@ -64,25 +64,9 @@
 .hero-rotating-title [data-hero-slot] > .is-current { opacity: 1; visibility: visible; }
 .hero-rotating-title [data-hero-slot] > .is-leaving {
   visibility: visible;
-  animation: hero-ink-erase 440ms cubic-bezier(.4, 0, .2, 1) both;
+  animation: hero-ink-erase 220ms ease-out both;
 }
-.hero-rotating-title [data-hero-slot] > .is-entering {
-  visibility: visible;
-  animation: hero-ink-reveal 740ms cubic-bezier(.22, 1, .36, 1) both;
-}
-.hero-word-slot::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  bottom: -.025em;
-  height: .075em;
-  background: #a53d5c;
-  clip-path: polygon(0 44%, 22% 0, 49% 60%, 73% 22%, 100% 50%, 100% 100%, 70% 78%, 45% 100%, 20% 60%, 0 100%);
-  transform: scaleX(0) rotate(-1deg);
-  transform-origin: left;
-  opacity: 0;
-}
-.hero-word-slot.is-rewriting::after { animation: hero-ink-swipe 1.15s ease-in-out both; }
+.hero-rotating-title [data-hero-slot] > .is-writing { opacity: 1; visibility: visible; }
 .hero-rotate-toggle {
   display: inline-flex;
   align-items: center;
@@ -99,21 +83,11 @@
 .hero-rotate-toggle:hover { color: var(--text); border-color: #a53d5c; }
 .hero-rotate-toggle:focus-visible { outline: 2px solid #bf758b; outline-offset: 3px; }
 @keyframes hero-ink-erase {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-.1em); }
-}
-@keyframes hero-ink-reveal {
-  from { opacity: 0; transform: translateY(.12em); clip-path: inset(0 100% 0 0); }
-  to { opacity: 1; transform: translateY(0); clip-path: inset(0); }
-}
-@keyframes hero-ink-swipe {
-  0% { opacity: 0; transform: scaleX(0) rotate(-1deg); }
-  20% { opacity: .75; }
-  75% { opacity: .65; transform: scaleX(.94) rotate(-1deg); }
-  100% { opacity: 0; transform: scaleX(1) rotate(-1deg); }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-rotating-title [data-hero-slot] > span, .hero-word-slot::after { animation: none !important; }
+  .hero-rotating-title [data-hero-slot] > span { animation: none !important; }
   .hero-rotate-toggle { display: none; }
 }
 @media (min-width: 1100px) { .hero-trace-tags { justify-content: flex-start; } }
