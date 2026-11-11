@@ -425,23 +425,23 @@
         break;
       case "standard_daily_limit":
         title = "You have used today's 5 standard scans";
-        body = "Your free allowance resets at midnight UTC. The ₹99 plan unlocks unlimited standard scans and includes 10 Extended scans across 3,000+ platforms.";
-        action = `<a class="btn btn-primary" href="/pricing">Get unlimited standard scans for ₹99</a>`;
+        body = "Your free allowance resets at midnight UTC. Basic unlocks unlimited standard scans and includes 10 Extended scans across 3,000+ platforms.";
+        action = `<a class="btn btn-primary" href="/pricing">Try Basic free for 3 days</a>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
         title = err.code === "auth_invalid" ? "Please sign in again"
           : err.scope === "extended" ? "Extended scans require sign-in" : "Standard scans require sign-in";
         body = canSignIn
-          ? "Sign in with Google before running a Standard scan across 500+ platforms. Free accounts get 5 standard scans daily. Guests can run Quick scans across 100 platforms. The ₹99 plan adds unlimited standard scans and 10 Extended scans."
+          ? "Sign in with Google before running a Standard scan across 500+ platforms. Free accounts get 5 standard scans daily. Guests can run Quick scans across 100 platforms. Basic adds unlimited standard scans and 10 Extended scans."
           : "Sign-in is temporarily unavailable. Guests can still run Quick scans across 100 platforms.";
         action = (canSignIn ? `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>` : "")
           + `<button type="button" class="btn btn-ghost" data-gate="standard">Run a Quick scan</button>`;
         break;
       case "upgrade_required": {
         title = "Get more Extended scans";
-        body = "₹99 gives you 10 Extended scans across 3,000+ platforms each, with no expiry. Signed-in free accounts get 5 standard scans daily; the ₹99 plan includes unlimited standard scans.";
-        action = `<a class="btn btn-primary" href="/pricing">Get the ₹99 plan</a>
+        body = "Basic includes 10 Extended scans per paid month or 120 per paid year across 3,000+ platforms. Signed-in free accounts get 5 standard scans daily; Basic includes unlimited standard scans.";
+        action = `<a class="btn btn-primary" href="/pricing">Get Basic</a>
           <button type="button" class="btn btn-ghost" data-gate="full">Run a free standard scan</button>`;
         break;
       }
@@ -1909,7 +1909,7 @@
       return;
     }
     if (scope === "extended" && (!st || !st.user)) {
-      note.textContent = `Checks ${EXTENDED_LABEL} platforms in about 5 minutes. Sign in and get 10 scans for ₹99, with no expiry.`;
+      note.textContent = `Checks ${EXTENDED_LABEL} platforms in about 5 minutes. Sign in and try Basic free for 3 days.`;
       return;
     }
     if (!st || !st.user) {
@@ -1923,13 +1923,13 @@
           + (acct.extended_legacy_scans_left > 0
             ? `${acct.extended_legacy_scans_left} from a previous pass expire ${new Date(acct.extended_legacy_until).toLocaleDateString()}; pack credits never expire.`
             : "Pack credits never expire.")
-        : "Get 10 scans for ₹99, with no expiry.");
+        : "Basic includes 10 Extended scans per paid month or 120 per paid year.");
       return;
     }
     const label = scope === "full" ? "Standard 500+ platform scans" : "Quick 100-platform scans";
     note.textContent = acct && acct.standard_scans_unlimited
       ? `${label}: unlimited with your paid plan. Extended credits are separate.`
-      : `${label}: ${acct ? acct.standard_scans_left : 5} of 5 free scans left today, shared across quick and standard scans. Resets at midnight UTC. The ₹99 plan unlocks unlimited standard scans.`;
+      : `${label}: ${acct ? acct.standard_scans_left : 5} of 5 free scans left today, shared across quick and standard scans. Resets at midnight UTC. Basic unlocks unlimited standard scans.`;
   }
 
   // ---- Username: live streaming scan with progress -----------------

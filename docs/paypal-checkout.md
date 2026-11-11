@@ -1,3 +1,7 @@
+# Legacy PayPal pack settlement
+
+New purchases use Basic subscriptions. See [basic-subscriptions.md](basic-subscriptions.md). The order/capture logic below remains for purchases created before the subscription release.
+
 # PayPal Extended Scan Pack
 
 Prepared locally: one-time USD 3.99 for the existing pack (10 non-expiring

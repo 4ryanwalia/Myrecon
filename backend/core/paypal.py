@@ -50,6 +50,8 @@ def _request(method, path, **kwargs):
         response = requests.request(method, _base() + path, timeout=15, **kwargs)
         if response.status_code >= 400:
             raise PayPalError("PayPal request failed. Please try again.")
+        if response.status_code == 204:
+            return {}
         result = response.json()
         if not isinstance(result, dict):
             raise PayPalError("Invalid PayPal response.")
@@ -268,6 +270,9 @@ def webhook(event, headers):
     verified = _call("POST", "/v1/notifications/verify-webhook-signature", json=payload)
     if verified.get("verification_status") != "SUCCESS":
         raise ValueError("Invalid PayPal webhook signature.")
+    if str(event.get("event_type", "")).startswith(("BILLING.SUBSCRIPTION.", "PAYMENT.SALE.")):
+        from core import subscriptions
+        return subscriptions.webhook("paypal", event)
     kind = event.get("event_type")
     resource = event.get("resource") or {}
     if kind == "CHECKOUT.ORDER.APPROVED":

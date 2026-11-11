@@ -50,6 +50,8 @@ def create_app() -> Flask:
     _register_hooks(app)
     _register_routes(app)
     _register_errors(app)
+    from core import subscriptions
+    subscriptions.register(app, _require_user)
     return app
 
 
@@ -937,7 +939,7 @@ def _register_routes(app: Flask) -> None:
     @app.route("/api/plans")
     def api_plans():
         """Public: tiers, limits, and whether sign-in and payments are live."""
-        from core import buymeacoffee, paypal, plans, razorpay, store
+        from core import buymeacoffee, paypal, plans, razorpay, store, subscriptions
         return responses.ok({
             # Only ever true on a local development server; see config.py.
             "dev_test_account": config.DEV_TEST_ACCOUNT,
@@ -950,11 +952,12 @@ def _register_routes(app: Flask) -> None:
                 "authDomain": f"{config.FIREBASE_PROJECT_ID}.firebaseapp.com",
             } if config.FIREBASE_WEB_API_KEY and store.persistent() else None,
             "accounts_enabled": store.persistent(),
-            "payments_enabled": razorpay.enabled() and store.persistent(),
+            "payments_enabled": False,  # Retired one-time Razorpay checkout.
+            "subscriptions": subscriptions.offers(),
             "international_payments": {"enabled": buymeacoffee.enabled(),
                                        "provider": "buymeacoffee", "amount": 399,
                                        "currency": "USD", "plan": "extended"},
-            "paypal_payments": {"enabled": paypal.enabled(), "amount": 399,
+            "paypal_payments": {"enabled": False, "amount": 399,
                                 "currency": "USD", "plan": "extended",
                                 "environment": config.PAYPAL_ENV},
             "razorpay_key_id": config.RAZORPAY_KEY_ID if razorpay.enabled() else None,
@@ -970,7 +973,7 @@ def _register_routes(app: Flask) -> None:
                 "daily_reset_timezone": "UTC",
                 "full_results_require_sign_in": True,
             },
-            "plans": list(plans.PLANS.values()),
+            "plans": subscriptions.offers(),
         })
 
     @app.route("/api/match-choices", methods=["GET", "POST", "OPTIONS"])
@@ -1036,37 +1039,7 @@ def _register_routes(app: Flask) -> None:
     def api_billing_order():
         if request.method == "OPTIONS":
             return ("", 204)
-        from core import plans, razorpay, store
-        user = _require_user()
-        if not (razorpay.enabled() and store.persistent()):
-            return responses.error("Payments are not open yet.", status=503,
-                                   code="payments_unavailable")
-        plan_id = str(_json_body().get("plan", "")).strip().lower()
-        plan = plans.PLANS.get(plan_id)
-        if not plan:
-            raise validation.ValidationError("Unknown plan.")
-        amount = plan["price_inr"] * 100
-        if amount < 100:  # Razorpay's minimum order is 100 paise
-            raise validation.ValidationError("Amount is below Razorpay's minimum.")
-        try:
-            order = razorpay.create_order(
-                amount,
-                receipt=f"{plan_id}-{user['sub'][:24]}",
-                notes={"uid": user["sub"], "plan": plan_id},
-            )
-        except razorpay.RazorpayAuthError:
-            log.error("Razorpay rejected the API keys; check RAZORPAY_KEY_ID/SECRET")
-            return responses.error("Payments are misconfigured. Please try later.",
-                                   status=401, code="razorpay_auth_failed")
-        except razorpay.RazorpayError as exc:
-            log.error("Razorpay order creation failed: %s", exc)
-            return responses.error("Could not start the payment. Please try again.",
-                                   status=500, code="razorpay_error")
-        return responses.ok({
-            "order_id": order["id"], "amount": order["amount"],
-            "currency": order["currency"], "key_id": config.RAZORPAY_KEY_ID,
-            "plan": plan, "email": user.get("email", ""), "name": user.get("name", ""),
-        })
+        return responses.error("Choose a Basic subscription on the pricing page.", status=410)
 
     @app.route("/api/billing/paypal/quotes", methods=["GET", "OPTIONS"])
     def api_paypal_quotes():
@@ -1094,9 +1067,7 @@ def _register_routes(app: Flask) -> None:
         body = _json_body()
         try:
             if request.path.endswith("/order"):
-                if body.get("plan") != "extended":
-                    raise ValueError("Unknown plan.")
-                return responses.ok(paypal.checkout(user["sub"], body.get("currency", "USD"), body.get("quote")))
+                return responses.error("Choose a Basic subscription on the pricing page.", status=410)
             result = paypal.settle(body.get("order_id"), uid=user["sub"], capture=True)
             return responses.ok({**result, "account": plans.get_account(user["sub"])})
         except ValueError as exc:
@@ -1233,6 +1204,9 @@ def _register_routes(app: Flask) -> None:
             event = json.loads(raw or b"{}")
         except ValueError:
             return responses.error("Bad payload.", status=400, code="bad_payload")
+        if str(event.get("event", "")).startswith("subscription."):
+            from core import subscriptions
+            return responses.ok(subscriptions.webhook("razorpay", event))
         payload = event.get("payload") or {}
         order_id = (((payload.get("order") or {}).get("entity") or {}).get("id")
                     or ((payload.get("payment") or {}).get("entity") or {}).get("order_id"))

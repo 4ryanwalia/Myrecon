@@ -560,25 +560,10 @@ def test_verify_applies_the_pass(client, keys, monkeypatch):
     assert r["applied"] is True and r["account"]["extended_pack_scans_left"] == 10
 
 
-def test_only_one_pack_is_advertised_and_orders_cost_99_rupees(client, keys, monkeypatch):
-    info = client.get("/api/plans").get_json()
-    assert [p["id"] for p in info["plans"]] == ["extended"]
-    assert info["plans"][0]["price_inr"] == 99
-    assert info["plans"][0]["extended_scans"] == 10
-    assert info["limits"]["free_standard_scans_per_day"] == 5
-    assert info["limits"]["paid_standard_scans_unlimited"] is True
-    calls = []
-    monkeypatch.setattr(razorpay, "create_order", lambda amount, **kw: (
-        calls.append({"amount": amount, **kw}),
-        {"id": "order_new", "amount": amount, "currency": "INR"})[1])
-    r = client.post("/api/billing/order", json={"plan": "extended", "amount": 1, "extended_scans": 100},
-                    headers={"Authorization": f"Bearer {_token()}"})
-    assert r.status_code == 200 and r.get_json()["amount"] == 9900
-    assert calls[0]["amount"] == 9900
-    for old in ("weekly", "monthly"):
-        assert client.post("/api/billing/order", json={"plan": old},
-                           headers={"Authorization": f"Bearer {_token()}"}).status_code == 422
-    assert len(calls) == 1
+def test_legacy_order_creation_is_retired(client, keys, monkeypatch):
+    monkeypatch.setattr(razorpay, "create_order", lambda *a, **k: pytest.fail("Retired checkout"))
+    assert client.post("/api/billing/order", json={"plan": "extended"},
+                       headers={"Authorization": f"Bearer {_token()}"}).status_code == 410
 
 
 def test_previously_created_legacy_orders_still_settle(client, keys, monkeypatch):
@@ -667,7 +652,7 @@ def test_bad_razorpay_keys_are_a_401_not_a_crash(client, keys, monkeypatch):
     monkeypatch.setattr(razorpay, "create_order", refuse)
     r = client.post("/api/billing/order", data=json.dumps({"plan": "extended"}),
                     headers={"Content-Type": "application/json", "Authorization": f"Bearer {_token()}"})
-    assert r.status_code == 401 and r.get_json()["code"] == "razorpay_auth_failed"
+    assert r.status_code == 410
 
 
 def test_dev_test_account_is_forced_off_in_production():

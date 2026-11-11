@@ -228,15 +228,16 @@
       $("#acctUsage").textContent = "";
       return;
     }
-    $("#acctPlan").textContent = acct.standard_scans_unlimited ? "Extended Scan Pack" : "Free standard account";
+    $("#acctPlan").textContent = acct.plan === "basic" ? "Basic subscription" : acct.standard_scans_unlimited ? "Extended Scan Pack" : "Free standard account";
     const pack = Number(acct.extended_pack_scans_left) || 0;
     const legacy = Number(acct.extended_legacy_scans_left) || 0;
     $("#acctUsage").textContent = (acct.standard_scans_unlimited
       ? "Unlimited standard 500+ platform scans and Deep Search included with your paid plan. "
       : `${acct.standard_scans_left} of 5 free standard scans left today. Resets at midnight UTC (${new Date(acct.standard_resets_at).toLocaleString()}). `)
+      + (acct.subscription_scans_left ? `${acct.subscription_scans_left} subscription scans left until ${new Date(acct.subscription_until).toLocaleString()}. ` : "")
       + (pack ? `${pack} Extended pack scans left, no expiry. ` : "")
       + (legacy ? `${legacy} scans from a previous pass, until ${new Date(acct.extended_legacy_until).toLocaleDateString()}.` : "")
-      + (!pack && !legacy ? "Get 10 Extended scans for ₹99 or US$3.99 when you need wider coverage." : "");
+      + (!pack && !legacy ? "Basic starts at US$3.99/month, US$19.99/year or ₹299/month. Buy Me a Coffee packs remain US$3.99 one-time." : "");
   }
 
   // The Free account card: a sign-in button for visitors, and a status once
@@ -250,7 +251,7 @@
       b.textContent = !signedIn ? "Sign in with Google" : pro ? "Unlimited standard included" : "Standard: 5 scans a day";
     });
     document.querySelectorAll("[data-plan-card]").forEach((card) => {
-      const current = card.dataset.planCard === (pro ? "extended" : signedIn ? "free" : "guest");
+      const current = card.dataset.planCard === (st?.account?.plan === "basic" ? "basic" : pro ? "extended" : signedIn ? "free" : "guest");
       card.classList.toggle("current", current);
     });
   }

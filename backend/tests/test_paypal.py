@@ -40,8 +40,8 @@ def test_checkout_server_owns_price_and_binding(monkeypatch):
         captured.update(kwargs["json"])
         return {"id": ORDER, "links": [{"rel": "payer-action", "href": "https://www.sandbox.paypal.com/checkoutnow?token=" + ORDER}]}
     monkeypatch.setattr(paypal, "_call", call)
-    response = app_module.app.test_client().post("/api/billing/paypal/order", json={"plan": "extended", "uid": "attacker", "amount": 1})
-    assert response.status_code == 200
+    result = paypal.checkout("dev-test-user")
+    assert result["amount"] == 399
     assert captured["purchase_units"][0]["amount"] == {"currency_code": "USD", "value": "3.99"}
     assert store.store.get(paypal._path(ORDER))["uid"] == "dev-test-user"
     assert plans.get_account("dev-test-user")["extended_pack_scans_left"] == 0
@@ -157,7 +157,7 @@ def test_invalid_order_ids(value):
 
 def test_secrets_not_in_plans():
     info = app_module.app.test_client().get("/api/plans").get_json()
-    assert info["paypal_payments"]["enabled"]
+    assert info["paypal_payments"]["enabled"] is False
     assert "test-secret" not in str(info)
     assert "test-client" not in str(info)
 
@@ -176,9 +176,8 @@ def test_currency_quote_and_capture_are_server_owned(monkeypatch):
         captured.update(kwargs["json"])
         return {"id": ORDER, "links": [{"rel": "payer-action", "href": "https://www.sandbox.paypal.com/checkoutnow?token=" + ORDER}]}
     monkeypatch.setattr(paypal, "_call", call)
-    response = client.post("/api/billing/paypal/order", json={"plan": "extended", "currency": "EUR",
-                           "quote": choices["EUR"]["quote"], "amount": "0.01"})
-    assert response.status_code == 200
+    result = paypal.checkout("dev-test-user", "EUR", choices["EUR"]["quote"])
+    assert result["currency"] == "EUR"
     assert captured["purchase_units"][0]["amount"] == {"currency_code": "EUR", "value": "3.59"}
     intent = store.store.get(paypal._path(ORDER))
     assert intent["amount"] == "3.59" and intent["currency"] == "EUR"

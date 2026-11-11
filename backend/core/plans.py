@@ -103,13 +103,18 @@ def entitlements(record, now_ms=None) -> dict:
     # Existing purchased packs already carry scans_left, including zero.
     # The paid standard benefit is not tied to remaining Extended credits.
     pack_purchased = "scans_left" in pack
-    unlimited = pack_purchased or pro_active
+    sub = record.get("subscription") or {}
+    sub_active = sub.get("until", 0) > now
+    sub_left = max(0, int(sub.get("scans_left", 0))) if sub_active else 0
+    unlimited = pack_purchased or pro_active or sub_active
     usage = record.get("standard_usage") or {}
     used = int(usage.get("used", 0)) if usage.get("day") == _standard_day(now) else 0
     free_left = max(0, FREE_STANDARD_SCANS_PER_DAY - used)
     return {
         "tier": "pro" if unlimited else "free",
-        "plan": "extended" if pack_purchased else pro.get("plan") if pro_active else None,
+        "plan": "basic" if sub_active else "extended" if pack_purchased else pro.get("plan") if pro_active else None,
+        "subscription_scans_left": sub_left,
+        "subscription_until": sub.get("until") if sub_active else None,
         "pro_until": pro.get("until") if pro_active else None,
         "pro_scans_left": pro_left,
         # Null means unmetered, not an exhausted allowance.
@@ -122,7 +127,7 @@ def entitlements(record, now_ms=None) -> dict:
         "standard_scans_left": None if unlimited else free_left,
         "standard_scans_per_day": None if unlimited else FREE_STANDARD_SCANS_PER_DAY,
         "standard_resets_at": None if unlimited else _standard_reset(now),
-        "extended_scans_left": pack_left + legacy_left,
+        "extended_scans_left": pack_left + legacy_left + sub_left,
         "extended_pack_scans_left": pack_left,
         "extended_legacy_scans_left": legacy_left,
         "extended_legacy_until": pro.get("until") if legacy_left else None,
@@ -223,7 +228,10 @@ def consume_extended_scan(uid: str, job_id=None) -> str:
         if ent["extended_scans_left"] <= 0:
             denied["ent"] = ent
             raise Abort()
-        if ent["extended_legacy_scans_left"] > 0:
+        if ent["subscription_scans_left"] > 0:
+            cur["subscription"]["scans_left"] = ent["subscription_scans_left"] - 1
+            spent["source"] = "subscription:" + cur["subscription"]["id"] + ":" + cur["subscription"]["period"]
+        elif ent["extended_legacy_scans_left"] > 0:
             cur["pro"]["extended_left"] = ent["extended_legacy_scans_left"] - 1
             spent["source"] = "extended"
         else:
@@ -257,6 +265,10 @@ def refund_full_scan(uid: str, source: str, job_id=None) -> None:
             if usage.get("day") == source.split(":", 1)[1]:
                 usage["used"] = max(0, int(usage.get("used", 0)) - 1)
                 cur["standard_usage"] = usage
+        elif source.startswith("subscription:"):
+            sub = cur.get("subscription") or {}
+            if source == "subscription:" + sub.get("id", "") + ":" + sub.get("period", ""):
+                sub["scans_left"] = int(sub.get("scans_left", 0)) + 1
         elif source == "extended_pack":
             pack = cur.setdefault("extended", {})
             pack["scans_left"] = int(pack.get("scans_left", 0)) + 1
