@@ -122,6 +122,33 @@ def claim(executor, versions=None):
     selected = {}
     is_render = executor == "render"
     fingerprints = {}
+    presence = None
+
+    def pickup_window(job):
+        # Read presence only for queued work within the short pickup window,
+        # once per claim (including transaction retries). Presence is advisory;
+        # the atomic job lease still decides which executor owns the scan.
+        nonlocal presence
+        window = min(5, config.SCAN_WORKER_WAIT_SECONDS)
+        if now - job["updated"] >= window:
+            return 0
+        if presence is None:
+            try:
+                from core.scan_workers import ROOT as presence_root
+                records = storage.store.get(presence_root) or {}
+                presence = list(records.values()) if isinstance(records, dict) else []
+            except Exception:
+                presence = []
+        key, fingerprint = current_fingerprint(job)
+        for record in presence:
+            if not isinstance(record, dict) or record.get("state") != "idle":
+                continue
+            seen = record.get("last_seen_at")
+            catalogues = record.get("catalogues")
+            if (_timestamp(seen) and 0 <= now - seen <= config.SCAN_WORKER_FRESH_SECONDS
+                    and isinstance(catalogues, dict) and catalogues.get(key) == fingerprint):
+                return window
+        return 0
 
     def current_fingerprint(job):
         key = job["scope"] + (":deep" if job["scope"] == "standard" and job["deep"] else "")
@@ -184,11 +211,12 @@ def claim(executor, versions=None):
                 continue
             if not finalize and status != "queued" and not (expired and status == "scanning"):
                 continue
-            if not finalize and is_render and status == "queued" and (
-                    now < job.get("worker_wait_until", 0) or (
-                    now - job["updated"] < config.SCAN_WORKER_WAIT_SECONDS
-                    and job.get("attempts", 0) < 2)):
-                continue
+            if not finalize and is_render and status == "queued":
+                window = pickup_window(job)
+                wait_until = min(job.get("worker_wait_until", 0), job["updated"] + window)
+                if (now < wait_until or (now - job["updated"] < window
+                        and job.get("attempts", 0) < 2)):
+                    continue
             if not is_render:
                 key, fingerprint = current_fingerprint(job)
                 if (not versions or versions.get(key) != fingerprint

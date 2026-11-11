@@ -11,9 +11,13 @@ allowances, payment keys, optional Google search, enrichment, exposure checks,
 report assembly and history. Other lookup tools and on-device Android scanning
 are not moved by this change. No Firebase or payment credential enters Colab.
 
-Render initially gives Colab 20 seconds to claim a queued job. If no worker
-claims it, one Render fallback runs the same platform checks with eight active
-probes. A disconnected Colab attempt loses its lease after 90 seconds. Render
+Render gives a fresh, idle worker with a matching catalogue up to five seconds
+to claim a queued job (or the configured worker wait, if shorter). If no such
+worker is available, Render can claim the job immediately on its next coordinator
+pass, normally within two seconds when its heavy-work slot is free. One Render
+fallback runs the same platform checks with eight active probes. Worker presence
+is advisory; atomic leases prevent duplicate execution. Queue contention,
+database latency and a sleeping Render instance can still delay startup. A disconnected Colab attempt loses its lease after 90 seconds. Render
 then resumes the committed platforms; probes in the last unsaved batch can be
 repeated. Late results from the previous lease are refused. A notebook exception
 releases its job for immediate fallback. Render also performs finalization one

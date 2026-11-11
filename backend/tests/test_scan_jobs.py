@@ -99,6 +99,9 @@ def complete_raw(job):
 
 
 def test_colab_first_and_render_resumes_only_uncommitted_platforms(setup, monkeypatch):
+    memory, _ = setup
+    memory.set("web/scan_workers", {"ready": {"state": "idle",
+        "last_seen_at": jobs.time.time(), "catalogues": versions()}})
     queued()
     assert jobs.claim("render") is None
     remote = jobs.claim("colab:worker", versions())
@@ -518,3 +521,46 @@ def test_completed_report_history_is_recovered_after_save_failure(setup, monkeyp
     monkeypatch.setattr(history, "save", real_save)
     scan_job_runner.maintenance()
     assert jobs.get(remote["id"])["history_id"] == remote["id"]
+
+
+@pytest.mark.parametrize("state,age,compatible", [
+    ("stopped", 0, True), ("idle", 60, True), ("idle", 0, False),
+    ("busy", 0, True), ("recovering", 0, True),
+])
+def test_fallback_immediate_without_ready_matching_worker(setup, state, age, compatible):
+    memory, _ = setup
+    memory.set("web/scan_workers", {"worker": {"state": state,
+        "last_seen_at": jobs.time.time() - age,
+        "catalogues": versions() if compatible else {"full": "old"}}})
+    queued()
+    assert jobs.claim("render")["executor"] == "render"
+
+
+def test_fallback_immediate_when_no_workers_exist(setup):
+    queued()
+    assert jobs.claim("render")["executor"] == "render"
+
+
+def test_healthy_worker_gets_only_five_seconds_and_lease_remains_exclusive(setup, monkeypatch):
+    memory, _ = setup
+    now = jobs.time.time()
+    monkeypatch.setattr(jobs.time, "time", lambda: now)
+    memory.set("web/scan_workers", {"ready": {"state": "idle",
+        "last_seen_at": now, "catalogues": versions()}})
+    queued()
+    assert jobs.claim("render") is None
+    monkeypatch.setattr(jobs.time, "time", lambda: now + 5)
+    assert jobs.claim("render")["executor"] == "render"
+    assert jobs.claim("colab:worker", versions()) is None
+
+
+def test_presence_failure_does_not_block_fallback(setup, monkeypatch):
+    memory, _ = setup
+    queued()
+    original = memory.get
+    def read(path):
+        if path == "web/scan_workers":
+            raise OSError("presence unavailable")
+        return original(path)
+    monkeypatch.setattr(memory, "get", read)
+    assert jobs.claim("render")["executor"] == "render"

@@ -52,7 +52,7 @@ def execute(job):
                     del batch[:32]
                     sequence += 1
                     flushed = time.monotonic()
-                if batch and time.monotonic() - flushed >= 10:
+                if batch and (sequence == 0 or time.monotonic() - flushed >= 10):
                     jobs.checkpoint(job_id, token, sequence, batch)
                     batch = []
                     sequence += 1
