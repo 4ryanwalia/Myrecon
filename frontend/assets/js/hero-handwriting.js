@@ -113,9 +113,9 @@
         const path=paths.shift(),start=path[0];
         if(!await lease.travelTo(point(box.left+start.x,box.top+start.y),{signal,duration:Math.min(140,Math.max(32,Math.hypot(start.x-last.x,start.y-last.y)*2))}))return false;
         const measure=metrics(path);let cursor=1,painted=start;
-        const duration=Math.max(32,Math.min(140,90/item.paths.length+measure.total*.3));
+        const duration=Math.max(40,Math.min(180,(90/item.paths.length+measure.total*.3)*1.2));
         if(!await animate(duration,t=>{
-          const distance=measure.total*t;ctx.beginPath();ctx.moveTo(painted.x,painted.y);
+          const distance=measure.total*(t*t*(3-2*t));ctx.beginPath();ctx.moveTo(painted.x,painted.y);
           while(cursor<path.length&&measure.lengths[cursor]<=distance){ctx.lineTo(path[cursor].x,path[cursor].y);painted=path[cursor++];}
           const end=Math.min(cursor,path.length-1),begin=Math.max(0,end-1),f=(distance-measure.lengths[begin])/(measure.lengths[end]-measure.lengths[begin]||1);
           const tip=point(path[begin].x+(path[end].x-path[begin].x)*f,path[begin].y+(path[end].y-path[begin].y)*f);
