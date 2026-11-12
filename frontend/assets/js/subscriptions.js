@@ -94,6 +94,8 @@
       $("#resumeRazorpay").disabled = busy;
     }
     const yearly = period === "yearly";
+    const billingSwitch = $(".billing-switch");
+    if (billingSwitch) billingSwitch.dataset.period = period;
     const copy = COPY[yearly ? "yearly" : "monthly"];
     document.querySelectorAll("[data-billing]").forEach((button) => {
       button.disabled = busy;

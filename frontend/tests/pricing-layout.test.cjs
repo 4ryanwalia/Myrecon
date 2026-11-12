@@ -37,12 +37,19 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     await page.locator('[data-subscribe="paypal"]:enabled').waitFor();
     assert.equal(await page.locator('.plans > section').count(),2);
     assert.equal(await page.locator('select').count(),0);
-    assert.ok(await page.locator('.plans').evaluate(el=>el.getBoundingClientRect().bottom) < 900);
+    assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(0, 0, 0)');
     await page.screenshot({path:process.env.PRICING_SCREENSHOT || path.join(require('node:os').tmpdir(),'myrecon-pricing-desktop.png'),fullPage:true});
     await page.setViewportSize({width:1366,height:768});
-    assert.ok(await page.locator('.plans').evaluate(el=>el.getBoundingClientRect().bottom) < 768);
+    assert.ok(await page.locator('.plan .provider-btn').first().evaluate(el=>el.getBoundingClientRect().height) >= 44);
     await page.locator('[data-billing="yearly"]').click();
     assert.equal(await page.locator('#proPrice').innerText(),'$19.99');
+    await page.waitForTimeout(360);
+    const slider = page.locator('.billing-slider');
+    assert.ok(await slider.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41 > 100));
+    await page.emulateMedia({reducedMotion:'reduce'});
+    assert.ok(await slider.evaluate(el => parseFloat(getComputedStyle(el).transitionDuration) <= .001));
+    await page.emulateMedia({reducedMotion:'no-preference'});
+
     assert.match(await page.locator('#proCredits').innerText(),/120/);
     assert.equal(await page.locator('[data-subscribe="razorpay"]').isEnabled(),true);
     await page.locator('[data-subscribe="razorpay"]').click();
