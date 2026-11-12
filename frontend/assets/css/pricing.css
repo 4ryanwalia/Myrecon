@@ -57,3 +57,75 @@
   .checkout-code-row input { font-size: .7rem; }
 }
 .paypal-currency[hidden], #retryPayPalCurrencies[hidden] { display: none; }
+/* Compact Free / Pro comparison. Keep feature rows at their natural height. */
+.pricing-page { max-width: 1040px; padding-top: 24px; padding-bottom: 48px; }
+.pricing-intro { text-align: center; margin: 16px 0 20px; }
+.pricing-eyebrow { color: var(--accent); font-size: .74rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.pricing-intro h1 { font-size: clamp(1.7rem, 3.5vw, 2.6rem); letter-spacing: -.045em; line-height: 1.2; margin: 8px 0; }
+.pricing-intro > p:last-child { color: var(--text-dim); line-height: 1.6; }
+.billing-switch { display: flex; width: fit-content; max-width: 100%; margin: 0 auto 20px; padding: 4px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); gap: 4px; }
+.billing-switch button { border: 0; border-radius: 8px; padding: 10px 18px; min-height: 44px; background: transparent; color: var(--text-dim); font: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; }
+.billing-switch button[aria-pressed="true"] { background: var(--text); color: var(--bg); box-shadow: var(--shadow-sm); }
+.billing-switch span { display: inline-block; background: var(--surface); color: var(--accent); padding: 3px 6px; margin-left: 5px; border-radius: 4px; font-size: .7rem; }
+.pricing-page .plans { grid-template-columns: 1fr 1.15fr; gap: 20px; margin: 0; }
+.pricing-page .plan { padding: 24px; gap: 0; border-radius: 14px; }
+.plan-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.plan-heading h2 { font-size: 1.25rem; letter-spacing: -.03em; }
+.plan-tag { font-size: .7rem; color: var(--text-dim); }
+.plan-tag.pro-tag { background: var(--burgundy); color: #fff; padding: 5px 9px; border-radius: 5px; font-weight: 600; }
+.plan-description { color: var(--text-dim); font-size: .85rem; margin-top: 8px; }
+.pricing-page .price { font-size: 2.5rem; margin-top: 18px; line-height: 1.15; }
+.price-caption { min-height: 34px; font-size: .73rem; line-height: 1.5; color: var(--text-dim); margin-top: 7px; }
+.pricing-page .plan ul { flex: none; align-content: start; gap: 10px; margin: 18px 0 22px; font-size: .83rem; line-height: 1.5; }
+.pricing-page .plan ul li::before { color: var(--accent); }
+.plan-actions { margin-top: auto; }
+.plan-actions > .btn { width: 100%; min-height: 52px; }
+.trial-invitation { font-size: .85rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
+.provider-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.plan .provider-btn { display: flex; flex-direction: column; gap: 4px; min-height: 58px; background: var(--burgundy); border: 1px solid var(--burgundy); color: #fff; padding: 9px; border-radius: 8px; }
+.plan .provider-btn span { font-size: .95rem; font-weight: 700; }
+.plan .provider-btn small { font-size: .7rem; font-weight: 400; }
+.plan .provider-btn:hover:not(:disabled) { filter: brightness(1.15); }
+.plan .provider-btn:disabled { background: var(--surface-2); color: var(--text-dim); border-color: var(--border); opacity: 1; cursor: not-allowed; }
+.plan-footnote { color: var(--text-dim); font-size: .7rem; line-height: 1.5; margin-top: 10px; }
+.pricing-reassurance { text-align: center; color: var(--text-dim); font-size: .73rem; margin: 14px 0 5px; line-height: 1.5; }
+#subscriptionStatus { text-align: center; margin-bottom: 16px; }
+.subscription-dialog { position: fixed; inset: 0; margin: auto; width: min(480px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 30px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 24px 80px #0004; }
+.subscription-dialog::backdrop { background: #0008; backdrop-filter: blur(3px); }
+.subscription-dialog h2 { font-size: 1.5rem; margin: 10px 24px 10px 0; letter-spacing: -.03em; }
+.subscription-dialog p { line-height: 1.6; margin-bottom: 14px; }
+#checkoutProvider { font-weight: 700; color: var(--accent); }
+#basicTerms { font-size: .9rem; }
+.subscription-consent { display: flex; align-items: flex-start; gap: 10px; font-size: .83rem; line-height: 1.6; margin: 20px 0; }
+.subscription-consent input { margin-top: 5px; accent-color: var(--accent); }
+.subscription-dialog .btn { width: 100%; justify-content: center; min-height: 46px; }
+.dialog-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--surface-2); color: var(--text); font-size: 1.5rem; cursor: pointer; }
+#checkoutStatus { margin: 12px 0 0; }
+.pack-alternative { margin: 20px 0; padding: 16px 20px; }
+.pack-alternative summary, .pricing-details summary { cursor: pointer; font-size: .85rem; line-height: 1.6; }
+.pack-alternative summary span { color: var(--text-dim); }
+.pack-content { padding-top: 18px; display: grid; gap: 12px; }
+.pack-content h2 { font-size: 1.1rem; }
+.pack-content p { line-height: 1.6; }
+.pricing-details { margin: 16px 0; }
+.pricing-details > p { margin-top: 12px; }
+.billing-switch button:focus-visible, .provider-btn:focus-visible, .dialog-close:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .pricing-page { padding-top: 16px; }
+  .pricing-intro { text-align: left; }
+  .pricing-page .plans { grid-template-columns: 1fr; gap: 16px; }
+  .pricing-page .plan { padding: 22px; }
+  .pricing-page .price { font-size: 2.2rem; }
+  .price-caption { min-height: 0; }
+  .pricing-page .plan ul { margin: 16px 0 20px; }
+  .subscription-dialog { padding: 24px; }
+}
+.pricing-page [hidden] { display: none !important; }
+@media (min-width: 641px) {
+  .pricing-page { padding-top: 16px; }
+  .pricing-intro { margin: 10px 0 14px; }
+  .billing-switch { margin-bottom: 16px; }
+  .pricing-page .plan { padding: 20px; }
+  .pricing-page .price { margin-top: 14px; }
+  .pricing-page .plan ul { gap: 8px; margin: 14px 0 18px; }
+}

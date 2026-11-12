@@ -4,8 +4,8 @@
   const A = window.MyReconAccount;
   const base = (window.MYRECON || {}).apiBase || "";
   const $ = (s) => document.querySelector(s);
-  let offers = [], busy = false, subscription = null, userId = null;
-  const say = (s) => { $("#subscriptionStatus").textContent = s; };
+  let offers = [], busy = false, subscription = null, userId = null, period = "monthly";
+  const say = (s) => { $("#subscriptionStatus").textContent = s; if ($("#checkoutStatus")) $("#checkoutStatus").textContent = s; };
   const date = (ms) => new Date(ms).toLocaleString();
   const selected = () => $("#basicPlan").value;
   const labels = { monthly: "US$3.99/month", yearly: "US$19.99/year", inr_monthly: "₹299/month" };
@@ -30,8 +30,30 @@
       : `${labels[selected()]} starting today, automatically renewing until cancelled. Your account has already used its free trial.`;
     $("#basicAllowance").textContent = `${selected() === "yearly" ? "120 Extended scans per paid year" : "10 Extended scans per paid month"}; 3 during your free trial. Unused subscription scans expire at the end of their period.`;
     $("#startBasic").disabled = busy || !A?.enabled || !offer?.enabled || !$("#basicConsent").checked;
-    $("#startBasic").textContent = busy ? "Please wait…" : trial ? "Start 3-day free trial" : "Subscribe to Basic";
+    $("#startBasic").textContent = busy ? "Please wait…" : trial ? "Start 3-day free trial" : "Subscribe to Pro";
     $("#basicPlan").disabled = busy;
+    const yearly = period === "yearly";
+    document.querySelectorAll("[data-billing]").forEach((button) => {
+      button.disabled = busy;
+      button.setAttribute("aria-pressed", String(button.dataset.billing === period));
+    });
+    const setText = (id, text) => { if ($(id)) $(id).textContent = text; };
+    setText("#proPrice", yearly ? "$19.99" : "$3.99");
+    setText("#proPeriod", yearly ? "/ year" : "/ month");
+    setText("#proPriceCaption", yearly ? "US$19.99 billed annually · save 58% vs US$47.88 monthly total" : "US$3.99 monthly via PayPal · ₹299 monthly via Razorpay");
+    setText("#proCredits", yearly ? "120 Extended scans per paid year" : "10 Extended scans per paid month");
+    setText("#paypalPrice", yearly ? "US$19.99 / year" : "US$3.99 / month");
+    setText("#razorpayPrice", yearly ? "Monthly only" : "₹299 / month");
+    setText("#trialInvitation", trial ? "Your first 3 days are free." : "Continue your research with Pro.");
+    setText("#trialSummary", trial ? "Then your selected price, auto-renewing. Cancel before day 3 to avoid the first subscription charge." : "Your free trial has been used. Billing starts today and renews automatically until cancelled.");
+    setText("#checkoutHeading", trial ? "Start your 3-day free trial" : "Subscribe to Pro");
+    setText("#checkoutProvider", `${selected() === "inr_monthly" ? "Razorpay" : "PayPal"} · ${labels[selected()]}`);
+    document.querySelectorAll("[data-subscribe]").forEach((button) => {
+      const key = button.dataset.subscribe === "paypal" ? period : "inr_monthly";
+      const unavailablePeriod = yearly && key === "inr_monthly";
+      button.disabled = busy || !A?.enabled || unavailablePeriod || !offers.find((o) => o.id === key)?.enabled;
+      button.title = unavailablePeriod ? "Razorpay currently supports monthly billing only. Choose Monthly above." : "Review Pro checkout terms";
+    });
     $("#manageSubscription").hidden = !A?.state().user;
     $("#refreshSubscription").disabled = busy;
     $("#cancelSubscription").hidden = !subscription?.id || ["cancelled", "expired", "completed", "approval_pending"].includes(subscription.status);
@@ -46,8 +68,8 @@
       }
     }
     $("#cancelSubscription").disabled = busy;
-    $("#subscriptionDetails").textContent = !subscription ? "No Basic subscription on this account."
-      : `Basic ${labels[subscription.plan] || ""} · ${subscription.status}. `
+    $("#subscriptionDetails").textContent = !subscription ? "No Pro subscription on this account."
+      : `Pro ${labels[subscription.plan] || ""} · ${subscription.status}. `
       + (subscription.active ? `${subscription.scans_left || 0} Extended scans left. Access until ${date(subscription.until)}. ` : "")
       + (subscription.status === "cancelled" ? "Automatic billing is cancelled."
         : subscription.active ? `Next charge: ${date(subscription.until)}. Cancel before then to stop renewal.`
@@ -89,7 +111,7 @@
       if (A.state().user?.uid !== uid) return;
       if (offeredTrial !== (subscription?.trial_eligible !== false)) {
         $("#basicConsent").checked = false;
-        say("Your account has already used its trial. Review the updated billing terms and select Subscribe to Basic to continue.");
+        say("Your account has already used its trial. Review the updated billing terms and select Subscribe to Pro to continue.");
         return;
       }
       const key = selected();
@@ -105,15 +127,18 @@
       }
       say(result.trial_until ? `First subscription charge: ₹299 on ${date(result.trial_until)}, then monthly. Razorpay may require a refundable payment-method authorization.` : "₹299 monthly. Review and authorize recurring billing in Razorpay.");
       const checkout = new window.Razorpay({
-        key: result.key_id, subscription_id: result.id, name: "MyRecon Basic",
+        key: result.key_id, subscription_id: result.id, name: "MyRecon Pro",
         description: "₹299/month after a 3-day trial for eligible accounts",
+        theme: { color: "#6d001a" },
         handler: async () => {
-          try { await refresh(); say(subscription?.active ? "Basic is ready. Manage or cancel your subscription below." : "Authorization is being confirmed. Check status shortly; do not subscribe again."); }
+          try { await refresh(); say(subscription?.active ? "Pro is ready. Manage or cancel your subscription below." : "Authorization is being confirmed. Check status shortly; do not subscribe again."); }
           catch (e) { say(e.message); }
         },
         modal: { ondismiss: () => { refresh().catch((e) => say(e.message)); } },
       });
       checkout.on("payment.failed", () => say("Authorization failed. Check subscription status before trying again."));
+      // Release the native dialog top layer so Razorpay can receive focus.
+      $("#subscriptionDialog")?.close();
       checkout.open();
     } catch (e) { say(A.friendly(e)); }
     finally { busy = false; render(); }
@@ -121,6 +146,22 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     if (!$("#startBasic")) return;
+    document.querySelectorAll("[data-billing]").forEach((button) => button.addEventListener("click", () => {
+      if (busy) return;
+      period = button.dataset.billing;
+      $("#basicPlan").value = period;
+      $("#basicConsent").checked = false;
+      render();
+    }));
+    document.querySelectorAll("[data-subscribe]").forEach((button) => button.addEventListener("click", () => {
+      if (busy || button.disabled) return;
+      $("#basicPlan").value = button.dataset.subscribe === "paypal" ? period : "inr_monthly";
+      $("#basicConsent").checked = false;
+      if ($("#checkoutStatus")) $("#checkoutStatus").textContent = "";
+      render();
+      $("#subscriptionDialog").showModal();
+    }));
+    $("#closeSubscription")?.addEventListener("click", () => $("#subscriptionDialog").close());
     $("#basicPlan").addEventListener("change", () => { $("#basicConsent").checked = false; render(); });
     $("#basicConsent").addEventListener("change", render);
     $("#startBasic").addEventListener("click", start);
@@ -149,7 +190,7 @@
       const response = await fetch(base + "/api/plans");
       if (!response.ok) throw new Error("Could not load subscription prices.");
       offers = (await response.json()).subscriptions || [];
-      say(offers.some((o) => o.enabled) ? "Choose your billing option, then review the recurring payment terms." : "Subscription checkout is temporarily unavailable.");
+      say(offers.some((o) => o.enabled) ? "Choose PayPal or Razorpay to review your plan." : "Subscription checkout is temporarily unavailable.");
     } catch (e) { say(e.message); }
     A.onChange((state) => {
       const uid = state.user?.uid || null;

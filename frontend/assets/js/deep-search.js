@@ -212,8 +212,8 @@
       ? "Your paid account includes name, handle and public Google email research. Deep Search does not spend Extended scan credits."
       : pending ? "Waiting for your account details. Retry if your connection was interrupted."
       : guest ? "Investigate public sources now. Preview one returned finding free; sign in with an eligible paid account to unlock the rest."
-      : guestReport ? "Your investigation is retained temporarily. The Basic plan is required to reveal Deep Search findings. After upgrading, refresh access to open the retained results."
-      : "The Basic plan includes Deep Search, unlimited standard scans and 10 Extended scans. No renewal. Deep Search does not spend Extended credits.";
+      : guestReport ? "Your investigation is retained temporarily. The Pro plan is required to reveal Deep Search findings. After upgrading, refresh access to open the retained results."
+      : "The Pro plan includes Deep Search, unlimited standard scans and 10 Extended scans. Try Pro free for 3 days. Then automatic renewal until cancelled. Deep Search does not spend Extended credits.";
     $("#dsSignIn").hidden = !!state.user || !A?.enabled;
     $("#dsUpgrade").hidden = paid || pending || guest;
     $("#dsRetryAccess").hidden = !pending && !(state.user && guestReport);
@@ -267,7 +267,7 @@
       ? `<strong>Unlock the remaining findings</strong><p>One returned finding is shown free. Sign in with an eligible paid account to view the rest.</p><button class="btn btn-sm" type="button" data-ds-unlock>Sign in to unlock the rest</button>`
       : `<strong>Sign in to view the findings</strong><p>Sign-in is temporarily unavailable. The investigation can still run; try signing in again shortly.</p>`;
     if (!state.account) return `<strong>Checking your Deep Search access</strong><p>Your findings stay locked while your plan is checked.</p><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Retry plan check</button>`;
-    if (!hasAccess(state)) return `<strong>The Basic plan is required to view findings</strong><p>You are signed in. Upgrade your account, then refresh access to reveal this investigation.</p><a class="btn btn-sm" href="/pricing">Get the Basic plan</a><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Refresh access</button>`;
+    if (!hasAccess(state)) return `<strong>The Pro plan is required to view findings</strong><p>You are signed in. Upgrade your account, then refresh access to reveal this investigation.</p><a class="btn btn-sm" href="/pricing">Try Pro free for 3 days</a><button class="btn btn-ghost btn-sm" type="button" data-ds-refresh>Refresh access</button>`;
     return `<strong>${restoring ? "Opening your findings…" : "View the retained findings"}</strong><p>Open the investigation already completed by the server.</p><button class="btn btn-sm" type="button" data-ds-reveal ${restoring ? "disabled" : ""}>View findings</button>`;
   }
   function renderLocked(data, live) {
