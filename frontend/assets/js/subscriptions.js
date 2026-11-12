@@ -8,17 +8,43 @@
   const say = (s) => { $("#subscriptionStatus").textContent = s; if ($("#checkoutStatus")) $("#checkoutStatus").textContent = s; };
   const date = (ms) => new Date(ms).toLocaleString();
   const selected = () => $("#basicPlan").value;
-  const labels = { monthly: "US$3.99/month", yearly: "US$19.99/year", inr_monthly: "₹299/month" };
+  const labels = { monthly: "US$3.99/month", yearly: "US$19.99/year", inr_monthly: "₹299/month", inr_yearly: "₹1,999/year" };
+  const isRazorpay = (key) => String(key || "").startsWith("inr_");
+  const providerKey = (provider) => provider === "paypal" ? period : (period === "yearly" ? "inr_yearly" : "inr_monthly");
+  const COPY = {
+    monthly: {
+      price: "$3.99", period: "/ month", anchor: "", credits: "10 Extended scans per paid month",
+      caption: "About 13¢ a day · ₹299/month in India",
+      paypal: "$3.99/mo", razorpay: "₹299/mo", charge: "Pro continues at $3.99/mo or ₹299/mo.",
+    },
+    yearly: {
+      price: "$19.99", period: "/ year", anchor: "$47.88", credits: "120 Extended scans per paid year",
+      caption: "Just $1.67/month, billed yearly · ₹1,999/year in India",
+      paypal: "$19.99/yr · save 58%", razorpay: "₹1,999/yr · save 44%", charge: "Pro continues at $19.99/yr or ₹1,999/yr.",
+    },
+  };
+
+  // A Razorpay checkout the customer never authorized can be closed by the
+  // server and replaced; anything authorized, paid or PayPal-pending cannot.
+  const replaceable = () => subscription?.provider === "razorpay" && subscription?.status === "created" && !subscription?.active;
 
   function checkoutConflict() {
     if (!subscription) return false;
     const terminal = ["cancelled", "expired", "completed"].includes(subscription.status);
     const resumable = ["pending", "approval_pending", "created"].includes(subscription.status);
-    return subscription.active || (!terminal && !(resumable && subscription.id && subscription.plan === selected()));
+    if (subscription.active) return true;
+    if (terminal) return false;
+    if (resumable && subscription.id && subscription.plan === selected()) return false;
+    return !replaceable();
   }
 
   function conflictMessage() {
     return `You already have ${subscription?.provider === "razorpay" ? "a Razorpay" : "a PayPal"} ${labels[subscription?.plan] || ""} checkout or subscription. Manage it first, or resume that same plan. A second subscription has not been created.`;
+  }
+
+  function replacementNotice() {
+    if (!replaceable() || subscription.plan === selected()) return "";
+    return `Your unfinished Razorpay ${labels[subscription.plan] || ""} checkout was never authorized and nothing was charged. Continuing closes it and starts this plan instead.`;
   }
 
   async function api(path, body) {
@@ -53,40 +79,54 @@
     $("#basicTerms").textContent = trial
       ? `3 days free, then ${labels[selected()]} automatically until cancelled. Cancel before the first charge to pay no subscription fee. One trial per account. Your exact first charge date is shown by the payment provider.`
       : `${labels[selected()]} starting today, automatically renewing until cancelled. Your account has already used its free trial.`;
-    $("#basicAllowance").textContent = `${selected() === "yearly" ? "120 Extended scans per paid year" : "10 Extended scans per paid month"}; 3 during your free trial. Unused subscription scans expire at the end of their period.`;
+    $("#basicAllowance").textContent = `${selected().endsWith("yearly") ? "120 Extended scans per paid year" : "10 Extended scans per paid month"}; 3 during your free trial. Unused subscription scans expire at the end of their period.`;
     $("#startBasic").disabled = busy || checkoutConflict() || !A?.enabled || !offer?.enabled || !$("#basicConsent").checked;
     $("#startBasic").textContent = busy ? "Please wait…" : trial ? "Start 3-day free trial" : "Subscribe to Pro";
     $("#basicPlan").disabled = busy;
     if ($("#checkoutManage")) $("#checkoutManage").hidden = !checkoutConflict();
+    if ($("#checkoutNotice")) {
+      const notice = replacementNotice();
+      $("#checkoutNotice").textContent = notice;
+      $("#checkoutNotice").hidden = !notice;
+    }
     if ($("#resumeRazorpay")) {
       $("#resumeRazorpay").hidden = !(subscription?.provider === "razorpay" && subscription?.id && ["pending", "created"].includes(subscription.status));
       $("#resumeRazorpay").disabled = busy;
     }
     const yearly = period === "yearly";
+    const copy = COPY[yearly ? "yearly" : "monthly"];
     document.querySelectorAll("[data-billing]").forEach((button) => {
       button.disabled = busy;
       button.setAttribute("aria-pressed", String(button.dataset.billing === period));
     });
     const setText = (id, text) => { if ($(id)) $(id).textContent = text; };
-    setText("#proPrice", yearly ? "$19.99" : "$3.99");
-    setText("#proPeriod", yearly ? "/ year" : "/ month");
-    setText("#proPriceCaption", yearly ? "US$19.99 billed annually · save 58% vs US$47.88 monthly total" : "US$3.99 monthly via PayPal · ₹299 monthly via Razorpay");
-    setText("#proCredits", yearly ? "120 Extended scans per paid year" : "10 Extended scans per paid month");
-    setText("#paypalPrice", yearly ? "US$19.99 / year" : "US$3.99 / month");
-    setText("#razorpayPrice", yearly ? "Monthly only" : "₹299 / month");
-    setText("#trialInvitation", trial ? "Your first 3 days are free." : "Continue your research with Pro.");
-    setText("#trialSummary", trial ? "Then your selected price, auto-renewing. Cancel before day 3 to avoid the first subscription charge." : "Your free trial has been used. Billing starts today and renews automatically until cancelled.");
+    setText("#proPrice", copy.price);
+    setText("#proPeriod", copy.period);
+    if ($("#proAnchor")) { $("#proAnchor").textContent = copy.anchor; $("#proAnchor").hidden = !copy.anchor; }
+    setText("#proPriceCaption", copy.caption);
+    setText("#proCredits", copy.credits);
+    setText("#paypalPrice", copy.paypal);
+    setText("#razorpayPrice", copy.razorpay);
+    setText("#timelineCharge", copy.charge);
+    setText("#trialRibbonTitle", trial ? "3-Day Free Trial · Try Once" : "Welcome back");
+    setText("#trialRibbonText", trial ? "Try every Pro feature. $0 today." : "Pick up where you left off with Pro.");
+    if ($("#trialTimeline")) $("#trialTimeline").hidden = !trial;
+    if ($("#trialPill")) $("#trialPill").hidden = !trial;
+    document.querySelectorAll("[data-provider-cta]").forEach((el) => { el.textContent = trial ? "Start free trial" : "Subscribe"; });
+    setText("#trialSummary", trial ? "Free for 3 days, then your selected price, auto-renewing until cancelled. One trial per account." : "Your free trial has been used. Billing starts today and renews automatically until cancelled. Cancel anytime from this page.");
     setText("#checkoutHeading", trial ? "Start your 3-day free trial" : "Subscribe to Pro");
-    setText("#checkoutProvider", `${selected() === "inr_monthly" ? "Razorpay" : "PayPal"} · ${labels[selected()]}`);
+    setText("#checkoutProvider", `${isRazorpay(selected()) ? "Razorpay" : "PayPal"} · ${labels[selected()]}`);
     document.querySelectorAll("[data-subscribe]").forEach((button) => {
-      const key = button.dataset.subscribe === "paypal" ? period : "inr_monthly";
-      const unavailablePeriod = yearly && key === "inr_monthly";
-      button.disabled = busy || !A?.enabled || unavailablePeriod || !offers.find((o) => o.id === key)?.enabled;
-      button.title = unavailablePeriod ? "Razorpay currently supports monthly billing only. Choose Monthly above." : "Review Pro checkout terms";
+      const key = providerKey(button.dataset.subscribe);
+      button.disabled = busy || !A?.enabled || !offers.find((o) => o.id === key)?.enabled;
+      button.title = `${trial ? "Start your free trial" : "Subscribe"}: ${labels[key]}`;
     });
     $("#manageSubscription").hidden = !A?.state().user;
     $("#refreshSubscription").disabled = busy;
     $("#cancelSubscription").hidden = !subscription?.id || ["cancelled", "expired", "completed", "approval_pending"].includes(subscription.status);
+    if (!$("#cancelSubscription").hidden) {
+      $("#cancelSubscription").textContent = replaceable() ? "Cancel unfinished checkout" : "Cancel subscription";
+    }
     const resume = $("#resumeSubscription");
     if (resume) {
       resume.hidden = true; resume.removeAttribute("href");
@@ -103,6 +143,7 @@
       + (subscription.active ? `${subscription.scans_left || 0} Extended scans left. Access until ${date(subscription.until)}. ` : "")
       + (subscription.status === "cancelled" ? "Automatic billing is cancelled."
         : subscription.active ? `Next charge: ${date(subscription.until)}. Cancel before then to stop renewal.`
+        : replaceable() ? "Unfinished Razorpay checkout: never authorized, nothing charged. Resume it, or choose another plan above and it will be closed for you."
         : "Check status after completing checkout. If checkout was interrupted, contact support before starting another subscription.");
   }
 
@@ -149,8 +190,8 @@
         return;
       }
       const key = selected();
-      if (key === "inr_monthly") await loadRazorpay();
-      say("Preparing your subscription approval…");
+      if (isRazorpay(key)) await loadRazorpay();
+      say(replaceable() && subscription.plan !== key ? "Closing your unfinished Razorpay checkout and preparing this plan…" : "Preparing your subscription approval…");
       progressTimer = setTimeout(() => say("Still waiting for the payment provider. Please keep this page open; this can take up to 30 seconds."), 8000);
       const result = await api("", { plan: key, consent: true });
       if (A.state().user?.uid !== uid) return;
@@ -161,10 +202,12 @@
         window.location.assign(url.href);
         return;
       }
-      say(result.trial_until ? `First subscription charge: ₹299 on ${date(result.trial_until)}, then monthly. Razorpay may require a refundable payment-method authorization.` : "₹299 monthly. Review and authorize recurring billing in Razorpay.");
+      const price = key === "inr_yearly" ? "₹1,999" : "₹299";
+      const every = key === "inr_yearly" ? "yearly" : "monthly";
+      say(result.trial_until ? `First subscription charge: ${price} on ${date(result.trial_until)}, then ${every}. Razorpay may require a refundable payment-method authorization.` : `${price} ${every}. Review and authorize recurring billing in Razorpay.`);
       const checkout = new window.Razorpay({
         key: result.key_id, subscription_id: result.id, name: "MyRecon Pro",
-        description: "₹299/month after a 3-day trial for eligible accounts",
+        description: `${labels[key]} after a 3-day trial for eligible accounts`,
         theme: { color: "#6d001a" },
         handler: async () => {
           try { await refresh(); say(subscription?.active ? "Pro is ready. Manage or cancel your subscription below." : "Authorization is being confirmed. Check status shortly; do not subscribe again."); }
@@ -191,7 +234,7 @@
     }));
     document.querySelectorAll("[data-subscribe]").forEach((button) => button.addEventListener("click", () => {
       if (busy || button.disabled) return;
-      $("#basicPlan").value = button.dataset.subscribe === "paypal" ? period : "inr_monthly";
+      $("#basicPlan").value = providerKey(button.dataset.subscribe);
       $("#basicConsent").checked = false;
       if ($("#checkoutStatus")) $("#checkoutStatus").textContent = "";
       render();
@@ -204,8 +247,9 @@
       $("#refreshSubscription").focus({ preventScroll: true });
     });
     $("#resumeRazorpay")?.addEventListener("click", () => {
-      period = "monthly";
-      $("#basicPlan").value = "inr_monthly";
+      const plan = subscription?.plan === "inr_yearly" ? "inr_yearly" : "inr_monthly";
+      period = plan === "inr_yearly" ? "yearly" : "monthly";
+      $("#basicPlan").value = plan;
       $("#basicConsent").checked = false;
       say("Resume your existing Razorpay checkout. Review the terms, then continue; this will reuse the same subscription.");
       render();
@@ -222,7 +266,10 @@
       finally { busy = false; render(); }
     });
     $("#cancelSubscription").addEventListener("click", async () => {
-      if (busy || !confirm("Cancel automatic billing? Your confirmed access remains available until the end of the current trial or paid period.")) return;
+      const prompt = replaceable()
+        ? "Cancel this unfinished Razorpay checkout? Nothing has been charged."
+        : "Cancel automatic billing? Your confirmed access remains available until the end of the current trial or paid period.";
+      if (busy || !confirm(prompt)) return;
       busy = true; render();
       try {
         const uid = A.state().user?.uid;

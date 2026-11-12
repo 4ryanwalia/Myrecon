@@ -1,4 +1,4 @@
-"""Recurring Basic billing. Provider records, never browser claims, grant access.
+"""Recurring Pro billing. Provider records, never browser claims, grant access.
 
 One active subscription per account; trial consumption and period credits are
 atomic with the user's entitlement. Legacy packs are intentionally separate.
@@ -23,14 +23,24 @@ CATALOG = {
     "monthly": {"amount": 399, "currency": "USD", "interval": "MONTH", "scans": 10},
     "yearly": {"amount": 1999, "currency": "USD", "interval": "YEAR", "scans": 120},
     "inr_monthly": {"amount": 29900, "currency": "INR", "interval": "MONTH", "scans": 10},
+    "inr_yearly": {"amount": 199900, "currency": "INR", "interval": "YEAR", "scans": 120},
 }
 TERMINAL = {"cancelled", "expired", "completed"}
 BASE_URL = "https://www.myrecon.xyz/pricing"
+# Razorpay limits a schedule to 100 years; both plans disclose a ten-year schedule.
+RAZORPAY_TOTAL_COUNT = {"MONTH": 120, "YEAR": 10}
+RAZORPAY_PERIOD = {"MONTH": "monthly", "YEAR": "yearly"}
+
+
+def provider_for(key):
+    return "razorpay" if key.startswith("inr_") else "paypal"
 
 
 def configured_plan(provider, key, trial=True):
-    env = (config.BASIC_RAZORPAY_MONTHLY_PLAN_ID if provider == "razorpay" else
-           getattr(config, "BASIC_PAYPAL_" + key.upper() + ("_TRIAL" if trial else "_PAID") + "_PLAN_ID"))
+    if provider == "razorpay":
+        env = config.BASIC_RAZORPAY_YEARLY_PLAN_ID if key == "inr_yearly" else config.BASIC_RAZORPAY_MONTHLY_PLAN_ID
+    else:
+        env = getattr(config, "BASIC_PAYPAL_" + key.upper() + ("_TRIAL" if trial else "_PAID") + "_PLAN_ID")
     if env:
         return env
     catalog_file = Path(__file__).with_name("billing_catalog.json")
@@ -38,18 +48,25 @@ def configured_plan(provider, key, trial=True):
     return catalog.get(_namespace(provider), {}).get(key + ("_trial" if trial else "_paid"), "")
 
 
-def enabled(provider):
-    if provider == "paypal":
-        return paypal.enabled() and all(configured_plan("paypal", key, trial) for key in ("monthly", "yearly") for trial in (True, False))
-    return (provider == "razorpay" and razorpay.enabled() and store.persistent()
-            and bool(config.RAZORPAY_WEBHOOK_SECRET and configured_plan("razorpay", "inr_monthly"))
+def _razorpay_ready():
+    return (razorpay.enabled() and store.persistent() and bool(config.RAZORPAY_WEBHOOK_SECRET)
             and (config.RAZORPAY_KEY_ID.startswith("rzp_live_") or config.DEV_TEST_ACCOUNT))
+
+
+def enabled(provider, key=None):
+    if provider == "paypal":
+        return paypal.enabled() and all(configured_plan("paypal", k, trial) for k in ("monthly", "yearly") for trial in (True, False))
+    if provider != "razorpay" or not _razorpay_ready():
+        return False
+    # Monthly must be pre-provisioned. Yearly may be provisioned on first use
+    # from the server catalog (persistently cached) and is verified before use.
+    return key == "inr_yearly" or bool(configured_plan("razorpay", "inr_monthly"))
 
 
 def offers():
     return [{"id": key, **value, "trial_days": TRIAL_DAYS,
-             "provider": "razorpay" if key == "inr_monthly" else "paypal",
-             "enabled": enabled("razorpay" if key == "inr_monthly" else "paypal")}
+             "provider": provider_for(key),
+             "enabled": enabled(provider_for(key), key)}
             for key, value in CATALOG.items()]
 
 
@@ -119,8 +136,10 @@ def provision_plan(provider, key, trial):
                                     "payment_preferences": {"auto_bill_outstanding": False,
                                                             "payment_failure_threshold": 1}})
     else:
-        result = razorpay._call("POST", "/plans", json={"period": "monthly", "interval": 1,
-                               "item": {"name": "MyRecon Basic monthly", "amount": 29900, "currency": "INR"}})
+        result = razorpay._call("POST", "/plans", json={"period": RAZORPAY_PERIOD[offer["interval"]], "interval": 1,
+                               "item": {"name": "MyRecon Pro " + RAZORPAY_PERIOD[offer["interval"]],
+                                        "amount": offer["amount"], "currency": offer["currency"]},
+                               "notes": {"catalog": key}})
     store.store.set(path, {"id": result["id"]})
     return result["id"]
 
@@ -136,13 +155,17 @@ def _approval_url(result):
 
 def _plan(provider, key, trial):
     plan_id = configured_plan(provider, key, trial)
+    if not plan_id and provider == "razorpay" and key == "inr_yearly":
+        plan_id = provision_plan(provider, key, True)
+    if not plan_id:
+        raise ValueError("This subscription checkout is temporarily unavailable.")
     # Validate configured plans against the advertised offer before asking for consent.
     offer = CATALOG[key]
     if provider == "razorpay":
         plan = razorpay._call("GET", "/plans/" + plan_id)
         item = plan.get("item") or {}
-        valid = (plan.get("period") == "monthly" and plan.get("interval") == 1
-                 and item.get("amount") == 29900 and item.get("currency") == "INR")
+        valid = (plan.get("period") == RAZORPAY_PERIOD[offer["interval"]] and plan.get("interval") == 1
+                 and item.get("amount") == offer["amount"] and item.get("currency") == offer["currency"])
     else:
         plan = paypal._call("GET", "/v1/billing/plans/" + plan_id)
         cycles = plan.get("billing_cycles") or []
@@ -166,11 +189,39 @@ def _plan(provider, key, trial):
     return plan_id
 
 
+def _close_unauthorized_razorpay(uid, pending):
+    """Cancel a Razorpay checkout the customer never authorized, so another can start.
+
+    Only Razorpay "created" (no mandate, nothing charged) qualifies. PayPal
+    APPROVAL_PENDING cannot be cancelled through the API, and a later approval
+    of an abandoned link would bill without access, so it is never replaced.
+    Returns True only when the provider confirms the old checkout is terminal.
+    """
+    sid = pending.get("id")
+    # The stored status must already show "created" from a provider refresh;
+    # anything else is rejected without contacting a provider.
+    if pending.get("provider") != "razorpay" or not sid or pending.get("status") != "created":
+        return False
+    refreshed = sync("razorpay", sid, uid)
+    if refreshed.get("status") in TERMINAL and not refreshed.get("active"):
+        return True
+    if refreshed.get("status") != "created" or refreshed.get("active"):
+        return False
+    try:
+        razorpay._call("POST", "/subscriptions/" + sid + "/cancel", json={"cancel_at_cycle_end": False})
+    except razorpay.RazorpayError:
+        pass
+    refreshed = sync("razorpay", sid, uid)
+    if refreshed.get("status") not in TERMINAL or refreshed.get("active"):
+        raise ValueError("Your unfinished Razorpay checkout could not be closed. Resume it, or try again shortly.")
+    return True
+
+
 def checkout(uid, key):
     if key not in CATALOG:
         raise ValueError("Unknown subscription plan.")
-    provider = "razorpay" if key == "inr_monthly" else "paypal"
-    if not enabled(provider):
+    provider = provider_for(key)
+    if not enabled(provider, key):
         raise ValueError("This subscription checkout is temporarily unavailable.")
     existing = store.store.get(_user(uid)) or {}
     pending = existing.get("subscription") or {}
@@ -183,6 +234,11 @@ def checkout(uid, key):
                     "trial": intent["trial"], "trial_until": intent.get("trial_until"), **CATALOG[key]}
     existing = store.store.get(_user(uid)) or {}
     pending = existing.get("subscription") or {}
+    # An unauthorized Razorpay checkout for another plan or provider is closed
+    # first; this is what lets a customer switch after abandoning Razorpay.
+    if pending and pending.get("until", 0) <= time.time() * 1000 and _close_unauthorized_razorpay(uid, pending):
+        existing = store.store.get(_user(uid)) or {}
+        pending = existing.get("subscription") or {}
     # Reject an existing contract before making unrelated provider API calls.
     # The transaction below remains the final concurrency guard.
     if pending and (pending.get("status") not in TERMINAL or pending.get("until", 0) > time.time() * 1000):
@@ -215,7 +271,7 @@ def checkout(uid, key):
                                     "user_action": "SUBSCRIBE_NOW", "return_url": BASE_URL + "?subscription=return",
                                     "cancel_url": BASE_URL + "?subscription=cancel"}})
     else:
-        payload = {"plan_id": plan_id, "total_count": 120, "quantity": 1,
+        payload = {"plan_id": plan_id, "total_count": RAZORPAY_TOTAL_COUNT[CATALOG[key]["interval"]], "quantity": 1,
                    "customer_notify": True, "notes": {"binding": binding}}
         if intent["trial"]:
             payload["start_at"] = int(time.time()) + TRIAL_DAYS * 86400
@@ -274,7 +330,7 @@ def sync(provider, sid, uid=None):
     else:
         if int(remote.get("paid_count") or 0) > 0:
             start, end = _stamp(remote.get("current_start")), _stamp(remote.get("current_end"))
-            if start and end and end <= _period_end(start, "MONTH") + 86400000:
+            if start and end and end <= _period_end(start, offer["interval"]) + 86400000:
                 until, period, count = end, "paid:" + str(start), offer["scans"]
         elif intent["trial"] and status in ("authenticated", "active"):
             trial_until = intent.get("trial_until", 0)

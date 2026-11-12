@@ -14,7 +14,7 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     page.on('pageerror', e => errors.push(e.message));
     await page.route('**/*', async route => {
       const url = new URL(route.request().url());
-      if (url.pathname === '/api/plans') return route.fulfill({json:{subscriptions:['monthly','yearly','inr_monthly'].map(id=>({id,enabled:true}))}});
+      if (url.pathname === '/api/plans') return route.fulfill({json:{subscriptions:['monthly','yearly','inr_monthly','inr_yearly'].map(id=>({id,enabled:true}))}});
       if (url.pathname === '/api/billing/subscriptions') {
         if (route.request().method() === 'POST') {
           creations.push(route.request().postDataJSON());
@@ -44,7 +44,11 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     await page.locator('[data-billing="yearly"]').click();
     assert.equal(await page.locator('#proPrice').innerText(),'$19.99');
     assert.match(await page.locator('#proCredits').innerText(),/120/);
-    assert.equal(await page.locator('[data-subscribe="razorpay"]').isDisabled(),true);
+    assert.equal(await page.locator('[data-subscribe="razorpay"]').isEnabled(),true);
+    await page.locator('[data-subscribe="razorpay"]').click();
+    assert.equal(await page.locator('#basicPlan').inputValue(),'inr_yearly');
+    assert.match(await page.locator('#basicTerms').innerText(),/₹1,999\/year/);
+    await page.keyboard.press('Escape');
     await page.locator('[data-subscribe="paypal"]').click();
     assert.equal(await page.locator('#basicPlan').inputValue(),'yearly');
     assert.match(await page.locator('#basicTerms').innerText(),/US\$19.99\/year/);
@@ -74,22 +78,39 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     await page.locator('[data-subscribe="paypal"]').click();
     assert.equal(await page.locator('#basicPlan').inputValue(),'monthly');
     assert.equal(await page.locator('#basicConsent').isChecked(),false);
+    await page.keyboard.press('Escape');
+
+    // Unauthorized Razorpay checkout is replaceable: notice explains it and customer can proceed with PayPal or resume Razorpay.
     currentSubscription = {id:'sub_TEST123456',provider:'razorpay',plan:'inr_monthly',status:'created',active:false,trial_eligible:true};
     await page.reload();
     await page.locator('#resumeRazorpay').waitFor({state:'visible'});
-    const createsBefore = creations.length;
-    await page.locator('[data-subscribe="paypal"]').click();
-    assert.match(await page.locator('#checkoutStatus').innerText(), /already have a Razorpay/);
-    await page.locator('#basicConsent').check();
-    assert.equal(await page.locator('#startBasic').isDisabled(),true);
-    assert.equal(creations.length,createsBefore);
-    await page.locator('#checkoutManage').click();
-    assert.equal(await page.locator('#subscriptionDialog').isVisible(),false);
+    assert.equal(await page.locator('#cancelSubscription').innerText(), 'Cancel unfinished checkout');
     await page.locator('#resumeRazorpay').click();
     assert.equal(await page.locator('#basicPlan').inputValue(),'inr_monthly');
     assert.equal(await page.locator('#basicConsent').isChecked(),false);
+    await page.locator('#closeSubscription').click();
+
+    const createsBefore = creations.length;
+    await page.locator('[data-subscribe="paypal"]').click();
+    assert.match(await page.locator('#checkoutNotice').innerText(), /never authorized/);
     await page.locator('#basicConsent').check();
     assert.equal(await page.locator('#startBasic').isEnabled(),true);
+    await page.locator('#startBasic').click();
+    await page.locator('#checkoutStatus').getByText('Test checkout stopped before provider approval.').waitFor();
+    assert.equal(creations.length, createsBefore + 1);
+    assert.equal(creations[creations.length - 1].plan, 'monthly');
+    await page.keyboard.press('Escape');
+
+    // Confirmed active subscription is a hard conflict and cannot be replaced silently.
+    currentSubscription = {id:'sub_TEST123456',provider:'razorpay',plan:'inr_monthly',status:'active',active:true,until:Date.now() + 86400000,trial_eligible:false};
+    await page.reload();
+    await page.locator('[data-subscribe="paypal"]').click();
+    assert.match(await page.locator('#checkoutStatus').innerText(), /already have a Razorpay/);
+    assert.equal(await page.locator('#startBasic').isDisabled(),true);
+    await page.locator('#checkoutManage').click();
+    assert.equal(await page.locator('#subscriptionDialog').isVisible(),false);
+    assert.match(await page.locator('#subscriptionDetails').innerText(), /Pro/);
+    assert.equal(await page.locator('#cancelSubscription').innerText(), 'Cancel subscription');
     assert.deepEqual(errors,[]);
   } finally {await browser.close();}
 });

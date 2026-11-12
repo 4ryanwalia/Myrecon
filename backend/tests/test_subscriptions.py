@@ -52,7 +52,8 @@ def remote(status="ACTIVE", paid=False, amount="3.99"):
 
 
 def test_catalog_and_fail_closed_without_configuration(monkeypatch):
-    assert [(o["amount"], o["scans"]) for o in sub.offers()] == [(399, 10), (1999, 120), (29900, 10)]
+    assert [(o["amount"], o["scans"]) for o in sub.offers()] == [(399, 10), (1999, 120), (29900, 10), (199900, 120)]
+    assert [o["provider"] for o in sub.offers()] == ["paypal", "paypal", "razorpay", "razorpay"]
     assert all(o["trial_days"] == 3 for o in sub.offers())
     monkeypatch.setattr(config, "BASIC_PAYPAL_YEARLY_PAID_PLAN_ID", "")
     assert not sub.enabled("paypal")
@@ -251,3 +252,128 @@ def test_other_provider_pending_checkout_rejected_before_provider_requests(monke
     monkeypatch.setattr(razorpay, "_call", unexpected)
     with pytest.raises(ValueError, match="pending checkout"):
         sub.checkout(UID, "monthly")
+
+
+def _razorpay_fake(remote_status="created", cancel_ok=True, sid="sub_TEST123456"):
+    """Fake Razorpay API: tracks calls, supports plan provisioning and cancel."""
+    state = {"status": remote_status, "calls": [], "plans": {}, "subs": {}}
+    def call(method, path, **kwargs):
+        state["calls"].append((method, path, kwargs.get("json")))
+        if method == "POST" and path == "/plans":
+            plan_id = "plan_YEARLY" + str(len(state["plans"]))
+            state["plans"][plan_id] = {"id": plan_id, **kwargs["json"]}
+            return state["plans"][plan_id]
+        if method == "GET" and path.startswith("/plans/"):
+            return state["plans"][path.split("/")[-1]]
+        if method == "POST" and path.endswith("/cancel"):
+            if not cancel_ok:
+                raise razorpay.RazorpayError("HTTP 400 cannot cancel")
+            state["status"] = "cancelled"
+            return {}
+        if method == "POST" and path == "/subscriptions":
+            new = "sub_NEWYEARLY" + str(len(state["subs"]))
+            state["subs"][new] = kwargs["json"]
+            return {"id": new}
+        if method == "GET" and path == "/subscriptions/" + sid:
+            return {"id": sid, "plan_id": "provider-plan", "notes": {"binding": "binding"},
+                    "status": state["status"], "paid_count": 0}
+        raise AssertionError("unexpected Razorpay call " + method + " " + path)
+    return state, call
+
+
+def test_razorpay_yearly_offer_is_enabled_and_provisions_verified_plan(monkeypatch):
+    offer = next(o for o in sub.offers() if o["id"] == "inr_yearly")
+    assert offer["enabled"] and offer["provider"] == "razorpay" and offer["interval"] == "YEAR"
+    state, call = _razorpay_fake()
+    monkeypatch.setattr(razorpay, "_call", call)
+    result = sub.checkout(UID, "inr_yearly")
+    assert result["provider"] == "razorpay" and result["amount"] == 199900 and result["trial"]
+    created_plan = next(j for m, p, j in state["calls"] if p == "/plans")
+    assert created_plan["period"] == "yearly" and created_plan["interval"] == 1
+    assert created_plan["item"] == {"name": "MyRecon Pro yearly", "amount": 199900, "currency": "INR"}
+    payload = next(iter(state["subs"].values()))
+    assert payload["total_count"] == 10 and payload["start_at"] == NOW + 3 * 86400
+    # The provisioned plan is cached; a second account reuses it.
+    store.store.set(sub._user(UID), {})
+    sub.checkout(UID, "inr_yearly")
+    assert sum(1 for m, p, j in state["calls"] if p == "/plans") == 1
+
+
+def test_razorpay_yearly_rejects_mismatched_configured_plan(monkeypatch):
+    monkeypatch.setattr(config, "BASIC_RAZORPAY_YEARLY_PLAN_ID", "plan_WRONG")
+    monkeypatch.setattr(razorpay, "_call", lambda method, path, **k: {
+        "id": "plan_WRONG", "period": "yearly", "interval": 1, "item": {"amount": 29900, "currency": "INR"}})
+    with pytest.raises(ValueError, match="does not match"):
+        sub.checkout(UID, "inr_yearly")
+
+
+def test_razorpay_yearly_paid_period_grants_year_of_credits(monkeypatch):
+    sid = seed("razorpay", "inr_yearly")
+    obj = {"id": sid, "plan_id": "provider-plan", "notes": {"binding": "binding"}, "status": "active",
+           "paid_count": 1, "current_start": NOW, "current_end": NOW + 365 * 86400}
+    monkeypatch.setattr(razorpay, "_call", lambda *a, **k: obj)
+    result = sub.sync("razorpay", sid, UID)
+    assert result["scans_left"] == 120 and result["until"] == (NOW + 365 * 86400) * 1000
+
+
+@pytest.mark.parametrize("target", ["monthly", "yearly", "inr_yearly"])
+def test_unauthorized_razorpay_checkout_is_closed_before_switching(monkeypatch, target):
+    seed("razorpay", "inr_monthly")
+    store.store.transaction(sub._user(UID), lambda cur: {**cur, "subscription": {**cur["subscription"], "status": "created"}})
+    state, call = _razorpay_fake()
+    monkeypatch.setattr(razorpay, "_call", call)
+    paypal_calls = []
+    def paypal_call(method, path, **kwargs):
+        paypal_calls.append(path)
+        return {"id": "I-NEWSUB123456", "links": [{"rel": "approve", "href": "https://www.sandbox.paypal.com/webapps/billing/subscriptions?ba_token=x"}]}
+    monkeypatch.setattr(paypal, "_call", paypal_call)
+    monkeypatch.setattr(sub, "_plan", lambda provider, key, trial: "server-plan")
+    result = sub.checkout(UID, target)
+    assert ("POST", "/subscriptions/sub_TEST123456/cancel", {"cancel_at_cycle_end": False}) in state["calls"]
+    assert result["provider"] == sub.provider_for(target) and result["id"] != "sub_TEST123456"
+    record = store.store.get(sub._user(UID))["subscription"]
+    assert record["plan"] == target and record["status"] == "pending"
+
+
+@pytest.mark.parametrize("remote_status", ["authenticated", "active", "pending"])
+def test_authorized_razorpay_subscription_is_never_replaced(monkeypatch, remote_status):
+    seed("razorpay", "inr_monthly")
+    store.store.transaction(sub._user(UID), lambda cur: {**cur, "subscription": {**cur["subscription"], "status": "created"}})
+    state, call = _razorpay_fake(remote_status)
+    monkeypatch.setattr(razorpay, "_call", call)
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: pytest.fail("must not create a PayPal subscription"))
+    monkeypatch.setattr(sub, "_plan", lambda *a: pytest.fail("must not prepare a new plan"))
+    with pytest.raises(ValueError, match="pending checkout"):
+        sub.checkout(UID, "monthly")
+    assert not any(p.endswith("/cancel") for m, p, j in state["calls"])
+
+
+def test_failed_close_of_unauthorized_checkout_blocks_new_subscription(monkeypatch):
+    seed("razorpay", "inr_monthly")
+    store.store.transaction(sub._user(UID), lambda cur: {**cur, "subscription": {**cur["subscription"], "status": "created"}})
+    state, call = _razorpay_fake(cancel_ok=False)
+    monkeypatch.setattr(razorpay, "_call", call)
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: pytest.fail("must not create a PayPal subscription"))
+    monkeypatch.setattr(sub, "_plan", lambda *a: pytest.fail("must not prepare a new plan"))
+    with pytest.raises(ValueError, match="could not be closed"):
+        sub.checkout(UID, "monthly")
+    assert store.store.get(sub._user(UID))["subscription"]["id"] == "sub_TEST123456"
+
+
+def test_pending_paypal_approval_is_not_replaced_by_razorpay(monkeypatch):
+    seed()
+    store.store.transaction(sub._user(UID), lambda cur: {**cur, "subscription": {**cur["subscription"], "status": "approval_pending"}})
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: pytest.fail("must not contact PayPal"))
+    monkeypatch.setattr(razorpay, "_call", lambda *a, **k: pytest.fail("must not contact Razorpay"))
+    monkeypatch.setattr(sub, "_plan", lambda *a: pytest.fail("must not prepare a new plan"))
+    with pytest.raises(ValueError, match="pending checkout"):
+        sub.checkout(UID, "inr_yearly")
+
+
+def test_same_razorpay_plan_resumes_instead_of_closing(monkeypatch):
+    seed("razorpay", "inr_yearly")
+    store.store.transaction(sub._user(UID), lambda cur: {**cur, "subscription": {**cur["subscription"], "status": "created"}})
+    state, call = _razorpay_fake()
+    monkeypatch.setattr(razorpay, "_call", call)
+    assert sub.checkout(UID, "inr_yearly")["id"] == "sub_TEST123456"
+    assert [m for m, p, j in state["calls"]] == ["GET"]
