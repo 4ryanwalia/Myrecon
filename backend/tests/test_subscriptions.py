@@ -241,3 +241,13 @@ def test_unapproved_paypal_checkout_has_clear_cancellation_message(monkeypatch):
     monkeypatch.setattr(paypal,'_call',lambda method,*a,**k:remote('APPROVAL_PENDING'))
     with pytest.raises(ValueError,match='no recurring payment is authorized'):
         sub.cancel(UID)
+
+def test_other_provider_pending_checkout_rejected_before_provider_requests(monkeypatch):
+    seed(provider="razorpay", plan="inr_monthly")
+    def unexpected(*args, **kwargs):
+        pytest.fail("Conflicting checkout must not contact a payment provider")
+    monkeypatch.setattr(sub, "_plan", unexpected)
+    monkeypatch.setattr(paypal, "_call", unexpected)
+    monkeypatch.setattr(razorpay, "_call", unexpected)
+    with pytest.raises(ValueError, match="pending checkout"):
+        sub.checkout(UID, "monthly")

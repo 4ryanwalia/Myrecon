@@ -10,7 +10,7 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
   const browser = await chromium.launch({channel:'chrome', headless:true});
   try {
     const page = await browser.newPage({viewport:{width:1366,height:900}});
-    const errors = []; const creations = [];
+    const errors = []; const creations = []; let currentSubscription = null;
     page.on('pageerror', e => errors.push(e.message));
     await page.route('**/*', async route => {
       const url = new URL(route.request().url());
@@ -20,7 +20,7 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
           creations.push(route.request().postDataJSON());
           return route.fulfill({status:503,json:{error:'Test checkout stopped before provider approval.'}});
         }
-        return route.fulfill({json:{subscription:null}});
+        return route.fulfill({json:{subscription:currentSubscription}});
       }
       if (url.pathname.includes('/assets/')) {
         const clean = url.pathname.replace('/optimized/','/').replace(/\.[a-f0-9]{12}\./,'.');
@@ -74,6 +74,22 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     await page.locator('[data-subscribe="paypal"]').click();
     assert.equal(await page.locator('#basicPlan').inputValue(),'monthly');
     assert.equal(await page.locator('#basicConsent').isChecked(),false);
+    currentSubscription = {id:'sub_TEST123456',provider:'razorpay',plan:'inr_monthly',status:'created',active:false,trial_eligible:true};
+    await page.reload();
+    await page.locator('#resumeRazorpay').waitFor({state:'visible'});
+    const createsBefore = creations.length;
+    await page.locator('[data-subscribe="paypal"]').click();
+    assert.match(await page.locator('#checkoutStatus').innerText(), /already have a Razorpay/);
+    await page.locator('#basicConsent').check();
+    assert.equal(await page.locator('#startBasic').isDisabled(),true);
+    assert.equal(creations.length,createsBefore);
+    await page.locator('#checkoutManage').click();
+    assert.equal(await page.locator('#subscriptionDialog').isVisible(),false);
+    await page.locator('#resumeRazorpay').click();
+    assert.equal(await page.locator('#basicPlan').inputValue(),'inr_monthly');
+    assert.equal(await page.locator('#basicConsent').isChecked(),false);
+    await page.locator('#basicConsent').check();
+    assert.equal(await page.locator('#startBasic').isEnabled(),true);
     assert.deepEqual(errors,[]);
   } finally {await browser.close();}
 });

@@ -10,16 +10,41 @@
   const selected = () => $("#basicPlan").value;
   const labels = { monthly: "US$3.99/month", yearly: "US$19.99/year", inr_monthly: "₹299/month" };
 
+  function checkoutConflict() {
+    if (!subscription) return false;
+    const terminal = ["cancelled", "expired", "completed"].includes(subscription.status);
+    const resumable = ["pending", "approval_pending", "created"].includes(subscription.status);
+    return subscription.active || (!terminal && !(resumable && subscription.id && subscription.plan === selected()));
+  }
+
+  function conflictMessage() {
+    return `You already have ${subscription?.provider === "razorpay" ? "a Razorpay" : "a PayPal"} ${labels[subscription?.plan] || ""} checkout or subscription. Manage it first, or resume that same plan. A second subscription has not been created.`;
+  }
+
   async function api(path, body) {
-    const response = await fetch(base + "/api/billing/subscriptions" + path, {
-      method: body === undefined ? "GET" : "POST",
-      headers: { "Content-Type": "application/json", ...await A.authHeaders() },
-      body: body === undefined ? undefined : JSON.stringify(body),
-      signal: AbortSignal.timeout(60000),
+    const controller = new AbortController();
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        controller.abort();
+        reject(new Error("Checkout took too long to respond. Check subscription status before retrying. An unfinished checkout may already exist; do not start a second subscription."));
+      }, 30000);
     });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || "Could not update subscription.");
-    return result;
+    try {
+      return await Promise.race([timeout, (async () => {
+        const headers = await A.authHeaders();
+        controller.signal.throwIfAborted();
+        const response = await fetch(base + "/api/billing/subscriptions" + path, {
+          method: body === undefined ? "GET" : "POST",
+          headers: { "Content-Type": "application/json", ...headers },
+          body: body === undefined ? undefined : JSON.stringify(body),
+          signal: controller.signal,
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Could not reach checkout. Check subscription status before retrying.");
+        return result;
+      })()]);
+    } finally { clearTimeout(timer); }
   }
 
   function render() {
@@ -29,9 +54,14 @@
       ? `3 days free, then ${labels[selected()]} automatically until cancelled. Cancel before the first charge to pay no subscription fee. One trial per account. Your exact first charge date is shown by the payment provider.`
       : `${labels[selected()]} starting today, automatically renewing until cancelled. Your account has already used its free trial.`;
     $("#basicAllowance").textContent = `${selected() === "yearly" ? "120 Extended scans per paid year" : "10 Extended scans per paid month"}; 3 during your free trial. Unused subscription scans expire at the end of their period.`;
-    $("#startBasic").disabled = busy || !A?.enabled || !offer?.enabled || !$("#basicConsent").checked;
+    $("#startBasic").disabled = busy || checkoutConflict() || !A?.enabled || !offer?.enabled || !$("#basicConsent").checked;
     $("#startBasic").textContent = busy ? "Please wait…" : trial ? "Start 3-day free trial" : "Subscribe to Pro";
     $("#basicPlan").disabled = busy;
+    if ($("#checkoutManage")) $("#checkoutManage").hidden = !checkoutConflict();
+    if ($("#resumeRazorpay")) {
+      $("#resumeRazorpay").hidden = !(subscription?.provider === "razorpay" && subscription?.id && ["pending", "created"].includes(subscription.status));
+      $("#resumeRazorpay").disabled = busy;
+    }
     const yearly = period === "yearly";
     document.querySelectorAll("[data-billing]").forEach((button) => {
       button.disabled = busy;
@@ -76,14 +106,14 @@
         : "Check status after completing checkout. If checkout was interrupted, contact support before starting another subscription.");
   }
 
-  async function refresh() {
+  async function refresh(includeAccount = true) {
     const uid = A?.state().user?.uid;
     if (!uid) { subscription = null; render(); return; }
     const result = await api("");
     if (A.state().user?.uid !== uid) return;
     subscription = result.subscription;
     render();
-    await A.refreshAccount();
+    if (includeAccount) await A.refreshAccount();
   }
 
   async function loadRazorpay() {
@@ -99,7 +129,10 @@
 
   async function start() {
     if (busy || !$("#basicConsent").checked) return;
+    if (checkoutConflict()) { say(conflictMessage()); return; }
     busy = true; render();
+    say("Checking your account and existing checkout…");
+    let progressTimer;
     try {
       if (!A.state().user) await A.signIn();
       const uid = A.state().user?.uid;
@@ -107,8 +140,9 @@
       // Sign-in may reveal that this account has already used its trial.
       // Reconfirm the displayed terms before creating a billable contract.
       const offeredTrial = subscription?.trial_eligible !== false;
-      await refresh();
+      await refresh(false);
       if (A.state().user?.uid !== uid) return;
+      if (checkoutConflict()) { say(conflictMessage()); return; }
       if (offeredTrial !== (subscription?.trial_eligible !== false)) {
         $("#basicConsent").checked = false;
         say("Your account has already used its trial. Review the updated billing terms and select Subscribe to Pro to continue.");
@@ -117,8 +151,10 @@
       const key = selected();
       if (key === "inr_monthly") await loadRazorpay();
       say("Preparing your subscription approval…");
+      progressTimer = setTimeout(() => say("Still waiting for the payment provider. Please keep this page open; this can take up to 30 seconds."), 8000);
       const result = await api("", { plan: key, consent: true });
       if (A.state().user?.uid !== uid) return;
+      clearTimeout(progressTimer);
       if (result.provider === "paypal") {
         const url = new URL(result.url);
         if (url.protocol !== "https:" || !["www.paypal.com", "www.sandbox.paypal.com"].includes(url.hostname) || url.username || url.password || (url.port && url.port !== "443")) throw new Error("Invalid approval link.");
@@ -141,7 +177,7 @@
       $("#subscriptionDialog")?.close();
       checkout.open();
     } catch (e) { say(A.friendly(e)); }
-    finally { busy = false; render(); }
+    finally { clearTimeout(progressTimer); busy = false; render(); }
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -159,8 +195,22 @@
       $("#basicConsent").checked = false;
       if ($("#checkoutStatus")) $("#checkoutStatus").textContent = "";
       render();
+      if (checkoutConflict()) say(conflictMessage());
       $("#subscriptionDialog").showModal();
     }));
+    $("#checkoutManage")?.addEventListener("click", () => {
+      $("#subscriptionDialog").close();
+      $("#manageSubscription").scrollIntoView({ block: "center" });
+      $("#refreshSubscription").focus({ preventScroll: true });
+    });
+    $("#resumeRazorpay")?.addEventListener("click", () => {
+      period = "monthly";
+      $("#basicPlan").value = "inr_monthly";
+      $("#basicConsent").checked = false;
+      say("Resume your existing Razorpay checkout. Review the terms, then continue; this will reuse the same subscription.");
+      render();
+      $("#subscriptionDialog").showModal();
+    });
     $("#closeSubscription")?.addEventListener("click", () => $("#subscriptionDialog").close());
     $("#basicPlan").addEventListener("change", () => { $("#basicConsent").checked = false; render(); });
     $("#basicConsent").addEventListener("change", render);

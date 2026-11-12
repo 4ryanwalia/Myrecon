@@ -181,6 +181,12 @@ def checkout(uid, key):
             return {"id": pending["id"], "provider": provider, "url": intent.get("url"),
                     "key_id": config.RAZORPAY_KEY_ID if provider == "razorpay" else None,
                     "trial": intent["trial"], "trial_until": intent.get("trial_until"), **CATALOG[key]}
+    existing = store.store.get(_user(uid)) or {}
+    pending = existing.get("subscription") or {}
+    # Reject an existing contract before making unrelated provider API calls.
+    # The transaction below remains the final concurrency guard.
+    if pending and (pending.get("status") not in TERMINAL or pending.get("until", 0) > time.time() * 1000):
+        raise ValueError("You already have a subscription or pending checkout. Manage it below before starting another.")
     trial = not bool(existing.get("basic_trial_used"))
     plan_id = _plan(provider, key, trial)
     binding = uuid.uuid4().hex
