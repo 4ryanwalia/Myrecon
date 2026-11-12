@@ -129,3 +129,20 @@
   .pricing-page .price { margin-top: 14px; }
   .pricing-page .plan ul { gap: 8px; margin: 14px 0 18px; }
 }
+@media (min-width: 900px) and (max-height: 800px) {
+  .pricing-page { padding-top: 10px; }
+  .pricing-intro { margin: 6px 0 10px; }
+  .pricing-intro .pricing-eyebrow { display: none; }
+  .pricing-intro h1 { font-size: 2rem; }
+  .billing-switch { margin-bottom: 12px; }
+  .pricing-page .plan { padding: 18px; }
+  .pricing-page .price { margin-top: 10px; font-size: 2.2rem; }
+  .price-caption { min-height: 0; }
+  .pricing-page .plan ul { margin: 12px 0; gap: 6px; }
+  .plan-description { margin-top: 4px; }
+}
+@media (max-width: 420px) {
+  body:has(.pricing-page) .brand small { display: none; }
+  body:has(.pricing-page) .nav-inner { gap: 8px; }
+  body:has(.pricing-page) .brand { font-size: 1rem; gap: 6px; }
+}

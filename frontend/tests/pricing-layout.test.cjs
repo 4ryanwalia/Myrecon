@@ -39,6 +39,8 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     assert.equal(await page.locator('select').count(),0);
     assert.ok(await page.locator('.plans').evaluate(el=>el.getBoundingClientRect().bottom) < 900);
     await page.screenshot({path:process.env.PRICING_SCREENSHOT || path.join(require('node:os').tmpdir(),'myrecon-pricing-desktop.png'),fullPage:true});
+    await page.setViewportSize({width:1366,height:768});
+    assert.ok(await page.locator('.plans').evaluate(el=>el.getBoundingClientRect().bottom) < 768);
     await page.locator('[data-billing="yearly"]').click();
     assert.equal(await page.locator('#proPrice').innerText(),'$19.99');
     assert.match(await page.locator('#proCredits').innerText(),/120/);
