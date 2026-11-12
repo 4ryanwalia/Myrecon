@@ -444,3 +444,22 @@ body.pricing-monochrome {
 }
 
 .pricing-monochrome .price small { letter-spacing: 0; margin-left: 6px; font-size: .85rem; }
+
+/* Provider branding is the only color accent on the monochrome pricing page. */
+.pricing-monochrome .plan .provider-paypal { background: #ffc439; border-color: #ffc439; color: #003087; }
+.pricing-monochrome .plan .provider-paypal:hover:not(:disabled) { background: #ffd05b; border-color: #ffd05b; }
+.pricing-monochrome .provider-paypal .provider-price,
+.pricing-monochrome .provider-paypal .provider-meta { color: #003087; }
+.pricing-monochrome .provider-wordmark { width: 88px; height: 28px; object-fit: contain; }
+.pricing-monochrome .provider-paypal .provider-cta,
+.pricing-monochrome .provider-paypal:hover:not(:disabled) .provider-cta { background: #003087; color: #fff; }
+.pricing-monochrome .plan .provider-razorpay { background: #2455d6; border-color: #4778f5; color: #fff; }
+.pricing-monochrome .plan .provider-razorpay:hover:not(:disabled) { background: #3064e8; border-color: #7096ff; }
+.pricing-monochrome .provider-razorpay .provider-brand { min-height: 28px; }
+.pricing-monochrome .provider-razorpay .provider-name { font-style: italic; }
+.pricing-monochrome .provider-razorpay .provider-meta { color: #fff; }
+.pricing-monochrome .provider-razorpay .provider-cta,
+.pricing-monochrome .provider-razorpay:hover:not(:disabled) .provider-cta { background: #fff; color: #1743b5; }
+.pricing-monochrome .provider-btn:disabled .provider-wordmark { filter: grayscale(1); opacity: .5; }
+.pricing-monochrome .provider-paypal:disabled .provider-price,
+.pricing-monochrome .provider-paypal:disabled .provider-meta { color: var(--text-dim); }
