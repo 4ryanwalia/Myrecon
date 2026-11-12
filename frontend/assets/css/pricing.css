@@ -85,66 +85,121 @@
 .plan .provider-btn {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 2px;
-  min-height: 64px;
+  min-height: 68px;
   min-width: 0;
   white-space: normal;
-  background: var(--burgundy);
-  border: 1px solid var(--burgundy);
-  color: #fff;
-  padding: 7px 6px;
-  border-radius: 8px;
+  padding: 8px 6px 7px;
+  border-radius: 9px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  transition: transform 0.12s ease, filter 0.12s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
 }
 .plan .provider-btn:hover:not(:disabled) {
-  filter: brightness(1.12);
-  transform: translateY(-1px);
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
-.plan .provider-btn .provider-name {
+.plan .provider-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1;
+}
+.plan .provider-logo {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.plan .provider-name {
   font-size: .95rem;
   font-weight: 800;
   letter-spacing: -.02em;
-  line-height: 1.1;
+  line-height: 1;
+  color: #fff;
 }
-.plan .provider-btn .provider-price {
-  font-size: .78rem;
-  font-weight: 700;
-  opacity: .95;
+.plan .provider-price {
+  font-size: .82rem;
+  font-weight: 750;
+  color: #fff;
   line-height: 1.2;
 }
-.plan .provider-btn .provider-meta {
+.plan .provider-meta {
   font-size: .63rem;
-  opacity: .82;
   line-height: 1.15;
 }
-.plan .provider-btn .provider-cta {
+.plan .provider-cta {
   margin-top: 2px;
   font-size: .67rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: .04em;
-  background: #fff;
-  color: var(--burgundy);
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
   line-height: 1.2;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
+
+/* Authentic PayPal Brand Theme */
+.plan .provider-paypal {
+  background: linear-gradient(145deg, #003087 0%, #001c4a 100%);
+  border: 1px solid #005ea6;
+  color: #fff;
+}
+.plan .provider-paypal .provider-meta {
+  color: #bae6fd;
+}
+.plan .provider-paypal .provider-cta {
+  background: #ffc439;
+  color: #002c66;
+}
+.plan .provider-paypal:hover:not(:disabled) .provider-cta {
+  background: #ffd05b;
+}
+
+/* Authentic Razorpay Brand Theme */
+.plan .provider-razorpay {
+  background: linear-gradient(145deg, #0c2340 0%, #061527 100%);
+  border: 1px solid #1a4a82;
+  color: #fff;
+}
+.plan .provider-razorpay .provider-logo {
+  color: #3395ff;
+}
+.plan .provider-razorpay .provider-meta {
+  color: #bfdbfe;
+}
+.plan .provider-razorpay .provider-cta {
+  background: #3395ff;
+  color: #fff;
+}
+.plan .provider-razorpay:hover:not(:disabled) .provider-cta {
+  background: #4da3ff;
+}
+
 .plan .provider-btn:disabled {
-  background: var(--surface-2);
-  color: var(--text-dim);
-  border-color: var(--border);
+  background: var(--surface-2) !important;
+  color: var(--text-dim) !important;
+  border-color: var(--border) !important;
   opacity: 1;
   cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.plan .provider-btn:disabled .provider-name {
+  color: var(--text-dim) !important;
+}
+.plan .provider-btn:disabled .provider-logo {
+  opacity: .35;
+  color: var(--text-dim) !important;
 }
 .plan .provider-btn:disabled .provider-cta {
-  background: var(--border);
-  color: var(--text-dim);
+  background: var(--border) !important;
+  color: var(--text-dim) !important;
+  box-shadow: none !important;
 }
 .plan-footnote { color: var(--text-dim); font-size: .7rem; line-height: 1.5; margin-top: 10px; }
 .pricing-reassurance { text-align: center; color: var(--text-dim); font-size: .73rem; margin: 14px 0 5px; line-height: 1.5; }
@@ -303,7 +358,11 @@
   .pricing-page .plan ul { margin: 6px 0 8px; gap: 4px; font-size: .78rem; }
   .trial-timeline { margin: 4px 0 8px; padding: 5px 8px; gap: 2px; font-size: .7rem; }
   .plan-description { margin-top: 2px; font-size: .78rem; }
-  .plan .provider-btn { min-height: 56px; padding: 5px 4px; gap: 1px; }
+  .plan .provider-btn { min-height: 56px; padding: 4px 4px; gap: 1px; }
+  .plan .provider-btn .provider-logo { width: 14px; height: 14px; }
+  .plan .provider-btn .provider-name { font-size: .88rem; }
+  .plan .provider-btn .provider-price { font-size: .78rem; }
+  .plan .provider-btn .provider-cta { font-size: .62rem; padding: 1px 6px; }
   .plan-footnote { margin-top: 5px; font-size: .66rem; }
   .pricing-reassurance { margin: 8px 0 3px; }
 }
