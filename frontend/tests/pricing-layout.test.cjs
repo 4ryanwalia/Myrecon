@@ -72,6 +72,7 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
       for (const theme of ['light','dark']) {
         await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);
         assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth),`${width} ${theme} overflow`);
+        if (width <= 390) assert.ok(await page.locator('.plan.featured').evaluate(el => el.getBoundingClientRect().top < document.querySelector('[data-plan-card="free"]').getBoundingClientRect().top));
         if (width===390) await page.screenshot({path:path.join(require('node:os').tmpdir(),`myrecon-pricing-mobile-${theme}.png`),fullPage:true});
       }
     }
@@ -111,6 +112,8 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     assert.equal(await page.locator('#subscriptionDialog').isVisible(),false);
     assert.match(await page.locator('#subscriptionDetails').innerText(), /Pro/);
     assert.equal(await page.locator('#cancelSubscription').innerText(), 'Cancel subscription');
+    assert.doesNotMatch(await page.locator('#pricingHeading').innerText(), /free/i);
+    assert.equal(await page.locator('#trialTimeline').isVisible(),false);
     assert.deepEqual(errors,[]);
   } finally {await browser.close();}
 });

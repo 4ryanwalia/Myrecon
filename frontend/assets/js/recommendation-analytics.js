@@ -53,6 +53,11 @@
   }
   window.MyReconAnalytics = Object.freeze({
     isBenchmark,
+    subscriptionStep(step, plan) {
+      if (!['billing_select', 'checkout_review', 'checkout_submit', 'provider_handoff'].includes(step)
+          || !['monthly', 'yearly', 'inr_monthly', 'inr_yearly'].includes(plan)) return;
+      send('subscription_' + step, { subscription_plan: plan, pricing_version: 'trial_clarity_v1' });
+    },
     scanComplete(tool, scope, partial) {
       if (!TOOLS.has(tool)) return;
       send('scan_complete', { scan_tool: tool,

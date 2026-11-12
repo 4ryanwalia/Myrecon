@@ -57,3 +57,19 @@ test('benchmark flag suppresses conversions across internal pages, even without 
   const c = load('https://www.myrecon.xyz/?mr_benchmark=1', '', new Map(), true);
   assert.equal(c.api.isBenchmark(), true);
 });
+
+
+test('subscription funnel accepts bounded steps and plans and suppresses benchmark traffic', () => {
+  const a = load('https://www.myrecon.xyz/pricing?email=private@example.com');
+  a.api.subscriptionStep('checkout_review', 'yearly');
+  a.api.subscriptionStep('provider_handoff', 'inr_monthly');
+  a.api.subscriptionStep('purchase', 'yearly');
+  a.api.subscriptionStep('checkout_review', 'private@example.com');
+  assert.equal(a.events.length, 2);
+  assert.equal(a.events[0][1], 'subscription_checkout_review');
+  assert.equal(a.events[1][1], 'subscription_provider_handoff');
+  assert.doesNotMatch(JSON.stringify(a.events), /private|email|purchase/);
+  const b = load('https://www.myrecon.xyz/pricing?mr_benchmark=1');
+  b.api.subscriptionStep('checkout_submit', 'monthly');
+  assert.equal(b.events.length, 0);
+});

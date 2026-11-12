@@ -371,3 +371,21 @@
   body:has(.pricing-page) .nav-inner { gap: 8px; }
   body:has(.pricing-page) .brand { font-size: 1rem; gap: 6px; }
 }
+
+/* Trial guidance keeps the decision concrete without adding checkout steps. */
+.trial-guide, .pricing-faq { margin: 36px 0; }
+.trial-guide h2, .pricing-faq h2 { font-size: clamp(1.3rem, 3vw, 1.8rem); letter-spacing: -.03em; margin-bottom: 18px; }
+.trial-use-cases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+.trial-use-cases article { padding: 22px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.trial-use-cases article > span { color: var(--accent); font-weight: 800; }
+.trial-use-cases h3 { font-size: 1rem; margin: 12px 0 8px; }
+.trial-use-cases p, .pricing-faq p { color: var(--text-dim); line-height: 1.65; font-size: .9rem; }
+.pricing-faq details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+.pricing-faq summary { cursor: pointer; font-weight: 650; line-height: 1.5; }
+.pricing-faq p { margin-top: 12px; max-width: 80ch; }
+#plans { scroll-margin-top: 90px; }
+@media (max-width: 640px) {
+  .pricing-page .plan.featured { grid-row: 1; }
+  .trial-use-cases { grid-template-columns: 1fr; }
+  .trial-use-cases article { padding: 18px; }
+}

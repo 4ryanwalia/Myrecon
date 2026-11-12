@@ -14,12 +14,12 @@
   const COPY = {
     monthly: {
       price: "$3.99", period: "/ month", anchor: "", credits: "10 Extended scans per paid month",
-      caption: "About 13¢ a day · ₹299/month in India",
+      caption: "Monthly flexibility · ₹299/month in India",
       paypal: "$3.99/mo", razorpay: "₹299/mo", charge: "Pro continues at $3.99/mo or ₹299/mo.",
     },
     yearly: {
-      price: "$19.99", period: "/ year", anchor: "$47.88", credits: "120 Extended scans per paid year",
-      caption: "Just $1.67/month, billed yearly · ₹1,999/year in India",
+      price: "$19.99", period: "/ year", anchor: "", credits: "120 Extended scans per paid year",
+      caption: "$1.67/month equivalent · $19.99 billed yearly · ₹1,999/year in India",
       paypal: "$19.99/yr · save 58%", razorpay: "₹1,999/yr · save 44%", charge: "Pro continues at $19.99/yr or ₹1,999/yr.",
     },
   };
@@ -100,6 +100,8 @@
       button.setAttribute("aria-pressed", String(button.dataset.billing === period));
     });
     const setText = (id, text) => { if ($(id)) $(id).textContent = text; };
+    setText("#pricingHeading", trial ? "Follow more public leads. Try Pro free." : "Follow more public leads with Pro.");
+    setText("#pricingIntroCopy", trial ? "Explore Deep Search and a wider username search for 3 days. Cancel before your trial ends to avoid the subscription charge." : "Choose your billing period for Deep Search, unlimited Standard scans and Extended scan credits.");
     setText("#proPrice", copy.price);
     setText("#proPeriod", copy.period);
     if ($("#proAnchor")) { $("#proAnchor").textContent = copy.anchor; $("#proAnchor").hidden = !copy.anchor; }
@@ -108,12 +110,12 @@
     setText("#paypalPrice", copy.paypal);
     setText("#razorpayPrice", copy.razorpay);
     setText("#timelineCharge", copy.charge);
-    setText("#trialRibbonTitle", trial ? "3-Day Free Trial · Try Once" : "Welcome back");
-    setText("#trialRibbonText", trial ? "Try every Pro feature. $0 today." : "Pick up where you left off with Pro.");
+    setText("#trialRibbonTitle", trial ? "3 days to explore Pro" : "Welcome back");
+    setText("#trialRibbonText", trial ? "Includes 3 Extended scans + Deep Search." : "Pick up where you left off with Pro.");
     if ($("#trialTimeline")) $("#trialTimeline").hidden = !trial;
     if ($("#trialPill")) $("#trialPill").hidden = !trial;
-    document.querySelectorAll("[data-provider-cta]").forEach((el) => { el.textContent = trial ? "Start free trial" : "Subscribe"; });
-    setText("#trialSummary", trial ? "Free for 3 days, then your selected price, auto-renewing until cancelled. One trial per account." : "Your free trial has been used. Billing starts today and renews automatically until cancelled. Cancel anytime from this page.");
+    document.querySelectorAll("[data-provider-cta]").forEach((el) => { el.textContent = trial ? "Try Pro free for 3 days" : "Subscribe"; });
+    setText("#trialSummary", trial ? `3 days free, then ${yearly ? "US$19.99/year or ₹1,999/year" : "US$3.99/month or ₹299/month"}. Auto-renews until cancelled. New subscribers only.` : "Your free trial has been used. Billing starts today and renews automatically until cancelled. Cancel anytime from this page.");
     setText("#checkoutHeading", trial ? "Start your 3-day free trial" : "Subscribe to Pro");
     setText("#checkoutProvider", `${isRazorpay(selected()) ? "Razorpay" : "PayPal"} · ${labels[selected()]}`);
     document.querySelectorAll("[data-subscribe]").forEach((button) => {
@@ -190,10 +192,12 @@
         return;
       }
       const key = selected();
+      window.MyReconAnalytics?.subscriptionStep?.("checkout_submit", key);
       if (isRazorpay(key)) await loadRazorpay();
       say(replaceable() && subscription.plan !== key ? "Closing your unfinished Razorpay checkout and preparing this plan…" : "Preparing your subscription approval…");
       progressTimer = setTimeout(() => say("Still waiting for the payment provider. Please keep this page open; this can take up to 30 seconds."), 8000);
       const result = await api("", { plan: key, consent: true });
+      window.MyReconAnalytics?.subscriptionStep?.("provider_handoff", key);
       if (A.state().user?.uid !== uid) return;
       clearTimeout(progressTimer);
       if (result.provider === "paypal") {
@@ -228,6 +232,7 @@
     document.querySelectorAll("[data-billing]").forEach((button) => button.addEventListener("click", () => {
       if (busy) return;
       period = button.dataset.billing;
+      window.MyReconAnalytics?.subscriptionStep?.("billing_select", period);
       $("#basicPlan").value = period;
       $("#basicConsent").checked = false;
       render();
@@ -240,6 +245,7 @@
       render();
       if (checkoutConflict()) say(conflictMessage());
       $("#subscriptionDialog").showModal();
+      window.MyReconAnalytics?.subscriptionStep?.("checkout_review", selected());
     }));
     $("#checkoutManage")?.addEventListener("click", () => {
       $("#subscriptionDialog").close();
