@@ -472,6 +472,10 @@ def _register_routes(app: Flask) -> None:
     register_android_referrals(app, _json_body, responses)
     from core.android_billing import register_routes as register_android_billing
     register_android_billing(app, _json_body, responses)
+    from core.android_pro import register_routes as register_android_pro
+    register_android_pro(app, _json_body, responses)
+    from core.android_growth import register_routes as register_android_growth
+    register_android_growth(app, _json_body, responses)
     from services.search import search_username, search_fullname
     from services.email import scan_email
     from services.image import scan_image
