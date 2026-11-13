@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-11-12",
+  "generated": "2026-11-13",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,6 +14,63 @@
   },
   "count": 10,
   "breaches": [
+    {
+      "name": "CastleRAT",
+      "title": "CastleRAT",
+      "slug": "castlerat",
+      "url": "https://www.myrecon.xyz/breaches/castlerat.html",
+      "domain": null,
+      "breach_date": "2026-11-12",
+      "added_date": "2026-11-13T05:41:32Z",
+      "accounts": 179745,
+      "data_classes": [
+        "Email addresses",
+        "Passwords"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Malware.png",
+      "severity": 56,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In November 2026, Europol and international law enforcement partners dismantled infrastructure supporting several malware operations. Among them was CastleRAT, a remote access trojan (RAT) that enabled criminals to remotely control infected computers. Europol provided HIBP with 180k email addresses associated with CastleRAT infections, along with 893k unique passwords observed more than 3M times…",
+      "story": {
+        "background": [
+          "In November 2026, Europol and international law enforcement partners dismantled infrastructure supporting several malware operations . Among them was CastleRAT, a remote access trojan (RAT) that enabled criminals to remotely control infected computers. Europol provided HIBP with 180k email addresses associated with CastleRAT infections, along with 893k unique passwords observed more than 3M times across accounts used on infected computers. The passwords are now searchable via Pwned Passwords ."
+        ],
+        "how": [
+          "In November 2026, Europol and international law enforcement partners dismantled infrastructure supporting several malware operations ."
+        ],
+        "motive": [],
+        "outcome": [
+          "179,745 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Passwords."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "CastleRAT",
+          "breach_date": "2026-11-12"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Passwords",
+          "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        }
+      ],
+      "actions": [
+        "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": null
+    },
     {
       "name": "YouHack",
       "title": "YouHack",
@@ -780,92 +837,6 @@
         },
         {
           "name": "Salutations",
-          "why": "Adds detail to a profile that can be assembled from several breaches at once."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
-      ],
-      "scale_line": null
-    },
-    {
-      "name": "CyrusOne",
-      "title": "CyrusOne",
-      "slug": "cyrusone",
-      "url": "https://www.myrecon.xyz/breaches/cyrusone.html",
-      "domain": "cyrusone.com",
-      "breach_date": "2026-08-05",
-      "added_date": "2026-10-07T23:19:16Z",
-      "accounts": 373460,
-      "data_classes": [
-        "Email addresses",
-        "Employers",
-        "Job titles",
-        "Names",
-        "Phone numbers",
-        "Physical addresses",
-        "Support tickets"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/CyrusOne.png",
-      "severity": 55,
-      "band": "Serious",
-      "data_provider": null,
-      "summary": "In August 2026, data centre operator CyrusOne was the target of a ShinyHunters \"pay or leak\" extortion attempt. The group subsequently published data allegedly obtained from the company, which included 373k unique email addresses across records relating to users, sales leads and CyrusOne employees. The data largely consisted of corporate contact information, including names, physical addresses…",
-      "story": {
-        "background": [
-          "In August 2026, data centre operator CyrusOne was the target of a ShinyHunters \"pay or leak\" extortion attempt . The group subsequently published data allegedly obtained from the company, which included 373k unique email addresses across records relating to users, sales leads and CyrusOne employees. The data largely consisted of corporate contact information, including names, physical addresses, phone numbers and job titles.",
-          "It also included support tickets and other information related to the organisation's operations."
-        ],
-        "how": [
-          "The published account does not explain the exact way the data was obtained."
-        ],
-        "motive": [
-          "In August 2026, data centre operator CyrusOne was the target of a ShinyHunters \"pay or leak\" extortion attempt ."
-        ],
-        "outcome": [
-          "373,460 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Support tickets."
-        ],
-        "editorial": []
-      },
-      "check_targets": [
-        {
-          "name": "CyrusOne",
-          "breach_date": "2026-08-05"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Employers",
-          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
-        },
-        {
-          "name": "Job titles",
-          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
-        },
-        {
-          "name": "Support tickets",
           "why": "Adds detail to a profile that can be assembled from several breaches at once."
         }
       ],

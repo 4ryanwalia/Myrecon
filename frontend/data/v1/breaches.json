@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-11-12",
+  "generated": "2026-11-13",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -12,9 +12,66 @@
     "licence": "https://creativecommons.org/licenses/by/4.0/",
     "notice": "Breach data originates from Have I Been Pwned and is licensed CC BY 4.0. If you publish it you must credit Have I Been Pwned. A link to https://www.myrecon.xyz/breaches/ is appreciated but not required by the licence."
   },
-  "count": 59,
-  "total_accounts": 5958654696,
+  "count": 60,
+  "total_accounts": 5958834441,
   "breaches": [
+    {
+      "name": "CastleRAT",
+      "title": "CastleRAT",
+      "slug": "castlerat",
+      "url": "https://www.myrecon.xyz/breaches/castlerat.html",
+      "domain": null,
+      "breach_date": "2026-11-12",
+      "added_date": "2026-11-13T05:41:32Z",
+      "accounts": 179745,
+      "data_classes": [
+        "Email addresses",
+        "Passwords"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Malware.png",
+      "severity": 56,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In November 2026, Europol and international law enforcement partners dismantled infrastructure supporting several malware operations. Among them was CastleRAT, a remote access trojan (RAT) that enabled criminals to remotely control infected computers. Europol provided HIBP with 180k email addresses associated with CastleRAT infections, along with 893k unique passwords observed more than 3M times…",
+      "story": {
+        "background": [
+          "In November 2026, Europol and international law enforcement partners dismantled infrastructure supporting several malware operations . Among them was CastleRAT, a remote access trojan (RAT) that enabled criminals to remotely control infected computers. Europol provided HIBP with 180k email addresses associated with CastleRAT infections, along with 893k unique passwords observed more than 3M times across accounts used on infected computers. The passwords are now searchable via Pwned Passwords ."
+        ],
+        "how": [
+          "In November 2026, Europol and international law enforcement partners dismantled infrastructure supporting several malware operations ."
+        ],
+        "motive": [],
+        "outcome": [
+          "179,745 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Email addresses, Passwords."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "CastleRAT",
+          "breach_date": "2026-11-12"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Passwords",
+          "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        }
+      ],
+      "actions": [
+        "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": null
+    },
     {
       "name": "DoubleCounter",
       "title": "Double Counter",
