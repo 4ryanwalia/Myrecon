@@ -11,14 +11,46 @@ log = logging.getLogger("myrecon.scan_jobs")
 _lock = threading.Lock()
 _thread = None
 _maintenance_thread = None
+_wake = threading.Event()
+_refund_settled = set()
+
+
+def wake():
+    _wake.set()
+
+
+jobs.set_wake_hook(wake)
+
+
+def _remember_refund_settled(job_id):
+    if len(_refund_settled) >= 512:
+        _refund_settled.clear()
+    _refund_settled.add((id(storage.store), job_id))
 
 
 def refund(job):
-    if job and job.get("status") in ("failed", "cancelled"):
-        receipt = plans.job_receipt(job.get("uid"), job["id"])
-        source = job.get("charged") or (receipt or {}).get("source")
-        if source:
-            plans.refund_full_scan(job.get("uid"), source, job_id=job["id"])
+    if not job or job.get("status") not in ("failed", "cancelled") or job.get("refund_done"):
+        return
+    job_id = job["id"]
+    if (id(storage.store), job_id) in _refund_settled:
+        jobs.mark_refund_done(job_id)
+        return
+    uid = job.get("uid")
+    receipt = plans.job_receipt(uid, job_id)
+    if receipt and receipt.get("refunded"):
+        _remember_refund_settled(job_id)
+        jobs.mark_refund_done(job_id)
+        return
+    source = job.get("charged") or (receipt or {}).get("source")
+    if source and uid:
+        plans.refund_full_scan(uid, source, job_id=job_id)
+        after = plans.job_receipt(uid, job_id)
+        if not after or after.get("refunded"):
+            _remember_refund_settled(job_id)
+            jobs.mark_refund_done(job_id)
+    elif not uid or not receipt:
+        _remember_refund_settled(job_id)
+        jobs.mark_refund_done(job_id)
 
 
 def execute(job):
@@ -115,8 +147,11 @@ def execute(job):
         monitor.join(timeout=1)
 
 
-def maintenance():
-    for job in (storage.store.get(jobs.ROOT) or {}).values():
+def maintenance(prune=True, prune_workers=True):
+    seq_before = jobs.read_signal_seq()
+    snapshot = storage.store.get(jobs.ROOT) or {}
+    mutated = False
+    for job in snapshot.values():
         try:
             if job["status"] not in jobs.TERMINAL:
                 # An interrupted admission/finalization must not clog the queue.
@@ -135,25 +170,35 @@ def maintenance():
                         # receipt cannot currently be read. Refund retries are
                         # isolated below and remain idempotent.
                         job = jobs.expire(job["id"], limit=limit)
+                    mutated = True
+            was_refund_done = bool(job.get("refund_done"))
             refund(job)
+            if not was_refund_done and job.get("status") in ("failed", "cancelled"):
+                mutated = True
             if job["status"] == "complete" and job.get("uid") and not job.get("history_id") and storage.persistent():
                 if history.save(job["uid"], jobs.result(job), scan_id=job["id"],
                                 job_token=job["result_token"]):
                     jobs.remember_history(job["id"], job["result_token"])
+                    mutated = True
         except Exception as exc:
             # A damaged result or transient history/refund write for one job
             # must not block every other scan from being reclaimed or run.
             log.warning("Could not maintain one scan job (%s)", type(exc).__name__)
-    try:
-        jobs.prune()
-    except Exception as exc:
-        log.warning("Could not prune scan jobs (%s)", type(exc).__name__)
-    try:
-        scan_workers.prune()
-    except Exception as exc:
-        # Presence is operator telemetry. A transient cleanup failure must not
-        # prevent the scan coordinator from maintaining or running jobs.
-        log.warning("Could not prune scan-worker presence (%s)", type(exc).__name__)
+    if prune:
+        try:
+            jobs.prune()
+            mutated = True
+        except Exception as exc:
+            log.warning("Could not prune scan jobs (%s)", type(exc).__name__)
+    if not mutated and snapshot is not None:
+        jobs.sync_from_snapshot(snapshot, seq_before)
+    if prune_workers:
+        try:
+            scan_workers.prune()
+        except Exception as exc:
+            # Presence is operator telemetry. A transient cleanup failure must not
+            # prevent the scan coordinator from maintaining or running jobs.
+            log.warning("Could not prune scan-worker presence (%s)", type(exc).__name__)
 
 
 def ensure_started():
@@ -161,12 +206,28 @@ def ensure_started():
     with _lock:
         if not _maintenance_thread or not _maintenance_thread.is_alive():
             def maintenance_loop():
+                last_worker_prune = 0.0
+                last_reconcile = 0.0
                 while jobs.available():
                     try:
-                        maintenance()
+                        now = time.time()
+                        should_maint, prune_due = jobs.pending_maintenance(now)
+                        due_reconcile = (now - last_reconcile) >= 900
+                        due_worker_prune = (now - last_worker_prune) >= 900
+                        if should_maint or due_reconcile:
+                            maintenance(prune=prune_due or due_reconcile, prune_workers=due_worker_prune)
+                            last_reconcile = now
+                            if due_worker_prune:
+                                last_worker_prune = now
+                        elif due_worker_prune:
+                            try:
+                                scan_workers.prune()
+                            except Exception as exc:
+                                log.warning("Could not prune scan-worker presence (%s)", type(exc).__name__)
+                            last_worker_prune = now
                     except Exception as exc:
                         log.warning("Could not read scan-job maintenance state (%s)", type(exc).__name__)
-                    time.sleep(60)
+                    time.sleep(300)
 
             # Keep stale admissions/refund retries moving while the sole
             # Render executor spends a long time on a scan or finalization.
@@ -178,19 +239,24 @@ def ensure_started():
 
         def loop():
             while jobs.available():
+                idle = False
+                _wake.clear()
                 try:
-                    from app import _full_slots
-                    if _full_slots.acquire(blocking=False):
-                        try:
-                            job = jobs.claim("render")
-                            if job:
-                                execute(job)
-                                continue
-                        finally:
-                            _full_slots.release()
+                    if not jobs.pending_dispatch():
+                        idle = True
+                    else:
+                        from app import _full_slots
+                        if _full_slots.acquire(blocking=False):
+                            try:
+                                job = jobs.claim("render")
+                                if job:
+                                    execute(job)
+                                    continue
+                            finally:
+                                _full_slots.release()
                 except Exception as exc:
                     log.warning("Scan coordinator retry (%s)", type(exc).__name__)
-                time.sleep(2)
+                _wake.wait(15 if idle else 2)
 
         _thread = threading.Thread(target=loop, daemon=True, name="scan-job-coordinator")
         _thread.start()

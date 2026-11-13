@@ -11,6 +11,7 @@ import time
 
 import config
 from core import store as storage
+from core.store import Abort
 from core import scan_jobs
 
 
@@ -41,11 +42,27 @@ def validate_label(label):
     return label
 
 
+_idle_cache = {}
+
+
 def _touch(worker_id, state, label=None, versions=None):
     worker_id = validate_worker_id(worker_id)
     if state not in _LIVE_STATES | {"stopped"}:
         raise ValueError("Invalid worker state")
     now = time.time()
+    clean_versions = (
+        tuple(sorted((k, v) for k, v in versions.items()
+                     if k in _CATALOGUES and isinstance(v, str) and re.fullmatch(r"[a-f0-9]{64}", v)))
+        if isinstance(versions, dict) else None
+    )
+    cache_key = (id(storage.store), worker_id)
+    if state == "idle" and storage.store.backend == "rtdb":
+        cached = _idle_cache.get(cache_key)
+        if (cached and cached[0] == validate_label(label)
+                and cached[1] == clean_versions and 0 <= now - cached[2] < 10):
+            return
+    elif state != "idle":
+        _idle_cache.pop(cache_key, None)
 
     def change(current):
         current = current or {}
@@ -69,6 +86,10 @@ def _touch(worker_id, state, label=None, versions=None):
         return current
 
     storage.store.transaction(ROOT, change)
+    if state == "idle" and storage.store.backend == "rtdb":
+        if len(_idle_cache) >= 256:
+            _idle_cache.clear()
+        _idle_cache[cache_key] = (validate_label(label), clean_versions, now)
 
 
 def seen_claim(worker_id, label, job, versions=None):
@@ -213,10 +234,16 @@ def prune():
 
     def change(current):
         current = current or {}
-        return {
+        kept = {
             worker_id: record for worker_id, record in current.items()
             if isinstance(record, dict) and isinstance(record.get("last_seen_at"), (int, float))
             and record["last_seen_at"] >= cutoff
         }
+        if len(kept) == len(current):
+            raise Abort()
+        return kept
 
-    storage.store.transaction(ROOT, change)
+    try:
+        storage.store.transaction(ROOT, change)
+    except Abort:
+        pass

@@ -3,6 +3,7 @@ import copy
 import time
 import jwt
 import pytest
+import requests
 from core import android_referrals as r
 
 OWN = "11111111-1111-1111-1111-111111111111"
@@ -26,6 +27,7 @@ def setup(monkeypatch):
     store = Store()
     monkeypatch.setattr(r.storage, "store", store)
     monkeypatch.setattr(r.config, "SECRET_KEY", "test-secret-for-referrals-" * 3)
+    monkeypatch.setattr(r.config, "SECRET_KEY_IS_EPHEMERAL", False)
     monkeypatch.setattr(r.config, "FIREBASE_SERVICE_ACCOUNT", "configured-in-test")
     monkeypatch.setenv("ANDROID_REFERRAL_CERT_SHA256", "ab" * 32)
     monkeypatch.setattr(r, "_qualifying_scan", lambda username: None)
@@ -49,9 +51,30 @@ def test_grant_atomic_idempotent_and_no_query_retention(setup, monkeypatch):
     assert r.redeem(body) == {"claim": "counted"}
     assert r.redeem(body) == {"claim": "already_counted"}
     data = setup.data["android_referrals"]
-    assert data["grants"] == {REF: True}
+    assert data["grants"] == {REF: 1}
     assert list(data["claims"]) == [KEY]
     assert set(data["claims"][KEY]) == {"referrer", "at"}
+
+def test_multiple_referrals_increment_grants_and_upgrade_legacy_bool(setup, monkeypatch):
+    t1 = challenge()
+    monkeypatch.setattr(r, "_decode_integrity", lambda proof: verdict(t1))
+    assert r.redeem(dict(challenge=t1, integrity_token="proof")) == {"claim": "counted"}
+    key2 = "b" * 64
+    own2 = "33333333-3333-3333-3333-333333333333"
+    t2 = r.challenge(dict(own_code=own2, referrer=REF, claim_key=key2, username="example"))["challenge"]
+    monkeypatch.setattr(r, "_decode_integrity", lambda proof: verdict(t2))
+    assert r.redeem(dict(challenge=t2, integrity_token="proof")) == {"claim": "counted"}
+    assert setup.data["android_referrals"]["grants"] == {REF: 2}
+
+    # Legacy boolean True converts cleanly to 2 when a subsequent referral completes.
+    legacy_ref = "44444444-4444-4444-4444-444444444444"
+    setup.data["android_referrals"]["grants"][legacy_ref] = True
+    key3 = "c" * 64
+    own3 = "55555555-5555-5555-5555-555555555555"
+    t3 = r.challenge(dict(own_code=own3, referrer=legacy_ref, claim_key=key3, username="example"))["challenge"]
+    monkeypatch.setattr(r, "_decode_integrity", lambda proof: verdict(t3))
+    assert r.redeem(dict(challenge=t3, integrity_token="proof")) == {"claim": "counted"}
+    assert setup.data["android_referrals"]["grants"][legacy_ref] == 2
 
 @pytest.mark.parametrize("section,field,value", [
     ("requestDetails", "requestHash", "another-request"),
@@ -112,3 +135,42 @@ def test_memory_and_missing_cert_fail_closed(setup, monkeypatch):
 def test_invalid_capture_rejected(setup, changes):
     body = dict(own_code=OWN, referrer=REF, claim_key=KEY, username="example"); body.update(changes)
     with pytest.raises(r.Rejected): r.challenge(body)
+
+
+@pytest.mark.parametrize("fail_in", ["get", "transaction"])
+@pytest.mark.parametrize(
+    "exc",
+    [
+        requests.RequestException("429 Too Many Requests"),
+        RuntimeError("ETag exhaustion"),
+    ],
+)
+def test_http_redeem_returns_503_when_rtdb_fails(setup, monkeypatch, exc, fail_in):
+    from flask import Flask, request
+    from core import responses
+
+    token = challenge()
+    monkeypatch.setattr(r, "_decode_integrity", lambda proof: verdict(token))
+
+    class FailingStore:
+        backend = "rtdb"
+
+        def get(self, path):
+            if fail_in == "get":
+                raise exc
+            return None
+
+        def transaction(self, path, callback):
+            raise exc
+
+    monkeypatch.setattr(r.storage, "store", FailingStore())
+    app = Flask(__name__)
+    r.register_routes(app, lambda: request.get_json(silent=True) or {}, responses)
+    client = app.test_client()
+
+    r_resp = client.post(
+        "/api/android/referral/redeem",
+        json=dict(challenge=token, integrity_token="proof"),
+    )
+    assert r_resp.status_code == 503
+    assert r_resp.get_json()["code"] == "referral_unavailable"

@@ -564,3 +564,53 @@ def test_presence_failure_does_not_block_fallback(setup, monkeypatch):
         return original(path)
     monkeypatch.setattr(memory, "get", read)
     assert jobs.claim("render")["executor"] == "render"
+
+
+def test_idle_polling_skips_dispatch_reads_and_preserves_concurrent_reserve(setup, monkeypatch):
+    memory, client = setup
+    # Initial unknown signal scans ROOT once and clears signal.
+    assert jobs.pending_dispatch() is True
+    assert jobs.claim("render") is None
+    assert jobs.pending_dispatch() is False
+    assert jobs.pending_maintenance() == (False, False)
+
+    root_reads = []
+    original_tx = memory.transaction
+    original_get = memory.get
+    monkeypatch.setattr(memory, "get", lambda p: (root_reads.append(p) if p == jobs.ROOT else None, original_get(p))[1])
+    monkeypatch.setattr(memory, "transaction", lambda p, fn: (root_reads.append(p) if p == jobs.ROOT else None, original_tx(p, fn))[1])
+
+    auth = {"Authorization": "Bearer " + config.SCAN_WORKER_TOKEN}
+    res = client.post("/api/scan-worker/claim", json={
+        "worker_id": "worker-idle-poll-1234",
+        "catalogues": versions(),
+        "protocol": scan_engine.PROTOCOL,
+    }, headers=auth)
+    assert res.status_code == 200
+    assert res.json["job"] is None
+    assert jobs.pending_dispatch() is False
+    assert root_reads == []
+
+    # Simulated concurrent reserve after seq_before snapshot cannot have active signal cleared.
+    seq_before = jobs.read_signal_seq()
+    queued("f" * 32)
+    jobs._sync_signal({"active": False, "maint": False, "prune_at": 0}, seq_before)
+    assert jobs.pending_dispatch() is True
+
+
+def test_settled_refund_avoids_repeated_user_reads(setup, monkeypatch):
+    memory, _ = setup
+    memory.set("web/users/u", {"extended": {"scans_left": 1}})
+    job = queued(scope="extended")
+    source = plans.consume_extended_scan("u", job["id"])
+    memory.transaction(jobs.ROOT, lambda cur: (cur[job["id"]].__setitem__("charged", source), cur)[1])
+    jobs.fail(job["id"])
+    scan_job_runner.maintenance()
+    scan_job_runner.maintenance()
+    assert jobs.get(job["id"]).get("refund_done") is True
+
+    user_reads = []
+    original_get = memory.get
+    monkeypatch.setattr(memory, "get", lambda p: (user_reads.append(p) if p.startswith("web/users/") else None, original_get(p))[1])
+    scan_job_runner.maintenance()
+    assert user_reads == []

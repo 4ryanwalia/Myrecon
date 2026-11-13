@@ -320,7 +320,7 @@ def register(app, api):
                 versions = body.get("catalogues")
                 if not isinstance(versions, dict) or body.get("protocol") != scan_engine.PROTOCOL:
                     raise ValueError("Worker protocol mismatch")
-                job = jobs.claim("colab:" + worker_id, versions)
+                job = jobs.claim("colab:" + worker_id, versions) if jobs.pending_dispatch() else None
                 presence_recorded = _note_worker(workers.seen_claim, worker_id, worker_label, job, versions)
                 if not job:
                     return responses.ok({"job": None, "presence_recorded": presence_recorded})

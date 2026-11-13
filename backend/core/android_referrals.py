@@ -170,7 +170,17 @@ def redeem(body):
             outcome["claim"] = "already_counted"
             return current
         claims[claim["claim_key"]] = {"referrer": claim["referrer"], "at": int(time.time() * 1000)}
-        current.setdefault("grants", {})[claim["referrer"]] = True
+        grants = current.setdefault("grants", {})
+        previous_grant = grants.get(claim["referrer"])
+        if previous_grant is True:
+            prev_count = 1
+        elif isinstance(previous_grant, dict):
+            prev_count = int(previous_grant.get("count", 0) or 0)
+        elif isinstance(previous_grant, (int, float)) and not isinstance(previous_grant, bool):
+            prev_count = max(0, int(previous_grant))
+        else:
+            prev_count = 0
+        grants[claim["referrer"]] = prev_count + 1
         return current
     storage.store.transaction("android_referrals", grant)
     return outcome
@@ -190,6 +200,6 @@ def register_routes(app, json_body, responses):
         except (Rejected, validation.ValidationError):
             return responses.error("Referral verification failed. Install the current app from Google Play and try again.",
                 status=403, code="referral_verification_failed")
-        except (Unavailable, requests.RequestException):
+        except (Unavailable, requests.RequestException, RuntimeError):
             return responses.error("Referral verification is temporarily unavailable. Your invite is saved for retry.",
                 status=503, code="referral_unavailable")

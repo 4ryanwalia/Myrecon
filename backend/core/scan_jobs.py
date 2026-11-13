@@ -18,8 +18,123 @@ from services import scan_engine
 
 ROOT = "web/scan_dispatch"
 DATA = "web/scan_job_data"
+SIGNAL = "web/scan_dispatch_signal"
 TERMINAL = {"complete", "failed", "cancelled", "deleted"}
 _ACTIVE = {"admitting", "queued", "scanning", "raw_done", "finalizing"}
+_wake_hook = None
+
+
+def set_wake_hook(hook):
+    global _wake_hook
+    _wake_hook = hook
+
+
+def _notify_wake():
+    if _wake_hook is not None:
+        try:
+            _wake_hook()
+        except Exception:
+            pass
+
+
+def _summarize(current, now=None):
+    now = time.time() if now is None else now
+    active = False
+    maint = False
+    earliest_prune = None
+    for job in (current or {}).values():
+        if not isinstance(job, dict):
+            continue
+        if _dispatchable(job):
+            active = True
+        status = job.get("status")
+        if status not in TERMINAL:
+            maint = True
+        elif status == "complete" and job.get("uid") and not job.get("history_id"):
+            maint = True
+        elif status in ("failed", "cancelled") and not job.get("refund_done"):
+            maint = True
+        if status in TERMINAL and _timestamp(job.get("created")):
+            due = job["created"] + config.SCAN_JOB_TTL_SECONDS
+            earliest_prune = due if earliest_prune is None else min(earliest_prune, due)
+            if due <= now:
+                maint = True
+    return {"active": active, "maint": maint, "prune_at": earliest_prune or 0}
+
+
+def _signal_seq():
+    try:
+        sig = storage.store.get(SIGNAL)
+        return int(sig.get("seq", 0)) if isinstance(sig, dict) else 0
+    except Exception:
+        return None
+
+
+def _bump_signal(active=True, maint=True):
+    def update(cur):
+        cur = dict(cur) if isinstance(cur, dict) else {}
+        cur["active"] = bool(cur.get("active")) or active
+        cur["maint"] = bool(cur.get("maint")) or maint
+        cur["seq"] = int(cur.get("seq", 0)) + 1
+        return cur
+
+    try:
+        storage.store.transaction(SIGNAL, update)
+    except Exception:
+        pass
+    _notify_wake()
+
+
+def _sync_signal(summary, seq_before):
+    if seq_before is None:
+        return
+
+    def update(cur):
+        cur = dict(cur) if isinstance(cur, dict) else {}
+        if int(cur.get("seq", 0)) != seq_before:
+            raise Abort()
+        return {
+            "active": bool(summary["active"]),
+            "maint": bool(summary["maint"]),
+            "prune_at": summary["prune_at"],
+            "seq": seq_before,
+        }
+
+    try:
+        storage.store.transaction(SIGNAL, update)
+    except Exception:
+        pass
+
+
+def sync_from_snapshot(current, seq_before):
+    _sync_signal(_summarize(current), seq_before)
+
+
+def read_signal_seq():
+    return _signal_seq()
+
+
+def pending_dispatch():
+    try:
+        sig = storage.store.get(SIGNAL)
+    except Exception:
+        return True
+    if not isinstance(sig, dict):
+        return True
+    return bool(sig.get("active", True))
+
+
+def pending_maintenance(now=None):
+    try:
+        sig = storage.store.get(SIGNAL)
+    except Exception:
+        return True, True
+    if not isinstance(sig, dict):
+        return True, True
+    now = time.time() if now is None else now
+    prune_at = sig.get("prune_at") or 0
+    prune_due = bool(prune_at and now >= prune_at)
+    return bool(sig.get("maint", True)) or prune_due, prune_due
 
 
 class Busy(Exception):
@@ -89,7 +204,9 @@ def reserve(job_id, username, scope, deep, owner, uid, guest_receipt_path=None):
                            "checked": 0, "names": [], "refs": [], "attempts": 0}
         return current
 
-    return storage.store.transaction(ROOT, change)[job_id]
+    job = storage.store.transaction(ROOT, change)[job_id]
+    _bump_signal(active=True, maint=True)
+    return job
 
 
 def admit(job_id, charged):
@@ -98,15 +215,21 @@ def admit(job_id, charged):
         if job["status"] == "admitting":
             job.update(status="queued", charged=charged, updated=time.time())
         return current
-    return storage.store.transaction(ROOT, change)[job_id]
+    job = storage.store.transaction(ROOT, change)[job_id]
+    _bump_signal(active=True, maint=True)
+    return job
 
 
 def reject(job_id):
+    seq_before = _signal_seq()
+    summary = {}
     def change(current):
         if current and current.get(job_id, {}).get("status") == "admitting":
             current.pop(job_id, None)
+        summary.update(_summarize(current))
         return current
     storage.store.transaction(ROOT, change)
+    _sync_signal(summary, seq_before)
 
 
 def _lease(job, token):
@@ -155,6 +278,9 @@ def claim(executor, versions=None):
         if key not in fingerprints:
             fingerprints[key] = engine_fingerprint(job["scope"], job["deep"])
         return key, fingerprints[key]
+
+    seq_before = _signal_seq()
+    summary = {}
 
     def change(current):
         selected.clear()
@@ -230,12 +356,17 @@ def claim(executor, versions=None):
         # Persist revision reconciliation even when this particular notebook
         # has an obsolete bundle and therefore cannot claim any refreshed job.
         if refreshed:
+            summary.update(_summarize(current, now))
             return current
+        summary.update(_summarize(current, now))
         raise Abort()
 
     try:
-        storage.store.transaction(ROOT, change)
+        updated = storage.store.transaction(ROOT, change)
+        _sync_signal(_summarize(updated, now), seq_before)
     except Abort:
+        if summary:
+            _sync_signal(summary, seq_before)
         return None
     return selected or None
 
@@ -246,7 +377,9 @@ def heartbeat(job_id, token):
         _lease(job, token)
         job.update(expires=time.time() + config.SCAN_LEASE_SECONDS, updated=time.time())
         return current
-    return storage.store.transaction(ROOT, change)[job_id]
+    job = storage.store.transaction(ROOT, change)[job_id]
+    _bump_signal(active=True, maint=True)
+    return job
 
 
 def checkpoint(job_id, token, sequence, rows):
@@ -288,7 +421,9 @@ def checkpoint(job_id, token, sequence, rows):
         entry.update(checked=len(entry["names"]), updated=time.time(),
                      expires=time.time() + config.SCAN_LEASE_SECONDS)
         return current
-    return storage.store.transaction(ROOT, change)[job_id]
+    job = storage.store.transaction(ROOT, change)[job_id]
+    _bump_signal(active=True, maint=True)
+    return job
 
 
 def raw_done(job_id, token):
@@ -300,7 +435,9 @@ def raw_done(job_id, token):
             raise ValueError("The worker has not checkpointed the complete catalogue")
         job.update(status="raw_done", updated=time.time(), expires=0)
         return current
-    return storage.store.transaction(ROOT, change)[job_id]
+    job = storage.store.transaction(ROOT, change)[job_id]
+    _bump_signal(active=True, maint=True)
+    return job
 
 
 def chunk(job_id, ref):
@@ -322,6 +459,8 @@ def finish(job_id, token, data, history_id=None):
     job = get(job_id)
     _lease(job, token)
     storage.store.set(f"{DATA}/{job_id}/results/{token}", data)
+    seq_before = _signal_seq()
+    summary = {}
 
     def change(current):
         entry = (current or {}).get(job_id)
@@ -329,11 +468,17 @@ def finish(job_id, token, data, history_id=None):
         entry.update(status="complete", result_token=token, history_id=history_id,
                      updated=time.time(), expires=0)
         entry.pop("names", None)
+        summary.update(_summarize(current))
         return current
-    return storage.store.transaction(ROOT, change)[job_id]
+    job = storage.store.transaction(ROOT, change)[job_id]
+    _sync_signal(summary, seq_before)
+    return job
 
 
 def fail(job_id, token=None, cancelled=False):
+    seq_before = _signal_seq()
+    summary = {}
+
     def change(current):
         job = (current or {}).get(job_id)
         if not job or job["status"] in TERMINAL:
@@ -341,9 +486,12 @@ def fail(job_id, token=None, cancelled=False):
         if token is not None:
             _lease(job, token)
         job.update(status="cancelled" if cancelled else "failed", updated=time.time(), expires=0)
+        summary.update(_summarize(current))
         return current
     try:
-        return storage.store.transaction(ROOT, change)[job_id]
+        job = storage.store.transaction(ROOT, change)[job_id]
+        _sync_signal(summary, seq_before)
+        return job
     except Abort:
         return get(job_id)
 
@@ -351,6 +499,8 @@ def fail(job_id, token=None, cancelled=False):
 def expire(job_id, limit=3600, admitting=False):
     """Fail stale work only after rechecking its state/lease transactionally."""
     now = time.time()
+    seq_before = _signal_seq()
+    summary = {}
 
     def change(current):
         job = (current or {}).get(job_id)
@@ -363,10 +513,13 @@ def expire(job_id, limit=3600, admitting=False):
         if now - job.get("updated", job["created"]) < limit:
             raise Abort()
         job.update(status="failed", updated=now, expires=0)
+        summary.update(_summarize(current, now))
         return current
 
     try:
-        return storage.store.transaction(ROOT, change)[job_id]
+        job = storage.store.transaction(ROOT, change)[job_id]
+        _sync_signal(summary, seq_before)
+        return job
     except Abort:
         return get(job_id)
 
@@ -378,28 +531,58 @@ def release(job_id, token):
         _lease(job, token)
         job.update(status="queued", attempts=max(2, job["attempts"]), updated=time.time(), expires=0)
         return current
-    return storage.store.transaction(ROOT, change)[job_id]
+    job = storage.store.transaction(ROOT, change)[job_id]
+    _bump_signal(active=True, maint=True)
+    return job
 
 
 def result(job):
     return storage.store.get(f"{DATA}/{job['id']}/results/{job['result_token']}")
 
 
+def mark_refund_done(job_id):
+    seq_before = _signal_seq()
+    summary = {}
+
+    def change(current):
+        job = (current or {}).get(job_id)
+        if not job or job.get("status") not in ("failed", "cancelled") or job.get("refund_done"):
+            raise Abort()
+        job["refund_done"] = True
+        summary.update(_summarize(current))
+        return current
+
+    try:
+        storage.store.transaction(ROOT, change)
+        _sync_signal(summary, seq_before)
+    except Abort:
+        pass
+
+
 def remember_history(job_id, result_token):
+    seq_before = _signal_seq()
+    summary = {}
+
     def change(current):
         job = (current or {}).get(job_id)
         if not job or job["status"] != "complete" or job.get("result_token") != result_token:
             raise Abort()
         job["history_id"] = job_id
+        summary.update(_summarize(current))
         return current
+
     try:
         storage.store.transaction(ROOT, change)
+        _sync_signal(summary, seq_before)
     except Abort:
         pass
 
 
 def erase_history(uid, job_id=None):
     removed = []
+    seq_before = _signal_seq()
+    summary = {}
+
     def change(current):
         removed.clear()
         for key, job in (current or {}).items():
@@ -411,10 +594,18 @@ def erase_history(uid, job_id=None):
                 current[key] = {"id": key, "uid": uid, "owner": job.get("owner", ""),
                     "created": job.get("created", time.time()), "updated": time.time(), "status": "deleted",
                     "checked": 0, "scope": job.get("scope", "standard"),
-                    "deep": job.get("deep", False), "username": ""}
+                    "deep": job.get("deep", False), "username": "", "refund_done": True}
                 removed.append(key)
+        if not removed:
+            raise Abort()
+        summary.update(_summarize(current))
         return current
-    storage.store.transaction(ROOT, change)
+
+    try:
+        storage.store.transaction(ROOT, change)
+        _sync_signal(summary, seq_before)
+    except Abort:
+        pass
     for key in removed:
         storage.store.delete(f"{DATA}/{key}")
 
@@ -422,6 +613,8 @@ def erase_history(uid, job_id=None):
 def prune():
     now = time.time()
     removed = []
+    seq_before = _signal_seq()
+    summary = {}
 
     def change(current):
         removed.clear()
@@ -431,7 +624,16 @@ def prune():
                     and isinstance(job.get("status"), str) and job["status"] in TERMINAL):
                 current.pop(key)
                 removed.append(key)
+        summary.update(_summarize(current, now))
+        if not removed:
+            raise Abort()
         return current
-    storage.store.transaction(ROOT, change)
+
+    try:
+        storage.store.transaction(ROOT, change)
+    except Abort:
+        pass
+    if summary:
+        _sync_signal(summary, seq_before)
     for key in removed:
         storage.store.delete(f"{DATA}/{key}")

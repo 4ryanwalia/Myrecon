@@ -471,6 +471,8 @@ def _register_routes(app: Flask) -> None:
     scan_job_api.register(app, sys.modules[__name__])
     from core.android_referrals import register_routes as register_android_referrals
     register_android_referrals(app, _json_body, responses)
+    from core.android_billing import register_routes as register_android_billing
+    register_android_billing(app, _json_body, responses)
     from services.search import search_username, search_fullname
     from services.email import scan_email
     from services.image import scan_image
