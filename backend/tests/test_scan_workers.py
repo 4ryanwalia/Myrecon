@@ -171,3 +171,53 @@ def test_prune_removes_long_stale_records(setup):
     memory.set(workers.ROOT, records)
     workers.prune()
     assert memory.get(workers.ROOT) == {}
+
+
+def test_rtdb_heartbeat_updates_only_its_own_record(setup, monkeypatch):
+    memory, _ = setup
+    calls = []
+    class ChildStore:
+        backend = "rtdb"
+        def transaction(self, path, fn):
+            calls.append(path)
+            return memory.transaction(path, fn)
+    monkeypatch.setattr(storage, "store", ChildStore())
+    worker_id = "worker-targeted-123456"
+    workers.seen_claim(worker_id, "Worker 01", None, {"full": "a" * 64})
+    workers.seen_busy(worker_id)
+    workers.stopped(worker_id)
+    assert calls == [f"{workers.ROOT}/{worker_id}"] * 3
+    record = memory.get(calls[0])
+    assert record["state"] == "stopped"
+    assert record["label"] == "Worker 01"
+    assert record["catalogues"] == {"full": "a" * 64}
+
+
+def test_long_poll_wakes_for_new_scan_and_releases_slot(setup, monkeypatch):
+    _, client = setup
+    from services import scan_job_api
+    jobs.claim("render")  # Clear the initially unknown dispatch signal.
+    clock = [0.0]
+    monkeypatch.setattr(scan_job_api.time, "monotonic", lambda: clock[0])
+    def tick(seconds):
+        clock[0] += seconds
+        if clock[0] == 0.5:
+            _queue()
+    monkeypatch.setattr(scan_job_api.time, "sleep", tick)
+    payload = {"worker_id": "worker-longpoll-123456", "worker_label": "Worker 01",
+               "catalogues": {"full": "a" * 64}, "protocol": scan_engine.PROTOCOL,
+               "wait_seconds": 10}
+    response = client.post("/api/scan-worker/claim", json=payload, headers=_auth())
+    assert response.status_code == 200
+    assert response.json["job"]["id"] == "a" * 32
+    assert clock[0] == 0.5
+    assert scan_job_api._worker_wait_slots._value == 4
+
+
+@pytest.mark.parametrize("wait", [-1, 11, True, "10", None])
+def test_long_poll_rejects_invalid_wait(setup, wait):
+    _, client = setup
+    response = client.post("/api/scan-worker/claim", json={
+        "worker_id": "worker-longpoll-123456", "catalogues": {},
+        "protocol": scan_engine.PROTOCOL, "wait_seconds": wait}, headers=_auth())
+    assert response.status_code == 422

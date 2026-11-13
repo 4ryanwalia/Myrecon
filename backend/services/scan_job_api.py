@@ -18,6 +18,7 @@ from services import scan_engine, scan_job_runner
 _ID = re.compile(r"^[a-f0-9]{32}$")
 _REQUEST_ID = re.compile(r"^[A-Za-z0-9_-]{16,80}$")
 _wait_slots = threading.BoundedSemaphore(8)
+_worker_wait_slots = threading.BoundedSemaphore(4)
 log = logging.getLogger("myrecon.scan_workers")
 
 
@@ -324,7 +325,21 @@ def register(app, api):
                 versions = body.get("catalogues")
                 if not isinstance(versions, dict) or body.get("protocol") != scan_engine.PROTOCOL:
                     raise ValueError("Worker protocol mismatch")
+                wait_seconds = body.get("wait_seconds", 0)
+                if type(wait_seconds) not in (int, float) or not math.isfinite(wait_seconds) or not 0 <= wait_seconds <= 10:
+                    raise ValueError("Invalid worker wait")
                 job = jobs.claim("colab:" + worker_id, versions) if jobs.pending_dispatch() else None
+                # Optional bounded long poll. Keep HTTP threads for users and
+                # heartbeats; older notebooks retain immediate responses.
+                if not job and wait_seconds and _worker_wait_slots.acquire(blocking=False):
+                    try:
+                        until = time.monotonic() + wait_seconds
+                        while not job and time.monotonic() < until:
+                            time.sleep(min(0.5, max(0, until - time.monotonic())))
+                            if jobs.pending_dispatch():
+                                job = jobs.claim("colab:" + worker_id, versions)
+                    finally:
+                        _worker_wait_slots.release()
                 presence_recorded = _note_worker(workers.seen_claim, worker_id, worker_label, job, versions)
                 if not job:
                     return responses.ok({"job": None, "presence_recorded": presence_recorded})
