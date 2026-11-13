@@ -194,6 +194,22 @@ def test_verify_requires_authenticated_install(pro_client):
     assert pro_client.post("/api/android/pro/verify", json={"purchaseToken": "x"}).status_code == 401
 
 
+def test_publisher_diagnostic_never_logs_tokens_or_response_content(pro_client, monkeypatch, caplog):
+    import requests
+    response = requests.Response()
+    response.status_code = 403
+    response.url = "https://androidpublisher.googleapis.com/tokens/private-purchase-token"
+    response._content = b'{"error":{"status":"PERMISSION_DENIED","message":"private-user-data"}}'
+    def fail(*args, **kwargs):
+        raise requests.HTTPError("private-purchase-token", response=response)
+    monkeypatch.setattr(p, "verify_purchase", fail)
+    result = pro_client.post("/api/android/pro/verify", headers={"Authorization": "Bearer test-auth"}, json={"purchaseToken": "private-purchase-token"})
+    assert result.status_code == 503
+    assert "status=403 category=PERMISSION_DENIED" in caplog.text
+    assert "private-purchase-token" not in caplog.text
+    assert "private-user-data" not in caplog.text
+
+
 def test_client_cannot_assert_restore_or_pro(pro_client, monkeypatch):
     calls = []
     def verify(uid, token, allow_restore=False):

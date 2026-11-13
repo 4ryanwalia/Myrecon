@@ -4,6 +4,8 @@ Runs on the existing backend, not Spark Cloud Functions. Firebase is an owner-on
 metadata projection. Access always requires a fresh Google API verification.
 """
 import hashlib
+import logging
+import re
 import time
 from datetime import datetime
 from urllib.parse import quote
@@ -131,5 +133,19 @@ def register_routes(app, json_body, responses):
             return responses.error("Invalid restore proof.", status=403)
         except ValueError as exc:
             return responses.error(str(exc), status=403)
+        except requests.HTTPError as exc:
+            # Never log exception text/URLs: these can contain a purchase token.
+            response = exc.response
+            category = "unknown"
+            if response is not None:
+                try:
+                    error = response.json().get("error", {})
+                    if isinstance(error, dict):
+                        category = error.get("status") or next(iter(error.get("errors", [])), {}).get("reason", "unknown")
+                except (ValueError, AttributeError, TypeError):
+                    pass
+            category = category if isinstance(category, str) and re.fullmatch(r"[A-Za-z_]{1,64}", category) else "unknown"
+            logging.getLogger(__name__).warning("Play verification HTTP failure: status=%s category=%s", response.status_code if response is not None else "unknown", category)
+            return responses.error("Google Play verification temporarily unavailable.", status=503)
         except (requests.RequestException, RuntimeError, KeyError):
             return responses.error("Google Play verification temporarily unavailable.", status=503)
