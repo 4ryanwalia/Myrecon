@@ -4,6 +4,8 @@ import re
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, os.fspath(ROOT / "tools"))
 
@@ -44,7 +46,7 @@ def test_csv_export_includes_header_and_all_markets():
     assert len(lines) == len(ppp.PLAY_MARKETS) + 1
 
 
-def test_real_iso_codes_no_synthetic_markets_and_matches_kotlin_preview():
+def test_real_iso_codes_no_synthetic_markets():
     codes = [spec.country for spec in ppp.PLAY_MARKETS]
     assert len(codes) >= 120
     assert len(codes) == len(set(codes))
@@ -54,7 +56,11 @@ def test_real_iso_codes_no_synthetic_markets_and_matches_kotlin_preview():
     for euro in ("DE", "FR", "IT", "ES", "NL", "AT", "BE", "FI", "IE", "PT", "GR"):
         assert euro in codes
 
+def test_optional_local_kotlin_preview_matches_market_prices():
+    codes = [spec.country for spec in ppp.PLAY_MARKETS]
     kt_path = ROOT / "app" / "src" / "main" / "java" / "com" / "aryan" / "myrecon" / "billing" / "PppPricing.kt"
+    if not kt_path.is_file():
+        pytest.skip("Android sources are intentionally local-only and absent in website CI")
     kt_text = kt_path.read_text(encoding="utf-8")
     pairs = dict(re.findall(r'"([A-Z]{2})"\s+to\s+"([^"]+)"', kt_text))
     assert len(pairs) == len(codes)
