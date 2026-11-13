@@ -55,12 +55,12 @@ def transport(monkeypatch, *replies):
     return calls, connections
 
 
-def test_public_image_is_pinned_cached_and_connection_closed(monkeypatch):
-    calls, connections = transport(monkeypatch, Reply())
+def test_public_image_is_pinned_not_cached_and_connection_closed(monkeypatch):
+    calls, connections = transport(monkeypatch, Reply(), Reply())
     first = photos.fetch_public_photo(URL)
     assert first.body == PNG and first.content_type == "image/png"
-    assert photos.fetch_public_photo(URL) is first
-    assert calls == [("avatars.githubusercontent.com", "/u/42?v=4", "8.8.8.8", 5)]
+    assert photos.fetch_public_photo(URL).body == first.body
+    assert calls == [("avatars.githubusercontent.com", "/u/42?v=4", "8.8.8.8", 5)] * 2
     assert all(connection.closed for connection in connections)
     assert URL not in photos._cache
 
@@ -95,14 +95,16 @@ def test_private_dns_answer_never_connects(monkeypatch, address):
     assert not calls
 
 
-def test_public_redirect_checks_destination_and_caches_original(monkeypatch):
+def test_public_redirect_checks_destination_without_caching(monkeypatch):
     calls, connections = transport(monkeypatch,
+        Reply(status=302, headers={"Location": "https://lh3.googleusercontent.com/a/fixture"}), Reply(),
         Reply(status=302, headers={"Location": "https://lh3.googleusercontent.com/a/fixture"}), Reply())
     assert photos.fetch_public_photo(URL).body == PNG
     assert [call[0] for call in calls] == ["avatars.githubusercontent.com", "lh3.googleusercontent.com"]
     assert all(connection.closed for connection in connections)
     photos.fetch_public_photo(URL)
-    assert len(calls) == 2
+    assert len(calls) == 4
+    assert not photos._cache
 
 
 def test_redirect_to_private_or_unknown_host_is_not_followed(monkeypatch):
@@ -157,12 +159,12 @@ def test_response_size_is_bounded_with_or_without_length(monkeypatch, declared):
     assert not photos._cache
 
 
-def test_cache_eviction_is_bounded(monkeypatch):
+def test_photo_results_are_never_retained(monkeypatch):
     monkeypatch.setattr(photos, "MAX_CACHE_ITEMS", 1)
     transport(monkeypatch, Reply(), Reply())
     photos.fetch_public_photo(URL)
     photos.fetch_public_photo("https://www.gravatar.com/avatar/fixture?d=404")
-    assert len(photos._cache) == 1 and photos._cache_bytes == len(PNG)
+    assert not photos._cache and photos._cache_bytes == 0
 
 
 def test_cache_expiry_fetches_fresh_data(monkeypatch):

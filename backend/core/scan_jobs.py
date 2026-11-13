@@ -1,8 +1,7 @@
-"""Durable, leased scan queue. Only Render owns the database credentials.
+"""Memory-only active scan queue. Inputs and results never enter Firebase.
 
-All ownership transitions share one small RTDB transaction. Checkpoint data
-is written separately under an attempt token, then atomically referenced.
-An expired worker cannot overwrite a replacement's progress or results.
+One API process owns leases; Colab workers use its authenticated HTTP API.
+Completed delivery buffers are erased on delivery or after 60 seconds.
 """
 import hashlib
 import json
@@ -13,7 +12,9 @@ from functools import lru_cache
 
 import config
 from core import store as storage
-from core.store import Abort
+from core.store import Abort, _MemoryStore
+
+_job_store = _MemoryStore()
 from services import scan_engine
 
 ROOT = "web/scan_dispatch"
@@ -50,8 +51,6 @@ def _summarize(current, now=None):
         status = job.get("status")
         if status not in TERMINAL:
             maint = True
-        elif status == "complete" and job.get("uid") and not job.get("history_id"):
-            maint = True
         elif status in ("failed", "cancelled") and not job.get("refund_done"):
             maint = True
         if status in TERMINAL and _timestamp(job.get("created")):
@@ -64,7 +63,7 @@ def _summarize(current, now=None):
 
 def _signal_seq():
     try:
-        sig = storage.store.get(SIGNAL)
+        sig = _job_store.get(SIGNAL)
         return int(sig.get("seq", 0)) if isinstance(sig, dict) else 0
     except Exception:
         return None
@@ -79,7 +78,7 @@ def _bump_signal(active=True, maint=True):
         return cur
 
     try:
-        storage.store.transaction(SIGNAL, update)
+        _job_store.transaction(SIGNAL, update)
     except Exception:
         pass
     _notify_wake()
@@ -101,7 +100,7 @@ def _sync_signal(summary, seq_before):
         }
 
     try:
-        storage.store.transaction(SIGNAL, update)
+        _job_store.transaction(SIGNAL, update)
     except Exception:
         pass
 
@@ -116,7 +115,7 @@ def read_signal_seq():
 
 def pending_dispatch():
     try:
-        sig = storage.store.get(SIGNAL)
+        sig = _job_store.get(SIGNAL)
     except Exception:
         return True
     if not isinstance(sig, dict):
@@ -126,7 +125,7 @@ def pending_dispatch():
 
 def pending_maintenance(now=None):
     try:
-        sig = storage.store.get(SIGNAL)
+        sig = _job_store.get(SIGNAL)
     except Exception:
         return True, True
     if not isinstance(sig, dict):
@@ -175,11 +174,11 @@ def _dispatchable(job):
 
 
 def get(job_id):
-    if storage.store.backend == "memory":
-        return (storage.store.get(ROOT) or {}).get(job_id)
+    if _job_store.backend == "memory":
+        return (_job_store.get(ROOT) or {}).get(job_id)
     # Fetch only this job while streaming, not every queued job's checkpoint
     # index. Ownership transitions still use the shared dispatcher transaction.
-    return storage.store.get(f"{ROOT}/{job_id}")
+    return _job_store.get(f"{ROOT}/{job_id}")
 
 
 def reserve(job_id, username, scope, deep, owner, uid, guest_receipt_path=None):
@@ -204,7 +203,7 @@ def reserve(job_id, username, scope, deep, owner, uid, guest_receipt_path=None):
                            "checked": 0, "names": [], "refs": [], "attempts": 0}
         return current
 
-    job = storage.store.transaction(ROOT, change)[job_id]
+    job = _job_store.transaction(ROOT, change)[job_id]
     _bump_signal(active=True, maint=True)
     return job
 
@@ -215,7 +214,7 @@ def admit(job_id, charged):
         if job["status"] == "admitting":
             job.update(status="queued", charged=charged, updated=time.time())
         return current
-    job = storage.store.transaction(ROOT, change)[job_id]
+    job = _job_store.transaction(ROOT, change)[job_id]
     _bump_signal(active=True, maint=True)
     return job
 
@@ -228,7 +227,7 @@ def reject(job_id):
             current.pop(job_id, None)
         summary.update(_summarize(current))
         return current
-    storage.store.transaction(ROOT, change)
+    _job_store.transaction(ROOT, change)
     _sync_signal(summary, seq_before)
 
 
@@ -362,7 +361,7 @@ def claim(executor, versions=None):
         raise Abort()
 
     try:
-        updated = storage.store.transaction(ROOT, change)
+        updated = _job_store.transaction(ROOT, change)
         _sync_signal(_summarize(updated, now), seq_before)
     except Abort:
         if summary:
@@ -377,7 +376,7 @@ def heartbeat(job_id, token):
         _lease(job, token)
         job.update(expires=time.time() + config.SCAN_LEASE_SECONDS, updated=time.time())
         return current
-    job = storage.store.transaction(ROOT, change)[job_id]
+    job = _job_store.transaction(ROOT, change)[job_id]
     _bump_signal(active=True, maint=True)
     return job
 
@@ -403,7 +402,7 @@ def checkpoint(job_id, token, sequence, rows):
         if old is not None and old != clean:
             raise ValueError("Checkpoint replay changed its contents")
         return clean
-    storage.store.transaction(f"{DATA}/{job_id}/chunks/{ref}", immutable)
+    _job_store.transaction(f"{DATA}/{job_id}/chunks/{ref}", immutable)
 
     def change(current):
         entry = (current or {}).get(job_id)
@@ -421,7 +420,11 @@ def checkpoint(job_id, token, sequence, rows):
         entry.update(checked=len(entry["names"]), updated=time.time(),
                      expires=time.time() + config.SCAN_LEASE_SECONDS)
         return current
-    job = storage.store.transaction(ROOT, change)[job_id]
+    try:
+        job = _job_store.transaction(ROOT, change)[job_id]
+    except LostLease:
+        _job_store.delete(f"{DATA}/{job_id}/chunks/{ref}")
+        raise
     _bump_signal(active=True, maint=True)
     return job
 
@@ -435,13 +438,13 @@ def raw_done(job_id, token):
             raise ValueError("The worker has not checkpointed the complete catalogue")
         job.update(status="raw_done", updated=time.time(), expires=0)
         return current
-    job = storage.store.transaction(ROOT, change)[job_id]
+    job = _job_store.transaction(ROOT, change)[job_id]
     _bump_signal(active=True, maint=True)
     return job
 
 
 def chunk(job_id, ref):
-    value = storage.store.get(f"{DATA}/{job_id}/chunks/{ref['path']}")
+    value = _job_store.get(f"{DATA}/{job_id}/chunks/{ref['path']}")
     if (not isinstance(value, list) or hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
             != ref["digest"]):
         raise RuntimeError("A committed checkpoint is missing or corrupt")
@@ -458,7 +461,7 @@ def rows(job):
 def finish(job_id, token, data, history_id=None):
     job = get(job_id)
     _lease(job, token)
-    storage.store.set(f"{DATA}/{job_id}/results/{token}", data)
+    _job_store.set(f"{DATA}/{job_id}/results/{token}", data)
     seq_before = _signal_seq()
     summary = {}
 
@@ -470,8 +473,17 @@ def finish(job_id, token, data, history_id=None):
         entry.pop("names", None)
         summary.update(_summarize(current))
         return current
-    job = storage.store.transaction(ROOT, change)[job_id]
+    try:
+        job = _job_store.transaction(ROOT, change)[job_id]
+    except LostLease:
+        _job_store.delete(f"{DATA}/{job_id}/results/{token}")
+        raise
     _sync_signal(summary, seq_before)
+    # A disconnected caller must not leave completed results resident indefinitely.
+    import threading
+    cleanup = threading.Timer(60, _expire_delivery, args=(_job_store, job_id, token))
+    cleanup.daemon = True
+    cleanup.start()
     return job
 
 
@@ -485,11 +497,13 @@ def fail(job_id, token=None, cancelled=False):
             raise Abort()
         if token is not None:
             _lease(job, token)
-        job.update(status="cancelled" if cancelled else "failed", updated=time.time(), expires=0)
+        job.update(status="cancelled" if cancelled else "failed", updated=time.time(), expires=0,
+                   username="", names=[], refs=[])
         summary.update(_summarize(current))
         return current
     try:
-        job = storage.store.transaction(ROOT, change)[job_id]
+        job = _job_store.transaction(ROOT, change)[job_id]
+        _job_store.delete(f"{DATA}/{job_id}")
         _sync_signal(summary, seq_before)
         return job
     except Abort:
@@ -512,12 +526,13 @@ def expire(job_id, limit=3600, admitting=False):
             raise Abort()
         if now - job.get("updated", job["created"]) < limit:
             raise Abort()
-        job.update(status="failed", updated=now, expires=0)
+        job.update(status="failed", updated=now, expires=0, username="", names=[], refs=[])
         summary.update(_summarize(current, now))
         return current
 
     try:
-        job = storage.store.transaction(ROOT, change)[job_id]
+        job = _job_store.transaction(ROOT, change)[job_id]
+        _job_store.delete(f"{DATA}/{job_id}")
         _sync_signal(summary, seq_before)
         return job
     except Abort:
@@ -531,13 +546,13 @@ def release(job_id, token):
         _lease(job, token)
         job.update(status="queued", attempts=max(2, job["attempts"]), updated=time.time(), expires=0)
         return current
-    job = storage.store.transaction(ROOT, change)[job_id]
+    job = _job_store.transaction(ROOT, change)[job_id]
     _bump_signal(active=True, maint=True)
     return job
 
 
 def result(job):
-    return storage.store.get(f"{DATA}/{job['id']}/results/{job['result_token']}")
+    return _job_store.get(f"{DATA}/{job['id']}/results/{job['result_token']}")
 
 
 def mark_refund_done(job_id):
@@ -553,7 +568,7 @@ def mark_refund_done(job_id):
         return current
 
     try:
-        storage.store.transaction(ROOT, change)
+        _job_store.transaction(ROOT, change)
         _sync_signal(summary, seq_before)
     except Abort:
         pass
@@ -572,7 +587,7 @@ def remember_history(job_id, result_token):
         return current
 
     try:
-        storage.store.transaction(ROOT, change)
+        _job_store.transaction(ROOT, change)
         _sync_signal(summary, seq_before)
     except Abort:
         pass
@@ -602,12 +617,12 @@ def erase_history(uid, job_id=None):
         return current
 
     try:
-        storage.store.transaction(ROOT, change)
+        _job_store.transaction(ROOT, change)
         _sync_signal(summary, seq_before)
     except Abort:
         pass
     for key in removed:
-        storage.store.delete(f"{DATA}/{key}")
+        _job_store.delete(f"{DATA}/{key}")
 
 
 def prune():
@@ -630,10 +645,29 @@ def prune():
         return current
 
     try:
-        storage.store.transaction(ROOT, change)
+        _job_store.transaction(ROOT, change)
     except Abort:
         pass
     if summary:
         _sync_signal(summary, seq_before)
     for key in removed:
-        storage.store.delete(f"{DATA}/{key}")
+        _job_store.delete(f"{DATA}/{key}")
+
+
+def discard(job_id):
+    """Erase all inputs, chunks and results once the response is delivered."""
+    def remove(current):
+        current = current or {}
+        current.pop(job_id, None)
+        return current
+    _job_store.transaction(ROOT, remove)
+    _job_store.delete(f"{DATA}/{job_id}")
+    _bump_signal(active=False, maint=True)
+
+
+def _expire_delivery(owner_store, job_id, token):
+    if _job_store is not owner_store:
+        return
+    job = get(job_id)
+    if job and job.get("status") == "complete" and job.get("result_token") == token:
+        discard(job_id)

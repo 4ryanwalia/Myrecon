@@ -116,6 +116,22 @@ def _register_cors(app: Flask) -> None:
         resp.headers["Cross-Origin-Resource-Policy"] = (
             "cross-origin" if request.path == "/api/email/photo" else "same-site"
         )
+        # Count top-level JSON tools once, excluding enrichment subrequests.
+        count_tools = {"/api/fullname", "/api/email", "/api/domain", "/api/dns",
+                       "/api/whois", "/api/ip", "/api/subdomains", "/api/image"}
+        if (request.method == "POST" and request.path in count_tools and
+                resp.status_code == 200 and resp.is_json):
+            if request.path == "/api/email":
+                # Free email lookups deliberately accept malformed/expired auth headers.
+                # Aggregate usage must not add an authentication or billing dependency.
+                try:
+                    from core import plans
+                    plans.record_scan()
+                except Exception as exc:
+                    log.warning("Could not update scan count (%s)", type(exc).__name__)
+            else:
+                user = _signed_in_user()
+                _remember(user["sub"] if user else None, resp.get_json())
         if request.path.startswith("/api/"):
             # A shared cache must never mix a signed-in full report with the
             # guest projection of the same URL, including POST/cache hits.
@@ -352,31 +368,14 @@ def _admit_scan(scope: str, cached: bool, job_id=None):
 
 
 def _remember(uid, data):
-    """
-    Save a finished scan to the signed-in user's history. Returns its id, or
-    None for guests and on any failure: history is a convenience and must
-    never turn a successful scan into an error.
-    """
-    from core import history, store
-    if not uid or not store.persistent() or not isinstance(data, dict):
-        return None
-    if data.get("status") == "error":
-        return None
-    try:
-        from core.profile_input import parse_profile_input
-        supplied = (request.get_json(silent=True) or {}).get("supplied_profile")
-        snapshot = dict(data)
-        if supplied:
-            try:
-                parsed = parse_profile_input(supplied)
-                if parsed.get("url") and parsed["handle"].lower() == str(data.get("query", {}).get("username", "")).lower():
-                    snapshot["supplied_profile"] = parsed["url"]
-            except ValueError:
-                pass
-        return history.save(uid, snapshot)
-    except Exception as exc:  # noqa: BLE001
-        log.warning("Could not save scan history (%s)", type(exc).__name__)
-        return None
+    """Count a completed scan without storing its input or findings."""
+    if isinstance(data, dict) and data.get("status") != "error":
+        from core import plans
+        try:
+            plans.record_scan(uid)
+        except Exception as exc:
+            log.warning("Could not update scan count (%s)", type(exc).__name__)
+    return None
 
 
 # Concurrent full and extended sweeps in this worker. Each holds 24 sockets.
@@ -501,9 +500,12 @@ def _register_routes(app: Flask) -> None:
 
     @app.route("/api/health")
     def health():
+        from core import privacy_cleanup
         return responses.ok({
-            "service": config.public_config(),
+            "service": {**config.public_config(), "features": {**config.public_config()["features"], "cache": False}},
             "revision": os.getenv("RENDER_GIT_COMMIT", ""),
+            "scan_storage": {"persistent": False, "result_cache": False,
+                             "legacy_cleanup": privacy_cleanup.status()},
             # How this caller is identified for rate limiting. It echoes only
             # the caller's own address back to them, which they already know,
             # and the hop count as a bare integer, enough to confirm after a
@@ -728,6 +730,7 @@ def _register_routes(app: Flask) -> None:
                         guest_reports.deep({**result, "status": "unknown", "partial": True},
                                            token=report_token, complete=False)
                 else:
+                    _remember(user["sub"] if user else None, result)
                     emit({"type": "complete", "data": result})
             except Exception:
                 emit({"type": "error", "error": "Deep Search could not complete. Please try again."})

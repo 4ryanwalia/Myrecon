@@ -141,19 +141,47 @@ def _extended_left(pro: dict) -> int:
 
 
 def get_account(uid: str, email: str = "", name: str = "") -> dict:
-    """Read (creating on first sight) the account and its entitlements."""
-    def touch(cur):
-        cur = cur or {"created": _now_ms()}
-        if email:
-            cur["email"] = email[:254]
-        if name:
-            cur["name"] = name[:120]
-        return cur
+    """Read access metadata; profile details are retained only for purchasers."""
+    record = store.get(_user_path(uid)) or {}
+    # Recover an interrupted memory-only job using allowance metadata only.
+    # A healthy active job still exists in the local queue and is never refunded here.
+    from core import scan_jobs
+    for job_id, receipt in list((record.get("scan_job_receipts") or {}).items()):
+        if (receipt.get("ephemeral") and receipt.get("source") and
+                not receipt.get("complete") and not receipt.get("refunded") and
+                scan_jobs.get(job_id) is None):
+            refund_full_scan(uid, receipt["source"], job_id=job_id)
+            record = store.get(_user_path(uid)) or {}
+    purchased = bool(record.get("extended") or record.get("pro") or
+                     str((record.get("subscription") or {}).get("period", "")).startswith("paid:"))
+    if purchased and (email or name):
+        def touch(cur):
+            cur = cur or {}
+            if email:
+                cur["email"] = email[:254]
+            if name:
+                cur["name"] = name[:120]
+            return cur
+        if email != record.get("email") or name != record.get("name"):
+            record = store.transaction(_user_path(uid), touch)
+    return {"uid": uid, "email": email or record.get("email", ""),
+            "scan_count": int(record.get("scan_count", 0)), **entitlements(record)}
 
-    record = store.get(_user_path(uid))
-    if record is None or (email and record.get("email") != email):
-        record = store.transaction(_user_path(uid), touch)
-    return {"uid": uid, "email": record.get("email", ""), **entitlements(record)}
+
+def record_scan(uid=None, job_id=None):
+    """A single aggregate count, with no per-search records or timestamps."""
+    path = _user_path(uid) if uid else "web/usage/guest"
+    def increment(cur):
+        cur = cur or {}
+        if job_id:
+            receipt = _job_receipt(cur, job_id)
+            if receipt:
+                if receipt.get("complete"):
+                    return cur
+                receipt["complete"] = True
+        cur["scan_count"] = int(cur.get("scan_count", 0)) + 1
+        return cur
+    store.transaction(path, increment)
 
 
 def _job_receipt(cur, job_id):
@@ -176,7 +204,8 @@ def _record_job(cur, job_id, source):
         cutoff = _now_ms() - 2 * _DAY_MS
         receipts = {key: value for key, value in (cur.get("scan_job_receipts") or {}).items()
                     if value.get("at", 0) >= cutoff}
-        receipts[job_id] = {"source": source, "at": _now_ms(), "refunded": False}
+        receipts[job_id] = {"source": source, "at": _now_ms(), "refunded": False,
+                            "ephemeral": True}
         cur["scan_job_receipts"] = receipts
 
 

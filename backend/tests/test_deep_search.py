@@ -65,7 +65,7 @@ def test_paid_streams_partial_and_complete_without_spending_credits(client, monk
     events = [json.loads(line) for line in response.data.splitlines()]
     assert [e["type"] for e in events] == ["partial", "complete"]
     assert events[-1]["data"]["mode"] == "name"
-    assert plans.store.get("web/users/paid-user") == before
+    assert plans.store.get("web/users/paid-user") == {**before, "scan_count": 1}
     assert api._full_slots.acquire(blocking=False)
     api._full_slots.release()
 

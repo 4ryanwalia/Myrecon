@@ -180,7 +180,8 @@ def redeem(body):
             prev_count = max(0, int(previous_grant))
         else:
             prev_count = 0
-        grants[claim["referrer"]] = prev_count + 1
+        grants[claim["referrer"]] = max(1, prev_count)
+        # One lifetime referral trial; existing earned balances are preserved.
         return current
     storage.store.transaction("android_referrals", grant)
     return outcome

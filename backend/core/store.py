@@ -65,6 +65,10 @@ class _MemoryStore:
             }
             return json.loads(json.dumps(children)) if children else None
 
+    def keys(self, path):
+        value = self.get(path)
+        return list(value) if isinstance(value, dict) else []
+
     def push(self, path: str, value: Any) -> str:
         """Store under a new chronologically sortable child id."""
         self._check_process()
@@ -173,6 +177,15 @@ class _RTDBStore:
         resp = self._http.get(self._url(path), timeout=10, headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+
+    def keys(self, path):
+        """List child IDs without downloading any stored profile/result values."""
+        self._check_process()
+        resp = self._http.get(self._url(path), params={"shallow": "true"},
+                              timeout=10, headers=self._headers())
+        resp.raise_for_status()
+        value = resp.json()
+        return list(value) if isinstance(value, dict) else []
 
     def push(self, path: str, value: Any) -> str:
         """POST creates a child with a server-generated, chronological id."""

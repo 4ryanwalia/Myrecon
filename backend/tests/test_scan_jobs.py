@@ -23,6 +23,7 @@ SPECS = [
 def setup(monkeypatch):
     memory = storage._MemoryStore()
     monkeypatch.setattr(storage, "store", memory)
+    monkeypatch.setattr(jobs, "_job_store", memory)
     monkeypatch.setattr(plans, "store", memory)
     monkeypatch.setattr(config, "IS_PRODUCTION", False)
     monkeypatch.setattr(config, "DEV_TEST_ACCOUNT", True)
@@ -230,6 +231,7 @@ def test_paid_admission_and_refund_are_each_once(setup):
     memory, _ = setup
     memory.set("web/users/u", {"extended": {"scans_left": 2}})
     job_id = "a" * 32
+    jobs.reserve(job_id, "fixture", "extended", False, "owner", "u")
     assert plans.consume_extended_scan("u", job_id) == "extended_pack"
     assert plans.consume_extended_scan("u", job_id) == "extended_pack"
     assert plans.get_account("u")["extended_scans_left"] == 1
@@ -239,6 +241,7 @@ def test_paid_admission_and_refund_are_each_once(setup):
 
 
 def test_standard_and_guest_admission_retry_do_not_charge_twice(setup):
+    jobs.reserve("a" * 32, "fixture", "standard", False, "owner", "u")
     source = plans.consume_standard_scan("u", "a" * 32)
     assert plans.consume_standard_scan("u", "a" * 32) == source
     assert plans.get_account("u")["standard_scans_left"] == 4
@@ -319,8 +322,8 @@ def test_finalizer_uses_saved_checks_preserves_server_optional_features(setup, m
     job = jobs.get(remote["id"])
     assert job["status"] == "complete"
     assert len(calls[0]["sweep_results"][0]) == 2
-    assert job["history_id"] == remote["id"]
-    assert history.list_scans("u")[0]["id"] == remote["id"]
+    assert job["history_id"] is None
+    assert history.list_scans("u") == []
     assert jobs.result(job)["status"] == "ok"
 
 
@@ -415,17 +418,17 @@ def test_admission_recovers_after_charge_before_queue_publish(setup, monkeypatch
     assert plans.get_account("u")["extended_scans_left"] == 1
 
 
-def test_offloaded_cache_hit_keeps_existing_extended_credit_policy(setup, monkeypatch):
+def test_offloaded_cache_is_disabled_and_new_scan_spends_credit(setup, monkeypatch):
     memory, client = setup
     monkeypatch.setattr(config, "CACHE_ENABLED", True)
     monkeypatch.setattr(api, "_signed_in_user", lambda: {"sub": "u"})
     memory.set("web/users/u", {"extended": {"scans_left": 1}})
     api._cache.set(api._cache_key("username_extended", "cached-fixture"),
                    {"status": "ok", "query": {}, "summary": {}, "results": {}})
-    response = client.post("/api/username/stream", json={"username": "cached-fixture", "scope": "extended"})
-    assert json.loads(response.data)["type"] == "complete"
-    assert plans.get_account("u")["extended_scans_left"] == 1
-    assert not memory.get(jobs.ROOT)
+    response = client.post("/api/username/stream", json={"username": "cached-fixture", "scope": "extended"}, buffered=False)
+    assert json.loads(next(response.response))["type"] == "job"
+    response.close()
+    assert plans.get_account("u")["extended_scans_left"] == 0
 
 
 def test_colab_client_to_api_to_final_report_round_trip(setup, monkeypatch):
@@ -462,31 +465,17 @@ def test_colab_client_to_api_to_final_report_round_trip(setup, monkeypatch):
     assert result["data"]["coverage"]["total"] == 2
     assert result["data"]["coverage"]["unchecked"] == 0
     assert result["data"]["results"]["profiles"][0]["platform"] == "GitHub"
-    assert len(history.list_scans("u")) == 1
+    assert history.list_scans("u") == []
     assert plans.get_account("u")["standard_scans_left"] == 4
 
 
-def test_delete_history_removes_job_payload_without_refunding_or_recreating(setup):
+def test_legacy_history_delete_erases_stored_payload(setup):
     memory, _ = setup
-    memory.set("web/users/u", {"extended": {"scans_left": 2}})
-    job = queued(scope="extended")
-    source = plans.consume_extended_scan("u", job["id"])
-    def charged(current):
-        current[job["id"]]["charged"] = source
-        return current
-    memory.transaction(jobs.ROOT, charged)
-    remote = jobs.claim("colab:worker", versions())
-    complete_raw(remote)
-    finalizer = jobs.claim("render")
-    data = {"query": {"username": "fixture"}, "summary": {}, "results": {}}
-    jobs.finish(job["id"], finalizer["token"], data)
-    history.save("u", data, scan_id=job["id"])
-    history.delete("u", job["id"])
-    assert jobs.get(job["id"])["status"] == "deleted"
-    assert not memory.get(f"{jobs.DATA}/{job['id']}")
-    scan_job_runner.maintenance()
-    assert plans.get_account("u")["extended_scans_left"] == 1
-    assert jobs.reserve(job["id"], "fixture", "extended", False, "owner", "u")["status"] == "deleted"
+    memory.set("web/scans/u/legacy", {"query": {"username": "private"}})
+    memory.set("web/history/u/legacy", {"handle": "private"})
+    history.delete("u", "legacy")
+    assert not memory.get("web/scans/u/legacy")
+    assert not memory.get("web/history/u/legacy")
 
 
 def test_stream_limit_refuses_before_admission_and_releases_on_disconnect(setup, monkeypatch):
@@ -506,7 +495,7 @@ def test_stream_limit_refuses_before_admission_and_releases_on_disconnect(setup,
     second.close()
 
 
-def test_completed_report_history_is_recovered_after_save_failure(setup, monkeypatch):
+def test_completed_report_is_never_saved_even_during_maintenance(setup, monkeypatch):
     queued()
     remote = jobs.claim("colab:worker", versions())
     complete_raw(remote)
@@ -520,7 +509,8 @@ def test_completed_report_history_is_recovered_after_save_failure(setup, monkeyp
     assert not jobs.get(remote["id"]).get("history_id")
     monkeypatch.setattr(history, "save", real_save)
     scan_job_runner.maintenance()
-    assert jobs.get(remote["id"])["history_id"] == remote["id"]
+    assert not jobs.get(remote["id"]).get("history_id")
+    assert history.list_scans("u") == []
 
 
 @pytest.mark.parametrize("state,age,compatible", [

@@ -63,7 +63,7 @@ def _note_worker(callback, *args):
 def _operator_snapshot():
     """Aggregate queue health; never include job identities or finding data."""
     now = time.time()
-    records = storage.store.get(jobs.ROOT) or {}
+    records = jobs._job_store.get(jobs.ROOT) or {}
     active = [job for job in records.values() if isinstance(job, dict)
               and (not isinstance(job.get("status"), str) or job["status"] not in jobs.TERMINAL)]
     active_count = len(active) + sum(not isinstance(job, dict) for job in records.values())
@@ -226,8 +226,11 @@ def events(api, job_id):
             data = jobs.result(job)
             if not isinstance(data, dict):
                 raise RuntimeError("Completed scan result is missing")
-            yield json.dumps({"type": "complete", "data": _visible(api, job, data),
-                              "history_id": job.get("history_id"), "job_id": job_id}) + "\n"
+            try:
+                yield json.dumps({"type": "complete", "data": _visible(api, job, data),
+                                  "history_id": None, "job_id": job_id}) + "\n"
+            finally:
+                jobs.discard(job_id)
             return
         if job["status"] in ("failed", "cancelled", "deleted"):
             scan_job_runner.refund(job)
@@ -278,7 +281,8 @@ def register(app, api):
             scan_job_runner.refund(job)
         payload = {"job_id": job_id, "job_status": job["status"], "checked": job["checked"]}
         if job["status"] == "complete":
-            payload.update(data=_visible(api, job, jobs.result(job)), history_id=job.get("history_id"))
+            payload.update(data=_visible(api, job, jobs.result(job)), history_id=None)
+            jobs.discard(job_id)
         response, status = responses.ok(payload)
         response.headers["Cache-Control"] = "no-store"
         return response, status

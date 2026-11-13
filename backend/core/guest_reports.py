@@ -1,30 +1,8 @@
-"""Server-side guest projections and short-lived, authenticated report reveal.
+"""Guest response projections. No server report retention or reveal receipts."""
 
-Only the explicit card/section projections below may cross the guest response
-boundary. The original JSON stays in this single-worker process for at most
-30 minutes, never in browser storage or the shared result cache under a token.
-Retention is bounded by both report count and serialized bytes. A restart or
-capacity eviction returns an honest expired response, never an automatic scan.
-"""
-
-import json
 import re
-import secrets
-import threading
-import time
-from collections import OrderedDict
 from copy import deepcopy
 
-TTL_SECONDS = 30 * 60
-MAX_REPORTS = 64
-MAX_BYTES = 24 * 1024 * 1024
-MAX_REPORT_BYTES = 8 * 1024 * 1024
-_TOKEN = re.compile(r"^[A-Za-z0-9_-]{43}$")
-_reports = OrderedDict()
-_lock = threading.RLock()
-_expiry_changed = threading.Condition(_lock)
-_cleanup_started = False
-_bytes = 0
 _STATES = {"ok", "partial", "pending", "found", "no_match", "not_found", "error",
            "disabled", "unconfigured", "authentication_required", "rate_limited",
            "timeout", "unavailable", "unknown", "skipped", "credits_exhausted"}
@@ -38,104 +16,17 @@ def _rows(value):
     return [row for row in value if isinstance(row, dict)] if isinstance(value, list) else []
 
 
-def _remove(token):
-    global _bytes
-    row = _reports.pop(token, None)
-    if row:
-        _bytes -= row["bytes"]
-
-
-def _prune(now):
-    for token, row in list(_reports.items()):
-        if row["expires_at"] <= now:
-            _remove(token)
-
-
-def _cleanup():
-    """Remove expired payloads even when no further requests reach the server."""
-    global _cleanup_started
-    with _expiry_changed:
-        while _reports:
-            now = time.time()
-            _prune(now)
-            if _reports:
-                next_expiry = min(row["expires_at"] for row in _reports.values())
-                _expiry_changed.wait(timeout=max(0.1, next_expiry - now))
-        _cleanup_started = False
-
-
 def retain(tool, data, *, token=None, complete=True):
-    """Retain a JSON snapshot and return public receipt metadata only.
-
-    The token is random, independent of query/IP/cache key, and is not enough
-    to reveal a report without verified Firebase authentication.
-    """
-    global _bytes, _cleanup_started
-    encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
-    size = len(encoded.encode("utf-8"))
-    now = time.time()
-    with _lock:
-        _prune(now)
-        existing = _reports.get(token) if token else None
-        if token and existing is None:
-            # A later streaming snapshot cannot resurrect an expired/evicted
-            # token or forget the owner to whom its report was already bound.
-            return {"report_token": None, "expires_at": None, "complete": bool(complete),
-                    "retention_unavailable": True}
-        expires = existing["expires_at"] if existing else int(now) + TTL_SECONDS
-        # Oversized reports still get a safe guest projection, with an explicit
-        # unavailable receipt instead of risking the backend's memory budget.
-        if size > MAX_REPORT_BYTES:
-            if token:
-                _remove(token)
-            return {"report_token": None, "expires_at": None, "complete": complete,
-                    "retention_unavailable": True}
-        token = token or secrets.token_urlsafe(32)
-        owner = existing.get("uid") if existing else None
-        if existing:
-            _remove(token)
-        while _reports and (len(_reports) >= MAX_REPORTS or _bytes + size > MAX_BYTES):
-            _remove(next(iter(_reports)))
-        _reports[token] = {"tool": tool, "payload": encoded, "bytes": size,
-                           "expires_at": expires, "complete": bool(complete), "uid": owner}
-        _bytes += size
-        if not _cleanup_started:
-            _cleanup_started = True
-            try:
-                threading.Thread(target=_cleanup, name="guest-report-expiry", daemon=True).start()
-            except Exception:
-                _cleanup_started = False
-                _remove(token)
-                return {"report_token": None, "expires_at": None, "complete": bool(complete),
-                        "retention_unavailable": True}
-        _expiry_changed.notify_all()
-        return {"report_token": token, "expires_at": expires, "complete": bool(complete)}
+    return {"report_token": None, "expires_at": None, "complete": bool(complete),
+            "retention_unavailable": True}
 
 
 def read(token, uid=None):
-    """Read a private receipt, optionally binding it to its first signed-in owner.
-
-    Calling without uid is server-internal metadata inspection. No public
-    endpoint returns this data until it has authenticated and checked plans.
-    """
-    if not isinstance(token, str) or not _TOKEN.fullmatch(token):
-        return None
-    with _lock:
-        _prune(time.time())
-        row = _reports.get(token)
-        if not row or (row["uid"] and uid and row["uid"] != uid):
-            return None
-        if uid:
-            row["uid"] = uid
-        return {"tool": row["tool"], "data": json.loads(row["payload"]),
-                "complete": row["complete"], "expires_at": row["expires_at"]}
+    return None
 
 
 def failed(token):
-    row = read(token)
-    if row:
-        data = {**row["data"], "status": "error", "partial": True}
-        retain(row["tool"], data, token=token, complete=False)
+    pass
 
 
 def _card(kind, title, data):

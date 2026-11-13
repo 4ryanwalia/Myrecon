@@ -266,9 +266,9 @@ def test_quick_and_full_cached_requests_share_one_daily_allowance(client, monkey
     r = client.post("/api/username/stream", json={"username": "octocat", "scope": "full"},
                     headers={"Authorization": f"Bearer {t}"})
     assert r.status_code == 429 and r.get_json()["code"] == "standard_daily_limit"
-    # Reopening a saved report does not use or require a daily scan.
+    # History is disabled regardless of remaining allowance.
     scans = client.get("/api/history", headers={"Authorization": f"Bearer {t}"}).get_json()["scans"]
-    assert client.get(f"/api/history/{scans[0]['id']}", headers={"Authorization": f"Bearer {t}"}).status_code == 200
+    assert scans == []
 
 
 def test_standard_daily_allowance_is_per_uid_not_address(client):
@@ -472,15 +472,15 @@ def test_expired_legacy_pass_does_not_expire_pack_credits():
     assert plans.consume_extended_scan("u") == "extended_pack"
 
 
-def test_cached_extended_result_requires_credit_but_does_not_spend(client, monkeypatch):
+def test_extended_cache_is_disabled_and_each_new_scan_spends_credit(client, monkeypatch):
     monkeypatch.setattr(config, "CACHE_ENABLED", True)
     app_module._cache.set(app_module._cache_key("username_extended", "octocat"), _full_result())
     t = _token()
     assert _scan(client, t, "extended").status_code == 402
     plans.grant_pass("user-1", "extended", "order_pack")
     assert _scan(client, t, "extended").status_code == 200
-    assert plans.get_account("user-1")["extended_scans_left"] == 10
-    for _ in range(10):
+    assert plans.get_account("user-1")["extended_scans_left"] == 9
+    for _ in range(9):
         plans.consume_extended_scan("user-1")
     assert _scan(client, t, "extended").status_code == 402
 
@@ -675,14 +675,12 @@ def _auth(token):
     return {"Authorization": f"Bearer {token}"}
 
 
-def test_signed_in_scans_are_saved_and_reopened(client):
+def test_signed_in_scans_are_not_saved(client):
     t = _token()
     r = _scan(client, t).get_json()
-    assert r["history_id"]
-    scans = client.get("/api/history", headers=_auth(t)).get_json()["scans"]
-    assert len(scans) == 1 and scans[0]["id"] == r["history_id"]
-    one = client.get(f"/api/history/{r['history_id']}", headers=_auth(t)).get_json()["scan"]
-    assert one["status"] == "ok" and one["rejected"] == []
+    assert r["history_id"] is None
+    assert client.get("/api/history", headers=_auth(t)).get_json()["scans"] == []
+    assert client.get("/api/me", headers=_auth(t)).get_json()["account"]["scan_count"] == 1
 
 
 def test_guest_scans_are_not_saved(client):
@@ -700,24 +698,22 @@ def test_history_needs_sign_in(client):
     assert client.get("/api/history").status_code == 401
 
 
-def test_history_keeps_only_the_newest(client, monkeypatch):
-    from core import history
-    monkeypatch.setattr(history, "MAX_SCANS", 3)
+def test_multiple_scans_never_create_history(client):
     t = _token()
-    ids = [_scan(client, t).get_json()["history_id"] for _ in range(5)]
-    kept = [s["id"] for s in client.get("/api/history", headers=_auth(t)).get_json()["scans"]]
-    assert sorted(kept) == sorted(ids[-3:])
-    assert client.get(f"/api/history/{ids[0]}", headers=_auth(t)).status_code == 404
-
-
-def test_history_delete_one_and_all(client):
-    t = _token()
-    a = _scan(client, t).get_json()["history_id"]
-    _scan(client, t)
-    assert client.delete(f"/api/history/{a}", headers=_auth(t)).status_code == 200
-    assert len(client.get("/api/history", headers=_auth(t)).get_json()["scans"]) == 1
-    client.delete("/api/history", headers=_auth(t))
+    for _ in range(5): assert _scan(client, t).get_json()["history_id"] is None
     assert client.get("/api/history", headers=_auth(t)).get_json()["scans"] == []
+    assert store.store.get("web/scans/user-1") is None
+
+
+def test_history_delete_removes_legacy_one_and_all(client):
+    t = _token()
+    for key in ("old1", "old2"):
+        store.store.set(f"web/scans/user-1/{key}", {"query": "private"})
+        store.store.set(f"web/history/user-1/{key}", {"handle": "private"})
+    assert client.delete("/api/history/old1", headers=_auth(t)).status_code == 200
+    assert store.store.get("web/scans/user-1/old1") is None
+    assert client.delete("/api/history", headers=_auth(t)).status_code == 200
+    assert store.store.get("web/scans/user-1") is None
 
 
 def test_history_id_is_validated(client):
@@ -770,7 +766,7 @@ def test_guest_quick_exposes_two_cards_without_mutating_shared_cache(client, mon
     assert shown["summary"]["total"] == 4
     assert "HiddenThird" not in wire and "hiddenthird.example" not in wire
     assert "HiddenFourth" not in wire and "hiddenfourth.example" not in wire
-    assert full == original and app_module._cache.get(key) == original
+    assert full == original and app_module._cache.get(key) is None
     signed = client.post(endpoint, json={"username": "octocat", "deep": True, "scope": "standard"},
                          headers={"Authorization": f"Bearer {_token()}"})
     signed_wire = signed.get_data(as_text=True)
@@ -829,7 +825,7 @@ def test_guest_quick_stream_still_works(client, monkeypatch, cached):
     shown = json.loads(r.get_data(as_text=True))["data"]
     assert shown["query"] == quick["query"]
     assert shown["guest_preview"] == {"visible_cards": 0, "hidden_cards": 0, "requires_sign_in": True}
-    assert calls == ([] if cached else [("octocat", False, "standard")])
+    assert calls == [("octocat", False, "standard")]
 
 
 @pytest.mark.parametrize("stream", [False, True])
@@ -859,7 +855,7 @@ def test_signed_in_standard_returns_complete_report(client, monkeypatch, stream,
     result = json.loads(r.get_data(as_text=True))["data"] if stream else r.get_json()
     assert "https://hidden.example/octocat" in json.dumps(result)
     assert "preview" not in result
-    assert calls == ([] if cached else [1])
+    assert calls == [1]
     assert plans.get_account("user-1")["standard_scans_left"] == plans.FREE_STANDARD_SCANS_PER_DAY - 1
 
 
@@ -910,24 +906,15 @@ def test_closing_running_stream_retains_slot_until_cleanup(client, monkeypatch):
     assert plans.get_account("user-1")["extended_scans_left"] == 9
 
 
-def test_match_choices_are_private_persistent_and_revisable(client):
-    one = {"Authorization": f"Bearer {_token('choice-one')}"}
-    two = {"Authorization": f"Bearer {_token('choice-two')}"}
+def test_match_choices_are_not_persisted(client):
     endpoint = "/api/match-choices"
     assert client.get(endpoint).status_code == 401
+    headers = _auth(_token("choice-one"))
     for choice in ("mine", "not_mine", "unsure"):
-        response = client.post(endpoint, headers=one, json={"url": "https://example.com/Alice#bio", "choice": choice})
-        assert response.status_code == 200
-        saved = list(client.get(endpoint, headers=one).get_json()["choices"].values())
-        assert len(saved) == 1
-        assert saved[0]["choice"] == choice
-        assert saved[0]["url"] == "https://example.com/Alice"
-        assert saved[0]["basis"] == "user_assertion"
-        assert client.get(endpoint, headers=two).get_json()["choices"] == {}
-    assert client.post(endpoint, headers=one, json={"url": "https://example.com/alice", "choice": "mine"}).status_code == 200
-    assert len(client.get(endpoint, headers=one).get_json()["choices"]) == 2
-    client.post(endpoint, headers=one, json={"url": "https://example.com/Alice", "choice": ""})
-    assert len(client.get(endpoint, headers=one).get_json()["choices"]) == 1
+        r = client.post(endpoint, headers=headers, json={"url": "https://example.com/Alice", "choice": choice})
+        assert r.status_code == 200 and r.get_json()["choices"] == {}
+    assert client.get(endpoint, headers=headers).get_json()["choices"] == {}
+    assert store.store.get("web/match_choices") is None
 
 
 def test_match_choices_reject_invalid_input_and_volatile_storage(client, monkeypatch):
@@ -949,31 +936,18 @@ def test_shared_username_never_confirms_identity():
     assert all(c["identity_status"] == "unverified" and c["confidence_basis"] == "retrieval_quality_not_identity" for c in clusters)
 
 
-def test_discovery_cleanup_is_private_user_record_and_survives_reload(client):
-    headers = {"Authorization": f"Bearer {_token('cleanup-user')}"}
-    url = "https://github.com/alice/?utm_source=test"
-    endpoint = "/api/match-choices"
-    for cleanup in ("keep", "review", "requested", "completed"):
-        response = client.post(endpoint, headers=headers, json={"url": url, "choice": "mine", "cleanup": cleanup})
-        assert response.status_code == 200
-        row = list(client.get(endpoint, headers=headers).get_json()["choices"].values())[0]
-        assert row["url"] == "https://github.com/alice"
-        assert row["cleanup"] == cleanup
-        assert row["basis"] == "user_assertion"
-    client.post(endpoint, headers=headers, json={"url": url, "choice": "not_mine", "cleanup": "completed"})
-    row = list(client.get(endpoint, headers=headers).get_json()["choices"].values())[0]
-    assert row["cleanup"] == "review"
-    assert client.post(endpoint, headers=headers, json={"url": url, "choice": "mine", "cleanup": "verified_deleted"}).status_code == 400
+def test_discovery_cleanup_validates_without_saving_profile_urls(client):
+    headers = _auth(_token("cleanup-user"))
+    body = {"url": "https://github.com/alice", "choice": "mine"}
+    for state in ("keep", "review", "requested", "completed"):
+        r = client.post("/api/match-choices", headers=headers, json={**body, "cleanup": state})
+        assert r.status_code == 200 and r.get_json()["choices"] == {}
+    assert client.post("/api/match-choices", headers=headers, json={**body, "cleanup": "verified_deleted"}).status_code == 400
 
 
-def test_discovery_history_retains_evidence_and_original_check_time():
-    from core.history import _trim
+def test_discovery_history_never_writes_evidence_or_check_time():
+    from core import history
     report = {"checked_at": "2026-10-12T00:00:00+00:00", "supplied_profile": "https://github.com/alice",
-              "results": {"profiles": [{"url": "https://github.com/alice", "exists": True, "evidence": "public API", "verdict": "found"}]},
-              "platform_checks": [{"platform": "Other", "verdict": "unknown", "reason": "blocked"}]}
-    saved = _trim(report)
-    assert saved["checked_at"] == report["checked_at"]
-    assert saved["supplied_profile"] == report["supplied_profile"]
-    assert saved["results"]["profiles"][0]["evidence"] == "public API"
-    assert saved["platform_checks"][0]["verdict"] == "unknown"
-    assert _trim({})["checked_at"] is None
+              "results": {"profiles": [{"evidence": "public API", "verdict": "found"}]}}
+    assert history.save("u", report) is None
+    assert store.store.get("web/scans/u") is None

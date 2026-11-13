@@ -93,5 +93,5 @@ def test_incomplete_results_are_retried_instead_of_cached(monkeypatch):
     assert scan("fixture@example.com")["summary"]["breach_status"] == "partial_unavailable"
     assert scan("fixture@example.com")["summary"]["breach_status"] == "ok"
     scan("fixture@example.com")
-    assert len(calls) == 2
+    assert len(calls) == 3
     appmod._cache.clear()

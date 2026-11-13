@@ -27,22 +27,14 @@ def canonical_url(value):
 
 
 def choices(uid):
-    return store.store.get(f"web/match_choices/{uid}") or {}
+    return {}
 
 
 def save(uid, url, choice, cleanup=None):
-    url = canonical_url(url)
+    canonical_url(url)
     if choice not in ("mine", "not_mine", "unsure", ""):
         raise ValueError("Choose mine, not mine, or unsure.")
     if cleanup not in (None, "review", "keep", "requested", "completed"):
         raise ValueError("Choose a supported cleanup state.")
-    key = hashlib.sha256(url.encode()).hexdigest()
-    path = f"web/match_choices/{uid}/{key}"
-    if not choice:
-        store.store.delete(path)
-    else:
-        previous = store.store.get(path) or {}
-        state = (cleanup or previous.get("cleanup", "review")) if choice == "mine" else "review"
-        store.store.set(path, {"url": url, "choice": choice, "basis": "user_assertion",
-                               "cleanup": state, "updated_at": int(time.time() * 1000)})
-    return choices(uid)
+    # The browser keeps these assertions only in its current page memory.
+    return {}

@@ -34,16 +34,9 @@
     return Object.fromEntries(Object.values(rows || {}).filter(r => r && key(r.url) && Object.hasOwn(labels, r.choice)).map(r => [key(r.url), r]));
   }
   async function load() {
-    const current = uid(), ticket = ++generation;
-    owner = current; ready = false; values = {}; saving = false; loadError = "";
-    paint("Loading your choices…");
-    try {
-      const rows = current ? await request("GET") : JSON.parse(localStorage.getItem(guestKey) || "{}");
-      if (ticket !== generation || current !== uid()) return;
-      values = index(rows); ready = true; paint();
-    } catch {
-      if (ticket === generation) { loadError = "Choices unavailable. Reload to retry."; paint(loadError); }
-    }
+    owner = uid(); ++generation; ready = true; values = {}; saving = false; loadError = "";
+    try { localStorage.removeItem(guestKey); } catch {}
+    paint();
   }
   function controls(url) {
     url = key(url);
@@ -55,7 +48,7 @@
     if (loadError) return loadError;
     if (!ready || owner !== uid()) return "Loading your choices…";
     const row = choice(url);
-    return `${row ? "Your choice: " + labels[row.choice] + ". " : ""}${owner ? "Choices save to your account." : "Choices save in this browser only."} A username match alone does not establish identity; your choice is self-reported.`;
+    return `${row ? "Your choice: " + labels[row.choice] + ". " : ""}${owner ? "Choices last for this page only." : "Choices last for this page only."} A username match alone does not establish identity; your choice is self-reported.`;
   }
   function paint(error) {
     document.querySelectorAll("[data-match-url]").forEach(el => {
@@ -87,12 +80,11 @@
     saving = true; paint("Saving your choice…");
     try {
       let next;
-      if (current) next = index(await request("POST", { url, choice: selected, cleanup }));
-      else {
+      {
         next = { ...values };
         if (selected) next[url] = { url, choice: selected, cleanup: selected === "mine" ? cleanup : "review", basis: "user_assertion", updated_at: Date.now() };
         else delete next[url];
-        localStorage.setItem(guestKey, JSON.stringify(next));
+
       }
       if (ticket !== generation || current !== uid()) return;
       values = next; saving = false; paint();

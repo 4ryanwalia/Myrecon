@@ -267,7 +267,7 @@
     resultUid = data?.guest_access ? null : window.MyReconAccount?.state()?.user?.uid || null;
     if (!data?.guest_access) return;
     guestSnapshot = { tool, query, data };
-    try { sessionStorage.setItem(GUEST_REPORT_KEY, JSON.stringify(guestSnapshot)); } catch {}
+    try { sessionStorage.removeItem(GUEST_REPORT_KEY); } catch {}
     if (signedIn() && data.guest_access.locked_count) Promise.resolve().then(revealGuestReport);
   }
 
@@ -311,7 +311,7 @@
     if (data.partial) html += `<p class="partial-notice" role="status">Some checks did not complete. Returned results are shown below; missing results remain inconclusive.</p>`;
     if (!cards.length) html += `<div class="empty"><p>No result cards were returned. An empty response does not establish absence; some sources may be unavailable.</p></div>`;
     html += `<div class="guest-visible-results">${cards.filter(c => !c.locked).map(guestCard).join("")}</div>`;
-    if (access.locked_count > 0) html += `<section class="guest-locked-results" aria-label="Locked results"><div class="card-grid">${cards.filter(c => c.locked).map(guestPlaceholder).join("")}</div><div class="guest-results-overlay"><strong>Sign in to view all results</strong><p>${Number(access.locked_count)} more result ${access.locked_count === 1 ? "card is" : "cards are"} available.</p><p>${access.report_token ? "Your scan is retained for up to 30 minutes. A restart or capacity limit can end retention sooner." : "This report could not be retained. Sign in, then run the lookup again to view all results."}</p>${access.report_token ? `<button type="button" class="btn" data-guest-reveal>${signedIn() ? "View all results" : "Sign in to view all results"}</button>` : `<button type="button" class="btn" data-gate="signin">Sign in and run again</button>`}<p class="hint" data-guest-reveal-status role="status"></p></div></section>`;
+    if (access.locked_count > 0) html += `<section class="guest-locked-results" aria-label="Locked results"><div class="card-grid">${cards.filter(c => c.locked).map(guestPlaceholder).join("")}</div><div class="guest-results-overlay"><strong>Sign in to view all results</strong><p>${Number(access.locked_count)} more result ${access.locked_count === 1 ? "card is" : "cards are"} available.</p><p>${access.report_token ? "Your scan is retained for up to 30 minutes. A restart or capacity limit can end retention sooner." : "Searches are not saved. Sign in, then run the lookup again to view all results."}</p>${access.report_token ? `<button type="button" class="btn" data-guest-reveal>${signedIn() ? "View all results" : "Sign in to view all results"}</button>` : `<button type="button" class="btn" data-gate="signin">Sign in and run again</button>`}<p class="hint" data-guest-reveal-status role="status"></p></div></section>`;
     resultsEl().innerHTML = html;
     if (access.locked_count > 0) $$(".results-actions button", resultsEl()).forEach(b => { b.disabled = true; b.title = "Sign in to view all results before exporting or sharing."; });
   }
@@ -2559,20 +2559,10 @@
   // ---------------------------------------------------------------- history
   const HKEY = "myrecon-history";
   function getHistory() {
-    try {
-      const history = JSON.parse(storageGet(HKEY));
-      return Array.isArray(history) ? history : [];
-    } catch { return []; }
+    storageRemove(HKEY);
+    return [];
   }
-  function pushHistory(tool, query) {
-    let h = getHistory().filter((x) => !(x.tool === tool && x.query === query));
-    h.unshift({ tool, query, at: Date.now() });
-    h = h.slice(0, 20);
-    // Search results are still successful if optional local history cannot
-    // be written (for example, in a private browser with storage disabled).
-    if (!storageSet(HKEY, JSON.stringify(h))) return;
-    renderHistory();
-  }
+  function pushHistory() { renderHistory(); }
   function renderHistory() {
     const wrap = $("#history");
     if (!wrap) return;
@@ -2907,20 +2897,7 @@
       // so a crafted link can never pre-fill, or auto-submit, a password.
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
       const linked = params.get("tool");
-      if (!linked) {
-        try {
-          const saved = JSON.parse(sessionStorage.getItem(GUEST_REPORT_KEY) || "null");
-          if (saved && saved.tool !== "email" && RENDERERS[saved.tool] && Array.isArray(saved.data?.cards) && saved.data?.guest_access?.report_token) {
-            switchTool(saved.tool);
-            $("#queryInput").value = saved.query || "";
-            guestSnapshot = lastResult = saved;
-            enterToolMode();
-            renderSafely(RENDERERS[saved.tool], saved.data);
-            bindActions();
-            window.MyReconAccount?.ready.then(() => { if (signedIn()) revealGuestReport(); });
-          }
-        } catch {}
-      }
+      try { sessionStorage.removeItem(GUEST_REPORT_KEY); } catch {}
       if (linked && TOOLS[linked] && !TOOLS[linked].secret) {
         switchTool(linked);
         if (params.get("scan")) openSavedScan(params.get("scan"));

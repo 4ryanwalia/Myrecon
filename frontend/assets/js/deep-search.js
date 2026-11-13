@@ -38,7 +38,7 @@
     guestLive = live;
     try {
       // The server permits one preview finding; all other details stay redacted.
-      sessionStorage.setItem(GUEST_STORAGE, JSON.stringify({ data, live }));
+      sessionStorage.removeItem(GUEST_STORAGE);
     } catch {}
   }
   function forgetGuestReport() {
@@ -48,23 +48,7 @@
     try { sessionStorage.removeItem(GUEST_STORAGE); } catch {}
   }
   function readGuestReport() {
-    try {
-      const saved = JSON.parse(sessionStorage.getItem(GUEST_STORAGE) || "null");
-      if (!isLocked(saved?.data) || typeof saved.data.guest_access.report_token !== "string") return;
-      const complete = !!saved.data.guest_access.complete;
-      guestReport = { ...saved.data, partial: !!saved.data.partial || !complete };
-      guestLive = false;
-      if (saved.data.subject) inputNode().value = saved.data.subject + (saved.data.context ? ", " + saved.data.context : "");
-      render(guestReport, guestLive);
-      $("#dsConsole").hidden = false;
-      $("#dsConsole").className = complete ? "ds-console done" : "ds-console failed";
-      $("#dsBar").style.width = complete ? "100%" : "0%";
-      $("#dsCount").textContent = complete ? "100%" : "Partial";
-      $("#dsStatus").textContent = complete
-        ? "Saved investigation. Preview one returned finding below; sign in with an eligible paid account to unlock the rest."
-        : "Retained partial preview. Sign in to check the saved investigation; it may be incomplete.";
-      modeHint();
-    } catch {}
+    try { sessionStorage.removeItem(GUEST_STORAGE); } catch {}
   }
 
   const connectionLabels = {
@@ -297,7 +281,7 @@
     }
     if (!sections.length) out.push(`<div class="ds-panel"><p>${live ? "Checking public sources. Sections appear when the server returns them." : "No public findings were returned. This does not prove that no account or record exists."}</p></div>`);
     if (data.partial) out.push(`<aside class="ds-panel" role="status"><strong>Partial investigation</strong><p>Some public sources could not finish or returned limited data. ${preview ? "One returned finding is shown; additional findings stay locked." : "Available findings stay locked until the preview is ready."} Unavailable checks do not establish absence.</p></aside>`);
-    if (access.report_token && total) out.push(`<p class="ds-retained-note">The server temporarily retains this investigation for up to 30 minutes. Sign in to reveal the remaining findings without repeating the scan. A server restart can end retention sooner.</p>`);
+    if (total) out.push(`<p class="ds-retained-note">Results are not saved. Sign in with eligible access, then run a new search to see the full findings.</p>`);
     $("#dsOut").innerHTML = out.join("");
     $("#dsExport").hidden = true;
     $("#dsExport").disabled = true;

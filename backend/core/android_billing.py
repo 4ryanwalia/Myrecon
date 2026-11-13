@@ -122,8 +122,35 @@ def record_purchase(body):
     return outcome
 
 
+def record_scan_count(body):
+    """Untrusted aggregate telemetry only; never used for access or billing."""
+    if not configured():
+        raise Unavailable()
+    if not isinstance(body, dict):
+        raise Rejected()
+    install_id, count = body.get("install_id"), body.get("scan_count")
+    if (not isinstance(install_id, str) or not _UUID.fullmatch(install_id)
+            or type(count) is not int or not 0 <= count <= 2_147_483_647):
+        raise Rejected()
+    def update(current):
+        return max(int(current or 0), count)
+    storage.store.transaction(f"android_usage/{install_id}/scan_count", update)
+    return {"recorded": True}
+
+
 def register_routes(app, json_body, responses):
     from flask import request
+
+    @app.route("/api/android/usage", methods=["POST", "OPTIONS"])
+    def android_usage():
+        if request.method == "OPTIONS":
+            return ("", 204)
+        try:
+            return responses.ok(record_scan_count(json_body()))
+        except Rejected:
+            return responses.error("Invalid usage count.", 400)
+        except (Unavailable, requests.RequestException, RuntimeError):
+            return responses.error("Usage counter unavailable.", 503)
 
     @app.route("/api/android/billing/record", methods=["POST", "OPTIONS"])
     def android_billing_record():

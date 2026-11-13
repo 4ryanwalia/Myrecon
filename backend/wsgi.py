@@ -10,6 +10,8 @@ def application(environ, start_response):
     if not _recovery_started:
         _recovery_started = True
         try:
+            from core.privacy_cleanup import ensure_started as start_cleanup
+            start_cleanup()
             from services.colab_recovery import ensure_started
             ensure_started()
         except Exception:

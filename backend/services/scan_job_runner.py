@@ -120,20 +120,12 @@ def execute(job):
         if lost.is_set():
             return
         data["execution"] = {"job_id": job_id, "resumed": job["attempts"] > 2}
-        # Final result is persisted before the terminal status is published.
-        # Deterministic history id makes a finalizer restart harmless.
+        # Only the active delivery buffer lives in memory. No result/history writes.
+        try:
+            plans.record_scan(job.get("uid"), job_id=job_id)
+        except Exception as exc:
+            log.warning("Could not update scan count (%s)", type(exc).__name__)
         jobs.finish(job_id, token, data)
-        if config.CACHE_ENABLED and not data.get("partial") and data.get("status") != "error":
-            import app as api
-            key = (api._cache_key("username_" + job["scope"], job["username"])
-                   if job["scope"] != "standard" else api._cache_key("username", job["username"], job["deep"]))
-            api._cache.set(key, data)
-        if job.get("uid") and storage.persistent():
-            try:
-                if history.save(job["uid"], data, scan_id=job_id, job_token=token):
-                    jobs.remember_history(job_id, token)
-            except Exception as exc:
-                log.warning("Could not save job history (%s)", type(exc).__name__)
     except jobs.LostLease:
         pass
     except Exception as exc:
@@ -149,7 +141,7 @@ def execute(job):
 
 def maintenance(prune=True, prune_workers=True):
     seq_before = jobs.read_signal_seq()
-    snapshot = storage.store.get(jobs.ROOT) or {}
+    snapshot = jobs._job_store.get(jobs.ROOT) or {}
     mutated = False
     for job in snapshot.values():
         try:
@@ -175,11 +167,6 @@ def maintenance(prune=True, prune_workers=True):
             refund(job)
             if not was_refund_done and job.get("status") in ("failed", "cancelled"):
                 mutated = True
-            if job["status"] == "complete" and job.get("uid") and not job.get("history_id") and storage.persistent():
-                if history.save(job["uid"], jobs.result(job), scan_id=job["id"],
-                                job_token=job["result_token"]):
-                    jobs.remember_history(job["id"], job["result_token"])
-                    mutated = True
         except Exception as exc:
             # A damaged result or transient history/refund write for one job
             # must not block every other scan from being reclaimed or run.
@@ -251,6 +238,7 @@ def ensure_started():
                                 job = jobs.claim("render")
                                 if job:
                                     execute(job)
+                                    job = None
                                     continue
                             finally:
                                 _full_slots.release()

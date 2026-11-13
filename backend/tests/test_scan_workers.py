@@ -14,6 +14,7 @@ from services import scan_engine, scan_job_runner
 def setup(monkeypatch):
     memory = storage._MemoryStore()
     monkeypatch.setattr(storage, "store", memory)
+    monkeypatch.setattr(jobs, "_job_store", memory)
     monkeypatch.setattr(plans, "store", memory)
     monkeypatch.setattr(config, "IS_PRODUCTION", False)
     monkeypatch.setattr(config, "DEV_TEST_ACCOUNT", True)

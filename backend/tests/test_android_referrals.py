@@ -55,7 +55,7 @@ def test_grant_atomic_idempotent_and_no_query_retention(setup, monkeypatch):
     assert list(data["claims"]) == [KEY]
     assert set(data["claims"][KEY]) == {"referrer", "at"}
 
-def test_multiple_referrals_increment_grants_and_upgrade_legacy_bool(setup, monkeypatch):
+def test_multiple_referrals_do_not_repeat_the_one_time_trial(setup, monkeypatch):
     t1 = challenge()
     monkeypatch.setattr(r, "_decode_integrity", lambda proof: verdict(t1))
     assert r.redeem(dict(challenge=t1, integrity_token="proof")) == {"claim": "counted"}
@@ -64,9 +64,9 @@ def test_multiple_referrals_increment_grants_and_upgrade_legacy_bool(setup, monk
     t2 = r.challenge(dict(own_code=own2, referrer=REF, claim_key=key2, username="example"))["challenge"]
     monkeypatch.setattr(r, "_decode_integrity", lambda proof: verdict(t2))
     assert r.redeem(dict(challenge=t2, integrity_token="proof")) == {"claim": "counted"}
-    assert setup.data["android_referrals"]["grants"] == {REF: 2}
+    assert setup.data["android_referrals"]["grants"] == {REF: 1}
 
-    # Legacy boolean True converts cleanly to 2 when a subsequent referral completes.
+    # Legacy boolean True already represents a used referral grant.
     legacy_ref = "44444444-4444-4444-4444-444444444444"
     setup.data["android_referrals"]["grants"][legacy_ref] = True
     key3 = "c" * 64
@@ -74,7 +74,7 @@ def test_multiple_referrals_increment_grants_and_upgrade_legacy_bool(setup, monk
     t3 = r.challenge(dict(own_code=own3, referrer=legacy_ref, claim_key=key3, username="example"))["challenge"]
     monkeypatch.setattr(r, "_decode_integrity", lambda proof: verdict(t3))
     assert r.redeem(dict(challenge=t3, integrity_token="proof")) == {"claim": "counted"}
-    assert setup.data["android_referrals"]["grants"][legacy_ref] == 2
+    assert setup.data["android_referrals"]["grants"][legacy_ref] == 1
 
 @pytest.mark.parametrize("section,field,value", [
     ("requestDetails", "requestHash", "another-request"),

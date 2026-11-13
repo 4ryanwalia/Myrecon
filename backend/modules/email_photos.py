@@ -177,9 +177,6 @@ def _cache_put(key: str, photo: Photo):
 def fetch_public_photo(url: str) -> Photo:
     normalized, _, _ = validated_url(url)
     key = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
-    cached = _cache_get(key)
-    if cached:
-        return cached
     deadline = time.monotonic() + TOTAL_SECONDS
     current = normalized
     try:
@@ -234,7 +231,6 @@ def fetch_public_photo(url: str) -> Photo:
                 if not body or _raster_type(body) != declared:
                     raise PhotoError("unsupported_photo_type", 415)
                 photo = Photo(body, declared)
-                _cache_put(key, photo)
                 return photo
             finally:
                 connection.close()

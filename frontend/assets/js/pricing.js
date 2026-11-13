@@ -274,31 +274,8 @@
     const st = A.state();
     if (!st.user) { box.hidden = true; return; }
     box.hidden = false;
-    list.innerHTML = `<p class="hint">Loading your scans…</p>`;
-    let scans;
-    try {
-      scans = (await api("GET", "/api/history")).scans || [];
-    } catch (e) {
-      list.innerHTML = `<p class="hint">Could not load your scans: ${escHtml(e.message)}</p>`;
-      return;
-    }
-    $("#clearScans").hidden = !scans.length;
-    if (!scans.length) {
-      list.innerHTML = `<p class="hint">No saved scans yet. <a href="/#tool">Run a username scan</a> while signed in and it appears here.</p>`;
-      return;
-    }
-    list.innerHTML = scans.map((s) => `
-      <div class="scan-row">
-        <div class="scan-main">
-          <strong>${escHtml(s.handle)}</strong>
-          <span class="scan-badge${s.scope === "full" || s.scope === "extended" ? " pro" : ""}">${s.scope === "extended" ? "Extended · 3,000+" : s.scope === "full" ? "Standard · 500+" : "Quick · 100"}</span>
-          <span class="hint">${escHtml(new Date(s.at).toLocaleString())} · ${Number(s.profiles) || 0} found</span>
-        </div>
-        <div class="scan-actions">
-          <a class="btn btn-sm" href="/#tool=username&amp;scan=${encodeURIComponent(s.id)}">Open</a>
-          <button type="button" class="btn btn-ghost btn-sm" data-del-scan="${escHtml(s.id)}" aria-label="Delete scan of ${escHtml(s.handle)}">Delete</button>
-        </div>
-      </div>`).join("");
+    $("#clearScans").hidden = true;
+    list.innerHTML = `<p class="hint">Searches are not saved. Results stay on the current page. Scan count: ${Number(st.account?.scan_count) || 0}.</p>`;
   }
 
   async function buy(planId) {

@@ -25,7 +25,8 @@ def test_email_shows_one_actual_review_and_keeps_other_findings_server_side():
     assert "Contributor name" not in encoded
     assert "do not expose" not in encoded
     assert shown["guest_access"]["visible_count"] == 1
-    assert guest_reports.read(shown["guest_access"]["report_token"])["data"] == report
+    assert shown["guest_access"]["report_token"] is None
+    assert guest_reports.read(shown["guest_access"]["report_token"]) is None
 
 
 def test_handle_preview_has_one_profile_without_nested_posts_or_other_profiles():
