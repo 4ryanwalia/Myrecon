@@ -70,7 +70,7 @@
   <!-- app-promo-layout:start --><div class="promo-layout"><main class="container legal" id="main">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">Privacy policy</span></nav>
     <h1>Privacy Policy</h1>
-    <p class="legal-meta">Last updated: 8 October 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
+    <p class="legal-meta">Last updated: 15 November 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
 
     <div class="legal-summary">
       <h2>The short version</h2>
@@ -176,8 +176,8 @@
             </tr>
             <tr><td><strong>Scan history</strong></td><td>No automatic history is collected</td><td>Not written to Firebase or server storage</td><td>No retention</td></tr>
             <tr>
-              <td><strong>If you buy a scan pack</strong>: payment references and the purchased entitlement. Buy Me a Coffee checkout also stores a hash of your activation code, account ID, creation and expiry times, and the account linked to the purchase. PayPal checkout stores the order ID, account ID, a random order binding, price, currency, environment and grant status</td>
-              <td>To apply the pass, sort out payment problems, and keep the records tax law requires</td>
+              <td><strong>If you subscribe to Pro or buy a scan pack</strong>: payment references and the purchased entitlement. A subscription also stores its provider, plan, status, whether it began with a free trial, a random checkout binding, and its start and current period end times. Buy Me a Coffee checkout also stores a hash of your activation code, account ID, creation and expiry times, and the account linked to the purchase. PayPal checkout stores the order ID, account ID, a random order binding, price, currency, environment and grant status</td>
+              <td>To apply the subscription or pack, sort out payment problems, and keep the records tax law requires</td>
               <td>Razorpay, PayPal or Buy Me a Coffee processes payment; account links and purchase references are stored in our server-managed Firebase database</td>
               <td>As long as Indian tax and accounting law requires, currently up to 8 years</td>
             </tr>
@@ -268,11 +268,9 @@
             <tr><td><strong>Google</strong> (ML Kit, Android QR scanner)</td><td>Usage analytics, diagnostics and maintaining the scanning SDK</td><td>Per-installation identifiers, device and app metadata, scan feature events, configuration, performance metrics and error codes. The input image and decoded QR content are processed on-device and are not sent to Google by ML Kit</td></tr>
             <tr><td><strong>Google</strong> (Firebase and Play Integrity, Android invites)</td><td>Stores and verifies invite eligibility, prevents duplicate rewards and abuse</td><td>Firebase in Singapore stores invite codes, a one-way hash derived from the app-specific Android ID and the claim time, without the scanned username. MyRecon receives the invite request and IP address; Google Play Integrity verifies the app, licence and device. The app reads its invite status while the invite card is visible</td></tr>
             <tr><td><strong>Google</strong> (Firebase, website accounts)</td><td>Google sign-in and the store of account allowances</td><td>Google Authentication handles sign-in. Realtime Database holds your user ID and scan counts, with profile details only for purchasers. For visitors who are not signed in: a daily-rotating keyed hash used for the guest scan limit</td></tr>
-            <tr><td><strong>Razorpay</strong></td><td>Processes Pro pass payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
+            <tr><td><strong>Razorpay</strong></td><td>Processes Pro subscription payments</td><td>Whatever you enter in Razorpay&rsquo;s payment window, plus the email address and name from your sign-in to pre-fill it. Handled under Razorpay&rsquo;s own privacy policy</td></tr>
             <tr><td><strong>Buy Me a Coffee</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in its Shop checkout, including the MyRecon activation code you submit after payment to link the purchase to your account. Its signed purchase notification is processed by our server; we retain purchase references and account links, without copying its customer names or emails into our account database. Handled under Buy Me a Coffee's own privacy policy</td></tr>
-            <tr><td><strong>PayPal</strong></td><td>Processes international scan pack purchases when enabled</td><td>Whatever you enter in PayPal checkout. We send the pack description, selected currency and quoted price, and a random order binding; we retain order references and account links. We verify payment through PayPal and do not copy PayPal customer names or emails into our account database. Handled under PayPal's own privacy policy</td></tr>
-            <tr><td><strong>Google Fonts</strong></td><td>Serves the typeface</td><td>IP address and browser details when a font loads</td></tr>
-            <tr><td><strong>Have I Been Pwned</strong></td><td>The breach catalogue, breach logos, and the Pwned Passwords API</td><td>Your IP address, and a five-character hash prefix when you check a password. The address itself only where a breach lookup is configured to use HIBP directly</td></tr>
+            <tr><td><strong>PayPal</strong></td><td>Processes international Pro subscriptions and scan pack purchases when enabled</td><td>Whatever you enter in PayPal checkout. We send the selected plan or pack, currency and quoted price, and a random order binding; we retain order references and account links. We verify payment through PayPal and do not copy PayPal customer names or emails into our account database. Handled under PayPal's own privacy policy</td></tr>            <tr><td><strong>Have I Been Pwned</strong></td><td>The breach catalogue, breach logos, and the Pwned Passwords API</td><td>Your IP address, and a five-character hash prefix when you check a password. The address itself only where a breach lookup is configured to use HIBP directly</td></tr>
             <tr><td><strong>XposedOrNot</strong>, <strong>LeakCheck</strong></td><td>Answer &ldquo;has this address been breached&rdquo;</td><td>The email address you queried</td></tr>
             <tr><td><strong>GitHub</strong></td><td>Finds a public GitHub account for an address or username</td><td>The identifier you queried</td></tr>
             <tr><td><strong>OSINT Industries</strong> (optional, when configured)</td><td>Returns source-reported linked profiles, registration signals and available public profile details, including Google review venues and LinkedIn history. Runs when linked-account checks are enabled.</td><td>The email address you queried, sent by our backend. This provider has its own data-handling policies.</td></tr>
@@ -481,7 +479,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=d36c2c5f31"></script>
+  <script src="/assets/js/app.js?v=b569264372"></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 </body>
