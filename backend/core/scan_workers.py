@@ -56,10 +56,13 @@ def _touch(worker_id, state, label=None, versions=None):
         if isinstance(versions, dict) else None
     )
     cache_key = (id(storage.store), worker_id)
+    unchanged_idle = False
     if state == "idle" and storage.store.backend == "rtdb":
         cached = _idle_cache.get(cache_key)
-        if (cached and cached[0] == validate_label(label)
-                and cached[1] == clean_versions and 0 <= now - cached[2] < 10):
+        unchanged_idle = bool(cached and cached[0] == validate_label(label)
+                              and cached[1] == clean_versions
+                              and 0 <= now - cached[2] and 0 <= now - cached[3] < 60)
+        if unchanged_idle and now - cached[2] < 10:
             return
     elif state != "idle":
         _idle_cache.pop(cache_key, None)
@@ -85,6 +88,14 @@ def _touch(worker_id, state, label=None, versions=None):
             current[worker_id]["stopped_at"] = now
         return current
 
+    if unchanged_idle:
+        # The successful full presence write established state and catalogue
+        # metadata. Renew only the timestamp: one tiny PUT, no ETag GET and no
+        # repeated catalogue upload. Do not overwrite a concurrent state change.
+        # Periodically re-establish the full record in case it was removed.
+        storage.store.set(f"{ROOT}/{worker_id}/last_seen_at", now)
+        _idle_cache[cache_key] = (cached[0], cached[1], now, cached[3])
+        return
     if storage.store.backend == "rtdb":
         # Never upload the whole retained worker registry for one heartbeat.
         # Child ETags preserve concurrent updates from other worker instances.
@@ -96,7 +107,7 @@ def _touch(worker_id, state, label=None, versions=None):
     if state == "idle" and storage.store.backend == "rtdb":
         if len(_idle_cache) >= 256:
             _idle_cache.clear()
-        _idle_cache[cache_key] = (validate_label(label), clean_versions, now)
+        _idle_cache[cache_key] = (validate_label(label), clean_versions, now, now)
 
 
 def seen_claim(worker_id, label, job, versions=None):

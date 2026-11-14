@@ -193,6 +193,74 @@ def test_rtdb_heartbeat_updates_only_its_own_record(setup, monkeypatch):
     assert record["catalogues"] == {"full": "a" * 64}
 
 
+def test_idle_renewals_preserve_freshness_and_refresh_metadata(setup, monkeypatch):
+    memory, _ = setup
+    calls = []
+    clock = [1000.0]
+    workers._idle_cache.clear()
+    monkeypatch.setattr(workers.time, "time", lambda: clock[0])
+
+    class ChildStore:
+        backend = "rtdb"
+
+        def transaction(self, path, fn):
+            calls.append(("transaction", path))
+            return memory.transaction(path, fn)
+
+        def set(self, path, value):
+            calls.append(("set", path))
+            parent, field = path.rsplit("/", 1)
+            memory.transaction(parent, lambda record: {**record, field: value})
+
+    monkeypatch.setattr(storage, "store", ChildStore())
+    worker_id = "worker-idle-renew-123456"
+    path = f"{workers.ROOT}/{worker_id}"
+    versions = {"full": "a" * 64}
+    for elapsed in range(61):
+        clock[0] = 1000.0 + elapsed
+        workers.seen_claim(worker_id, "Worker 01", None, versions)
+        record = memory.get(path)
+        assert workers._state(record, clock[0])[0] == "idle"
+        assert record["catalogues"] == versions
+    assert [method for method, _ in calls] == ["transaction"] + ["set"] * 5 + ["transaction"]
+    assert all(p == path + "/last_seen_at" for method, p in calls if method == "set")
+
+    # Changed catalogue metadata and state transitions must bypass throttling.
+    clock[0] += 1
+    workers.seen_claim(worker_id, "Worker 02", None, {"full": "b" * 64})
+    assert memory.get(path)["label"] == "Worker 02"
+    workers.seen_busy(worker_id)
+    assert memory.get(path)["state"] == "busy"
+    workers.seen_claim(worker_id, "Worker 02", None, {"full": "b" * 64})
+    assert memory.get(path)["state"] == "idle"
+
+
+def test_failed_idle_renewal_is_retried_without_advancing_cache(setup, monkeypatch):
+    memory, _ = setup
+    workers._idle_cache.clear()
+    clock = [1000.0]
+    monkeypatch.setattr(workers.time, "time", lambda: clock[0])
+
+    class ChildStore:
+        backend = "rtdb"
+
+        def transaction(self, path, fn):
+            return memory.transaction(path, fn)
+
+        def set(self, path, value):
+            raise OSError("unavailable")
+
+    child = ChildStore()
+    monkeypatch.setattr(storage, "store", child)
+    worker_id = "worker-idle-retry-123456"
+    workers.seen_claim(worker_id, "Worker 01", None, {})
+    clock[0] += 10
+    for _ in range(2):
+        with pytest.raises(OSError):
+            workers.seen_claim(worker_id, "Worker 01", None, {})
+    assert workers._idle_cache[(id(child), worker_id)][2] == 1000.0
+
+
 def test_long_poll_wakes_for_new_scan_and_releases_slot(setup, monkeypatch):
     _, client = setup
     from services import scan_job_api

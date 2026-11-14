@@ -304,3 +304,15 @@ Render. The queue already keeps scan payloads in process memory, not RTDB.
 Check Render Metrics > Outbound Bandwidth and workspace Billing after a full
 24-hour window. Colab availability and customer traffic vary; these changes
 cannot promise that the remaining allowance lasts until the reset.
+
+### November 15 idle heartbeat refinement
+
+Unchanged idle presence renewals now write only `last_seen_at` to the worker's
+RTDB child. The ten-second write throttle and all freshness thresholds remain
+unchanged. A full conditional presence transaction runs at least every sixty
+seconds, on metadata changes, and on state transitions. Failed renewals do not
+advance the cache, so the next claim retries. This removes the ETag read and
+repeated catalogue-hash upload from five of every six steady idle renewals.
+Job polling, pickup windows, active lease heartbeats, scan concurrency and
+catalogue coverage are unchanged. Existing notebooks benefit immediately.
+Actual monthly savings depend on worker uptime and other outbound traffic.
