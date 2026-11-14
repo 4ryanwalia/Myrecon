@@ -137,8 +137,9 @@ def test_trial_start_records_and_dispatches_notification(monkeypatch):
     to_email, subject, text_body = call_args[0], call_args[1], call_args[2]
     assert to_email == "owner@myrecon.xyz"
     assert "New 3-Day Free Trial Started" in subject
-    assert USER_EMAIL in subject
-    assert USER_EMAIL in text_body
+    # Alerts say that a trial started, never who started it.
+    assert USER_EMAIL not in subject and USER_EMAIL not in text_body and UID not in text_body
+    assert sid not in text_body and USER_EMAIL not in call_args[3]
     assert "Plan: monthly" in text_body
     assert "PAYPAL" in text_body
 
@@ -176,7 +177,7 @@ def test_trial_converted_to_paid_records_and_dispatches_notification(monkeypatch
     conv_email = dispatched[1][1]
     assert "Money Received! Trial Converted" in conv_email[1]
     assert "$3.99 USD" in conv_email[1]
-    assert USER_EMAIL in conv_email[2]
+    assert USER_EMAIL not in conv_email[1] and USER_EMAIL not in conv_email[2] and UID not in conv_email[2]
     assert "Conversion Rate: 100.0%" in conv_email[2]
 
     # Repeated sync does not re-notify or increment
@@ -209,8 +210,38 @@ def test_trial_cancelled_before_end(monkeypatch):
     assert len(dispatched) == 2
     canc_email = dispatched[1][1]
     assert "Trial Cancelled" in canc_email[1]
-    assert USER_EMAIL in canc_email[1]
+    assert USER_EMAIL not in canc_email[1] and USER_EMAIL not in canc_email[2] and UID not in canc_email[2]
     assert "Cancellation Rate: 100.0%" in canc_email[2]
+
+
+def test_webhook_alert_carries_no_customer_details(monkeypatch):
+    sid = seed_trial()
+    posted = []
+    monkeypatch.setattr(notifications.config, "NOTIFICATION_WEBHOOK_URL", "https://hooks.example.test/x")
+    monkeypatch.setattr(notifications.requests, "post", lambda url, json=None, **k: posted.append(json) or type("R", (), {"status_code": 204})())
+    monkeypatch.setattr(notifications, "send_email", lambda *a, **k: True)
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: remote_sub("ACTIVE", paid=False))
+    sub.sync("paypal", sid, UID)
+    assert len(posted) == 1
+    body = str(posted[0])
+    assert "New 3-Day Free Trial Started" in body
+    assert USER_EMAIL not in body and UID not in body and sid not in body
+
+
+def test_sender_never_defaults_to_the_dmarc_protected_domain(monkeypatch):
+    sent = []
+    class FakeSMTP:
+        def __init__(self, *a, **k): pass
+        def starttls(self): pass
+        def login(self, *a): pass
+        def send_message(self, msg): sent.append(msg)
+        def quit(self): pass
+    monkeypatch.setattr(notifications.config, "SMTP_HOST", "smtp.example.test")
+    monkeypatch.setattr(notifications.config, "SMTP_FROM", "")
+    monkeypatch.setattr(notifications.config, "SMTP_USER", "")
+    monkeypatch.setattr(notifications.smtplib, "SMTP", FakeSMTP)
+    assert notifications.send_email("owner@example.test", "Subject", "Body")
+    assert sent[0]["From"] == "owner@example.test"
 
 
 def test_analytics_api_endpoint(monkeypatch):
