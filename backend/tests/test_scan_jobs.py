@@ -531,7 +531,7 @@ def test_fallback_immediate_when_no_workers_exist(setup):
     assert jobs.claim("render")["executor"] == "render"
 
 
-def test_healthy_worker_gets_only_five_seconds_and_lease_remains_exclusive(setup, monkeypatch):
+def test_healthy_worker_gets_configured_pickup_window_and_lease_remains_exclusive(setup, monkeypatch):
     memory, _ = setup
     now = jobs.time.time()
     monkeypatch.setattr(jobs.time, "time", lambda: now)
@@ -539,7 +539,7 @@ def test_healthy_worker_gets_only_five_seconds_and_lease_remains_exclusive(setup
         "last_seen_at": now, "catalogues": versions()}})
     queued()
     assert jobs.claim("render") is None
-    monkeypatch.setattr(jobs.time, "time", lambda: now + 5)
+    monkeypatch.setattr(jobs.time, "time", lambda: now + 20)
     assert jobs.claim("render")["executor"] == "render"
     assert jobs.claim("colab:worker", versions()) is None
 

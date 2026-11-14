@@ -85,7 +85,14 @@ def _touch(worker_id, state, label=None, versions=None):
             current[worker_id]["stopped_at"] = now
         return current
 
-    storage.store.transaction(ROOT, change)
+    if storage.store.backend == "rtdb":
+        # Never upload the whole retained worker registry for one heartbeat.
+        # Child ETags preserve concurrent updates from other worker instances.
+        def change_one(prior):
+            return change({worker_id: prior or {}})[worker_id]
+        storage.store.transaction(f"{ROOT}/{worker_id}", change_one)
+    else:
+        storage.store.transaction(ROOT, change)
     if state == "idle" and storage.store.backend == "rtdb":
         if len(_idle_cache) >= 256:
             _idle_cache.clear()

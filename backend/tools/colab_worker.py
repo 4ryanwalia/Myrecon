@@ -151,7 +151,8 @@ class Worker:
                 try:
                     response = self.call("claim", {"worker_id": self.worker_id,
                         "worker_label": self.worker_label, "catalogues": self.catalogues,
-                        "protocol": scan_engine.PROTOCOL})
+                        "protocol": scan_engine.PROTOCOL,
+                        "wait_seconds": min(10, max(0, end - time.monotonic()))})
                     self.note_presence(response)
                 except RuntimeError:
                     print("Render is temporarily unavailable; retrying while this session remains active.")

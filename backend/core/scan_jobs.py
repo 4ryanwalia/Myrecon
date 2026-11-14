@@ -251,7 +251,7 @@ def claim(executor, versions=None):
         # once per claim (including transaction retries). Presence is advisory;
         # the atomic job lease still decides which executor owns the scan.
         nonlocal presence
-        window = min(5, config.SCAN_WORKER_WAIT_SECONDS)
+        window = min(30, config.SCAN_WORKER_WAIT_SECONDS)
         if now - job["updated"] >= window:
             return 0
         if presence is None:

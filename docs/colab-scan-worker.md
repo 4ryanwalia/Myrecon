@@ -11,8 +11,8 @@ allowances, payment keys, optional Google search, enrichment, exposure checks,
 report assembly and history. Other lookup tools and on-device Android scanning
 are not moved by this change. No Firebase or payment credential enters Colab.
 
-Render gives a fresh, idle worker with a matching catalogue up to five seconds
-to claim a queued job (or the configured worker wait, if shorter). If no such
+Render gives a fresh, idle worker with a matching catalogue up to 30 seconds
+to claim a queued job (20 seconds by default, bounded by the configured worker wait). If no such
 worker is available, Render can claim the job immediately on its next coordinator
 pass, normally within two seconds when its heavy-work slot is free. One Render
 fallback runs the same platform checks with eight active probes. Worker presence
@@ -45,7 +45,7 @@ signal. If the final worker cell is still running after reconnecting, it continu
 to poll Render. If Colab ended the runtime, choose **Connect** and run all cells
 again. A successful poll prints `Live status confirmed for Worker 01.` in a
 current numbered notebook. The Worker Console should show that label as
-`idle`, `busy` or `recovering` within about 10 seconds.
+`idle`, `busy` or `recovering` within about 20 seconds.
 
 ## 1. Prepare Render
 
@@ -279,3 +279,28 @@ Android Chrome, use **Install app** when it appears. On iPhone, use Safari's
 **Share → Add to Home Screen**. The PWA shell is public static code, but it
 contains no worker token, notebook URL, status data, or private Drive content;
 those are returned only after the configured owner account is verified.
+
+
+## November 13 bandwidth conservation
+
+Render Metrics showed 3.94 GB this month: 3.82 GB service-initiated and
+124 MB HTTP responses. Workspace Billing independently confirmed the same 3.94 GB total.
+At most 1.06 GB of the 5 GB workspace allowance remained at that observation.
+Through November 30, aim below 50 MB/day across the workspace to retain a buffer.
+This is an operating target, not an enforced cap or a guarantee.
+
+Worker presence now transacts only the individual RTDB child instead of
+uploading every retained worker on each heartbeat. Idle updates remain limited
+to once per ten seconds. New notebook bundles request a bounded ten-second
+long poll, checking the in-memory queue every half second without database
+traffic; four waiting workers at most can occupy HTTP threads. Legacy notebooks
+remain compatible. The managed Colab session picks up the new bundle on restart.
+A healthy matching idle worker receives the configured pickup window (default
+20 seconds, capped at 30); unavailable workers still allow immediate bounded
+Render fallback so a Colab outage does not silently strand admitted scans.
+Authentication, billing, report finalization and other lookup types remain on
+Render. The queue already keeps scan payloads in process memory, not RTDB.
+
+Check Render Metrics > Outbound Bandwidth and workspace Billing after a full
+24-hour window. Colab availability and customer traffic vary; these changes
+cannot promise that the remaining allowance lasts until the reset.
