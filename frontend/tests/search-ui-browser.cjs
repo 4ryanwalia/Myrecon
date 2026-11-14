@@ -82,7 +82,7 @@ async function submitSharedDeepSearch(page, byEnter = false) {
       await page.goto(base + '/');
       assert.equal(await page.locator('#ds').isVisible(), false);
       assert.equal(await page.locator('#runBtn').evaluate(el => getComputedStyle(el, '::after').content), '"→"');
-      await page.locator('#deepSearchEntry').click();
+      await page.locator('#tab-deepsearch').click();
       await page.locator('#ds').waitFor({ state:'visible' });
       await assertSharedDeepSearch(page);
       const theme = await page.locator('html').getAttribute('data-theme');

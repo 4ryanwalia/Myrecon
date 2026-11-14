@@ -13,14 +13,14 @@
   const providerKey = (provider) => provider === "paypal" ? period : (period === "yearly" ? "inr_yearly" : "inr_monthly");
   const COPY = {
     monthly: {
-      price: "$3.99", period: "/ month", anchor: "", credits: "10 Extended scans per paid month",
-      caption: "Monthly flexibility · ₹299/month in India",
-      paypal: "$3.99/mo", razorpay: "₹299/mo", charge: "Pro continues at $3.99/mo or ₹299/mo.",
+      price: "$3.99", period: "/ month", anchor: "$4.99", discount: "20% OFF", credits: "10 Extended scans per paid month",
+      caption: "Black Friday deal (was $4.99/mo) · ₹299/month in India",
+      paypal: "$3.99/mo · was $4.99", razorpay: "₹299/mo", charge: "Pro continues at $3.99/mo (Black Friday rate) or ₹299/mo.",
     },
     yearly: {
-      price: "$19.99", period: "/ year", anchor: "", credits: "120 Extended scans per paid year",
-      caption: "$1.67/month equivalent · $19.99 billed yearly · ₹1,999/year in India",
-      paypal: "$19.99/yr · save 58%", razorpay: "₹1,999/yr · save 44%", charge: "Pro continues at $19.99/yr or ₹1,999/yr.",
+      price: "$19.99", period: "/ year", anchor: "$39.99", discount: "50% OFF", credits: "120 Extended scans per paid year",
+      caption: "$1.67/month equivalent · $19.99/yr (was $39.99) · ₹1,999/year in India",
+      paypal: "$19.99/yr · was $39.99", razorpay: "₹1,999/yr · save 44%", charge: "Pro continues at $19.99/yr (Black Friday rate) or ₹1,999/yr.",
     },
   };
 
@@ -103,10 +103,11 @@
     });
     const setText = (id, text) => { if ($(id)) $(id).textContent = text; };
     setText("#pricingHeading", trial ? "Follow more public leads. Try Pro free." : "Follow more public leads with Pro.");
-    setText("#pricingIntroCopy", trial ? "Explore Deep Search and a wider username search for 3 days. Cancel before your trial ends to avoid the subscription charge." : "Choose your billing period for Deep Search, unlimited Standard scans and Extended scan credits.");
+    setText("#pricingIntroCopy", trial ? "Explore Deep Search and 3,000+ platforms for 3 days. Cancel before trial ends to pay $0." : "Choose your billing period for Deep Search, unlimited Standard scans and Extended scan credits.");
     setText("#proPrice", copy.price);
     setText("#proPeriod", copy.period);
     if ($("#proAnchor")) { $("#proAnchor").textContent = copy.anchor; $("#proAnchor").hidden = !copy.anchor; }
+    if ($("#proDiscount")) { $("#proDiscount").textContent = copy.discount || ""; $("#proDiscount").hidden = !copy.discount; }
     setText("#proPriceCaption", copy.caption);
     setText("#proCredits", copy.credits);
     setText("#paypalPrice", copy.paypal);
@@ -231,6 +232,17 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     if (!$("#startBasic")) return;
+    $("#bfTryNow")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      const card = $('[data-plan-card="basic"]');
+      if (card) {
+        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        card.classList.remove("bf-highlight");
+        void card.offsetWidth;
+        card.classList.add("bf-highlight");
+      }
+      $('[data-subscribe="paypal"]:not(:disabled)')?.focus({ preventScroll: true });
+    });
     document.querySelectorAll("[data-billing]").forEach((button) => button.addEventListener("click", () => {
       if (busy) return;
       period = button.dataset.billing;

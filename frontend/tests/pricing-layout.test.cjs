@@ -40,9 +40,26 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(0, 0, 0)');
     await page.screenshot({path:process.env.PRICING_SCREENSHOT || path.join(require('node:os').tmpdir(),'myrecon-pricing-desktop.png'),fullPage:true});
     await page.setViewportSize({width:1366,height:768});
+    assert.equal(await page.locator('#blackFridayBanner').isVisible(), true);
+    assert.match(await page.locator('#blackFridayBanner').innerText(), /Black Friday/i);
+    assert.match(await page.locator('meta[name="description"]').getAttribute('content'), /US\$19\.99\/year/);
+    assert.equal(await page.locator('#proAnchor').innerText(), '$4.99');
+    assert.equal(await page.locator('#proDiscount').innerText(), '20% OFF');
+    for (const vp of [{width:1366,height:768},{width:1280,height:720}]) {
+      await page.setViewportSize(vp);
+      assert.ok(await page.locator('[data-plan-card="free"]').evaluate(el=>el.getBoundingClientRect().bottom <= window.innerHeight), `Free card fits above fold at ${vp.width}x${vp.height}`);
+      assert.ok(await page.locator('[data-plan-card="basic"]').evaluate(el=>el.getBoundingClientRect().bottom <= window.innerHeight), `Pro card fits above fold at ${vp.width}x${vp.height}`);
+      assert.ok(await page.locator('[data-subscribe="paypal"]').evaluate(el=>el.getBoundingClientRect().bottom <= window.innerHeight), `PayPal button fits above fold at ${vp.width}x${vp.height}`);
+    }
+    await page.setViewportSize({width:1366,height:768});
+    await page.locator('#bfTryNow').click();
+    assert.equal(await page.evaluate(()=>document.activeElement?.dataset?.subscribe), 'paypal');
+    assert.ok(await page.locator('[data-plan-card="basic"]').evaluate(el=>el.classList.contains('bf-highlight')));
     assert.ok(await page.locator('.plan .provider-btn').first().evaluate(el=>el.getBoundingClientRect().height) >= 44);
     await page.locator('[data-billing="yearly"]').click();
     assert.equal(await page.locator('#proPrice').innerText(),'$19.99');
+    assert.equal(await page.locator('#proAnchor').innerText(),'$39.99');
+    assert.equal(await page.locator('#proDiscount').innerText(),'50% OFF');
     await page.waitForTimeout(360);
     const slider = page.locator('.billing-slider');
     assert.ok(await slider.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41 > 100));

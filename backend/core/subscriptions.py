@@ -15,7 +15,7 @@ from decimal import Decimal
 from urllib.parse import urlsplit
 
 import config
-from core import paypal, razorpay, store
+from core import notifications, paypal, razorpay, store, trial_tracking
 
 TRIAL_DAYS = 3
 TRIAL_SCANS = 3
@@ -217,7 +217,7 @@ def _close_unauthorized_razorpay(uid, pending):
     return True
 
 
-def checkout(uid, key):
+def checkout(uid, key, email=""):
     if key not in CATALOG:
         raise ValueError("Unknown subscription plan.")
     provider = provider_for(key)
@@ -259,7 +259,8 @@ def checkout(uid, key):
                                "trial": not bool(cur.get("basic_trial_used"))}
         return cur
     record = store.store.transaction(_user(uid), reserve)
-    intent = {**record["subscription"], "uid": uid}
+    user_email = email or existing.get("email") or ""
+    intent = {**record["subscription"], "uid": uid, "email": user_email}
     # On an ambiguous provider timeout retain the reservation: automatically
     # retrying a non-idempotent create could leave two billable subscriptions.
     intent["provider_plan"] = plan_id
@@ -360,6 +361,51 @@ def sync(provider, sid, uid=None):
         cur["subscription"] = sub
         return cur
     record = store.store.transaction(_user(intent["uid"]), apply)
+
+    # Track 3-day trial lifecycle and dispatch notifications
+    user_email = intent.get("email")
+    if not user_email:
+        u_rec = store.store.get(_user(intent["uid"])) or {}
+        user_email = u_rec.get("email", "")
+    if not user_email and isinstance(remote, dict):
+        subscriber = remote.get("subscriber") or {}
+        user_email = subscriber.get("email_address") or (remote.get("notes") or {}).get("email", "")
+
+    if intent.get("trial") and period == "trial":
+        trial_rec, is_new = trial_tracking.record_trial_started(
+            provider=provider,
+            sid=sid,
+            uid=intent["uid"],
+            plan=intent["plan"],
+            email=user_email,
+            trial_until=trial_until,
+        )
+        if is_new:
+            summary = trial_tracking.get_summary()
+            notifications.dispatch_trial_started(trial_rec, summary)
+    elif intent.get("trial") and period and str(period).startswith("paid:"):
+        trial_rec, is_new = trial_tracking.record_trial_converted(
+            provider=provider,
+            sid=sid,
+            amount=offer["amount"],
+            currency=offer["currency"],
+            email=user_email,
+        )
+        if is_new:
+            summary = trial_tracking.get_summary()
+            notifications.dispatch_trial_converted(trial_rec, summary)
+    elif intent.get("trial") and status in TERMINAL and not (period and str(period).startswith("paid:")):
+        trial_rec, is_new = trial_tracking.record_trial_cancelled(
+            provider=provider,
+            sid=sid,
+            reason=f"Provider status: {status}",
+        )
+        if is_new:
+            summary = trial_tracking.get_summary()
+            notifications.dispatch_trial_cancelled(trial_rec, summary)
+    elif intent.get("trial") and status in ("expired", "suspended", "halted") and not (period and str(period).startswith("paid:")):
+        trial_tracking.record_trial_expired(provider, sid)
+
     result = public(record)
     if result and provider == "paypal" and status == "approval_pending":
         result["approval_url"] = intent.get("url")
@@ -393,6 +439,10 @@ def cancel(uid):
     provider, sid = sub["provider"], sub["id"]
     if provider == "paypal" and sub["status"] == "approval_pending":
         raise ValueError("PayPal checkout has not been approved; no recurring payment is authorized. Resume the pending checkout to finish approval. Active subscriptions can be cancelled here.")
+
+    intent = store.store.get(_path(provider, sid)) or {}
+    is_trial_cancel = bool(intent.get("trial")) and not str(sub.get("period", "")).startswith("paid:")
+
     if provider == "paypal":
         paypal._call("POST", "/v1/billing/subscriptions/" + sid + "/cancel",
                      json={"reason": "Cancelled by the account owner"})
@@ -402,7 +452,17 @@ def cancel(uid):
         if (cur.get("subscription") or {}).get("id") == sid:
             cur["subscription"]["status"] = "cancelled"
         return cur
-    return public(store.store.transaction(_user(uid), mark))
+    result = public(store.store.transaction(_user(uid), mark))
+    if is_trial_cancel:
+        trial_rec, is_new = trial_tracking.record_trial_cancelled(
+            provider=provider,
+            sid=sid,
+            reason="Cancelled by account owner on website",
+        )
+        if is_new:
+            summary = trial_tracking.get_summary()
+            notifications.dispatch_trial_cancelled(trial_rec, summary)
+    return result
 
 
 def webhook(provider, event):
@@ -434,7 +494,9 @@ def register(app, require_user):
     def subscription_api():
         if request.method == "OPTIONS":
             return "", 204
-        uid = require_user()["sub"]
+        user = require_user()
+        uid = user["sub"]
+        email = user.get("email", "")
         if not store.persistent():
             return responses.error("Accounts are unavailable.", status=503)
         try:
@@ -446,7 +508,7 @@ def register(app, require_user):
                 body = request.get_json(silent=True) or {}
                 if not isinstance(body, dict) or body.get("consent") is not True:
                     raise ValueError("Please accept the recurring billing terms before continuing.")
-                result = checkout(uid, body.get("plan"))
+                result = checkout(uid, body.get("plan"), email=email)
             response, status = responses.ok(result)
             response.headers["Cache-Control"] = "no-store"
             return response, status
@@ -454,3 +516,45 @@ def register(app, require_user):
             return responses.error(str(exc), status=400)
         except (paypal.PayPalError, razorpay.RazorpayError):
             return responses.error("The payment provider is unavailable. Check subscription status before retrying; contact support if checkout remains pending.", status=502)
+
+    @app.route("/api/billing/analytics/trials", methods=["GET", "OPTIONS"])
+    def trial_analytics_api():
+        if request.method == "OPTIONS":
+            return "", 204
+
+        authorized = False
+        if config.DEV_TEST_ACCOUNT:
+            authorized = True
+
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header and not authorized:
+            try:
+                user = require_user()
+                user_email = (user.get("email") or "").strip().casefold()
+                allowed_operator = (config.SCAN_WORKER_OPERATOR_EMAIL or "").strip().casefold()
+                allowed_notify = (config.NOTIFICATION_EMAIL_TO or "").strip().casefold()
+                if (allowed_operator and user_email == allowed_operator) or (allowed_notify and user_email == allowed_notify):
+                    authorized = True
+            except Exception:
+                pass
+
+        token = request.headers.get("X-Admin-Token") or request.args.get("token")
+        if not token and auth_header.startswith("Bearer "):
+            token = auth_header.partition(" ")[2].strip()
+        if token and not authorized:
+            expected_token = config.TRIAL_ANALYTICS_TOKEN or config.SCAN_WORKER_STATUS_TOKEN
+            if expected_token and token == expected_token:
+                authorized = True
+
+        if not authorized:
+            return responses.error("Unauthorized to access trial analytics.", status=403, code="unauthorized")
+
+        try:
+            limit = min(200, max(1, int(request.args.get("limit", 50))))
+        except (ValueError, TypeError):
+            limit = 50
+
+        report = trial_tracking.get_full_report(limit=limit)
+        response, status = responses.ok(report)
+        response.headers["Cache-Control"] = "no-store"
+        return response, status

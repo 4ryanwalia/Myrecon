@@ -578,7 +578,6 @@
         section.hidden = !active;
         const lookupResults = $("#results")?.closest("section");
         if (lookupResults) lookupResults.hidden = active;
-        $("#deepSearchEntry")?.setAttribute("aria-expanded", String(active));
         if (active) {
           if (!inputNode().value && typeof renderedReport?.subject === "string") {
             inputNode().value = renderedReport.subject + (renderedReport.context ? ", " + renderedReport.context : "");

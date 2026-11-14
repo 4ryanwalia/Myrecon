@@ -70,12 +70,10 @@ const server = http.createServer((req, res) => {
     for (const width of [375, 390, 768]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'homepage overflow at ' + width);
-      assert.ok(await page.locator('.deep-search-entry-copy').evaluate(el => el.getBoundingClientRect().width) >= 180, 'Deep Search text is too narrow at ' + width);
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await page.screenshot({ path: path.join(output, 'homepage-mobile.png'), fullPage: true });
-    await page.locator('.deep-search-entry').screenshot({ path: path.join(output, 'homepage-deep-search-entry-mobile.png') });
-    await page.locator('.deep-search-entry').click();
+    await page.locator('#tab-deepsearch').click();
     await page.locator('#dsPreviewTitle').waitFor();
     assert.equal(await page.locator('.deep-search-preview-footer a').getAttribute('href'), '/pricing.html');
     await page.screenshot({ path: path.join(output, 'guest-preview-mobile.png'), fullPage: true });

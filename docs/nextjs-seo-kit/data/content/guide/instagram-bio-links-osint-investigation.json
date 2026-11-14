@@ -1,0 +1,92 @@
+{
+  "kind": "guide",
+  "slug": "instagram-bio-links-osint-investigation",
+  "status": "published",
+  "title": "Instagram Bio & External Links OSINT Guide",
+  "description": "Extract verifiable public leads from Instagram bios, link-in-bio hubs, and cross-referenced usernames without overclaiming account ownership.",
+  "h1": "Instagram Bio and External Links OSINT Verification",
+  "focus_keyword": "instagram bio osint",
+  "intro": "This practical guide explains how to run a instagram bio osint workflow using MyRecon and complementary public sources—covering exact-match verification, false-positive filtering, and how to unlock 3,000+ platform Extended scans at Black Friday pricing ($3.99/mo or $19.99/yr).",
+  "evidence": {
+    "image": "/assets/img/blog/social-profile-research.webp",
+    "alt": "Smartphone showing a public social profile layout beside a laptop and research notes.",
+    "caption": "Cross-platform social media handle and public profile review workflow.",
+    "source": "https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68"
+  },
+  "takeaways": [
+    "MyRecon Standard scans check 500+ platforms for free (5/day); Pro Extended scans cover 3,000+ platforms.",
+    "Email breach lookups on MyRecon are completely free and do not use your username scan allowance.",
+    "Never treat an HTTP 200 or matching handle alone as proof of identity—always verify bio, links, and dates.",
+    "Black Friday sale: upgrade to Pro for $3.99/mo or $19.99/yr (50% off) with a 3-day free trial."
+  ],
+  "sections": [
+    {
+      "heading": "How instagram bio osint works in MyRecon",
+      "body": "Start with a single known identifier—a handle, email address, or domain—and run a targeted lookup in MyRecon. Standard scans query 500+ public platforms in the browser, while Extended scans (included in Pro and the 3-day free trial) expand coverage to 3,000+ sites alongside Deep Search for indexed public mentions."
+    },
+    {
+      "heading": "Separating confirmed matches from false positives",
+      "body": "Automated tools classify each source into found, not_found, or unknown. Login walls, CAPTCHAs, and rate limits produce unknown rather than a fake clean result. Always open the source URL and corroborate profile photos, bio links, or timestamps before linking two accounts.",
+      "table": {
+        "caption": "Evidence classification standards for public-source OSINT.",
+        "headers": [
+          "Result State",
+          "What It Means",
+          "Next Step"
+        ],
+        "rows": [
+          [
+            "found",
+            "Platform returned a verifiable profile page or API record",
+            "Inspect bio, links, and dates to confirm ownership"
+          ],
+          [
+            "not_found",
+            "Platform returned a confirmed 404 or missing-account signal",
+            "Record as absent at check time (handles can be renamed)"
+          ],
+          [
+            "unknown",
+            "Login wall, rate limit, timeout, or ambiguous HTTP response",
+            "Check manually in a browser; never assume absence"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "Free tier vs Black Friday Pro upgrade",
+      "body": "You can run 5 Standard username scans every UTC day and unlimited free email exposure checks on the Free plan. If you need Deep Search or 3,000+ platform Extended scans, MyRecon's Black Friday sale lowers Pro to $3.99/month (20% off) or $19.99/year (50% off) with a 3-day free trial."
+    },
+    {
+      "heading": "Ethical boundaries and privacy self-audit tips",
+      "body": "Use OSINT tools on your own accounts or for authorized research. If you discover forgotten public profiles, sign in to lock down privacy settings, remove reused handles, or delete unused accounts using official provider flows."
+    }
+  ],
+  "faq": [
+    {
+      "question": "Is MyRecon's instagram bio osint workflow free to try?",
+      "answer": "Yes. Free accounts get 5 Standard scans per day across 500+ platforms and free email breach lookups. Pro adds Deep Search and 3,000+ platform Extended scans with a 3-day free trial."
+    },
+    {
+      "question": "Can this tool access private profiles or hidden DMs?",
+      "answer": "No. MyRecon only checks publicly accessible sources and never bypasses login walls, private account settings, or platform access controls."
+    },
+    {
+      "question": "How accurate is a cross-platform username match?",
+      "answer": "A matching username is a lead, not proof that the same person owns both accounts. Common handles are frequently registered by unrelated people."
+    },
+    {
+      "question": "What is the Black Friday discount for MyRecon Pro?",
+      "answer": "During the Black Friday sale, Pro is $3.99/month (was $4.99) or $19.99/year (was $39.99 — 50% off), or ₹299/mo and ₹1,999/yr in India."
+    }
+  ],
+  "sources": [
+    "/#tool",
+    "/pricing",
+    "/deep-search.html",
+    "/guides/"
+  ],
+  "method": "Reviewed against MyRecon's current Black Friday 2026 pricing, 500+ Standard platform catalogue, 3,000+ Extended scan scope, and public-source verification rules.",
+  "editorial_review": "Reviewed 2026-11-14 for Black Friday 2026 accuracy, 2026-2027 OSINT tool coverage, and non-overclaiming verification standards.",
+  "modified_at": "2026-11-14"
+}

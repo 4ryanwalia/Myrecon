@@ -220,6 +220,7 @@ def public_config() -> dict:
             "accounts": bool(FIREBASE_SERVICE_ACCOUNT and FIREBASE_DB_URL),
             "payments": bool(RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET),
             "payment_webhook": bool(RAZORPAY_WEBHOOK_SECRET),
+            "notifications": bool(NOTIFICATION_EMAIL_TO and (SMTP_HOST or NOTIFICATION_WEBHOOK_URL)),
         },
         # Surfaced so a misconfigured deploy is visible without shell access.
         # It reports only whether a key was supplied, never the key.
@@ -236,3 +237,15 @@ BASIC_PAYPAL_MONTHLY_PAID_PLAN_ID = os.environ.get("BASIC_PAYPAL_MONTHLY_PAID_PL
 BASIC_PAYPAL_YEARLY_PAID_PLAN_ID = os.environ.get("BASIC_PAYPAL_YEARLY_PAID_PLAN_ID", "").strip()
 BASIC_RAZORPAY_MONTHLY_PLAN_ID = os.environ.get("BASIC_RAZORPAY_MONTHLY_PLAN_ID", "").strip()
 BASIC_RAZORPAY_YEARLY_PLAN_ID = os.environ.get("BASIC_RAZORPAY_YEARLY_PLAN_ID", "").strip()
+
+# ── Owner Notifications & Trial Analytics ────────────────────────
+NOTIFICATION_EMAIL_TO = os.environ.get("NOTIFICATION_EMAIL_TO", "").strip() or SCAN_WORKER_OPERATOR_EMAIL
+SMTP_HOST = os.environ.get("SMTP_HOST", "").strip()
+SMTP_PORT = _get_int("SMTP_PORT", 587)
+SMTP_USER = os.environ.get("SMTP_USER", "").strip()
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "").strip()
+SMTP_FROM = os.environ.get("SMTP_FROM", "").strip() or SMTP_USER or f"notifications@{APP_DOMAIN}"
+SMTP_USE_TLS = _get_bool("SMTP_USE_TLS", True)
+SMTP_USE_SSL = _get_bool("SMTP_USE_SSL", False)
+NOTIFICATION_WEBHOOK_URL = os.environ.get("NOTIFICATION_WEBHOOK_URL", "").strip()
+TRIAL_ANALYTICS_TOKEN = os.environ.get("TRIAL_ANALYTICS_TOKEN", "").strip()

@@ -125,7 +125,7 @@ function schema(article) {
     publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
     isPartOf: { "@id": `${SITE}/#website` },
     mainEntityOfPage: article.url,
-    ...(article.media ? { image: `${SITE}/assets/img/blog/${article.media.photo}.webp` } : {}),
+    image: article.media ? `${SITE}/assets/img/blog/${article.media.photo}.webp` : `${SITE}/assets/img/og-image.png`,
   };
   return json(value);
 }
