@@ -2787,7 +2787,8 @@
       introductions.append(introduction);
       introductions.hidden = activeTool !== "username";
       introductions.style.display = activeTool === "username" ? "" : "none";
-      $("#queryInput")?.closest(".field-row").before(introductions);
+      // Below the input and scan options: the search box is the first thing a visitor reaches.
+      ($("#examples") || $("#queryInput")?.closest(".field-row"))?.after(introductions);
       $("#detectHint")?.addEventListener("click", (e) => {
         const btn = e.target.closest("[data-switch]");
         const target = btn && btn.dataset.switch;

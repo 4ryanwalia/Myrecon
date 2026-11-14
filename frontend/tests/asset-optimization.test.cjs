@@ -32,3 +32,36 @@ test('deployment assets preserve behavior, share fingerprints and refresh only a
   assert.equal(next.assets['/assets/css/style.css'].output, first.assets['/assets/css/style.css'].output);
   assert.ok(fs.existsSync(path.join(root, js.output)), 'old fingerprint remains valid during local rebuilds');
 });
+
+test('head stylesheets are joined in order, never across an inline style, and Google Fonts become self-hosted', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'myrecon-bundle-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  for (const kind of ['css', 'js']) fs.mkdirSync(path.join(root, 'assets', kind), { recursive: true });
+  for (const name of ['a', 'b', 'c', 'd']) fs.writeFileSync(path.join(root, `assets/css/${name}.css`), `.${name}{color:red}`);
+  fs.writeFileSync(path.join(root, 'assets/css/fonts.css'), '@font-face{font-family:Inter;src:url(/assets/fonts/x.woff2)}');
+  fs.writeFileSync(path.join(root, 'index.html'), [
+    '<html><head>',
+    '  <link rel="preconnect" href="https://fonts.googleapis.com">',
+    '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+    '  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">',
+    '  <link rel="stylesheet" href="/assets/css/a.css?v=1">',
+    '  <link rel="stylesheet" href="/assets/css/b.css">',
+    '  <style>.inline{}</style>',
+    '  <link rel="stylesheet" href="/assets/css/c.css">',
+    '  <link rel="stylesheet" href="/assets/css/d.css" media="print">',
+    '</head><body><link rel="stylesheet" href="/assets/css/d.css"></body></html>',
+  ].join('\n'));
+  fs.writeFileSync(path.join(root, 'other.html'), '<html><head><link href="https://fonts.googleapis.com/css2?family=Inter&family=Roboto" rel="stylesheet"></head></html>');
+  optimizeAssets(root);
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert.ok(!html.includes('fonts.googleapis.com') && !html.includes('fonts.gstatic.com'));
+  assert.match(html, /rel="preload" href="\/assets\/fonts\/[^"]+\.woff2" as="font"/);
+  const head = html.slice(0, html.indexOf('</head>'));
+  const bundles = [...head.matchAll(/href="(\/assets\/optimized\/css\/bundle\.[a-f0-9]{12}\.css)"/g)].map(m => m[1]);
+  assert.equal(bundles.length, 1, 'fonts, a and b share one bundle; c stays alone after the inline style');
+  assert.equal(fs.readFileSync(path.join(root, bundles[0]), 'utf8').replace(/\s/g, ''), '@font-face{font-family:Inter;src:url(/assets/fonts/x.woff2)}.a{color:red}.b{color:red}');
+  assert.ok(head.indexOf(bundles[0]) < head.indexOf('<style>') && head.indexOf('<style>') < head.indexOf('/c.'));
+  assert.match(head, /d\.[a-f0-9]{12}\.css" media="print"/);
+  assert.match(html.slice(html.indexOf('<body>')), /\/assets\/optimized\/css\/d\.[a-f0-9]{12}\.css/, 'body stylesheets are left alone');
+  assert.match(fs.readFileSync(path.join(root, 'other.html'), 'utf8'), /fonts\.googleapis\.com/, 'other families keep Google Fonts');
+});

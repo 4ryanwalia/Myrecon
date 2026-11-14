@@ -18,9 +18,10 @@ function optimizeAssets(root = ROOT) {
   }
   walk(root);
   const pattern = /\b(src|href)=(['"])(\/assets\/(?:optimized\/)?(css|js)\/([\w-]+)(?:\.[a-f0-9]{12})?\.(css|js))(?:\?[^'"]*)?\2/g;
+  const selfHostedFonts = fs.existsSync(path.join(root, 'assets/css/fonts.css'));
   for (const file of pages) {
     const before = fs.readFileSync(file, 'utf8');
-    const after = before.replace(pattern, (all, attr, quote, url, kind, name, extension) => {
+    const after = bundleStyles(root, selfHostFonts(before, selfHostedFonts).replace(pattern, (all, attr, quote, url, kind, name, extension) => {
       if (kind !== extension || name === 'env') return all;
       const source = `/assets/${kind}/${name}.${extension}`;
       if (!assets.has(source)) {
@@ -38,7 +39,7 @@ function optimizeAssets(root = ROOT) {
         assets.set(source, { output, before: Buffer.byteLength(original), after: Buffer.byteLength(code) });
       }
       return `${attr}=${quote}${assets.get(source).output}${quote}`;
-    });
+    }));
     if (before !== after) {
       for (let attempt = 0; attempt < 5; attempt++) {
         try {
@@ -57,5 +58,55 @@ function optimizeAssets(root = ROOT) {
   console.log(`[optimize] ${assets.size} shared assets: ${values.reduce((s, a) => s + a.before, 0)} -> ${values.reduce((s, a) => s + a.after, 0)} bytes; ${pages.length} pages`);
   return report;
 }
+// Google Fonts costs two extra connections before first paint. The same Inter and
+// JetBrains Mono files are served from this origin by assets/css/fonts.css.
+const GOOGLE_FONTS = /<link\b[^>]*\bhref="https:\/\/fonts\.googleapis\.com\/css2\?family=(?:Inter|JetBrains\+Mono)[^"]*"[^>]*>/gi;
+const FONT_PRECONNECT = /[ \t]*<link\b[^>]*\brel="preconnect"[^>]*\bhref="https:\/\/fonts\.(?:googleapis|gstatic)\.com"[^>]*>\r?\n?/gi;
+// The Latin Inter file nearly every page renders its text with.
+const INTER_LATIN = '/assets/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2';
+function selfHostFonts(html, available) {
+  if (!available) return html;
+  const links = [...html.matchAll(GOOGLE_FONTS)].map(([tag]) => tag);
+  // Only the families fonts.css provides; a page asking for any other keeps Google.
+  const families = links.flatMap(tag => [...tag.matchAll(/family=([^:&"]+)/g)].map(match => match[1]));
+  if (!links.length || families.some(name => name !== 'Inter' && name !== 'JetBrains+Mono')) return html;
+  let first = true;
+  return html.replace(FONT_PRECONNECT, '').replace(GOOGLE_FONTS, () => {
+    if (!first) return '';
+    first = false;
+    return `<link rel="preload" href="${INTER_LATIN}" as="font" type="font/woff2" crossorigin>\n  <link rel="stylesheet" href="/assets/css/fonts.css">`;
+  });
+}
+
+// Every stylesheet in <head> blocks first paint, and each one is a separate request.
+// Join each run of optimized stylesheets into one file, in the same order. A run
+// ends at anything that could change the cascade between them: an inline <style>
+// or a stylesheet that is not ours (or has media/onload attributes).
+const PLAIN_SHEET = /^<link rel="stylesheet" href="(\/assets\/optimized\/css\/[\w.-]+\.css)"\s*\/?>$/;
+function bundleStyles(root, html) {
+  const head = /<head\b[^>]*>([\s\S]*?)<\/head>/i.exec(html);
+  if (!head) return html;
+  const tags = [...head[1].matchAll(/<style\b[\s\S]*?<\/style>|<link\b[^>]*>/gi)];
+  const runs = [];
+  let run = [];
+  for (const match of tags) {
+    const sheet = PLAIN_SHEET.exec(match[0]);
+    if (sheet) { run.push({ tag: match[0], href: sheet[1] }); continue; }
+    if (/^<style/i.test(match[0]) || /\brel=["']?stylesheet/i.test(match[0])) { runs.push(run); run = []; }
+  }
+  runs.push(run);
+  let out = head[1];
+  for (const group of runs.filter(group => group.length > 1)) {
+    const css = group.map(item => fs.readFileSync(path.join(root, item.href), 'utf8')).join('\n');
+    const hash = crypto.createHash('sha256').update(css).digest('hex').slice(0, 12);
+    const href = `/assets/optimized/css/bundle.${hash}.css`;
+    const destination = path.join(root, href);
+    if (!fs.existsSync(destination)) fs.writeFileSync(destination, css);
+    out = out.replace(group[0].tag, `<link rel="stylesheet" href="${href}">`);
+    for (const item of group.slice(1)) out = out.replace(new RegExp(`[ \\t]*${item.tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\r?\\n?`), '');
+  }
+  return html.slice(0, head.index) + head[0].replace(head[1], () => out) + html.slice(head.index + head[0].length);
+}
+
 if (require.main === module) optimizeAssets();
-module.exports = { optimizeAssets };
+module.exports = { optimizeAssets, bundleStyles, selfHostFonts };
