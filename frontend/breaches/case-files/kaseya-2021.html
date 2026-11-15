@@ -82,7 +82,7 @@
           <h1>Kaseya, 2021: the update arrived on schedule and encrypted 1,500 companies</h1>
           <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Kaseya VSA supply chain ransomware attack</h2><p>REvil exploited zero-days in Kaseya&#39;s remote management server to push ransomware down the trusted update channel into roughly 1,500 downstream businesses.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="kaseya-vsa-supply-chain-ransomware-attack">Kaseya VSA supply chain ransomware attack</h2><p>REvil exploited zero-days in Kaseya&#39;s remote management server to push ransomware down the trusted update channel into roughly 1,500 downstream businesses.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>Roughly 1,500 downstream businesses, reached through 50–60 managed service providers</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: Roughly 1,500 downstream businesses, reached through 50, 60 managed service providers.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On the Friday afternoon before the US Independence Day weekend, thousands of computers belonging to companies that had never heard of Kaseya began encrypting themselves. The instruction to do so arrived through the software their IT provider used to keep them patched, from a server that was supposed to be the thing protecting them.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>Kaseya VSA is remote monitoring and management software. It is the tool a managed service provider uses to administer client computers at scale: deploy software, apply patches, run scripts, check health. An agent runs on each managed machine and does what the VSA server tells it to, without asking the user, because that is the entire point of the product.</p>
 
@@ -110,7 +110,7 @@
 
 <p>Kaseya's response was unusually decisive and is worth recording: within hours it told every VSA customer to shut their servers down immediately, and it took its own cloud-hosted service offline pre-emptively. That instruction cost the company its product's availability for over a week. It also capped the damage, because a VSA server that is switched off cannot be used to push anything.</p>
 
-<h2>Why this is not SolarWinds</h2>
+<h2 id="why-this-is-not-solarwinds">Why this is not SolarWinds</h2>
 
 <p>The two incidents are filed together as supply chain attacks, and the filing obscures a difference that matters to anyone deciding what to do about either. SolarWinds was a compromise of the build process: attackers got inside the machinery that produces a release, and their code left the factory inside a genuine, correctly signed product. Nothing a customer could have inspected would have revealed it.</p>
 
@@ -120,13 +120,13 @@
   <p><strong>The trust that actually failed.</strong> Every management agent in existence has the same design: it does what its server says, without confirmation, because an administrator cannot approve fifty thousand actions by hand. That trust is not a flaw, it is the product. The consequence is that the security of every managed machine collapses into the security of one server, and any tool with that property has to be treated as the most sensitive asset in the estate. Management consoles do not belong on the public internet, and how many VSA servers were is the real finding here.</p>
 </div>
 
-<h2>The race that was already running</h2>
+<h2 id="the-race-that-was-already-running">The race that was already running</h2>
 
 <p>Before the attack, researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of VSA vulnerabilities to Kaseya under coordinated disclosure. Kaseya had accepted the reports and was shipping fixes for them. The attack exploited what was still outstanding.</p>
 
 <p>There is no villain in that sequence, which is why it is instructive. The researchers did the right thing and did not publish. The vendor did the right thing and was actively patching. Both were running coordinated disclosure properly, and an attacker who had independently found the same bugs was under no obligation to observe anyone's timeline. The window between a flaw being known to somebody and being fixed everywhere is not a process failure that can be engineered away; it is a structural property of software, and every defence that assumes it can be closed is assuming something untrue.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>Early 2021</b>: Researchers report a set of Kaseya VSA vulnerabilities under coordinated disclosure; fixes begin shipping.</li>
@@ -139,13 +139,13 @@
   <li><b>November 2021</b>: The US Department of Justice announces charges against a REvil affiliate over the Kaseya attack, alongside international arrests and seizures.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>The Coop closures did more to change the conversation than the ransom demand did. A supermarket chain shutting its doors because a software company three steps removed from it had a vulnerability made the dependency concrete for people who do not read incident reports. Concentration risk stopped being an abstract phrase about cloud providers and became a thing that happened to the shopping.</p>
 
 <p>Practically, the attack accelerated a shift already underway in how management tooling is deployed: consoles moved off the public internet and behind VPNs or identity-aware proxies, multi-factor authentication on administrative access stopped being optional in serious environments, and blanket antivirus exclusions for management directories were revisited by a lot of providers who had applied them without thinking. It also strengthened the argument that a managed service provider is a critical dependency of every client it serves, which turns provider due diligence from a procurement formality into a security control.</p>
 
-<h2>If your IT is managed by somebody else</h2>
+<h2 id="if-your-it-is-managed-by-somebody-else">If your IT is managed by somebody else</h2>
 
 <p>Almost every victim here was a small business with no security team, no visibility into the tooling running on its machines, and no realistic way to have prevented any of this. That is not a reason to conclude nothing can be done, it is a reason to be specific about the few things that can.</p>
 
@@ -155,7 +155,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -167,7 +167,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Was Kaseya's software compromised the way SolarWinds was?</h3>
         <p>No, and the distinction matters. In the SolarWinds case the attackers got inside the build process and shipped their code inside a genuinely signed release, so every customer who installed the update was compromised. Kaseya's build pipeline was not touched. The attackers exploited vulnerabilities in internet-facing VSA servers run by managed service providers, then used the legitimate software's own update mechanism to push a payload to the machines each server managed. The trust that was abused was the agent's trust in its server, not a customer's trust in a signed build.</p>
@@ -200,7 +200,7 @@
         <li><b>US Department of Justice, indictment and sanctions actions against REvil affiliates, November 2021</b></li>
         <li><b>Kaseya incident updates and public statements, July–August 2021</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/air-india-2021.html">Air India, 2021: ten years of passengers, lost by a supplier</a></li>
         <li><a href="/breaches/case-files/colonial-pipeline-2021.html">Colonial Pipeline, 2021: one leaked password, and the fuel stopped</a></li>
@@ -229,11 +229,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

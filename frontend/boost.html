@@ -79,7 +79,7 @@
   <a class="btn btn-primary" href="/#tool=username">Boost your OSINT scan</a>
   <p class="discovery-note">Parallel multi-platform sweeps. Synthetic control validation. Free guest Quick scans across 100 platforms; 500+ platforms with free sign-in.</p>
   <section>
-    <h2>How to boost OSINT speed without sacrificing accuracy</h2>
+    <h2 id="how-to-boost-osint-speed-without-sacrificing-accuracy">How to boost OSINT speed without sacrificing accuracy</h2>
     <p>In open-source intelligence, raw request speed means very little if half of the returned URLs are false positives. Traditional username enumeration scripts race through hundreds of URLs and flag any HTTP 200 response as a match, forcing investigators to waste time clicking dead landing pages.</p>
     <p>MyRecon boosts real investigative throughput by combining parallel cloud execution with automated evidence verification:</p>
     <dl>
@@ -92,7 +92,7 @@
     </dl>
   </section>
   <section id="benchmarks">
-    <h2>Empirical benchmarks: parallel scanning vs CLI baselines</h2>
+    <h2 id="empirical-benchmarks-parallel-scanning-vs-cli-baselines">Empirical benchmarks: parallel scanning vs CLI baselines</h2>
     <p>We measure parallel scan latency and verdict accuracy against standard command-line tools and sequential status-only baselines across controlled datasets. All runs use synthetic control handles to detect soft 404s and prevent false positives.</p>
     <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Empirical benchmark comparison">
       <table>
@@ -146,7 +146,7 @@
     <p>Unlike sequential CLI scripts that burn your home IP and produce soft-404 false positives on nonexistent profiles, MyRecon delivers sub-second parallel latency with 0% false positives on scored controls. Read our detailed methodology in the <a href="/blog/username-search-benchmark-research.html">controlled study report</a>.</p>
   </section>
   <section>
-    <h2>4-step workflow to accelerate your reconnaissance</h2>
+    <h2 id="4-step-workflow-to-accelerate-your-reconnaissance">4-step workflow to accelerate your reconnaissance</h2>
     <ol>
       <li><strong>Launch a parallel username sweep:</strong> Enter a handle in the <a href="/#tool=username">MyRecon scanner</a> to probe public profiles across social and developer platforms.</li>
       <li><strong>Pivot to Deep Search mentions:</strong> Use <a href="/deep-search.html">Deep Search</a> to uncover public forum threads, comments, and web mentions tied to the handle.</li>
@@ -155,15 +155,15 @@
     </ol>
   </section>
   <section>
-    <h2>Why investigators switch from CLI scripts to MyRecon</h2>
+    <h2 id="why-investigators-switch-from-cli-scripts-to-myrecon">Why investigators switch from CLI scripts to MyRecon</h2>
     <ul>
       <li><strong>Zero environment maintenance:</strong> No Python virtual environments, broken pip dependencies, or outdated JSON site definitions to patch before starting urgent research.</li>
       <li><strong>Protected local IP reputation:</strong> Avoid triggering Cloudflare blocks or CAPTCHA loops on your personal connection during large sweeps.</li>
-      <li><strong>Documented benchmark transparency:</strong> Review our <a href="/#benchmarks">published benchmark comparisons</a> against <a href="/vs/sherlock">Sherlock</a>, <a href="/vs/">Maigret</a>, and <a href="/vs/">WhatsMyName</a>.</li>
+      <li><strong>Documented benchmark transparency:</strong> Review our <a href="/#benchmarks">published benchmark comparisons</a> against <a href="/vs/sherlock">Sherlock</a>, <a href="/vs/">Maigret</a>, and <a href="/whatsmyname-alternatives.html">WhatsMyName</a>.</li>
     </ul>
   </section>
   <section>
-    <h2>Related OSINT tools and investigation hubs</h2>
+    <h2 id="related-osint-tools-and-investigation-hubs">Related OSINT tools and investigation hubs</h2>
     <ul>
       <li><a href="/free-osint-tool.html">Free OSINT tool and online investigation platform</a></li>
       <li><a href="/browser.html">Browser OSINT tool and web username scanner</a></li>
@@ -179,11 +179,11 @@
     </ul>
   </section>
   <section>
-    <h2>Frequently asked questions about boosting OSINT workflows</h2>
+    <h2 id="frequently-asked-questions-about-boosting-osint-workflows">Frequently asked questions about boosting OSINT workflows</h2>
     <div class="faq"><details><summary>How does MyRecon boost OSINT investigation speed?</summary><p>MyRecon replaces sequential manual checks and fragile terminal scripts with parallelized, multi-vector public queries. In one workspace, you can sweep a username across 500+ platforms, check email breach exposure, verify k-anonymity password status, and inspect domain DNS security records without switching tools.</p></details><details><summary>Why do standard username scanners produce slow or noisy results?</summary><p>Many command-line scanners query sites without synthetic control validation, returning dozens of false-positive HTTP 200 responses that an analyst must manually inspect and discard. MyRecon filters out soft-404 ghost accounts automatically so you only spend time reviewing genuine public profile leads.</p></details><details><summary>What is the difference between Quick, Standard, and Extended sweeps?</summary><p>Guest Quick scans check 100 major platforms with zero sign-up. Standard scans check 500+ platforms for signed-in users. Extended sweeps and Deep Search add broader platform coverage and public mention correlation for deeper authorized investigations.</p></details><details><summary>Does boosting scan speed trigger IP blocks on my home network?</summary><p>When you run CLI tools like Sherlock or Maigret locally, hundreds of rapid requests originate directly from your personal IP address, frequently triggering rate limits and CAPTCHAs. MyRecon orchestrates checks through its cloud scanner infrastructure so your local network is not burned.</p></details><details><summary>Can I combine username sweeps with Deep Search and breach checks?</summary><p>Yes. After running a high-speed username sweep, you can pivot directly into Deep Search to inspect indexed public activity, or run an email breach and domain RDAP check from the same console.</p></details></div>
   </section>
   <section>
-    <h2>Authorized and ethical reconnaissance</h2>
+    <h2 id="authorized-and-ethical-reconnaissance">Authorized and ethical reconnaissance</h2>
     <p>MyRecon is built for personal footprint self-audits, defensive security teams, and authorized investigations. Only query identifiers you own or have lawful authorization to review. See our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
     <p>Reviewed for this release: October 2026.</p>
   </section>
@@ -204,11 +204,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

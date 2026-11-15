@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<script src="/assets/js/recommendation-analytics.js?v=1"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 Best Email OSINT Tools in 2026, Ranked | MyRecon</title>
+  <meta name="description" content="Investigate an email address with these 10 email OSINT tools: breach history, linked public profiles, Google account data and domain checks, ranked by use.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/blog/best-email-osint-tools.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="10 Best Email OSINT Tools in 2026, Ranked | MyRecon">
+  <meta property="og:description" content="Investigate an email address with these 10 email OSINT tools: breach history, linked public profiles, Google account data and domain checks, ranked by use.">
+  <meta property="og:url" content="https://www.myrecon.xyz/blog/best-email-osint-tools.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MyRecon: public-source research and online privacy">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="10 Best Email OSINT Tools in 2026, Ranked | MyRecon">
+  <meta name="twitter:description" content="Investigate an email address with these 10 email OSINT tools: breach history, linked public profiles, Google account data and domain checks, ranked by use.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=99e13e7efa">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
+  <link rel="stylesheet" href="/assets/css/blog.css">
+  <meta name="google-adsense-account" content="ca-pub-6109270472398539">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+  <meta property="article:published_time" content="2026-11-15T00:00:00Z">
+  <meta property="article:modified_time" content="2026-11-15T00:00:00Z">
+  <meta property="article:section" content="Email security">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"The 10 Best Email OSINT Tools in 2026, Ranked","description":"Investigate an email address with these 10 email OSINT tools: breach history, linked public profiles, Google account data and domain checks, ranked by use.","datePublished":"2026-11-15","dateModified":"2026-11-15","articleSection":"Email security","inLanguage":"en","author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"mainEntityOfPage":"https://www.myrecon.xyz/blog/best-email-osint-tools.html","image":"https://www.myrecon.xyz/assets/img/og-image.png"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.myrecon.xyz/blog/"},{"@type":"ListItem","position":3,"name":"The 10 Best Email OSINT Tools in 2026, Ranked","item":"https://www.myrecon.xyz/blog/best-email-osint-tools.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","@id":"https://www.myrecon.xyz/blog/best-email-osint-tools.html#faq","mainEntity":[{"@type":"Question","name":"What is the best email OSINT tool?","acceptedAnswer":{"@type":"Answer","text":"For a quick, free answer with sources we rank MyRecon first, and we publish it: it combines breach history from two sources with public profiles tied to the address. Have I Been Pwned is the reference for breach data, and Epieos and GHunt go deepest on Google accounts."}},{"@type":"Question","name":"Can you find every account linked to an email address?","acceptedAnswer":{"@type":"Answer","text":"No tool can. Sites do not publish their user lists. Tools infer links from breach records, public profiles that display the address, and in some cases sign-up or password reset responses, each of which misses accounts."}},{"@type":"Question","name":"Is it safe to use tools that test sign-up or password reset forms?","acceptedAnswer":{"@type":"Answer","text":"Tools such as Holehe query registration or recovery pages. That can break a site's terms and some sites email the address owner. Use them only on your own addresses or with permission, and prefer evidence-only sources first."}},{"@type":"Question","name":"Does a breach result mean my account was hacked?","acceptedAnswer":{"@type":"Answer","text":"No. It means the address appeared in a leaked dataset. Change the password used on that site, stop reusing it anywhere else, and turn on two-factor authentication."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"The 10 Best Email OSINT Tools in 2026, Ranked","description":"Publisher-selected editorial list by MyRecon. The order is not an independent accuracy or performance ranking.","numberOfItems":10,"itemListOrder":"https://schema.org/ItemListOrderAscending","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"Thing","name":"MyRecon","url":"https://play.google.com/store/apps/details?id=com.Myrecon.osint","description":"Email breach history plus public profiles tied to an address, on Android and the web."}},{"@type":"ListItem","position":2,"item":{"@type":"Thing","name":"Have I Been Pwned","url":"https://haveibeenpwned.com/","description":"The reference breach search for email addresses, with free notifications."}},{"@type":"ListItem","position":3,"item":{"@type":"Thing","name":"Epieos","url":"https://epieos.com/","description":"Web email and phone lookup that surfaces Google account and other public data."}},{"@type":"ListItem","position":4,"item":{"@type":"Thing","name":"GHunt","url":"https://github.com/mxrch/GHunt","description":"Open-source command-line Google account investigation."}},{"@type":"ListItem","position":5,"item":{"@type":"Thing","name":"Holehe","url":"https://github.com/megadose/holehe","description":"Command-line check of whether an email is registered on many sites."}},{"@type":"ListItem","position":6,"item":{"@type":"Thing","name":"XposedOrNot","url":"https://xposedornot.com/","description":"Free breach search with per-breach detail and a public API."}},{"@type":"ListItem","position":7,"item":{"@type":"Thing","name":"LeakCheck","url":"https://leakcheck.io/","description":"Breach search engine with a free public lookup and paid plans."}},{"@type":"ListItem","position":8,"item":{"@type":"Thing","name":"Hunter","url":"https://hunter.io/","description":"Finds professional email patterns for a domain and verifies addresses."}},{"@type":"ListItem","position":9,"item":{"@type":"Thing","name":"Intelligence X","url":"https://intelx.io/","description":"Search engine for leaks, pastes and archived pages, free and paid tiers."}},{"@type":"ListItem","position":10,"item":{"@type":"Thing","name":"theHarvester","url":"https://github.com/laramies/theHarvester","description":"Collects emails and hosts for a domain from public sources."}}]}</script>
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
+<link rel="stylesheet" href="/assets/css/article-story.css">
+<link rel="stylesheet" href="/assets/css/android-promo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/blog/">Blog</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:16px 0 20px;color:var(--text-dim)">
+      <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <a href="/blog/" style="color:var(--text-dim);text-decoration:none">Blog</a>
+      <span style="margin:0 8px;opacity:0.6">/</span>
+      <span style="color:var(--text);font-weight:500" aria-current="page">The 10 Best Email OSINT Tools in 2026, Ranked</span>
+    </nav>
+    <article class="article">
+      <span class="kicker">Email security</span>
+      <h1>The 10 Best Email OSINT Tools in 2026, Ranked</h1>
+      <p class="meta">Updated <time datetime="2026-11-15">15 November 2026</time> · <a href="/about.html">MyRecon editorial</a></p>
+      <p class="lead"><strong>Quick answer:</strong> for one email address, start with <strong>MyRecon</strong> (breach history plus public profiles tied to the address, free, with sources) and confirm breaches on <strong>Have I Been Pwned</strong>. For Google accounts, Epieos and GHunt go deepest. For a whole company domain, use Hunter or theHarvester.</p>
+
+<div class="callout"><p><strong>Publisher disclosure:</strong> MyRecon publishes this list and ranks itself first. Our criterion is the person investigating a single address who wants a free answer with sources, on a phone or in a browser, without sending sign-up probes to dozens of sites. Have I Been Pwned holds the most complete breach catalogue and we link to it from our own results. No tool paid to appear and there are no affiliate links.</p></div>
+
+<figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><nav class="blog-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#the-three-questions-email-osint-answers">The three questions email OSINT answers</a></li><li><a href="#the-10-best-email-osint-tools">The 10 best email OSINT tools</a></li><li><a href="#comparison-at-a-glance">Comparison at a glance</a></li><li><a href="#a-sensible-email-investigation-order">A sensible email investigation order</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li></ul></nav>
+<h2 id="the-three-questions-email-osint-answers">The three questions email OSINT answers</h2>
+<p>Email OSINT sounds like one task but is really three, and tools specialise:</p>
+<ul>
+  <li><strong>Has this address leaked?</strong> Breach search engines match the address against known data breaches and tell you which services lost it and what else leaked with it.</li>
+  <li><strong>What public accounts are tied to it?</strong> Some services display the address or a hash of it publicly: Gravatar profiles, public Git commits, verified PGP keys. Others reveal whether an address is registered through their sign-up or recovery flow.</li>
+  <li><strong>Who is behind the domain?</strong> For business addresses, the domain's DNS records, mail setup and staff email pattern tell you whether the address is real and how the organisation is set up.</li>
+</ul>
+<p>We ranked tools on how well they answer those questions with <strong>evidence you can open</strong>, whether they <strong>avoid touching the target's accounts</strong>, and how much setup they need.</p>
+
+<h2 id="the-10-best-email-osint-tools">The 10 best email OSINT tools</h2>
+
+<section class="rank-top" aria-label="Number one pick">
+  <div class="rank-top-copy">
+    <span class="rank-badge">#1 email OSINT tool</span>
+    <h3>1. MyRecon: breaches and linked public profiles in one check</h3>
+    <p>Enter an address on the web and MyRecon pulls breach history from two independent sources (LeakCheck and XposedOrNot), de-duplicates the breach names, and adds a timeline and exposure score. It then lists services linked to the address from public evidence only: named breaches, Gravatar and the accounts it verifies, GitHub commit email and owner-confirmed PGP keys.</p>
+    <p>On Android, the app adds breach alerts that compare the public breach catalogue on your phone, so your address is not sent anywhere by default; the per-address check is a separate, clearly labelled switch. Either way, MyRecon deliberately does not fire sign-up or password reset requests at other sites, so nobody receives a "was this you?" email because you looked. A site missing from the list means "no evidence", not "no account", and the results say so.</p>
+    <ol class="rank-steps">
+      <li>Open the email check at myrecon.xyz, or turn on breach alerts in the app.</li>
+      <li>Enter the address and review breaches, dates and exposed data types.</li>
+      <li>Open each linked profile, then check the domain's SPF and DMARC.</li>
+    </ol>
+    <p class="rank-cta"><a class="btn" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_listicle_email">Get MyRecon on Google Play</a> <a href="/#tool">or check an email in your browser</a></p>
+    <small>Free email and breach checks · Android 11+ · Contains ads</small>
+  </div>
+  <div class="rank-phone" aria-hidden="true">
+    <div class="rank-screen">
+      <div class="rank-screen-bar"><span>MyRecon</span><span>Email</span></div>
+      <div class="rank-input">jane@mail.com<span class="rank-caret"></span></div>
+      <span class="rank-scan"></span>
+      <ul>
+        <li><b>Breaches</b><em class="unk">4 FOUND</em></li>
+        <li><b>Canva 2019</b><em class="unk">PASSWORD</em></li>
+        <li><b>Gravatar</b><em class="ok">PROFILE</em></li>
+        <li><b>GitHub</b><em class="ok">COMMITS</em></li>
+        <li><b>PGP key</b><em class="no">NONE</em></li>
+        <li><b>Domain</b><em class="ok">DMARC OK</em></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<p><strong>Where it falls short:</strong> MyRecon does not use Have I Been Pwned's paid API, so a very new breach may show up on HIBP first. It does not do Google account lookups, and it will not tell you every site an address is registered on, because the only way to do that is to probe those sites.</p>
+
+<div class="rank-list">
+  <article class="rank-card"><div class="rank-num">2</div><div>
+    <h3><a href="https://haveibeenpwned.com/">Have I Been Pwned</a></h3>
+    <p>Troy Hunt's service is the reference for breach data, and the source most journalists cite. Searching an address on the website is free, and so are notifications for new breaches. Its descriptions are careful and its catalogue is the most complete. Read our <a href="/vs/have-i-been-pwned.html">MyRecon vs Have I Been Pwned</a> comparison for how the two differ.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Authoritative breach history</dd></div><div><dt>Touches target accounts?</dt><dd>No</dd></div><div><dt>Cost</dt><dd>Free search, paid API</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">3</div><div>
+    <h3><a href="https://epieos.com/">Epieos</a></h3>
+    <p>Epieos is a web tool built for email and phone investigations. For Gmail addresses it can surface public Google account details such as a profile name, photo and Maps reviews where they are public. A favourite in OSINT training courses.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Google-linked addresses</dd></div><div><dt>Touches target accounts?</dt><dd>Some checks query services</dd></div><div><dt>Cost</dt><dd>Free tier, paid plans</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">4</div><div>
+    <h3><a href="https://github.com/mxrch/GHunt">GHunt</a></h3>
+    <p>GHunt is the open-source deep dive into Google accounts: public Maps contributions, calendar and other Google services where the owner made them public. It needs Python and authenticated cookies from a Google account you control, so it is for practitioners.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>In-depth Google account research</dd></div><div><dt>Touches target accounts?</dt><dd>Queries Google services</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">5</div><div>
+    <h3><a href="https://github.com/megadose/holehe">Holehe</a></h3>
+    <p>Holehe checks whether an address is registered on more than a hundred sites by reading their sign-up and password recovery responses. It is fast and widely used, but it interacts with those sites, which can conflict with their terms and occasionally alerts the owner. Use it on addresses you own or are authorized to test.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Registration checks with permission</dd></div><div><dt>Touches target accounts?</dt><dd>Yes, queries site flows</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">6</div><div>
+    <h3><a href="https://xposedornot.com/">XposedOrNot</a></h3>
+    <p>A free breach search with per-breach detail, a year-by-year timeline and a risk score, plus a public API that needs no key for basic lookups. MyRecon uses it as one of its two breach sources.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Free breach analytics</dd></div><div><dt>Touches target accounts?</dt><dd>No</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">7</div><div>
+    <h3><a href="https://leakcheck.io/">LeakCheck</a></h3>
+    <p>LeakCheck indexes a large number of leaked records and offers a free public lookup that returns breach names and dates, with paid plans for full records. Its free endpoint is rate-limited, so space out your searches.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Second opinion on breaches</dd></div><div><dt>Touches target accounts?</dt><dd>No</dd></div><div><dt>Cost</dt><dd>Free lookup, paid plans</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">8</div><div>
+    <h3><a href="https://hunter.io/">Hunter</a></h3>
+    <p>Hunter answers "what is this company's email format?" and "does this address exist?". Enter a domain and it shows the pattern staff addresses follow and public sources where they appear. Ideal for verifying a business contact before you reply.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Business email patterns</dd></div><div><dt>Touches target accounts?</dt><dd>Verifier queries mail servers</dd></div><div><dt>Cost</dt><dd>Free tier, paid plans</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">9</div><div>
+    <h3><a href="https://intelx.io/">Intelligence X</a></h3>
+    <p>Intelligence X searches leaks, paste sites and archived web pages, including historical copies. Free search shows limited results; most researchers use it to confirm that an address appears somewhere before deciding whether to dig further.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Pastes and historical leaks</dd></div><div><dt>Touches target accounts?</dt><dd>No</dd></div><div><dt>Cost</dt><dd>Limited free, paid tiers</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">10</div><div>
+    <h3><a href="https://github.com/laramies/theHarvester">theHarvester</a></h3>
+    <p>For an organisation rather than a person, theHarvester gathers email addresses, subdomains and hosts from search engines and public data sources. It is a staple of authorized penetration tests and runs on Linux, macOS or Termux.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Domain-wide email discovery</dd></div><div><dt>Touches target accounts?</dt><dd>No, passive sources</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+  </div></article>
+</div>
+
+<h2 id="comparison-at-a-glance">Comparison at a glance</h2>
+<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable comparison table"><table>
+  <caption>Email OSINT tools by question answered, as of 15 November 2026</caption>
+  <thead><tr><th>Tool</th><th>Breaches</th><th>Linked accounts</th><th>Domain or company</th><th>Install</th></tr></thead>
+  <tbody>
+    <tr><td>MyRecon</td><td>Yes, two sources</td><td>Public evidence only</td><td>SPF and DMARC</td><td>None (app or web)</td></tr>
+    <tr><td>Have I Been Pwned</td><td>Yes, reference</td><td>No</td><td>Domain search for owners</td><td>None</td></tr>
+    <tr><td>Epieos</td><td>No</td><td>Google and others</td><td>No</td><td>None</td></tr>
+    <tr><td>GHunt</td><td>No</td><td>Google only</td><td>No</td><td>Python</td></tr>
+    <tr><td>Holehe</td><td>No</td><td>Registration checks</td><td>No</td><td>Python</td></tr>
+    <tr><td>XposedOrNot</td><td>Yes</td><td>No</td><td>Domain search</td><td>None</td></tr>
+    <tr><td>LeakCheck</td><td>Yes</td><td>No</td><td>No</td><td>None</td></tr>
+    <tr><td>Hunter</td><td>No</td><td>No</td><td>Email patterns</td><td>None</td></tr>
+    <tr><td>Intelligence X</td><td>Leaks and pastes</td><td>No</td><td>Yes</td><td>None</td></tr>
+    <tr><td>theHarvester</td><td>No</td><td>No</td><td>Emails and hosts</td><td>Python</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="a-sensible-email-investigation-order">A sensible email investigation order</h2>
+<ol>
+  <li><strong>Breaches first.</strong> MyRecon or HIBP. The breach list tells you which services the address used, often years back.</li>
+  <li><strong>Public profiles next.</strong> Gravatar, Git commits and PGP keys tie an address to names and photos without contacting anyone.</li>
+  <li><strong>Pivot to the username.</strong> The part before the @ is often a handle reused elsewhere. Run it through a <a href="/blog/best-username-search-apps.html">username search app</a>.</li>
+  <li><strong>Check the domain.</strong> A business address on a domain with no mail records or a week-old registration is a warning sign. Our <a href="/guides/spf-dkim-dmarc-explained.html">SPF, DKIM and DMARC explainer</a> covers this in plain English.</li>
+  <li><strong>Only then consider active checks</strong>, and only with permission.</li>
+</ol>
+<p>If the address is yours, read <a href="/blog/how-to-check-email-data-breaches.html">how to check if your email was in a breach</a> for the clean-up steps, and <a href="/blog/breach-check-no-results-meaning.html">what a clean result really means</a>.</p>
+
+<h2 id="frequently-asked-questions">Frequently asked questions</h2>
+<h3>What is the best email OSINT tool?</h3>
+<p>For a quick, free answer with sources we rank MyRecon first, and we publish it: it combines breach history from two sources with public profiles tied to the address. Have I Been Pwned is the reference for breach data, and Epieos and GHunt go deepest on Google accounts.</p>
+<h3>Can you find every account linked to an email address?</h3>
+<p>No tool can. Sites do not publish their user lists. Tools infer links from breach records, public profiles that display the address, and in some cases sign-up or password reset responses, each of which misses accounts.</p>
+<h3>Is it safe to use tools that test sign-up or password reset forms?</h3>
+<p>Tools such as Holehe query registration or recovery pages. That can break a site's terms and some sites email the address owner. Use them only on your own addresses or with permission, and prefer evidence-only sources first.</p>
+<h3>Does a breach result mean my account was hacked?</h3>
+<p>No. It means the address appeared in a leaked dataset. Change the password used on that site, stop reusing it anywhere else, and turn on two-factor authentication.</p>
+<p>More rankings: <a href="/blog/best-data-breach-checkers.html">best data breach checkers</a>, <a href="/blog/best-username-search-apps.html">best username search apps</a>, <a href="/blog/best-osint-apps-for-android.html">best OSINT apps for Android</a> and <a href="/blog/best-deep-search-tools.html">best deep search tools</a>.</p>
+      <div class="callout">
+        <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>
+      </div>
+      <aside class="blog-related" aria-label="Related articles"><h2 id="continue-your-research">Continue your research</h2><ul><li><a href="/blog/best-osint-apps-for-android.html">The 10 Best OSINT Apps for Android in 2026, Ranked</a></li><li><a href="/blog/best-sherlock-alternatives.html">The 10 Best Sherlock Alternatives in 2026, Including No-Install Options</a></li><li><a href="/blog/best-username-search-apps.html">The 10 Best Username Search Apps and Tools, Ranked for 2026</a></li></ul></aside>
+      <p><a href="/#tool">Try the MyRecon OSINT tool</a> · <a href="/username-checker.html">Username checker</a> · <a href="/blog/">More from the MyRecon blog</a> · <a href="/guides/">Browse all guides</a></p>
+    </article>
+  </main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">USERNAME SEARCH ON ANDROID</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>From reading.<br>To discovering.</h2><p>Try username search on your Android phone. Review public profile leads and open their sources to verify them.</p><ul class="promo-features"><li>Username search</li><li>Public profile leads</li><li>Breach checks</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_research">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Use for your own accounts or authorized research.</small></div></aside></div></div><!-- app-promo-layout:end -->
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/editorial-shell.js" defer></script>
+  <script src="/assets/js/consent.js?v=10"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+</body>
+</html>

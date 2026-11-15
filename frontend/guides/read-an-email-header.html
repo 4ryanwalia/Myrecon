@@ -86,15 +86,15 @@
 
 <p class="lead">Every email carries a record of the servers it passed through and what each of them thought of it. Most of that record can be forged by the sender, but the part that cannot is added by your own provider, sits at the top, and answers the question people open headers to ask.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>Getting at the headers</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="getting-at-the-headers">Getting at the headers</h2>
       <p>What you normally see is a summary. The full message source contains dozens of lines above it. Look in your client for <em>show original</em>, <em>view source</em>, <em>message details</em> or <em>properties</em>: in web clients it is usually in the menu next to reply, and in desktop clients under a view or file menu. What you get is plain text, and it is read from the bottom upwards.</p>
 
-      <h2>Why bottom-up</h2>
+      <h2 id="why-bottom-up">Why bottom-up</h2>
       <p>Each server that handles a message adds a <span style="font-family:var(--mono)">Received:</span> line at the <em>top</em> of the existing headers. The result is a stack in reverse chronological order: the last line is the first hop, and the first line is your own provider.</p>
       <p>This matters for a reason beyond ordering. A sender can fabricate as many <span style="font-family:var(--mono)">Received:</span> lines as they like before sending, inventing a plausible journey through respectable servers. What they cannot fabricate is the line your provider added when it accepted the message, that one was written after the forgery was out of the sender's hands.</p>
       <p>So the rule is: <strong>trust downwards from the top until you reach a server you do not recognise, and treat everything below that point as unverified.</strong> The first genuinely informative line is the one where your provider records who actually connected to it.</p>
 
-      <h2>The fields worth reading</h2>
+      <h2 id="the-fields-worth-reading">The fields worth reading</h2>
       <ul>
         <li><strong><span style="font-family:var(--mono)">Authentication-Results:</span></strong>: the summary of SPF, DKIM and DMARC checks, written by your receiving server. This is the most valuable line in the header, and it is covered on its own below.</li>
         <li><strong><span style="font-family:var(--mono)">Received:</span></strong>: one per hop, each naming the connecting host, its address, the receiving server and a timestamp. Read from the bottom, trust from the top.</li>
@@ -108,7 +108,7 @@
         <li><strong><span style="font-family:var(--mono)">List-Unsubscribe:</span></strong>: present on legitimate bulk mail, and its absence on something claiming to be a newsletter is worth noticing.</li>
       </ul>
 
-      <h2>The one line that settles most questions</h2>
+      <h2 id="the-one-line-that-settles-most-questions">The one line that settles most questions</h2>
       <p>If you only read one thing, read <span style="font-family:var(--mono)">Authentication-Results</span>. It records what your provider concluded:</p>
       <ul>
         <li><strong><span style="font-family:var(--mono)">spf=pass</span></strong>: the connecting server was authorised to send for the envelope domain. Note: the envelope domain, which may not be the domain you can see.</li>
@@ -121,12 +121,12 @@
         <p><strong><span style="font-family:var(--mono)">dmarc=pass</span> does not mean the message is safe.</strong> It means the message genuinely came from the domain printed in the From line. A lookalike domain, one character different, or the brand name in front of an unrelated word, passes its own DMARC perfectly, because the attacker owns that domain and configured it properly. Authentication proves the domain; whether the domain is the right one is still a human judgement, and it is the judgement phishing is built to defeat.</p>
       </div>
 
-      <h2>About the IP addresses</h2>
+      <h2 id="about-the-ip-addresses">About the IP addresses</h2>
       <p>The routine hope is that a header reveals where the sender was sitting. It usually does not.</p>
       <p>Major webmail providers have for years stripped the originating address from outgoing mail, so the earliest address in the chain is the provider's own outbound relay, a data centre, shared by millions of users. Mail from a self-hosted server, some corporate systems and older desktop clients may still carry the real originating address, which is why it is worth looking even though the answer is usually a relay.</p>
       <p>When you do have an address, read it for what it can support: the network, the operator, whether it is hosting or residential, and the reverse DNS name. It identifies a connection at a moment, not a person, the reasoning is set out in <a href="/guides/ip-geolocation-reverse-dns.html">the IP guide</a>.</p>
 
-      <h2>A reading order</h2>
+      <h2 id="a-reading-order">A reading order</h2>
       <ol>
         <li><strong>Read <span style="font-family:var(--mono)">Authentication-Results</span> first.</strong> A DMARC failure on a message impersonating a known brand ends the analysis.</li>
         <li><strong>Compare From, Return-Path and Reply-To.</strong> Three different domains on a supposedly personal message is the classic spoofing shape.</li>
@@ -137,7 +137,7 @@
         <li><strong>Investigate the sending domain separately</strong>: registration age, DNS and mail posture, per <a href="/guides/investigate-a-domain.html">the domain investigation guide</a>.</li>
       </ol>
 
-      <h2>What headers cannot tell you</h2>
+      <h2 id="what-headers-cannot-tell-you">What headers cannot tell you</h2>
       <p>They cannot identify a person. At best they identify a domain that authenticated and a server that connected, both of which can be rented anonymously for the price of a coffee.</p>
       <p>They also cannot detect the most dangerous category of all: a genuine message from a genuinely compromised mailbox. Thread hijacking, a reply arriving inside a conversation you were already having, from the real address, with the real history quoted, passes every check in the header because nothing about it is forged. Against that, headers are silent, and the only defence is the content and an out-of-band check on anything irreversible.</p>
 
@@ -149,7 +149,7 @@
         <p>Check the sending domain's live SPF, DMARC and DNS records with the <a href="/#tool">MyRecon domain tool</a>.</p>
       </div>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <h3>Can I find the sender's real IP address in an email header?</h3>
       <p>Usually not. Major webmail providers have stripped the sender's own address from outgoing headers for years, so the earliest address you see is typically the provider's outbound server. Mail from a self-hosted server or an older client may still expose it.</p>
 
@@ -172,7 +172,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dread_an_email_header" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/spf-dkim-dmarc-explained.html">what SPF, DKIM and DMARC actually check</a></li>
         <li><a href="/guides/how-to-spot-phishing.html">spotting a phishing message without opening the headers</a></li>
@@ -201,11 +201,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

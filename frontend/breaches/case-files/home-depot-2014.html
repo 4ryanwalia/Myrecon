@@ -82,7 +82,7 @@
           <h1>Home Depot, 2014: 56 million cards through a supplier's login</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Home Depot data breach</h2><p>Attackers used a third-party vendor&#39;s stolen credentials to reach Home Depot&#39;s network, then ran custom malware on self-checkout tills for five months.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person holding a payment card while using a laptop" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-computer-holding-card-Q59HmzK38eQ" target="_blank" rel="noopener">rupixen / Unsplash</a> · Online payments · context photograph, not an affected customer</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="home-depot-data-breach">Home Depot data breach</h2><p>Attackers used a third-party vendor&#39;s stolen credentials to reach Home Depot&#39;s network, then ran custom malware on self-checkout tills for five months.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person holding a payment card while using a laptop" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-computer-holding-card-Q59HmzK38eQ" target="_blank" rel="noopener">rupixen / Unsplash</a> · Online payments · context photograph, not an affected customer</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>56 million payment cards and 53 million email addresses</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: 56 million payment cards and 53 million email addresses.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Home Depot did not learn about its breach from its own systems. It learned about it the way Target had a year earlier: banks noticed that a batch of stolen cards appearing for sale online all had one shop in common, and a journalist called the company for comment.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>In April 2014, attackers obtained the credentials of a third-party vendor with access to Home Depot's network. Vendor accounts of this kind exist everywhere in retail, for refrigeration monitoring, for point-of-sale support, for logistics, and they typically have narrow legitimate purposes and broad practical reach.</p>
 
@@ -114,13 +114,13 @@
   <p><strong>The warnings were internal and documented.</strong> Reporting after the breach, later echoed in litigation, described years of concern raised by Home Depot's own security staff about outdated antivirus software on store systems, the absence of network segmentation between corporate and payment environments, and infrequent vulnerability scanning. This is the most common shape of a large breach: not an absence of knowledge, but a backlog of known problems with no forcing function. The forcing function arrived in September.</p>
 </div>
 
-<h2>Five months is the number that matters</h2>
+<h2 id="five-months-is-the-number-that-matters">Five months is the number that matters</h2>
 
 <p>Fifty-six million cards is the headline. The duration is the operational finding. Memory-scraping malware running on retail terminals is not stealthy in any deep sense, it writes files, it stages collected data somewhere, and it periodically sends that data out of the network to a destination that has no business receiving anything from a till.</p>
 
 <p>Detecting it requires monitoring that most retailers did not have on store networks in 2014: file integrity checking on terminals, egress filtering so that a checkout cannot connect to arbitrary internet addresses, and someone reviewing the alerts. Home Depot's detection eventually came from outside, through the card networks, which is how the majority of card breaches of that era were found.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>April 2014</b>: Attackers use stolen vendor credentials to enter the network and escalate privileges.</li>
@@ -133,7 +133,7 @@
   <li><b>2016 – 2020</b>: Settlements conclude: $19.5 million for consumers, $25 million for financial institutions, and $17.5 million with state attorneys general.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>It ended the argument about chip cards in the United States.</strong> Target made the case; Home Depot made it impossible to defer. The October 2015 liability shift moved responsibility for counterfeit fraud to whichever party had not adopted chip technology, and terminals were replaced nationwide within a couple of years.</p>
 
@@ -143,7 +143,7 @@
 
 <p><strong>Boards started reading their own security backlogs.</strong> The most damaging material in the litigation was not technical. It was evidence that the risks were known and documented internally. Directors' duties in relation to cybersecurity oversight have been tested repeatedly since, and this case is part of why.</p>
 
-<h2>If your card was in it</h2>
+<h2 id="if-your-card-was-in-it">If your card was in it</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Cards from 2014 are long expired; the email address is not.</strong> Fifty-three million addresses tied to a known retail customer base still circulate and still get phished.</span></label>
@@ -156,7 +156,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -168,7 +168,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>How is this different from the Target breach?</h3>
         <p>It is almost the same breach, one year later, at a larger scale. Both started with a third-party vendor's credentials. Both ended with memory-scraping malware on point-of-sale terminals. Home Depot ran longer, five months against roughly three weeks, and took more cards. The uncomfortable implication is that a whole industry watched Target happen, and the same attack still worked.</p>
@@ -201,7 +201,7 @@
         <li><b>Multistate attorneys general settlement with Home Depot, November 2020</b>, $17.5 million</li>
         <li><b>Contemporaneous reporting by Brian Krebs, KrebsOnSecurity, September 2014</b>, the initial identification of the breach through bank card data</li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/ebay-2014.html">eBay, 2014: 145 million users and a notice nobody saw</a></li>
         <li><a href="/breaches/case-files/morrisons-2014.html">Morrisons, 2014: the auditor who published the payroll</a></li>
@@ -230,11 +230,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

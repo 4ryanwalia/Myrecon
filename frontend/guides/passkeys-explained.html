@@ -86,7 +86,7 @@
 
 <p class="lead">A passkey is not a password you do not have to remember. It is a different mechanism entirely: there is no shared secret, nothing for a breached company to lose, and nothing a convincing fake site can persuade you to hand over. Understanding why requires about two minutes of cryptography, and it is worth them.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>What a passkey actually is</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="what-a-passkey-actually-is">What a passkey actually is</h2>
       <p>When you create a passkey, your device generates a pair of mathematically linked keys. The <strong>private key</strong> stays on the device and never leaves it. The <strong>public key</strong> goes to the website, which stores it against your account.</p>
       <p>Logging in works by challenge and response. The site sends a random challenge. Your device asks you to unlock it, a fingerprint, a face, a PIN, and then signs the challenge with the private key. The site verifies the signature against the public key it already holds. If it matches, you are in.</p>
       <p>Three consequences follow immediately, and they are the whole argument for passkeys:</p>
@@ -100,19 +100,19 @@
         <p><strong>The biometric never leaves your device, and this is the most common misunderstanding.</strong> Your fingerprint or face is not sent to the website, not stored by it, and not involved in the cryptography. It is a local gate that unlocks the private key already sitting in your phone's secure hardware. The site receives a signature and nothing else, it does not learn how you unlocked the device, or that you used a biometric at all.</p>
       </div>
 
-      <h2>Why a fake site cannot use your passkey</h2>
+      <h2 id="why-a-fake-site-cannot-use-your-passkey">Why a fake site cannot use your passkey</h2>
       <p>This is the property that makes passkeys categorically different from every other second factor, and it has a name: <strong>origin binding</strong>.</p>
       <p>When a passkey is created, it is permanently associated with the site's domain. The browser enforces that association. A pixel-perfect replica of your bank at a lookalike domain can ask for a passkey all it likes; the browser will not offer one, because the origin does not match the credential.</p>
       <p>Note what that removes: the requirement that you notice. Every other defence against phishing depends on a human spotting something, a misspelt domain, an unexpected urgency, a wrong sender. Origin binding does not care whether the fake is convincing, because the check is done by software comparing strings, and the fake fails it by definition.</p>
       <p>The same property defeats real-time phishing proxies, which are what currently defeat authenticator apps. A proxy that relays your six-digit code to the real site within its thirty-second window has your code. There is no equivalent move against a passkey: the signature it could relay was computed over the wrong origin and the real site rejects it.</p>
 
-      <h2>Synced and device-bound passkeys</h2>
+      <h2 id="synced-and-device-bound-passkeys">Synced and device-bound passkeys</h2>
       <p>Two flavours exist, and the choice is a genuine trade-off rather than a matter of which is better.</p>
       <p>A <strong>synced passkey</strong> is backed up through your platform account or password manager and appears on every device you sign into. It is what most people will use, because it survives a dropped phone. The private key is protected in transit and at rest by the provider, which does mean the security of your passkeys now partly rests on the security of that account, so that account needs the strongest protection you can give it.</p>
       <p>A <strong>device-bound passkey</strong> never leaves the hardware it was created on. A physical security key is the clearest example. Nothing syncs, nothing can be pulled from a cloud account, and the trade is absolute: lose it with no backup enrolled and that credential is gone.</p>
       <p>There is also a cross-device flow for signing in on a machine that has no passkey of its own: the computer shows a QR code, your phone scans it, and the two communicate over Bluetooth to confirm the signature. The Bluetooth step is not incidental, it proves the phone is physically near the computer, which stops an attacker from displaying a QR code on their own screen and asking you to scan it remotely.</p>
 
-      <h2>The weak point nobody advertises</h2>
+      <h2 id="the-weak-point-nobody-advertises">The weak point nobody advertises</h2>
       <p>A passkey protects the front door. Most services still leave a side door open, and an attacker will always use the side door.</p>
       <p>If an account has a passkey <em>and</em> keeps a password, and that password can be reset by an emailed link or an SMS code, then the account's real security is the weaker of those paths. The passkey has not made the account phishing-resistant; it has made the phishing-resistant option available while the phishable one is still accepted.</p>
       <p>So the meaningful step, wherever a service allows it, is to remove the fallbacks after enrolling the passkey, delete the password, or at minimum remove SMS as a recovery route. Until that is done, the improvement is convenience rather than security, which is fine as long as nobody mistakes one for the other.</p>
@@ -121,7 +121,7 @@
         <p><strong>Enrol on two things before you rely on one.</strong> A phone and a laptop, a password manager and a hardware key, or two hardware keys with one kept elsewhere. Then keep the service's backup codes somewhere offline. The failure that actually happens to people is not an attacker defeating a passkey, it is a lost, broken or wiped device and no second way in.</p>
       </div>
 
-      <h2>What to do with them today</h2>
+      <h2 id="what-to-do-with-them-today">What to do with them today</h2>
       <ol>
         <li><strong>Start with your email account.</strong> It is the reset path for everything else, so it is the account where removing phishable fallbacks pays the most.</li>
         <li><strong>Then your password manager,</strong> which holds the rest.</li>
@@ -131,7 +131,7 @@
         <li><strong>Keep the password manager anyway.</strong> Passkey support is uneven, and most of your accounts will need passwords for years yet.</li>
       </ol>
 
-      <h2>Honest limitations</h2>
+      <h2 id="honest-limitations">Honest limitations</h2>
       <ul>
         <li><strong>Coverage is patchy.</strong> Plenty of services offer none, and some implementations are partial in ways that are hard to see from the outside.</li>
         <li><strong>Recovery is the unsolved part.</strong> The industry has replaced a well-understood weak point with a less-understood one, and support-desk recovery remains the route attackers prefer against any authentication system.</li>
@@ -144,7 +144,7 @@
         <p>Check which of your accounts are already exposed in a breach, and therefore which to move to a passkey first, with the <a href="/#tool">MyRecon email check</a>.</p>
       </div>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <h3>Is my fingerprint sent to the website?</h3>
       <p>No. The biometric check happens entirely on your device and is only there to unlock the private key already stored on it. Your fingerprint or face data never leaves the hardware, is never transmitted, and the website never receives anything but a signature.</p>
 
@@ -170,7 +170,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dpasskeys_explained" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/two-factor-authentication.html">how the other second factors compare</a></li>
         <li><a href="/guides/strong-passwords-guide.html">managing the passwords passkeys have not replaced yet</a></li>
@@ -199,11 +199,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

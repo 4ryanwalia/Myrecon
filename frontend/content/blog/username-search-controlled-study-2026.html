@@ -6,7 +6,20 @@
   "category": "Research",
   "datePublished": "2026-11-01",
   "dateModified": "2026-11-01",
-  "editorial_review": "2026-11-01"
+  "editorial_review": "2026-11-01",
+  "dataset": {
+    "name": "Username search control study: 35 controls, 8 platforms, 3 tools (1 November 2026)",
+    "description": "35 platform-specific username controls on GitHub, GitLab, Hacker News, Docker Hub, Dev.to, npm, Keybase and PyPI, each checked against an independent public reference and then run through the MyRecon web engine, Sherlock and Maigret. Every outcome is recorded, including exclusions and unresolved checks.",
+    "temporalCoverage": "2026-11-01T16:39:28Z/2026-11-01T16:41:33Z",
+    "measurementTechnique": "Manifest fixed before predictions. A public reference observation runs first for each control, then each tool runs sequentially, one connection at a time, with no retries, supplied authentication or block bypass. Outcomes are scored against the reference verdict.",
+    "keywords": ["username search", "OSINT", "false positives", "Sherlock", "Maigret", "account enumeration"],
+    "variableMeasured": ["Reference verdict", "Tool prediction", "Scored outcome"],
+    "distribution": [
+      { "url": "/assets/downloads/username-controls-2026-11-01/checks.csv", "format": "text/csv" },
+      { "url": "/assets/downloads/username-controls-2026-11-01/study.json", "format": "application/json" },
+      { "url": "/assets/downloads/username-controls-2026-11-01/controls.json", "format": "application/json" }
+    ]
+  }
 }
 -->
 

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<script src="/assets/js/recommendation-analytics.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSINT Evidence Log Template: Free CSV for Spreadsheets</title>
+  <meta name="description" content="Free OSINT evidence log template (CSV) with capture time, source URL, archive link, SHA-256 hash and confidence. Opens in Excel, Google Sheets and LibreOffice.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/templates/osint-evidence-log-template.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="OSINT Evidence Log Template: Free CSV for Spreadsheets">
+  <meta property="og:description" content="Free OSINT evidence log template (CSV) with capture time, source URL, archive link, SHA-256 hash and confidence. Opens in Excel, Google Sheets and LibreOffice.">
+  <meta property="og:url" content="https://www.myrecon.xyz/templates/osint-evidence-log-template.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OSINT Evidence Log Template: Free CSV for Spreadsheets">
+  <meta name="twitter:description" content="Free OSINT evidence log template (CSV) with capture time, source URL, archive link, SHA-256 hash and confidence. Opens in Excel, Google Sheets and LibreOffice.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=99e13e7efa">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
+  <link rel="stylesheet" href="/assets/css/editorial.css">
+  <link rel="stylesheet" href="/assets/css/article-story.css">
+  <link rel="stylesheet" href="/assets/css/android-promo.css">
+  <link rel="stylesheet" href="/assets/css/search-discovery.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Templates","item":"https://www.myrecon.xyz/templates/"},{"@type":"ListItem","position":3,"name":"Evidence log template","item":"https://www.myrecon.xyz/templates/osint-evidence-log-template.html"}]},{"@type":"Article","headline":"OSINT evidence log template (free CSV)","description":"Free OSINT evidence log template (CSV) with capture time, source URL, archive link, SHA-256 hash and confidence. Opens in Excel, Google Sheets and LibreOffice.","url":"https://www.myrecon.xyz/templates/osint-evidence-log-template.html","datePublished":"2026-11-15","dateModified":"2026-11-15","author":{"@type":"Organization","name":"MyRecon","@id":"https://www.myrecon.xyz/#organization"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"DigitalDocument","name":"OSINT evidence log template","encodingFormat":"text/csv","url":"https://www.myrecon.xyz/downloads/osint-evidence-log-template.csv","dateModified":"2026-11-15","isAccessibleForFree":true,"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an OSINT evidence log?","acceptedAnswer":{"@type":"Answer","text":"A table that records every piece of evidence captured during an investigation: when, by whom, from which URL, the saved file, its hash and what it shows. Findings in the final report point back to its item IDs."}},{"@type":"Question","name":"Why hash screenshots?","acceptedAnswer":{"@type":"Answer","text":"A SHA-256 hash proves a file has not changed since it was logged. If a capture is ever questioned, anyone can re-hash the file and compare."}},{"@type":"Question","name":"Can I use this template in Google Sheets?","acceptedAnswer":{"@type":"Answer","text":"Yes. In Google Sheets choose File, Import, and upload the CSV. Excel, Numbers and LibreOffice open it directly."}}]}]}</script></head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav editorial-nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/blog/">Blog</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container prose seo-page" style="max-width:900px;padding-top:36px;padding-bottom:48px"><nav class="search-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="https://www.myrecon.xyz/">MyRecon</a></li><li><a href="https://www.myrecon.xyz/templates/">Templates</a></li><li><span aria-current="page">Evidence log template</span></li></ol></nav>
+<h1>OSINT evidence log template (free CSV)</h1>
+<section class="key-finding" aria-label="What an evidence log records"><h2 id="what-an-evidence-log-records">What an evidence log records</h2><p>An OSINT evidence log records, for every item you capture, when it was captured in UTC, who captured it, the exact source URL, an archive link, the saved file name, a SHA-256 hash of that file, what it shows, and how confident you are. Those fields let someone else find, check and trust each piece of evidence later.</p></section>
+<p><a class="btn" href="/downloads/osint-evidence-log-template.csv" download>Download the evidence log (CSV, 1 KB)</a></p>
+<p>The file opens in Excel, Google Sheets, Numbers and LibreOffice. It has fifteen columns and two example rows you can delete. It pairs with the <a href="/templates/osint-investigation-report-template.html">investigation report template</a>, whose findings table points to these item IDs.</p>
+<section><h2 id="the-fifteen-columns">The fifteen columns</h2>
+<div class="editorial-table-wrap"><table><caption>Each column in the evidence log, with an example and its purpose.</caption><thead><tr><th scope="col">Column</th><th scope="col">Example</th><th scope="col">Why it is there</th></tr></thead><tbody><tr><td>item_id</td><td>E1, E2 ...</td><td>Findings in the report point to these IDs</td></tr><tr><td>captured_at_utc</td><td>2026-11-15T09:42:00Z</td><td>One time zone avoids disputes</td></tr><tr><td>analyst</td><td>Initials</td><td>Who can explain the capture</td></tr><tr><td>selector_searched</td><td>The username, email or domain</td><td>Shows which lead produced the item</td></tr><tr><td>tool_or_method</td><td>Tool name or 'manual check'</td><td>Different tools give different results</td></tr><tr><td>tool_version</td><td>Version or date</td><td>Makes the run reproducible</td></tr><tr><td>source_url</td><td>Exact page address</td><td>Where the evidence lives</td></tr><tr><td>archive_url</td><td>Wayback Machine or archive.today link</td><td>Survives deletion of the original</td></tr><tr><td>capture_type</td><td>Screenshot, PDF, HTML, video</td><td>Tells a reviewer what to expect</td></tr><tr><td>file_name</td><td>E1-github-handle.png</td><td>Matches the saved file</td></tr><tr><td>sha256</td><td>64-character hash</td><td>Proves the file has not changed</td></tr><tr><td>what_it_shows</td><td>One factual sentence</td><td>No conclusions here, only what is visible</td></tr><tr><td>confidence</td><td>Confirmed, Probable, Possible, Unresolved</td><td>Same scale as the report template</td></tr><tr><td>corroborated_by</td><td>Other item IDs</td><td>Independent support for the item</td></tr><tr><td>notes</td><td>Anything else</td><td>Login walls, odd behaviour, context</td></tr></tbody></table></div>
+</section>
+<section><h2 id="what-the-file-looks-like">What the file looks like</h2>
+<p>These are the two example rows that ship in the download, shown with the most useful columns. Delete them once you have added your first real item.</p>
+<div class="editorial-table-wrap"><table><caption>Example rows from osint-evidence-log-template.csv.</caption><thead><tr><th scope="col"><code>item_id</code></th><th scope="col"><code>captured_at_utc</code></th><th scope="col"><code>source_url</code></th><th scope="col"><code>capture_type</code></th><th scope="col"><code>what_it_shows</code></th><th scope="col"><code>confidence</code></th><th scope="col"><code>corroborated_by</code></th></tr></thead><tbody><tr><td>E1</td><td>2026-11-15T09:42:00Z</td><td>https://github.com/example_handle</td><td>full-page screenshot</td><td>Public profile exists; display name and location shown</td><td>Probable</td><td>E2</td></tr><tr><td>E2</td><td>2026-11-15T09:51:00Z</td><td>https://example.com/about</td><td>PDF print</td><td>Personal site links to the GitHub profile in E1</td><td>Probable</td><td>E1</td></tr></tbody></table></div>
+</section>
+<section><h2 id="a-worked-example-checking-an-old-handle">A worked example: checking an old handle</h2>
+<p>Suppose you are auditing where an old handle of yours still appears. A username scan reports a GitHub profile. Before logging anything, open the profile signed out and confirm it loads a real account page, not a login wall or an error page. Take a full-page screenshot, save it as <code>E1-github-handle.png</code>, hash it, and submit the URL to an archive service. Row E1 records the capture time, the URL, the archive link, the hash and one sentence: "Public profile exists; display name and city shown."</p>
+<p>Next you notice the profile links to a personal website. Open it, print the page to PDF and log it as E2, with E1 in its <code>corroborated_by</code> column and E2 in E1's. Neither row says "this is my old account". That conclusion goes in the report, where the confidence scale explains why two linked public pages make it Probable rather than Confirmed. If the website had been taken down, you would still add E2 and write "page removed, archive copy only" in the notes.</p>
+<p>Ten minutes of logging like this means that months later you, or anyone you hand the case to, can see exactly what was visible, where and when, without trusting memory.</p>
+</section>
+<section><h2 id="how-to-hash-a-capture">How to hash a capture</h2>
+<p>A SHA-256 hash is a fingerprint of a file. If anyone changes a single pixel, the hash changes. Record it right after you save the capture.</p>
+<ul>
+<li><strong>Windows (PowerShell):</strong> <code>Get-FileHash .\E1-github-handle.png -Algorithm SHA256</code></li>
+<li><strong>macOS:</strong> <code>shasum -a 256 E1-github-handle.png</code></li>
+<li><strong>Linux:</strong> <code>sha256sum E1-github-handle.png</code></li>
+</ul>
+<p>Store the original files somewhere read-only, and work from copies. The <a href="/guides/protect-researcher-notes">guide to protecting research notes</a> covers storage and retention.</p>
+</section>
+<section><h2 id="rules-that-keep-a-log-trustworthy">Rules that keep a log trustworthy</h2>
+<ol>
+<li><strong>Log at the moment of capture.</strong> Reconstructing a log afterwards is where wrong times and missing URLs creep in.</li>
+<li><strong>Describe, do not conclude.</strong> "Profile shows the name Alex R. and the city Leeds" is evidence. "This is the subject's account" is a finding and belongs in the report.</li>
+<li><strong>Archive public pages.</strong> Submit the URL to an archive service as well as saving your own copy. An independent archive is harder to dispute than your screenshot alone.</li>
+<li><strong>Log what you could not capture.</strong> A login wall or a removed page is useful context. Write it in the notes column rather than skipping the row.</li>
+<li><strong>Never log secrets.</strong> No passwords, session tokens or private messages, even your own. The log may be shared.</li>
+</ol>
+</section>
+<section><h2 id="where-the-evidence-comes-from">Where the evidence comes from</h2>
+<p>Most items in a public-source log start as a lead from a search tool: a username scan, a breach lookup or a search operator. A lead is not evidence until you open the original page and capture it. MyRecon results include the profile URL for each lead, and our <a href="/guides/public-profile-evidence-logging">evidence logging guide</a> shows the full capture routine for a public profile.</p>
+</section><section><h2 id="frequently-asked-questions">Frequently asked questions</h2><h3>What is an OSINT evidence log?</h3><p>A table that records every piece of evidence captured during an investigation: when, by whom, from which URL, the saved file, its hash and what it shows. Findings in the final report point back to its item IDs.</p><h3>Why hash screenshots?</h3><p>A SHA-256 hash proves a file has not changed since it was logged. If a capture is ever questioned, anyone can re-hash the file and compare.</p><h3>Can I use this template in Google Sheets?</h3><p>Yes. In Google Sheets choose File, Import, and upload the CSV. Excel, Numbers and LibreOffice open it directly.</p></section><p>Template version 2026-11-15. Related: <a href="/templates/">all templates</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">USERNAME SEARCH ON ANDROID</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>From reading.<br>To discovering.</h2><p>Try username search on your Android phone. Review public profile leads and open their sources to verify them.</p><ul class="promo-features"><li>Username search</li><li>Public profile leads</li><li>Breach checks</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_research">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Use for your own accounts or authorized research.</small></div></aside></div></div><!-- app-promo-layout:end -->
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=b569264372"></script>
+  <script src="/assets/js/consent.js"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+</body>
+</html>

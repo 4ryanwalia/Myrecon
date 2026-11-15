@@ -82,7 +82,7 @@
           <h1>Adobe, 2013: 153 million records and the world's worst crossword</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Adobe data breach</h2><p>Adobe encrypted its passwords instead of hashing them, then stored every password hint in plain text beside them, turning the dump into a puzzle anyone could solve.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="adobe-data-breach">Adobe data breach</h2><p>Adobe encrypted its passwords instead of hashing them, then stored every password hint in plain text beside them, turning the dump into a puzzle anyone could solve.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>153 million records</dd></div>
@@ -104,13 +104,13 @@
 <p>Reported scale: 153 million records.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Adobe's 2013 breach is not remembered for its size, although 153 million records was enormous for the time. It is remembered because the company had made a specific, fixable engineering decision about how to store passwords, and the dump turned that decision into a public demonstration of why it was wrong.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>In late September 2013, Adobe found that intruders had been inside its systems. On 3 October it announced that customer information had been taken and that source code for several products had been copied, a combination that is unusual and, for a software vendor, worse than either on its own.</p>
 
 <p>The numbers moved. Adobe first said 2.9 million customers, then raised it to 38 million active users. The file that circulated publicly held around 153 million records, including accounts that were long dormant or invalid. Both statements can be true at once: 38 million was Adobe's count of active accounts it considered affected; 153 million was what was actually in the database.</p>
 
-<h2>The password decision</h2>
+<h2 id="the-password-decision">The password decision</h2>
 
 <p>A system that checks passwords does not need to be able to read them. That is the whole point of a password hash: the site stores a one-way transformation, and at login it repeats the transformation and compares. Done properly, a slow algorithm, a unique random salt per user, a stolen file yields almost nothing, and two users with the same password produce entirely different stored values.</p>
 
@@ -129,13 +129,13 @@
 
 <p>The result was that researchers reconstructed the most common passwords in the file without ever attacking the encryption. The top entries were <code>123456</code>, <code>123456789</code>, <code>password</code> and <code>adobe123</code>: a ranking that has barely changed in the decade since.</p>
 
-<h2>The source code, which mattered more</h2>
+<h2 id="the-source-code-which-mattered-more">The source code, which mattered more</h2>
 
 <p>Lost customer records damage the people in them. Lost source code damages everyone who runs the software. Adobe confirmed that code for ColdFusion and Acrobat, among others, was taken. ColdFusion in particular was widely deployed on internet-facing servers inside other organisations, and an attacker holding its source has a permanent head start in finding new vulnerabilities in it.</p>
 
 <p>This is the part of the Adobe breach that is hardest to quantify and easiest to underrate. Customer data ages. Source code that ships into other people's infrastructure hands an attacker a research capability that keeps paying out for years.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>September 2013</b>: Adobe detects the intrusion.</li>
@@ -145,7 +145,7 @@
   <li><b>November 2016</b>: Adobe settles with 15 US states and the District of Columbia for over $1 million, alongside an undisclosed consumer settlement.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>The Adobe file became a teaching artefact. Before it, "hash your passwords properly" was an argument security engineers had with product teams about theoretical risk. Afterwards there was a concrete, visual example of what the alternative looks like when the file gets out, and, crucially, one that a non-specialist could follow in ninety seconds.</p>
 
@@ -153,7 +153,7 @@
 
 <p>The third legacy is more subtle. Adobe is one of the clearest cases of a breach figure that moved with the definition: 2.9 million, then 38 million, then 153 million, depending on whether you counted customers Adobe believed were affected, active accounts, or rows in the file. Almost every breach since has produced the same divergence, and reading a disclosure now means asking what exactly is being counted.</p>
 
-<h2>If you had an Adobe account in 2013</h2>
+<h2 id="if-you-had-an-adobe-account-in-2013">If you had an Adobe account in 2013</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Any password you used then should be considered public.</strong> Not weakened, public. If it, or a close variant with a number bumped, is still in use anywhere, change it today.</span></label>
@@ -166,7 +166,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;Adobe&quot;,&quot;breach_date&quot;:&quot;2013-10-03&quot;,&quot;match_year&quot;:true}]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -178,7 +178,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Why was Adobe's password storage so bad?</h3>
         <p>Adobe encrypted passwords with Triple DES in ECB mode using a single key, rather than hashing them. Encryption is reversible by design, and ECB mode produces the same ciphertext for the same input every time, so identical passwords looked identical in the dump. Proper password storage uses a slow, salted hash, which cannot be reversed even by the company that stored it.</p>
@@ -211,7 +211,7 @@
         <li><b>Analysis of the published dump by Sophos and by password researcher Jeremi Gosney, 2013</b></li>
         <li><a href="https://xkcd.com/1286/" target="_blank" rel="noopener nofollow">xkcd 1286, &quot;Encryptic&quot;</a>, the crossword framing that made the flaw legible to non-specialists</li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/linkedin-2012.html">LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</a></li>
         <li><a href="/breaches/case-files/sony-psn-2011.html">PlayStation Network, 2011: 77 million accounts and 23 days offline</a></li>
@@ -240,11 +240,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

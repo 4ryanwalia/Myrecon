@@ -13,12 +13,14 @@ const GROUPS = [
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [
-    ["Site directory", "/directory.html"], ["Watch MyRecon", "/watch.html"], ["Video guides", "/videos/"], ["OSINT cheat sheet", "/osint-cheat-sheet.html"], ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
+    ["Site directory", "/directory.html"], ["Watch MyRecon", "/watch.html"], ["Video guides", "/videos/"], ["OSINT cheat sheet", "/osint-cheat-sheet.html"], ["Free templates", "/templates/"], ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [
-    ["Top 10 OSINT tools", "/blog/top-10-osint-tools.html"],
+    ["Top 10 OSINT tools", "/guides/top-10-osint-tools-2026"],
     ["MyRecon vs Sherlock", "/vs/sherlock"],
+    ["OSINT tool prices", "/osint-tool-pricing.html"],
+    ["WhatsMyName alternatives", "/whatsmyname-alternatives.html"],
     ["Choose a research workflow", "/vs/"],
   ]],
   ["Company", [

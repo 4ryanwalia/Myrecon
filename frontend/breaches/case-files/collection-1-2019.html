@@ -82,7 +82,7 @@
           <h1>Collection #1, 2019: 773 million addresses, and nobody was breached</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Collection #1 credential aggregate</h2><p>Collection #1 was not a hack. It was 87GB of everyone else&#39;s hacks, merged and deduplicated into a single file built for one purpose: automated login attempts.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="collection-1-credential-aggregate">Collection #1 credential aggregate</h2><p>Collection #1 was not a hack. It was 87GB of everyone else&#39;s hacks, merged and deduplicated into a single file built for one purpose: automated login attempts.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>772,904,991 unique email addresses; 21,222,975 unique passwords</dd></div>
@@ -102,7 +102,7 @@
       <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Reported scale: 772,904,991 unique email addresses; 21,222,975 unique passwords.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In January 2019, a file called Collection #1 appeared on a popular cloud storage service and then on a hacking forum: 87 gigabytes, 12,000 files, 772,904,991 unique email addresses and 21,222,975 unique passwords. It was the largest set of credentials ever loaded into Have I Been Pwned. No company had been breached to produce it. That is what makes it worth a case file.</p>
 
-<h2>What it actually was</h2>
+<h2 id="what-it-actually-was">What it actually was</h2>
 
 <p>Collection #1 was a <em>combination list</em>: a merged, deduplicated set of email-and-password pairs assembled from thousands of separate, older breaches. Some of the source material was a decade old. Much of it had been cracked from hashes long after the original theft. The compiler's contribution was not intrusion; it was data cleaning.</p>
 
@@ -112,7 +112,7 @@
   <p><strong>Why this reframes what "a breach" means.</strong> Most people think of breach exposure as a set of events: a site you used got hacked, you got an email, you changed the password. Collection #1 shows the other half, the long secondary market in which those events are merged, cracked, cleaned and re-traded for years afterwards. Your exposure is not a list of incidents. It is a moving aggregate that keeps growing without anyone new being attacked.</p>
 </div>
 
-<h2>How the file gets used</h2>
+<h2 id="how-the-file-gets-used">How the file gets used</h2>
 
 <p>Credential stuffing is the whole purpose. The mechanics are unglamorous:</p>
 
@@ -126,19 +126,19 @@
 
 <p>Nothing here requires a vulnerability in the service being attacked. Every request is a correctly formatted login attempt with a correct password. That is precisely what makes it so hard to block, and why defenders moved from "keep attackers out" to "detect anomalous login patterns" over this period.</p>
 
-<h2>The Collections that followed</h2>
+<h2 id="the-collections-that-followed">The Collections that followed</h2>
 
 <p>Collection #1 turned out to be one part of a set. Collections #2 through #5 followed within weeks, totalling roughly 845GB, an order of magnitude larger. Researchers at the Hasso Plattner Institute worked through the full set and found, unsurprisingly, enormous duplication.</p>
 
 <p>This is the trap in reading any aggregate announcement. A claim of "26 billion records" or "10 billion passwords" is a file size statement, not an exposure statement. What matters is the number of unique, current, valid pairs, and that figure is always dramatically smaller, often by two orders of magnitude, than the headline. Since 2019, every few months has produced a new compilation announced in terms designed to be alarming. The honest response is to ask how many unique credentials are actually new.</p>
 
-<h2>Why the 2019 file still matters</h2>
+<h2 id="why-the-2019-file-still-matters">Why the 2019 file still matters</h2>
 
 <p>Collection #1 is the moment credential stuffing became a mainstream concept rather than an industry term. It gave the public a concrete answer to a question people had been asking since 2012: <em>why does an old breach at a site I do not use matter?</em> Because the password does not stay at the site. It joins a list, the list gets cleaned, and the list gets tried everywhere.</p>
 
 <p>It also made breached-password checking normal. Before 2019, blocking a password because it appeared in a public breach list was an unusual control. Afterwards it became a standard feature of identity platforms, browsers and password managers, and it is written into NIST's guidance: check the candidate password against a list of known-compromised values, and stop demanding arbitrary composition rules that push people towards predictable choices.</p>
 
-<h2>What to do about it</h2>
+<h2 id="what-to-do-about-it">What to do about it</h2>
 
 <p>Finding your address in an aggregate is not an emergency, but it is a signal that your reuse habit has already been tested.</p>
 
@@ -153,7 +153,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -165,7 +165,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Which company was breached in Collection #1?</h3>
         <p>None. That is the point. Collection #1 is an aggregate, thousands of separate breaches, many of them years old, merged and deduplicated into one file. Finding your address in it tells you that you appeared in at least one of those sources, not that any particular service was compromised in 2019.</p>
@@ -197,7 +197,7 @@
         <li><a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener nofollow">Have I Been Pwned, Pwned Passwords</a></li>
         <li><b>Hasso Plattner Institute analysis of the subsequent Collections, 2019</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/marriott-starwood-2018.html">Marriott and Starwood, 2018: a breach that came with the acquisition</a></li>
         <li><a href="/breaches/case-files/british-airways-2018.html">British Airways, 2018: twenty-two lines of JavaScript</a></li>
@@ -226,11 +226,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

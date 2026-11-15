@@ -82,7 +82,7 @@
           <h1>Optus, 2022: an API with no lock on it, and 9.8 million Australians</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Optus data breach</h2><p>An internet-facing Optus API required no authentication at all. Anyone who found it could walk the customer database, including identity document numbers.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="optus-data-breach">Optus data breach</h2><p>An internet-facing Optus API required no authentication at all. Anyone who found it could walk the customer database, including identity document numbers.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>9.8 million customers; about 2.1 million with identity document numbers</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: 9.8 million customers; about 2.1 million with identity document numbers.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Most breaches require someone to break something. The Optus breach required someone to find an address. An internet-facing API served customer records to anyone who asked, with no authentication and no meaningful rate limiting, and the records were addressed by identifiers that could simply be counted upwards.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>On 22 September 2022, Optus, Australia's second-largest telecommunications company, disclosed that customer data had been taken. The eventual figure was 9.8 million current and former customers, in a country of roughly 26 million people. Around 2.1 million of those records contained at least one government identity document number: a passport, a driver's licence, or a Medicare number.</p>
 
@@ -112,13 +112,13 @@
   <p><strong>The specific engineering failure.</strong> Two controls were missing at once. Authentication, so that only an authorised caller gets an answer. And authorisation on the object itself, so that even an authenticated caller can only fetch records they are entitled to, the flaw category known as insecure direct object reference. Either one alone would have limited this to a nuisance. Together, their absence turned a customer lookup into a public database export.</p>
 </div>
 
-<h2>The extortion that fizzled</h2>
+<h2 id="the-extortion-that-fizzled">The extortion that fizzled</h2>
 
 <p>Days after the breach, an account using the name "optusdata" posted a sample of 10,000 records and demanded US$1 million in cryptocurrency, threatening to release more daily. Then, abruptly, the demand was withdrawn with an apology and a claim that the only copy had been deleted.</p>
 
 <p>Whatever happened behind that reversal, the scale of the attention from Australian federal police is the usual assumption, the episode illustrates something important. A deletion claim is unverifiable. Once records have been copied, the only honest position for the affected company is that the data is gone and will not come back, which is what Optus and the government proceeded on.</p>
 
-<h2>Why identity documents made this a national problem</h2>
+<h2 id="why-identity-documents-made-this-a-national-problem">Why identity documents made this a national problem</h2>
 
 <p>A leaked email address is a nuisance. A leaked passport number is an administrative emergency, because Australian identity verification, opening a bank account, taking out credit, getting a phone contract, runs on a small set of document numbers. Once those are in circulation, the verification system itself is degraded for the people affected.</p>
 
@@ -130,7 +130,7 @@
   <li><b>A licence-number change.</b> Several states moved to card numbers that can be reissued independently of the licence itself, so a future leak does not require replacing the whole document.</li>
 </ol>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>September 2022</b>: The exposed endpoint is found and customer records are extracted.</li>
@@ -142,7 +142,7 @@
   <li><b>2024</b>: The privacy regulator commences civil penalty proceedings; class action litigation continues.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Australia's privacy penalties stopped being symbolic.</strong> The pre-2022 maximum, around A$2.2 million, was a rounding error for a telco. The new ceiling, tied to turnover, moved privacy into the same enforcement bracket as competition law.</p>
 
@@ -150,7 +150,7 @@
 
 <p><strong>API security became a board-level term.</strong> Traditional security programmes were built around networks, endpoints and web applications. This breach was none of those: a documented, intentional interface with a missing control. API inventories and authorisation testing moved up every roadmap in the region.</p>
 
-<h2>If you were an Optus customer</h2>
+<h2 id="if-you-were-an-optus-customer">If you were an Optus customer</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Replace any exposed document you have not already replaced.</strong> A licence or passport number in circulation does not expire on its own.</span></label>
@@ -163,7 +163,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;Optus&quot;,&quot;breach_date&quot;:&quot;2022-09-22&quot;,&quot;match_year&quot;:true}]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -175,7 +175,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>How did the Optus breach happen?</h3>
         <p>Through an API endpoint that was reachable from the public internet and required no authentication. Customer records were addressed by identifiers that could be incremented, so anyone who found the endpoint could iterate through the database. There was no intrusion in the conventional sense, the door was open and the records were numbered.</p>
@@ -208,7 +208,7 @@
         <li><b>Privacy Legislation Amendment (Enforcement and Other Measures) Act 2022 (Cth)</b></li>
         <li><b>Optus customer notifications and public statements, September–October 2022</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/uber-2022.html">Uber, 2022: multi-factor authentication held, and then somebody sent a WhatsApp message</a></li>
         <li><a href="/breaches/case-files/twilio-0ktapus-2022.html">0ktapus, 2022: one text message, one hundred and thirty companies</a></li>
@@ -237,11 +237,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

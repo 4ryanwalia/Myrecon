@@ -85,11 +85,11 @@
 
       <p class="lead">Every domain name has a paper trail: when it was registered, through which company, when it expires, and what locks are on it. Since 2018 that record no longer names a person, and investigators who go looking for a name miss the parts that are still there and still useful.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2>What the registration record actually is</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2 id="what-the-registration-record-actually-is">What the registration record actually is</h2>
       <p>When you register a domain you are buying an entry in a registry's database. The registry runs the top-level domain: Verisign for <span style="font-family:var(--mono)">.com</span>, Nominet for <span style="font-family:var(--mono)">.uk</span>, DENIC for <span style="font-family:var(--mono)">.de</span>. You never deal with the registry directly. You deal with a registrar, which sells the registration and writes it into the registry on your behalf.</p>
       <p>WHOIS is the protocol that lets anyone read that entry back. It dates to 1982, it runs on port 43, and it answers in free-form text that every registry formats a little differently. That format is the root of most of its problems: there is no schema, so every tool that reads WHOIS is really a pile of regular expressions guessing at labels that change between registries.</p>
 
-      <h2>The fields that still matter</h2>
+      <h2 id="the-fields-that-still-matter">The fields that still matter</h2>
       <p>Names and addresses are mostly gone. These are not, and they carry more investigative weight than the contact block ever did.</p>
       <ul>
         <li><strong>Creation date.</strong> The single most useful field. A domain registered eleven days ago that presents itself as an established retailer is telling you something the website is trying not to. Read the caveat below before you lean on it too hard.</li>
@@ -102,7 +102,7 @@
         <li><strong>Registrar abuse contact.</strong> Still published, always, even when everything else is redacted, ICANN requires it. It is the address you report a phishing domain to, and almost nobody uses it.</li>
       </ul>
 
-      <h2>Reading the status codes</h2>
+      <h2 id="reading-the-status-codes">Reading the status codes</h2>
       <p>Status codes are the most misread part of a registration record. They come in two families: <span style="font-family:var(--mono)">client*</span> codes set by the registrar, and <span style="font-family:var(--mono)">server*</span> codes set by the registry itself. The second family is the interesting one, because a registry does not act on a domain casually.</p>
       <ul>
         <li><span style="font-family:var(--mono)">clientTransferProhibited</span>, completely normal. Most registrars set it by default to stop unauthorised transfers. Its absence is mildly more interesting than its presence.</li>
@@ -117,12 +117,12 @@
         <p><strong>An old creation date is not a clean bill of health.</strong> Transferring a domain to a new owner does not reset its creation date, and there is an entire market in aged domains sold precisely because they look established. A 2009 creation date, a nameserver change three weeks ago and a website that has existed for a fortnight is a bought history, not a real one. Check the updated date and the site's archived history against the age before you treat age as trust.</p>
       </div>
 
-      <h2>Why the owner's name is missing</h2>
+      <h2 id="why-the-owner-s-name-is-missing">Why the owner's name is missing</h2>
       <p>Until 2018, WHOIS published the registrant's name, postal address, email and phone number for most domains, and a good deal of the security industry was built on that assumption. The GDPR made publishing that data for European registrants unlawful without a basis for it, and ICANN's response, a Temporary Specification adopted in May 2018, applied redaction broadly rather than trying to sort registrants by geography at query time.</p>
       <p>What you generally still get is the organisation name where the registrant is a company rather than a person, the country and sometimes the state, and a forwarding address that relays to the real registrant without revealing them. What you no longer get is an individual.</p>
       <p>Separately, and predating all of this, privacy services replace the registrant block with the provider's own details. Seeing one is not a red flag by itself, it is the default at several large registrars, and plenty of ordinary people use it so that their home address is not on a public list. It becomes a signal only in combination: a privacy service on a domain claiming to be a regulated financial institution is a contradiction, because regulated institutions are required to be identifiable.</p>
 
-      <h2>RDAP: the replacement, and it has already happened</h2>
+      <h2 id="rdap-the-replacement-and-it-has-already-happened">RDAP: the replacement, and it has already happened</h2>
       <p><strong>RDAP</strong>: the Registration Data Access Protocol, standardised across RFCs 7480 to 7484 in 2015, is what WHOIS became. It is an HTTPS API returning JSON with defined field names, which removes the guesswork: <span style="font-family:var(--mono)">events</span> carry registration and expiry as real timestamps, <span style="font-family:var(--mono)">status</span> carries the EPP codes as an array, and <span style="font-family:var(--mono)">secureDNS</span> states the DNSSEC position outright.</p>
       <p>It also solves problems WHOIS never could. Clients find the right server through IANA's bootstrap registry rather than a hardcoded list. Internationalised data has a defined encoding. Access control is possible, so a registry can in principle show more to an authenticated requester with a legitimate interest than to the public, the mechanism that makes redaction something other than a dead end.</p>
       <p>ICANN required gTLD registries and registrars to run RDAP from 2019, and in January 2025 the obligation to keep port-43 WHOIS running ended. For <span style="font-family:var(--mono)">.com</span>, <span style="font-family:var(--mono)">.org</span>, <span style="font-family:var(--mono)">.net</span> and the rest of the gTLDs, RDAP is now the record and WHOIS is a courtesy that some providers still offer.</p>
@@ -132,7 +132,7 @@
         <p><strong>WHOIS is not DNS.</strong> The registration record tells you about the <em>contract</em>: who registered the name, when, through whom, and what state it is in. DNS tells you how the name <em>currently resolves</em>: its servers, its mail, its verification records. A domain can have an immaculate registration and point at a server that went up yesterday. Read both; our guide to <a href="/guides/dns-records-explained.html">DNS records</a> covers the other half.</p>
       </div>
 
-      <h2>A practical reading order</h2>
+      <h2 id="a-practical-reading-order">A practical reading order</h2>
       <p>Given a domain you do not trust, this sequence gets you to a judgement in a couple of minutes.</p>
       <ol>
         <li><strong>Creation date against the claim.</strong> Does the age of the registration match the age the site claims for itself? Note the gap, in either direction.</li>
@@ -143,7 +143,7 @@
         <li><strong>Then leave the record.</strong> Registration data narrows the question; it does not answer it. Pair it with DNS, certificate history and the content itself.</li>
       </ol>
 
-      <h2>What the record cannot tell you</h2>
+      <h2 id="what-the-record-cannot-tell-you">What the record cannot tell you</h2>
       <p>It cannot tell you who is behind a domain, in almost every case, and treating a privacy service or a redaction as evasion will make you wrong regularly. It cannot tell you whether a site is malicious: plenty of criminal infrastructure sits on clean, aged, fully locked registrations, and plenty of legitimate small businesses look exactly like something disposable because they registered a domain for a year and never thought about it again.</p>
       <p>What it gives you is a set of facts with dates attached, which is worth more than it sounds. Most fraudulent infrastructure is new, cheap and in a hurry, and the registration record is where being new, cheap and in a hurry shows up first.</p>
 
@@ -161,7 +161,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dwhois_rdap_explained" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/dns-records-explained.html">what each DNS record type actually does</a></li>
         <li><a href="/guides/investigate-a-domain.html">a repeatable way to investigate a domain you don't trust</a></li>
@@ -190,11 +190,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

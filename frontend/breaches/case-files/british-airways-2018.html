@@ -82,7 +82,7 @@
           <h1>British Airways, 2018: twenty-two lines of JavaScript</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>British Airways data breach</h2><p>A modified script on the British Airways payment page skimmed card details as customers typed them, running for 15 days and leading to a £20 million fine.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="british-airways-data-breach">British Airways data breach</h2><p>A modified script on the British Airways payment page skimmed card details as customers typed them, running for 15 days and leading to a £20 million fine.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>About 429,612 customers and staff</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: About 429,612 customers and staff.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">The British Airways breach took 429,612 people's card details, including the three-digit security codes that no company is allowed to store. British Airways did not store them. The attackers did not need it to, they read the numbers out of the customer's own browser as they were typed, and the airline's systems received exactly what they always had.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>On 22 June 2018, a script served by ba.com was modified. The change was small, and it was appended to an existing, legitimate file, a widely used JavaScript library that had been on the site for years. Anyone reviewing the page would have seen a familiar library at a familiar path.</p>
 
@@ -114,7 +114,7 @@
   <p><strong>How the attackers got in, according to the regulator.</strong> The ICO's penalty notice found the initial access came through compromised credentials of an employee of a BA cargo handling supplier, used to log into a remote access gateway that did not require multi-factor authentication. From there the attackers moved laterally, found administrator credentials stored in plaintext on a server, and reached the environment serving the website. The clever part of this attack was the skimmer. The way in was an ordinary chain of missing controls.</p>
 </div>
 
-<h2>Why client-side skimming is so hard to see</h2>
+<h2 id="why-client-side-skimming-is-so-hard-to">Why client-side skimming is so hard to see</h2>
 
 <p>Every defence a payment system has is built around the server: the database is encrypted, the CVV is discarded, the card number is tokenised, access is logged. All of that is downstream of the browser. A skimmer sits upstream of it, in the one place where the data is unavoidably in plain text, the form the customer is filling in.</p>
 
@@ -122,7 +122,7 @@
 
 <p>The mobile app was affected too, because it loaded the same compromised scripts inside a web view. Users who assumed a native app was a separate, safer path were in the same breach.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>22 June 2018</b>: The modified script goes live; card harvesting begins.</li>
@@ -134,7 +134,7 @@
   <li><b>July 2021</b>: A group claim brought on behalf of affected customers settles on confidential terms.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>The ICO published a working description of the attack.</strong> The penalty notice is unusually specific about what was missing: multi-factor authentication on remote access, credentials in plaintext on servers, insufficient monitoring of file changes on the website. It became a reference document, because regulators rarely publish that level of technical detail and security teams could take it straight to their own management.</p>
 
@@ -144,7 +144,7 @@
 
 <p><strong>The size of the first number stopped being the story.</strong> The gap between £183 million and £20 million was widely reported as a climbdown. What it actually demonstrated is that headline regulatory figures are opening positions, and the final number is a negotiation about findings, remediation and circumstance.</p>
 
-<h2>If you were affected</h2>
+<h2 id="if-you-were-affected">If you were affected</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Assume a card used on ba.com in that window is compromised, replaced or not.</strong> Card details from 2018 still circulate; they are simply worth less than fresh ones.</span></label>
@@ -157,7 +157,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;BritishAirways&quot;,&quot;breach_date&quot;:&quot;2018-09-06&quot;,&quot;match_year&quot;:true}]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -169,7 +169,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>How were CVV codes stolen when nobody stores them?</h3>
         <p>Because they were never stored. Card rules forbid keeping the CVV after a transaction, and BA did not keep it. The skimmer captured the code in the browser at the moment the customer typed it, before it reached the airline's systems at all. This is exactly why client-side attacks are so effective against payment pages: they read the data upstream of every rule about what may be retained.</p>
@@ -202,7 +202,7 @@
         <li><b>British Airways statements to customers, September 2018</b></li>
         <li><b>Group claim against British Airways, settled July 2021 on undisclosed terms</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/singhealth-2018.html">SingHealth, 2018: 1.5 million patients, taken on the way to one of them</a></li>
         <li><a href="/breaches/case-files/cambridge-analytica-2018.html">Cambridge Analytica, 2018: the breach that was not a breach</a></li>
@@ -231,11 +231,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

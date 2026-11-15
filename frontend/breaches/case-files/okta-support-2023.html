@@ -82,7 +82,7 @@
           <h1>Okta, 2023: the breach arrived through the help desk, inside debugging files</h1>
           <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Okta customer support system breach</h2><p>Attackers reached Okta&#39;s support case system and read HAR files customers had uploaded for troubleshooting. Those files contained live session tokens.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="okta-customer-support-system-breach">Okta customer support system breach</h2><p>Attackers reached Okta&#39;s support case system and read HAR files customers had uploaded for troubleshooting. Those files contained live session tokens.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>Initially reported as 134 customers; later disclosed as affecting the details of essentially all users of the support system, around 18,400</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: Initially reported as 134 customers; later disclosed as affecting the details of essentially all users of the support system, around 18,400.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Okta sells identity. Its entire product is being the trusted place where a company's employees authenticate, which makes it one of the highest-value targets in enterprise software. In October 2023 it was breached, not through its authentication platform, but through the support portal where customers upload files to explain what is broken.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>When something goes wrong in a browser, a support engineer will often ask for a HAR file. The browser produces it in a couple of clicks, and it is exactly what the engineer needs: a complete recording of every request and response in the session, showing precisely where things failed.</p>
 
@@ -114,19 +114,19 @@
   <p><strong>Credentials do not always look like credentials.</strong> Organisations classify passwords, keys and certificates carefully, and then move enormous quantities of secret material around in formats nobody has categorised: HAR files, browser exports, memory dumps, screen recordings of a logged-in console, debug logs with authorisation headers intact. Every support interaction is a potential exfiltration channel that the people using it experience as helpfulness. Sanitise HAR files before uploading them, the tooling exists, and treat any support portal that stores them as holding live credentials, because it does.</p>
 </div>
 
-<h2>Detected by the customers</h2>
+<h2 id="detected-by-the-customers">Detected by the customers</h2>
 
 <p>The sequence that surfaced this incident is the part worth studying. BeyondTrust noticed anomalous activity against its own Okta tenant, investigated, connected it to a HAR file it had uploaded to Okta support days earlier, and raised it with Okta. Cloudflare and 1Password identified related activity in their own environments. The detection, and much of the initial technical analysis, came from downstream organisations examining their own logs.</p>
 
 <p>Two things follow from that. The first is a reasonable criticism of the provider's own detection and its initial responsiveness, which was raised at the time by the customers involved. The second is more broadly useful: these particular customers are security companies with mature detection capability, watching their identity provider's activity closely enough to spot an unexpected session. A typical enterprise would not have noticed at all. If your identity provider is the root of trust for everything else, its audit log is not the provider's business, it is yours, and something at your end should be reading it.</p>
 
-<h2>The number that grew</h2>
+<h2 id="the-number-that-grew">The number that grew</h2>
 
 <p>Okta's first public account described 134 customers whose uploaded files had been accessed. In November, a month later, it disclosed that a report the attacker had run within the support system contained the names and email addresses of essentially every user of that system, around 18,400 people, covering almost the entire customer base.</p>
 
 <p>The revision is worth noting precisely because it is so ordinary. Early breach figures describe what investigators have confirmed at that moment, and confirmation lags reality. Every large incident in this archive followed the same curve: Yahoo went from 500 million to 3 billion, Latitude went from hundreds of thousands to 14 million, Uber's 2016 figure took a year and a criminal case to settle. A first number is a floor, and reporting that treats it as a measurement is reporting something that has not happened yet.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>September 2023</b>: Attackers access Okta's customer support case management system using compromised service account credentials.</li>
@@ -138,7 +138,7 @@
   <li><b>29 November 2023</b>: Okta discloses that a report run by the attacker exposed the names and email addresses of essentially all support system users.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>Support portals were reclassified. Organisations that had treated case management as a business system rather than a security-critical one revisited that, and HAR file sanitisation moved from a niche practice into standard guidance, several vendors now strip tokens automatically on upload, or refuse HAR files outright in favour of narrower diagnostics.</p>
 
@@ -146,7 +146,7 @@
 
 <p>For the identity sector specifically, it reinforced a lesson from the 0ktapus campaign the previous year: an identity provider is a concentration of risk proportionate to its convenience. Single sign-on is a genuine security improvement over dozens of separate passwords, and it also means one compromise reaches everything. The correct response is not to abandon it but to defend the provider relationship as critical infrastructure, phishing-resistant factors for administrators, independent monitoring of the provider's audit log, and a rehearsed answer to the question of what you do on the day your identity provider tells you it has been breached.</p>
 
-<h2>If you use a support portal</h2>
+<h2 id="if-you-use-a-support-portal">If you use a support portal</h2>
 
 <p>The practical takeaway generalises well beyond Okta customers. Before uploading a HAR file, a browser export, or a debug log to any vendor, assume it contains live credentials, because in most cases it does. Use a sanitiser, or capture the recording from a session you are willing to invalidate and then log out to kill it.</p>
 
@@ -156,7 +156,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -168,7 +168,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>What is a HAR file and why is it dangerous?</h3>
         <p>A HAR file is an HTTP Archive: a recording of everything a browser sent and received during a session, which support teams ask for because it shows exactly what went wrong. It records request headers, and request headers carry session cookies and authorisation tokens. So a HAR file captured from a logged-in session is a container holding live credentials, produced by a user who believes they are sending a log file.</p>
@@ -201,7 +201,7 @@
         <li><b>Cloudflare, incident report concerning compromised Okta credentials, October 2023</b></li>
         <li><b>1Password, security incident report, October 2023</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/23andme-2023.html">23andMe, 2023: 14,000 accounts opened the door to 6.9 million people</a></li>
         <li><a href="/breaches/case-files/mgm-resorts-2023.html">MGM Resorts, 2023: a ten-minute phone call to the help desk</a></li>
@@ -230,11 +230,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

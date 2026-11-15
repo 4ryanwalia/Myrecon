@@ -82,7 +82,7 @@
           <h1>WannaCry, 2017: the patch had been available for two months</h1>
           <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>WannaCry ransomware outbreak</h2><p>A leaked intelligence-agency exploit turned ransomware into a worm that needed nobody to click anything. Microsoft had shipped the fix in March. The NHS lost 19,000 appointments in May.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="wannacry-ransomware-outbreak">WannaCry ransomware outbreak</h2><p>A leaked intelligence-agency exploit turned ransomware into a worm that needed nobody to click anything. Microsoft had shipped the fix in March. The NHS lost 19,000 appointments in May.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>No data stolen; more than 200,000 computers encrypted across around 150 countries</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: No data stolen; more than 200,000 computers encrypted across around 150 countries.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On the afternoon of 12 May 2017, screens across English hospitals turned red. Appointments were cancelled, ambulances diverted, and staff went back to paper, not because anyone at those hospitals clicked anything, but because a machine somewhere on the network was reachable on port 445 and had not been patched since March.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>In April 2017 a group calling itself the Shadow Brokers published a cache of exploits attributed to a US intelligence agency. Among them was EternalBlue, an exploit for a flaw in SMBv1, the old Microsoft protocol for file and printer sharing. Microsoft had issued the fix, MS17-010, in March, before the leak, which strongly suggests it had been told what was coming.</p>
 
@@ -110,7 +110,7 @@
 
 <p>The NHS impact was the one that defined the event publicly. Eighty of 236 trusts were disrupted, more than 19,000 appointments and operations were cancelled, and some emergency departments diverted patients. No NHS organisation paid the ransom. The Department of Health later estimated the cost to the NHS in England at around £92 million, almost all of it disruption and recovery rather than payments.</p>
 
-<h2>Why hospitals, and why not simply patch</h2>
+<h2 id="why-hospitals-and-why-not-simply-patch">Why hospitals, and why not simply patch</h2>
 
 <p>The reflexive explanation, that the NHS was running Windows XP and had not bothered to patch, is partly true, mostly wrong, and unhelpful in a way that matters, because it stops the conversation at "they should have tried harder".</p>
 
@@ -120,13 +120,13 @@
   <p><strong>What actually determined who got hit.</strong> Not patch levels alone, network shape. WannaCry spread laterally, so the organisations that suffered most were those where one infected machine could reach thousands of others directly. Where networks were segmented, the worm hit a wall. Where medical devices sat on isolated VLANs with controlled routes, they survived being unpatchable. Segmentation is the control that makes an unpatchable device survivable, which is why it matters more in hospitals, factories and utilities than anywhere else.</p>
 </div>
 
-<h2>The domain that stopped it</h2>
+<h2 id="the-domain-that-stopped-it">The domain that stopped it</h2>
 
 <p>Hours into the outbreak, a researcher analysing the malware noticed it queried a long, unregistered domain name and halted if the domain resolved, most likely an anti-analysis check, on the reasoning that a sandbox tends to answer every DNS lookup. He registered the domain. New infections worldwide collapsed almost immediately.</p>
 
 <p>It is a good story and it is routinely told with the wrong moral. It was not a defensive triumph; it was a flaw in the attacker's code, found by someone who happened to be looking at the right sample at the right moment, and it did nothing whatsoever for machines already encrypted. A defensive posture that depends on the adversary making a mistake is not a posture. The correct reading is that the world got a reprieve it had not earned, and had roughly six weeks to use it before NotPetya arrived in June using the same exploit with no kill switch and no intention of decrypting anything.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>14 March 2017</b>: Microsoft publishes MS17-010, fixing the SMBv1 flaw.</li>
@@ -139,7 +139,7 @@
   <li><b>October 2017</b>: The National Audit Office publishes its investigation; formal attribution to the Lazarus Group follows.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>WannaCry did more than any awareness campaign to establish that cyber incidents are a patient safety issue rather than an IT issue. In the UK it drove sustained investment in NHS infrastructure, a national programme to get off unsupported operating systems, and the creation of security operations capability that had not previously existed at that scale.</p>
 
@@ -147,7 +147,7 @@
 
 <p>The deepest change was to the argument about stockpiling vulnerabilities. EternalBlue was built on a flaw an intelligence agency had known about and kept, and the exploit's public release turned it into the engine of two global incidents within eight weeks. Whatever position one takes on the trade-off, this pair of incidents made the downside concrete: a retained exploit that leaks does not stay in the hands of professionals, and the bill is paid by hospitals.</p>
 
-<h2>What to take from it</h2>
+<h2 id="what-to-take-from-it">What to take from it</h2>
 
 <p>For individuals, the ordinary advice covers this entirely: keep automatic updates on, and keep a backup that is not permanently connected to the machine it protects. The people who lost personal files to WannaCry were overwhelmingly those whose only copy was on the encrypted disk, or on a drive plugged into it.</p>
 
@@ -157,7 +157,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -169,7 +169,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>How is a worm different from ordinary ransomware?</h3>
         <p>Ordinary ransomware needs a person to do something, open an attachment, run a file, follow a link. A worm does not. WannaCry carried an exploit for a network file-sharing protocol, so an infected machine could scan for and infect other reachable machines by itself. Nobody at the organisations hit had to make a mistake on the day. One vulnerable machine anywhere on a flat network was enough to take the network.</p>
@@ -202,7 +202,7 @@
         <li><b>Microsoft Security Bulletin MS17-010, March 2017</b></li>
         <li><b>UK National Cyber Security Centre and US government attribution statements, late 2017</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/yahoo-2013-2014.html">Yahoo, 2013–2014: three billion accounts, and three years of silence</a></li>
         <li><a href="/breaches/case-files/dropbox-2012.html">Dropbox, 2012: an employee reused a password, and 68 million accounts followed</a></li>
@@ -231,11 +231,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

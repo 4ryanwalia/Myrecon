@@ -17,7 +17,9 @@ test('watch pages expose playable assets, captions, source links and matching vi
   assert.ok(html.includes(`src="${new URL(video.contentUrl).pathname}"`));
   assert.ok(html.includes(`poster="${new URL(video.thumbnailUrl).pathname}"`));
   assert.ok(html.includes(`src="/assets/media/blog/${slug}.vtt"`));
-  assert.ok(html.includes(`href="/blog/${slug}.html"`));
+  // A merged article's video links to the page it was merged into.
+  const retired = JSON.parse(fs.readFileSync(path.join(root,'content/editorial-redirects.json'),'utf8'))[`/blog/${slug}`];
+  assert.ok(html.includes(`href="${retired || `/blog/${slug}.html`}"`));
   assert.ok(sitemap.includes('https://www.myrecon.xyz'+route));
   assert.ok(html.includes('aria-current="page"'));
   for(const url of [video.contentUrl,video.thumbnailUrl]) assert.ok(fs.existsSync(path.join(root,new URL(url).pathname)));

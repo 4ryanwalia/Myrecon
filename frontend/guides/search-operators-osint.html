@@ -86,7 +86,7 @@
 
 <p class="lead">The most productive tool in open-source intelligence is not a specialist platform. It is an ordinary search box used precisely, and the difference between typing a name and constructing a query is the difference between four million irrelevant results and the three pages that actually mention the person.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>The operators that still work</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="the-operators-that-still-work">The operators that still work</h2>
       <p>Search syntax has been quietly pruned over the years. These are the ones that remain reliable across the major engines.</p>
       <ul>
         <li><strong>Quotation marks</strong>: exact phrase. <span style="font-family:var(--mono)">"jordan alvarez"</span> finds the name as written, rather than every page containing either word. This is the highest-value operator by a distance.</li>
@@ -100,7 +100,7 @@
       </ul>
       <p>Retired or degraded, so do not build a method on them: <span style="font-family:var(--mono)">link:</span>, <span style="font-family:var(--mono)">info:</span>, <span style="font-family:var(--mono)">related:</span> in its old form, the leading plus sign, and the tilde for synonyms. Most either return nothing or silently do something else.</p>
 
-      <h2>Different engines, different indexes</h2>
+      <h2 id="different-engines-different-indexes">Different engines, different indexes</h2>
       <p>Running the same query in more than one engine is not redundancy. The indexes genuinely differ, and so does the syntax.</p>
       <ul>
         <li><strong>Bing</strong> keeps operators the others dropped, including <span style="font-family:var(--mono)">contains:</span> for pages linking to a file type and <span style="font-family:var(--mono)">ip:</span> for pages on a given address, the latter being a rare public way to see other sites on the same host.</li>
@@ -113,7 +113,7 @@
         <p><strong>Your results are not the results.</strong> Search output is personalised by location, language, device, history and whether you are signed in, so two people running an identical query get different pages, and you cannot reproduce your own search a month later. For anything you intend to rely on, work signed out in a private window, record the query and the date, and save the page rather than the link. A finding you cannot reproduce is not evidence.</p>
       </div>
 
-      <h2>Auditing your own footprint</h2>
+      <h2 id="auditing-your-own-footprint">Auditing your own footprint</h2>
       <p>The most useful thing most people can do with this syntax is point it at themselves. Work through these and record what comes back.</p>
       <ol>
         <li><strong><span style="font-family:var(--mono)">"your full name"</span></strong>: then with your city, employer, and university in turn. Each addition surfaces a different cluster.</li>
@@ -126,7 +126,7 @@
       </ol>
       <p>Then act on it: the <a href="/guides/reduce-your-digital-footprint.html">digital footprint guide</a> covers removal at source, and <a href="/guides/how-data-brokers-work.html">the data broker guide</a> covers the listings that regenerate.</p>
 
-      <h2>Checking an organisation or a domain</h2>
+      <h2 id="checking-an-organisation-or-a-domain">Checking an organisation or a domain</h2>
       <p>The same syntax, pointed at a company, answers questions the company's own website will not.</p>
       <ul>
         <li><strong><span style="font-family:var(--mono)">site:example.com</span></strong> alone gives a rough sense of how much of the site is indexed, a handful of pages for a business claiming years of trading is a contradiction.</li>
@@ -137,7 +137,7 @@
       </ul>
       <p>Pair it with the infrastructure checks in <a href="/guides/investigate-a-domain.html">how to investigate a suspicious domain</a>; search tells you what a domain says about itself, and the registration record tells you when it started saying it.</p>
 
-      <h2>Where the line is</h2>
+      <h2 id="where-the-line-is">Where the line is</h2>
       <p>Searching a public index is not intrusion. What you do afterwards can be.</p>
       <p>Pointing search syntax at other people's systems to enumerate exposed files, unprotected devices and administrative interfaces is a well-known practice, and this guide does not publish recipes for it, not because the syntax is secret, but because the useful half of that activity happens under an authorised testing agreement and the rest is someone trespassing on infrastructure they do not own. Finding an address easily has never been a defence to accessing what is behind it.</p>
       <p>The same restraint applies to people. Establishing whether an account contacting you is genuine is reasonable. Assembling a stranger's home address, employer and daily routine because you can is the behaviour the OSINT community spends most of its time distancing itself from, and in many jurisdictions the harassment that follows is an offence regardless of how public each individual fragment was.</p>
@@ -146,7 +146,7 @@
         <p><strong>A search result is a claim, not a fact.</strong> Snippets go stale, pages get edited, names collide, and the engine's summary is frequently not what the page says. Open the source, read it, note the date, and corroborate before it becomes a conclusion, the standard is set out in <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a>.</p>
       </div>
 
-      <h2>What search will not do</h2>
+      <h2 id="what-search-will-not-do">What search will not do</h2>
       <p>The index is not the web. Content behind logins, in apps, in private groups and in messaging platforms is absent, and a great deal of what exists is simply not crawled. Search engines also actively suppress some categories, and delisting under privacy law removes results without removing pages.</p>
       <p>So the absence of a result means very little. It is evidence that a search engine did not return something today, from your location, signed out, which is a much narrower statement than "it is not on the internet", and confusing the two is how a search-based investigation reaches a confident wrong answer.</p>
 
@@ -154,7 +154,7 @@
         <p>Once the search box has told you which handles and addresses of yours are public, check what they are exposed in with the <a href="/#tool">MyRecon tools</a>.</p>
       </div>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <h3>Do search operators still work?</h3>
       <p>The core set does: quoted phrases, site:, filetype:, intitle:, inurl:, the minus sign for exclusion, and OR. Several older ones were quietly retired, link:, info:, the plus sign and the tilde among them, and a few that still parse now return approximations rather than exact matching.</p>
 
@@ -177,7 +177,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dsearch_operators_osint" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/what-is-osint.html">what open-source intelligence is, and is not</a></li>
         <li><a href="/guides/reduce-your-digital-footprint.html">acting on what the search box finds</a></li>
@@ -206,11 +206,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

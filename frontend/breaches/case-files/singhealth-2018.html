@@ -82,7 +82,7 @@
           <h1>SingHealth, 2018: 1.5 million patients, taken on the way to one of them</h1>
           <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>SingHealth cyberattack</h2><p>An advanced attacker spent months inside Singapore&#39;s largest health system, repeatedly and specifically seeking one patient&#39;s records. A million and a half others were taken en route.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="An empty hospital room with a bed and seating" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/hospital-bed-near-couch-KF-h9HMxRKg" target="_blank" rel="noopener">Martha Dominguez de Gouveia / Unsplash</a> · Healthcare · context photograph, not an affected facility</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="singhealth-cyberattack">SingHealth cyberattack</h2><p>An advanced attacker spent months inside Singapore&#39;s largest health system, repeatedly and specifically seeking one patient&#39;s records. A million and a half others were taken en route.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="An empty hospital room with a bed and seating" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/hospital-bed-near-couch-KF-h9HMxRKg" target="_blank" rel="noopener">Martha Dominguez de Gouveia / Unsplash</a> · Healthcare · context photograph, not an affected facility</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>1.5 million patients' personal particulars; about 160,000 patients' outpatient dispensed-medicine records</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: 1.5 million patients' personal particulars; about 160,000 patients' outpatient dispensed-medicine records.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On 20 July 2018 Singapore announced that the personal records of 1.5 million people, a quarter of the country's population, had been taken from its largest healthcare group. The inquiry that followed established something rarer than the number: the attackers had been looking for one patient in particular, and they found him.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>SingHealth operates a large share of Singapore's public hospitals and outpatient clinics. Its records sit in a system called SCM, the electronic medical records platform administered not by the hospitals themselves but by IHiS, the central IT agency for the country's public healthcare sector.</p>
 
@@ -110,7 +110,7 @@
 
 <p>Between 27 June and 4 July 2018 they ran the queries that took the data: demographic records for 1.5 million patients, and outpatient dispensed-medicine records for around 160,000 of them. Diagnoses and clinical notes were not taken. The pattern of queries showed why. The Committee of Inquiry found that the records of Prime Minister Lee Hsien Loong had been specifically and repeatedly targeted.</p>
 
-<h2>Who they were actually after</h2>
+<h2 id="who-they-were-actually-after">Who they were actually after</h2>
 
 <p>Almost every case file in this archive describes an opportunistic crime. Somebody found a way in, took whatever was reachable, and sold it. The value was in volume, and the victims were interchangeable.</p>
 
@@ -122,7 +122,7 @@
   <p><strong>The weaknesses were ordinary.</strong> The inquiry did not find an exotic capability. It found administrative accounts with weak and reused passwords, software left unpatched, a network that permitted movement between segments it should not have, and, most consequentially, staff who noticed unusual database activity and did not escalate it, in some cases for weeks. A sophisticated attacker does not need sophisticated failures. It needs the ordinary ones to still be there, and they usually are.</p>
 </div>
 
-<h2>The findings nobody redacted</h2>
+<h2 id="the-findings-nobody-redacted">The findings nobody redacted</h2>
 
 <p>What makes this incident unusually valuable is the Committee of Inquiry report published in January 2019. Singapore held public hearings and published findings that name specific technical weaknesses and specific human decisions, including the periods during which anomalies were visible to staff and went unreported.</p>
 
@@ -130,7 +130,7 @@
 
 <p>The report's recommendations followed from that, and they are notable for how much of their weight falls on process rather than product. Enhanced security monitoring, yes, but also clearer incident reporting obligations, defined escalation paths with named responsibilities, and the expectation that an unexplained anomaly is reported as an anomaly rather than resolved privately by whoever noticed it.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>August 2017</b>: A front-end workstation is compromised; the attackers begin moving laterally.</li>
@@ -142,7 +142,7 @@
   <li><b>January 2019</b>: The Committee of Inquiry publishes its report with sixteen recommendations; the data protection regulator fines IHiS S$750,000 and SingHealth S$250,000.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>Singapore's response went further than most jurisdictions would consider proportionate. Public healthcare systems were placed under internet surfing separation, removing general web access from work computers that handle patient data, on the reasoning that the initial compromise came through ordinary browsing and email, and that severing that path is worth the inconvenience it causes.</p>
 
@@ -150,7 +150,7 @@
 
 <p>The fines mattered less than the allocation of them. The larger penalty went to IHiS, the IT agency, not to SingHealth, the healthcare provider, an explicit finding that responsibility for securing the data sat with the organisation actually operating the systems. Where care providers outsource their infrastructure to a central agency or a vendor, that allocation is the precedent worth knowing about.</p>
 
-<h2>If you were a SingHealth patient</h2>
+<h2 id="if-you-were-a-singhealth-patient">If you were a SingHealth patient</h2>
 
 <p>The exposed set is demographic and durable: name, identity card number, address, race, gender and date of birth, plus dispensed medicines for a subset. None of it can be changed. An NRIC number in particular is a lifelong identifier, which is why the years after this breach saw sustained official effort to discourage organisations from treating it as proof of identity rather than merely as a reference number.</p>
 
@@ -160,7 +160,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -172,7 +172,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>What was actually taken?</h3>
         <p>Demographic records for about 1.5 million people who had visited SingHealth outpatient clinics over a seven-year period: name, national identity card number, address, gender, race and date of birth. For roughly 160,000 of those patients, records of dispensed outpatient medicines were also taken. Diagnoses, doctors' notes and test results were not, the attackers queried a specific database in a specific way, and what they took reflects that.</p>
@@ -205,7 +205,7 @@
         <li><b>Ministry of Health and Ministry of Communications and Information statements, July 2018</b></li>
         <li><b>Cyber Security Agency of Singapore, post-incident measures for the public healthcare sector</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/cambridge-analytica-2018.html">Cambridge Analytica, 2018: the breach that was not a breach</a></li>
         <li><a href="/breaches/case-files/aadhaar-exposures-2018.html">Aadhaar, 2018: what the reported exposures actually showed</a></li>
@@ -234,11 +234,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

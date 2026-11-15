@@ -82,7 +82,7 @@
           <h1>First American, 2019: 885 million documents behind a number you could count up</h1>
           <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>First American Financial document exposure</h2><p>Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of any kind.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="first-american-financial-document-exposure">First American Financial document exposure</h2><p>Sixteen years of mortgage paperwork, bank details, Social Security numbers, wire receipts, sat behind sequential document IDs in a URL, with no login of any kind.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>About 885 million documents, the oldest dating to 2003</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: About 885 million documents, the oldest dating to 2003.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">There was no intrusion, no malware, no stolen password and no attacker. The documents were served to anyone who asked for them, and asking meant editing a number at the end of a web address. Behind that number sat roughly 885 million files: the paperwork of American house purchases going back to 2003.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>First American Financial is one of the largest title insurance companies in the United States. In a US property transaction, the title company is the entity that verifies ownership, insures against defects in the chain of title, and holds and disburses the money at closing. To do that it accumulates the complete documentary record of the sale, and it keeps it.</p>
 
@@ -114,7 +114,7 @@
   <p><strong>Two controls, one of them missing everywhere.</strong> Authentication asks who you are. Authorisation asks whether this particular record is yours. Applications routinely get the first right and skip the second, because the second has to be enforced per object, on every request, forever, and because during development the only records anyone tests with are their own. That is the flaw class here, and it is the same one that produced the Optus breach three years later: not a broken lock, but a door that was never fitted with one.</p>
 </div>
 
-<h2>The finding that was already in the building</h2>
+<h2 id="the-finding-that-was-already-in-the-building">The finding that was already in the building</h2>
 
 <p>The part of this case that outlives the technical detail is what regulators established afterwards. First American's own penetration testing had identified this vulnerability in December 2018, roughly six months before it became public. The issue was documented internally. It was classified as low severity. The remediation was not completed.</p>
 
@@ -122,7 +122,7 @@
 
 <p>What made the rating wrong was context the rating did not capture. The exploit was trivial, no skill, no tooling, no credential. The exposure was unbounded, every document in the system, not a sample. And the data was of the most durable kind: a Social Security number disclosed in 2019 is still a Social Security number today. Severity scoring that weighs technical complexity heavily and data sensitivity lightly will systematically underrate exactly this shape of problem.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>2003 onwards</b>: Documents accumulate in the sharing system, reachable by sequential identifier.</li>
@@ -134,13 +134,13 @@
   <li><b>2024</b>: A separate SEC proceeding concludes over the adequacy of the company's disclosure controls at the time of the incident.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>The regulatory significance outran the technical one. New York's Part 500 cybersecurity regulation had been in force since 2017 but had never been enforced; this was the case the department chose to bring first. That choice sent a clearer message than the eventual penalty did, a US$1 million settlement is not material to a company of this size, but establishing that a state financial regulator will bring charges over an unfixed web vulnerability changed how boards in the sector treated the regulation.</p>
 
 <p>The SEC's separate action pushed on a different and increasingly consequential point: not whether the company was breached, but whether what it told investors about the incident was supported by what it knew internally. When a company's own testing has already flagged the flaw, statements implying surprise become a securities question as well as a security one. That linkage, internal findings as evidence against later public statements, is now a standard feature of US breach enforcement, and this case is one of the places it was established.</p>
 
-<h2>If you bought a home in the US before 2019</h2>
+<h2 id="if-you-bought-a-home-in-the-us">If you bought a home in the US before 2019</h2>
 
 <p>There is no notification to wait for and no list to check. The exposure was defined by document numbers, not by a customer list, and a large share of the people whose paperwork sat in that system never had an account or a direct relationship with the company at all, they were simply the other side of a transaction it handled.</p>
 
@@ -152,7 +152,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -164,7 +164,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>What is an insecure direct object reference?</h3>
         <p>It is what happens when an application identifies a record by a number in the address and never checks whether the person asking is entitled to that record. If document 75000000 is yours, document 74999999 belongs to somebody else, and if the only thing standing between a visitor and that file is the fact that they have not tried, there is no access control at all. The flaw needs no tooling and no skill to exploit. It needs arithmetic.</p>
@@ -197,7 +197,7 @@
         <li><b>US Securities and Exchange Commission, administrative proceeding regarding disclosure controls, 2024</b></li>
         <li><b>Contemporaneous reporting, KrebsOnSecurity, May 2019</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/collection-1-2019.html">Collection #1, 2019: 773 million addresses, and nobody was breached</a></li>
         <li><a href="/breaches/case-files/marriott-starwood-2018.html">Marriott and Starwood, 2018: a breach that came with the acquisition</a></li>
@@ -226,11 +226,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

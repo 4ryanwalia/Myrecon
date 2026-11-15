@@ -82,7 +82,7 @@
           <h1>MOVEit, 2023: one file transfer product, 2,700 organisations</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>MOVEit Transfer mass exploitation</h2><p>A zero-day in a file transfer product let one criminal group steal data from thousands of organisations over a single weekend, most of which had never heard of it.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="moveit-transfer-mass-exploitation">MOVEit Transfer mass exploitation</h2><p>A zero-day in a file transfer product let one criminal group steal data from thousands of organisations over a single weekend, most of which had never heard of it.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>over 2,700 organisations; more than 90 million individuals</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: over 2,700 organisations; more than 90 million individuals.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Over the US Memorial Day weekend in 2023, one criminal group stole data from thousands of organisations simultaneously. They did not attack those organisations. They attacked a single piece of software that all of them used to move sensitive files, and let the product's own customer base do the rest.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>MOVEit Transfer, made by Progress Software, is managed file transfer software. Organisations use it to send large, sensitive files to partners with encryption and an audit trail: payroll data to a bureau, claims files to an insurer, citizen records between agencies. Its whole purpose is to be trusted with the things that matter.</p>
 
@@ -114,7 +114,7 @@
   <p><strong>Why file transfer products specifically.</strong> This was not Cl0p's first time. The group exploited Accellion FTA in 2021 and Fortra GoAnywhere in early 2023, and similar products have been targeted since. The logic is exact: managed file transfer servers are internet-facing by design, they hold concentrated sensitive data by design, and they sit at the boundary between organisations, so one compromise yields data belonging to many parties. It is the highest-leverage target class in enterprise software.</p>
 </div>
 
-<h2>The blast radius</h2>
+<h2 id="the-blast-radius">The blast radius</h2>
 
 <p>Trackers counted more than 2,700 affected organisations and over 90 million individuals. The composition is the point:</p>
 
@@ -127,13 +127,13 @@
 
 <p>Very few of the people in that data had ever made a decision that led to it. That is the defining feature of supply-chain breaches: consent and exposure are completely decoupled.</p>
 
-<h2>Extortion without encryption</h2>
+<h2 id="extortion-without-encryption">Extortion without encryption</h2>
 
 <p>Cl0p did not encrypt systems. It took data and threatened publication, listing victims on its leak site with countdowns and releasing files for those who refused.</p>
 
 <p>This shift, from ransomware to pure data extortion, is now the dominant model, and the reasons are practical. Encryption is noisy, triggers alarms, and can be defeated by good backups. Exfiltration is quiet, and backups are no defence against publication. For the victim, the calculation changes completely: you can restore your systems perfectly and still be facing the same demand.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>27 May 2023</b>: Mass exploitation of the zero-day begins over the holiday weekend.</li>
@@ -143,7 +143,7 @@
   <li><b>2023–2024</b>: Victim disclosures continue in a long tail, as organisations work out whose data was in their instances.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Fourth-party risk became a real concept.</strong> Organisations had begun mapping their suppliers. MOVEit forced the next question: which software do our suppliers depend on, and would we even know if it failed? Many victims learned they were affected only when a vendor's vendor notified them.</p>
 
@@ -151,7 +151,7 @@
 
 <p><strong>Holiday-weekend readiness stopped being a joke.</strong> The timing was deliberate and it has been deliberate in every major campaign since. Coverage planning for long weekends is now an explicit part of incident response planning.</p>
 
-<h2>If you were notified</h2>
+<h2 id="if-you-were-notified">If you were notified</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Read which organisation notified you, not which software failed.</strong> Your exposure depends entirely on what that particular body held about you.</span></label>
@@ -164,7 +164,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -176,7 +176,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>What is MOVEit and why did so many organisations use it?</h3>
         <p>MOVEit Transfer is managed file transfer software: the tool an organisation uses to move large, sensitive files to partners with an audit trail, payroll to a bureau, claims to an insurer, records to a government agency. It is used precisely because the files are sensitive, which is what made compromising it so effective.</p>
@@ -209,7 +209,7 @@
         <li><b>US Department of State, Rewards for Justice, Cl0p reward announcement, June 2023</b></li>
         <li><b>Emsisoft, running tally of MOVEit victims and affected individuals, 2023–2024</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/latitude-financial-2023.html">Latitude Financial, 2023: a licence number from 2005, stolen in 2023</a></li>
         <li><a href="/breaches/case-files/lastpass-2022.html">LastPass, 2022: the vaults were stolen, and then attacked offline</a></li>
@@ -238,11 +238,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

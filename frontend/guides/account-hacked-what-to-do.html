@@ -86,7 +86,7 @@
 
 <p class="lead">Someone else is in your account. The order in which you do the next few things decides whether you get it back cleanly or spend three weeks being locked out again every few days, because the step nearly everyone starts with is not the step that evicts an attacker.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>First, confirm it is real</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="first-confirm-it-is-real">First, confirm it is real</h2>
       <p>A significant share of "your account has been compromised" messages are themselves the attack, and panic is exactly the state they are engineered to produce. Before acting on a notification, verify it independently: open the service through your own bookmark or app, not through anything in the message, and look at the account's own security or activity page.</p>
       <p>Real indicators are things you can see from inside the account: sign-ins from places you have not been, messages in the sent folder you did not write, a changed recovery address, a second factor you did not enrol, new connected applications, or contacts telling you they received something odd from you.</p>
 
@@ -94,7 +94,7 @@
         <p><strong>Work from a device you trust.</strong> If there is any chance malware is involved, a file you ran, a command you pasted, several accounts falling at once, then the machine is the problem and every password you type on it is captured as you type it. Use a different computer or phone for everything below. This single decision is the difference between recovering once and recovering repeatedly.</p>
       </div>
 
-      <h2>The order that actually works</h2>
+      <h2 id="the-order-that-actually-works">The order that actually works</h2>
 
       <h3>1. Go to the email account first, whatever was taken</h3>
       <p>Email is the master key. Nearly every other account can be reset through it, so if the mailbox is compromised, securing anything else is temporary. If the breached account <em>is</em> the mailbox, you are already in the right place.</p>
@@ -128,21 +128,21 @@
       <h3>7. Work outwards</h3>
       <p>Anything that resets through the compromised account is also exposed. Change the password on any service where you reused that password, and check your banking and payment accounts for new payees, changed addresses and saved cards. If the account was used to contact people, tell them directly, the follow-on scam aimed at your contacts is usually where the real money is made.</p>
 
-      <h2>If it was the device, not the password</h2>
+      <h2 id="if-it-was-the-device-not-the-password">If it was the device, not the password</h2>
       <p>Suspect this when several unrelated accounts fall at once, when the attacker was inside without your second factor ever firing, or when you recently ran an installer or pasted a command you did not fully understand.</p>
       <p>In that case the order changes: clean or rebuild the device <em>first</em>, then change passwords from somewhere else, then revoke sessions everywhere. Cleaning is not reliable against modern infostealers, and a rebuild is the only outcome you can be confident in. The full picture is in <a href="/guides/stealer-logs-explained.html">why your password leaked when nobody was breached</a>.</p>
 
-      <h2>If it was your phone number</h2>
+      <h2 id="if-it-was-your-phone-number">If it was your phone number</h2>
       <p>Sudden loss of mobile service, immediately followed by password reset messages, is a SIM swap rather than an ordinary account compromise. The fix starts with the carrier, not the account, see <a href="/guides/sim-swap-attacks.html">SIM swap attacks</a>.</p>
 
       <div class="callout">
         <p><strong>If it is a work account or a work device, report it now.</strong> Not after you have tidied it up, and not once you are sure. Corporate credential theft is how a large proportion of serious intrusions begin, and the gap between the first hour and the first day is the difference between a password reset and an incident. No security team has ever been annoyed by an early report.</p>
       </div>
 
-      <h2>Preserve the evidence before you clean up</h2>
+      <h2 id="preserve-the-evidence-before-you-clean-up">Preserve the evidence before you clean up</h2>
       <p>If there is any chance of a police report, an insurance claim or a dispute with the platform, capture what you can before it disappears: screenshots of the unfamiliar sessions and login history, the full headers of any phishing message that started it, transaction records with timestamps, and the dates and times of everything you changed. Logs age out on a schedule that suits the platform rather than you.</p>
 
-      <h2>Where to report</h2>
+      <h2 id="where-to-report">Where to report</h2>
       <ul>
         <li><strong>The platform,</strong> through its compromised-account process, which is separate from ordinary support.</li>
         <li><strong>Your bank,</strong> immediately, if money or card details were involved. Speed is the only variable that matters for recall.</li>
@@ -150,14 +150,14 @@
         <li><strong>Your employer's security team,</strong> for anything touching work.</li>
       </ul>
 
-      <h2>Afterwards: closing the route in</h2>
+      <h2 id="afterwards-closing-the-route-in">Afterwards: closing the route in</h2>
       <p>Once the immediate work is done, identify how it happened, because otherwise it recurs. Check whether the credentials were in a known breach, retire every reuse of that password, move the important accounts to a manager and a phishing-resistant second factor, and review the recovery paths, which are where the next attempt will go.</p>
 
       <div class="callout">
         <p>Find out which breaches your address appears in, and which password of yours is already in circulation, with the <a href="/#tool">MyRecon tools</a>. The password check runs in your own browser and sends only a partial hash.</p>
       </div>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <h3>Should I change my password first?</h3>
       <p>Only if you are confident the device you are typing on is clean. If there is any chance malware is involved, change it from a different device, otherwise the new password is captured as you type it. And a password change alone does not evict an attacker who holds a valid session cookie; you must also sign out of all sessions.</p>
 
@@ -180,7 +180,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Daccount_hacked_what_to_do" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/stealer-logs-explained.html">why changing the password first sometimes achieves nothing</a></li>
         <li><a href="/guides/two-factor-authentication.html">closing the door once you are back in</a></li>
@@ -209,11 +209,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

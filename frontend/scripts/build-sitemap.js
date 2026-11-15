@@ -63,10 +63,14 @@ const SECTIONS = [
   // legal boilerplate lives.
   { test: (u) => u === "/is-myrecon-legit.html"
       || u === "/how-myrecon-compares.html"
-      || u === "/username-sweep-vs-deep-search.html",
+      || u === "/username-sweep-vs-deep-search.html"
+      || u === "/osint-tool-pricing.html"
+      || u === "/whatsmyname-alternatives.html",
     changefreq: "monthly", priority: "0.8" },
   // Named head-to-head comparisons. Same intent class as the explainers.
   { test: (u) => u.startsWith("/vs/"), changefreq: "monthly", priority: "0.8" },
+  // Downloadable templates (2026-11-15): searchers want the file itself.
+  { test: (u) => u.startsWith("/templates/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/founder.html", changefreq: "monthly", priority: "0.7" },
   { test: (u) => u === "/about.html", changefreq: "monthly", priority: "0.6" },
   { test: (u) => u === "/contact.html", changefreq: "yearly", priority: "0.5" },

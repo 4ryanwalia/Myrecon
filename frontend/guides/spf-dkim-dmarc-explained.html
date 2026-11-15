@@ -85,11 +85,11 @@
 
       <p class="lead">Email was designed without any way to check who sent a message. The From line is free text, and anything can write anything in it. SPF, DKIM and DMARC are three layers bolted on afterwards to fix that, and understanding what each one actually checks explains why a domain can pass two of them and still be forged.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>The hole all three are patching</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="the-hole-all-three-are-patching">The hole all three are patching</h2>
       <p>SMTP, the protocol that moves mail, has two separate notions of who sent a message and neither is verified by default.</p>
       <p>There is the <strong>envelope sender</strong>: the address given during the SMTP conversation, which is where bounces go and which you never see. And there is the <strong>From: header</strong>: the name and address your mail client displays. They do not have to match. Nothing checks either of them. That single design decision is the reason phishing works at all.</p>
 
-      <h2>SPF: which servers may send</h2>
+      <h2 id="spf-which-servers-may-send">SPF: which servers may send</h2>
       <p>An <strong>SPF</strong> record is a TXT record on the domain listing the servers allowed to send mail for it. A receiving server takes the envelope sender's domain, fetches its SPF record, and checks whether the connecting address is on the list.</p>
       <p>The record is a sequence of mechanisms ending in a catch-all:</p>
       <ul>
@@ -104,12 +104,12 @@
         <p><strong>SPF checks the envelope, not the From line you can see.</strong> An attacker can send from a domain they control, pass SPF for that domain perfectly, and still put your bank's address in the visible From: header. SPF is satisfied and the display is a forgery. This is not an implementation flaw; it is what SPF was scoped to do. Closing that gap is DMARC's job, and it is why SPF alone has never stopped spoofing.</p>
       </div>
 
-      <h2>DKIM: a signature that travels with the message</h2>
+      <h2 id="dkim-a-signature-that-travels-with-the-message">DKIM: a signature that travels with the message</h2>
       <p><strong>DKIM</strong> takes a different approach. The sending server signs the message, a chosen set of headers plus the body, with a private key, and attaches the signature as a header. The matching public key is published in DNS at a name built from a selector: <span style="font-family:var(--mono)">selector._domainkey.example.com</span>. The receiver fetches the key and verifies the signature.</p>
       <p>Two fields in the signature matter when you are reading one. <span style="font-family:var(--mono)">d=</span> names the signing domain, which is the identity DKIM actually asserts, and <span style="font-family:var(--mono)">s=</span> names the selector, which lets an organisation run several keys at once, one per provider, rotated independently.</p>
       <p>Because the signature is carried inside the message, it survives being forwarded, which SPF does not. It breaks if the content is modified in transit, mailing lists that append footers are the classic case, and the reason ARC exists to let intermediaries vouch for a message they altered.</p>
 
-      <h2>DMARC: the part that ties the display to the proof</h2>
+      <h2 id="dmarc-the-part-that-ties-the-display-to">DMARC: the part that ties the display to the proof</h2>
       <p><strong>DMARC</strong> adds the missing idea: <strong>alignment</strong>. It requires that the domain in the visible From: header matches the domain that SPF or DKIM actually authenticated. One of the two must pass <em>and</em> be aligned. That is what finally makes the header you read mean something.</p>
       <p>The record is a TXT record at <span style="font-family:var(--mono)">_dmarc.example.com</span>, and the fields to read are:</p>
       <ul>
@@ -124,7 +124,7 @@
         <p><strong><span style="font-family:var(--mono)">p=none</span> is not protection, and most domains never move past it.</strong> It is the monitoring stage: failures are reported and delivered anyway. A domain sitting on <span style="font-family:var(--mono)">p=none</span> years after publishing it has the appearance of email authentication and none of the effect, anyone can send mail as that domain and it will land in inboxes. When you are assessing an organisation, the policy value is the finding, not the presence of a record.</p>
       </div>
 
-      <h2>How to read a domain's mail posture in thirty seconds</h2>
+      <h2 id="how-to-read-a-domain-s-mail-posture">How to read a domain's mail posture in thirty seconds</h2>
       <p>Look up three records and you have a fair picture of how seriously a domain takes being impersonated.</p>
       <ol>
         <li><strong>SPF.</strong> Present? Does it end in <span style="font-family:var(--mono)">-all</span> or <span style="font-family:var(--mono)">~all</span>? How many includes, and who are they, that list is the supplier chain.</li>
@@ -133,7 +133,7 @@
       </ol>
       <p>A payment company on <span style="font-family:var(--mono)">p=reject</span> with a tight SPF record has an email security team. A company presenting itself as a bank with no DMARC record at all is telling you something, and it is worth writing down before you go looking for anything subtler.</p>
 
-      <h2>What none of it stops</h2>
+      <h2 id="what-none-of-it-stops">What none of it stops</h2>
       <p>This is the part that gets lost, and it is the reason a perfect DMARC record does not end phishing.</p>
       <ul>
         <li><strong>Lookalike domains.</strong> DMARC protects <em>your</em> domain. It has nothing to say about a message from a domain that merely resembles yours, which will pass its own authentication perfectly because the attacker owns it and configured it properly.</li>
@@ -143,7 +143,7 @@
       </ul>
       <p>Which is why these three records are a floor rather than a defence. They stop your domain being used directly, and they make the remaining attacks take a shape a careful reader can notice. Our guide to <a href="/guides/how-to-spot-phishing.html">spotting phishing</a> covers that shape.</p>
 
-      <h2>If you are setting it up</h2>
+      <h2 id="if-you-are-setting-it-up">If you are setting it up</h2>
       <p>The order that avoids blocking your own mail: publish SPF listing every service that sends on your behalf, and end it in <span style="font-family:var(--mono)">~all</span> to start. Enable DKIM signing at every one of those providers. Publish DMARC at <span style="font-family:var(--mono)">p=none</span> with an <span style="font-family:var(--mono)">rua</span> address, and actually read the reports for a few weeks, they will show senders you had forgotten about, which is the entire point of this stage. Fix what they reveal, then move to <span style="font-family:var(--mono)">quarantine</span>, then to <span style="font-family:var(--mono)">reject</span>. Set <span style="font-family:var(--mono)">sp=reject</span> and publish a null SPF and a reject policy on every domain you own that sends no mail at all, including the ones you bought defensively, unused domains are the ones attackers reach for precisely because nobody protects them.</p>
 
       <div class="callout">
@@ -160,7 +160,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dspf_dkim_dmarc_explained" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/dns-records-explained.html">what each DNS record type actually does</a></li>
         <li><a href="/guides/how-to-spot-phishing.html">spotting the phishing these records do not stop</a></li>
@@ -189,11 +189,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

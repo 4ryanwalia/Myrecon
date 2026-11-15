@@ -85,13 +85,13 @@
 
       <p class="lead">A photograph is a claim: this is me, this happened, this was here. Reverse image search is how you test that claim, by finding where else the picture has been, and when. It is also the technique people most often run once, get nothing, and abandon just before it would have worked.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>How it works, and why that shapes the method</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="how-it-works-and-why-that-shapes-the">How it works, and why that shapes the method</h2>
       <p>Two different technologies sit behind the phrase, and knowing which you are using explains the results you get.</p>
       <p><strong>Perceptual hashing</strong> reduces an image to a short fingerprint that survives resizing and re-compression. Two copies of the same file produce the same or nearly the same hash, so matching is exact and fast. It answers "where else does this <em>file</em> appear" and it fails as soon as the image is cropped, flipped or recoloured, because the fingerprint changes.</p>
       <p><strong>Embedding search</strong> converts the image into a vector describing what is in it, then finds neighbours in that space. It tolerates crops, rotations, filters and edits, and will happily find a different photograph of the same building. It answers "what is this, and what looks like it", which is a different and sometimes more useful question.</p>
       <p>Most engines now blend both. The practical consequence is that a crop can defeat one engine and not another, which is the core reason the workflow below insists on running more than one.</p>
 
-      <h2>The engines, and what each is actually good at</h2>
+      <h2 id="the-engines-and-what-each-is-actually-good">The engines, and what each is actually good at</h2>
       <ul>
         <li><strong>Google Lens</strong>: strongest on objects, products, plants, artwork and landmarks. It will often tell you what a thing is when it cannot tell you where the photo came from.</li>
         <li><strong>Bing Visual Search</strong>: good at products and page matches, and it offers a crop tool that lets you search one region of an image without leaving the interface.</li>
@@ -105,7 +105,7 @@
         <p><strong>"No results" is a result, and it needs interpreting.</strong> It can mean the image is genuinely original, a real photo taken by the person who posted it. It can mean the image is synthetic, because a generated face has no earlier existence to find. Or it can mean the copy you searched has been cropped or re-encoded enough to break the match. The three are distinguished by the follow-up searches below, not by the empty first result.</p>
       </div>
 
-      <h2>A workflow that actually finds things</h2>
+      <h2 id="a-workflow-that-actually-finds-things">A workflow that actually finds things</h2>
       <p>Verifying a profile photo, step by step:</p>
       <ol>
         <li><strong>Get the largest copy available.</strong> Open the image in its own tab rather than screenshotting a thumbnail. Platforms serve several sizes and the largest carries the most signal.</li>
@@ -117,7 +117,7 @@
         <li><strong>Sort by date where the engine allows it.</strong> An image that existed before the event it supposedly documents has answered the question.</li>
       </ol>
 
-      <h2>What a match proves, and what it does not</h2>
+      <h2 id="what-a-match-proves-and-what-it-does">What a match proves, and what it does not</h2>
       <p>Finding the same photo elsewhere establishes that the image is not unique to the profile you are examining. It does not by itself establish who took it, who is in it, or who the account belongs to.</p>
       <p>Read the matches for these patterns instead:</p>
       <ul>
@@ -127,11 +127,11 @@
         <li><strong>The photo appears once, on the account itself.</strong> Consistent with a genuine original, and not proof of one.</li>
       </ul>
 
-      <h2>Check the metadata before you assume there is none</h2>
+      <h2 id="check-the-metadata-before-you-assume-there-is">Check the metadata before you assume there is none</h2>
       <p>Photographs carry EXIF data: camera model, timestamps, settings and sometimes GPS coordinates. Most social platforms strip it on upload, which is why people assume it is never there. Files sent as email attachments, through messaging apps that preserve originals, downloaded from cloud storage, or hosted on a personal site frequently retain it in full.</p>
       <p>It costs nothing to look, and when it is present it is more precise than anything reverse search will give you. Treat it with care in both directions: absent metadata means nothing, and present metadata can be edited, so a timestamp is a claim to corroborate rather than a fact.</p>
 
-      <h2>Synthetic images changed the problem</h2>
+      <h2 id="synthetic-images-changed-the-problem">Synthetic images changed the problem</h2>
       <p>A generated portrait has no origin. Reverse search returns nothing because there is nothing earlier to find, and the visual tells people learned to look for, malformed hands, garbled text, mismatched earrings, eyes in identical positions across images, have been largely engineered away. Detection heuristics published a couple of years ago are not reliable now, and stating a confident verdict from them is how people get this wrong in public.</p>
       <p>Two things do still work. <strong>Provenance metadata</strong>: the C2PA Content Credentials standard, now attached by a growing number of cameras and editing tools, travels with a file and records how it was made and altered; its presence is informative, though its absence proves nothing. And <strong>corroboration</strong>: a real person has a history that is not a single image. Accounts with other photos, mutual connections, mentions by others, and a presence extending backwards in time are hard to fabricate consistently, and a single perfect portrait attached to an account created last month is the actual signal.</p>
 
@@ -139,7 +139,7 @@
         <p><strong>A note on what this site does.</strong> MyRecon does not run reverse image search. Doing it properly requires the commercial image-search APIs, and this project is built on free, documented, keyless sources, so rather than ship a version that quietly returns worse answers, we explain the method and point you at the engines that do it well. The <a href="/about.html">about page</a> sets out the rest of that reasoning.</p>
       </div>
 
-      <h2>Where the line is</h2>
+      <h2 id="where-the-line-is">Where the line is</h2>
       <p>The technique is neutral; the use is not. Verifying whether the person messaging you is real is reasonable and often necessary. Assembling the identity, employer and home area of a stranger because their photo interested you is not, and in many jurisdictions the harassment that follows is an offence regardless of how the information was obtained.</p>
       <p>Two rules keep this on the right side. Be able to state what question you are answering and why it is yours to ask. And remember that a match associates <em>images</em>, not people: our guide to <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a> covers the standard a conclusion has to meet before anyone acts on it, and image matches fail that standard more often than any other kind of evidence.</p>
 
@@ -153,7 +153,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dreverse_image_search" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/verify-an-osint-finding.html">how to verify a finding before acting on it</a></li>
         <li><a href="/guides/username-osint-search.html">finding accounts across platforms by username</a></li>
@@ -182,11 +182,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

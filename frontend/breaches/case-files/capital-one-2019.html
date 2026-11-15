@@ -82,7 +82,7 @@
           <h1>Capital One, 2019: a firewall misconfiguration and 106 million applicants</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Capital One data breach</h2><p>A misconfigured web application firewall let an attacker ask the cloud for its own credentials, then read 106 million credit card applications out of storage.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person holding a payment card while using a laptop" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-computer-holding-card-Q59HmzK38eQ" target="_blank" rel="noopener">rupixen / Unsplash</a> · Online payments · context photograph, not an affected customer</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="capital-one-data-breach">Capital One data breach</h2><p>A misconfigured web application firewall let an attacker ask the cloud for its own credentials, then read 106 million credit card applications out of storage.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person holding a payment card while using a laptop" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-computer-holding-card-Q59HmzK38eQ" target="_blank" rel="noopener">rupixen / Unsplash</a> · Online payments · context photograph, not an affected customer</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>about 100 million US and 6 million Canadian applicants</dd></div>
@@ -104,7 +104,7 @@
 <p>Reported scale: about 100 million US and 6 million Canadian applicants.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">Capital One's breach is the best worked example of a cloud-native intrusion, and the part everyone remembers is wrong. The attacker did not break Amazon's cloud. She asked a misconfigured firewall to fetch a URL for her, and the URL she chose was the one where the machine keeps its own keys.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>In March 2019, an attacker exploited a misconfiguration in a web application firewall that Capital One ran on a cloud instance. The flaw allowed server-side request forgery: the ability to make the server issue an HTTP request to an address of the attacker's choosing.</p>
 
@@ -116,13 +116,13 @@
   <p><strong>The chain, in four links.</strong> A firewall configured to allow an outbound request it should have refused. A metadata service that answers any request from the instance without further proof. A role with far more storage permission than the workload needed. And no alert on a sudden bulk listing and download of buckets. Remove any one of the four and the breach does not happen at this scale. That is the honest way to read most cloud incidents: not one catastrophic hole, but four ordinary settings lined up.</p>
 </div>
 
-<h2>How it was discovered</h2>
+<h2 id="how-it-was-discovered">How it was discovered</h2>
 
 <p>Not by monitoring. On 17 July 2019, an outside researcher emailed Capital One's responsible disclosure address to report that data appearing to belong to the bank had been published on a public code-sharing site. The attacker had also discussed the material in online chat groups under a recognisable handle. Capital One confirmed the breach, notified the FBI, and an arrest followed on 29 July, the same day the breach was announced publicly.</p>
 
 <p>Four months from intrusion to discovery, and the discovery came from someone who happened to notice a public post. It is worth sitting with that: the technical sophistication of the attack was modest, and the detection was accidental.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>March 2019</b>: The SSRF is exploited; credentials are retrieved and data copied from storage.</li>
@@ -136,7 +136,7 @@
   <li><b>June and October 2022</b>: Thompson is convicted and sentenced.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Cloud metadata got a second version.</strong> IMDSv2 requires a client to obtain a session token with a PUT request before reading credentials, and restricts network hops. SSRF alone no longer suffices. It is one of the clearest cases of a single breach changing a piece of global cloud infrastructure.</p>
 
@@ -144,11 +144,11 @@
 
 <p><strong>Over-permissive roles became the headline cloud risk.</strong> The instance role could read far more than the application needed. Least privilege had been a slogan for decades; this case made it a board-level finding, and it is why permission-boundary tooling became a product category.</p>
 
-<h2>What makes this case unusual</h2>
+<h2 id="what-makes-this-case-unusual">What makes this case unusual</h2>
 
 <p>Most large breaches end with attribution to a group that will never be prosecuted. This one ended with an arrest within days, a trial, and a conviction, because the attacker discussed it publicly under a traceable handle. It is a reminder that the population of people attacking systems includes individuals acting alone with poor operational security, not only organised crews and state units.</p>
 
-<h2>If you applied for a Capital One card before 2019</h2>
+<h2 id="if-you-applied-for-a-capital-one-card">If you applied for a Capital One card before 2019</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>An application you were rejected for still counts.</strong> The data covers applicants, not just customers, which is what makes the population so much larger than the cardholder base.</span></label>
@@ -161,7 +161,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -173,7 +173,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>What is SSRF, in plain terms?</h3>
         <p>Server-side request forgery. You persuade a server to make a web request on your behalf, to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials.</p>
@@ -206,7 +206,7 @@
         <li><b>Capital One incident disclosures and SEC filings, 2019</b></li>
         <li><b>Amazon Web Services, announcement of Instance Metadata Service v2, November 2019</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/first-american-2019.html">First American, 2019: 885 million documents behind a number you could count up</a></li>
         <li><a href="/breaches/case-files/collection-1-2019.html">Collection #1, 2019: 773 million addresses, and nobody was breached</a></li>
@@ -235,11 +235,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

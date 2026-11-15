@@ -82,7 +82,7 @@
           <h1>LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>LinkedIn data breach</h2><p>LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1579869847557-1f67382cc158?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A phone displaying social media apps on a wooden table" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68" target="_blank" rel="noopener">dole777 / Unsplash</a> · Social accounts · context photograph, not incident evidence</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="linkedin-data-breach">LinkedIn data breach</h2><p>LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1579869847557-1f67382cc158?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A phone displaying social media apps on a wooden table" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68" target="_blank" rel="noopener">dole777 / Unsplash</a> · Social accounts · context photograph, not incident evidence</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>165 million accounts (117 million with passwords)</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: 165 million accounts (117 million with passwords).</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">On 5 June 2012 someone posted a file of 6.5 million password hashes to a Russian password-cracking forum and asked for help with the ones they could not solve. The hashes were unsalted SHA-1. Within days, most of them were cracked, and LinkedIn confirmed the file was its own. It took another four years for anyone to learn that 6.5 million was a fraction of what had been taken.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>LinkedIn's response in 2012 was the standard one: invalidate the affected passwords, email the users, and, belatedly, start salting and hashing properly. The company said 6.5 million accounts, because 6.5 million was what had appeared in public. The assumption everyone made, including LinkedIn, was that the leaked file was the extent of the theft.</p>
 
@@ -110,7 +110,7 @@
 
 <p>That gap between a breach happening and a breach becoming fully known is the single most useful thing this case teaches. For four years, 110 million people had been told nothing was wrong with their account because nobody had yet chosen to sell their row.</p>
 
-<h2>Why the hashes fell so fast</h2>
+<h2 id="why-the-hashes-fell-so-fast">Why the hashes fell so fast</h2>
 
 <p>SHA-1 is a cryptographic hash function built for speed, it exists to verify that a file has not changed, and it is very good at that. Speed is precisely the wrong property for password storage. A consumer graphics card can compute billions of SHA-1 hashes per second, so an attacker holding a list of hashes can simply try every word in a dictionary, every leaked password from every previous breach, and every plausible mutation of both.</p>
 
@@ -120,7 +120,7 @@
   <p><strong>What proper storage looks like.</strong> A password-specific algorithm, bcrypt, scrypt or Argon2, with a per-user salt and a cost factor tuned so that a single guess takes a measurable fraction of a second. That turns "billions of guesses per second" into "a few thousand", which is the difference between a file cracked over a weekend and a file that is not worth attacking. LinkedIn moved to salted hashing after 2012; the 2016 file was still the old format, because it was taken before the change.</p>
 </div>
 
-<h2>The damage other companies took</h2>
+<h2 id="the-damage-other-companies-took">The damage other companies took</h2>
 
 <p>LinkedIn is the clearest case of a breach whose worst consequences landed somewhere else entirely.</p>
 
@@ -130,7 +130,7 @@
 
 <p><strong>Everyone else.</strong> Once a hundred million real email-and-password pairs are in circulation, they become the fuel for credential stuffing: automated login attempts against banks, mailboxes, retailers and games, on the basis that a sizeable fraction of people reuse. The LinkedIn set has been folded into every large combination list since.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>5 June 2012</b>: 6.5 million unsalted SHA-1 hashes are posted to a cracking forum.</li>
@@ -142,7 +142,7 @@
   <li><b>2020</b>: Nikulin is convicted of the intrusions at LinkedIn, Dropbox and Formspring and sentenced to 88 months.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>Three things came out of this case that are now simply how the industry works.</p>
 
@@ -152,7 +152,7 @@
 
 <p><strong>Employee password reuse became a corporate risk, not a personal one.</strong> The Dropbox chain is the standard argument for enforcing password managers and phishing-resistant two-factor authentication on staff accounts: your company's security now depends on where your engineers signed up in 2011.</p>
 
-<h2>If you had a LinkedIn account before 2012</h2>
+<h2 id="if-you-had-a-linkedin-account-before-2012">If you had a LinkedIn account before 2012</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>The password is public.</strong> Assume it was cracked, because it almost certainly was. If any variation of it is still in use, replace it.</span></label>
@@ -165,7 +165,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;LinkedIn&quot;,&quot;breach_date&quot;:&quot;2012-06-06&quot;,&quot;match_year&quot;:true}]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -177,7 +177,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>How many LinkedIn accounts were breached?</h3>
         <p>Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale.</p>
@@ -210,7 +210,7 @@
         <li><b>In re LinkedIn User Privacy Litigation, $1.25 million settlement, 2015</b></li>
         <li><a href="https://haveibeenpwned.com/PwnedWebsites#LinkedIn" target="_blank" rel="noopener nofollow">Have I Been Pwned, LinkedIn breach record</a></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/sony-psn-2011.html">PlayStation Network, 2011: 77 million accounts and 23 days offline</a></li>
         <li><a href="/breaches/case-files/rockyou-2009.html">RockYou, 2009: the 32 million plaintext passwords that became a wordlist</a></li>
@@ -239,11 +239,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

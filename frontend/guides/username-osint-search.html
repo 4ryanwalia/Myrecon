@@ -85,14 +85,14 @@
 
       <p class="lead">People tend to reuse the same handle everywhere. That habit makes username search one of the most productive starting points in open-source intelligence, and one of the easiest to get wrong.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1579869847557-1f67382cc158?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A phone displaying social media apps on a wooden table" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68" target="_blank" rel="noopener">dole777 / Unsplash</a> · Social accounts · context photograph, not incident evidence</figcaption></figure><h2>Why usernames are so revealing</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1579869847557-1f67382cc158?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A phone displaying social media apps on a wooden table" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68" target="_blank" rel="noopener">dole777 / Unsplash</a> · Social accounts · context photograph, not incident evidence</figcaption></figure><h2 id="why-usernames-are-so-revealing">Why usernames are so revealing</h2>
       <p>Choosing a username is a personal decision, and most people make it once and stick with it. The gamer tag from your teens, the handle you registered on a forum, the name on your professional developer profile, they are often identical or only slightly varied. Because handles are effectively a chosen identifier that follows a person across unrelated services, finding the same one in several places is a strong hint that they belong to the same individual.</p>
 
-      <h2>How username enumeration works</h2>
+      <h2 id="how-username-enumeration-works">How username enumeration works</h2>
       <p>The basic technique is simple: take a username and check whether a profile exists at the predictable URL for each platform, <span style="font-family:var(--mono)">github.com/&lt;name&gt;</span>, <span style="font-family:var(--mono)">reddit.com/user/&lt;name&gt;</span>, and so on. A tool like MyRecon does this across many sites in parallel and reports where a profile appears to exist.</p>
       <p>The catch is that "the page loaded" is not the same as "the account exists." Many modern sites return a normal <span style="font-family:var(--mono)">200 OK</span> response for <em>any</em> handle, showing a login wall, a single-page app shell, or a soft error page that never sends a proper "not found" status. Naive tools mark all of these as hits, which is why so many username checkers are full of false positives.</p>
 
-      <h2>Why "found" isn't proof</h2>
+      <h2 id="why-found-isn-t-proof">Why "found" isn't proof</h2>
       <p>There are two separate questions, and it is easy to conflate them:</p>
       <ul>
         <li><strong>Does an account with this handle exist on this platform?</strong></li>
@@ -100,7 +100,7 @@
       </ul>
       <p>A common handle like "alex" or "photography" exists on nearly every site, owned by thousands of unrelated people. Even a unique handle can produce a false match if the tool mistook a soft-404 page for a real profile. Good OSINT keeps these questions distinct and never treats a bare "found" as a conclusion.</p>
 
-      <h2>Verifying a match with confidence signals</h2>
+      <h2 id="verifying-a-match-with-confidence-signals">Verifying a match with confidence signals</h2>
       <p>To move from "a page loaded" to "this is a real, relevant profile," look for corroborating evidence:</p>
       <ul>
         <li><strong>The handle echoed in the page</strong>: in the title, the canonical URL, or profile metadata, rather than just in the address you requested.</li>
@@ -114,12 +114,12 @@
         <p><strong>Investigate ethically.</strong> Username research surfaces information people made public, but that does not make every use acceptable. Use it to audit your own footprint, for authorized research, or for legitimate verification, never to harass, stalk, or dox anyone.</p>
       </div>
 
-      <h2>Testing whether a tool is honest</h2>
+      <h2 id="testing-whether-a-tool-is-honest">Testing whether a tool is honest</h2>
       <p>Before trusting any username search, run one experiment. Search for a handle that cannot exist, a string of nonsense nobody would register. Compare it against a handle you know is real.</p>
       <p>If the tool reports accounts for the nonsense string, it is not detecting accounts. It is detecting that pages loaded, and every result it gives you needs checking by hand.</p>
       <p>This is not a hypothetical failure. Measured across well-known platforms, several return responses for a real handle and an invented one that are identical down to the byte, the same page, the same length, no difference to detect. Any tool reporting a match on those platforms is reporting that the site is online. The full measurements are in <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that don't exist</a>.</p>
 
-      <h2>Handle variations worth trying</h2>
+      <h2 id="handle-variations-worth-trying">Handle variations worth trying</h2>
       <p>People rarely use one handle everywhere, and the variants follow predictable patterns. If the exact handle comes up short, try:</p>
       <ul>
         <li><strong>Separator swaps</strong>-<code>john.smith</code>, <code>john_smith</code>, <code>john-smith</code>, <code>johnsmith</code>. Platforms disagree about which characters they permit, so the same person ends up with different spellings on different sites. A dot is the most common casualty; several platforms reject it outright, which means a handle containing one simply cannot exist there.</li>
@@ -130,7 +130,7 @@
       </ul>
       <p>Each variant is a separate hypothesis needing its own verification. A different spelling is weaker evidence than an exact match, not equal evidence.</p>
 
-      <h2>What a negative result is worth</h2>
+      <h2 id="what-a-negative-result-is-worth">What a negative result is worth</h2>
       <p>"Not found" is only meaningful when the check could actually have found something. Three situations produce a blank that means nothing at all:</p>
       <ul>
         <li><strong>You were blocked.</strong> A 403 or 429 response means the platform refused to answer you, usually because of the network you asked from. It says nothing about the account.</li>
@@ -139,11 +139,11 @@
       </ul>
       <p>A tool that distinguishes "checked, nothing there" from "could not check" is giving you materially more than one that shows both as silence.</p>
 
-      <h2>Using this on yourself</h2>
+      <h2 id="using-this-on-yourself">Using this on yourself</h2>
       <p>The most valuable use of username enumeration is auditing your own footprint, and it is easier because you already know the truth, you are measuring what a stranger could assemble.</p>
       <p>Search every handle you have used, including ones you abandoned years ago, then sort the results: accounts you want public, accounts you forgot existed, and accounts that are not yours. The middle group is the one that matters. Dormant accounts hold old photos, old email addresses and old passwords, and they are the standard route into an account-takeover attempt precisely because nobody is watching them.</p>
 
-      <h2>Turning a username into a fuller picture</h2>
+      <h2 id="turning-a-username-into-a-fuller-picture">Turning a username into a fuller picture</h2>
       <p>A confirmed profile often exposes the next lead: a personal website, a public email, or another handle. That is where pivoting matters, a discovered domain becomes a WHOIS and DNS lookup, an email becomes a breach and provider check. Chaining these small, verified steps is what separates a genuine investigation from a list of guesses.</p>
 
       <!-- After the guide, never inside it. Someone who has just read how to
@@ -156,7 +156,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dusername_osint_search" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-            <h2>Related guides</h2>
+            <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that never existed</a></li>
         <li><a href="/guides/verify-an-osint-finding.html">how to verify an OSINT finding before you act on it</a></li>
@@ -186,11 +186,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

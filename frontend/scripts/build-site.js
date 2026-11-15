@@ -90,6 +90,8 @@ fs.writeFileSync(homepagePath, homepageContents);
 require('./enhance-article-promotion');
 require('./enrich-story-experience');
 require('./canonicalize-links').canonicalizeLinks(ROOT);
+// Last, so headings added by the enhancers above get an id too.
+require('./anchor-headings').run();
 
 const changed = changedHtmlPaths(before, publicHtmlHashes());
 const date = changed.length ? latestFrontendCommitDate() : '';

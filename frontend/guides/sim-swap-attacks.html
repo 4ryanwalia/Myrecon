@@ -86,11 +86,11 @@
 
 <p class="lead">Your phone number is not something you own. It is an entry in your carrier's database, and it can be moved to someone else's device by a member of staff in under a minute. Everything that treats that number as proof of who you are, and a great deal does, moves with it.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>What a SIM swap is</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="what-a-sim-swap-is">What a SIM swap is</h2>
       <p>The attacker persuades your mobile operator to reassign your number to a SIM or eSIM profile they control. From that moment, calls and texts to your number reach them, and your handset drops off the network.</p>
       <p>What follows takes minutes, because the industry spent a decade building password recovery on top of SMS. Reset links and one-time codes arrive at the attacker's device. Email goes first, because email resets everything else; then banking, then exchanges, then whatever else is worth taking. Victims routinely describe watching notification after notification arrive on a phone that can no longer receive them.</p>
 
-      <h2>How it is actually done</h2>
+      <h2 id="how-it-is-actually-done">How it is actually done</h2>
       <ul>
         <li><strong>Social engineering of support staff.</strong> The most common route. The attacker calls or walks into a shop with your name, address, date of birth and often the last digits of a card, all of which can be bought from a people-search site, and reports a lost phone. The agent is measured on resolving calls quickly and does so.</li>
         <li><strong>Insider access.</strong> Documented repeatedly in prosecutions: retail or call-centre staff paid per swap. This defeats every verification control, because the person performing the check is the attacker's accomplice.</li>
@@ -103,7 +103,7 @@
         <p><strong>The information used to pass verification was not stolen from you.</strong> Address history, date of birth, previous phone numbers and relatives' names are sold openly by people-search companies and sit in breach corpora by the hundred million. A carrier asking for them is not authenticating you; it is testing whether the caller has done ten minutes of research. This is the same data problem described in <a href="/guides/how-data-brokers-work.html">how data brokers work</a>.</p>
       </div>
 
-      <h2>The symptoms, in order</h2>
+      <h2 id="the-symptoms-in-order">The symptoms, in order</h2>
       <ol>
         <li><strong>Service stops.</strong> No signal, no calls, no texts. Wifi keeps working, which is what makes people assume it is a network fault.</li>
         <li><strong>Unexpected carrier messages</strong> just before it, a confirmation of a SIM change, a porting request, or a security code you did not request.</li>
@@ -113,7 +113,7 @@
       </ol>
       <p>The window between the first and third of these is often under ten minutes. Treating sudden unexplained loss of service as a possible attack rather than a fault is the single most useful habit here.</p>
 
-      <h2>The first ten minutes</h2>
+      <h2 id="the-first-ten-minutes">The first ten minutes</h2>
       <ol>
         <li><strong>Get to another connection.</strong> Wifi on the same handset still works; a friend's phone or a laptop will do.</li>
         <li><strong>Call your carrier from another line</strong> and say the words "SIM swap" or "unauthorised port". Ask them to reverse it and freeze the account. Carriers have a process for this and it is faster than a general support queue.</li>
@@ -123,7 +123,7 @@
         <li><strong>Report it.</strong> Your national fraud or cybercrime body, and get a reference number; you will likely need it for any dispute.</li>
       </ol>
 
-      <h2>Preventing it</h2>
+      <h2 id="preventing-it">Preventing it</h2>
       <p>Two categories: making the swap harder, and making it matter less. The second is more reliable, because the first depends on other people's staff.</p>
       <p><strong>Harden the carrier account</strong></p>
       <ul>
@@ -144,7 +144,7 @@
         <p><strong>If you hold cryptocurrency, treat this as the primary threat.</strong> SIM swapping exists at scale largely because irreversible transfers make it profitable, and the reported losses run to substantial sums per victim. Exchange accounts should never have SMS enabled in any capacity, and holdings of consequence belong in hardware wallets where a phone number is irrelevant to control of the funds.</p>
       </div>
 
-      <h2>Why this keeps working</h2>
+      <h2 id="why-this-keeps-working">Why this keeps working</h2>
       <p>The phone number was never designed to be an identity credential. It is a routing address, assigned by a commercial entity, transferable by customer service, and shared with every company that ever asked you for a contact detail. Using it as proof of identity was a convenience decision made when the alternative was worse, and it has outlived its justification.</p>
       <p>It persists because it is easy: services get a cheap verification channel, and users get something familiar. But the security of a bank account should not rest on how a retail assistant handles a stranger with a plausible story, and until services stop accepting SMS, the practical defence is to remove it from your own accounts one at a time.</p>
 
@@ -152,7 +152,7 @@
         <p>See where your details are already exposed, which is what attackers use to pass a carrier's verification questions, with the <a href="/#tool">MyRecon email check</a>.</p>
       </div>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <h3>What is the first sign of a SIM swap?</h3>
       <p>Your phone loses mobile service and will not recover, no calls, no texts, often an "emergency calls only" or "no SIM" indicator, while wifi still works. If that happens without explanation and is quickly followed by password reset emails, treat it as an attack in progress rather than a network fault.</p>
 
@@ -175,7 +175,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dsim_swap_attacks" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/two-factor-authentication.html">why SMS is the weakest second factor</a></li>
         <li><a href="/guides/account-hacked-what-to-do.html">the first hour after an account is taken</a></li>
@@ -204,11 +204,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

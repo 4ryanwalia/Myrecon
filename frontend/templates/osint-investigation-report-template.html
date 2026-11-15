@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<script src="/assets/js/recommendation-analytics.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer,
+    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free OSINT Investigation Report Template (Markdown)</title>
+  <meta name="description" content="Free OSINT investigation report template: scope, authorisation, findings, confidence scale and evidence appendix. Download the Markdown file or copy it.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/templates/osint-investigation-report-template.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Free OSINT Investigation Report Template (Markdown)">
+  <meta property="og:description" content="Free OSINT investigation report template: scope, authorisation, findings, confidence scale and evidence appendix. Download the Markdown file or copy it.">
+  <meta property="og:url" content="https://www.myrecon.xyz/templates/osint-investigation-report-template.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free OSINT Investigation Report Template (Markdown)">
+  <meta name="twitter:description" content="Free OSINT investigation report template: scope, authorisation, findings, confidence scale and evidence appendix. Download the Markdown file or copy it.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=99e13e7efa">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
+  <link rel="stylesheet" href="/assets/css/editorial.css">
+  <link rel="stylesheet" href="/assets/css/article-story.css">
+  <link rel="stylesheet" href="/assets/css/android-promo.css">
+  <link rel="stylesheet" href="/assets/css/search-discovery.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Templates","item":"https://www.myrecon.xyz/templates/"},{"@type":"ListItem","position":3,"name":"OSINT report template","item":"https://www.myrecon.xyz/templates/osint-investigation-report-template.html"}]},{"@type":"Article","headline":"Free OSINT investigation report template","description":"Free OSINT investigation report template: scope, authorisation, findings, confidence scale and evidence appendix. Download the Markdown file or copy it.","url":"https://www.myrecon.xyz/templates/osint-investigation-report-template.html","datePublished":"2026-11-15","dateModified":"2026-11-15","author":{"@type":"Organization","name":"MyRecon","@id":"https://www.myrecon.xyz/#organization"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"DigitalDocument","name":"OSINT investigation report template","encodingFormat":"text/markdown","url":"https://www.myrecon.xyz/downloads/osint-investigation-report-template.md","dateModified":"2026-11-15","isAccessibleForFree":true,"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What should an OSINT report include?","acceptedAnswer":{"@type":"Answer","text":"Scope and authorisation, an executive summary, the starting selectors, method and tools with dates, numbered findings tied to evidence, analysis of alternative explanations, limitations, and conclusions. A defined confidence scale and an evidence log should be attached."}},{"@type":"Question","name":"How long should an OSINT report be?","acceptedAnswer":{"@type":"Answer","text":"As short as the questions allow. The executive summary should fit on one page; findings and evidence can run longer. Length is not quality: every finding should point to an evidence item."}},{"@type":"Question","name":"Is this OSINT report template free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Download the Markdown file, adapt it and use it for any lawful work. No sign-up is needed."}},{"@type":"Question","name":"Can I open the template in Word or Google Docs?","acceptedAnswer":{"@type":"Answer","text":"Yes. Paste the Markdown into Google Docs or Word, or open the file in any editor that previews Markdown. Tables and headings carry over."}}]}]}</script></head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav editorial-nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/blog/">Blog</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container prose seo-page" style="max-width:900px;padding-top:36px;padding-bottom:48px"><nav class="search-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="https://www.myrecon.xyz/">MyRecon</a></li><li><a href="https://www.myrecon.xyz/templates/">Templates</a></li><li><span aria-current="page">OSINT report template</span></li></ol></nav>
+<h1>Free OSINT investigation report template</h1>
+<section class="key-finding" aria-label="What goes in an OSINT report"><h2 id="what-goes-in-an-osint-report">What goes in an OSINT report</h2><p>An OSINT investigation report should contain eight parts: scope and authorisation, an executive summary with confidence for each answer, the starting selectors, the method and tools with dates, numbered findings that each point to an evidence item, analysis of alternative explanations, limitations, and conclusions. This template has all eight plus an evidence appendix.</p></section>
+<p><a class="btn" href="/downloads/osint-investigation-report-template.md" download>Download the template (Markdown, 3 KB)</a> &nbsp; <a href="/downloads/osint-evidence-log-template.csv" download>Download the matching evidence log (CSV)</a></p>
+<p>Markdown opens in any text editor, pastes cleanly into Word, Google Docs, Notion or Obsidian, and keeps tables intact. Most report templates you find online are a PDF on a document-sharing site or a page that asks you to sign up. This one is a plain file you can keep, change and reuse, and it is free to adapt.</p>
+<section><h2 id="the-eight-sections-and-why-each-one-is">The eight sections and why each one is there</h2>
+<div class="editorial-table-wrap"><table><caption>What each section of the template does.</caption><thead><tr><th scope="col">Section</th><th scope="col">What to write</th><th scope="col">Why it matters</th></tr></thead><tbody><tr><td>1. Scope and authorisation</td><td>Who asked, on what basis, which questions, and what is out of scope</td><td>Shows the work was lawful and stops scope creep</td></tr><tr><td>2. Executive summary</td><td>A direct answer to each question with a confidence level</td><td>Most readers stop here, so it must stand alone</td></tr><tr><td>3. Starting selectors</td><td>Every username, email, domain or name you began with, and its source</td><td>Lets a reviewer see whether a finding came from the brief or from your own pivot</td></tr><tr><td>4. Method and tools</td><td>Tool names, versions and the UTC time each was run</td><td>Results change as websites change; dates make them reproducible</td></tr><tr><td>5. Findings</td><td>Numbered findings, each tied to an evidence item</td><td>No finding without evidence; no evidence without a finding</td></tr><tr><td>6. Analysis</td><td>How findings connect and which other explanations you ruled out</td><td>A matching username is not proof of identity</td></tr><tr><td>7. Limitations</td><td>Unavailable sources, unknown results, facts that could change the answer</td><td>Separates 'not found' from 'not checked'</td></tr><tr><td>8. Conclusions</td><td>Plain-language answers and next steps inside the authorisation</td><td>Turns research into a decision</td></tr></tbody></table></div>
+</section>
+<section><h2 id="use-a-confidence-scale-and-define-it">Use a confidence scale, and define it</h2>
+<p>Words like "likely" mean different things to different readers. The template ends with a four-level scale so every finding is graded the same way: <strong>Confirmed</strong> (verified at the source and independently supported), <strong>Probable</strong> (verified at the source, support not independent), <strong>Possible</strong> (a single unverified signal such as a matching username) and <strong>Unresolved</strong>. Put the scale in every report you send, even if the reader has seen it before.</p>
+<p>The most common error in OSINT reports is grading a username match as Confirmed. In our own testing, six of 24 platforms returned identical responses for a real handle and an invented one, so a "found" result from any tool is a lead until you open the page. Our guide to <a href="/guides/verify-osint-account-matches">verifying account matches</a> covers the checks that move a finding up the scale.</p>
+</section>
+<section><h2 id="a-worked-example">A worked example</h2>
+<p>Say a small company asks whether a social account using its brand name belongs to a former employee. Section 1 records the request, the written approval and that contacting the account holder is out of scope. Section 3 lists the brand handle and the former employee's known work email. Section 4 logs a username scan, a breach check on the email and a manual review, each with a timestamp. Finding F1 might read: "The handle exists on three platforms (E1 to E3)", graded Probable. Finding F2: "The profile bio links to a personal site registered to a different person (E4)", which lowers the case for the original theory. Section 6 explains why the evidence points to an unrelated fan account, and Section 8 recommends a trademark report instead of an HR process.</p>
+</section>
+<section><h2 id="tips-that-make-a-report-hold-up">Tips that make a report hold up</h2>
+<ul>
+<li>Capture evidence as you go, not at the end. Pages change and accounts disappear. The <a href="/templates/osint-evidence-log-template.html">evidence log template</a> has columns for the archive link and file hash.</li>
+<li>Write times in UTC and say so. Mixed time zones are the easiest thing for someone to challenge.</li>
+<li>Record negative results. "Searched 500 platforms, no account found on 15 November 2026" is a finding; leaving it out hides your coverage.</li>
+<li>Keep personal data to what answers the question. A report is not a dossier.</li>
+<li>Have someone else read the executive summary without the rest. If they cannot repeat the answer, rewrite it.</li>
+</ul>
+</section>
+<section><h2 id="copy-the-template">Copy the template</h2>
+<pre style="white-space:pre-wrap;max-height:520px;overflow:auto"><code># OSINT Investigation Report
+
+Template: MyRecon OSINT investigation report, version 2026-11-15
+Source: https://www.myrecon.xyz/templates/osint-investigation-report-template.html
+Licence: free to use, copy and adapt.
+
+Delete the guidance in [square brackets] before you share the report.
+
+---
+
+## Cover
+
+- Case title:
+- Case reference:
+- Prepared by (analyst):
+- Prepared for (client or team):
+- Report date (UTC):
+- Classification / handling: [e.g. Internal, Confidential]
+- Version: [1.0, and list revisions at the end]
+
+## 1. Scope and authorisation
+
+- Requested by and date:
+- Authorisation basis: [contract, written consent, your own accounts, legal duty]
+- Questions in scope: [list each question as a sentence]
+- Out of scope: [what you were told not to do or look at]
+- Method limits: [public sources only, no account creation, no contact with the subject, etc.]
+
+## 2. Executive summary
+
+[Three to five sentences. Answer each question in scope, give the confidence for each answer, and name the most important limitation.]
+
+| Question | Answer | Confidence |
+|---|---|---|
+| | | Confirmed / Probable / Possible / Unresolved |
+
+## 3. Starting selectors
+
+[Every identifier you started from, and where it came from.]
+
+| Selector | Type | Provided by | Date received |
+|---|---|---|---|
+| | username / email / domain / phone / name / image | | |
+
+## 4. Method and tools
+
+| Tool or source | Version or URL | Date and time run (UTC) | What it was used for |
+|---|---|---|---|
+| | | | |
+
+[Note any searches that returned nothing. &quot;Not found&quot; and &quot;not checked&quot; are different results.]
+
+## 5. Findings
+
+[One row per finding. Each finding must point to an evidence item in Appendix A.]
+
+| ID | Finding | Source URL | Evidence item | Confidence | Corroborated by |
+|---|---|---|---|---|---|
+| F1 | | | E1 | | |
+
+## 6. Analysis
+
+- How the findings connect:
+- Alternative explanations considered: [same username used by different people, impersonation, recycled handles]
+- Why each alternative was accepted or rejected:
+
+## 7. Limitations and unknowns
+
+- Sources that were unavailable, rate-limited or behind a login:
+- Results marked unknown or ambiguous:
+- Facts that could change the conclusions:
+
+## 8. Conclusions and recommendations
+
+[Answer each question again in plain language. Recommend next steps that stay within the authorisation.]
+
+## Appendix A: Evidence log
+
+[Attach or paste the evidence log. Use osint-evidence-log-template.csv.]
+
+## Appendix B: Confidence scale
+
+- Confirmed: verified at the original source and supported by at least one independent source.
+- Probable: verified at the original source, with consistent but not independent support.
+- Possible: a single unverified signal, such as a matching username.
+- Unresolved: conflicting, ambiguous or unavailable evidence.
+
+## Revision history
+
+| Version | Date | Change | By |
+|---|---|---|---|
+| 1.0 | | First issue | |
+</code></pre>
+</section><section><h2 id="frequently-asked-questions">Frequently asked questions</h2><h3>What should an OSINT report include?</h3><p>Scope and authorisation, an executive summary, the starting selectors, method and tools with dates, numbered findings tied to evidence, analysis of alternative explanations, limitations, and conclusions. A defined confidence scale and an evidence log should be attached.</p><h3>How long should an OSINT report be?</h3><p>As short as the questions allow. The executive summary should fit on one page; findings and evidence can run longer. Length is not quality: every finding should point to an evidence item.</p><h3>Is this OSINT report template free?</h3><p>Yes. Download the Markdown file, adapt it and use it for any lawful work. No sign-up is needed.</p><h3>Can I open the template in Word or Google Docs?</h3><p>Yes. Paste the Markdown into Google Docs or Word, or open the file in any editor that previews Markdown. Tables and headings carry over.</p></section><p>Template version 2026-11-15. Related: <a href="/templates/">all templates</a>, <a href="/guides/public-profile-evidence-logging">public profile evidence logging</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">USERNAME SEARCH ON ANDROID</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>From reading.<br>To discovering.</h2><p>Try username search on your Android phone. Review public profile leads and open their sources to verify them.</p><ul class="promo-features"><li>Username search</li><li>Public profile leads</li><li>Breach checks</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_research">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Use for your own accounts or authorized research.</small></div></aside></div></div><!-- app-promo-layout:end -->
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Products">
+  <h2 class="site-footer__heading">Products</h2>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/features">Features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/badge.html">Badges &amp; widgets</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <h2 class="site-footer__heading">Explore</h2>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <h2 class="site-footer__heading">Compare</h2>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <h2 class="site-footer__heading">Company</h2>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <h2 class="site-footer__heading">Legal</h2>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=b569264372"></script>
+  <script src="/assets/js/consent.js"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+</body>
+</html>

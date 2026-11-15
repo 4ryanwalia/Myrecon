@@ -82,7 +82,7 @@
           <h1>NotPetya, 2017: the update that cost ten billion dollars</h1>
           <p class="meta">Case file · 5 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>NotPetya cyberattack</h2><p>A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours. Damage is estimated at $10 billion.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="notpetya-cyberattack">NotPetya cyberattack</h2><p>A backdoored update to Ukrainian tax software destroyed the networks of shipping lines, drugmakers and food companies worldwide within hours. Damage is estimated at $10 billion.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>No data stolen, an estimated $10 billion in destroyed systems</dd></div>
@@ -101,7 +101,7 @@
 <p>Reported scale: No data stolen, an estimated $10 billion in destroyed systems.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">On 27 June 2017, accountants across Ukraine opened their tax software and it updated itself, as it had a hundred times before. Within hours, shipping terminals in India stopped moving containers, a chocolate factory in Australia stopped making chocolate, and hospitals in Pennsylvania could not access patient records. Nothing was stolen. That was never the objective.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>M.E.Doc is accounting software used by most Ukrainian companies to file tax returns. For a business operating in Ukraine it is effectively mandatory, which makes its update server one of the most efficient distribution points into the country's economy that exists.</p>
 
@@ -115,7 +115,7 @@
   <p><strong>The ransom note was a lie, and the lie was detectable.</strong> Researchers pulled it apart within a day. The installation key displayed on screen was random data rather than anything derived from the encryption, so the attackers could not have decrypted a victim's disk even if they had wanted to. Payment ran through a single hardcoded email address, which the provider suspended almost immediately, a detail no functioning criminal operation would design in. This was a wiper wearing a ransomware costume, and the costume bought it several days of being reported as an ordinary crime wave.</p>
 </div>
 
-<h2>The companies that were not the target</h2>
+<h2 id="the-companies-that-were-not-the-target">The companies that were not the target</h2>
 
 <p>NotPetya was aimed at Ukraine. It reached everyone else because multinational companies run flat global networks, and any of them with a Ukrainian subsidiary, a sales office, a small logistics arm, one finance team filing local taxes, had a machine running M.E.Doc connected to the rest of the business.</p>
 
@@ -129,7 +129,7 @@
 
 <p>The White House put total damage at more than $10 billion. It remains the most expensive cyberattack ever recorded, and no personal data was taken in it.</p>
 
-<h2>The domain controller in Ghana</h2>
+<h2 id="the-domain-controller-in-ghana">The domain controller in Ghana</h2>
 
 <p>The most-repeated detail of the Maersk recovery is also the most instructive. The company's Active Directory, the database that holds every account and permission, was destroyed on every domain controller it had, worldwide, near-simultaneously. Without it, restoring anything else was pointless: there would have been no way to authenticate to the restored systems.</p>
 
@@ -137,7 +137,7 @@
 
 <p>The reason this story gets told is not the luck. It is that Maersk's backup strategy was, on paper, sound, and it still did not account for the possibility that everything would be destroyed at the same moment. Backups that are online and reachable from the network being destroyed are not backups. They are copies.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>April – June 2017</b>: Attackers hold access to the M.E.Doc update infrastructure and stage the payload.</li>
@@ -149,7 +149,7 @@
   <li><b>2022 – 2024</b>: The insurance disputes settle, Mondelez in 2022 and Merck in January 2024.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Cyber insurance was rewritten.</strong> The war exclusion arguments failed on the wording that existed in 2017, and insurers responded by writing new wording. State-backed attack clauses are now explicit, negotiated, and frequently the most contested part of a cyber policy.</p>
 
@@ -159,7 +159,7 @@
 
 <p><strong>The blast radius of a small subsidiary got taken seriously.</strong> Several victims had almost no Ukrainian business at all. Acquisition due diligence and subsidiary network isolation are now routine questions precisely because of this event.</p>
 
-<h2>What to take from it</h2>
+<h2 id="what-to-take-from-it">What to take from it</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Keep at least one backup the network cannot reach.</strong> Offline, immutable, or held by a third party, the test is whether an attacker with full administrator rights could destroy it.</span></label>
@@ -172,7 +172,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -184,7 +184,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Was NotPetya ransomware?</h3>
         <p>It was designed to look like ransomware and was not one. Real ransomware needs a working payment and decryption path, because a crew that never returns files stops being paid. NotPetya overwrote the key material it claimed to be holding and used a single hardcoded contact address that the email provider shut down within hours. Recovery was never on offer. The ransom screen was camouflage for a destructive weapon.</p>
@@ -217,7 +217,7 @@
         <li><b>A.P. Moller-Maersk 2017 interim and annual reports</b>, the source of the ~$250–300m loss figure</li>
         <li><b>Merck &amp; Co. securities filings and the New Jersey insurance litigation record</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/wannacry-2017.html">WannaCry, 2017: the patch had been available for two months</a></li>
         <li><a href="/breaches/case-files/yahoo-2013-2014.html">Yahoo, 2013–2014: three billion accounts, and three years of silence</a></li>
@@ -246,11 +246,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

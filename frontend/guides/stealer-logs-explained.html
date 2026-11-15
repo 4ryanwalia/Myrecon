@@ -86,7 +86,7 @@
 
       <p class="lead">You check your email address, and it comes back exposed, but the entry does not name a company. It names a collection you have never heard of, traded on a messaging app, listing a dozen unrelated websites you have accounts on. Nobody was hacked. A computer was, and it may well have been yours.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>What a stealer log actually is</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="what-a-stealer-log-actually-is">What a stealer log actually is</h2>
       <p>Infostealer malware does one job. It runs on a person's computer, empties out everything that looks like a credential, packages it up, and sends it to whoever deployed it. Then, usually, it deletes itself.</p>
       <p>What it collects is more comprehensive than most people expect:</p>
       <ul>
@@ -102,13 +102,13 @@
         <p><strong>Why this is worse than a normal credential leak.</strong> A leaked password list tells an attacker a password you once used somewhere. A stealer log tells them the password, the exact site it opens, and the email address that goes with it. Credential stuffing, trying a leaked password across hundreds of sites and seeing what works, becomes unnecessary, because the file already says where the key fits. There is no guessing step to defeat.</p>
       </div>
 
-      <h2>The session cookie problem</h2>
+      <h2 id="the-session-cookie-problem">The session cookie problem</h2>
       <p>This is the part that catches out people who otherwise do everything right.</p>
       <p>When you log into a website and tick "remember me", the site gives your browser a session cookie. From then on, that cookie is what proves who you are. It is why you do not re-enter your password every morning, and it is why you do not re-enter your two-factor code either.</p>
       <p>A stolen session cookie can be loaded into an attacker's browser and used directly. They never see your login page. They never need your password, and your two-factor authentication never triggers, because from the site's point of view this is a session that already completed authentication.</p>
       <p>That is why changing your password after a stealer log is necessary but not sufficient. You also have to invalidate the sessions. Most significant services offer this as "sign out of all devices" or "revoke active sessions" in security settings, and after this kind of exposure it is the more urgent of the two actions.</p>
 
-      <h2>How to tell which kind of exposure you have</h2>
+      <h2 id="how-to-tell-which-kind-of-exposure-you">How to tell which kind of exposure you have</h2>
       <p>Breach checkers list both kinds side by side, and the distinction changes what you should do. It is easy to read off once you know what to look for.</p>
       <ul>
         <li><strong>A company breach</strong> names the company. It has a date the incident happened, a count of affected accounts, and a list of fields that company held. The failure was theirs, and the fix is to change the password on that service and anywhere you reused it.</li>
@@ -116,7 +116,7 @@
       </ul>
       <p>MyRecon's <a href="/breaches/">breach archive</a> marks these explicitly: any article for a stealer log collection says on the page that the source was malware on victims' own machines rather than one company's servers, because reading it the other way sends people to change one password and stop.</p>
 
-      <h2>How devices get infected</h2>
+      <h2 id="how-devices-get-infected">How devices get infected</h2>
       <p>The delivery methods have shifted over the last few years, and almost all of them now involve the victim running something deliberately.</p>
       <ul>
         <li><strong>Cracked software and game cheats.</strong> Consistently the largest single source. The download works, the software runs, and the stealer runs alongside it.</li>
@@ -127,7 +127,7 @@
       </ul>
       <p>The common thread is that antivirus software is not the deciding factor. Most of these are run with the user's own permission, which is precisely the case that endpoint protection handles least well.</p>
 
-      <h2>What to do if you are in one</h2>
+      <h2 id="what-to-do-if-you-are-in-one">What to do if you are in one</h2>
       <p>The order matters here more than in any other kind of exposure, because doing it in the wrong order accomplishes nothing.</p>
       <ol>
         <li><strong>Work out which device.</strong> The log usually indicates a machine and a rough time. If you cannot tell, assume every device where you saved passwords in a browser.</li>
@@ -142,7 +142,7 @@
         <p><strong>If this was a work device, tell someone immediately.</strong> Corporate credentials in a stealer log are how a great many large intrusions start, a set of them was the entry point for the campaign that hit dozens of major companies through their cloud tenants in 2024. Reporting it quickly is the difference between a password reset and an incident, and no employer would rather find out later.</p>
       </div>
 
-      <h2>Why this category keeps growing</h2>
+      <h2 id="why-this-category-keeps-growing">Why this category keeps growing</h2>
       <p>Infostealers are sold as a service, rented by the month, with dashboards and customer support. The barrier to running a credential theft operation is now a subscription rather than a skill, and the output is monetised immediately: logs are sold in bulk, then resold individually to people who want access to one particular service.</p>
       <p>Meanwhile the defences that made company breaches harder, better hashing, mandatory multi-factor authentication, faster patching, do nothing against this route, because the credentials are captured before any of those controls apply. The password is read as it is typed, and the session is stolen after authentication has already succeeded.</p>
       <p>Which is why a growing share of what appears in breach searches now names no company at all. The organisations got better at protecting their databases. The data is being taken from the other end.</p>
@@ -163,7 +163,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dstealer_logs_explained" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/how-breaches-actually-happen.html">the seven routes attackers use to get in</a></li>
         <li><a href="/guides/check-email-data-breach.html">how to check whether your email is in a breach</a></li>
@@ -193,11 +193,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

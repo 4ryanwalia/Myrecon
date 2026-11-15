@@ -100,17 +100,17 @@
            the Dataset markup in <head>. A finding whose date lives in a
            different paragraph gets quoted as an undated claim. -->
       <section class="key-finding">
-        <figure class="story-photo"><img src="https://images.unsplash.com/photo-1579869847557-1f67382cc158?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A phone displaying social media apps on a wooden table" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68" target="_blank" rel="noopener">dole777 / Unsplash</a> · Social accounts · context photograph, not incident evidence</figcaption></figure><h2>Key finding</h2>
+        <figure class="story-photo"><img src="https://images.unsplash.com/photo-1579869847557-1f67382cc158?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A phone displaying social media apps on a wooden table" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/black-iphone-4-on-brown-wooden-table-EQSPI11rf68" target="_blank" rel="noopener">dole777 / Unsplash</a> · Social accounts · context photograph, not incident evidence</figcaption></figure><h2 id="key-finding">Key finding</h2>
         <p><strong>Six of the 24 platforms we measured returned a byte-for-byte identical response for a real handle and for one we invented seconds earlier.</strong> On those platforms an HTTP 200 carries no information about whether the account exists, so any tool reporting a match from a status code alone is reporting that the website is online.</p>
         <p class="method">Measured 6 September 2026 against 24 platforms from a residential connection. For each platform we requested the profile URL twice, once for a handle known to exist, once for <code>zzqnope99123xqq</code>: and recorded the HTTP status code and response body size. Reproducible in any browser's developer tools; the full table is below.</p>
       </section>
 
-      <h2>The test that exposes it</h2>
+      <h2 id="the-test-that-exposes-it">The test that exposes it</h2>
       <p>There is one experiment that separates a username checker that works from one that is guessing, and you can run it in under a minute. Search for a handle that cannot possibly exist, a string of nonsense nobody would ever register. We use <code>zzqnope99123xqq</code>. Then compare the results against a handle you know is real.</p>
       <p>If the tool reports accounts for the nonsense string, every result it gives you is suspect, because it is not detecting accounts. It is detecting that a web page loaded.</p>
       <p>We ran exactly this across a range of platforms, comparing the HTTP status code and the response size for a real handle against an invented one. The results below are raw measurements, and you can reproduce all of them with a browser and its developer tools.</p>
 
-      <h2>Some platforms return the identical page either way</h2>
+      <h2 id="some-platforms-return-the-identical-page-either-way">Some platforms return the identical page either way</h2>
       <p>This is the core of the problem. Here is what several well-known platforms returned for a real handle versus an invented one, measured the same minute:</p>
       <div class="table-wrap">
         <table class="data-table">
@@ -136,7 +136,7 @@
       <p>Look at Discord and MeWe: not merely a similar response, but the <em>same number of bytes</em>. The server produced identical output for a real account and a string we invented seconds earlier. There is no signal in that response. None. Any tool reporting a Discord account from a check like this is reporting the fact that discord.com is online.</p>
       <p>WhatsApp differs by 29 bytes out of 220,565, that is the handle itself echoed back into the page, not evidence of anything.</p>
 
-      <h2>Why so many sites behave this way</h2>
+      <h2 id="why-so-many-sites-behave-this-way">Why so many sites behave this way</h2>
       <p>It is rarely deliberate obstruction. Three ordinary engineering decisions produce it:</p>
 
       <h3>Single-page applications</h3>
@@ -148,7 +148,7 @@
       <h3>Soft 404s</h3>
       <p>The correct response for a missing page is HTTP 404. Plenty of sites instead return 200 with a "user not found" message in the body, because it is simpler or because a marketing team wanted a branded page. Status code alone cannot distinguish this from a real profile.</p>
 
-      <h2>The tautology trap</h2>
+      <h2 id="the-tautology-trap">The tautology trap</h2>
       <p>Once you accept that status codes are unreliable, the obvious next step is scoring: award points for signals suggesting a real profile, and require a threshold. This is what better tools do, and it is where a subtle failure creeps in.</p>
       <p>Consider a scorer that awards a point when the handle appears in the final URL. It sounds reasonable. It is worthless, because <em>we requested that URL</em>. The handle is in the response URL for the same reason it is in the request: we put it there. The point is free, and it is awarded to real and fake handles alike.</p>
       <p>The same applies to two other tempting signals. A page having a meta description does not indicate a profile, nearly every page on the web has one. A page having an <code>og:image</code> does not either, because most sites set a default share image sitewide.</p>
@@ -158,7 +158,7 @@ duolingo.com/profile/&lt;real handle&gt;          0     2   1    0   1    0     
 duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0      4</code></pre>
       <p>Identical. The real handle and the invented one scored four points each, and four was enough to be reported as a high-confidence match. Not one of those points came from evidence that an account existed.</p>
 
-      <h2>What a real signal looks like</h2>
+      <h2 id="what-a-real-signal-looks-like">What a real signal looks like</h2>
       <p>The fix is to separate signals that <em>could only come from a page rendered for that specific account</em> from signals that any page on the domain would produce.</p>
       <p>Only two things reliably meet that bar across platforms:</p>
       <ul>
@@ -168,17 +168,17 @@ duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0     
       <p>Everything else, canonical URLs, OpenGraph type, share images, descriptions, is corroboration. It can raise confidence once real evidence exists, but it must never create a match on its own.</p>
       <p>Applying that gate to a real scan changed the reported results substantially. Of 16 accounts previously reported for one handle, 11 disappeared. Those 11 were Duolingo, Twitch, Trello, WordPress, Spotify, Trakt, HackerRank, Odysee, Giphy, CoinMarketCap and Instructables, every one of which had been listed as a confirmed account, and every one of which scored identically for a handle that could not exist.</p>
 
-      <h2>The cost of getting this right</h2>
+      <h2 id="the-cost-of-getting-this-right">The cost of getting this right</h2>
       <p>Honesty here has a price, and any tool claiming otherwise is hiding something. A real profile on a site that renders entirely client-side produces no evidence either way. The strict answer is to report it as unconfirmed rather than found.</p>
       <p>That means you will miss some real accounts. It is the correct trade for anything whose value depends on its results being true, a list of twenty accounts where nine are imaginary is worse than a list of five that are all real, because you cannot tell which nine.</p>
       <p>The better resolution is not to hide the uncertain results but to label them. "Found", "possible" and "could not verify" are three different statements, and collapsing them into one green tick is the original sin of this entire category of tool.</p>
 
-      <h2>Not found and could not check are different</h2>
+      <h2 id="not-found-and-could-not-check-are-different">Not found and could not check are different</h2>
       <p>One more distinction matters, and almost every tool gets it wrong. When a platform rate-limits you, blocks your address, or times out, that is not evidence the account is absent. It is the absence of evidence.</p>
       <p>We saw this vividly with Instagram. From one network, its API returned HTTP 429 for every handle we tried, including Instagram's own official account. A tool that treats a failed check as "not found" would confidently report that Instagram does not have an Instagram account.</p>
       <p>Platforms also behave differently depending on who is asking. The same check that a cloud server is refused for is often answered for a phone on a mobile connection, because datacentre address ranges are blocked far more aggressively than residential ones. Two tools can therefore disagree completely and both be reporting honestly.</p>
 
-      <h2>How to evaluate any username tool</h2>
+      <h2 id="how-to-evaluate-any-username-tool">How to evaluate any username tool</h2>
       <p>Three questions, in order of how much they tell you:</p>
       <ol>
         <li><strong>What does it return for an invented handle?</strong> Anything other than nothing means its results cannot be trusted at face value.</li>
@@ -186,7 +186,7 @@ duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0     
         <li><strong>Does it show you what it rejected, and why?</strong> A tool willing to say "here is every platform we checked, and what each one answered" is one that has thought about being wrong.</li>
       </ol>
 
-      <h2>Try it yourself</h2>
+      <h2 id="try-it-yourself">Try it yourself</h2>
       <p>MyRecon reports its results by confidence and tells you which platforms it checked but could not confirm, including the reason each one gave. Run your own handle, then run a string of nonsense, and compare, that comparison is the honest measure of any tool in this category, including ours.</p>
       <p><a href="/#tool" style="color:var(--accent)">Run a username search →</a></p>
 
@@ -200,7 +200,7 @@ duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0     
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dwhy_username_checkers_report_fake_accounts" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-            <h2>Related guides</h2>
+            <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/what-http-responses-reveal.html">what a site's HTTP response really tells you</a></li>
         <li><a href="/guides/verify-an-osint-finding.html">how to verify an OSINT finding before you act on it</a></li>
@@ -229,11 +229,11 @@ duolingo.com/profile/&lt;invented handle&gt;      0     2   1    0   1    0     
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

@@ -82,7 +82,7 @@
           <h1>Anthem, 2015: 78.8 million health records and one query that looked wrong</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Anthem data breach</h2><p>A database administrator noticed a query running under his own name that he had not run. Behind it were 78.8 million member records, taken over the course of a year.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="An empty hospital room with a bed and seating" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/hospital-bed-near-couch-KF-h9HMxRKg" target="_blank" rel="noopener">Martha Dominguez de Gouveia / Unsplash</a> · Healthcare · context photograph, not an affected facility</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="anthem-data-breach">Anthem data breach</h2><p>A database administrator noticed a query running under his own name that he had not run. Behind it were 78.8 million member records, taken over the course of a year.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="An empty hospital room with a bed and seating" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/hospital-bed-near-couch-KF-h9HMxRKg" target="_blank" rel="noopener">Martha Dominguez de Gouveia / Unsplash</a> · Healthcare · context photograph, not an affected facility</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>78.8 million people</dd></div>
@@ -104,7 +104,7 @@
 <p>Reported scale: 78.8 million people.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">The Anthem breach was found because a database administrator looked at a query running under his own account, did not recognise it, and asked about it. Everything else, the largest health data breach in US history at the time, the largest HIPAA penalty ever levied, a federal indictment, followed from that one moment of professional suspicion.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>Anthem was one of the largest health insurers in the United States. Beginning in February 2014, attackers established access to its network and spent roughly a year inside. In late January 2015, the administrator noticed the anomalous query; the investigation that followed established that a data warehouse containing member records had been queried and copied.</p>
 
@@ -112,7 +112,7 @@
 
 <p>Clinical data was not taken. That distinction matters, and it is often lost: this was not a leak of diagnoses. It was a leak of the identity layer that sits underneath health coverage, which is arguably the more portable and durable asset.</p>
 
-<h2>How they got in</h2>
+<h2 id="how-they-got-in">How they got in</h2>
 
 <p>The entry point was a spear-phishing campaign against a subsidiary. At least one employee opened a message and their credentials were captured; from there the attackers escalated and moved laterally until they reached credentials with access to the enterprise data warehouse.</p>
 
@@ -122,7 +122,7 @@
 
 <p>In May 2019 the Department of Justice indicted two Chinese nationals over the intrusion and three similar attacks on other US companies. The indictment described the same pattern: tailored phishing emails, a remote access trojan, patient lateral movement, then a bulk extraction of a customer database. Neither defendant has been brought to trial in the United States.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>February 2014</b>: A spear-phishing campaign against an Anthem subsidiary succeeds; access is established.</li>
@@ -136,7 +136,7 @@
   <li><b>September 2020</b>: A $39.5 million settlement with state attorneys general.</li>
 </ol>
 
-<h2>Why health identity data is different</h2>
+<h2 id="why-health-identity-data-is-different">Why health identity data is different</h2>
 
 <p>A stolen payment card has a short, well-managed life. The bank has fraud models, the network has liability rules, and the card can be cancelled. Health identity data has none of that infrastructure.</p>
 
@@ -144,7 +144,7 @@
 
 <p>Unwinding it is slow, because health records are held by many separate organisations with no central mechanism to correct them, and because privacy law that protects records also makes them harder to inspect and amend after fraud.</p>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>HIPAA enforcement got teeth.</strong> The $16 million settlement reset expectations for what a health data failure costs in the United States. Regulators also made clear in the resolution agreement that the failures were ordinary ones, insufficient risk analysis, inadequate review of system activity, weak access controls, not exotic ones.</p>
 
@@ -152,7 +152,7 @@
 
 <p><strong>Anomaly review stopped being purely automated.</strong> The most-quoted fact about this breach is how it was found. It is used, correctly, as an argument for a culture in which an employee who notices something odd has an obvious, low-friction way to report it and an expectation that it will be taken seriously.</p>
 
-<h2>If you were an Anthem member</h2>
+<h2 id="if-you-were-an-anthem-member">If you were an Anthem member</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Read your explanation of benefits statements.</strong> They are the only routine mechanism by which medical identity fraud becomes visible. Any provider or service you do not recognise is worth a phone call.</span></label>
@@ -165,7 +165,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -177,7 +177,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Was medical treatment data stolen from Anthem?</h3>
         <p>No. Anthem reported that clinical and claims information, diagnoses, treatments, test results, was not taken. What was taken was the membership file: names, dates of birth, Social Security numbers, member IDs, addresses and employment data. That is an identity-theft dataset rather than a medical one, which is bad in a different way.</p>
@@ -210,7 +210,7 @@
         <li><b>California Department of Insurance examination findings, January 2017</b></li>
         <li><b>In re Anthem, Inc. Data Breach Litigation, $115 million settlement, 2017</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/sony-pictures-2014.html">Sony Pictures, 2014: the breach that destroyed the computers on the way out</a></li>
         <li><a href="/breaches/case-files/jpmorgan-2014.html">JPMorgan Chase, 2014: one server without two-factor authentication</a></li>
@@ -239,11 +239,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

@@ -30,6 +30,8 @@ for (const [slug, m] of Object.entries(media)) {
   const body = `<video class="watch-video" controls playsinline preload="metadata" width="1280" height="720" poster="/assets/media/blog/${slug}-poster.jpg" aria-label="${esc(m.title)}"><source src="/assets/media/blog/${slug}.mp4" type="video/mp4"><track kind="captions" src="/assets/media/blog/${slug}.vtt" srclang="en" label="English" default></video><p>${esc(m.description)}</p><p>32 seconds. Silent explainer with on-screen text and English captions.</p><h2>Video transcript</h2><ol>${m.steps.map(([h,t]) => `<li><strong>${esc(h)}.</strong> ${esc(t)}</li>`).join('')}</ol><h2>Put the workflow into practice</h2><p><a href="/blog/${slug}.html">Read the full guide, sources and limitations</a>, <a href="/#tool">try the MyRecon OSINT scanner</a>, or <a href="/videos/">browse all explainers</a>.</p>`;
   fs.writeFileSync(path.join(out, slug + '.html'), page(m.title, m.description, route, body, [video]));
   const articlePath = path.join(root, 'blog', slug + '.html');
+  // A merged article keeps its video; the link to it resolves through editorial-redirects.json.
+  if (!fs.existsSync(articlePath)) continue;
   let article = fs.readFileSync(articlePath, 'utf8');
   if (!article.includes(`href="${route}"`)) article = article.replace('</video>', `</video><p><a href="${route}">Watch this explainer on its dedicated video page</a>.</p>`);
   fs.writeFileSync(articlePath, article);

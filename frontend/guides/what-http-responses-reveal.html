@@ -85,7 +85,7 @@
 
       <p class="lead">Every online lookup ends with a server sending back a number and some text. Reading those correctly is the difference between an investigation and a guess, and almost every mistake in automated OSINT comes from treating one kind of answer as though it were another.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>The four answers you will actually get</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="the-four-answers-you-will-actually-get">The four answers you will actually get</h2>
       <p>Strip away the detail and a platform can tell you one of four things when you ask about a handle. They are not equally informative, and only two are answers at all.</p>
 
       <h3>200: "here is a page"</h3>
@@ -108,7 +108,7 @@ clubhouse.com/@zzqnope99123x    404   (invented, for comparison)</code></pre>
       <h3>429: "you have asked too much"</h3>
       <p>Rate limiting. Also not an answer about the account, and the most dangerous to misread, because it usually appears only after a tool has been working correctly for a while. Results silently get worse the more you use it.</p>
 
-      <h2>The error shell</h2>
+      <h2 id="the-error-shell">The error shell</h2>
       <p>The hardest case is a platform that answers 200 while telling you nothing. Instagram is the clearest example we measured.</p>
       <p>Requesting profile pages from a blocked network returned this:</p>
       <pre><code>instagram.com/nasa               200   612,900 bytes
@@ -116,7 +116,7 @@ instagram.com/zzqnope99123xqq    200   612,912 bytes</code></pre>
       <p>NASA's account, one of the most followed on the platform, and a string invented for the test, differing by twelve bytes in six hundred thousand. Both pages contained an internal marker reading <code>"httperrorpage"</code>, and both echoed the requested handle back inside a routing object roughly 309,000 characters into the document.</p>
       <p>That echo is a trap worth naming, because it is exactly the sort of thing that looks like a signal. A tool searching the page for the handle would find it, for every handle, real or not, and report a match every time. The handle appears because we asked for it, not because anyone is there.</p>
 
-      <h2>Who is asking changes the answer</h2>
+      <h2 id="who-is-asking-changes-the-answer">Who is asking changes the answer</h2>
       <p>The same request, sent at the same moment to the same URL, gets different responses depending on the network it comes from. This is not a quirk; it is deliberate anti-abuse design, and it has real consequences for anyone comparing tools.</p>
       <p>We ran an identical Instagram lookup from two places:</p>
       <pre><code>from a laptop / datacentre address:   401 for every handle
@@ -125,7 +125,7 @@ from a hosted server elsewhere:       full profile, 104,000,000 followers</code>
       <p>The general rule is that residential and mobile addresses are treated far more permissively than datacentre ranges, because that is where abuse comes from in bulk. This is why a check run from a phone frequently succeeds where a cloud-hosted scanner is refused, and why two tools can disagree entirely while both behave honestly.</p>
       <p>It also means results are not stable over time. Run enough lookups from one address and you will be throttled, after which your results quietly degrade. If a tool suddenly reports fewer accounts than it did last week, suspect your address before you suspect the accounts vanished.</p>
 
-      <h2>Redirects: watch where you land</h2>
+      <h2 id="redirects-watch-where-you-land">Redirects: watch where you land</h2>
       <p>A redirect is not automatically a negative. Reddit answers 301 and YouTube 302 for perfectly real profiles, simply canonicalising the URL. What matters is the destination.</p>
       <p>Landing on any of these means the platform has nothing to show you:</p>
       <ul>
@@ -135,7 +135,7 @@ from a hosted server elsewhere:       full profile, 104,000,000 followers</code>
       </ul>
       <p>We watched Reddit change behaviour mid-investigation. Requests for a well-known, definitely-real account began redirecting to <code>/login/?reason=lor2</code>, returning a 352,259-byte login page, and an invented handle returned the same page at 352,369 bytes. Once that started, no reading of the response could tell the two apart.</p>
 
-      <h2>Reading the body, not just the number</h2>
+      <h2 id="reading-the-body-not-just-the-number">Reading the body, not just the number</h2>
       <p>Because status codes are unreliable, the body matters. Three things worth checking, in order of value:</p>
       <ol>
         <li><strong>The page title.</strong> A profile is titled for its owner: "Linus Torvalds (@torvalds)". A shell is titled for the site: "Twitch". This distinction does most of the work.</li>
@@ -144,7 +144,7 @@ from a hosted server elsewhere:       full profile, 104,000,000 followers</code>
       </ol>
       <p>One caution on titles: some platforms echo the handle into the title of their not-found page. Telegram titles every page "Telegram: Contact @&lt;anything&gt;" whether or not the account exists, so the title check alone marks every Telegram handle as a match. Any rule you adopt needs a short list of known exceptions, and the only way to build that list is measurement.</p>
 
-      <h2>Where the data actually sits</h2>
+      <h2 id="where-the-data-actually-sits">Where the data actually sits</h2>
       <p>A practical trap for anyone writing their own checks: profile information is often nowhere near the top of the document. Tools commonly read the first few kilobytes for speed, which quietly guarantees they miss everything that matters.</p>
       <p>Measured on live Pinterest profiles:</p>
       <pre><code>page size                   1,307,070 - 1,523,336 characters
@@ -153,7 +153,7 @@ profile image URL at        ~90,000 characters further on</code></pre>
       <p>A tool reading the first 192 KB reaches none of it and concludes there is no profile. Instagram has the same shape for a different reason: roughly 95,000 characters of inline script arrive before the <code>&lt;title&gt;</code> tag.</p>
       <p>Worth knowing before you assume this is expensive: the Pinterest page is about 140 KB compressed on the wire. The full document costs almost nothing extra to download, the limit was only ever on how much got decompressed and searched.</p>
 
-      <h2>A checklist for verifying anything yourself</h2>
+      <h2 id="a-checklist-for-verifying-anything-yourself">A checklist for verifying anything yourself</h2>
       <ol>
         <li>Open the profile URL in a private browsing window, logged out. This is what an automated tool sees.</li>
         <li>Check the page title. Does it name the account, or the site?</li>
@@ -162,7 +162,7 @@ profile image URL at        ~90,000 characters further on</code></pre>
         <li>If you get 403 or 429, stop and try later from a different connection. You have learned nothing yet.</li>
       </ol>
 
-      <h2>The honest summary</h2>
+      <h2 id="the-honest-summary">The honest summary</h2>
       <p>Only two of the four responses are answers. A verified 404 means absent. A 200 with account-specific content means present. A 200 with a generic page, a 403, or a 429 all mean the same thing: <em>you do not know</em>, and any tool that renders those three as a green tick is manufacturing certainty it does not have.</p>
       <p><a href="/guides/why-username-checkers-report-fake-accounts.html" style="color:var(--accent)">Read next: why username checkers report accounts that don't exist →</a></p>
 
@@ -176,7 +176,7 @@ profile image URL at        ~90,000 characters further on</code></pre>
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dwhat_http_responses_reveal" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-            <h2>Related guides</h2>
+            <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report accounts that never existed</a></li>
         <li><a href="/guides/username-osint-search.html">finding accounts across platforms from a single username</a></li>
@@ -204,11 +204,11 @@ profile image URL at        ~90,000 characters further on</code></pre>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

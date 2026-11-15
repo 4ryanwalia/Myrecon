@@ -82,7 +82,7 @@
           <h1>MySpace, 2016: 360 million accounts from a website nobody used any more</h1>
           <p class="meta">Case file · 3 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>MySpace data breach</h2><p>The MySpace passwords were years old and the site was long abandoned. That is exactly why the breach worked, abandoned accounts still hold passwords people reuse.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="myspace-data-breach">MySpace data breach</h2><p>The MySpace passwords were years old and the site was long abandoned. That is exactly why the breach worked, abandoned accounts still hold passwords people reuse.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>about 360 million accounts</dd></div>
@@ -100,13 +100,13 @@
       <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Reported scale: about 360 million accounts.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 3 min</summary><p class="lead">When roughly 360 million MySpace accounts appeared for sale in May 2016, the reaction in most places was amusement. MySpace? The data was eight years old, from a site that had been culturally irrelevant for most of a decade. The amusement was misplaced: it was the largest breach loaded into public breach databases at the time, and its age was the point rather than the punchline.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>The dataset contained email addresses, usernames and password hashes for accounts dating to around 2008. It surfaced in the same 2016 wave that brought the full <a href="/breaches/case-files/linkedin-2012.html">LinkedIn</a> file and the Tumblr data to market, offered by the same seller, a period when several enormous old breaches were monetised at once.</p>
 
 <p>MySpace, by then owned by Time Inc., invalidated passwords for affected accounts. For most users this was a notification about a service they had forgotten they had.</p>
 
-<h2>The password storage, which was remarkable</h2>
+<h2 id="the-password-storage-which-was-remarkable">The password storage, which was remarkable</h2>
 
 <p>The hashing scheme deserves its own paragraph because it manages three separate failures simultaneously:</p>
 
@@ -120,7 +120,7 @@
   <p><strong>What truncation destroys.</strong> Every additional character in a password multiplies the work an attacker must do. Truncating at ten caps that work at a fixed, modest ceiling regardless of what the user chose, which means the site silently overrode its most security-conscious users. If you ever wonder why security people are suspicious of undocumented password length limits, this is the reason: a limit usually implies something is being done to the password before it is stored.</p>
 </div>
 
-<h2>Why old breaches keep working</h2>
+<h2 id="why-old-breaches-keep-working">Why old breaches keep working</h2>
 
 <p>The value of a fifteen-year-old password file rests on a simple, well-evidenced fact about people: passwords are sticky. Someone who chose a password in 2008 often still uses it, or a version with a digit incremented, or the same base word with a different site's name appended. Human-generated passwords evolve; they rarely get replaced.</p>
 
@@ -128,13 +128,13 @@
 
 <p>That combination is why the MySpace file went straight into combination lists and is still being tried against banks and mailboxes today. It is also why the honest answer to "should I worry about a breach at a site I stopped using?" is yes, if you ever reused that password.</p>
 
-<h2>The other MySpace data loss</h2>
+<h2 id="the-other-myspace-data-loss">The other MySpace data loss</h2>
 
 <p>Worth recording alongside it: in 2019 MySpace confirmed that a server migration had destroyed roughly twelve years of user-uploaded music, photos and video, an estimated fifty million tracks from fourteen million artists, gone with no recoverable backup.</p>
 
 <p>That is not a breach, and it belongs here anyway, because it is the other half of the same lesson. Handing your only copy of something to a platform means accepting its retention decisions, its migration competence and its survival. Availability failures rarely make the news the way breaches do, and for the person who lost the only recording of a song they wrote, the outcome is worse.</p>
 
-<h2>What to do about accounts you abandoned</h2>
+<h2 id="what-to-do-about-accounts-you-abandoned">What to do about accounts you abandoned</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>List the services you used before about 2015</strong>: forums, games, social networks, shopping sites. Most people can name fifteen in five minutes, which is fifteen more than they were thinking about.</span></label>
@@ -147,7 +147,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;MySpace&quot;,&quot;breach_date&quot;:&quot;2016-05-27&quot;,&quot;match_year&quot;:true}]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -159,7 +159,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Why does a breach of an abandoned site matter?</h3>
         <p>Because the password is not abandoned. People who used a password on MySpace in 2008 frequently used it, or a small variation of it, on accounts they still hold. The site's irrelevance is what makes it dangerous: nobody thinks to change a password for a service they have not opened in fifteen years.</p>
@@ -191,7 +191,7 @@
         <li><a href="https://haveibeenpwned.com/PwnedWebsites#MySpace" target="_blank" rel="noopener nofollow">Have I Been Pwned, MySpace breach record</a></li>
         <li><b>LeakedSource analysis of the dataset, 2016</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/vtech-2015.html">VTech, 2015: six million children in a toy company's database</a></li>
         <li><a href="/breaches/case-files/talktalk-2015.html">TalkTalk, 2015: a nineteen-year-old and a webpage nobody owned</a></li>
@@ -220,11 +220,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

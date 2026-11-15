@@ -11,6 +11,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { datasetSchema } = require("./dataset-schema");
 
 const ROOT = path.join(__dirname, "..");
 const SOURCE = path.join(ROOT, "content", "blog");
@@ -142,6 +143,8 @@ function additionalSchema(article) {
     numberOfItems: article.tools.length, itemListOrder: 'https://schema.org/ItemListOrderAscending',
     itemListElement: article.tools.map((tool, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Thing', name: tool.name, url: tool.url, description: tool.description } })),
   });
+  const dataset = datasetSchema(article);
+  if (dataset) values.push(dataset);
   return values.map(value => `  <script type="application/ld+json">${json(value)}</script>\n`).join('');
 }
 

@@ -82,7 +82,7 @@
           <h1>Ashley Madison, 2015: when the data itself was the weapon</h1>
           <p class="meta">Case file · 5 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Ashley Madison data breach</h2><p>The Impact Team did not sell the Ashley Madison data. They published it, 32 million people, a paid deletion service that did not delete, and consequences measured in lives.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="ashley-madison-data-breach">Ashley Madison data breach</h2><p>The Impact Team did not sell the Ashley Madison data. They published it, 32 million people, a paid deletion service that did not delete, and consequences measured in lives.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>32 million user records</dd></div>
@@ -102,13 +102,13 @@
 <p>Reported scale: 32 million user records.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Every other case file here is about data being stolen for money. Ashley Madison is the one where the data was taken in order to be published, by people who wanted the exposure itself to be the punishment, and it is the clearest demonstration that the harm from a breach is not always fraud. Sometimes it is simply that someone now knows.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>On 19 July 2015, visitors to Ashley Madison, a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media, were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently. This was not a ransom in the usual sense: there was no price. The demand was that the business cease to exist.</p>
 
 <p>Avid Life Media did not comply. On 18 and 20 August, the attackers published, in two releases: roughly 32 million user records, internal company documents, source code, and the chief executive's email archive. It was posted openly and mirrored instantly. Within days, searchable web front-ends existed for anyone to check a name or an email address.</p>
 
-<h2>The password story</h2>
+<h2 id="the-password-story">The password story</h2>
 
 <p>Ashley Madison did something most breached companies of that era did not: it stored passwords with bcrypt at a high cost factor. That is real, correct password hashing, slow by design, salted per user, resistant to large-scale cracking. For a few weeks after the dump, the passwords held.</p>
 
@@ -116,7 +116,7 @@
   <p><strong>Then the second copy was found.</strong> Researchers working through the leaked source code found a legacy authentication token that had been generated from an MD5 hash of the username and password, lowercased. MD5 is fast and the token was effectively a weaker duplicate of the same secret. Around 11 million passwords fell almost immediately. The lesson is one that recurs in modern breaches: your password storage is only as strong as the weakest place that secret exists in your system, including the old code path nobody remembers.</p>
 </div>
 
-<h2>The parts that were not technical</h2>
+<h2 id="the-parts-that-were-not-technical">The parts that were not technical</h2>
 
 <p>Two findings from the joint Canadian and Australian privacy investigation stand out, because neither is about hackers.</p>
 
@@ -126,7 +126,7 @@
 
 <p>And one more, which changes how the leaked list should be read: the service never verified email addresses at registration. Anyone could sign up with anyone's address. This is why the widely reported presence of government and military addresses in the file proved so little, and why treating the dump as a list of confirmed users was wrong from the first day.</p>
 
-<h2>The human cost</h2>
+<h2 id="the-human-cost">The human cost</h2>
 
 <p>This is the part that separates Ashley Madison from every other entry in this archive. Within days of publication, extortion emails began arriving at addresses in the file, pay, or your spouse, employer and contacts get told. Some of the recipients had never used the service. It did not matter, because the accusation was the weapon.</p>
 
@@ -134,7 +134,7 @@
 
 <p>No fraud occurred in any of that. Nobody's money was stolen. The damage was done entirely by the fact of publication.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>19 July 2015</b>: The Impact Team announces the breach and demands the site be shut down.</li>
@@ -147,7 +147,7 @@
   <li><b>2017</b>: An $11.2 million class-action settlement is approved in the United States.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Sensitivity entered the risk calculation properly.</strong> Before Ashley Madison, breach severity was largely measured in identity-theft terms: how many card numbers, how many national identifiers. This case forced a second axis, what does this data imply about a person, and what happens to them if it is published? That axis now drives how health data, sexual-orientation data and location history are classified, and it is why the <a href="/breaches/">breach archive</a> weights those fields the way it does.</p>
 
@@ -155,7 +155,7 @@
 
 <p><strong>Unverified email addresses became a liability.</strong> Letting anyone register any address seemed harmless while the database was private. In a published dump it implicated people who had never visited the site, and there was no way to un-ring that bell.</p>
 
-<h2>If you were in it, or accused of being in it</h2>
+<h2 id="if-you-were-in-it-or-accused-of">If you were in it, or accused of being in it</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Presence in the file is not proof of use.</strong> Addresses were never verified. Anyone reading the dump as a membership list is reading it wrong.</span></label>
@@ -168,7 +168,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[{&quot;name&quot;:&quot;AshleyMadison&quot;,&quot;breach_date&quot;:&quot;2015-08-18&quot;,&quot;match_year&quot;:true}]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -180,7 +180,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Were Ashley Madison passwords cracked?</h3>
         <p>Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password, a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase.</p>
@@ -212,7 +212,7 @@
         <li><b>Joint report of the Privacy Commissioner of Canada and the Australian Privacy Commissioner, August 2016</b></li>
         <li><b>CynoSure Prime analysis of the legacy login token, September 2015</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/opm-2015.html">OPM, 2015: 21.5 million security clearance files, fingerprints included</a></li>
         <li><a href="/breaches/case-files/anthem-2015.html">Anthem, 2015: 78.8 million health records and one query that looked wrong</a></li>
@@ -241,11 +241,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

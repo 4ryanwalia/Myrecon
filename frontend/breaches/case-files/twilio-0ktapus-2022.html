@@ -82,7 +82,7 @@
           <h1>0ktapus, 2022: one text message, one hundred and thirty companies</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>0ktapus phishing campaign</h2><p>A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies. Cloudflare was targeted with the same messages and lost nothing.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="0ktapus-phishing-campaign">0ktapus phishing campaign</h2><p>A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies. Cloudflare was targeted with the same messages and lost nothing.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>~9,900 accounts and ~5,400 one-time codes captured across 130+ organisations</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: ~9,900 accounts and ~5,400 one-time codes captured across 130+ organisations.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>The campaign was industrial rather than clever. The attackers registered domains combining a target company's name with words like <code>-sso</code>, <code>-okta</code> or <code>-help</code>, stood up phishing pages that mirrored each company's real login screen, and sent SMS messages to employees' personal mobile numbers claiming a password reset or schedule change required them to log in.</p>
 
@@ -114,13 +114,13 @@
   <p><strong>Why a one-time code is not phishing-resistant.</strong> A code from an app or a text message is a shared secret that the human copies from one place to another. Anything that can convince the human to copy it into the wrong box defeats it, and the attacker has thirty seconds to use it, which is plenty when the relay is automated. A security key or passkey is different in kind, not degree: the browser performs a cryptographic challenge that is bound to the real domain name. Present it a lookalike domain and it will not produce a signature at all. There is nothing for the user to get wrong.</p>
 </div>
 
-<h2>The company it did not work on</h2>
+<h2 id="the-company-it-did-not-work-on">The company it did not work on</h2>
 
 <p>Cloudflare was targeted in the same campaign, with the same message format, within the same minutes. Its employees received 76 messages. Some of them clicked. Some of them entered their credentials on the fake page.</p>
 
 <p>The attack failed at the next step. Cloudflare required hardware security keys for all employees, and the keys would not authenticate to a domain that was not Cloudflare's. The attackers had valid passwords and no way to use them. Cloudflare published a detailed account of the attempt, including the fact that its own people had been fooled by the message, which is the part worth dwelling on. The control that saved them did not depend on anyone spotting anything.</p>
 
-<h2>What the access was used for</h2>
+<h2 id="what-the-access-was-used-for">What the access was used for</h2>
 
 <p>Compromised employee accounts were not the objective. Customer support and administrative tooling was.</p>
 
@@ -133,7 +133,7 @@
 
 <p>Each of these is one step further from the original phishing text, and each step multiplies the affected population. A campaign against employees ended up affecting people who had never heard of Twilio.</p>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Hardware keys and passkeys moved from best practice to baseline.</strong> Cloudflare's published account did more for the adoption of phishing-resistant authentication than any advisory. It was a controlled comparison run by accident: same attacker, same messages, same human error rate, different outcome.</p>
 
@@ -143,7 +143,7 @@
 
 <p><strong>The campaign's people became the next few years of intrusions.</strong> The social engineering tradecraft visible in 0ktapus, targeting recovery flows, impersonating IT, exploiting the phone, recurs directly in the attacks on Las Vegas casinos in 2023 and in a long run of help desk compromises since.</p>
 
-<h2>What to take from it</h2>
+<h2 id="what-to-take-from-it">What to take from it</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Move your most important accounts to passkeys or a security key.</strong> Email first, because email resets everything else. This is the single change that defeats the technique described here.</span></label>
@@ -156,7 +156,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -168,7 +168,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>If they had one-time codes, is two-factor authentication useless?</h3>
         <p>No, the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one.</p>
@@ -201,7 +201,7 @@
         <li><a href="https://blog.cloudflare.com/2022-07-sms-phishing-attacks/" target="_blank" rel="noopener nofollow">Cloudflare, The mechanics of a sophisticated phishing scam and how we stopped it</a></li>
         <li><b>Signal statement on the Twilio incident, August 2022</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/twitter-2022.html">Twitter, 2022: an API that confirmed which account owned which email</a></li>
         <li><a href="/breaches/case-files/t-mobile-2021.html">T-Mobile, 2021: an exposed router, and 76 million people who were mostly not customers</a></li>
@@ -230,11 +230,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

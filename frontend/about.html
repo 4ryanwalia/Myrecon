@@ -78,10 +78,10 @@
       MyRecon is an open-source intelligence (OSINT) platform for defenders, researchers, and privacy-conscious individuals who want to understand a digital footprint using only public, lawful data sources.
     </p>
 
-    <h2 style="margin:26px 0 10px">Accuracy over noise</h2>
+    <h2 style="margin:26px 0 10px" id="accuracy-over-noise">Accuracy over noise</h2>
     <p style="color:var(--text-dim)">Many OSINT tools inflate their results with fragile scrapers and undocumented endpoints that produce false positives. MyRecon deliberately favours a smaller set of reliable, documented sources, RDAP for registration data, DNS-over-HTTPS for records, official APIs for breach and profile data, and validates username matches per platform to reduce false positives.</p>
 
-    <h2 style="margin:26px 0 10px">What you can investigate</h2>
+    <h2 style="margin:26px 0 10px" id="what-you-can-investigate">What you can investigate</h2>
     <ul style="color:var(--text-dim);padding-left:20px;line-height:2">
       <li><strong>Usernames</strong> across a wide range of platforms, with avatar and bio enrichment and cross-platform identity correlation.</li>
       <li><strong>Email addresses</strong>: provider and deliverability analysis, linked accounts, and breach exposure.</li>
@@ -89,7 +89,7 @@
       <li><strong>IP addresses</strong>: geolocation, network ownership, hosting flags, and reverse DNS.</li>
     </ul>
 
-    <h2 style="margin:26px 0 10px">Who uses MyRecon</h2>
+    <h2 style="margin:26px 0 10px" id="who-uses-myrecon">Who uses MyRecon</h2>
     <p style="color:var(--text-dim)">People use MyRecon to review their own public footprint, support authorized security assessments, check public breach and infrastructure signals, and research claims using source links they can verify. Developers and administrators can also use the domain, DNS, and IP tools for routine configuration checks. These tools surface leads from public data; they do not establish identity or replace consent and professional judgment.</p>
 
     <h2 id="editorial-method" style="margin:26px 0 10px">What we publish, and how it is written</h2>
@@ -102,7 +102,7 @@
 
     <p style="color:var(--text-dim)">An observed result carries its source, observation date and access context. A worked example labeled illustrative is a teaching example, not a completed account test. Workflow diagrams are illustrations; captured browser images are labeled screenshots. External provider instructions are checked against linked documentation, but a linked procedure does not mean we exercised it on a personal account.</p>
     <p style="color:var(--text-dim)">Our <a href="/guides/account-enumeration-false-positives">false-positive review</a> includes a frozen historical run and explains its shared-reference and small-sample limitations. The <a href="/guides/public-profile-evidence-logging">evidence register</a> and <a href="/guides/protect-researcher-notes">retention worksheet</a> are downloadable examples for readers to adapt locally. They do not send completed notes to MyRecon. Modification dates record content or source changes; routine rebuilds are not a new field test.</p>
-    <h2 style="margin:26px 0 10px">Checking any of this</h2>
+    <h2 style="margin:26px 0 10px" id="checking-any-of-this">Checking any of this</h2>
     <p style="color:var(--text-dim)">
       Everything above is a claim made by the people who built the thing. Two pages exist so
       you do not have to take it on trust: <a href="/is-myrecon-legit.html">six tests you can
@@ -111,19 +111,19 @@
       workflows and the limits of the available comparison evidence.
     </p>
 
-    <h2 style="margin:26px 0 10px">Corrections</h2>
+    <h2 style="margin:26px 0 10px" id="corrections">Corrections</h2>
     <p style="color:var(--text-dim)">If something here is wrong, we want to know and we will fix it. Write to us through the <a href="/contact.html" style="color:var(--accent)">contact page</a> with the page and the correction, and if it is a factual error the page is updated and the change reflected in its modification date. Breach records that are later revised by their source are picked up automatically at the next rebuild.</p>
 
-    <h2 style="margin:26px 0 10px">How MyRecon is funded</h2>
+    <h2 style="margin:26px 0 10px" id="how-myrecon-is-funded">How MyRecon is funded</h2>
     <p style="color:var(--text-dim)">Advertising appears on parts of the site, which supports the free tools and written archive; what that means for your data is set out in our <a href="/privacy.html" style="color:var(--accent)">privacy policy</a>. We also offer optional <a href="/pricing" style="color:var(--accent)">Basic subscription</a> and a paid, manual <a href="/services.html" style="color:var(--accent)">footprint review and removal service</a>, carried out only on identifiers the client owns and can verify. Nothing in the archive is sponsored, no breach entry is paid for or suppressed, and no advertiser has any input into what is published.</p>
 
-    <h2 style="margin:26px 0 10px">Privacy</h2>
+    <h2 style="margin:26px 0 10px" id="privacy">Privacy</h2>
     <p style="color:var(--text-dim)">You can start as a guest. Recent lookup history stays in your browser, while results may be cached briefly on the server. If you sign in, completed username scans are saved to your account so you can reopen or delete them. See the <a href="/privacy.html" style="color:var(--accent)">privacy policy</a> for details.</p>
 
-    <h2 style="margin:26px 0 10px">Responsible use</h2>
+    <h2 style="margin:26px 0 10px" id="responsible-use">Responsible use</h2>
     <p style="color:var(--text-dim)">MyRecon surfaces information that is already public. It is intended for lawful security research, personal footprint checks, and authorized investigations only. Do not use it for harassment, stalking, or any activity that violates applicable laws or platform terms. See our <a href="/terms.html" style="color:var(--accent)">Terms</a>.</p>
 
-    <h2 style="margin:26px 0 10px">Who builds MyRecon</h2>
+    <h2 style="margin:26px 0 10px" id="who-builds-myrecon">Who builds MyRecon</h2>
     <p style="color:var(--text-dim)">MyRecon is built by <a href="/founder.html" style="color:var(--accent)"><strong>Aryan Walia</strong></a>, founder of <a href="https://bugsnaps.in" target="_blank" rel="noopener" style="color:var(--accent)">BugSnaps</a>: a penetration testing and offensive security practice that helps growing businesses find and fix vulnerabilities before attackers do.</p>
     <p style="color:var(--text-dim)">MyRecon grew out of that work. Mapping an organisation's attack surface and mapping a person's public footprint are the same exercise with a different subject: you enumerate what is reachable, verify what is real, and discard what only looks like a finding. The discipline that matters most in a penetration test, never report something you have not confirmed, is the one this tool is built around, which is why it labels results by confidence and says "unconfirmed" instead of inflating a count.</p>
 
@@ -147,11 +147,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

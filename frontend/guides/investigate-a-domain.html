@@ -85,12 +85,12 @@
 
       <p class="lead">Somebody sends you a link, or a domain turns up in a log, and you need to know what it is before anyone acts on it. This is the order to do it in, starting with the checks that need no contact with the site at all, and ending with a judgement you can defend.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2>Before anything: do not just open it</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2 id="before-anything-do-not-just-open-it">Before anything: do not just open it</h2>
       <p>Almost every step below can be done without loading the page. Do those first, because visiting has consequences: it confirms to the operator that the address they targeted is live, it hands over your IP address and browser fingerprint, and a small number of sites serve something harmful to the first visitor from a given network.</p>
       <p>When you do need to see the page, see it somewhere disposable, a virtual machine, a sandboxed browser profile, or an online rendering service that fetches the page and shows you a screenshot. Never open a suspicious link on a phone you use for banking, and never while signed into anything.</p>
       <p>If the link is shortened, expand it without following it. Several shorteners will show you the destination if you append a character to the URL, and any link-expander service does the same. A shortener in a message that claims to be from a bank is already an answer of sorts: regulated institutions do not hide their own domain.</p>
 
-      <h2>Step 1: read the name itself</h2>
+      <h2 id="step-1-read-the-name-itself">Step 1: read the name itself</h2>
       <p>More fraudulent domains are given away by their own spelling than by anything technical. The only part that matters is the <strong>registrable domain</strong>: the label immediately before the top-level domain. Everything to the left of it is under the control of whoever owns that name, and that is precisely what the tricks exploit.</p>
       <ul>
         <li><strong>Subdomain dressing.</strong> In <span style="font-family:var(--mono)">yourbank.com.account-verify.example</span>, the real domain is <span style="font-family:var(--mono)">account-verify.example</span>. The brand is just a subdomain that anyone may create. Read a hostname right to left.</li>
@@ -100,11 +100,11 @@
         <li><strong>The TLD.</strong> An established brand's primary presence is rarely on a novelty extension. This is a weak signal on its own and a strong one in combination.</li>
       </ul>
 
-      <h2>Step 2: the registration record</h2>
+      <h2 id="step-2-the-registration-record">Step 2: the registration record</h2>
       <p>Look up RDAP. You are after four things: when it was created, when it was last updated, which registrar sold it, and what status codes are set. A domain created days ago that claims to be an established business is the most reliable single finding in this entire process.</p>
       <p>Note also what you will <em>not</em> get, a name. Redaction is the norm since 2018 and is not itself suspicious. The <a href="/guides/whois-rdap-explained.html">WHOIS and RDAP guide</a> covers how to read the record properly, including why an old creation date can be bought.</p>
 
-      <h2>Step 3: DNS</h2>
+      <h2 id="step-3-dns">Step 3: DNS</h2>
       <p>Pull the zone's records and read them as a description of how much infrastructure actually exists behind the name.</p>
       <ul>
         <li><strong>A and AAAA</strong>: where it resolves, and whether that is a CDN standing in front of something else.</li>
@@ -114,14 +114,14 @@
       </ul>
       <p>The <a href="/guides/dns-records-explained.html">DNS guide</a> goes through each type and what it gives away.</p>
 
-      <h2>Step 4: the mail posture</h2>
+      <h2 id="step-4-the-mail-posture">Step 4: the mail posture</h2>
       <p>Check SPF and DMARC specifically. A domain impersonating a bank, with no DMARC policy and a permissive SPF record, is built to send mail as itself and was never configured to stop anyone else doing the same. A domain with a carefully maintained <span style="font-family:var(--mono)">p=reject</span> policy has had someone competent working on it, which does not prove legitimacy but does change the picture. See <a href="/guides/spf-dkim-dmarc-explained.html">SPF, DKIM and DMARC</a>.</p>
 
-      <h2>Step 5: the hosting</h2>
+      <h2 id="step-5-the-hosting">Step 5: the hosting</h2>
       <p>Resolve the address and identify the network: the ASN, the organisation, and whether this is mainstream cloud, a small reseller, or a provider with a reputation for not answering abuse reports. Check reverse DNS, and forward-confirm it.</p>
       <p>Keep expectations calibrated. Shared hosting and CDNs mean an address is usually shared with thousands of unrelated sites, so "this IP also hosts something bad" is nearly meaningless on its own. Our <a href="/guides/ip-geolocation-reverse-dns.html">IP guide</a> covers what an address does and does not establish.</p>
 
-      <h2>Step 6: the certificate</h2>
+      <h2 id="step-6-the-certificate">Step 6: the certificate</h2>
       <p>Every publicly trusted certificate is logged to certificate transparency, and those logs are searchable by domain. Two things come out of that.</p>
       <p>First, the issuance date. A certificate issued three days ago for a site claiming a decade of trading is the same finding as a fresh registration, arrived at independently. Second, the other names: certificates list every hostname they cover, and searching the logs for a domain returns subdomains that are otherwise undiscoverable, which often exposes the staging environment, the mail host, or the rest of an operator's estate.</p>
 
@@ -129,7 +129,7 @@
         <p><strong>The padlock proves nothing about honesty.</strong> A domain-validated certificate attests to one fact: whoever requested it could demonstrate control of the domain. It is free, it is automated, and phishing sites have it because every site has it. HTTPS means the connection is encrypted, not that the destination is trustworthy, and the widespread advice to "look for the padlock" now does more harm than good.</p>
       </div>
 
-      <h2>Step 7: the content, viewed safely</h2>
+      <h2 id="step-7-the-content-viewed-safely">Step 7: the content, viewed safely</h2>
       <p>Once you are looking at the page in something disposable, the tells are mostly about effort and reuse:</p>
       <ul>
         <li><strong>Copied assets.</strong> Logos hotlinked from the real company, or images that reverse-search back to stock libraries and other businesses.</li>
@@ -140,10 +140,10 @@
         <li><strong>Reviews that all arrived at once</strong>, in the same register, within days of the domain being registered.</li>
       </ul>
 
-      <h2>Step 8: the history</h2>
+      <h2 id="step-8-the-history">Step 8: the history</h2>
       <p>Web archives let you see what the domain looked like before. Two patterns matter. A site with no archived history at all, presenting itself as long-established, is contradicting itself. And a domain whose archive shows a completely different business until recently has been re-purposed, either bought for its age or taken over, and both are worth knowing.</p>
 
-      <h2>Putting it together</h2>
+      <h2 id="putting-it-together">Putting it together</h2>
       <p>No single finding decides it. What decides it is the combination, and these combinations are the ones that recur:</p>
       <ul>
         <li><strong>Very likely fraudulent:</strong> registered within weeks, certificate issued at the same time, brand name in a subdomain or a typo variant, no archived history, legal pages naming an unrelated company, no verifiable registration, payment or credentials requested.</li>
@@ -155,7 +155,7 @@
         <p><strong>Write down what you checked, not just what you concluded.</strong> Domains change, and a judgement with no record behind it cannot be revisited when it turns out to be wrong. Note each finding with the date you observed it. Our guide to <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a> covers the standard of evidence this needs to meet before anyone acts on it.</p>
       </div>
 
-      <h2>What not to do</h2>
+      <h2 id="what-not-to-do">What not to do</h2>
       <p>Do not submit fake credentials to see what happens, it can be an offence, it contaminates the evidence, and some kits harvest whatever they receive regardless. Do not scan, probe or attack the site; you will have moved from investigating to intruding, and the line is not where people assume it is. Do not publish an accusation against a named individual on the strength of infrastructure signals, which associate machines rather than people.</p>
       <p>Do report it. The registrar's abuse contact is published in the registration record precisely for this, the hosting provider has one too, and browser safe-browsing programmes and national reporting bodies take submissions. A phishing site taken down an hour earlier is a real result.</p>
 
@@ -173,7 +173,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dinvestigate_a_domain" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/whois-rdap-explained.html">reading a domain's registration record</a></li>
         <li><a href="/guides/dns-records-explained.html">what each DNS record type actually does</a></li>
@@ -202,11 +202,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

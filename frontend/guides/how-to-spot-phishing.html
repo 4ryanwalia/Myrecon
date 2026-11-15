@@ -90,14 +90,14 @@
         <figcaption style="margin-top:.65rem;color:var(--muted,#53627b);font-size:.9rem">Read the hostname from the right. A familiar brand name on the left can still lead to a different site.</figcaption>
       </figure>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>Why the old checklist fails</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="why-the-old-checklist-fails">Why the old checklist fails</h2>
       <p>Three of the four things people were taught to look for have been neutralised.</p>
       <p><strong>Spelling and grammar</strong> were never a property of phishing; they were a property of attackers writing in a second language. Fluent text is now available to anyone at no cost, and the deliberately clumsy message, which did exist, as a filter to select the most credulous recipients, has largely gone with it.</p>
       <p><strong>The padlock</strong> means the connection is encrypted. It has never meant the destination is honest. Certificates are free and automatic, so essentially every phishing page has one, and teaching the padlock as a trust signal actively helps the attacker.</p>
       <p><strong>Generic greetings</strong> are unusual now. Enough personal data has leaked that "Dear Customer" has been replaced with your name, your city, the last four digits of a card, or a reference to a real recent order.</p>
       <p>What has not changed is the shape of the request.</p>
 
-      <h2>The shape that still gives it away</h2>
+      <h2 id="the-shape-that-still-gives-it-away">The shape that still gives it away</h2>
       <p>Nearly every phishing message combines three elements. Any one alone is ordinary. Together they are the pattern.</p>
       <ol>
         <li><strong>A reason to act now.</strong> An account closing, a payment failing, a delivery held, a login from an unfamiliar country, a bonus expiring. Urgency exists to stop you checking.</li>
@@ -106,7 +106,7 @@
       </ol>
       <p>If a message wants you to do something final, quickly, by a route it chose, treat it as hostile until proven otherwise, no matter how correct it looks.</p>
 
-      <h2>Reading a link before you click it</h2>
+      <h2 id="reading-a-link-before-you-click-it">Reading a link before you click it</h2>
       <p>Hover over it on a computer, or press and hold on a phone, and read the address that appears. The only part that matters is the registrable domain: the label directly before the top-level domain. Read hostnames right to left.</p>
       <ul>
         <li><span style="font-family:var(--mono)">accounts.yourbank.com</span>, a subdomain of the real domain. Fine.</li>
@@ -120,7 +120,7 @@
         <p><strong>The one habit that defeats most of this: never authenticate from a link.</strong> If a message says there is a problem with an account, close it and reach the organisation the way you normally do, your own bookmark, the app on your phone, the number on the back of your card. If the problem is real it will be waiting for you there. This single rule neutralises almost every phishing message regardless of how well it is made, because it removes the attacker's chosen route.</p>
       </div>
 
-      <h2>The current techniques worth recognising</h2>
+      <h2 id="the-current-techniques-worth-recognising">The current techniques worth recognising</h2>
 
       <h3>Fake verification pages that ask you to run a command</h3>
       <p>You land on a page showing what looks like a CAPTCHA or a document that will not load. It instructs you to press a keyboard shortcut and paste something to prove you are human, or to fix the error. The clipboard has already been filled with a command that downloads and runs malware, and because you typed it yourself, no download warning appears.</p>
@@ -138,10 +138,10 @@
       <h3>Callback phishing</h3>
       <p>An invoice or subscription renewal for something you did not buy, with no link at all, just a number to call and cancel. The number reaches the attacker, who talks you into installing remote access software. The absence of a link is what gets it past filters, and what makes it feel safe.</p>
 
-      <h2>Checking a sender properly</h2>
+      <h2 id="checking-a-sender-properly">Checking a sender properly</h2>
       <p>Expand the actual address rather than trusting the display name, which is free text and set by the sender. Then check the reply-to, which is where your response actually goes and is frequently different. In a mail client that shows headers, an authentication summary indicating that SPF or DMARC failed is a strong signal, but note that it passing proves only that the message came from the domain it claims, and a lookalike domain passes its own checks perfectly. The <a href="/guides/spf-dkim-dmarc-explained.html">email authentication guide</a> explains exactly what those results cover.</p>
 
-      <h2>If you have already clicked</h2>
+      <h2 id="if-you-have-already-clicked">If you have already clicked</h2>
       <p>Speed matters more than thoroughness, and the order matters.</p>
       <ol>
         <li><strong>If you entered a password:</strong> change it immediately from a different, trusted device, and change it anywhere you reused it. Then sign out of all sessions on that account, a stolen session cookie keeps working after a password change, and this is the step people miss.</li>
@@ -157,7 +157,7 @@
         <p><strong>Phishing that follows a breach is more convincing, because it is informed.</strong> When a company is breached, the attacker knows you are a customer, and often what you bought and when. A message that cites a real order, days after a real incident, will get past people who would have deleted a generic one. Checking <a href="/#tool">what your address is exposed in</a> tells you which brands you should expect to be impersonated to you.</p>
       </div>
 
-      <h2>The long-term fix</h2>
+      <h2 id="the-long-term-fix">The long-term fix</h2>
       <p>Two changes make most credential phishing structurally impossible rather than merely detectable. A <strong>password manager</strong> will not autofill on a lookalike domain, because it matches the domain exactly, it declines to fill when you would have typed it in anyway, and that refusal is a warning you get before you make the mistake. And <strong>passkeys or security keys</strong> bind the credential to the real site's domain, so a convincing replica cannot use them at all; there is nothing to phish, because there is no secret you can be persuaded to hand over. Both are covered in <a href="/guides/two-factor-authentication.html">the two-factor guide</a>.</p>
 
       <!-- After the guide, never inside it. Someone who has just read how to
@@ -170,7 +170,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dhow_to_spot_phishing" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/investigate-a-domain.html">how to investigate a suspicious domain safely</a></li>
         <li><a href="/guides/two-factor-authentication.html">which second factors actually resist phishing</a></li>
@@ -199,11 +199,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

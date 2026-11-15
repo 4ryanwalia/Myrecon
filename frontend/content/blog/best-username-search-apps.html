@@ -1,0 +1,163 @@
+<!--
+{
+  "title": "10 Best Username Search Apps & Tools, Ranked | MyRecon",
+  "headline": "The 10 Best Username Search Apps and Tools, Ranked for 2026",
+  "description": "Find where a username is used across social media with these 10 username search apps and tools. Mobile, browser and command-line options, ranked by use case.",
+  "category": "Username search",
+  "datePublished": "2026-11-15",
+  "dateModified": "2026-11-15",
+  "editorial_review": "2026-11-15",
+  "keywords": ["best username search app", "username search app", "username lookup app", "find accounts by username", "username search tool", "search username across social media"],
+  "faq": [
+    {"question": "What is the best app to search a username across social media?", "answer": "For an Android phone we rank MyRecon first, and we publish it: it sweeps hundreds of sites from the handset and labels each result by confidence. On a laptop, Maigret has the largest open-source site list, and WhatsMyName is the best no-install web option."},
+    {"question": "Why do username search tools show accounts that do not exist?", "answer": "Many sites return the same page for every handle, real or invented, so a simple status check reports a match that is not there. Good tools compare against a control handle or look for profile-specific content, and say unknown when they cannot tell."},
+    {"question": "Is a username availability checker the same as a username search?", "answer": "No. Availability checkers such as Namechk and Namecheckup tell you whether a name can be registered. A username search looks for evidence of an existing public profile. A taken name does not always mean a visible account."},
+    {"question": "Does the same username mean the same person?", "answer": "No. Common handles are reused by unrelated people, and impersonators copy names on purpose. Treat a match as a lead and confirm it with independent signals such as the same photo, bio link or writing style."}
+  ],
+  "tools": [
+    {"name": "MyRecon", "url": "https://play.google.com/store/apps/details?id=com.Myrecon.osint", "description": "Android and web username sweep with confidence labels and source links."},
+    {"name": "Maigret", "url": "https://github.com/soxoj/maigret", "description": "Open-source command-line username search with a very large site list and reports."},
+    {"name": "WhatsMyName", "url": "https://whatsmyname.app/", "description": "Community site list with a free web interface, archived 9 November 2026."},
+    {"name": "Sherlock", "url": "https://github.com/sherlock-project/sherlock", "description": "The classic open-source command-line username search."},
+    {"name": "Blackbird", "url": "https://github.com/p1ngul1n0/blackbird", "description": "Open-source command-line search by username or email."},
+    {"name": "Social Analyzer", "url": "https://github.com/qeeqbox/social-analyzer", "description": "Open-source profile finder with a local web interface and detection scoring."},
+    {"name": "Instant Username Search", "url": "https://instantusername.com/", "description": "Fast web availability check as you type."},
+    {"name": "Namechk", "url": "https://namechk.com/", "description": "Username and domain availability checker for brands."},
+    {"name": "Namecheckup", "url": "https://namecheckup.com/", "description": "Brand name availability across social networks and domains."},
+    {"name": "Google site search", "url": "https://www.google.com/", "description": "Manual site: and quoted searches that find mentions a profile checker misses."}
+  ]
+}
+-->
+<p class="lead"><strong>Quick answer:</strong> to find where a username is used, we rank <strong>MyRecon</strong> first for phones (it runs the sweep on your device and labels every result), <strong>Maigret</strong> first for laptops with Python, and <strong>WhatsMyName</strong> for a quick no-install web check. Availability checkers like Namechk answer a different question.</p>
+
+<div class="callout"><p><strong>Publisher disclosure:</strong> MyRecon publishes this ranking and places its own app first. Our criterion is the reader who searched "username search app": someone who wants results on a phone, with source links, without installing Python. On raw site coverage, Maigret's open-source list is larger than ours on the free tier, and we say so in its entry. No tool paid to appear and there are no affiliate links.</p></div>
+
+<h2>What makes a username search tool good</h2>
+<p>Every username search tool does the same basic thing: build a profile address for each site, request it, and decide whether an account lives there. The difference between a useful tool and a noisy one is almost entirely in that last step.</p>
+<p>Plenty of sites answer "200 OK" for every handle anyone types, real or not. Others redirect to a login page, serve a soft "not found" page with a success status, or block automated requests outright. A tool that counts every 200 as a hit will show you forty "accounts", most of them imaginary. When we measured this on 24 platforms, six returned byte-for-byte identical responses for a real handle and an invented one; the details are in our <a href="/guides/why-username-checkers-report-fake-accounts.html">write-up on fake username matches</a>.</p>
+<p>So we ranked on: <strong>how results are verified</strong> (does the tool say "unknown" when it cannot tell?), <strong>whether it links the source</strong>, <strong>setup effort</strong>, and <strong>coverage</strong>, in that order. A smaller list you can trust beats a giant one you cannot.</p>
+
+<h2>The 10 best username search apps and tools</h2>
+
+<section class="rank-top" aria-label="Number one pick">
+  <div class="rank-top-copy">
+    <span class="rank-badge">#1 username search app</span>
+    <h3>1. MyRecon: the username sweep that runs on your phone</h3>
+    <p>MyRecon checks social, developer, gaming, marketplace, forum and portfolio sites concurrently and shows confirmed profiles as they arrive. Each one is labelled by confidence, and the sites it could not confirm are listed as unknown with the reason, rather than quietly counted as matches.</p>
+    <p>On Android the sweep runs from the handset itself. Platforms rate-limit cloud servers much harder than mobile connections, so checks a hosted tool gets blocked on are usually answered for a phone. There is also a free <a href="/#tool">browser version</a> covering 100+ platforms for guests and 500+ for signed-in users.</p>
+    <ol class="rank-steps">
+      <li>Install MyRecon from Google Play, no account needed.</li>
+      <li>Enter the handle and start the sweep.</li>
+      <li>Open each found profile to confirm it, then pivot to the breach check.</li>
+    </ol>
+    <p class="rank-cta"><a class="btn" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_listicle_username">Get MyRecon on Google Play</a> <a href="/#tool">or search in your browser</a></p>
+    <small>Free download · Android 11+ · Contains ads</small>
+  </div>
+  <div class="rank-phone" aria-hidden="true">
+    <div class="rank-screen">
+      <div class="rank-screen-bar"><span>MyRecon</span><span>Username</span></div>
+      <div class="rank-input">@pixelfox_88<span class="rank-caret"></span></div>
+      <span class="rank-scan"></span>
+      <ul>
+        <li><b>Instagram</b><em class="ok">FOUND</em></li>
+        <li><b>GitHub</b><em class="no">NONE</em></li>
+        <li><b>Chess.com</b><em class="ok">FOUND</em></li>
+        <li><b>TikTok</b><em class="unk">UNKNOWN</em></li>
+        <li><b>Reddit</b><em class="ok">FOUND</em></li>
+        <li><b>Linked</b><em class="unk">2 LIKELY</em></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<p><strong>Where it falls short:</strong> MyRecon only reports public profiles; private accounts stay private. The free app shows ads, and the largest site tier on the web is part of Pro. If you want to script hundreds of handles, a command-line tool is the better fit.</p>
+
+<div class="rank-list">
+  <article class="rank-card"><div class="rank-num">2</div><div>
+    <h3><a href="https://github.com/soxoj/maigret">Maigret</a></h3>
+    <p>Maigret began as a Sherlock fork and grew into the most thorough open-source username tool. Its site list is far longer than Sherlock's, it can parse profile pages for extra identifiers and follow them recursively, and it writes HTML and PDF reports. The cost is setup: Python, a terminal, and runs that can take a while. We compared it with MyRecon and Sherlock in <a href="/blog/sherlock-vs-maigret-vs-myrecon.html">Sherlock vs Maigret vs MyRecon</a>.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Deep investigations with reports</dd></div><div><dt>Runs on</dt><dd>Python CLI (laptop or Termux)</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">3</div><div>
+    <h3><a href="https://whatsmyname.app/">WhatsMyName</a></h3>
+    <p>WhatsMyName is a community-built list of sites with detection rules for each, and a free web app that runs the checks in the browser. Many other tools borrow its data. It is a quick no-install option on a laptop, though some checks are blocked by browser security rules. The project was archived on 9 November 2026, so its 691-site list is no longer updated and its checks will drift as sites change (<a href="/whatsmyname-alternatives.html">what that means</a>).</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Quick checks without installing</dd></div><div><dt>Runs on</dt><dd>Web</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">4</div><div>
+    <h3><a href="https://github.com/sherlock-project/sherlock">Sherlock</a></h3>
+    <p>The tool that made username search popular. Sherlock is simple, fast and well documented, which makes it the best learning tool. Its detection is lighter than Maigret's, so expect to verify more of its hits by hand. See <a href="/vs/sherlock">MyRecon vs Sherlock</a> for the differences.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Learning and quick scripted checks</dd></div><div><dt>Runs on</dt><dd>Python CLI</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">5</div><div>
+    <h3><a href="https://github.com/p1ngul1n0/blackbird">Blackbird</a></h3>
+    <p>Blackbird searches by username or email and uses the WhatsMyName dataset under the hood, with export options. It is a good middle ground when you want email and handle checks from one command-line tool.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Username plus email from one CLI</dd></div><div><dt>Runs on</dt><dd>Python CLI</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">6</div><div>
+    <h3><a href="https://github.com/qeeqbox/social-analyzer">Social Analyzer</a></h3>
+    <p>Social Analyzer runs as a local web app or command line, scores each detection, and can try name variations. Its interface suits people who want a visual result page but are happy to self-host.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Self-hosted visual results</dd></div><div><dt>Runs on</dt><dd>Node.js or Python, local web UI</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">7</div><div>
+    <h3><a href="https://instantusername.com/">Instant Username Search</a></h3>
+    <p>Type a name and see availability across popular sites as you type. It is built for picking a handle, not for research, but the speed makes it handy for a first glance.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Choosing a new handle</dd></div><div><dt>Runs on</dt><dd>Web</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">8</div><div>
+    <h3><a href="https://namechk.com/">Namechk</a></h3>
+    <p>Namechk checks a name against social networks and domain extensions at once, which suits brands securing a name everywhere. Remember that "taken" is not the same as "a public profile exists".</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Brand name and domain availability</dd></div><div><dt>Runs on</dt><dd>Web</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">9</div><div>
+    <h3><a href="https://namecheckup.com/">Namecheckup</a></h3>
+    <p>Namecheckup is another brand-focused availability checker covering social networks and domain names. Useful for businesses; not designed for investigating an existing account.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Brand protection planning</dd></div><div><dt>Runs on</dt><dd>Web</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
+  </div></article>
+  <article class="rank-card"><div class="rank-num">10</div><div>
+    <h3><a href="https://www.google.com/">Google site search</a></h3>
+    <p>No list replaces a search engine. Queries like <code>"pixelfox_88" -site:instagram.com</code> find forum posts, comments and old mentions that profile checkers never look for. Our <a href="/osint-cheat-sheet.html">OSINT cheat sheet</a> lists the operators worth knowing.</p>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Mentions outside profile pages</dd></div><div><dt>Runs on</dt><dd>Any browser</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
+  </div></article>
+</div>
+
+<h2>Side-by-side comparison</h2>
+<table>
+  <caption>Username search tools compared, as of 15 November 2026</caption>
+  <thead><tr><th>Tool</th><th>Type</th><th>Phone friendly</th><th>Says "unknown" when unsure</th></tr></thead>
+  <tbody>
+    <tr><td>MyRecon</td><td>Profile search</td><td>Yes, native Android app</td><td>Yes</td></tr>
+    <tr><td>Maigret</td><td>Profile search</td><td>Only via Termux</td><td>Partly, configurable</td></tr>
+    <tr><td>WhatsMyName</td><td>Profile search</td><td>Mobile browser</td><td>Per-site rules</td></tr>
+    <tr><td>Sherlock</td><td>Profile search</td><td>Only via Termux</td><td>Limited</td></tr>
+    <tr><td>Blackbird</td><td>Profile search</td><td>Only via Termux</td><td>Per-site rules</td></tr>
+    <tr><td>Social Analyzer</td><td>Profile search</td><td>No</td><td>Scored detections</td></tr>
+    <tr><td>Instant Username Search</td><td>Availability</td><td>Mobile browser</td><td>Not applicable</td></tr>
+    <tr><td>Namechk</td><td>Availability</td><td>Mobile browser</td><td>Not applicable</td></tr>
+    <tr><td>Namecheckup</td><td>Availability</td><td>Mobile browser</td><td>Not applicable</td></tr>
+    <tr><td>Google site search</td><td>Search engine</td><td>Yes</td><td>Not applicable</td></tr>
+  </tbody>
+</table>
+
+<h2>A five-minute username search that holds up</h2>
+<ol>
+  <li><strong>Write down variations.</strong> People add numbers, underscores and dots. Search the obvious three or four forms, not just one.</li>
+  <li><strong>Run one profile search.</strong> MyRecon on a phone, Maigret on a laptop. Do not stack five tools that use the same site list; you will just see the same false positives five times.</li>
+  <li><strong>Open every hit you care about.</strong> Check the profile photo, bio, links and join date. Two independent matches beat one exact handle.</li>
+  <li><strong>Search the handle in a search engine.</strong> Quoted, with and without the main sites excluded.</li>
+  <li><strong>Note what you could not check.</strong> An "unknown" is not a "no".</li>
+</ol>
+<p>For your own handles, our <a href="/blog/find-your-own-old-accounts.html">old-accounts guide</a> walks through recovery and deletion, and <a href="/blog/username-reuse-privacy.html">username reuse and privacy</a> explains why one handle everywhere makes you easy to map. For the slower, evidence-first version of this topic, read <a href="/blog/best-username-search-tools.html">choosing a username search tool by evidence</a>.</p>
+
+<h2>Use username search responsibly</h2>
+<p>Username search is great for auditing yourself, finding forgotten accounts, catching impersonators and verifying someone before you trust them. It is not a way to keep tabs on a person who has stepped away from you. If a search is about control rather than safety, stop.</p>
+
+<h2>Frequently asked questions</h2>
+<h3>What is the best app to search a username across social media?</h3>
+<p>For an Android phone we rank MyRecon first, and we publish it: it sweeps hundreds of sites from the handset and labels each result by confidence. On a laptop, Maigret has the largest open-source site list, and WhatsMyName is the best no-install web option.</p>
+<h3>Why do username search tools show accounts that do not exist?</h3>
+<p>Many sites return the same page for every handle, real or invented, so a simple status check reports a match that is not there. Good tools compare against a control handle or look for profile-specific content, and say unknown when they cannot tell.</p>
+<h3>Is a username availability checker the same as a username search?</h3>
+<p>No. Availability checkers such as Namechk and Namecheckup tell you whether a name can be registered. A username search looks for evidence of an existing public profile. A taken name does not always mean a visible account.</p>
+<h3>Does the same username mean the same person?</h3>
+<p>No. Common handles are reused by unrelated people, and impersonators copy names on purpose. Treat a match as a lead and confirm it with independent signals such as the same photo, bio link or writing style.</p>
+<p>More rankings: <a href="/blog/best-osint-apps-for-android.html">best OSINT apps for Android</a>, <a href="/blog/best-email-osint-tools.html">best email OSINT tools</a>, <a href="/blog/best-sherlock-alternatives.html">best Sherlock alternatives</a> and <a href="/blog/best-deep-search-tools.html">best deep search tools</a>.</p>

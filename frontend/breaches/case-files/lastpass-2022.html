@@ -82,7 +82,7 @@
           <h1>LastPass, 2022: the vaults were stolen, and then attacked offline</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>LastPass data breach</h2><p>An engineer&#39;s home media server was the way into a password manager&#39;s cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="lastpass-data-breach">LastPass data breach</h2><p>An engineer&#39;s home media server was the way into a password manager&#39;s cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>backups of customer vaults, affecting tens of millions of accounts</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: backups of customer vaults, affecting tens of millions of accounts.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">A password manager is a concentration of risk accepted deliberately: you put everything in one vault because one strong secret protected properly beats a hundred weak ones scattered about. LastPass is the case that shows what happens when that vault leaves the building, and why the encryption holding is not the same as being safe.</p>
 
-<h2>Two incidents, one chain</h2>
+<h2 id="two-incidents-one-chain">Two incidents, one chain</h2>
 
 <p><strong>August 2022.</strong> An attacker compromised a developer's account and took source code and technical documentation from a development environment. LastPass said at the time that customer data and vaults were not affected, which was true of that incident.</p>
 
@@ -114,7 +114,7 @@
   <p><strong>The perimeter question this raises.</strong> The intrusion that mattered did not happen on a corporate network, a company laptop, or any system LastPass monitored. It happened on a home media server belonging to an employee. For a small number of people in any organisation, the ones who hold keys rather than data, the blast radius of their personal computing is the entire company, and almost no security programme is scoped that way.</p>
 </div>
 
-<h2>Why a stolen vault is worse than it sounds</h2>
+<h2 id="why-a-stolen-vault-is-worse-than-it">Why a stolen vault is worse than it sounds</h2>
 
 <p>The vault contents were encrypted with AES-256, using a key derived from each user's master password. That scheme was not broken, and LastPass was right to say so. It is also not the end of the analysis.</p>
 
@@ -128,19 +128,19 @@
 
 <p>And the unencrypted metadata did real work independent of cracking. Knowing that a specific named person, at a specific address, holds accounts at particular cryptocurrency exchanges lets an attacker decide which vaults are worth spending compute on.</p>
 
-<h2>The downstream thefts</h2>
+<h2 id="the-downstream-thefts">The downstream thefts</h2>
 
 <p>From 2023 onwards, independent researchers tracking cryptocurrency theft identified a recurring pattern: victims who lost funds from self-custodied wallets had stored seed phrases or exchange credentials in LastPass. The totals attributed to this cluster have run well into the hundreds of millions of dollars, and US forfeiture filings have referenced a 2022 password manager compromise in related proceedings.</p>
 
 <p>The timing is the instructive part. Thefts continued long after the breach, because cracking a vault takes as long as it takes, and a seed phrase written into a vault in 2019 is still valid whenever the vault finally opens.</p>
 
-<h2>The disclosure problem</h2>
+<h2 id="the-disclosure-problem">The disclosure problem</h2>
 
 <p>LastPass's communications drew as much criticism as the breach. The August notice said customer data was not affected. A November update said an incident had occurred using information from August. The December update, published just before the holidays, revealed that customer vault backups had been copied. The detail about the engineer's home computer came later still.</p>
 
 <p>Each statement was defensible at the moment it was written. The cumulative effect was that customers learned the severity in stages over four months, which is precisely the pattern that destroys trust: not one lie, but a sequence of technically accurate statements that each turned out to be the floor rather than the ceiling.</p>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Iteration counts became a visible setting.</strong> Password managers raised defaults sharply and began prompting users to upgrade old accounts. A parameter that had been an implementation detail became something users were told to check.</p>
 
@@ -148,7 +148,7 @@
 
 <p><strong>"Encrypted" stopped being an acceptable one-word answer.</strong> The right questions are now: encrypted with what, derived how, how many iterations, and what metadata sits outside the encryption.</p>
 
-<h2>If you were a LastPass user</h2>
+<h2 id="if-you-were-a-lastpass-user">If you were a LastPass user</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Assume your vault as of late 2022 is in someone's possession.</strong> That is the only safe assumption, and it does not change with time.</span></label>
@@ -161,7 +161,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -173,7 +173,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Were LastPass passwords decrypted?</h3>
         <p>Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall.</p>
@@ -205,7 +205,7 @@
         <li><b>Analysis of cryptocurrency thefts linked to the breach by independent researchers, 2023–2024</b></li>
         <li><b>US Department of Justice forfeiture filings referencing a 2022 password manager compromise, 2024</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/aiims-delhi-2022.html">AIIMS Delhi, 2022: the hospital went back to paper, and the record stayed thin</a></li>
         <li><a href="/breaches/case-files/medibank-2022.html">Medibank, 2022: the company said no, and the data went up anyway</a></li>
@@ -234,11 +234,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

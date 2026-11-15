@@ -85,7 +85,7 @@
 
       <p class="lead">An IP address looks like the most precise thing in an investigation and behaves like the least. It will tell you, reliably, which network an address belongs to and what kind of network that is. The map pin it comes with is an estimate, and treating it as a location has put innocent people through years of trouble.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2>How IP geolocation is actually produced</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2 id="how-ip-geolocation-is-actually-produced">How IP geolocation is actually produced</h2>
       <p>There is no location field in an IP address. Nothing in the protocol encodes geography. Every "IP location" you have ever seen is an inference, assembled by commercial and open databases from a handful of imperfect inputs:</p>
       <ul>
         <li><strong>Registry records.</strong> The regional internet registries, ARIN, RIPE NCC, APNIC, LACNIC, AFRINIC, publish which organisation holds each block and the country it registered from. This is the strongest input and it is why country-level answers are usually right.</li>
@@ -100,7 +100,7 @@
         <p><strong>The default-centroid problem.</strong> When a database knows the country but not the city, it has to return something, and for years the common practice was to return the geographic centre of the country. One rural property in Kansas sat at the centre of the United States and was consequently listed as the location of many hundreds of millions of addresses. The people who lived there spent a decade receiving police visits, threats and accusations over crimes committed by strangers. Nothing about that was a database error in the technical sense: the record said "somewhere in this country" and every tool downstream rendered it as a pin on a house. If a geolocation result lands exactly on a country's centroid, it is telling you it does not know.</p>
       </div>
 
-      <h2>ASN: the part that is actually reliable</h2>
+      <h2 id="asn-the-part-that-is-actually-reliable">ASN: the part that is actually reliable</h2>
       <p>Every routable block belongs to an <strong>autonomous system</strong>: a network with its own number, announcing its own routes. The ASN, and the organisation behind it, is registry data rather than inference, and it is the most dependable thing an address will give you.</p>
       <p>More importantly, it tells you the <em>kind</em> of network, which usually matters more than the place:</p>
       <ul>
@@ -112,7 +112,7 @@
       </ul>
       <p>The distinction between residential and hosting is the single most useful classification in fraud work, and it is derived from ownership records rather than guessed.</p>
 
-      <h2>Reverse DNS, and why it is controlled by someone else</h2>
+      <h2 id="reverse-dns-and-why-it-is-controlled-by">Reverse DNS, and why it is controlled by someone else</h2>
       <p>Forward DNS turns a name into an address. <strong>Reverse DNS</strong> turns an address back into a name, through PTR records published in a special zone derived from the address itself.</p>
       <p>The crucial detail is who may publish there: not the website owner, but whoever holds the IP block, the hosting provider or the ISP. You cannot claim a reverse name for an address you do not control, and that is what makes PTR records evidence rather than assertion.</p>
       <p>What they leak in practice:</p>
@@ -127,7 +127,7 @@
         <p><strong>Forward-confirmed reverse DNS is the check that makes it meaningful.</strong> Take the address, find its PTR name, then look that name up again and see whether it resolves back to the same address. If it does, the two halves are controlled consistently and the name is worth something. If it does not, you have a reverse name that nobody has backed up, and it should carry no weight. This one round trip separates a real identification from a decorative hostname, and it takes seconds.</p>
       </div>
 
-      <h2>Why an address is not a person</h2>
+      <h2 id="why-an-address-is-not-a-person">Why an address is not a person</h2>
       <p>This is the part that matters most, and it is the part that gets skipped.</p>
       <ul>
         <li><strong>Addresses are shared.</strong> Carrier-grade NAT puts hundreds or thousands of subscribers behind one public address at a time. On mobile networks this is the norm, not the exception.</li>
@@ -137,17 +137,17 @@
       </ul>
       <p>The practical rule: an IP address identifies a <em>connection at a moment</em>. Turning that into a person requires records only the provider holds, obtained through a process built for the purpose. Everything short of that is an inference, and it should be written down as one.</p>
 
-      <h2>VPN and proxy detection, and its limits</h2>
+      <h2 id="vpn-and-proxy-detection-and-its-limits">VPN and proxy detection, and its limits</h2>
       <p>Services that flag an address as a VPN or proxy work mostly by enumeration: they subscribe to commercial VPN providers, record the exit addresses, and match against that list, supplemented by the hosting-versus-residential classification above.</p>
       <p>This catches mainstream commercial VPNs reasonably well. It does not catch a private server someone rented and configured themselves, and it increasingly mislabels residential proxy networks, which route traffic through real consumer connections, sometimes with the consent of the person whose bandwidth is being used and sometimes without it. Both failure directions are common enough that a VPN flag belongs in the evidence pile, not at the end of it.</p>
 
-      <h2>IPv6 changes the arithmetic</h2>
+      <h2 id="ipv6-changes-the-arithmetic">IPv6 changes the arithmetic</h2>
       <p>IPv6 allocations are enormous, a single household typically receives a block far larger than the entire IPv4 internet. That has two consequences worth knowing. Sharing is much rarer, so an IPv6 address is a more specific identifier than an IPv4 one. But privacy extensions rotate the address a device uses for outbound connections, often daily, so the specific address is less stable even as the surrounding block stays put. Reason about the prefix, not the full address.</p>
 
-      <h2>Where addresses come from in real work</h2>
+      <h2 id="where-addresses-come-from-in-real-work">Where addresses come from in real work</h2>
       <p>Two sources come up constantly, and both deserve a caveat. Email headers used to carry the sender's own address; major webmail providers have stripped that for years, so a header address now usually identifies the provider's outbound server, not the person. Server logs are the other, and there the address is genuine but subject to every caveat above, proxies, shared addresses, and the gap between an address and an account.</p>
 
-      <h2>A sane order of operations</h2>
+      <h2 id="a-sane-order-of-operations">A sane order of operations</h2>
       <ol>
         <li><strong>Identify the network.</strong> ASN and organisation first. This is the reliable part.</li>
         <li><strong>Classify the connection.</strong> Residential, mobile, hosting, corporate. This determines how to read everything that follows.</li>
@@ -171,7 +171,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dip_geolocation_reverse_dns" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/dns-records-explained.html">what each DNS record type actually does</a></li>
         <li><a href="/guides/verify-an-osint-finding.html">how to verify a finding before acting on it</a></li>
@@ -200,11 +200,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

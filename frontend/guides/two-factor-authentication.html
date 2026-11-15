@@ -85,12 +85,12 @@
 
       <p class="lead">A password is a secret that can be copied without you knowing. Every breach on this site's archive exists because copied secrets keep working. A second factor breaks that, but the methods differ enormously in what they actually stop, and the one most people have is the one that stops the least.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>What a second factor is for</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="what-a-second-factor-is-for">What a second factor is for</h2>
       <p>Authentication factors come in three kinds: something you know, something you have, and something you are. Two-factor authentication means using two different kinds, so that compromising one leaves the attacker still outside.</p>
       <p>The reason this matters so much in practice is narrower than it sounds. The dominant attack against ordinary accounts is not someone guessing your password, it is <strong>credential stuffing</strong>: taking email and password pairs from one company's breach and replaying them, automatically, against hundreds of other services. Any second factor at all defeats that outright, because the attacker has the password and nothing else. That is why enabling the weakest form of 2FA is still a step change from having none.</p>
       <p>What differs between methods is how they hold up against an attacker who is targeting <em>you</em>, in real time.</p>
 
-      <h2>The methods, ranked by what they actually resist</h2>
+      <h2 id="the-methods-ranked-by-what-they-actually-resist">The methods, ranked by what they actually resist</h2>
 
       <h3>1. Passkeys and hardware security keys: the only phishing-resistant option</h3>
       <p>These use public-key cryptography. Your device holds a private key; the service holds the matching public key; logging in means signing a challenge. The secret never leaves the device, so there is nothing to intercept, replay or read out over the phone.</p>
@@ -116,7 +116,7 @@
         <p><strong>The single most valuable change: remove SMS as a recovery path on your email account.</strong> Email is the master key, nearly every other account can be reset through it. An attacker who controls your number does not need your email password, only the reset flow. Where a service allows an authenticator app or a passkey with SMS disabled entirely, that is the configuration worth the ten minutes it takes.</p>
       </div>
 
-      <h2>Where 2FA does not help</h2>
+      <h2 id="where-2fa-does-not-help">Where 2FA does not help</h2>
       <p>Three routes go around it entirely, and knowing them prevents a false sense of completion.</p>
       <ul>
         <li><strong>Stolen session cookies.</strong> After you authenticate, the site gives your browser a token that proves you already did. Malware that steals that token can load it into another browser and be logged in with no password and no second factor, because from the service's perspective authentication already happened. This is why "sign out of all devices" is the urgent step after a device compromise, see <a href="/guides/stealer-logs-explained.html">stealer logs</a>.</li>
@@ -124,12 +124,12 @@
         <li><strong>Consent to something else.</strong> Approving an OAuth application, an app password, or a device that then keeps its own long-lived access. Reviewing connected applications periodically is part of the same job.</li>
       </ul>
 
-      <h2>Recovery codes are the real single point of failure</h2>
+      <h2 id="recovery-codes-are-the-real-single-point-of">Recovery codes are the real single point of failure</h2>
       <p>When you enable 2FA you are usually shown a list of one-time backup codes. These bypass the second factor completely, by design.</p>
       <p>Two failures follow from ignoring them. Losing them along with your phone means losing the account permanently, with a passkey or an authenticator app and no backup, there may be no human anywhere who can restore it. And storing them badly means storing a full bypass: in a note in the same email account, or in a file called <span style="font-family:var(--mono)">codes.txt</span>, they are simply a password with extra steps.</p>
       <p>Store them in a password manager under a different master password, or print them and keep the paper where you keep documents. Then delete the copy in your downloads folder.</p>
 
-      <h2>What to enable, in order</h2>
+      <h2 id="what-to-enable-in-order">What to enable, in order</h2>
       <ol>
         <li><strong>Your primary email account.</strong> Everything resets through it. Strongest method available, SMS removed as a fallback.</li>
         <li><strong>Your password manager.</strong> The vault is the rest of your life.</li>
@@ -143,7 +143,7 @@
         <p><strong>Enrol two methods on anything important, then test the second one.</strong> A passkey and an authenticator app, or two hardware keys. The moment a single device is both your only factor and your only recovery route, an ordinary accident, a dropped phone, a wiped device, a stolen bag, becomes permanent loss of the account.</p>
       </div>
 
-      <h2>Passkeys are replacing the whole arrangement</h2>
+      <h2 id="passkeys-are-replacing-the-whole-arrangement">Passkeys are replacing the whole arrangement</h2>
       <p>It is worth being clear about where this is going. A passkey is not a second factor bolted onto a password; it replaces the password entirely, with the device unlock standing in for the thing you know. There is no shared secret on the server, so a breach of the service cannot leak anything that logs anyone in, the public key it stores is useless to an attacker. And because the credential is bound to the real domain, the most common attack against ordinary people stops being possible rather than becoming less likely.</p>
       <p>The rollout is uneven and the recovery story is still the weak part, which is why backup methods and printed codes remain necessary. But where a service offers a passkey, taking it is the single largest security improvement available to an individual today.</p>
 
@@ -161,7 +161,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dtwo_factor_authentication" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/strong-passwords-guide.html">passwords worth having, and managing them</a></li>
         <li><a href="/guides/how-to-spot-phishing.html">the phishing that targets second factors</a></li>
@@ -190,11 +190,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

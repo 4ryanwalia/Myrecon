@@ -291,6 +291,22 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
     <p>MyRecon solves this by comparing every query against an impossible synthetic control handle. If a platform returns identical responses for both a real user and a non-existent control handle, MyRecon flags the response rather than falsely claiming an account was found. Read our research on <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report fake accounts</a>.</p>
   </section>
   <section>
+    <h2>How do you corroborate a username match?</h2>
+    <p>A matching handle is a lead, not proof that two accounts belong to the same person. Before you treat a match as the same owner, look for at least one of these independent signals:</p>
+    <ul>
+      <li><strong>Cross-linked bios:</strong> one profile links to the other, or both link to the same personal site or verified handle.</li>
+      <li><strong>Matching images:</strong> the same avatar or photo crop appears on both accounts.</li>
+      <li><strong>Consistent timelines:</strong> creation dates and early posts fit one person's history. A 2012 account about college and a 2024 account run by a teenager are probably different people.</li>
+      <li><strong>Writing and activity patterns:</strong> the same phrasing, posting hours and communities across both accounts.</li>
+    </ul>
+    <p>See <a href="/guides/verify-osint-account-matches.html">how to verify OSINT account matches</a> for the full review checklist.</p>
+  </section>
+  <section>
+    <h2>Worked example: a reused hobby handle</h2>
+    <p>Say you used <code>example_handle_27</code> on a forum and a photo service years ago. A lookup now returns those two pages and a third profile on another service. Your saved logins confirm the forum and your signed-in session confirms the photo account. You have no ownership evidence for the third result, so it stays unconfirmed. You can clean up the first two without assigning a stranger's information to yourself.</p>
+    <p>The example is illustrative. A useful audit counts completed corrections, not matching URLs. Keep your notes private, store only the evidence you need, and revisit unresolved entries only when new information would change what you do.</p>
+  </section>
+  <section>
     <h2>Related OSINT investigation tools</h2>
     <ul>
       <li><a href="/free-osint-tool.html">Free OSINT tool and online investigation platform</a></li>
@@ -301,8 +317,8 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
       <li><a href="/goal.html">Digital footprint goal &amp; privacy audit roadmap</a></li>
       <li><a href="/deep-search.html">Deep Search: public comments and mentions</a></li>
       <li><a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search workflow comparison</a></li>
-      <li><a href="/blog/reverse-username-lookup-guide.html">Complete reverse username lookup guide (2026)</a></li>
-      <li><a href="/blog/best-osint-tools-username-search-comparison.html">Top 8 OSINT username tools compared</a></li>
+      <li><a href="/blog/best-username-search-tools.html">Best username search tools: evidence and workflow</a></li>
+      <li><a href="/guides/verify-osint-account-matches.html">How to verify OSINT account matches</a></li>
       <li><a href="/vs/sherlock">MyRecon vs Sherlock comparison</a></li>
       <li><a href="/vs/dehashed">MyRecon vs DeHashed comparison</a></li>
       <li><a href="/vs/leakcheck">MyRecon vs LeakCheck comparison</a></li>

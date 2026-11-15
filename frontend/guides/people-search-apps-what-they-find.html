@@ -87,37 +87,37 @@
       <p class="lead">App stores carry hundreds of them: search anyone by name, photo or number, powered by AI, results in seconds. Several have tens of millions of installs. Before you pay for one, it is worth understanding what such an app can possibly know, because the ceiling is set by what is published on the open web, and no amount of AI raises it.</p>
 
       <section class="key-finding">
-        <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>The short answer</h2>
+        <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="the-short-answer">The short answer</h2>
         <p><strong>A people-search app can only show you what is already publicly readable.</strong> It cannot see private accounts, direct messages, deleted posts, likes, follower lists or location history, because none of that is published anywhere it could read. What it can do is gather public fragments faster than you would by hand, which is genuinely useful, and is a much smaller promise than most of these listings make.</p>
         <p class="method">Everything below is checkable before you spend anything: two searches inside the app, and four things to read on its store listing.</p>
       </section>
 
-      <h2>Where the data actually comes from</h2>
+      <h2 id="where-the-data-actually-comes-from">Where the data actually comes from</h2>
       <p>Strip the interface away and almost every one of these products draws on the same three sources.</p>
       <p><strong>Public web search.</strong> The app runs queries against a search index, often the same operators you could type yourself, and formats the hits as a profile. This is the bulk of what most of them do, and it is why results for a common name are so often about somebody else entirely.</p>
       <p><strong>Platform pages that are public by design.</strong> A profile URL that loads for a logged-out visitor is readable by anything. That includes a great many social, developer and forum accounts. This is real data, and it is free.</p>
       <p><strong>Data-broker records, where the app pays for them.</strong> Aggregated marketing and public-record data, assembled and resold. Coverage is heavily skewed by country, thin in most of the world, deeper in the United States, where certain public records are genuinely public. The records are also frequently stale or mismatched, because merging people by name is error-prone and nobody in the chain is penalised for getting it wrong.</p>
       <p>None of those three has access to anything behind a login. That is the whole ceiling.</p>
 
-      <h2>The two-minute test</h2>
+      <h2 id="the-two-minute-test">The two-minute test</h2>
       <p>You can check any of these tools before paying, and it takes two searches.</p>
       <p><strong>First, search for something that cannot exist.</strong> Type a string nobody would ever have registered, random letters and digits. We use <code>zzqnope99123xqq</code>. If the app returns profiles, a match count, or a confident-looking dossier for an identity you invented ten seconds ago, it is not detecting people. It is generating output regardless of input, and every result it has ever shown you is suspect for the same reason.</p>
       <p>This is not a hypothetical failure. We measured it on the underlying mechanism: <a href="/guides/why-username-checkers-report-fake-accounts.html">six of 24 platforms return a byte-for-byte identical response for a real handle and an invented one</a>, so any tool treating a page load as proof of an account will confidently report accounts that were never there.</p>
       <p><strong>Second, search for yourself.</strong> You are the only subject whose correct answer you already know. Go through what it reports and ask of each item: is this true, and could I have found it in five minutes with a search engine? A tool earns its price on the things that survive both questions.</p>
 
-      <h2>Four things to read on the store listing</h2>
+      <h2 id="four-things-to-read-on-the-store-listing">Four things to read on the store listing</h2>
       <p>All of this is published by the store itself, before you install anything.</p>
       <p><strong>Top grossing, or top free?</strong> Category rankings are public. An app ranked high in <em>top grossing</em> is one people pay for heavily, which tells you the subscription is working, not that the search is. The two rankings measure different things and only one of them is about whether the product does anything.</p>
       <p><strong>The Data Safety or App Privacy section.</strong> Developers must declare what they collect and share. Read it for three specifics: whether <em>financial info</em> is collected, whether data is shared with third parties, and whether the developer states that <strong>data is not encrypted in transit</strong>. That last one is a declaration the developer made about their own product, and for an app you are about to hand a name and a card to, it is worth more than any review.</p>
       <p><strong>Reviews sorted by newest, not by helpfulness.</strong> The default sort favours older, settled reviews. Newest shows you the current build and the current billing behaviour. Read for the specific and repeated: people describing the same billing surprise, or the same empty result screen, in their own different words.</p>
       <p><strong>The developer's other apps.</strong> One tap from any listing. A people-search tool published alongside a document scanner, a heart-rate monitor and a storage cleaner tells you the company's expertise is subscription mechanics, not investigation. That is not automatically disqualifying, but it sets a reasonable expectation of how much depth the search itself has.</p>
 
-      <h2>The free trial is the product</h2>
+      <h2 id="the-free-trial-is-the-product">The free trial is the product</h2>
       <p>A recurring design across this category: a trial that cannot be used without subscribing, and a subscription priced per week rather than per month. Weekly pricing is not a convenience. It makes a large annual figure read as a small one, and it shortens the window in which cancelling still feels urgent.</p>
       <p>If a result is blurred, greyed or reduced to a count until you pay, treat that screen as an advertisement rather than a finding. Producing the number "14 results found" requires no lookup to have happened at all. The honest version of that screen shows you one complete, verifiable item, a link you can open and check, and asks for payment for the rest.</p>
       <p>Set a calendar reminder for the day before any trial ends, at the moment you start it. The business model assumes you will not.</p>
 
-      <h2>What an honest tool in this space looks like</h2>
+      <h2 id="what-an-honest-tool-in-this-space-looks">What an honest tool in this space looks like</h2>
       <p>There is real work to do here, and tools that do it exist. The distinguishing marks are consistent:</p>
       <ul>
         <li><strong>It tells you when it does not know.</strong> Three outcomes rather than two: found, not found, and could not determine. A tool that only has "found" and "not found" must file every blocked, rate-limited or ambiguous response as one or the other, and both choices are lies. <a href="/guides/what-http-responses-reveal.html">Not found and could not check are different answers.</a></li>
@@ -127,11 +127,11 @@
       </ul>
       <p>MyRecon is built on those rules, which is why it <a href="/deep-search.html">does not offer search by personal name</a>: handles guessed from a name return whoever registered that string, which on a large platform is almost never the person meant. Refusing the feature was the only honest option available.</p>
 
-      <h2>Before you look anyone else up</h2>
+      <h2 id="before-you-look-anyone-else-up">Before you look anyone else up</h2>
       <p>Reading public information is generally lawful, but the purpose matters and the rules vary by country. Assembling a profile of a private individual in order to contact, monitor, pressure or embarrass them can breach anti-stalking, harassment and data-protection law even where every individual fact was public. Decisions about employment, tenancy or credit are separately regulated in many places and usually require a licensed and consented process, a consumer app is not one.</p>
       <p>The use that is almost always defensible, and the one most people actually arrive for, is auditing your own footprint: finding what is public about you so you can reduce it. <a href="/guides/reduce-your-digital-footprint.html">That guide is here</a>, and it needs no subscription.</p>
 
-      <h2>Common questions</h2>
+      <h2 id="common-questions">Common questions</h2>
 
       <h3>Do AI people-search apps actually find anything?</h3>
       <p>Most query the same public web a search engine does, then present the results in a dossier-style layout. They cannot see private profiles, direct messages, deleted posts, likes or location history, because none of that is published. An app that appears to know more than a careful web search is usually reformatting public data or reselling a broker record, and in both cases the information was reachable without paying.</p>
@@ -158,7 +158,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dpeople_search_apps_what_they_find" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/why-username-checkers-report-fake-accounts.html">the measurement behind the false-positive problem</a></li>
         <li><a href="/guides/verify-an-osint-finding.html">how to verify a finding before you act on it</a></li>
@@ -189,11 +189,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

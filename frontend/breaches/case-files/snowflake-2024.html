@@ -82,7 +82,7 @@
           <h1>Snowflake, 2024: 165 companies breached without anyone touching Snowflake</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Snowflake customer account compromises</h2><p>Around 165 companies including Ticketmaster and AT&amp;T lost data from cloud warehouses via credentials stolen by infostealer malware with no MFA.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="snowflake-customer-account-compromises">Snowflake customer account compromises</h2><p>Around 165 companies including Ticketmaster and AT&amp;T lost data from cloud warehouses via credentials stolen by infostealer malware with no MFA.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>around 165 customer tenants; hundreds of millions of individual records</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: around 165 customer tenants; hundreds of millions of individual records.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">In the space of two months in 2024, roughly 165 companies lost data out of their own cloud data warehouses, Ticketmaster, AT&T, Santander and a long list of others. There was no vulnerability. The attacker signed in with a correct username and password on accounts that asked for nothing else, using credentials that had been stolen from employees' computers, in some cases four years earlier.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>Snowflake is a cloud data warehouse: organisations put their analytical data in it, at enormous scale, and query it. Access is by account, and each customer configures its own authentication.</p>
 
@@ -120,7 +120,7 @@
   <p><strong>Why this is the defining breach of its era.</strong> Nothing was hacked in the sense the word implies. The intrusion happened on a contractor's laptop, possibly years before, and the consequence landed in a corporate data warehouse holding hundreds of millions of customer records. The security perimeter of a modern company includes every personal device that has ever held one of its passwords.</p>
 </div>
 
-<h2>Who lost what</h2>
+<h2 id="who-lost-what">Who lost what</h2>
 
 <p><strong>Ticketmaster.</strong> The attacker advertised 560 million customer records: names, contact details, order history and partial payment data. Live Nation confirmed unauthorised activity in a third-party cloud database.</p>
 
@@ -130,7 +130,7 @@
 
 <p><strong>Others.</strong> Advance Auto Parts, Neiman Marcus, a mortgage brokerage, and around 160 more tenants, each notified individually and each responsible for its own disclosure.</p>
 
-<h2>The shared responsibility argument</h2>
+<h2 id="the-shared-responsibility-argument">The shared responsibility argument</h2>
 
 <p>Snowflake's position was that its platform was not breached, that the accounts were customer-configured, and that MFA was available. All true. Its critics pointed out that a platform holding bulk sensitive data should not have permitted single-factor access by default, and that "available" is not the same as "on".</p>
 
@@ -138,7 +138,7 @@
 
 <p>The wider lesson generalises well beyond one vendor. In every shared-responsibility model, the security-relevant question is not who is responsible in the contract; it is which party is positioned to make the safe thing happen by default.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>2020 onwards</b>: Infostealer malware harvests credentials from employee and contractor machines.</li>
@@ -149,7 +149,7 @@
   <li><b>Late 2024</b>: Two men are arrested and charged in connection with the campaign; Snowflake announces MFA enforcement for new accounts.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Infostealer logs became a recognised enterprise threat.</strong> They had been treated as a consumer problem, stolen gaming accounts, drained crypto wallets. This campaign demonstrated that the same logs contain corporate credentials, and threat intelligence teams started buying and monitoring them for their own domains.</p>
 
@@ -157,7 +157,7 @@
 
 <p><strong>Defaults became a product security responsibility.</strong> The clearest industry-wide outcome is the continuing shift towards secure-by-default configuration in platforms handling bulk data, rather than a documented option a customer can choose to enable.</p>
 
-<h2>If you were a customer of one of the victims</h2>
+<h2 id="if-you-were-a-customer-of-one-of">If you were a customer of one of the victims</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Your exposure depends on the specific company</strong>, and each published its own notice. Read the one that applies rather than the aggregate headline.</span></label>
@@ -170,7 +170,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -182,7 +182,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>Was Snowflake itself hacked?</h3>
         <p>No. Investigations by Snowflake and by Mandiant found no vulnerability in the platform and no compromise of Snowflake's own systems. The attacker logged into individual customer accounts using valid usernames and passwords, on accounts that did not require a second factor.</p>
@@ -215,7 +215,7 @@
         <li><b>US Department of Justice indictment, November 2024</b></li>
         <li><b>AT&amp;T Form 8-K filing, July 2024</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/change-healthcare-2024.html">Change Healthcare, 2024: one login, and American healthcare stopped billing</a></li>
         <li><a href="/breaches/case-files/british-library-2023.html">The British Library, 2023: the ransom was refused and the catalogue stayed dark</a></li>
@@ -244,11 +244,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

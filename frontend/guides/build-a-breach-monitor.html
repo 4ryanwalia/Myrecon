@@ -86,17 +86,17 @@
       <p class="lead">A breach monitor is a small program: fetch a list, compare it to the last one you saw, tell someone about the difference. The hard part is not the code, it is deciding what deserves an alert, because a monitor that cries wolf gets muted, and a muted monitor is worse than none at all. Here is a working one, and the reasoning behind each decision in it.</p>
 
       <section class="key-finding">
-        <h2>What you need</h2>
+        <h2 id="what-you-need">What you need</h2>
         <p><strong>No API key, no account, no signup.</strong> This uses <a href="/developers.html">MyRecon's public data API</a>: static JSON on a CDN, rebuilt daily, CORS enabled, free under CC BY 4.0.</p>
         <p class="method">Python 3.8 or newer with the standard library. No packages to install. The whole monitor is about forty lines.</p>
       </section>
 
-      <h2>Step 1: see what you are working with</h2>
+      <h2 id="step-1-see-what-you-are-working-with">Step 1: see what you are working with</h2>
       <pre><code>curl -s https://www.myrecon.xyz/data/v1/latest.json</code></pre>
       <p>The envelope is the same on every endpoint, <code>api_version</code>, <code>generated</code>, <code>licence</code>, <code>attribution</code>: and then the payload. A breach record carries a <code>slug</code> (your stable key), a <code>band</code> (<code>Severe</code>, <code>Serious</code>, <code>Moderate</code>), an <code>accounts</code> count, a <code>domain</code>, and <code>data_classes</code> listing what was exposed.</p>
       <p>The full field reference is on the <a href="/developers.html">API page</a>. Three fields do most of the work in a monitor: <code>slug</code>, <code>added_date</code> and <code>band</code>.</p>
 
-      <h2>Step 2: the monitor</h2>
+      <h2 id="step-2-the-monitor">Step 2: the monitor</h2>
       <p>Save this as <code>breach_monitor.py</code>. It keeps a small state file of slugs it has already reported, so it only tells you about genuinely new entries.</p>
       <pre><code>#!/usr/bin/env python3
 """Alert on new breaches at domains I care about."""
@@ -172,7 +172,7 @@ if __name__ == "__main__":
 crontab -e                          # then, daily at 09:00
 0 9 * * * /usr/bin/python3 /path/to/breach_monitor.py</code></pre>
 
-      <h2>Step 3: the decisions that matter</h2>
+      <h2 id="step-3-the-decisions-that-matter">Step 3: the decisions that matter</h2>
 
       <h3>Alert on less than you think</h3>
       <p>The instinct is to alert on every new record. Resist it. A monitor that fires constantly gets muted within a week, and a muted monitor is <em>worse</em> than no monitor, because you believe you have coverage you do not have.</p>
@@ -196,7 +196,7 @@ crontab -e                          # then, daily at 09:00
         <p><strong>Keep <code>verified</code>.</strong> Some records are unverified, nobody has confirmed the corpus is genuine. If your monitor drops that field, an unconfirmed claim reaches your users looking exactly like a confirmed incident. If your alert has room for one flag, make it this one.</p>
       </div>
 
-      <h2>Step 4: putting it on a page</h2>
+      <h2 id="step-4-putting-it-on-a-page">Step 4: putting it on a page</h2>
       <p>If what you want is a breach list on your site rather than an alert in your terminal, the widget does the rendering for you:</p>
       <pre><code>&lt;div id="myrecon-breaches"&gt;&lt;/div&gt;
 &lt;script src="https://www.myrecon.xyz/assets/js/embed.js"
@@ -208,16 +208,16 @@ const { breaches } = await r.json();
 document.querySelector("#list").textContent =
   breaches.map(b =&gt; `${b.title} (${b.band})`).join("\n");</code></pre>
 
-      <h2>What this cannot do</h2>
+      <h2 id="what-this-cannot-do">What this cannot do</h2>
       <p>This API serves breach <strong>metadata</strong>: which incidents happened, what was exposed, how severe. <strong>It holds no personal records and cannot be queried by email address.</strong> A monitor built on it tells you "a service you use was breached", which you then act on. It cannot tell you "your address appeared in this dump".</p>
       <p>That is a deliberate boundary, not a gap. Per-address checking has entirely different privacy implications and belongs behind consent, not on an open endpoint. If you need it programmatically, <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener">HIBP's API</a> is built for exactly that.</p>
 
-      <h2>Attribution</h2>
+      <h2 id="attribution">Attribution</h2>
       <p>The data is Have I Been Pwned's, licensed <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. If your monitor is private, nothing is required. <strong>If you publish the data, a dashboard, a site, a bot others read, attribution is a condition of the licence</strong>, and it is owed to Have I Been Pwned, not to us. One line does it:</p>
       <pre><code>Breach data from Have I Been Pwned (CC BY 4.0), via MyRecon.</code></pre>
       <p>Every payload carries an <code>attribution</code> object saying the same thing, so it travels with the data whether or not anyone reads this page.</p>
 
-      <h2>Common questions</h2>
+      <h2 id="common-questions">Common questions</h2>
 
       <h3>Is there a free breach API with no key?</h3>
       <p>Yes, <a href="/developers.html">this one</a>. No account, no key, no rate limit beyond fair use, CORS enabled. The data comes from Have I Been Pwned under CC BY 4.0, so credit them if you publish it.</p>
@@ -231,7 +231,7 @@ document.querySelector("#list").textContent =
       <h3>What is the most common mistake?</h3>
       <p>Alerting on everything. A monitor that fires constantly gets muted, and a muted monitor is worse than none because you think you are covered. Filter before you notify.</p>
 
-      <h2>Related</h2>
+      <h2 id="related">Related</h2>
       <ul class="related-guides">
         <li><a href="/developers.html">the full API reference and field list</a></li>
         <li><a href="/guides/read-a-breach-notification.html">reading a breach notice, for humans</a></li>
@@ -261,11 +261,11 @@ document.querySelector("#list").textContent =
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

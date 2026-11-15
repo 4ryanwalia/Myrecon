@@ -82,7 +82,7 @@
           <h1>Uber, 2022: multi-factor authentication held, and then somebody sent a WhatsApp message</h1>
           <p class="meta">Case file · 5 min read · Published 15 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Uber 2022 internal systems breach</h2><p>A contractor&#39;s password was bought, their phone was buried in approval prompts, and a helpful message finished the job. The real prize was an admin credential sitting in a script.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="uber-2022-internal-systems-breach">Uber 2022 internal systems breach</h2><p>A contractor&#39;s password was bought, their phone was buried in approval prompts, and a helpful message finished the job. The real prize was an admin credential sitting in a script.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>No evidence of access to customer accounts or trip data; internal tools, Slack, cloud consoles and vulnerability reports were reached</dd></div>
@@ -102,7 +102,7 @@
 <p>Reported scale: No evidence of access to customer accounts or trip data; internal tools, Slack, cloud consoles and vulnerability reports were reached.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Uber had multi-factor authentication. It was enabled, it was enforced, and on the night of 15 September 2022 it worked precisely as specified: a login attempt from an unrecognised source generated an approval request to the account holder's phone. Then it generated another, and another, and then the account holder received a WhatsApp message explaining that the prompts would stop if they accepted one.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>The starting point was a contractor's corporate credentials, which reporting indicates were purchased on a dark web marketplace after most likely being harvested by information-stealing malware on a personal device. On its own the password was useless, because the second factor stood in the way.</p>
 
@@ -114,7 +114,7 @@
   <p><strong>MFA is not a boolean.</strong> "Do you have MFA?" is the wrong question, and it is the one on every security questionnaire. Push-approval and SMS codes stop credential stuffing and undirected phishing, and they fold against an attacker willing to spend twenty minutes on one person. Phishing-resistant factors, hardware security keys and passkeys bound to the origin, do not fold, because there is nothing for the user to approve that a fake site can use and no code that can be read out or relayed. The gap between those two is the gap this breach went through.</p>
 </div>
 
-<h2>The secret in the script</h2>
+<h2 id="the-secret-in-the-script">The secret in the script</h2>
 
 <p>The social engineering is what gets retold, and the hardcoded credential is what actually mattered. Everything beyond a single contractor's ordinary access followed from a secret written into a script and left on a share where any authenticated user could read it.</p>
 
@@ -122,7 +122,7 @@
 
 <p>The defence is unglamorous: scan repositories and shared storage for secrets continuously rather than during audits, issue short-lived credentials so that a leaked one expires on its own, and treat any human-readable administrative password as an incident rather than a finding. The measure of success is not that no secret is ever written down. It is that a secret written down in March is dead by April.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>Before 15 September 2022</b>: A contractor's corporate credentials are obtained, most likely via information-stealing malware, and sold.</li>
@@ -134,7 +134,7 @@
   <li><b>2023</b>: A UK teenager associated with Lapsus$ is convicted over a series of intrusions, this one among them.</li>
 </ol>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>This breach, alongside the 0ktapus campaign against Twilio and others in the same year, moved phishing-resistant authentication from a recommendation to an expectation at large technology companies. Push-based approval was not abandoned everywhere, but the assumption that it constituted adequate protection for administrative access did not survive 2022.</p>
 
@@ -142,7 +142,7 @@
 
 <p>The quieter shift was cultural, and it is the one most organisations still get wrong. The contractor who accepted the prompt had been worn down and then lied to by someone who sounded like their own IT department. Organisations that responded by blaming users got less reporting and slower detection; the ones that responded by making it safe and quick to say "I think I just approved something I should not have" got the opposite.</p>
 
-<h2>If you use Uber</h2>
+<h2 id="if-you-use-uber">If you use Uber</h2>
 
 <p>Uber stated that it found no evidence of access to customer accounts, trip histories or payment details, and no customer data exposure was subsequently established. On the current public record there is nothing for riders or drivers to remediate from this incident, and this archive is not going to manufacture an action item where none exists.</p>
 
@@ -152,7 +152,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -164,7 +164,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>What is MFA fatigue?</h3>
         <p>Where the second factor is a push notification that the user approves with a tap, an attacker who already has the password can request approval over and over. The victim's phone fills with prompts, at any hour, with no way to make them stop. Eventually somebody taps approve, to end the noise, or because they assume a system is malfunctioning. The control is not bypassed technically. It is worn down.</p>
@@ -197,7 +197,7 @@
         <li><b>UK prosecution and 2023 verdict concerning Lapsus$-associated intrusions</b></li>
         <li><b>CISA guidance on phishing-resistant multi-factor authentication</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/twilio-0ktapus-2022.html">0ktapus, 2022: one text message, one hundred and thirty companies</a></li>
         <li><a href="/breaches/case-files/twitter-2022.html">Twitter, 2022: an API that confirmed which account owned which email</a></li>
@@ -226,11 +226,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

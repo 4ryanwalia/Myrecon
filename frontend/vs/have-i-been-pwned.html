@@ -80,7 +80,7 @@
     </section>
     <article class="vs-article container">
     <div class="vs-verdict">
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>Short answer</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="short-answer">Short answer</h2>
       <p style="margin:0">For <strong>checking an email against breaches, and being alerted to new ones</strong>, Have I Been Pwned is the reference service and you should use it. <strong>MyRecon</strong> is for everything around that check: combining several breach sources in one answer, then moving on to the usernames, domains, DNS and IPs connected to the same person or company.</p>
     </div>
     <div class="vs-table-wrap"><table class="vs-table">
@@ -97,17 +97,17 @@
         <tr><th scope="row">Email API</th><td>Not offered</td><td class="vs-yes">Yes, paid API key required</td></tr>
         <tr><th scope="row">Breach catalogue</th><td>Republished with written analysis, CC BY credit to HIBP</td><td>Original source, CC BY 4.0</td></tr>
       </tbody></table></div>
-    <h2>What Have I Been Pwned is</h2>
+    <h2 id="what-have-i-been-pwned-is">What Have I Been Pwned is</h2>
     <p>Have I Been Pwned (HIBP), created by Troy Hunt, is the best-known service for checking whether an email address appears in a data breach. It maintains a catalogue of breaches with descriptions, dates and the data types exposed, offers free email notifications when your address turns up in a new one, and lets organisations search breaches across a domain they have verified. Its Pwned Passwords service lets anyone check a password against hundreds of millions of breached passwords without sending the password, using a technique called k-anonymity. According to its API documentation, searching by email through the API requires a paid key, while the breach catalogue and Pwned Passwords are free to use, with breach data licensed CC BY 4.0.</p>
 
-    <h2>How MyRecon uses HIBP</h2>
+    <h2 id="how-myrecon-uses-hibp">How MyRecon uses HIBP</h2>
     <ul>
       <li><strong>Password checks.</strong> When you use our password tool, your browser hashes the password with SHA-1 and sends only the first five characters of the hash to Pwned Passwords. The match happens on your device. The password never reaches our servers.</li>
       <li><strong>The Breach Files.</strong> Our <a href="/breaches/">breach archive</a> is built from HIBP's public catalogue and credits it on every page, as the CC BY licence requires. What we add is severity scoring and written analysis of what each exposed field means for the person it belongs to.</li>
     </ul>
     <p>For email searches we do not currently use HIBP's paid API. MyRecon combines two free sources, LeakCheck's public API and XposedOrNot, and reports distinct named breaches rather than raw leaked-row counts, so a single breach that leaked your address ten times is counted once.</p>
 
-    <h2>Where Have I Been Pwned beats MyRecon</h2>
+    <h2 id="where-have-i-been-pwned-beats-myrecon">Where Have I Been Pwned beats MyRecon</h2>
     <ul>
       <li><strong>The dataset.</strong> HIBP is the reference. Its breach loading is careful, well documented and widely trusted, and when a breach is newsworthy it is usually the first place people check.</li>
       <li><strong>Notifications on the web.</strong> Register once and HIBP emails you when you appear in a new breach. Our alerts live in the Android app, compared on the handset so your address is never sent anywhere.</li>
@@ -115,32 +115,32 @@
       <li><strong>A mature API.</strong> For developers integrating email breach checks, HIBP's API is the standard. We deliberately do not offer an email lookup API.</li>
     </ul>
 
-    <h2>Where MyRecon goes further</h2>
+    <h2 id="where-myrecon-goes-further">Where MyRecon goes further</h2>
     <ul>
       <li><strong>Two free breach sources in one answer.</strong> Useful as a cross-check, since no single breach index is complete.</li>
       <li><strong>More than the breach.</strong> The same email shows its provider, whether it is disposable, whether a Gravatar is attached, and whether its domain's SPF and DMARC would stop someone forging mail from it. From there, one click runs the domain, the DNS records or a username.</li>
       <li><strong>Written context.</strong> Our <a href="/breaches/case-files/">Case Files</a> are long-form accounts of the landmark breaches: what happened, how, and what it changed.</li>
     </ul>
 
-    <h2>"Unchecked is not clean"</h2>
+    <h2 id="unchecked-is-not-clean">"Unchecked is not clean"</h2>
     <p>One principle we hold everywhere applies here too. If a breach source fails to answer, MyRecon says the check was incomplete rather than showing a clean result. A green tick you did not earn is the most dangerous output a breach checker can give, because it is the one that stops you changing a password.</p>
 
-    <h2>Which one should you use?</h2>
+    <h2 id="which-one-should-you-use">Which one should you use?</h2>
     <p>Sign up for Have I Been Pwned's free notifications. That is the single most useful thing on this page. Then use MyRecon when you want a second breach source, a password check with nothing sent, or when a breached address turns into a wider question about the accounts and infrastructure around it.</p>
-    <h2>Questions people ask</h2>
+    <h2 id="questions-people-ask">Questions people ask</h2>
     <div class="faq">
       <details><summary>Is MyRecon affiliated with Have I Been Pwned?</summary><p>No. MyRecon uses HIBP's free Pwned Passwords service and republishes its CC BY licensed breach catalogue with attribution. We are an independent project.</p></details>
       <details><summary>Why doesn't MyRecon search HIBP for my email?</summary><p>HIBP's email search API requires a paid key. MyRecon's email check uses two free sources, LeakCheck and XposedOrNot, and you can always search HIBP directly on its own site.</p></details>
       <details><summary>Is it safe to type my password into MyRecon's checker?</summary><p>It is hashed in your browser and only the first five characters of the hash are sent to Pwned Passwords. That prefix is shared by many thousands of passwords, and the password itself never leaves your device.</p></details>
     </div>
-    <h2>Other comparisons</h2>
+    <h2 id="other-comparisons">Other comparisons</h2>
     <div class="vs-grid">
       <a class="vs-card" href="/vs/sherlock"><span class="kind">CLI scanner</span><h3>MyRecon vs Sherlock</h3><p>400+ sites from a terminal against a confidence-scored search in the browser.</p><span class="go">Compare</span></a>
       <a class="vs-card" href="/vs/"><span class="kind">CLI scanner</span><h3>MyRecon vs Maigret</h3><p>The largest site list in open source, and what a bigger list does and does not buy you.</p><span class="go">Compare</span></a>
       <a class="vs-card" href="/vs/"><span class="kind">Web + dataset</span><h3>MyRecon vs WhatsMyName</h3><p>The community dataset built to kill false positives, next to ours.</p><span class="go">Compare</span></a>
     </div>
     <div class="vs-cta">
-      <h2>Run the test yourself</h2>
+      <h2 id="run-the-test-yourself">Run the test yourself</h2>
       <p>Search a handle you own, then one that cannot exist, like <code>zq-no-such-user-8841</code>. A tool worth trusting reports nothing for the second.</p>
       <a class="btn" href="/#tool=username">Open the username search</a>
       <a class="btn btn-ghost" href="/is-myrecon-legit.html" style="margin-left:8px">Six tests for any tool</a>
@@ -164,11 +164,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

@@ -89,7 +89,7 @@
            rather than buried in the footer, because a reader who wants the
            story of a breach will not find it in a record. -->
       <aside class="bx-offer">
-        <h2>Case Files: how the breaches that mattered actually happened</h2>
+        <h2 id="case-files-how-the-breaches-that-mattered-actually">Case Files: how the breaches that mattered actually happened</h2>
         <p>In-depth write-ups of the landmark incidents, Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
         <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a> <a class="btn btn-ghost btn-sm" href="/#tool=email">Check an email for breach exposure →</a></p>
       </aside>
@@ -100,12 +100,12 @@
            their own site; a reader who only wanted to look something up
            scrolls straight past an aside. -->
       <aside class="bx-offer">
-        <h2>Building something? Take this data</h2>
+        <h2 id="building-something-take-this-data">Building something? Take this data</h2>
         <p>The whole archive is published as versioned JSON, no account, no API key, no rate limit, CORS enabled and rebuilt daily. There is a drop-in embed widget too, if you want a live breach list on your own page without writing the rendering. Free under CC BY 4.0, with credit to Have I Been Pwned.</p>
         <p><a class="btn btn-sm" href="/developers.html">Read the API documentation →</a></p>
       </aside>
 
-      <h2 class="bx-h2">By year</h2>
+      <h2 class="bx-h2" id="by-year">By year</h2>
       <div class="bx-years">
         <div class="bx-year">
           <span class="bx-year-label">2026</span>
@@ -154,7 +154,7 @@
         </div>
       </div>
 
-      <h2 class="bx-h2">The archive</h2>
+      <h2 class="bx-h2" id="the-archive">The archive</h2>
       <form class="archive-filters" data-archive-filters aria-label="Filter breach archive"><label>Find a service<input type="search" name="search" placeholder="Name or domain" autocomplete="off"></label><label>Year<select name="year"><option value="">All years</option><option value="2013">2013</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select></label><label>Industry<select name="industry"><option value="">All industries</option><option value="Finance &amp; insurance">Finance &amp; insurance</option><option value="Gaming">Gaming</option><option value="Healthcare">Healthcare</option><option value="Other / unclassified">Other / unclassified</option><option value="Retail">Retail</option><option value="Social &amp; communities">Social &amp; communities</option><option value="Technology">Technology</option><option value="Travel &amp; hospitality">Travel &amp; hospitality</option></select></label><label>Exposed data<select name="data"><option value="">All data types</option><option value="Age groups">Age groups</option><option value="Auth tokens">Auth tokens</option><option value="Avatars">Avatars</option><option value="Bank account numbers">Bank account numbers</option><option value="Bank card numbers">Bank card numbers</option><option value="Bios">Bios</option><option value="Booking details">Booking details</option><option value="Browser user agent details">Browser user agent details</option><option value="Charitable donations">Charitable donations</option><option value="Citizenship statuses">Citizenship statuses</option><option value="Credit card CVV">Credit card CVV</option><option value="Credit cards">Credit cards</option><option value="Credit scores">Credit scores</option><option value="Credit status information">Credit status information</option><option value="Dates of birth">Dates of birth</option><option value="Device information">Device information</option><option value="Education levels">Education levels</option><option value="Email addresses">Email addresses</option><option value="Email messages">Email messages</option><option value="Employers">Employers</option><option value="Employment statuses">Employment statuses</option><option value="Ethnicities">Ethnicities</option><option value="Family members&#39; names">Family members&#39; names</option><option value="Financial investments">Financial investments</option><option value="Financial transactions">Financial transactions</option><option value="Genders">Genders</option><option value="Geographic locations">Geographic locations</option><option value="Government issued IDs">Government issued IDs</option><option value="IP addresses">IP addresses</option><option value="Income levels">Income levels</option><option value="Job titles">Job titles</option><option value="Latitude and longitude pairs">Latitude and longitude pairs</option><option value="Loyalty program details">Loyalty program details</option><option value="Marital statuses">Marital statuses</option><option value="Names">Names</option><option value="Occupations">Occupations</option><option value="Partial credit card data">Partial credit card data</option><option value="Passwords">Passwords</option><option value="Personal health data">Personal health data</option><option value="Personal interests">Personal interests</option><option value="Phone numbers">Phone numbers</option><option value="Physical addresses">Physical addresses</option><option value="Places of birth">Places of birth</option><option value="Profile photos">Profile photos</option><option value="Profile statistics">Profile statistics</option><option value="Purchases">Purchases</option><option value="Salutations">Salutations</option><option value="Social media profiles">Social media profiles</option><option value="Socioeconomic levels">Socioeconomic levels</option><option value="Support tickets">Support tickets</option><option value="Survey results">Survey results</option><option value="User website URLs">User website URLs</option><option value="Usernames">Usernames</option></select></label><label>Incident type<select name="incident"><option value="">All incident types</option><option value="Not classified">Not classified</option><option value="Scraping">Scraping</option><option value="Software vulnerability">Software vulnerability</option><option value="Stealer logs">Stealer logs</option></select></label><button type="reset" class="btn btn-ghost btn-sm">Reset filters</button><p data-archive-count role="status" aria-live="polite">60 records</p><small>Filters cover the current feed below. Industry and incident categories are editorial groupings; unclassified records remain available.</small></form><div class="bx-grid" data-filtered-archive>
         <a class="bx-card" href="/breaches/castlerat.html" data-archive-card data-search="CastleRAT null" data-year="2026" data-industry="Other / unclassified" data-incident="Not classified" data-exposed="[&quot;Email addresses&quot;,&quot;Passwords&quot;]">
           <div class="bx-card-head">
@@ -897,11 +897,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

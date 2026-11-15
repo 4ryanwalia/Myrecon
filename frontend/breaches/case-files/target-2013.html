@@ -82,7 +82,7 @@
           <h1>Target, 2013: 40 million cards, and the air-conditioning contractor</h1>
           <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Target data breach</h2><p>Attackers entered Target&#39;s network through a refrigeration contractor&#39;s stolen login, then scraped 40 million card numbers from the tills during the Christmas rush.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person holding a payment card while using a laptop" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-computer-holding-card-Q59HmzK38eQ" target="_blank" rel="noopener">rupixen / Unsplash</a> · Online payments · context photograph, not an affected customer</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="target-data-breach">Target data breach</h2><p>Attackers entered Target&#39;s network through a refrigeration contractor&#39;s stolen login, then scraped 40 million card numbers from the tills during the Christmas rush.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person holding a payment card while using a laptop" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-computer-holding-card-Q59HmzK38eQ" target="_blank" rel="noopener">rupixen / Unsplash</a> · Online payments · context photograph, not an affected customer</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>40 million payment cards, 70 million customer records</dd></div>
@@ -104,7 +104,7 @@
 <p>Reported scale: 40 million payment cards, 70 million customer records.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 4 min</summary><p class="lead">If you want one story that explains why every large company now runs a vendor security programme, this is it. The attackers who took 40 million card numbers out of Target during the 2013 Christmas shopping season did not start at Target. They started at a refrigeration contractor in Pennsylvania.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>Fazio Mechanical Services supplied and maintained heating, ventilation and refrigeration systems for Target stores. Like many suppliers, it had a login to a Target-run web portal for billing, contracts and project management. In autumn 2013, someone sent Fazio a phishing email carrying a variant of Citadel, commodity password-stealing malware, sold openly on criminal forums. It worked, and the contractor's Target credentials went with it.</p>
 
@@ -112,7 +112,7 @@
 
 <p>On 27 November 2013, the day before Thanksgiving and the start of the busiest shopping period of the American year, they pushed memory-scraping malware onto the tills.</p>
 
-<h2>How card scraping worked</h2>
+<h2 id="how-card-scraping-worked">How card scraping worked</h2>
 
 <p>Card data on a magnetic stripe is encrypted in transit and at rest. But at the moment the stripe is read, the terminal holds the track data in memory in the clear for a fraction of a second so it can process the transaction. That gap is what BlackPOS-family malware exists to exploit: it sits on the terminal, watches its own process memory for the pattern of a card track, and copies it out.</p>
 
@@ -122,7 +122,7 @@
   <p><strong>The alerts fired.</strong> Target had installed FireEye malware detection earlier that year, and it flagged the malicious software as it was deployed. Symantec's endpoint product flagged related activity too. The alerts reached a security operations team, and no one escalated them before the exfiltration began. This is the part worth remembering: the failure was not that Target had no detection. It was that detection without a response process is a log file nobody reads.</p>
 </div>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>Autumn 2013</b>: Phishing malware steals Fazio Mechanical's Target portal credentials.</li>
@@ -138,13 +138,13 @@
   <li><b>May 2017</b>: $18.5 million settlement with 47 states and the District of Columbia.</li>
 </ol>
 
-<h2>What it cost, and who paid</h2>
+<h2 id="what-it-cost-and-who-paid">What it cost, and who paid</h2>
 
 <p>Target reported roughly $202 million in gross breach-related expenses across the following years, materially offset by insurance. Card issuers bore the cost of reissuing tens of millions of cards and recovered part of it through settlements with Visa and MasterCard. Consumers, in the main, were made whole on fraudulent transactions, card networks' liability rules are designed for exactly that, but spent the season cancelling cards and waiting for replacements.</p>
 
 <p>The people who paid the highest personal price were the executives. A chief executive of a Fortune 50 retailer losing his job over an intrusion was new in 2014, and it is the reason the subject stopped being delegated downwards.</p>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p><strong>Chip cards arrived in America.</strong> The United States had been an outlier: the rest of the developed world had moved to EMV chip cards years earlier, leaving the US magnetic stripe as the softest target on the planet. Target accelerated a rollout that was already planned, and the card networks brought forward the October 2015 liability shift that made whichever party had not adopted chip technology responsible for fraudulent transactions. Card-present fraud in the US fell sharply afterwards, and moved online, where it remains.</p>
 
@@ -152,7 +152,7 @@
 
 <p><strong>"We had alerts" stopped being a defence.</strong> The Senate committee's report walked through the intrusion as a kill chain and showed that Target had opportunities to break it at nearly every stage. That framing, where did detection exist, and why did it not produce a response, is now the standard shape of a post-incident review.</p>
 
-<h2>If you shopped there</h2>
+<h2 id="if-you-shopped-there">If you shopped there</h2>
 
 <p>The cards involved were reissued more than a decade ago, so the direct risk is long gone. The 70 million customer records, names, addresses, phone numbers, email addresses, are a different matter, because that information does not expire and has been folded into marketing and fraud datasets ever since.</p>
 
@@ -166,7 +166,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -178,7 +178,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>How did hackers get into Target?</h3>
         <p>Through Fazio Mechanical Services, a refrigeration and air-conditioning contractor. Malware delivered by a phishing email stole the contractor's credentials for a Target vendor portal, and from there the attackers found a route into the internal network and eventually onto the point-of-sale terminals.</p>
@@ -211,7 +211,7 @@
         <li><b>Multistate attorneys general settlement announcement, May 2017</b></li>
         <li><b>Contemporaneous reporting by Brian Krebs, who broke the story on 18 December 2013</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/adobe-2013.html">Adobe, 2013: 153 million records and the world's worst crossword</a></li>
         <li><a href="/breaches/case-files/linkedin-2012.html">LinkedIn, 2012: 6.5 million hashes that turned into 165 million accounts</a></li>
@@ -240,11 +240,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

@@ -85,11 +85,11 @@
 
       <p class="lead">A domain's DNS zone is a public list of every decision its owner has made about where things live. It names their host, their mail provider, and, through a set of records almost nobody thinks of as revealing, a good part of the software they run the company on.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2>What DNS actually is</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure><h2 id="what-dns-actually-is">What DNS actually is</h2>
       <p>DNS turns names into the answers a machine needs. Almost everyone describes it as "turning names into IP addresses", which is the most common job but not the only one, and the other jobs are where the interesting information is.</p>
       <p>A zone is the set of records for a domain. Each record has a name, a type, a value and a time-to-live. Anyone can ask for them, because they have to be readable for the internet to work at all, which is what makes DNS the single most productive public source in an infrastructure investigation.</p>
 
-      <h2>The record types, and what each one tells you</h2>
+      <h2 id="the-record-types-and-what-each-one-tells">The record types, and what each one tells you</h2>
 
       <h3>A and AAAA: where the name points</h3>
       <p>An <strong>A</strong> record maps a name to an IPv4 address; <strong>AAAA</strong> does the same for IPv6. This is the record people mean when they say a domain "points at" a server.</p>
@@ -134,11 +134,11 @@
       <h3>SRV, DS and DNSKEY</h3>
       <p><strong>SRV</strong> records advertise a service, a protocol, a port and a host, historically the fingerprint of on-premise directory and communications servers, and still visible on plenty of corporate domains. <strong>DS</strong> and <strong>DNSKEY</strong> are the DNSSEC chain: the signing keys and the fingerprint the parent zone holds for them. A domain with a DS record at the registry is signed; almost none are.</p>
 
-      <h2>TTL, and the propagation myth</h2>
+      <h2 id="ttl-and-the-propagation-myth">TTL, and the propagation myth</h2>
       <p>Every record carries a <strong>time-to-live</strong>: how many seconds a resolver may keep the answer before asking again. Nothing about DNS "propagates". Changes are published instantly at the authoritative server, and the delay everyone experiences is simply resolvers elsewhere serving cached answers until their TTL runs out.</p>
       <p>TTLs are also a small operational tell. A zone where every record has a five-minute TTL belongs to someone who expects to move things, or who did move things recently and lowered the TTL beforehand. Day-long TTLs belong to a zone nobody has touched in a long time.</p>
 
-      <h2>What DNS will not tell you</h2>
+      <h2 id="what-dns-will-not-tell-you">What DNS will not tell you</h2>
       <ul>
         <li><strong>The origin server behind a CDN.</strong> The A record is the proxy. Finding the origin is a separate problem and often an unsolvable one.</li>
         <li><strong>Every subdomain.</strong> There is no command that lists a zone, zone transfers were locked down decades ago, and a server that still allows one is a misconfiguration rather than a source. Subdomains are found through certificate transparency logs, passive DNS collections and wordlists, all of which are incomplete by nature.</li>
@@ -150,7 +150,7 @@
         <p><strong>Where the answer comes from matters.</strong> Public resolvers return different results in different countries, and some ISPs rewrite failed lookups to point at their own advertising pages. MyRecon queries DNS over HTTPS against a public resolver so the answer is not shaped by whatever your network decided to do with it, and shows you the records as returned.</p>
       </div>
 
-      <h2>A reading order for an unfamiliar zone</h2>
+      <h2 id="a-reading-order-for-an-unfamiliar-zone">A reading order for an unfamiliar zone</h2>
       <ol>
         <li><strong>NS first.</strong> Who runs the zone, and have you seen those nameservers before?</li>
         <li><strong>MX.</strong> Which mail provider, or none at all, which is its own answer.</li>
@@ -174,7 +174,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Ddns_records_explained" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/whois-rdap-explained.html">reading a domain's registration record</a></li>
         <li><a href="/guides/spf-dkim-dmarc-explained.html">the TXT records that stop a domain being spoofed</a></li>
@@ -203,11 +203,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

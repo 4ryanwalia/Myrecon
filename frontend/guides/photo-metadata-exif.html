@@ -86,7 +86,7 @@
 
 <p class="lead">An image file is not only an image. Cameras and phones write a block of data into it describing the device, the settings, the moment and sometimes the exact coordinates, and whether any of that reaches the person who receives the photo depends entirely on the route it travelled.</p>
 
-      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2>What is actually in there</h2>
+      <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="what-is-actually-in-there">What is actually in there</h2>
       <p>The main standard is EXIF, accompanied in many files by IPTC and XMP blocks used by publishers and editing software. Between them a photograph can carry:</p>
       <ul>
         <li><strong>Device.</strong> Make and model, and often the lens. Enough to say "these two photos came from the same model of phone", which is weaker than it sounds and still occasionally decisive.</li>
@@ -103,29 +103,29 @@
         <p><strong>The coordinates are the part that matters.</strong> A phone with location services on writes where the shutter was pressed, to within a few metres. One photograph is a place. A set of photographs is a pattern: a home, a workplace, a school, a route and the hours each is occupied. The risk is not usually a single revealing image, it is that a person's photo library, shared piecemeal over years, describes their life geographically without any of it being intended.</p>
       </div>
 
-      <h2>Who strips it and who does not</h2>
+      <h2 id="who-strips-it-and-who-does-not">Who strips it and who does not</h2>
       <p>This is where most assumptions go wrong in both directions.</p>
       <p><strong>Metadata is usually removed</strong> by the large social platforms, which re-encode every upload into their own formats and sizes, and by most messaging apps when sending as a photo rather than a file. The stripping is a side effect of compression rather than a privacy feature, which is why it is not guaranteed and not announced.</p>
       <p><strong>Metadata usually survives</strong> when the original file travels rather than a copy of it: email attachments, messaging apps used in "send as document" or "original quality" mode, cloud storage downloads, files transferred between devices, and images hosted on personal sites, forums and smaller platforms that do not re-encode.</p>
       <p>So the practical rules are two, pointing in opposite directions. If you are sharing, do not rely on a platform to protect you, strip it yourself. If you are investigating, always look, because the assumption that "platforms remove it" causes people to skip a check that costs seconds.</p>
 
-      <h2>How to read it</h2>
+      <h2 id="how-to-read-it">How to read it</h2>
       <p>Every operating system exposes some of it without extra software. On Windows, right-click a file, open properties and look at the details tab. On macOS, open the image in Preview and inspect the info panel, which has a dedicated tab for GPS when coordinates are present. On a phone, the photo details view in the gallery app shows the device, the timestamp and a map when location is recorded.</p>
       <p>Dedicated metadata tools show considerably more, including the vendor-specific blocks the system dialogs ignore, and are worth using when the question matters.</p>
       <p>One caution about online metadata viewers: using one means uploading the image to a third party. For a photograph you are investigating that may be acceptable; for a private photograph of your own, you have just published it to a stranger's server in order to check whether it was private.</p>
 
-      <h2>How much weight it carries</h2>
+      <h2 id="how-much-weight-it-carries">How much weight it carries</h2>
       <p>Less than people assume, in both directions.</p>
       <p><strong>Metadata is trivially editable.</strong> Free tools rewrite any field, including timestamps and coordinates. It is a claim made by whoever last saved the file, not a property of reality, and treating a GPS tag as proof of where a photograph was taken is how confident wrong conclusions get made in public.</p>
       <p><strong>Absence proves nothing.</strong> A file with no metadata may have been deliberately cleaned, or it may simply have passed through one platform that re-encodes uploads. The second is far more common. "The EXIF was stripped, so they are hiding something" is an inference the evidence does not support.</p>
       <p><strong>Timestamps drift.</strong> The clock belongs to the device and may be wrong, unset, or in a different time zone from the one you assume, a three-hour discrepancy is more often a traveller who did not update their phone than a fabrication.</p>
       <p>Where metadata earns its place is as corroboration: consistent with the other evidence, or inconsistent with it in a way that demands explanation. On its own it settles nothing, which is the same standard applied in <a href="/guides/verify-an-osint-finding.html">verifying an OSINT finding</a>.</p>
 
-      <h2>What the picture itself gives away</h2>
+      <h2 id="what-the-picture-itself-gives-away">What the picture itself gives away</h2>
       <p>Because metadata is so often absent, the durable signal is the content, and it is usually richer. House numbers, street signs, shop fronts, vehicle number plates, school uniforms and logos, the view from a window, a distinctive skyline, the language on a menu, seasonal foliage, shadow direction and length, and reflections in glass, screens and eyes.</p>
       <p>Geolocation of images as practised by investigators and open-source researchers is built almost entirely on these, not on EXIF, precisely because the coordinates are so rarely present in published images. The <a href="/guides/reverse-image-search.html">reverse image search guide</a> covers how to search these elements independently of the photograph as a whole.</p>
 
-      <h2>Practical protection</h2>
+      <h2 id="practical-protection">Practical protection</h2>
       <ol>
         <li><strong>Turn off location tagging in the camera app.</strong> The single highest-value change, and it costs almost nothing, you can still add a location to the posts where you want one.</li>
         <li><strong>Strip metadata before sharing anything outside a platform.</strong> Windows offers this in the file properties dialog; macOS in Preview; phone share sheets increasingly include a location toggle.</li>
@@ -139,7 +139,7 @@
         <p><strong>Provenance metadata is the emerging counterweight.</strong> Content Credentials, under the C2PA standard, attach a signed record of how an image was created and edited, and are now being written by some cameras and editing tools. It is designed to be evidence of origin rather than a privacy risk, and it is becoming one of the few durable ways to say where an image came from, relevant precisely because generated images have no earlier existence for a reverse search to find.</p>
       </div>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <h3>Does posting a photo on social media reveal my location?</h3>
       <p>Usually not through EXIF: the major platforms strip metadata when they re-encode uploads. The location leak on social media is far more often the visible content of the photo, a street sign, a view from a window, a repeated background, or a location tag you added yourself.</p>
 
@@ -162,7 +162,7 @@
         <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dguide%26utm_campaign%3Dphoto_metadata_exif" target="_blank" rel="noopener">Get it on Google Play</a>
       </aside>
 
-      <h2>Related guides</h2>
+      <h2 id="related-guides">Related guides</h2>
       <ul class="related-guides">
         <li><a href="/guides/reverse-image-search.html">tracing where a photo has appeared before</a></li>
         <li><a href="/guides/social-media-privacy.html">what else your posts give away</a></li>
@@ -191,11 +191,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

@@ -82,13 +82,13 @@
       <p class="lead">If you are building something that needs data breach information, a security dashboard, a blog sidebar, a student project, a status page, you can take ours. It is static JSON on a CDN. There is no account to create, no key to rotate, no quota to watch and no paid tier waiting for you at the bottom of the page.</p>
 
       <section class="key-finding">
-        <h2>Start here</h2>
+        <h2 id="start-here">Start here</h2>
         <p><strong>One request, no setup:</strong></p>
         <pre><code>curl https://www.myrecon.xyz/data/v1/latest.json</code></pre>
         <p class="method">Every endpoint is listed at <code>/data/v1/index.json</code>. Attribution to Have I Been Pwned is required by the licence, details below, and the embed widget handles it for you.</p>
       </section>
 
-      <h2>Endpoints</h2>
+      <h2 id="endpoints">Endpoints</h2>
       <div class="table-wrap">
         <table class="data-table">
           <caption>All endpoints are <code>GET</code>, return <code>application/json</code>, and need no authentication.</caption>
@@ -106,7 +106,7 @@
         </table>
       </div>
 
-      <h2>A breach record</h2>
+      <h2 id="a-breach-record">A breach record</h2>
       <p>Every payload shares an envelope, <code>api_version</code>, <code>generated</code>, <code>licence</code>, <code>attribution</code>: so you can write one parser for all of them. The records look like this:</p>
       <pre><code>{
   "slug": "mckesson",
@@ -150,7 +150,7 @@
         <p><strong><code>verified: false</code> is not a detail to drop.</strong> An unverified breach is one nobody has confirmed is genuine, and presenting it beside confirmed incidents with no distinction is how a rumour becomes a fact on somebody's dashboard. If your interface has room for one boolean, make it this one.</p>
       </div>
 
-      <h2>Examples</h2>
+      <h2 id="examples">Examples</h2>
 
       <h3>Browser JavaScript</h3>
       <pre><code>const res  = await fetch("https://www.myrecon.xyz/data/v1/latest.json");
@@ -173,7 +173,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
       <h3>One breach by slug</h3>
       <pre><code>curl -s https://www.myrecon.xyz/data/v1/breaches/mckesson.json | jq .breach.data_classes</code></pre>
 
-      <h2>The embed widget</h2>
+      <h2 id="the-embed-widget">The embed widget</h2>
       <p>If you want a live breach list on your page and would rather not write the rendering, drop in two lines. It builds itself inside a shadow root, so your CSS cannot break it and it cannot leak styles into your page.</p>
       <pre><code>&lt;div id="myrecon-breaches"&gt;&lt;/div&gt;
 &lt;script src="https://www.myrecon.xyz/assets/js/embed.js"
@@ -181,7 +181,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
       <p class="pre-label">Options: <code>data-count</code> (1–10, default 5), <code>data-theme</code> (<code>auto</code>, <code>dark</code>, <code>light</code>), <code>data-title</code>.</p>
       <p>It sets no cookies, stores nothing, and sends no identifier, it is one GET for a static file. If that request fails it renders nothing rather than showing your visitors an error. The attribution footer is drawn by the widget itself, which is what keeps you compliant with the licence without having to think about it.</p>
 
-      <h2>Attribution: the part that is not optional</h2>
+      <h2 id="attribution-the-part-that-is-not-optional">Attribution: the part that is not optional</h2>
       <p>The breach data originates with <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Have I Been Pwned</a> and is licensed <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. We redistribute it under that licence, and so do you when you publish it.</p>
       <p><strong>CC BY makes attribution a condition of use, not a courtesy.</strong> If you display this data publicly, credit Have I Been Pwned. That is the requirement, and it is owed upstream, we are the distributor, not the source. A link back to MyRecon is genuinely appreciated and is how this stays worth maintaining, but the licence does not demand it and neither do we.</p>
       <p>A credit line that satisfies it:</p>
@@ -189,7 +189,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
       <p>Every JSON payload carries its own <code>attribution</code> object with the same information, so it travels with the data even if this page never gets read.</p>
       <p>The case-file index is different: those write-ups are our own work. Use the index to link to them freely. Reproducing the article text needs a visible credit and a link to the article it came from.</p>
 
-      <h2>Fair use, and what we ask</h2>
+      <h2 id="fair-use-and-what-we-ask">Fair use, and what we ask</h2>
       <ul>
         <li><strong>Cache it.</strong> The data changes at most once a day. Fetch it on a schedule and serve from your own store rather than hitting us per page view, it is faster for your users and it is what the <code>generated</code> field is for.</li>
         <li><strong>Do not hotlink the logos.</strong> The <code>logo</code> URLs point at Have I Been Pwned's servers. Copy the images you need to your own hosting.</li>
@@ -197,15 +197,15 @@ print(len(severe), "severe of", data["count"])</code></pre>
         <li><strong>Read the <code>generated</code> date.</strong> If your copy is a month old, say so in your interface rather than implying it is live.</li>
       </ul>
 
-      <h2>Free breach API: catalogue data or an email lookup?</h2><p>This free breach API returns incident metadata, affected data categories and source links. It does not accept an email address or return leaked passwords. Use <a href="/data/v1/latest.json">latest.json</a> for recently added catalogue records and <a href="/data/v1/case-files.json">case-files.json</a> for researched case summaries. Both are rebuilt alongside the website and Android feeds.</p><p>Check <code>generated</code> before refreshing a local cache. Keep the previous successful response if a request fails; an unavailable feed is not an empty archive. Compare <code>added_date</code> with <code>breach_date</code> when showing new alerts. See <a href="/blog/breach-date-vs-disclosure-date.html">why those dates differ</a>.</p><h2>What this API is not</h2>
+      <h2 id="free-breach-api-catalogue-data-or-an-email">Free breach API: catalogue data or an email lookup?</h2><p>This free breach API returns incident metadata, affected data categories and source links. It does not accept an email address or return leaked passwords. Use <a href="/data/v1/latest.json">latest.json</a> for recently added catalogue records and <a href="/data/v1/case-files.json">case-files.json</a> for researched case summaries. Both are rebuilt alongside the website and Android feeds.</p><p>Check <code>generated</code> before refreshing a local cache. Keep the previous successful response if a request fails; an unavailable feed is not an empty archive. Compare <code>added_date</code> with <code>breach_date</code> when showing new alerts. See <a href="/blog/breach-date-vs-disclosure-date.html">why those dates differ</a>.</p><h2 id="what-this-api-is-not">What this API is not</h2>
       <p>It serves breach <em>metadata</em>: which incidents happened, what categories of data were exposed, how many accounts, how severe. <strong>It holds no personal records and cannot be queried by email address, name or password.</strong></p>
       <p>That is a deliberate boundary rather than a missing feature. Checking whether a specific address appears in breach data is a different operation with entirely different privacy implications, and an unauthenticated public endpoint is the wrong shape for it. That check lives <a href="/#tool">on the tool</a>, where it can be explained and consented to. If you need it programmatically, go to <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener">HIBP's own API</a>, which is built for it.</p>
 
-      <h2>Versioning and stability</h2>
+      <h2 id="versioning-and-stability">Versioning and stability</h2>
       <p>The path carries the version. Additive changes, new fields, new endpoints, ship into <code>/data/v1/</code> at any time, which is why you should ignore unknown keys. Anything that would break an existing consumer ships at a new version path, and <code>v1</code> stays exactly where it is.</p>
       <p>This is a free service maintained alongside a small product, offered in good faith and with no uptime guarantee. If you are building something where breach data being unavailable would be a real problem, cache it on your side.</p>
 
-      <h2>Common questions</h2>
+      <h2 id="common-questions">Common questions</h2>
 
       <h3>Is it really free?</h3>
       <p>Yes. No account, no key, no paid tier, no rate limit beyond fair use. The endpoints are static files on a CDN, so serving them costs almost nothing and there is nothing to meter.</p>
@@ -222,7 +222,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
       <h3>Can I use this commercially?</h3>
       <p>CC BY 4.0 permits commercial use with attribution. Credit Have I Been Pwned as described above and you are within the licence.</p>
 
-      <h2>Related</h2>
+      <h2 id="related">Related</h2>
       <ul class="related-guides">
         <li><a href="/breaches/">the breach archive these endpoints describe</a></li>
         <li><a href="/breaches/case-files/">the case files, written up in full</a></li>
@@ -250,11 +250,11 @@ print(len(severe), "severe of", data["count"])</code></pre>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>

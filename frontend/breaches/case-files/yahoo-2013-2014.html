@@ -82,7 +82,7 @@
           <h1>Yahoo, 2013–2014: three billion accounts, and three years of silence</h1>
           <p class="meta">Case file · 5 min read · Published 14 September 2026</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2>Yahoo data breaches</h2><p>Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the company.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="yahoo-data-breaches">Yahoo data breaches</h2><p>Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the company.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <dl class="cf-facts">
         <div class="cf-fact"><dt>People affected</dt><dd>3 billion accounts</dd></div>
@@ -107,7 +107,7 @@
 <p>Reported scale: 3 billion accounts.</p></section>
       <details class="bx-full-story"><summary>Read the full account and timeline · 5 min</summary><p class="lead">Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability.</p>
 
-<h2>What happened</h2>
+<h2 id="what-happened">What happened</h2>
 
 <p>There were two intrusions, and for a long time the public only knew about one.</p>
 
@@ -115,7 +115,7 @@
 
 <p>Three months later, in December 2016, Yahoo announced a second and separate breach, from August 2013, involving a billion accounts. That figure held until October 2017, when Yahoo, by then absorbed into Verizon, confirmed that the 2013 intrusion had in fact touched every account in existence: three billion, including Flickr, Tumblr and Fantasy Sports users who had never thought of themselves as Yahoo customers at all.</p>
 
-<h2>How they got in</h2>
+<h2 id="how-they-got-in">How they got in</h2>
 
 <p>The 2014 intrusion began the way most do: a spear-phishing email that worked on one employee. From that foothold, the attackers reached two things that mattered far more than any individual mailbox.</p>
 
@@ -127,7 +127,7 @@
 
 <p>In March 2017 the US Department of Justice indicted four people: two officers of Russia's Federal Security Service, Dmitry Dokuchaev and Igor Sushchin, and two hackers they directed, Alexsey Belan and Karim Baratov. The indictment described a state intelligence service using criminal contractors, the officers wanted access to specific accounts belonging to journalists, officials and company executives, and the contractors monetised the rest of the database on the side. Baratov, arrested in Canada, pleaded guilty and was sentenced to five years in 2018. Belan, already on the FBI's most wanted list, remains at large.</p>
 
-<h2>The timeline</h2>
+<h2 id="the-timeline">The timeline</h2>
 
 <ol class="cf-timeline">
   <li><b>August 2013</b>: The intrusion that ultimately touched all three billion accounts.</li>
@@ -143,25 +143,25 @@
   <li><b>2019</b>: A $117.5 million class-action settlement is approved.</li>
 </ol>
 
-<h2>What was taken</h2>
+<h2 id="what-was-taken">What was taken</h2>
 
 <p>Names, email addresses, telephone numbers, dates of birth, hashed passwords, and security questions and answers, some of the latter stored without encryption.</p>
 
 <p>The password hashing is worth dwelling on. The 2013 set used MD5, an algorithm that was already understood to be unsuitable for password storage years before 2013; modern hardware can test billions of MD5 candidates per second, so any password that appears in a wordlist falls immediately. But the security answers are the more durable problem. A password can be changed in thirty seconds. The city where you were born cannot, and neither can your mother's maiden name, and both were, for years, accepted by banks and telecoms as proof that you were you.</p>
 
-<h2>What happened next</h2>
+<h2 id="what-happened-next">What happened next</h2>
 
 <p>The commercial consequences were real but oddly indirect. The purchase price fell by $350 million and the two companies agreed to share certain liabilities. Yahoo's general counsel resigned; chief executive Marissa Mayer forfeited her annual bonus and equity award. The SEC's $35 million penalty in 2018 was the first time it had punished a company specifically for failing to tell investors about a data breach, and it landed not because Yahoo was breached but because Yahoo's own risk disclosures had continued to describe breaches as a hypothetical future risk while it knew about a real one.</p>
 
 <p>For users, the practical result was three billion accounts' worth of email addresses, phone numbers and security answers circulating permanently, plus the discovery that a password change had never been enough against forged session tokens.</p>
 
-<h2>What it changed</h2>
+<h2 id="what-it-changed">What it changed</h2>
 
 <p>Yahoo is the case that turned breach disclosure into a securities question. Before it, a late disclosure was a public-relations problem and perhaps a regulatory one. After it, the SEC had demonstrated that describing a known incident as a hypothetical risk in an investor filing is a misstatement in its own right, a line of reasoning that runs directly into the SEC's 2023 rules requiring disclosure of material cybersecurity incidents within four business days.</p>
 
 <p>It also settled an argument inside the industry about session tokens. Invalidate sessions on password change; treat cookie-minting tooling as the crown jewel it is; make the internal admin console the hardest system in the building rather than the most convenient. All of that is now standard advice, and Yahoo is the worked example everyone points at.</p>
 
-<h2>If you had a Yahoo account</h2>
+<h2 id="if-you-had-a-yahoo-account">If you had a Yahoo account</h2>
 
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
   <label><input type="checkbox"><span><strong>Assume the account is compromised, even if you abandoned it.</strong> Old Yahoo addresses are still listed as the recovery address on other people's live accounts. An abandoned mailbox with a reused password is a route into everything it can reset.</span></label>
@@ -174,7 +174,7 @@
            breach unfolded is far likelier to want the check than someone who
            landed here and was asked for an address in the first screen. -->
       <form class="bx-check" data-breach-check data-targets="[]">
-        <h2>Were you part of this breach?</h2>
+        <h2 id="were-you-part-of-this-breach">Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
           <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
@@ -186,7 +186,7 @@
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
 
-      <h2>Questions people ask</h2>
+      <h2 id="questions-people-ask">Questions people ask</h2>
       <div class="bx-faq">
         <h3>How many accounts were in the Yahoo breach?</h3>
         <p>Three billion, every account Yahoo had ever issued, including Flickr, Tumblr and Yahoo Fantasy accounts. The company first said 500 million, then a separate billion, then in October 2017 confirmed that the August 2013 intrusion had touched all three billion.</p>
@@ -219,7 +219,7 @@
         <li><b>Yahoo Inc. SEC filings and investor statements, 2016–2017</b></li>
         <li><b>In re Yahoo! Inc. Customer Data Security Breach Litigation, $117.5 million settlement, 2019</b></li>
       </ul>
-      <h2>Read next</h2>
+      <h2 id="read-next">Read next</h2>
       <ul class="bx-related">
         <li><a href="/breaches/case-files/dropbox-2012.html">Dropbox, 2012: an employee reused a password, and 68 million accounts followed</a></li>
         <li><a href="/breaches/case-files/myspace-2016.html">MySpace, 2016: 360 million accounts from a website nobody used any more</a></li>
@@ -248,11 +248,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <h2 class="site-footer__heading">Explore</h2>
-  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
+  <ul><li><a href="/directory.html">Site directory</a></li><li><a href="/watch.html">Watch MyRecon</a></li><li><a href="/videos/">Video guides</a></li><li><a href="/osint-cheat-sheet.html">OSINT cheat sheet</a></li><li><a href="/templates/">Free templates</a></li><li><a href="/find/">Platform directory</a></li><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <h2 class="site-footer__heading">Compare</h2>
-  <ul><li><a href="/blog/top-10-osint-tools.html">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/guides/top-10-osint-tools-2026">Top 10 OSINT tools</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <h2 class="site-footer__heading">Company</h2>
