@@ -87,7 +87,7 @@
 
 <h3>MyRecon (Browser &amp; API)</h3>
 <p><strong>Best for:</strong> Fast, evidence-aware browser searches with zero setup.</p>
-<p><a href="/#tool">MyRecon</a> searches across 500+ public platforms simultaneously. Unlike tools that blindly assume an HTTP 200 response proves an account exists, MyRecon evaluates server responses against synthetic control tests to eliminate false positives. Results are labeled <code>found</code>, <code>not_found</code>, or <code>unknown</code> (such as when rate limits or login gates prevent verification).</p>
+<p><a href="/#tool">MyRecon</a> searches across 500+ public platforms simultaneously. Unlike tools that blindly assume an HTTP 200 response proves an account exists, MyRecon looks for direct profile evidence and, on signed-in scans, compares unclear pages with a made-up control handle to cut false positives. Results are labeled <code>found</code>, <code>not_found</code>, or <code>unknown</code> (such as when rate limits or login gates prevent verification).</p>
 <ul>
   <li><strong>Pros:</strong> Runs instantly in the browser, provides JSON/CSV export, integrates breach and domain data in a single tab.</li>
   <li><strong>Cons:</strong> Focuses on supported public web checks rather than deep automated network graph clustering.</li>
