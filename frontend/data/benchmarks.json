@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "status": "measured",
-  "updated_at_utc": "2026-11-14T10:39:42Z",
-  "next_update_due_utc": "2026-11-15T10:39:42Z",
+  "updated_at_utc": "2026-11-15T11:12:02Z",
+  "next_update_due_utc": "2026-11-16T11:12:02Z",
   "schedule": {
     "interval_hours": 24,
     "cron_utc": "17 3 * * *",
@@ -49134,12 +49134,1088 @@
           }
         }
       ]
+    },
+    {
+      "started_at_utc": "2026-11-15T11:11:29Z",
+      "finished_at_utc": "2026-11-15T11:12:02Z",
+      "version_or_commit": "f80f26194890ba42c9c464bcb8055e0fc7a15a91",
+      "benchmark_harness_sha256": "cdb3cbf26b6ded2991253521f7775038ef2a61ec97e7ad2dc3bd1a1a7d9a989e",
+      "dataset_id": "public-controls-v1",
+      "dataset_sha256": "40a7ac2534d4b500fd6095f752055d3b1eefae9338258fc6e3465b6db28c72ee",
+      "username_count": 10,
+      "platforms": [
+        "GitHub",
+        "GitLab",
+        "Hacker News"
+      ],
+      "cache_state": "application cache bypassed",
+      "network_environment": "GitHub Actions",
+      "tools": {
+        "myrecon": {
+          "TP": 11,
+          "TN": 19,
+          "FP": 0,
+          "FN": 0,
+          "unknown": 0,
+          "unscored": 0,
+          "unknown_negative": 0,
+          "total": 30,
+          "scored": 30,
+          "negative_denominator": 19,
+          "false_positive_rate_percent": 0.0,
+          "accuracy_percent": 100.0,
+          "coverage_percent": 100.0,
+          "p50_seconds": 0.141,
+          "p95_seconds": 0.347
+        },
+        "http200_baseline": {
+          "TP": 8,
+          "TN": 5,
+          "FP": 1,
+          "FN": 0,
+          "unknown": 16,
+          "unscored": 0,
+          "unknown_negative": 13,
+          "total": 30,
+          "scored": 14,
+          "negative_denominator": 6,
+          "false_positive_rate_percent": 16.67,
+          "accuracy_percent": 92.86,
+          "coverage_percent": 46.67,
+          "p50_seconds": 0.577,
+          "p95_seconds": 0.815
+        },
+        "sherlock": {
+          "TP": 11,
+          "TN": 12,
+          "FP": 7,
+          "FN": 0,
+          "unknown": 0,
+          "unscored": 0,
+          "unknown_negative": 0,
+          "total": 30,
+          "scored": 30,
+          "negative_denominator": 19,
+          "false_positive_rate_percent": 36.84,
+          "accuracy_percent": 76.67,
+          "coverage_percent": 100.0,
+          "p50_seconds": 0.279,
+          "p95_seconds": 0.41
+        },
+        "maigret": {
+          "TP": 11,
+          "TN": 19,
+          "FP": 0,
+          "FN": 0,
+          "unknown": 0,
+          "unscored": 0,
+          "unknown_negative": 0,
+          "total": 30,
+          "scored": 30,
+          "negative_denominator": 19,
+          "false_positive_rate_percent": 0.0,
+          "accuracy_percent": 100.0,
+          "coverage_percent": 100.0,
+          "p50_seconds": 0.193,
+          "p95_seconds": 0.366
+        }
+      },
+      "tool_metadata": {
+        "myrecon": {
+          "label": "MyRecon",
+          "version": "f80f2619",
+          "commit": "f80f26194890ba42c9c464bcb8055e0fc7a15a91",
+          "status": "measured",
+          "python_version": "3.12.16",
+          "requests_version": "2.34.2",
+          "max_connections": 3,
+          "connect_timeout_seconds": 6,
+          "read_timeout_seconds": 8,
+          "deadline_seconds": 45
+        },
+        "sherlock": {
+          "label": "Sherlock",
+          "package": "sherlock-project",
+          "version": "0.16.2",
+          "repository": "https://github.com/sherlock-project/sherlock",
+          "commit": "e40a45ec2a074b90703b3b4b842c8a3adbd6ada3",
+          "status": "measured",
+          "timeout_seconds": 8,
+          "max_connections": 3,
+          "parsing": false,
+          "enrichment": false,
+          "retries": 0,
+          "python_version": "3.12.16",
+          "requests_version": "2.34.2",
+          "site_database_sha256": "9be547309225fa83e62195188f16dcdb957c3aa6a81082d4a260489f8977f74a"
+        },
+        "maigret": {
+          "label": "Maigret",
+          "package": "maigret",
+          "version": "0.6.6",
+          "repository": "https://github.com/soxoj/maigret",
+          "commit": "b6642744988e7e6c2d21f75db60ec3093019ba25",
+          "status": "measured",
+          "timeout_seconds": 8,
+          "max_connections": 3,
+          "parsing": false,
+          "enrichment": false,
+          "retries": 0,
+          "python_version": "3.12.16",
+          "requests_version": "2.34.2",
+          "site_database_sha256": "d076e8bcd4517f215df28df7034431385bb12a085a28c4d1ca941cae66336d4b"
+        }
+      },
+      "username_timings_seconds": [
+        {
+          "username": "torvalds",
+          "myrecon": 0.263,
+          "http200_baseline": 0.819,
+          "sherlock": 0.29,
+          "maigret": 0.431
+        },
+        {
+          "username": "octocat",
+          "myrecon": 0.348,
+          "http200_baseline": 0.607,
+          "sherlock": 0.274,
+          "maigret": 0.251
+        },
+        {
+          "username": "defunkt",
+          "myrecon": 0.315,
+          "http200_baseline": 0.805,
+          "sherlock": 0.322,
+          "maigret": 0.178
+        },
+        {
+          "username": "mojombo",
+          "myrecon": 0.346,
+          "http200_baseline": 0.811,
+          "sherlock": 0.377,
+          "maigret": 0.195
+        },
+        {
+          "username": "sindresorhus",
+          "myrecon": 0.126,
+          "http200_baseline": 0.752,
+          "sherlock": 0.437,
+          "maigret": 0.153
+        },
+        {
+          "username": "mrbench-a7b32c91d8e04f6a",
+          "myrecon": 0.142,
+          "http200_baseline": 0.546,
+          "sherlock": 0.219,
+          "maigret": 0.19
+        },
+        {
+          "username": "mrbench-b9e61d03a4c72f85",
+          "myrecon": 0.131,
+          "http200_baseline": 0.511,
+          "sherlock": 0.284,
+          "maigret": 0.282
+        },
+        {
+          "username": "mrbench-c4f82a16b9d03e57",
+          "myrecon": 0.116,
+          "http200_baseline": 0.485,
+          "sherlock": 0.221,
+          "maigret": 0.287
+        },
+        {
+          "username": "mrbench-d6a91e38c2b74f05",
+          "myrecon": 0.14,
+          "http200_baseline": 0.474,
+          "sherlock": 0.257,
+          "maigret": 0.146
+        },
+        {
+          "username": "mrbench-e2c57b90d4a16f83",
+          "myrecon": 0.116,
+          "http200_baseline": 0.509,
+          "sherlock": 0.219,
+          "maigret": 0.173
+        }
+      ],
+      "checks": [
+        {
+          "username": "torvalds",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://api.github.com/users/torvalds",
+            "checked_at_utc": "2026-11-15T11:11:29Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "torvalds",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=torvalds",
+            "checked_at_utc": "2026-11-15T11:11:30Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "torvalds",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/torvalds.json",
+            "checked_at_utc": "2026-11-15T11:11:30Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "octocat",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://api.github.com/users/octocat",
+            "checked_at_utc": "2026-11-15T11:11:32Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "octocat",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=octocat",
+            "checked_at_utc": "2026-11-15T11:11:32Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 403
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "octocat",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/octocat.json",
+            "checked_at_utc": "2026-11-15T11:11:33Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "defunkt",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://api.github.com/users/defunkt",
+            "checked_at_utc": "2026-11-15T11:11:34Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "defunkt",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=defunkt",
+            "checked_at_utc": "2026-11-15T11:11:34Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "defunkt",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/defunkt.json",
+            "checked_at_utc": "2026-11-15T11:11:35Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mojombo",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://api.github.com/users/mojombo",
+            "checked_at_utc": "2026-11-15T11:11:36Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mojombo",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=mojombo",
+            "checked_at_utc": "2026-11-15T11:11:37Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mojombo",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/mojombo.json",
+            "checked_at_utc": "2026-11-15T11:11:37Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "sindresorhus",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://api.github.com/users/sindresorhus",
+            "checked_at_utc": "2026-11-15T11:11:39Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "sindresorhus",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=sindresorhus",
+            "checked_at_utc": "2026-11-15T11:11:39Z"
+          },
+          "myrecon": {
+            "verdict": "found",
+            "reason_code": "api_user",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "found",
+            "status_code": 200
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "sindresorhus",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/sindresorhus.json",
+            "checked_at_utc": "2026-11-15T11:11:39Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-a7b32c91d8e04f6a",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 404,
+            "source_url": "https://api.github.com/users/mrbench-a7b32c91d8e04f6a",
+            "checked_at_utc": "2026-11-15T11:11:41Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 404
+          },
+          "http200_baseline": {
+            "verdict": "not_found",
+            "status_code": 404
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          }
+        },
+        {
+          "username": "mrbench-a7b32c91d8e04f6a",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=mrbench-a7b32c91d8e04f6a",
+            "checked_at_utc": "2026-11-15T11:11:41Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 403
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-a7b32c91d8e04f6a",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-a7b32c91d8e04f6a.json",
+            "checked_at_utc": "2026-11-15T11:11:42Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-b9e61d03a4c72f85",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 404,
+            "source_url": "https://api.github.com/users/mrbench-b9e61d03a4c72f85",
+            "checked_at_utc": "2026-11-15T11:11:43Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 404
+          },
+          "http200_baseline": {
+            "verdict": "not_found",
+            "status_code": 404
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          }
+        },
+        {
+          "username": "mrbench-b9e61d03a4c72f85",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=mrbench-b9e61d03a4c72f85",
+            "checked_at_utc": "2026-11-15T11:11:43Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 403
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-b9e61d03a4c72f85",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-b9e61d03a4c72f85.json",
+            "checked_at_utc": "2026-11-15T11:11:43Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-c4f82a16b9d03e57",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 404,
+            "source_url": "https://api.github.com/users/mrbench-c4f82a16b9d03e57",
+            "checked_at_utc": "2026-11-15T11:11:45Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 404
+          },
+          "http200_baseline": {
+            "verdict": "not_found",
+            "status_code": 404
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          }
+        },
+        {
+          "username": "mrbench-c4f82a16b9d03e57",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=mrbench-c4f82a16b9d03e57",
+            "checked_at_utc": "2026-11-15T11:11:45Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 403
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-c4f82a16b9d03e57",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-c4f82a16b9d03e57.json",
+            "checked_at_utc": "2026-11-15T11:11:45Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-d6a91e38c2b74f05",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 404,
+            "source_url": "https://api.github.com/users/mrbench-d6a91e38c2b74f05",
+            "checked_at_utc": "2026-11-15T11:11:46Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 404
+          },
+          "http200_baseline": {
+            "verdict": "not_found",
+            "status_code": 404
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          }
+        },
+        {
+          "username": "mrbench-d6a91e38c2b74f05",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=mrbench-d6a91e38c2b74f05",
+            "checked_at_utc": "2026-11-15T11:11:47Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 403
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-d6a91e38c2b74f05",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-d6a91e38c2b74f05.json",
+            "checked_at_utc": "2026-11-15T11:11:47Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-e2c57b90d4a16f83",
+          "platform": "GitHub",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 404,
+            "source_url": "https://api.github.com/users/mrbench-e2c57b90d4a16f83",
+            "checked_at_utc": "2026-11-15T11:11:48Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 404
+          },
+          "http200_baseline": {
+            "verdict": "not_found",
+            "status_code": 404
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 404
+          }
+        },
+        {
+          "username": "mrbench-e2c57b90d4a16f83",
+          "platform": "GitLab",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://gitlab.com/api/v4/users?username=mrbench-e2c57b90d4a16f83",
+            "checked_at_utc": "2026-11-15T11:11:49Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 403
+          },
+          "sherlock": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        },
+        {
+          "username": "mrbench-e2c57b90d4a16f83",
+          "platform": "Hacker News",
+          "reference": {
+            "verdict": "not_found",
+            "status_code": 200,
+            "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-e2c57b90d4a16f83.json",
+            "checked_at_utc": "2026-11-15T11:11:49Z"
+          },
+          "myrecon": {
+            "verdict": "not_found",
+            "reason_code": "api_absent",
+            "status_code": 200
+          },
+          "http200_baseline": {
+            "verdict": "unknown",
+            "status_code": 419
+          },
+          "sherlock": {
+            "verdict": "found",
+            "native_status": "CLAIMED",
+            "status_code": 419
+          },
+          "maigret": {
+            "verdict": "not_found",
+            "native_status": "AVAILABLE",
+            "status_code": 200
+          }
+        }
+      ]
     }
   ],
   "latest": {
-    "started_at_utc": "2026-11-14T10:39:05Z",
-    "finished_at_utc": "2026-11-14T10:39:42Z",
-    "version_or_commit": "d8121df3dc99446818733678653a60df6889241e",
+    "started_at_utc": "2026-11-15T11:11:29Z",
+    "finished_at_utc": "2026-11-15T11:12:02Z",
+    "version_or_commit": "f80f26194890ba42c9c464bcb8055e0fc7a15a91",
     "benchmark_harness_sha256": "cdb3cbf26b6ded2991253521f7775038ef2a61ec97e7ad2dc3bd1a1a7d9a989e",
     "dataset_id": "public-controls-v1",
     "dataset_sha256": "40a7ac2534d4b500fd6095f752055d3b1eefae9338258fc6e3465b6db28c72ee",
@@ -49166,8 +50242,8 @@
         "false_positive_rate_percent": 0.0,
         "accuracy_percent": 100.0,
         "coverage_percent": 100.0,
-        "p50_seconds": 0.246,
-        "p95_seconds": 0.287
+        "p50_seconds": 0.141,
+        "p95_seconds": 0.347
       },
       "http200_baseline": {
         "TP": 8,
@@ -49183,8 +50259,8 @@
         "false_positive_rate_percent": 16.67,
         "accuracy_percent": 92.86,
         "coverage_percent": 46.67,
-        "p50_seconds": 0.592,
-        "p95_seconds": 0.917
+        "p50_seconds": 0.577,
+        "p95_seconds": 0.815
       },
       "sherlock": {
         "TP": 11,
@@ -49200,8 +50276,8 @@
         "false_positive_rate_percent": 36.84,
         "accuracy_percent": 76.67,
         "coverage_percent": 100.0,
-        "p50_seconds": 0.474,
-        "p95_seconds": 0.691
+        "p50_seconds": 0.279,
+        "p95_seconds": 0.41
       },
       "maigret": {
         "TP": 11,
@@ -49217,15 +50293,15 @@
         "false_positive_rate_percent": 0.0,
         "accuracy_percent": 100.0,
         "coverage_percent": 100.0,
-        "p50_seconds": 0.248,
-        "p95_seconds": 0.287
+        "p50_seconds": 0.193,
+        "p95_seconds": 0.366
       }
     },
     "tool_metadata": {
       "myrecon": {
         "label": "MyRecon",
-        "version": "d8121df3",
-        "commit": "d8121df3dc99446818733678653a60df6889241e",
+        "version": "f80f2619",
+        "commit": "f80f26194890ba42c9c464bcb8055e0fc7a15a91",
         "status": "measured",
         "python_version": "3.12.16",
         "requests_version": "2.34.2",
@@ -49270,73 +50346,73 @@
     "username_timings_seconds": [
       {
         "username": "torvalds",
-        "myrecon": 0.265,
-        "http200_baseline": 0.723,
-        "sherlock": 0.512,
-        "maigret": 0.301
+        "myrecon": 0.263,
+        "http200_baseline": 0.819,
+        "sherlock": 0.29,
+        "maigret": 0.431
       },
       {
         "username": "octocat",
-        "myrecon": 0.3,
-        "http200_baseline": 0.636,
-        "sherlock": 0.573,
-        "maigret": 0.269
+        "myrecon": 0.348,
+        "http200_baseline": 0.607,
+        "sherlock": 0.274,
+        "maigret": 0.251
       },
       {
         "username": "defunkt",
-        "myrecon": 0.249,
-        "http200_baseline": 0.939,
-        "sherlock": 0.59,
-        "maigret": 0.261
+        "myrecon": 0.315,
+        "http200_baseline": 0.805,
+        "sherlock": 0.322,
+        "maigret": 0.178
       },
       {
         "username": "mojombo",
-        "myrecon": 0.272,
-        "http200_baseline": 0.719,
-        "sherlock": 0.687,
-        "maigret": 0.248
+        "myrecon": 0.346,
+        "http200_baseline": 0.811,
+        "sherlock": 0.377,
+        "maigret": 0.195
       },
       {
         "username": "sindresorhus",
-        "myrecon": 0.257,
-        "http200_baseline": 0.89,
-        "sherlock": 0.695,
-        "maigret": 0.259
+        "myrecon": 0.126,
+        "http200_baseline": 0.752,
+        "sherlock": 0.437,
+        "maigret": 0.153
       },
       {
         "username": "mrbench-a7b32c91d8e04f6a",
-        "myrecon": 0.235,
-        "http200_baseline": 0.548,
-        "sherlock": 0.387,
-        "maigret": 0.234
+        "myrecon": 0.142,
+        "http200_baseline": 0.546,
+        "sherlock": 0.219,
+        "maigret": 0.19
       },
       {
         "username": "mrbench-b9e61d03a4c72f85",
-        "myrecon": 0.233,
-        "http200_baseline": 0.46,
-        "sherlock": 0.386,
-        "maigret": 0.244
+        "myrecon": 0.131,
+        "http200_baseline": 0.511,
+        "sherlock": 0.284,
+        "maigret": 0.282
       },
       {
         "username": "mrbench-c4f82a16b9d03e57",
-        "myrecon": 0.242,
-        "http200_baseline": 0.525,
-        "sherlock": 0.436,
-        "maigret": 0.234
+        "myrecon": 0.116,
+        "http200_baseline": 0.485,
+        "sherlock": 0.221,
+        "maigret": 0.287
       },
       {
         "username": "mrbench-d6a91e38c2b74f05",
-        "myrecon": 0.224,
-        "http200_baseline": 0.521,
-        "sherlock": 0.381,
-        "maigret": 0.248
+        "myrecon": 0.14,
+        "http200_baseline": 0.474,
+        "sherlock": 0.257,
+        "maigret": 0.146
       },
       {
         "username": "mrbench-e2c57b90d4a16f83",
-        "myrecon": 0.226,
-        "http200_baseline": 0.464,
-        "sherlock": 0.39,
-        "maigret": 0.23
+        "myrecon": 0.116,
+        "http200_baseline": 0.509,
+        "sherlock": 0.219,
+        "maigret": 0.173
       }
     ],
     "checks": [
@@ -49347,7 +50423,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://api.github.com/users/torvalds",
-          "checked_at_utc": "2026-11-14T10:39:05Z"
+          "checked_at_utc": "2026-11-15T11:11:29Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49376,7 +50452,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=torvalds",
-          "checked_at_utc": "2026-11-14T10:39:06Z"
+          "checked_at_utc": "2026-11-15T11:11:30Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49405,7 +50481,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/torvalds.json",
-          "checked_at_utc": "2026-11-14T10:39:06Z"
+          "checked_at_utc": "2026-11-15T11:11:30Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49434,7 +50510,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://api.github.com/users/octocat",
-          "checked_at_utc": "2026-11-14T10:39:08Z"
+          "checked_at_utc": "2026-11-15T11:11:32Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49463,7 +50539,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=octocat",
-          "checked_at_utc": "2026-11-14T10:39:08Z"
+          "checked_at_utc": "2026-11-15T11:11:32Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49492,7 +50568,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/octocat.json",
-          "checked_at_utc": "2026-11-14T10:39:09Z"
+          "checked_at_utc": "2026-11-15T11:11:33Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49521,7 +50597,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://api.github.com/users/defunkt",
-          "checked_at_utc": "2026-11-14T10:39:10Z"
+          "checked_at_utc": "2026-11-15T11:11:34Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49550,7 +50626,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=defunkt",
-          "checked_at_utc": "2026-11-14T10:39:11Z"
+          "checked_at_utc": "2026-11-15T11:11:34Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49579,7 +50655,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/defunkt.json",
-          "checked_at_utc": "2026-11-14T10:39:11Z"
+          "checked_at_utc": "2026-11-15T11:11:35Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49608,7 +50684,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://api.github.com/users/mojombo",
-          "checked_at_utc": "2026-11-14T10:39:13Z"
+          "checked_at_utc": "2026-11-15T11:11:36Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49637,7 +50713,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=mojombo",
-          "checked_at_utc": "2026-11-14T10:39:13Z"
+          "checked_at_utc": "2026-11-15T11:11:37Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49666,7 +50742,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/mojombo.json",
-          "checked_at_utc": "2026-11-14T10:39:14Z"
+          "checked_at_utc": "2026-11-15T11:11:37Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49695,7 +50771,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://api.github.com/users/sindresorhus",
-          "checked_at_utc": "2026-11-14T10:39:15Z"
+          "checked_at_utc": "2026-11-15T11:11:39Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49724,7 +50800,7 @@
           "verdict": "found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=sindresorhus",
-          "checked_at_utc": "2026-11-14T10:39:16Z"
+          "checked_at_utc": "2026-11-15T11:11:39Z"
         },
         "myrecon": {
           "verdict": "found",
@@ -49753,7 +50829,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/sindresorhus.json",
-          "checked_at_utc": "2026-11-14T10:39:16Z"
+          "checked_at_utc": "2026-11-15T11:11:39Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49782,7 +50858,7 @@
           "verdict": "not_found",
           "status_code": 404,
           "source_url": "https://api.github.com/users/mrbench-a7b32c91d8e04f6a",
-          "checked_at_utc": "2026-11-14T10:39:18Z"
+          "checked_at_utc": "2026-11-15T11:11:41Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49811,7 +50887,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=mrbench-a7b32c91d8e04f6a",
-          "checked_at_utc": "2026-11-14T10:39:18Z"
+          "checked_at_utc": "2026-11-15T11:11:41Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49840,7 +50916,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-a7b32c91d8e04f6a.json",
-          "checked_at_utc": "2026-11-14T10:39:18Z"
+          "checked_at_utc": "2026-11-15T11:11:42Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49869,7 +50945,7 @@
           "verdict": "not_found",
           "status_code": 404,
           "source_url": "https://api.github.com/users/mrbench-b9e61d03a4c72f85",
-          "checked_at_utc": "2026-11-14T10:39:20Z"
+          "checked_at_utc": "2026-11-15T11:11:43Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49898,7 +50974,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=mrbench-b9e61d03a4c72f85",
-          "checked_at_utc": "2026-11-14T10:39:20Z"
+          "checked_at_utc": "2026-11-15T11:11:43Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49927,7 +51003,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-b9e61d03a4c72f85.json",
-          "checked_at_utc": "2026-11-14T10:39:21Z"
+          "checked_at_utc": "2026-11-15T11:11:43Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49956,7 +51032,7 @@
           "verdict": "not_found",
           "status_code": 404,
           "source_url": "https://api.github.com/users/mrbench-c4f82a16b9d03e57",
-          "checked_at_utc": "2026-11-14T10:39:22Z"
+          "checked_at_utc": "2026-11-15T11:11:45Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -49985,7 +51061,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=mrbench-c4f82a16b9d03e57",
-          "checked_at_utc": "2026-11-14T10:39:22Z"
+          "checked_at_utc": "2026-11-15T11:11:45Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -50014,7 +51090,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-c4f82a16b9d03e57.json",
-          "checked_at_utc": "2026-11-14T10:39:23Z"
+          "checked_at_utc": "2026-11-15T11:11:45Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -50043,7 +51119,7 @@
           "verdict": "not_found",
           "status_code": 404,
           "source_url": "https://api.github.com/users/mrbench-d6a91e38c2b74f05",
-          "checked_at_utc": "2026-11-14T10:39:24Z"
+          "checked_at_utc": "2026-11-15T11:11:46Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -50072,7 +51148,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=mrbench-d6a91e38c2b74f05",
-          "checked_at_utc": "2026-11-14T10:39:24Z"
+          "checked_at_utc": "2026-11-15T11:11:47Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -50101,7 +51177,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-d6a91e38c2b74f05.json",
-          "checked_at_utc": "2026-11-14T10:39:25Z"
+          "checked_at_utc": "2026-11-15T11:11:47Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -50130,7 +51206,7 @@
           "verdict": "not_found",
           "status_code": 404,
           "source_url": "https://api.github.com/users/mrbench-e2c57b90d4a16f83",
-          "checked_at_utc": "2026-11-14T10:39:26Z"
+          "checked_at_utc": "2026-11-15T11:11:48Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -50159,7 +51235,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://gitlab.com/api/v4/users?username=mrbench-e2c57b90d4a16f83",
-          "checked_at_utc": "2026-11-14T10:39:26Z"
+          "checked_at_utc": "2026-11-15T11:11:49Z"
         },
         "myrecon": {
           "verdict": "not_found",
@@ -50188,7 +51264,7 @@
           "verdict": "not_found",
           "status_code": 200,
           "source_url": "https://hacker-news.firebaseio.com/v0/user/mrbench-e2c57b90d4a16f83.json",
-          "checked_at_utc": "2026-11-14T10:39:27Z"
+          "checked_at_utc": "2026-11-15T11:11:49Z"
         },
         "myrecon": {
           "verdict": "not_found",
