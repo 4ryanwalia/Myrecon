@@ -81,7 +81,7 @@
   <section>
     <h2 id="what-is-an-osint-tool-and-how-does">What is an OSINT tool and how does it work?</h2>
     <p>Open-Source Intelligence (OSINT) refers to intelligence derived from publicly accessible data. A free OSINT tool automates the collection and correlation of public data across social networks, developer hubs, public registries, and breached credential archives.</p>
-    <p>Instead of manually visiting hundreds of websites, MyRecon queries public profile endpoints simultaneously. To prevent misleading results, MyRecon evaluates HTTP responses against synthetic control handles, classifying every check into three precise evidence states:</p>
+    <p>Instead of manually visiting hundreds of websites, MyRecon queries public profile endpoints simultaneously. On the full scan that comes with free sign-in, a check with no direct profile evidence is also compared with a made-up control handle on the same platform. Every check ends in one of three evidence states:</p>
     <dl>
       <dt><strong>Found</strong></dt>
       <dd>A supported public endpoint returned confirmed evidence of a public profile. The candidate link should be reviewed at the source to confirm ownership.</dd>
@@ -113,11 +113,11 @@
   </section>
   <section>
     <h2 id="comparing-free-osint-tools-web-scanner-vs-cli">Comparing free OSINT tools: Web scanner vs CLI scripts</h2>
-    <p>Traditional open-source intelligence tools like Sherlock, Maigret, and WhatsMyName are built as command-line terminal scripts. While powerful for developers, they present operational friction:</p>
+    <p>Traditional open-source intelligence tools like Sherlock and Maigret are built as command-line terminal scripts. While powerful for developers, they present operational friction:</p>
     <ul>
       <li><strong>Installation overhead:</strong> CLI tools require Python, pip package dependencies, and terminal environments. MyRecon runs instantly in any modern browser on desktop or mobile.</li>
       <li><strong>Rate limiting and IP burning:</strong> Running high-speed terminal sweeps from a personal home IP often triggers CAPTCHAs and temporary IP bans. MyRecon balances query distribution to maintain reliability.</li>
-      <li><strong>False-positive elimination:</strong> Many platforms return HTTP 200 responses for nonexistent accounts. MyRecon validates responses against impossible control handles to filter out ghost accounts.</li>
+      <li><strong>False-positive elimination:</strong> Many platforms return HTTP 200 responses for nonexistent accounts. MyRecon looks for direct profile evidence first and, on signed-in scans, compares unclear pages with an impossible control handle so ghost accounts are not reported as found.</li>
       <li><strong>Integrated intelligence:</strong> CLI tools typically focus only on usernames. MyRecon combines usernames, email breaches, password exposure, and domain DNS analysis in one view.</li>
     </ul>
     <p>See our head-to-head technical comparisons: <a href="/vs/sherlock">MyRecon vs Sherlock</a>, <a href="/vs/">MyRecon vs Maigret</a>, and <a href="/vs/">all OSINT tool comparisons</a>.</p>

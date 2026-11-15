@@ -77,7 +77,7 @@
   <h1>Boost OSINT investigations and parallel username search</h1>
   <p class="sub">Accelerate open-source intelligence workflows with MyRecon. Run parallel username sweeps across 500+ platforms, eliminate soft-404 false positives with synthetic control checks, and correlate email breaches in seconds.</p>
   <a class="btn btn-primary" href="/#tool=username">Boost your OSINT scan</a>
-  <p class="discovery-note">Parallel multi-platform sweeps. Synthetic control validation. Free guest Quick scans across 100 platforms; 500+ platforms with free sign-in.</p>
+  <p class="discovery-note">Parallel multi-platform sweeps. Control-handle validation on signed-in scans. Free guest Quick scans across 100 platforms; 500+ platforms with free sign-in.</p>
   <section>
     <h2 id="how-to-boost-osint-speed-without-sacrificing-accuracy">How to boost OSINT speed without sacrificing accuracy</h2>
     <p>In open-source intelligence, raw request speed means very little if half of the returned URLs are false positives. Traditional username enumeration scripts race through hundreds of URLs and flag any HTTP 200 response as a match, forcing investigators to waste time clicking dead landing pages.</p>
@@ -86,7 +86,7 @@
       <dt><strong>Parallel multi-platform probing</strong></dt>
       <dd>Query 100 to 500+ social networks, coding repositories, gaming networks, and community forums in a single pass instead of checking sites one by one.</dd>
       <dt><strong>Synthetic control filtering</strong></dt>
-      <dd>Every target check is paired against a known non-existent control handle so soft 404s and login-wall redirects are caught before they clutter your report.</dd>
+      <dd>On signed-in scans, a check with no direct profile evidence is compared with a known non-existent control handle, so soft 404s and placeholder pages are not reported as found.</dd>
       <dt><strong>Three-state evidence classification</strong></dt>
       <dd>Results are separated cleanly into <em>Found</em>, <em>Not found</em>, and <em>Unknown</em> (rate-limited or blocked), preventing false assumptions when a site throttles requests.</dd>
     </dl>
@@ -159,7 +159,7 @@
     <ul>
       <li><strong>Zero environment maintenance:</strong> No Python virtual environments, broken pip dependencies, or outdated JSON site definitions to patch before starting urgent research.</li>
       <li><strong>Protected local IP reputation:</strong> Avoid triggering Cloudflare blocks or CAPTCHA loops on your personal connection during large sweeps.</li>
-      <li><strong>Documented benchmark transparency:</strong> Review our <a href="/#benchmarks">published benchmark comparisons</a> against <a href="/vs/sherlock">Sherlock</a>, <a href="/vs/">Maigret</a>, and <a href="/whatsmyname-alternatives.html">WhatsMyName</a>.</li>
+      <li><strong>Documented benchmark transparency:</strong> Review our <a href="/#benchmarks">published benchmark comparisons</a> against <a href="/vs/sherlock">Sherlock</a>, <a href="/vs/">Maigret</a>, and WhatsMyName (archived in November 2026; see <a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a>).</li>
     </ul>
   </section>
   <section>

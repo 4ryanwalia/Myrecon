@@ -146,7 +146,7 @@ const osintBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>What is an OSINT tool and how does it work?</h2>
     <p>Open-Source Intelligence (OSINT) refers to intelligence derived from publicly accessible data. A free OSINT tool automates the collection and correlation of public data across social networks, developer hubs, public registries, and breached credential archives.</p>
-    <p>Instead of manually visiting hundreds of websites, MyRecon queries public profile endpoints simultaneously. To prevent misleading results, MyRecon evaluates HTTP responses against synthetic control handles, classifying every check into three precise evidence states:</p>
+    <p>Instead of manually visiting hundreds of websites, MyRecon queries public profile endpoints simultaneously. On the full scan that comes with free sign-in, a check with no direct profile evidence is also compared with a made-up control handle on the same platform. Every check ends in one of three evidence states:</p>
     <dl>
       <dt><strong>Found</strong></dt>
       <dd>A supported public endpoint returned confirmed evidence of a public profile. The candidate link should be reviewed at the source to confirm ownership.</dd>
@@ -178,11 +178,11 @@ const osintBody = `<main id="main" class="container prose discovery-page">
   </section>
   <section>
     <h2>Comparing free OSINT tools: Web scanner vs CLI scripts</h2>
-    <p>Traditional open-source intelligence tools like Sherlock, Maigret, and WhatsMyName are built as command-line terminal scripts. While powerful for developers, they present operational friction:</p>
+    <p>Traditional open-source intelligence tools like Sherlock and Maigret are built as command-line terminal scripts. While powerful for developers, they present operational friction:</p>
     <ul>
       <li><strong>Installation overhead:</strong> CLI tools require Python, pip package dependencies, and terminal environments. MyRecon runs instantly in any modern browser on desktop or mobile.</li>
       <li><strong>Rate limiting and IP burning:</strong> Running high-speed terminal sweeps from a personal home IP often triggers CAPTCHAs and temporary IP bans. MyRecon balances query distribution to maintain reliability.</li>
-      <li><strong>False-positive elimination:</strong> Many platforms return HTTP 200 responses for nonexistent accounts. MyRecon validates responses against impossible control handles to filter out ghost accounts.</li>
+      <li><strong>False-positive elimination:</strong> Many platforms return HTTP 200 responses for nonexistent accounts. MyRecon looks for direct profile evidence first and, on signed-in scans, compares unclear pages with an impossible control handle so ghost accounts are not reported as found.</li>
       <li><strong>Integrated intelligence:</strong> CLI tools typically focus only on usernames. MyRecon combines usernames, email breaches, password exposure, and domain DNS analysis in one view.</li>
     </ul>
     <p>See our head-to-head technical comparisons: <a href="/vs/sherlock.html">MyRecon vs Sherlock</a>, <a href="/vs/maigret.html">MyRecon vs Maigret</a>, and <a href="/vs/">all OSINT tool comparisons</a>.</p>
@@ -261,14 +261,14 @@ const lookupQuestions = [
   ['What is a reverse username lookup?', 'A reverse username lookup is an OSINT reconnaissance technique that takes a single username or handle and queries hundreds of web platforms to identify registered public profiles associated with that handle.'],
   ['Is reverse username lookup free on MyRecon?', 'Yes. MyRecon allows anyone to run free guest Quick scans across 100 platforms with no login required. Creating a free account unlocks Standard scans across 500+ platforms with complete result cards, exportable summaries, and saved search history.'],
   ['How does reverse username search differ from searching Google?', 'Traditional search engines only index pages that have been discovered and crawled, often missing new profiles, profile changes, and niche platforms. A reverse username lookup queries the platform\'s public URL endpoint directly in real time, detecting accounts even if Google has not indexed them.'],
-  ['How does MyRecon prevent false positives during username searches?', 'Many social networks return HTTP 200 OK status codes for non-existent users (soft 404s). MyRecon tests every platform against a synthetic control handle alongside the target handle. If a site responds identically for both, the result is flagged to prevent false-positive matches.'],
+  ['How does MyRecon prevent false positives during username searches?', 'Many social networks return HTTP 200 OK status codes for non-existent users (soft 404s). MyRecon first looks for direct evidence, such as an API user record or profile markup naming the handle. On signed-in scans, when that evidence is missing, it also fetches a made-up control handle on the same platform, and if the site responds identically for both, the result is not reported as found. Guest Quick scans rely on soft-404 and login-wall detection instead.'],
   ['Can a reverse username search prove who owns an account?', 'No. A matching username is an investigative lead, not conclusive proof of identity. Different people can independently choose the same handle on different websites. Always verify account ownership by reviewing profile content, joined dates, and cross-linked social profiles.'],
 ];
 
 const lookupBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse username lookup</span></nav>
   <h1>Free reverse username lookup &amp; social media account search</h1>
-  <p class="sub">Query handles across 500+ social platforms, developer hubs, and forums simultaneously. Discover profile leads, eliminate false positives with synthetic control tests, and map online accounts instantly.</p>
+  <p class="sub">Query handles across 500+ social platforms, developer hubs, and forums simultaneously. Discover profile leads, cut false positives with control-handle checks on signed-in scans, and map online accounts instantly.</p>
   <a class="btn btn-primary" href="/#tool=username">Start reverse username lookup</a>
   <p class="discovery-note">No terminal setup required. Free guest Quick scans across 100 platforms. Standard scans cover 500+ platforms. Public evidence research only.</p>
   <section>
@@ -288,7 +288,7 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Overcoming false positives: The synthetic control advantage</h2>
     <p>One major flaw in traditional CLI username tools like Sherlock and Maigret is susceptibility to soft 404s. Many modern web applications return an HTTP 200 OK status code with a "user not found" splash screen or redirect to a landing page, causing terminal tools to report ghost accounts.</p>
-    <p>MyRecon solves this by comparing every query against an impossible synthetic control handle. If a platform returns identical responses for both a real user and a non-existent control handle, MyRecon flags the response rather than falsely claiming an account was found. Read our research on <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report fake accounts</a>.</p>
+    <p>On signed-in scans, MyRecon handles this with a control handle. When a page gives no direct profile evidence, it fetches an impossible handle on the same platform. If both responses look the same, MyRecon reports not found or unknown rather than claiming an account was found. Guest Quick scans use soft-404 and login-wall detection instead. Read our research on <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report fake accounts</a>.</p>
   </section>
   <section>
     <h2>How do you corroborate a username match?</h2>
@@ -362,7 +362,7 @@ const boostBody = `<main id="main" class="container prose discovery-page">
   <h1>Boost OSINT investigations and parallel username search</h1>
   <p class="sub">Accelerate open-source intelligence workflows with MyRecon. Run parallel username sweeps across 500+ platforms, eliminate soft-404 false positives with synthetic control checks, and correlate email breaches in seconds.</p>
   <a class="btn btn-primary" href="/#tool=username">Boost your OSINT scan</a>
-  <p class="discovery-note">Parallel multi-platform sweeps. Synthetic control validation. Free guest Quick scans across 100 platforms; 500+ platforms with free sign-in.</p>
+  <p class="discovery-note">Parallel multi-platform sweeps. Control-handle validation on signed-in scans. Free guest Quick scans across 100 platforms; 500+ platforms with free sign-in.</p>
   <section>
     <h2>How to boost OSINT speed without sacrificing accuracy</h2>
     <p>In open-source intelligence, raw request speed means very little if half of the returned URLs are false positives. Traditional username enumeration scripts race through hundreds of URLs and flag any HTTP 200 response as a match, forcing investigators to waste time clicking dead landing pages.</p>
@@ -371,7 +371,7 @@ const boostBody = `<main id="main" class="container prose discovery-page">
       <dt><strong>Parallel multi-platform probing</strong></dt>
       <dd>Query 100 to 500+ social networks, coding repositories, gaming networks, and community forums in a single pass instead of checking sites one by one.</dd>
       <dt><strong>Synthetic control filtering</strong></dt>
-      <dd>Every target check is paired against a known non-existent control handle so soft 404s and login-wall redirects are caught before they clutter your report.</dd>
+      <dd>On signed-in scans, a check with no direct profile evidence is compared with a known non-existent control handle, so soft 404s and placeholder pages are not reported as found.</dd>
       <dt><strong>Three-state evidence classification</strong></dt>
       <dd>Results are separated cleanly into <em>Found</em>, <em>Not found</em>, and <em>Unknown</em> (rate-limited or blocked), preventing false assumptions when a site throttles requests.</dd>
     </dl>
@@ -444,7 +444,7 @@ const boostBody = `<main id="main" class="container prose discovery-page">
     <ul>
       <li><strong>Zero environment maintenance:</strong> No Python virtual environments, broken pip dependencies, or outdated JSON site definitions to patch before starting urgent research.</li>
       <li><strong>Protected local IP reputation:</strong> Avoid triggering Cloudflare blocks or CAPTCHA loops on your personal connection during large sweeps.</li>
-      <li><strong>Documented benchmark transparency:</strong> Review our <a href="/#benchmarks">published benchmark comparisons</a> against <a href="/vs/sherlock.html">Sherlock</a>, <a href="/vs/maigret.html">Maigret</a>, and <a href="/vs/whatsmyname.html">WhatsMyName</a>.</li>
+      <li><strong>Documented benchmark transparency:</strong> Review our <a href="/#benchmarks">published benchmark comparisons</a> against <a href="/vs/sherlock.html">Sherlock</a>, <a href="/vs/maigret.html">Maigret</a>, and WhatsMyName (archived in November 2026; see <a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a>).</li>
     </ul>
   </section>
   <section>
