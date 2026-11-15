@@ -1,0 +1,15 @@
+<p>The detail worth understanding here is how the card numbers were stored: as unsalted SHA-1
+hashes. That sounds protective, and for passwords it would at least slow an attacker down.
+For card numbers it does very little. A card number is a short string with a known structure:
+the first six digits identify the issuer, the last digit is a checksum, and only the digits in
+between vary. That is a small enough space to hash every possibility and match the results,
+so a hashed card number should be treated as an exposed one.</p>
+
+<p>The rest of the record is a loyalty program's view of a person: phone number, date of birth,
+email, membership dates and which partner offers they redeemed bonus points on. Loyalty data
+looks trivial but it is behavioural, and it is the kind of detail that makes a fake bank call
+sound real ("we noticed an unusual redemption on your Spasibo account").</p>
+
+<p>The data was published in March 2023 and reached Have I Been Pwned in November 2026, so it
+has had years to be used. If you are a Sberbank customer in this set, the card you held then
+should be reissued if it has not been already.</p>

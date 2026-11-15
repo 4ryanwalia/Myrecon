@@ -48,7 +48,11 @@
           "179,745 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Passwords."
         ],
-        "editorial": []
+        "editorial": [
+          "This entry is not a company that lost its customers' data. It is the other side of the transaction: a remote access trojan, taken down by Europol and its partners, whose infrastructure held what it had collected from infected computers. If your address is in here, the likely story is not that a website you trusted was breached.",
+          "It is that a machine you used, or one an account of yours was signed into, was under someone else's control. That changes the advice. Changing one password is the response to a site breach. A RAT sees everything typed on the infected machine, so every password used there should be treated as known, including ones for sites that were never breached at all.",
+          "The 893,000 unique passwords Europol shared are now in Pwned Passwords, which is the quickest way to check whether yours is among them. The order matters. Clean or replace the infected device first, then change passwords from a different, trusted device, starting with email, because email resets everything else. Changing passwords on a machine that is still compromised just hands over the new ones."
+        ]
       },
       "check_targets": [
         {
@@ -108,7 +112,12 @@
           "274,922 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Geographic locations, Names, Usernames."
         ],
-        "editorial": []
+        "editorial": [
+          "Double Counter's own site describes it as a Discord bot that blocks alternate accounts by comparing device, browser and network data, so the data it holds is, by design, the data that links accounts together.",
+          "That is what makes a leak of an anti-alt service different from an ordinary one: the pairing of an email address with a Discord username is exactly what someone running an alternate or anonymous account would least want published. The reported cause is also worth noticing. The breach was attributed to a vulnerability in Metabase, an analytics dashboard.",
+          "Internal tools like this are often left reachable from the internet with more access to raw data than any public page, and they tend to be patched last because nobody thinks of them as part of the product. For most people in this set the practical risk is targeted phishing on Discord itself: messages that use your real username and mention the server-verification bot you remember using.",
+          "Discord staff and verification bots do not ask for your password or a login code. The small number of paying subscribers whose names, countries and postcodes were included carry more risk than the rest, because those details connect a gaming identity to a real person."
+        ]
       },
       "check_targets": [
         {
@@ -173,7 +182,11 @@
           "345,439 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Email messages."
         ],
-        "editorial": []
+        "editorial": [
+          "Two data classes, but one of them is \"email messages\", and that is the part that matters. An email address list tells you who was on a mailing list. Hundreds of gigabytes of messages and attachments tell you what people wrote to a political party, which under European data protection law counts as special category data because it can reveal political opinions. Have I Been Pwned flags this entry as sensitive.",
+          "The publication format is new and worth watching. The data was released with searchable, AI-generated summaries alongside the original files. That lowers the effort needed to find a named person in a leak from days of reading to a single search, which makes the exposure for anyone who merely wrote in, including people who are not members, far greater than the headline count of addresses suggests.",
+          "The party attributed the breach to an attack on its hosting provider. Whatever one thinks of the organisation, the lesson is general: correspondence sent to any campaign, charity or advocacy group sits on someone else's servers indefinitely. If you are in this set, assume messages you sent could be quoted back to you, and treat any contact that references them with caution."
+        ]
       },
       "check_targets": [
         {
@@ -331,7 +344,12 @@
           "435,963 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Salutations."
         ],
-        "editorial": []
+        "editorial": [
+          "This is one of a run of entries in the archive with the same shape: a ShinyHunters \"pay or leak\" demand, followed by publication of what is mostly corporate contact data. Neogen's set is mailing lists, employee records and business contacts, so most people in it are not customers in the consumer sense. They are buyers, suppliers, lab staff and people who once filled in a form.",
+          "Contact records sound harmless until you look at what they combine: name, salutation, employer, job title, direct phone number and work address. That is the exact kit needed for a convincing business email compromise.",
+          "An invoice that appears to come from a real supplier, addressed to the right person by title, and followed up by a phone call to their actual desk number is far more persuasive than a generic phishing email. If your work address is in this set, the people to warn are colleagues in accounts payable.",
+          "Any request to change a supplier's bank details, especially one that arrives with urgency, should be confirmed by calling a number you already had on file, not one in the message."
+        ]
       },
       "check_targets": [
         {
@@ -589,7 +607,11 @@
           "318,185 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Dates of birth, Email addresses, Employers, Genders, Government issued IDs, Job titles, Marital statuses, Names, Phone numbers, Physical addresses."
         ],
-        "editorial": []
+        "editorial": [
+          "Most of this data is B2B sales and marketing records, the same kind of business contact list that appears in several other ShinyHunters releases. Read only the headline and you would file it as a nuisance. The detail that changes that is in the last line of the record: a small number of Brazilian health plan members, with dates of birth, genders, marital statuses and CPF numbers.",
+          "A CPF is Brazil's taxpayer identification number, and it is used far more widely than its name suggests: opening bank accounts, signing up for phone contracts, buying online, and proving identity to almost any service. Paired with a name and date of birth it is enough to attempt credit and account fraud in that person's name.",
+          "A small number of records can carry more real harm than hundreds of thousands of work email addresses. That is a pattern worth recognising in breach reporting generally. The size of a set and its severity are different measurements. If you hold a Brazilian plan connected to Sharecare, monitoring your CPF for new credit activity matters more here than changing any password."
+        ]
       },
       "check_targets": [
         {
@@ -688,7 +710,12 @@
           "373,460 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Support tickets."
         ],
-        "editorial": []
+        "editorial": [
+          "A data centre operator's contact list is a map of who runs other companies' infrastructure. The people in this set are not random consumers: they are users of the platform, sales leads and CyrusOne employees, which means facilities managers, network engineers and the people who can authorise physical or remote access to servers. The field that makes this more than a contact list is support tickets.",
+          "Tickets at a data centre are where customers describe access requests, hardware changes and outages in their own words, sometimes naming the systems involved. Like any support record, they also capture whatever someone typed while trying to get a problem fixed quickly.",
+          "The realistic follow-on attack is social engineering aimed at the help desk, from either direction: someone posing as a customer to request access, or posing as CyrusOne staff to ask a customer to \"confirm\" credentials.",
+          "If you manage infrastructure hosted there, treat any unexpected access or credential request as suspect until it is verified through a channel you set up before this leak, and check whether your old tickets mention anything that should be rotated."
+        ]
       },
       "check_targets": [
         {
@@ -841,7 +868,11 @@
           "117,574 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Booking details, Email addresses, Names, Phone numbers, Physical addresses."
         ],
-        "editorial": []
+        "editorial": [
+          "Gîtes de France operates through departmental branches, and the breach affected some of them rather than the whole network. A branch structure is common for federations, franchises and cooperatives, and it tends to mean many separate systems with uneven security, any one of which can expose customers who only ever dealt with the national brand. The data class that sets this apart is booking details.",
+          "A holiday booking says where someone will be and, by implication, when their home will be empty. Combined with a postal address, that is information a burglar would value, though for most people the more likely misuse is fraud: a message about \"your upcoming stay\" that knows the property, the dates and the guest's name, asking for a deposit to be paid again or a card to be re-confirmed.",
+          "Holiday rental scams already rely on urgency and plausibility. A leak that supplies the real booking removes the main thing that used to give them away. If you booked through a Gîtes de France branch, confirm any payment request directly with the owner or branch using contact details from your original confirmation, never from the message asking for money."
+        ]
       },
       "check_targets": [
         {
@@ -1322,7 +1353,11 @@
           "559,908 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Social media profiles."
         ],
-        "editorial": []
+        "editorial": [
+          "There is an irony in a company-intelligence platform losing its own contact data. Crunchbase is in the business of organising information about businesses and the people in them, and what leaked was largely its leads and business contacts: names, employers, job titles, phone numbers, addresses and LinkedIn profiles. The LinkedIn field is what makes this set unusually ready to use.",
+          "Most leaked contact lists need some work before an attacker can be sure the person and the job are current. A profile link does that work: it confirms the role, shows the reporting line and supplies the photo and history needed to impersonate a colleague or a recruiter convincingly. Crunchbase later confirmed that documents were exfiltrated from its corporate network, so this is not only a scraped list.",
+          "Founders, investors and executives are over-represented in a dataset like this, and they are the usual targets for fake investment offers, fake board introductions and invoice fraud. If you are in it, be sceptical of unsolicited deal flow that seems to know exactly who you are and who you work with."
+        ]
       },
       "check_targets": [
         {
@@ -1587,7 +1622,11 @@
           "850,537 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Charitable donations, Citizenship statuses, Dates of birth, Education levels, Email addresses, Employers, Ethnicities, Family members' names, Genders, Job titles, Marital statuses, Names, Occupations, Phone numbers, Physical addresses, Places of birth, Salutations, Social media profiles."
         ],
-        "editorial": []
+        "editorial": [
+          "Eighteen data classes is a lot, and the list reads like the fields of a fundraising database, because that is what it came from: alumni engagement and donor records. Charitable donations, family members' names, ethnicities, places of birth, citizenship statuses and marital statuses are not things a university needs to teach anyone. They are things a development office collects to decide whom to ask for money, and how much.",
+          "That is the uncomfortable point about this breach. The most detailed profiles belong to the people with the closest relationship to the institution: donors, alumni and parents. Donation history in particular is a ready-made target list, because it says who gives, how much and to what, which is exactly what a fake charity appeal or a fake \"alumni office\" call needs.",
+          "Harvard's notice describes the data as relating to fundraising and alumni engagement. If you are a Harvard alum or donor, expect approaches that cite real gifts, real classmates or real family members. A genuine development office will never object to you hanging up and calling the number on the university's own website."
+        ]
       },
       "check_targets": [
         {
@@ -2364,7 +2403,11 @@
           "70,372 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Dates of birth, Email addresses, Family members' names, Government issued IDs, Income levels, Marital statuses, Names, Phone numbers, Physical addresses."
         ],
-        "editorial": []
+        "editorial": [
+          "The people in this set were assistance beneficiaries of France's national pension fund, and the record makes their circumstances plain: income levels and marital statuses sit alongside names, addresses, phone numbers and French social security numbers (NIR). It is hard to design a better list for fraud aimed at vulnerable people. The field that stands out is the contact details of relatives or other nominated contacts.",
+          "That turns one person's record into a small family tree, and it enables the scam where a caller claims to be from the pension fund, already knows the beneficiary's details, and asks a son or daughter to help \"update the file\" or pay a fee to keep the benefit. The cause, a compromised partner account, is also typical.",
+          "Large public bodies increasingly share data with service partners, and the partner is often the weaker link. If you or a relative receive support from l'Assurance retraite, treat any call asking for bank details or a fee as fraud. Hang up and call back on the number from an official letter you already have."
+        ]
       },
       "check_targets": [
         {
@@ -2831,7 +2874,12 @@
           "133,957,569 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Dates of birth, Email addresses, Genders, Government issued IDs, Names, Phone numbers, Physical addresses."
         ],
-        "editorial": []
+        "editorial": [
+          "This is the entry that came with the \"3 billion people\" headline, and it deserves a careful reading because it is flagged as unverified. That flag is not a technicality. Have I Been Pwned's own description says the origin and accuracy of the data remain in question. Billions of rows are not billions of people: rows repeat, and one person can appear many times.",
+          "The 134 million unique email addresses here are the more meaningful number. The more important point is what National Public Data was. It was a background check service, a data broker, and most people in its files never had any relationship with it. They did not sign up, accept terms or choose to trust it.",
+          "Their names, addresses, dates of birth and US social security numbers were collected and sold about them, then lost. That is why the right response is not a password change. If you are in the US, a credit freeze at all three bureaus is free and stops new accounts being opened in your name, which is the main thing an exposed SSN enables.",
+          "It also shows why removing yourself from people search and broker sites is worth the tedious effort: data that is not held cannot leak."
+        ]
       },
       "check_targets": [
         {
@@ -3357,7 +3405,11 @@
           "6,765,054 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Bank account numbers, Dates of birth, Email addresses, Financial investments, Government issued IDs, Names, Phone numbers, Physical addresses."
         ],
-        "editorial": []
+        "editorial": [
+          "Angel One's statement that the breach \"has no impact on client securities, funds, or credentials\" is probably accurate as far as it goes, and it misses the point. Nobody needs your trading password to misuse this data. The set pairs names, phone numbers and addresses with bank account numbers, PANs and portfolio holdings, which is a complete brief for an investment scam.",
+          "India's stock-market fraud of the moment is the fake trading group: a WhatsApp or Telegram contact posing as a broker's research desk, offering tips or an \"institutional\" app, then taking deposits. A caller who can quote your real holdings and your PAN is far more persuasive than one guessing, and this leak supplies exactly that. Note the dates too.",
+          "The breach happened in April 2023 and was confirmed in July 2024, more than a year later. The data had plenty of time to circulate before anyone was told. If you held an Angel One account in that period, treat any unsolicited contact about your portfolio as fraudulent unless you started it, and never move money to an account a caller gives you, however much they know."
+        ]
       },
       "check_targets": [
         {
@@ -3444,7 +3496,12 @@
           "3,288,711 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Bank card numbers, Dates of birth, Email addresses, Loyalty program details, Phone numbers."
         ],
-        "editorial": []
+        "editorial": [
+          "The detail worth understanding here is how the card numbers were stored: as unsalted SHA-1 hashes. That sounds protective, and for passwords it would at least slow an attacker down. For card numbers it does very little. A card number is a short string with a known structure: the first six digits identify the issuer, the last digit is a checksum, and only the digits in between vary.",
+          "That is a small enough space to hash every possibility and match the results, so a hashed card number should be treated as an exposed one. The rest of the record is a loyalty program's view of a person: phone number, date of birth, email, membership dates and which partner offers they redeemed bonus points on.",
+          "Loyalty data looks trivial but it is behavioural, and it is the kind of detail that makes a fake bank call sound real (\"we noticed an unusual redemption on your Spasibo account\"). The data was published in March 2023 and reached Have I Been Pwned in November 2026, so it has had years to be used.",
+          "If you are a Sberbank customer in this set, the card you held then should be reissued if it has not been already."
+        ]
       },
       "check_targets": [
         {
@@ -4859,7 +4916,12 @@
           "17,838,396 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, Employers, Geographic locations, Job titles, Phone numbers."
         ],
-        "editorial": []
+        "editorial": [
+          "LimeLeads sold B2B marketing leads, so, like many data brokers in this archive, most of the 17.8 million addresses in it belong to people who never dealt with the company. Their work email, direct phone number, employer, job title and location were compiled and sold for cold outreach, then left on an Elasticsearch server with no password.",
+          "An unsecured Elasticsearch database is one of the most familiar causes of data exposure and one of the least excusable. It is not a sophisticated attack; it is a database answering anyone who asks, and automated scanners that look for open servers find them quickly. The company is now defunct. The data is not: copies of leads databases are resold and merged long after the original seller has gone.",
+          "Breached in 2019 and added to Have I Been Pwned in 2026, this set is a reminder that \"old\" corporate contact data stays useful as long as people keep their jobs and phone numbers. If you are in it, the realistic consequence is more targeted cold calls and spear phishing at work, not account takeover.",
+          "It is also a reason to opt out of the B2B data brokers that keep selling the same records."
+        ]
       },
       "check_targets": [
         {
@@ -4930,7 +4992,11 @@
           "7,160,849 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
           "The reported exposed data includes Email addresses, IP addresses, Passwords, Usernames."
         ],
-        "editorial": []
+        "editorial": [
+          "A hacking forum getting hacked is a familiar story, but the numbers here are the interesting part. YouHack had about 107,000 members. This entry lists 7.2 million email addresses. The difference is the forum's own content: members posted email and password pairs taken from other victims, so most people in this set were never members. They were the material being traded. That makes it two breaches in one.",
+          "For the members, the exposure is their email, username, IP address and an MD5 password hash, mostly unsalted, which modern hardware reverses quickly for anything but a long random password. For everyone else, it means a password of theirs was already circulating among people who collect them by 2013. Old does not mean harmless.",
+          "Password reuse is a habit, and a password from 2013 is often a close variant of one still in use today. If your address is here, check whether you still use that password, or a pattern built from it, anywhere. Our password leak check guide explains how to test it without sending the password itself."
+        ]
       },
       "check_targets": [
         {
