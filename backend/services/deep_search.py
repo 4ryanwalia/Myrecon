@@ -41,8 +41,9 @@ def _search_email(parsed, emit, stop):
     result["source_checks"] = [{"source": source.get("name", "Google public source"),
                                 "state": source.get("status", "unavailable")} for source in public["sources"]]
     result["notes"] = [
-        "Only an exact-email public Google identity and its public contributor reviews are checked.",
+        "Only an exact-email public Google identity and its public contributor reviews and photos are checked.",
         "Unavailable, private or incomplete review collections do not prove that no reviews exist.",
+        "Photos are a short preview Google returns with the profile, not the full set. Answers are shown as a count only; Google returns no answer text here.",
         "Profile edit dates describe profile changes and do not establish online or login activity.",
     ]
     if not stop.is_set():

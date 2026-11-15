@@ -252,3 +252,82 @@ def test_deadline_checked_after_final_chunk(monkeypatch):
     monkeypatch.setattr(maps.time, "monotonic", lambda: next(ticks))
     monkeypatch.setattr(maps.requests, "get", lambda *a, **k: response)
     assert maps.fetch_public_maps_reviews(CONTRIBUTOR)["status"] == "timeout" and response.closed
+
+
+# Synthetic preview photos. The image path mimics the shape of a Maps photo
+# URL; no real image, place or contributor is referenced.
+IMAGE = "https://lh3.googleusercontent.com/gps-cs/" + "A" * 40
+
+
+def photo(uploader=CONTRIBUTOR, photo_id="fixture-photo", image=IMAGE + "=w461-h260-k-no", year=2020, month=1):
+    post = [None] * 22
+    post[0], post[6] = photo_id, [image]
+    meta = [None] * 9
+    meta[3] = [None] * 8
+    meta[4] = [None, [[["Example Contributor"], "//maps.google.com/maps/contrib/" + uploader, None, None, None, uploader]]]
+    # Photo-level coordinates live here; the parser must never emit them.
+    meta[5] = [[1, [[None, None, 11.5, 22.5]]]]
+    meta[6] = [None] * 9
+    meta[6][7] = [year - 1, month, 1]
+    meta[6][8] = [year, month, 2]
+    post[21] = meta
+    venue = [None] * 19
+    venue[2], venue[3], venue[18] = "Example Viewpoint", "Example Road", "ChIJExamplePhotoPlace"
+    return [post, venue]
+
+
+def with_photos(rows, photos=3):
+    data = payload()
+    data[16][8][0].append([None, None, None, None, None, None, "Photos", photos])
+    data[22] = [None, rows, 99]
+    return data
+
+
+def test_preview_photos_project_venue_month_and_thumbnail_only():
+    result = maps.normalize_public_maps_reviews(with_photos([photo()]), CONTRIBUTOR)
+    assert result["status"] == "ok"  # Review status is independent of photo coverage.
+    item = result["photos"][0]
+    assert item == {"image_url": IMAGE + maps.PHOTO_SIZE, "name": "Example Viewpoint", "address": "Example Road",
+                    "date": "2020-01", "id": "fixture-photo",
+                    "source_url": f"https://www.google.com/maps/contrib/{CONTRIBUTOR}/photos",
+                    "maps_url": "https://www.google.com/maps/search/?api=1&query=Example+Viewpoint&query_place_id=ChIJExamplePhotoPlace"}
+    assert "11.5" not in json.dumps(result["photos"]) and "22.5" not in json.dumps(result["photos"])
+    coverage = result["photo_coverage"]
+    assert coverage["status"] == "partial" and coverage["returned"] == 1 and coverage["total_reported"] == 3
+    assert result["stats"]["Photos"] == 3
+
+
+def test_photo_from_another_uploader_or_foreign_host_is_dropped():
+    rows = [photo(uploader=OTHER), photo(photo_id="b", image="https://evil.example/gps-cs/" + "A" * 40),
+            photo(photo_id="c", image="javascript:alert(1)")]
+    result = maps.normalize_public_maps_reviews(with_photos(rows, photos=3), CONTRIBUTOR)
+    assert result["photos"] == []
+    assert result["photo_coverage"]["status"] == "unknown"
+
+
+def test_full_photo_set_is_ok_and_duplicates_collapse():
+    result = maps.normalize_public_maps_reviews(with_photos([photo(), photo()], photos=1), CONTRIBUTOR)
+    assert len(result["photos"]) == 1
+    # A duplicate row was skipped, not dropped, so the set matches the count.
+    assert result["photo_coverage"]["status"] == "ok" and result["photo_coverage"]["limited"] is False
+
+
+def test_missing_photo_preview_is_unknown_not_zero():
+    result = maps.normalize_public_maps_reviews(payload(), CONTRIBUTOR)
+    assert result["photos"] == [] and result["photo_coverage"]["status"] == "unknown"
+    data = payload()
+    data[16][8][0].append([None, None, None, None, None, None, "Photos", 0])
+    assert maps.normalize_public_maps_reviews(data, CONTRIBUTOR)["photo_coverage"]["status"] == "ok"
+
+
+@pytest.mark.parametrize("year,month", [(2004, 5), (2999, 1), (2020, 13), (True, 1)])
+def test_implausible_photo_dates_are_omitted(year, month):
+    item = maps.normalize_public_maps_reviews(with_photos([photo(year=year, month=month)]), CONTRIBUTOR)["photos"]
+    assert item and all("date" not in p or p["date"] == f"{int(year) - 1:04d}-{month:02d}" for p in item)
+
+
+def test_identity_mismatch_returns_no_photos():
+    data = with_photos([photo()])
+    data[16][1] = f"https://www.google.com/maps/contrib/{OTHER}/reviews"
+    result = maps.normalize_public_maps_reviews(data, CONTRIBUTOR)
+    assert result["photos"] == [] and result["status"] == "unknown"

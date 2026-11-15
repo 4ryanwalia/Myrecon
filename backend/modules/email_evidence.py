@@ -80,6 +80,10 @@ def _same_collection_item(kind, left, right):
         return True
     if not isinstance(left, dict) or not isinstance(right, dict):
         return False
+    if kind == "photos":
+        if left.get("id") and right.get("id"):
+            return left["id"] == right["id"]
+        return bool(left.get("image_url")) and left.get("image_url") == right.get("image_url")
     if kind == "reviews":
         if left.get("id") and right.get("id"):
             return left["id"] == right["id"]

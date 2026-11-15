@@ -224,6 +224,10 @@ def enrich_google_reviews(enrichment):
         if not profile.get("reviews") and latest.get("status") != "ok" and free_enabled:
             details = fetch_public_maps_reviews(contributor)
             profile["reviews"] = details["reviews"]
+            if details.get("photos") and not profile.get("photos"):
+                profile["photos"] = details["photos"]
+            if isinstance(details.get("photo_coverage"), dict):
+                profile["photo_coverage"] = details["photo_coverage"]
             merge_stats(profile, details.get("stats", {}), details["source"])
             reported_stats = details.get("stats", {})
             if not profile.get("display_name") and details.get("display_name"):
@@ -238,7 +242,7 @@ def enrich_google_reviews(enrichment):
                                                profile.get("review_source") or latest.get("provider", "Google Maps public reviews"),
                                                latest.get("reason", ""), latest.get("limited", latest.get("status") == "partial"), reported_stats)
         results[contributor] = {key: deepcopy(profile[key]) for key in
-                               ("reviews", "stats", "review_source", "review_coverage") if key in profile}
+                               ("reviews", "photos", "photo_coverage", "stats", "review_source", "review_coverage") if key in profile}
         if reported_stats is not None:
             results[contributor]["stats"] = deepcopy(reported_stats)
     return enrichment

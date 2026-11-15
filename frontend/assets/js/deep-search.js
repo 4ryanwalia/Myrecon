@@ -137,7 +137,11 @@
         source: source.name || source.provider, details: JSON.stringify(source) });
       for (const profile of google.profiles || []) {
         rows.push({ record_type: "google_profile", platform: "Google", handle: profile.display_name || data.subject,
-          url: profile.url, source: profile.source, details: JSON.stringify({ ...profile, reviews: undefined }) });
+          url: profile.url, source: profile.source, details: JSON.stringify({ ...profile, reviews: undefined, photos: undefined }) });
+        for (const photo of profile.photos || []) rows.push({ record_type: "google_photo", platform: "Google",
+          handle: profile.display_name || data.subject, url: photo.maps_url, source_url: photo.source_url,
+          source: profile.review_source || "Google Maps public contributions",
+          details: JSON.stringify({ contributor_id: profile.fields?.ID, ...photo }) });
         for (const review of profile.reviews || []) rows.push({ record_type: "google_review", platform: "Google",
           handle: profile.display_name || data.subject, url: review.maps_url, source_url: review.source_url,
           source: profile.review_source || profile.review_coverage?.source,
@@ -305,6 +309,34 @@
     return u.protocol === "https:" && !u.port && ["google.com", "www.google.com", "maps.google.com"].includes(u.hostname) && u.pathname.startsWith("/maps/")
       ? link(href, label) : esc(label);
   }
+  function googlePhotoUrl(url) {
+    const href = safeUrl(url);
+    if (!href) return "";
+    const u = new URL(href);
+    return u.protocol === "https:" && !u.port && /^lh[3-6]\.googleusercontent\.com$/.test(u.hostname) ? href : "";
+  }
+  function photoMonth(value) {
+    const m = /^(\d{4})-(\d{2})$/.exec(value || "");
+    if (!m) return "";
+    const d = new Date(Date.UTC(+m[1], +m[2] - 1, 1));
+    return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("en", { month: "short", year: "numeric", timeZone: "UTC" });
+  }
+  function googlePhotos(profile) {
+    const coverage = profile.photo_coverage;
+    if (!coverage && !Array.isArray(profile.photos)) return "";
+    const photos = (Array.isArray(profile.photos) ? profile.photos : []).filter((photo) => googlePhotoUrl(photo.image_url));
+    const reported = count(coverage?.total_reported ?? profile.stats?.Photos);
+    const label = photos.length
+      ? `Preview: ${photos.length}${reported !== null ? ` of ${reported}` : ""} public photos`
+      : "Public photos";
+    const items = photos.map((photo) => {
+      const month = photoMonth(photo.date);
+      return `<li class="ds-google-photo"><a href="${esc(googlePhotoUrl(photo.image_url))}" target="_blank" rel="noopener noreferrer nofollow"><img src="${esc(googlePhotoUrl(photo.image_url))}" alt="${esc(`Photo shared at ${photo.name || "a place"}`)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="400" height="300"></a><div>${googleLink(photo.maps_url, photo.name || "Photographed place")}${photo.address ? `<p class="hint">${esc(photo.address)}</p>` : ""}${month ? `<p class="hint">${esc(month)}</p>` : ""}</div></li>`;
+    }).join("");
+    const reason = coverage?.reason || "Google returns a short photo preview with the profile, not the full set.";
+    const sourceUrl = photos[0]?.source_url || (profile.fields?.ID ? `https://www.google.com/maps/contrib/${profile.fields.ID}/photos` : "");
+    return `<section class="ds-google-photos-block"><h4>${esc(label)}</h4><p class="hint">${esc(reason)}</p>${items ? `<ul class="ds-google-photos">${items}</ul>` : `<p class="hint">No public photo records were returned. This does not establish that the contributor has never shared a photo.</p>`}${sourceUrl ? `<p>${googleLink(sourceUrl, "View all public photos on Google Maps")}</p>` : ""}</section>`;
+  }
   function googleProfiles(data, live) {
     const lookup = data.google_public_profiles || {};
     const profiles = Array.isArray(lookup.profiles) ? lookup.profiles : [];
@@ -323,13 +355,13 @@
         return `<li class="ds-google-review"><h4>${googleLink(review.maps_url, review.name || "Reviewed place")}</h4>${review.address ? `<p class="hint">${esc(review.address)}</p>` : ""}<div class="ds-links">${rating !== null ? `<span class="ds-google-rating" aria-label="${rating} out of 5 stars">★ ${rating} / 5</span>` : ""}${date ? `<span class="hint">${esc(date)}</span>` : ""}</div>${review.text ? `<p class="ds-google-text">${esc(review.text)}</p>` : `<p class="hint">Rating only; no review text returned.</p>`}${review.owner_reply ? `<div class="ds-google-reply"><strong>Reply from the owner</strong>${review.owner_reply_date ? `<span class="hint"> · ${esc(review.owner_reply_date)}</span>` : ""}<p class="ds-google-text">${esc(review.owner_reply)}</p></div>` : ""}<p>${googleLink(review.source_url, "View public source")}</p></li>`;
       }).join("");
       const stats = Object.entries(profile.stats || {}).filter(([, value]) => count(value) !== null).map(([key, value]) => `<span class="ds-chip">${esc(key)} reported: ${value}</span>`).join(" ");
-      return `<article class="ds-evidence ds-google-profile"><h3>${googleLink(profile.url, profile.display_name || "Google contributor profile")}</h3>${window.MyReconMatchChoices?.controls(profile.url) || ""}<p class="hint">${esc(profile.evidence || "Returned by the exact-email Google lookup. Review the original source before linking identities.")}</p>${stats ? `<div class="ds-links">${stats}</div>` : ""}<div class="ds-google-coverage"><strong>${esc(coverageLabel)}</strong><p>${esc(coverageReason)}</p>${limited ? `<p class="hint">Partial collection. Returned reviews may be capped, filtered or unavailable; they are not a complete activity history.</p>` : ""}</div>${reviews.length ? `<ul class="ds-google-reviews">${reviewRows}</ul>` : `<p class="hint">No public review records were returned. This does not establish that the contributor has never reviewed a place.</p>`}<p class="hint">${esc(profile.review_source || coverage.source || profile.source || "Google public contributions")}</p></article>`;
+      return `<article class="ds-evidence ds-google-profile"><h3>${googleLink(profile.url, profile.display_name || "Google contributor profile")}</h3>${window.MyReconMatchChoices?.controls(profile.url) || ""}<p class="hint">${esc(profile.evidence || "Returned by the exact-email Google lookup. Review the original source before linking identities.")}</p>${stats ? `<div class="ds-links">${stats}</div>` : ""}<div class="ds-google-coverage"><strong>${esc(coverageLabel)}</strong><p>${esc(coverageReason)}</p>${limited ? `<p class="hint">Partial collection. Returned reviews may be capped, filtered or unavailable; they are not a complete activity history.</p>` : ""}</div>${reviews.length ? `<ul class="ds-google-reviews">${reviewRows}</ul>` : `<p class="hint">No public review records were returned. This does not establish that the contributor has never reviewed a place.</p>`}${googlePhotos(profile)}${count(profile.stats?.Answers) ? `<p class="hint">${esc(`${profile.stats.Answers} answers reported. Google does not return answer text with the public profile, so only the count is shown.`)}</p>` : ""}<p class="hint">${esc(profile.review_source || coverage.source || profile.source || "Google public contributions")}</p></article>`;
     }).join("");
     const checks = sources.length ? `<div class="ds-source-checks">${sources.map((source) => {
       const [sourceLabel, sourceMessage] = googleSourceState(source.status, source.name);
       return `<div><span>${esc(source.name || source.provider || "Google source")}</span><span class="ds-chip">${esc(sourceLabel)}</span></div><p class="hint">${esc(sourceMessage)}</p>`;
     }).join("")}</div>` : "";
-    return block("Google Maps contributor & public reviews", "Exact-email public Google research. Only public contributor data and reviews returned by the source are shown.", `<p class="ds-google-status" role="status"><span class="ds-chip">${esc(label)}</span> ${esc(message)}</p>${cards}${checks}`);
+    return block("Google Maps contributor, reviews & photos", "Exact-email public Google research. Only public contributor data, reviews and photos returned by the source are shown.", `<p class="ds-google-status" role="status"><span class="ds-chip">${esc(label)}</span> ${esc(message)}</p>${cards}${checks}`);
   }
   function render(data, live = false) {
     if (isLocked(data)) { saveGuestReport(data, live); renderLocked(data, live); return; }
@@ -339,7 +371,8 @@
     const emailMode = data.mode === "email";
     const google = data.google_public_profiles || {}, googleRows = Array.isArray(google.profiles) ? google.profiles : [];
     const reviewCount = googleRows.reduce((n, profile) => n + (Array.isArray(profile.reviews) ? profile.reviews.length : 0), 0);
-    const summary = emailMode ? `${googleRows.length} public Google profiles · ${reviewCount} reviews returned${live ? " so far" : ""}` : `${activity.length} public accounts · ${accounts.length + people.length} name candidates · ${pages} indexed pages`;
+    const photoCount = googleRows.reduce((n, profile) => n + (Array.isArray(profile.photos) ? profile.photos.filter((photo) => googlePhotoUrl(photo?.image_url)).length : 0), 0);
+    const summary = emailMode ? `${googleRows.length} public Google profiles · ${reviewCount} reviews${photoCount ? ` · ${photoCount} photos` : ""} returned${live ? " so far" : ""}` : `${activity.length} public accounts · ${accounts.length + people.length} name candidates · ${pages} indexed pages`;
     const out = [`<div class="ds-summary"><div><span class="ds-chip">${emailMode ? "Email" : data.mode === "name" ? "Name" : "Handle"} search${live ? " · live" : ""}</span><h2>${esc(data.subject)}</h2>${data.context ? `<p>Context: ${esc(data.context)}</p>` : ""}</div><p>${esc(summary)}</p></div>`];
     if (emailMode || data.google_public_profiles) out.push(googleProfiles(data, live));
     if (people.length) out.push(block("Public figure records", "Wikidata candidates. Check each record's description before making a connection.", people.map((p) =>

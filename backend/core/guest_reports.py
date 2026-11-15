@@ -98,7 +98,8 @@ def standard_cards(tool, data):
                                 "evidence", "evidence_url", "basis", "source", "profile_status",
                                 "last_seen", "confidence", "freshness", "review_source", "review_coverage")
                 profile = {key: deepcopy(row[key]) for key in profile_keys if key in row}
-                profile["_guest_collections_locked"] = any(collections.values())
+                # Photos have no guest card; they stay behind the lock entirely.
+                profile["_guest_collections_locked"] = any(collections.values()) or bool(_rows(row.get("photos")))
                 conflicts = row.get("field_conflicts") or {}
                 if isinstance(conflicts, dict):
                     profile["field_conflicts"] = {key: deepcopy(values) for key, values in conflicts.items()
@@ -232,6 +233,9 @@ def deep_sections(data):
             state = next((s for s in coverage if s not in ("ok", "no_match", "not_found")),
                          "ok" if review_count else "no_match")
             sections.append({"label": "Google Reviews", "count": review_count, "status": _state(state)})
+        photo_count = sum(len(_rows(profile.get("photos"))) for profile in profiles)
+        if photo_count:
+            sections.append({"label": "Google Photos", "count": photo_count, "status": "found"})
     for key, label in (("people", "Public figure records"), ("accounts", "Name matches"),
                        ("activity", "Public accounts & recent activity"),
                        ("owner_links", "Links declared by account owners"),

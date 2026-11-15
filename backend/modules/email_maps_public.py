@@ -22,7 +22,11 @@ ENDPOINT = "https://www.google.com/locationhistory/preview/mas"
 SOURCE = "Google Maps public contributions"
 MAX_BYTES = 2_000_000
 MAX_REVIEWS = 100
+MAX_PHOTOS = 30
 DEADLINE_SECONDS = 20
+# Thumbnail size; the full-size image stays on Google behind the source link.
+PHOTO_SIZE = "=w400-h300-k-no"
+_PHOTO_URL = re.compile(r"https://lh[3-6]\.googleusercontent\.com/[A-Za-z0-9_-]{1,40}/[A-Za-z0-9_-]{20,2000}")
 _ID = re.compile(r"[0-9]{15,25}\Z")
 _CONTRIBUTOR_LINK = re.compile(r"/maps/contrib/([0-9]{15,25})(?:/|[?#]|$)")
 _PLACE_ID = re.compile(r"ChIJ[A-Za-z0-9_-]{1,200}\Z")
@@ -65,11 +69,16 @@ def _number(value, lower, upper):
         return None
 
 
+def _photo_coverage(status="unknown", reason="Public photo data was not readable.", returned=0, reported=None):
+    return {"status": status, "returned": returned, "total_reported": reported,
+            "limited": True, "limit": MAX_PHOTOS, "reason": reason}
+
+
 def _result(contributor_id, status="unknown", reason="Public review data was not readable."):
-    return {"status": status, "reviews": [], "display_name": "", "stats": {},
+    return {"status": status, "reviews": [], "photos": [], "display_name": "", "stats": {},
             "limited": True, "reason": reason, "source": SOURCE,
             "contributor_id": contributor_id if isinstance(contributor_id, str) and _ID.fullmatch(contributor_id) else "",
-            "returned": 0, "limit": MAX_REVIEWS}
+            "returned": 0, "limit": MAX_REVIEWS, "photo_coverage": _photo_coverage()}
 
 
 def _exposed_ids(context):
@@ -140,6 +149,86 @@ def _review(row, contributor_id):
     return review, review_id
 
 
+def _stats(context):
+    stats = {}
+    entries = _at(context, 8, 0)
+    for entry in entries[:40] if isinstance(entries, list) else []:
+        label, count = _at(entry, 6), _at(entry, 7)
+        if label in ("Reviews", "Ratings", "Photos", "Answers") and isinstance(count, int) and not isinstance(count, bool) and 0 <= count <= 1_000_000_000:
+            stats[label] = count
+    return stats
+
+
+def _photo_month(post):
+    """Year and month only: the response carries two unlabelled dates per photo,
+    so neither is presented as the capture or upload date."""
+    for index in (8, 7):
+        year, month = _number(_at(post, 21, 6, index, 0), 2005, 2100), _number(_at(post, 21, 6, index, 1), 1, 12)
+        if year is not None and month is not None and int(year) == year and int(month) == month:
+            stamp = f"{int(year):04d}-{int(month):02d}"
+            return stamp if stamp <= datetime.now(timezone.utc).strftime("%Y-%m") else ""
+    return ""
+
+
+def _photo(entry, contributor_id):
+    """One preview photo, kept only when the response names this contributor
+    as its uploader. Photo-level coordinates are never emitted."""
+    post, venue = _at(entry, 0), _at(entry, 1)
+    if not isinstance(post, list) or not isinstance(venue, list):
+        return None
+    if _at(post, 21, 4, 1, 0, 5) != contributor_id:
+        return None
+    image = _at(post, 6, 0)
+    image = image.split("=", 1)[0] if isinstance(image, str) else ""
+    if not _PHOTO_URL.fullmatch(image):
+        return None
+    name = _text(_at(venue, 2), 300)
+    if not name:
+        return None
+    photo = {"image_url": image + PHOTO_SIZE, "name": name,
+             "source_url": f"https://www.google.com/maps/contrib/{contributor_id}/photos"}
+    address, month = _text(_at(venue, 3), 1000), _photo_month(post)
+    if address:
+        photo["address"] = address
+    if month:
+        photo["date"] = month
+    place_id = _at(venue, 18)
+    if isinstance(place_id, str) and _PLACE_ID.fullmatch(place_id):
+        photo["maps_url"] = "https://www.google.com/maps/search/?" + urlencode({"api": 1, "query": name, "query_place_id": place_id})
+    photo_id = _at(post, 0)
+    if isinstance(photo_id, str) and _REVIEW_ID.fullmatch(photo_id):
+        photo["id"] = photo_id
+    return photo
+
+
+def _photos(payload, contributor_id, reported):
+    """The contributor response embeds a short photo preview, not the full set.
+    An absent or unreadable preview is "not readable", never "no photos"."""
+    rows = _at(payload, 22, 1)
+    if not isinstance(rows, list):
+        reason = "No public photos are reported." if reported == 0 else "The public photo preview was absent or unreadable; this does not establish that no public photos exist."
+        return [], _photo_coverage("ok" if reported == 0 else "unknown", reason, 0, reported)
+    photos, seen, dropped = [], set(), False
+    for entry in rows[:MAX_PHOTOS]:
+        photo = _photo(entry, contributor_id)
+        if photo is None:
+            dropped = True
+            continue
+        key = photo.get("id") or photo["image_url"]
+        if key in seen:
+            continue
+        seen.add(key)
+        photos.append(photo)
+    if not photos:
+        return [], _photo_coverage("unknown", "No readable public photos were returned; this does not establish that none exist.", 0, reported)
+    complete = not dropped and reported is not None and reported == len(photos) and len(rows) <= MAX_PHOTOS
+    coverage = _photo_coverage("ok" if complete else "partial",
+                               "Readable public photo set." if complete else "Preview only: Google returns a few recent public photos, not the full set.",
+                               len(photos), reported)
+    coverage["limited"] = not complete
+    return photos, coverage
+
+
 def normalize_public_maps_reviews(payload, contributor_id):
     result = _result(contributor_id)
     if not isinstance(contributor_id, str) or not _ID.fullmatch(contributor_id):
@@ -153,14 +242,13 @@ def normalize_public_maps_reviews(payload, contributor_id):
     if any(value != contributor_id for value in _exposed_ids(context)):
         result["reason"] = "Contributor identity did not match the requested ID."
         return result
+    stats = _stats(context)
+    result["photos"], result["photo_coverage"] = _photos(payload, contributor_id, stats.get("Photos"))
     if not isinstance(section, list) or not isinstance(_at(section, 0), list):
         result["reason"] = "The public review layout was absent or unreadable; privacy and zero reviews cannot be determined."
         return result
     result["display_name"] = name
-    for entry in (_at(context, 8, 0) or [])[:40] if isinstance(_at(context, 8, 0), list) else []:
-        label, count = _at(entry, 6), _at(entry, 7)
-        if label in ("Reviews", "Ratings", "Photos", "Answers") and isinstance(count, int) and not isinstance(count, bool) and 0 <= count <= 1_000_000_000:
-            result["stats"][label] = count
+    result["stats"] = stats
     rows = section[0]
     seen, unreadable = set(), False
     for row in rows[:MAX_REVIEWS]:
@@ -175,7 +263,6 @@ def normalize_public_maps_reviews(payload, contributor_id):
         seen.add(identity)
         result["reviews"].append(review)
     result["returned"] = len(result["reviews"])
-    stats = result["stats"]
     total = stats["Reviews"] + stats["Ratings"] if "Reviews" in stats and "Ratings" in stats else None
     result["limited"] = bool(_at(section, 1)) or len(rows) >= MAX_REVIEWS or unreadable or total is None or total != result["returned"]
     if not result["returned"] and (rows or total != 0 or result["limited"]):

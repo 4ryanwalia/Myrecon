@@ -94,6 +94,46 @@ def _review(row, contributor):
     return result
 
 
+_PHOTO_IMAGE = re.compile(r"https://lh[3-6]\.googleusercontent\.com/[A-Za-z0-9_-]{1,40}/[A-Za-z0-9_-]{20,2000}=w400-h300-k-no\Z")
+_PHOTO_STATES = {"ok", "partial", "unknown"}
+
+
+def _photo(row, contributor):
+    if not isinstance(row, dict):
+        return None
+    image = _text(row.get("image_url"), 2100)
+    name = _text(row.get("name"), 300)
+    if not _PHOTO_IMAGE.fullmatch(image) or not name:
+        return None
+    result = {"image_url": image, "name": name,
+              "source_url": _public_url(row.get("source_url"), contributor) or f"https://www.google.com/maps/contrib/{contributor}/photos"}
+    for key, limit in (("id", 500), ("address", 1000)):
+        value = _text(row.get(key), limit)
+        if value:
+            result[key] = value
+    date = _text(row.get("date"), 7)
+    if re.fullmatch(r"(19|20)[0-9]{2}-(0[1-9]|1[0-2])", date):
+        result["date"] = date
+    maps_url = _public_url(row.get("maps_url"), contributor)
+    if maps_url:
+        result["maps_url"] = maps_url
+    return result
+
+
+def _photo_coverage(row, returned, reported):
+    row = row if isinstance(row, dict) else {}
+    state = row.get("status") if row.get("status") in _PHOTO_STATES else "unknown"
+    if state == "ok" and (reported is None or reported != returned):
+        state = "partial"
+    reasons = {"ok": "Readable public photo set.",
+               "partial": "Preview only: Google returns a few recent public photos, not the full set.",
+               "unknown": "Public photos could not be read; this does not establish that none exist."}
+    if state == "ok" and returned == 0:
+        reasons["ok"] = "No public photos are reported."
+    return {"status": state, "returned": returned, "total_reported": reported,
+            "limited": state != "ok", "limit": 30, "reason": reasons[state]}
+
+
 def _coverage(row, contributor, returned):
     row = row if isinstance(row, dict) else {}
     state = _state(row.get("status", "unknown"))
@@ -139,6 +179,14 @@ def _profile(row):
         projected = _review(review, contributor)
         if projected:
             result["reviews"].append(projected)
+    photo_rows = row.get("photos") if isinstance(row.get("photos"), list) else []
+    photos = [photo for item in photo_rows[:30] if (photo := _photo(item, contributor)) is not None]
+    if photos or "photo_coverage" in row:
+        result["photos"] = photos
+        coverage = _photo_coverage(row.get("photo_coverage"), len(photos), result["stats"].get("Photos"))
+        if len(photos) != len(photo_rows) and coverage["status"] == "ok":
+            coverage.update(status="partial", limited=True, reason="Preview only: Google returns a few recent public photos, not the full set.")
+        result["photo_coverage"] = coverage
     result["review_coverage"] = _coverage(row.get("review_coverage"), contributor, len(result["reviews"]))
     # A rejected or truncated record makes the projected collection incomplete.
     if len(result["reviews"]) != len(rows) and result["review_coverage"]["status"] in _SUCCESS:
