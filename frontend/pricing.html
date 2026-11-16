@@ -84,51 +84,52 @@
       <button type="button" data-billing="monthly" aria-pressed="true">Monthly</button>
       <button type="button" data-billing="yearly" aria-pressed="false">Annually <span id="yearlyBadge">50% OFF</span></button>
     </div>
-    <div class="plans" id="plans">
+    <div class="plans plans-v2" id="plans">
       <section class="panel plan" data-plan-card="free" aria-labelledby="freeHeading">
-        <div class="plan-heading"><h2 id="freeHeading">Free</h2><span class="plan-tag">For everyday curiosity</span></div>
-        <p class="plan-description">Start with the essentials.</p>
-        <div class="price">$0 <small>always free</small></div>
+        <div class="plan-top"><h2 id="freeHeading">Free</h2></div>
+        <p class="plan-description">Essentials for everyday checks</p>
+        <div class="price"><span id="freePrice">$0</span> <small>/ month</small></div>
         <p class="price-caption">Google sign-in. No payment details.</p>
-        <ul>
+        <div class="plan-actions">
+          <button type="button" class="btn plan-cta plan-cta-ghost" data-signin>Sign in with Google</button>
+        </div>
+        <p class="plan-includes">Includes:</p>
+        <ul class="plan-features">
           <li><strong>5 Standard scans</strong> every day</li>
           <li>Check <strong>500+ platforms</strong> per scan</li>
           <li>Complete results, ready to review</li>
           <li>Saved reports in your account</li>
           <li>Free email and breach lookup</li>
         </ul>
-        <div class="plan-actions">
-          <button type="button" class="btn btn-ghost" data-signin>Sign in with Google</button>
-          <p class="plan-footnote">Your daily scans reset at midnight UTC.</p>
+        <div class="plan-foot">
+          <p class="plan-footnote">Daily scans reset at midnight UTC.</p>
         </div>
       </section>
       <section class="panel plan featured" data-plan-card="basic" aria-labelledby="proHeading">
-        <div class="trial-ribbon" id="trialRibbon">
-          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>
-          <strong id="trialRibbonTitle">3 days to explore Pro</strong>
-          <span id="trialRibbonText">Includes 3 Extended scans + Deep Search.</span>
-          <span class="bf-card-tag" id="bfCardTag">Black Friday</span>
-        </div>
-        <div class="plan-heading"><h2 id="proHeading">Pro</h2><span class="plan-tag pro-tag">Recommended</span></div>
-        <p class="plan-description">For deeper research and regular public-footprint checks.</p>
+        <div class="plan-top"><h2 id="proHeading">Pro</h2><span class="plan-chip plan-chip-bf" id="bfCardTag">Black Friday</span><span class="plan-chip">Recommended</span></div>
+        <p class="plan-description">Deeper research and regular footprint checks</p>
         <div class="price"><span class="price-anchor" id="proAnchor">$4.99</span><span id="proPrice">$3.99</span> <small id="proPeriod">/ month</small><span class="price-discount" id="proDiscount">20% OFF</span></div>
-        <p class="price-caption" id="proPriceCaption">Black Friday deal (was $4.99/mo) · ₹299/month in India</p>
-        <ul>
+        <p class="price-caption" id="proPriceCaption">Black Friday deal (was $4.99/mo)</p>
+        <div class="plan-actions">
+          <div class="provider-buttons" data-region="intl">
+            <button type="button" class="btn provider-btn provider-paypal" data-subscribe="paypal" disabled><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span></button>
+            <button type="button" class="btn provider-btn provider-razorpay" data-subscribe="razorpay" disabled hidden><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span></button>
+            <p class="provider-note"><span class="via-paypal">Secure checkout with <b>PayPal</b> · cards &amp; PayPal</span><span class="via-razorpay">Secure checkout with <svg class="provider-logo" viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M22.436 0l-11.91 7.773-1.174 4.276 6.625-4.297L11.65 24h4.391l6.395-24zM14.26 10.098L3.389 17.166 1.564 24h9.008l3.688-13.902Z"/></svg><b>Razorpay</b> · UPI, cards &amp; netbanking</span></p>
+          </div>
+          <p class="region-switch"><span id="regionSwitchLead">Paying from India?</span> <button type="button" class="link-btn" id="regionSwitch">Pay in INR with Razorpay</button></p>
+        </div>
+        <p class="plan-includes"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg>Everything in Free, plus:</p>
+        <ul class="plan-features">
           <li><strong>Unlimited Standard scans</strong> · 500+ platforms</li>
           <li><a href="/deep-search.html">Deep Search</a> · explore public mentions</li>
           <li><strong id="proCredits">10 Extended scans per paid month</strong> · 3,000+ platforms</li>
         </ul>
-        <ol class="trial-timeline" id="trialTimeline" aria-label="How your free trial works">
-          <li><b>Start</b><span>Authorize checkout to unlock Pro + 3 Extended scans.</span></li>
-          <li><b>Control</b><span>Cancel renewal here in Manage Pro.</span></li>
-          <li><b>After 3 days</b><span id="timelineCharge">Pro continues at $3.99/mo or ₹299/mo.</span></li>
-        </ol>
-        <div class="plan-actions">
-          <div class="provider-buttons" data-region="intl">
-            <button type="button" class="btn provider-btn provider-paypal" data-subscribe="paypal" disabled><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span><small class="provider-via">with <img class="provider-wordmark" src="/assets/img/paypal-logo.svg" alt="PayPal" width="60" height="19"> · cards &amp; PayPal</small></button>
-            <button type="button" class="btn provider-btn provider-razorpay" data-subscribe="razorpay" disabled hidden><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span><small class="provider-via">with <svg class="provider-logo" viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M22.436 0l-11.91 7.773-1.174 4.276 6.625-4.297L11.65 24h4.391l6.395-24zM14.26 10.098L3.389 17.166 1.564 24h9.008l3.688-13.902Z"/></svg><span class="provider-name">Razorpay</span> · UPI, cards &amp; netbanking</small></button>
-          </div>
-          <p class="region-switch"><span id="regionSwitchLead">Paying from India?</span> <button type="button" class="link-btn" id="regionSwitch">Pay in INR with Razorpay</button></p>
+        <div class="plan-foot">
+          <ol class="trial-timeline" id="trialTimeline" aria-label="How your free trial works">
+            <li><b>Start</b><span>Authorize checkout to unlock Pro + 3 Extended scans.</span></li>
+            <li><b>Control</b><span>Cancel renewal here in Manage Pro.</span></li>
+            <li><b>After 3 days</b><span id="timelineCharge">Pro continues at $3.99/mo.</span></li>
+          </ol>
           <p class="plan-footnote" id="trialSummary">Free for 3 days, then your selected price, auto-renewing until cancelled. One trial per account.</p>
         </div>
       </section>

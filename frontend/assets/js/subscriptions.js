@@ -152,6 +152,7 @@
       ? "<strong>Limited-time drop:</strong> Pro Annually <s>₹3,588</s> <strong>₹1,999/yr</strong> (44% off) &middot; Monthly <strong>₹299/mo</strong>"
       : "<strong>Limited-time drop:</strong> Pro Monthly <s>$4.99</s> <strong>$3.99/mo</strong> &middot; Annually <s>$39.99</s> <strong>$19.99/yr</strong> (50% off)";
     setText("#yearlyBadge", inIndia ? "44% OFF" : "50% OFF");
+    setText("#freePrice", copy.zero);
     setText("#pricingReassurance", inIndia
       ? "Payment authorization required. Review the price and first charge date at checkout. Razorpay may require a refundable payment-method authorization."
       : "Payment authorization required. Review the price and first charge date at checkout.");
@@ -162,8 +163,6 @@
     setText("#proPriceCaption", copy.caption);
     setText("#proCredits", copy.credits);
     setText("#timelineCharge", copy.charge);
-    setText("#trialRibbonTitle", trial ? "3 days to explore Pro" : "Welcome back");
-    setText("#trialRibbonText", trial ? "Includes 3 Extended scans + Deep Search." : "Pick up where you left off with Pro.");
     if ($("#trialTimeline")) $("#trialTimeline").hidden = !trial;
     if ($("#trialPill")) $("#trialPill").hidden = !trial;
     document.querySelectorAll("[data-provider-cta]").forEach((el) => { el.textContent = trial ? "Try Pro free for 3 days" : "Subscribe"; });
