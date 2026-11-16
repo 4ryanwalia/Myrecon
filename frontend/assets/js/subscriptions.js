@@ -11,18 +11,61 @@
   const labels = { monthly: "US$3.99/month", yearly: "US$19.99/year", inr_monthly: "₹299/month", inr_yearly: "₹1,999/year" };
   const isRazorpay = (key) => String(key || "").startsWith("inr_");
   const providerKey = (provider) => provider === "paypal" ? period : (period === "yearly" ? "inr_yearly" : "inr_monthly");
+  // Card copy per visitor region: "intl" pays in USD through PayPal, "in"
+  // pays in INR through Razorpay. The ₹3,588 anchor is 12 × ₹299 monthly.
   const COPY = {
-    monthly: {
-      price: "$3.99", period: "/ month", anchor: "$4.99", discount: "20% OFF", credits: "10 Extended scans per paid month",
-      caption: "Black Friday deal (was $4.99/mo) · ₹299/month in India",
-      paypal: "$3.99/mo · was $4.99", razorpay: "₹299/mo", charge: "Pro continues at $3.99/mo (Black Friday rate) or ₹299/mo.",
+    intl: {
+      monthly: {
+        price: "$3.99", period: "/ month", anchor: "$4.99", discount: "20% OFF", credits: "10 Extended scans per paid month",
+        caption: "Black Friday deal (was $4.99/mo)", charge: "Pro continues at $3.99/mo (Black Friday rate).",
+        summary: "US$3.99/month", zero: "$0",
+      },
+      yearly: {
+        price: "$19.99", period: "/ year", anchor: "$39.99", discount: "50% OFF", credits: "120 Extended scans per paid year",
+        caption: "$1.67/month equivalent · $19.99/yr (was $39.99)", charge: "Pro continues at $19.99/yr (Black Friday rate).",
+        summary: "US$19.99/year", zero: "$0",
+      },
     },
-    yearly: {
-      price: "$19.99", period: "/ year", anchor: "$39.99", discount: "50% OFF", credits: "120 Extended scans per paid year",
-      caption: "$1.67/month equivalent · $19.99/yr (was $39.99) · ₹1,999/year in India",
-      paypal: "$19.99/yr · was $39.99", razorpay: "₹1,999/yr · save 44%", charge: "Pro continues at $19.99/yr (Black Friday rate) or ₹1,999/yr.",
+    in: {
+      monthly: {
+        price: "₹299", period: "/ month", anchor: "", discount: "", credits: "10 Extended scans per paid month",
+        caption: "Billed in INR · UPI, cards and netbanking", charge: "Pro continues at ₹299/mo.",
+        summary: "₹299/month", zero: "₹0",
+      },
+      yearly: {
+        price: "₹1,999", period: "/ year", anchor: "₹3,588", discount: "44% OFF", credits: "120 Extended scans per paid year",
+        caption: "₹167/month equivalent · ₹1,999/yr vs ₹3,588 paying monthly", charge: "Pro continues at ₹1,999/yr.",
+        summary: "₹1,999/year", zero: "₹0",
+      },
     },
   };
+
+  // One checkout per visitor. The country comes from /api/geo (Vercel's
+  // x-vercel-ip-country); without it, India's time zone is the fallback.
+  // The visitor's own switch wins and is remembered in this browser only.
+  const REGION_KEY = "mr_pricing_region";
+  let explicitRegion = null;
+  try { const saved = localStorage.getItem(REGION_KEY); if (saved === "in" || saved === "intl") explicitRegion = saved; } catch {}
+  const queryRegion = new URLSearchParams(location.search).get("region");
+  if (queryRegion === "in" || queryRegion === "intl") explicitRegion = queryRegion;
+  const timeZoneRegion = () => {
+    try { return /^Asia\/(Kolkata|Calcutta)$/.test(Intl.DateTimeFormat().resolvedOptions().timeZone) ? "in" : "intl"; }
+    catch { return "intl"; }
+  };
+  let detectedRegion = timeZoneRegion();
+  const region = () => explicitRegion || detectedRegion;
+  const provider = () => region() === "in" ? "razorpay" : "paypal";
+
+  async function detectRegion() {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      const response = await fetch("/api/geo", { signal: controller.signal, cache: "no-store" }).finally(() => clearTimeout(timer));
+      if (!response.ok) return;
+      const country = (await response.json())?.country;
+      if (typeof country === "string" && /^[A-Z]{2}$/.test(country)) detectedRegion = country === "IN" ? "in" : "intl";
+    } catch {} // Local previews have no /api/geo; the time zone answer stands.
+  }
 
   // A Razorpay checkout the customer never authorized can be closed by the
   // server and replaced; anything authorized, paid or PayPal-pending cannot.
@@ -96,36 +139,48 @@
     const yearly = period === "yearly";
     const billingSwitch = $(".billing-switch");
     if (billingSwitch) billingSwitch.dataset.period = period;
-    const copy = COPY[yearly ? "yearly" : "monthly"];
+    const copy = COPY[region()][yearly ? "yearly" : "monthly"];
     document.querySelectorAll("[data-billing]").forEach((button) => {
       button.disabled = busy;
       button.setAttribute("aria-pressed", String(button.dataset.billing === period));
     });
     const setText = (id, text) => { if ($(id)) $(id).textContent = text; };
     setText("#pricingHeading", trial ? "Follow more public leads. Try Pro free." : "Follow more public leads with Pro.");
-    setText("#pricingIntroCopy", trial ? "Explore Deep Search and 3,000+ platforms for 3 days. Cancel before trial ends to pay $0." : "Choose your billing period for Deep Search, unlimited Standard scans and Extended scan credits.");
+    setText("#pricingIntroCopy", trial ? `Explore Deep Search and 3,000+ platforms for 3 days. Cancel before trial ends to pay ${copy.zero}.` : "Choose your billing period for Deep Search, unlimited Standard scans and Extended scan credits.");
+    const inIndia = region() === "in";
+    if ($("#bfCopy")) $("#bfCopy").innerHTML = inIndia
+      ? "<strong>Limited-time drop:</strong> Pro Annually <s>₹3,588</s> <strong>₹1,999/yr</strong> (44% off) &middot; Monthly <strong>₹299/mo</strong>"
+      : "<strong>Limited-time drop:</strong> Pro Monthly <s>$4.99</s> <strong>$3.99/mo</strong> &middot; Annually <s>$39.99</s> <strong>$19.99/yr</strong> (50% off)";
+    setText("#yearlyBadge", inIndia ? "44% OFF" : "50% OFF");
+    setText("#pricingReassurance", inIndia
+      ? "Payment authorization required. Review the price and first charge date at checkout. Razorpay may require a refundable payment-method authorization."
+      : "Payment authorization required. Review the price and first charge date at checkout.");
     setText("#proPrice", copy.price);
     setText("#proPeriod", copy.period);
     if ($("#proAnchor")) { $("#proAnchor").textContent = copy.anchor; $("#proAnchor").hidden = !copy.anchor; }
     if ($("#proDiscount")) { $("#proDiscount").textContent = copy.discount || ""; $("#proDiscount").hidden = !copy.discount; }
     setText("#proPriceCaption", copy.caption);
     setText("#proCredits", copy.credits);
-    setText("#paypalPrice", copy.paypal);
-    setText("#razorpayPrice", copy.razorpay);
     setText("#timelineCharge", copy.charge);
     setText("#trialRibbonTitle", trial ? "3 days to explore Pro" : "Welcome back");
     setText("#trialRibbonText", trial ? "Includes 3 Extended scans + Deep Search." : "Pick up where you left off with Pro.");
     if ($("#trialTimeline")) $("#trialTimeline").hidden = !trial;
     if ($("#trialPill")) $("#trialPill").hidden = !trial;
     document.querySelectorAll("[data-provider-cta]").forEach((el) => { el.textContent = trial ? "Try Pro free for 3 days" : "Subscribe"; });
-    setText("#trialSummary", trial ? `3 days free, then ${yearly ? "US$19.99/year or ₹1,999/year" : "US$3.99/month or ₹299/month"}. Auto-renews until cancelled. New subscribers only.` : "Your free trial has been used. Billing starts today and renews automatically until cancelled. Cancel anytime from this page.");
+    setText("#trialSummary", trial ? `3 days free, then ${copy.summary}. Auto-renews until cancelled. New subscribers only.` : "Your free trial has been used. Billing starts today and renews automatically until cancelled. Cancel anytime from this page.");
     setText("#checkoutHeading", trial ? "Start your 3-day free trial" : "Subscribe to Pro");
     setText("#checkoutProvider", `${isRazorpay(selected()) ? "Razorpay" : "PayPal"} · ${labels[selected()]}`);
+    const shown = provider();
+    if ($(".provider-buttons")) $(".provider-buttons").dataset.region = region();
     document.querySelectorAll("[data-subscribe]").forEach((button) => {
       const key = providerKey(button.dataset.subscribe);
+      button.hidden = button.dataset.subscribe !== shown;
       button.disabled = busy || !A?.enabled || !offers.find((o) => o.id === key)?.enabled;
       button.title = `${trial ? "Start your free trial" : "Subscribe"}: ${labels[key]}`;
     });
+    setText("#regionSwitchLead", region() === "in" ? "Paying from outside India?" : "Paying from India?");
+    setText("#regionSwitch", region() === "in" ? "Pay in USD with PayPal" : "Pay in INR with Razorpay");
+    if ($("#regionSwitch")) $("#regionSwitch").disabled = busy;
     $("#manageSubscription").hidden = !A?.state().user;
     $("#refreshSubscription").disabled = busy;
     $("#cancelSubscription").hidden = !subscription?.id || ["cancelled", "expired", "completed", "approval_pending"].includes(subscription.status);
@@ -241,8 +296,16 @@
         void card.offsetWidth;
         card.classList.add("bf-highlight");
       }
-      $('[data-subscribe="paypal"]:not(:disabled)')?.focus({ preventScroll: true });
+      $("[data-subscribe]:not([hidden]):not(:disabled)")?.focus({ preventScroll: true });
     });
+    $("#regionSwitch")?.addEventListener("click", () => {
+      if (busy) return;
+      explicitRegion = region() === "in" ? "intl" : "in";
+      try { localStorage.setItem(REGION_KEY, explicitRegion); } catch {}
+      render();
+      $("[data-subscribe]:not([hidden])")?.focus({ preventScroll: true });
+    });
+    detectRegion().then(() => { if (!busy && !$("#subscriptionDialog")?.open) render(); });
     document.querySelectorAll("[data-billing]").forEach((button) => button.addEventListener("click", () => {
       if (busy) return;
       period = button.dataset.billing;
@@ -276,6 +339,7 @@
       $("#subscriptionDialog").showModal();
     });
     $("#closeSubscription")?.addEventListener("click", () => $("#subscriptionDialog").close());
+    render();
     $("#basicPlan").addEventListener("change", () => { $("#basicConsent").checked = false; render(); });
     $("#basicConsent").addEventListener("change", render);
     $("#startBasic").addEventListener("click", start);
@@ -307,7 +371,7 @@
       const response = await fetch(base + "/api/plans");
       if (!response.ok) throw new Error("Could not load subscription prices.");
       offers = (await response.json()).subscriptions || [];
-      say(offers.some((o) => o.enabled) ? "Choose PayPal or Razorpay to review your plan." : "Subscription checkout is temporarily unavailable.");
+      say(offers.some((o) => o.enabled) ? "Select your plan to review it before checkout." : "Subscription checkout is temporarily unavailable.");
     } catch (e) { say(e.message); }
     A.onChange((state) => {
       const uid = state.user?.uid || null;

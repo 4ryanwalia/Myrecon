@@ -81,14 +81,52 @@
 .plan-actions { margin-top: auto; }
 .plan-actions > .btn { width: 100%; min-height: 52px; }
 .trial-invitation { font-size: .85rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
-.provider-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.provider-buttons { display: grid; grid-template-columns: 1fr; gap: 10px; }
+/* One checkout per visitor: Razorpay in India, PayPal elsewhere (subscriptions.js). */
+.plan .provider-btn .provider-via {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: .72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  opacity: .92;
+}
+.plan .provider-btn .provider-via .provider-wordmark { height: 15px; width: auto; vertical-align: middle; }
+.plan .provider-btn .provider-via .provider-name { font-size: .78rem; }
+.plan .provider-btn > .provider-cta {
+  margin: 0;
+  padding: 0;
+  font-size: 1.02rem;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: -.01em;
+  color: #fff;
+}
+.plan .provider-btn:disabled > .provider-cta { color: var(--text-dim) !important; }
+.plan .provider-btn:disabled .provider-via { opacity: .6; }
+.region-switch { margin-top: 8px; text-align: center; font-size: .72rem; color: var(--text-dim); }
+.region-switch .link-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.region-switch .link-btn:disabled { opacity: .5; cursor: not-allowed; }
+.region-switch .link-btn:focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
 .plan .provider-btn {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 2px;
-  min-height: 68px;
+  gap: 4px;
+  min-height: 60px;
   min-width: 0;
   white-space: normal;
   padding: 8px 6px 7px;
@@ -131,17 +169,6 @@
   font-size: .63rem;
   line-height: 1.15;
 }
-.plan .provider-cta {
-  margin-top: 2px;
-  font-size: .67rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  padding: 2px 8px;
-  border-radius: 999px;
-  line-height: 1.2;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
 
 /* Authentic PayPal Brand Theme */
 .plan .provider-paypal {
@@ -151,13 +178,6 @@
 }
 .plan .provider-paypal .provider-meta {
   color: #bae6fd;
-}
-.plan .provider-paypal .provider-cta {
-  background: #ffc439;
-  color: #002c66;
-}
-.plan .provider-paypal:hover:not(:disabled) .provider-cta {
-  background: #ffd05b;
 }
 
 /* Authentic Razorpay Brand Theme */
@@ -171,13 +191,6 @@
 }
 .plan .provider-razorpay .provider-meta {
   color: #bfdbfe;
-}
-.plan .provider-razorpay .provider-cta {
-  background: #3395ff;
-  color: #fff;
-}
-.plan .provider-razorpay:hover:not(:disabled) .provider-cta {
-  background: #4da3ff;
 }
 
 .plan .provider-btn:disabled {
@@ -195,11 +208,6 @@
 .plan .provider-btn:disabled .provider-logo {
   opacity: .35;
   color: var(--text-dim) !important;
-}
-.plan .provider-btn:disabled .provider-cta {
-  background: var(--border) !important;
-  color: var(--text-dim) !important;
-  box-shadow: none !important;
 }
 .plan-footnote { color: var(--text-dim); font-size: .7rem; line-height: 1.5; margin-top: 10px; }
 .pricing-reassurance { text-align: center; color: var(--text-dim); font-size: .73rem; margin: 14px 0 5px; line-height: 1.5; }
@@ -358,11 +366,11 @@
   .pricing-page .plan ul { margin: 6px 0 8px; gap: 4px; font-size: .78rem; }
   .trial-timeline { margin: 4px 0 8px; padding: 5px 8px; gap: 2px; font-size: .7rem; }
   .plan-description { margin-top: 2px; font-size: .78rem; }
-  .plan .provider-btn { min-height: 56px; padding: 4px 4px; gap: 1px; }
+  .plan .provider-btn { min-height: 52px; padding: 4px 4px; gap: 2px; }
   .plan .provider-btn .provider-logo { width: 14px; height: 14px; }
   .plan .provider-btn .provider-name { font-size: .88rem; }
   .plan .provider-btn .provider-price { font-size: .78rem; }
-  .plan .provider-btn .provider-cta { font-size: .62rem; padding: 1px 6px; }
+  .plan .provider-btn > .provider-cta { font-size: .95rem; }
   .plan-footnote { margin-top: 5px; font-size: .66rem; }
   .pricing-reassurance { margin: 8px 0 3px; }
 }
@@ -513,14 +521,16 @@ body.pricing-monochrome {
 }
 .pricing-monochrome .trial-timeline { background: #ffffff05; border: 1px solid #ffffff1a; border-radius: 9px; padding: 7px 10px; gap: 4px; margin: 0 0 10px; font-size: .72rem; }
 .pricing-monochrome .trial-timeline li b { color: #fff; font-size: .64rem; min-width: 76px; }
-.pricing-monochrome .plan .provider-btn { background: #ffffff08; border: 1px solid #ffffff30; color: #fff; box-shadow: none; border-radius: 10px; padding: 8px 8px; gap: 4px; min-height: 82px; }
+.pricing-monochrome .plan .provider-btn { background: #ffffff08; border: 1px solid #ffffff30; color: #fff; box-shadow: none; border-radius: 10px; padding: 9px 10px; gap: 3px; min-height: 60px; }
 .pricing-monochrome .plan .provider-btn:hover:not(:disabled) { background: #ffffff12; border-color: #ffffff80; filter: none; transform: translateY(-2px); box-shadow: none; }
 .pricing-monochrome .provider-logo, .pricing-monochrome .provider-logo path { color: #fff; fill: #fff; }
 .pricing-monochrome .provider-btn .provider-brand { min-height: 22px; }
 .pricing-monochrome .provider-wordmark { width: 80px; height: 22px; object-fit: contain; }
 .pricing-monochrome .provider-btn .provider-price { font-size: .78rem; }
 .pricing-monochrome .provider-btn .provider-meta { color: #ffffffb8; font-size: .62rem; }
-.pricing-monochrome .provider-btn .provider-cta, .pricing-monochrome .provider-btn:hover:not(:disabled) .provider-cta { background: #fff; color: #111; border-radius: 6px; padding: 5px 8px; text-transform: none; letter-spacing: 0; font-size: .7rem; font-weight: 650; box-shadow: none; width: 100%; }
+.pricing-monochrome .provider-btn > .provider-cta { color: inherit; font-size: 1.02rem; font-weight: 800; }
+.pricing-monochrome .provider-btn .provider-via { color: inherit; }
+.pricing-monochrome .provider-btn .provider-via .provider-wordmark { width: auto; height: 15px; }
 .pricing-monochrome .plan-footnote { font-size: .7rem; line-height: 1.4; margin-top: 6px; }
 .pricing-monochrome .plan-actions > .btn { min-height: 44px; }
 .pricing-monochrome .pricing-reassurance { margin: 10px 0 4px; }
@@ -550,7 +560,7 @@ body.pricing-monochrome {
   .pricing-monochrome .billing-switch { margin-bottom: 10px; }
   .pricing-monochrome .plans { grid-template-columns: 1fr; gap: 12px; }
   .pricing-monochrome .plan { padding: 14px; }
-  .pricing-monochrome .plan .provider-btn { min-height: 78px; }
+  .pricing-monochrome .plan .provider-btn { min-height: 56px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pricing-monochrome .billing-slider, .pricing-monochrome .billing-switch button, .pricing-monochrome .provider-btn, .bf-cta { transition: none; }
@@ -565,14 +575,10 @@ body.pricing-monochrome {
 .pricing-monochrome .plan .provider-paypal:hover:not(:disabled) { background: #ffd05b; border-color: #ffd05b; }
 .pricing-monochrome .provider-paypal .provider-price,
 .pricing-monochrome .provider-paypal .provider-meta { color: #003087; }
-.pricing-monochrome .provider-paypal .provider-cta,
-.pricing-monochrome .provider-paypal:hover:not(:disabled) .provider-cta { background: #003087; color: #fff; }
 .pricing-monochrome .plan .provider-razorpay { background: #2455d6; border-color: #4778f5; color: #fff; }
 .pricing-monochrome .plan .provider-razorpay:hover:not(:disabled) { background: #3064e8; border-color: #7096ff; }
 .pricing-monochrome .provider-razorpay .provider-name { font-style: italic; }
 .pricing-monochrome .provider-razorpay .provider-meta { color: #fff; }
-.pricing-monochrome .provider-razorpay .provider-cta,
-.pricing-monochrome .provider-razorpay:hover:not(:disabled) .provider-cta { background: #fff; color: #1743b5; }
 .pricing-monochrome .provider-btn:disabled .provider-wordmark { filter: grayscale(1); opacity: .5; }
 .pricing-monochrome .provider-paypal:disabled .provider-price,
 .pricing-monochrome .provider-paypal:disabled .provider-meta { color: var(--text-dim); }

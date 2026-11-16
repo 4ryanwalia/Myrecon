@@ -11,6 +11,11 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
   try {
     const page = await browser.newPage({viewport:{width:1366,height:900}});
     const errors = []; const creations = []; let currentSubscription = null;
+    // One checkout is shown per visitor; this flips between PayPal (intl) and Razorpay (in).
+    const useRegion = async (region) => {
+      if (await page.locator('.provider-buttons').getAttribute('data-region') !== region) await page.locator('#regionSwitch').click();
+      assert.equal(await page.locator('.provider-buttons').getAttribute('data-region'), region);
+    };
     page.on('pageerror', e => errors.push(e.message));
     await page.route('**/*', async route => {
       const url = new URL(route.request().url());
@@ -33,8 +38,13 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
       }
       return route.abort();
     });
-    await page.goto('https://pricing.test/pricing');
+    await page.goto('https://pricing.test/pricing?region=intl');
     await page.locator('[data-subscribe="paypal"]:enabled').waitFor();
+    // Outside India: PayPal in USD only, never both buttons.
+    assert.equal(await page.locator('.plan .provider-btn:visible').count(), 1);
+    assert.equal(await page.locator('[data-subscribe="razorpay"]').isVisible(), false);
+    assert.match(await page.locator('[data-subscribe="paypal"]').innerText(), /Try Pro free for 3 days/);
+    assert.equal(await page.locator('#proPrice').innerText(), '$3.99');
     assert.equal(await page.locator('.plans > section').count(),2);
     assert.equal(await page.locator('select').count(),0);
     assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(0, 0, 0)');
@@ -68,11 +78,22 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     await page.emulateMedia({reducedMotion:'no-preference'});
 
     assert.match(await page.locator('#proCredits').innerText(),/120/);
+    await useRegion('in');
+    // India: Razorpay in INR only, with the label "Try Pro free for 3 days".
+    assert.equal(await page.locator('.plan .provider-btn:visible').count(), 1);
+    assert.equal(await page.locator('[data-subscribe="paypal"]').isVisible(), false);
+    assert.match(await page.locator('[data-subscribe="razorpay"]').innerText(), /Try Pro free for 3 days/);
+    assert.equal(await page.locator('#proPrice').innerText(), '₹1,999');
+    assert.equal(await page.locator('#proAnchor').innerText(), '₹3,588');
+    assert.equal(await page.locator('#yearlyBadge').innerText(), '44% OFF');
+    assert.match(await page.locator('#bfCopy').innerText(), /₹1,999/);
+    assert.match(await page.locator('#trialSummary').innerText(), /₹1,999\/year/);
     assert.equal(await page.locator('[data-subscribe="razorpay"]').isEnabled(),true);
     await page.locator('[data-subscribe="razorpay"]').click();
     assert.equal(await page.locator('#basicPlan').inputValue(),'inr_yearly');
     assert.match(await page.locator('#basicTerms').innerText(),/₹1,999\/year/);
     await page.keyboard.press('Escape');
+    await useRegion('intl');
     await page.locator('[data-subscribe="paypal"]').click();
     assert.equal(await page.locator('#basicPlan').inputValue(),'yearly');
     assert.match(await page.locator('#basicTerms').innerText(),/US\$19.99\/year/);
@@ -83,6 +104,7 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     assert.deepEqual(creations,[{plan:'yearly',consent:true}]);
     await page.keyboard.press('Escape');
     await page.locator('[data-billing="monthly"]').click();
+    await useRegion('in');
     await page.locator('[data-subscribe="razorpay"]').click();
     assert.equal(await page.locator('#basicConsent').isChecked(),false);
     assert.equal(await page.locator('#basicPlan').inputValue(),'inr_monthly');
@@ -100,6 +122,7 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
         if (width===390) await page.screenshot({path:path.join(require('node:os').tmpdir(),`myrecon-pricing-mobile-${theme}.png`),fullPage:true});
       }
     }
+    await useRegion('intl');
     await page.locator('[data-subscribe="paypal"]').click();
     assert.equal(await page.locator('#basicPlan').inputValue(),'monthly');
     assert.equal(await page.locator('#basicConsent').isChecked(),false);

@@ -71,7 +71,7 @@
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">Pricing</span></nav>
     <div class="bf-banner" id="blackFridayBanner" role="region" aria-label="Black Friday Sale">
       <span class="bf-badge"><span class="bf-dot" aria-hidden="true"></span>Black Friday Sale</span>
-      <p class="bf-copy"><strong>Limited-time drop:</strong> Pro Monthly <s>$4.99</s> <strong>$3.99/mo</strong> &middot; Annually <s>$39.99</s> <strong>$19.99/yr</strong> (50% off)</p>
+      <p class="bf-copy" id="bfCopy"><strong>Limited-time drop:</strong> Pro Monthly <s>$4.99</s> <strong>$3.99/mo</strong> &middot; Annually <s>$39.99</s> <strong>$19.99/yr</strong> (50% off)</p>
       <a class="bf-cta" href="#plans" id="bfTryNow">Try now &rarr;</a>
     </div>
     <header class="pricing-intro">
@@ -82,7 +82,7 @@
     <div class="billing-switch" data-period="monthly" role="group" aria-label="Billing period">
       <i class="billing-slider" aria-hidden="true"></i>
       <button type="button" data-billing="monthly" aria-pressed="true">Monthly</button>
-      <button type="button" data-billing="yearly" aria-pressed="false">Annually <span>50% OFF</span></button>
+      <button type="button" data-billing="yearly" aria-pressed="false">Annually <span id="yearlyBadge">50% OFF</span></button>
     </div>
     <div class="plans" id="plans">
       <section class="panel plan" data-plan-card="free" aria-labelledby="freeHeading">
@@ -124,15 +124,16 @@
           <li><b>After 3 days</b><span id="timelineCharge">Pro continues at $3.99/mo or ₹299/mo.</span></li>
         </ol>
         <div class="plan-actions">
-          <div class="provider-buttons">
-            <button type="button" class="btn provider-btn provider-paypal" data-subscribe="paypal" disabled><span class="provider-brand"><img class="provider-wordmark" src="/assets/img/paypal-logo.svg" alt="PayPal" width="101" height="32"></span><span class="provider-price" id="paypalPrice">$3.99/mo</span><small class="provider-meta">Cards &amp; PayPal · worldwide</small><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span></button>
-            <button type="button" class="btn provider-btn provider-razorpay" data-subscribe="razorpay" disabled><span class="provider-brand"><svg class="provider-logo" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M22.436 0l-11.91 7.773-1.174 4.276 6.625-4.297L11.65 24h4.391l6.395-24zM14.26 10.098L3.389 17.166 1.564 24h9.008l3.688-13.902Z"/></svg><span class="provider-name">Razorpay</span></span><span class="provider-price" id="razorpayPrice">₹299/mo</span><small class="provider-meta">UPI, cards &amp; netbanking · India</small><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span></button>
+          <div class="provider-buttons" data-region="intl">
+            <button type="button" class="btn provider-btn provider-paypal" data-subscribe="paypal" disabled><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span><small class="provider-via">with <img class="provider-wordmark" src="/assets/img/paypal-logo.svg" alt="PayPal" width="60" height="19"> · cards &amp; PayPal</small></button>
+            <button type="button" class="btn provider-btn provider-razorpay" data-subscribe="razorpay" disabled hidden><span class="provider-cta" data-provider-cta>Try Pro free for 3 days</span><small class="provider-via">with <svg class="provider-logo" viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M22.436 0l-11.91 7.773-1.174 4.276 6.625-4.297L11.65 24h4.391l6.395-24zM14.26 10.098L3.389 17.166 1.564 24h9.008l3.688-13.902Z"/></svg><span class="provider-name">Razorpay</span> · UPI, cards &amp; netbanking</small></button>
           </div>
+          <p class="region-switch"><span id="regionSwitchLead">Paying from India?</span> <button type="button" class="link-btn" id="regionSwitch">Pay in INR with Razorpay</button></p>
           <p class="plan-footnote" id="trialSummary">Free for 3 days, then your selected price, auto-renewing until cancelled. One trial per account.</p>
         </div>
       </section>
     </div>
-    <p class="pricing-reassurance">Payment authorization required. Review the price and first charge date at checkout. Razorpay may require a refundable payment-method authorization.</p>
+    <p class="pricing-reassurance" id="pricingReassurance">Payment authorization required. Review the price and first charge date at checkout. Razorpay may require a refundable payment-method authorization.</p>
     <p class="hint" id="subscriptionStatus" role="status" aria-live="polite">Checking subscription availability…</p>
     <dialog id="subscriptionDialog" class="subscription-dialog" aria-labelledby="checkoutHeading">
       <button type="button" class="dialog-close" id="closeSubscription" aria-label="Close checkout review">×</button>
