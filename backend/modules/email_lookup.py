@@ -29,6 +29,7 @@ from typing import Optional
 import requests
 
 from modules.network import _doh_query
+from modules.sensitive_breaches import POLICY_NOTE, drop_sensitive, is_sensitive
 
 _UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -410,6 +411,14 @@ class EmailLookup:
                         {"name": s.get("name", "Unknown"), "date": s.get("date", "")}
                         for s in data.get("sources", [])
                     ]
+                    # Sensitive breaches never appear (modules/sensitive_breaches.py).
+                    # LeakCheck's row count and field list cannot be split per
+                    # source, so when nothing else is left they go too.
+                    kept, hidden = drop_sensitive(result["sources"])
+                    if hidden:
+                        result["sources"] = kept
+                        if not kept:
+                            result.update(breached=False, count=0, fields=[])
             elif resp.status_code == 429:
                 result["status"] = "rate_limited"
                 result["retry_after"] = _retry_after(resp)
@@ -510,6 +519,7 @@ class EmailLookup:
                     seen.add(key)
                     unique.append(n.strip())
 
+            unique = [n for n in unique if not is_sensitive(n)]
             if unique:
                 out.update(breached=True, count=len(unique),
                            sources=[{"name": n, "date": ""} for n in unique[:50]])
@@ -571,6 +581,10 @@ class EmailLookup:
             result["error"] = "Breach analytics service was unreachable."
             return result
 
+        # Sensitive breaches are dropped before anything is counted, so the
+        # count, records and listed breaches never include them.
+        details, hidden = drop_sensitive(details, "breach", "domain")
+
         # A clean address answers 200 with every member null, not 404.
         if not details:
             return result
@@ -609,6 +623,23 @@ class EmailLookup:
         ]
 
         result["exposed_data"] = _flatten_categories(_first(metrics.get("xposed_data")))
+        if hidden:
+            # The provider's metrics were computed over every breach, including
+            # the dropped ones. Rebuild what can be rebuilt from the kept rows,
+            # and leave out the aggregate scores that cannot.
+            years: dict = {}
+            fields: dict = {}
+            for b in details:
+                year = str(b.get("xposed_date", ""))[:4]
+                if year.isdigit():
+                    years[int(year)] = years.get(int(year), 0) + 1
+                for item in str(b.get("xposed_data", "")).split(";"):
+                    if item.strip():
+                        fields[item.strip()] = fields.get(item.strip(), 0) + 1
+            result["timeline"] = [{"year": y, "count": c} for y, c in sorted(years.items())]
+            result["exposed_data"] = sorted(({"name": n, "category": "", "count": c} for n, c in fields.items()),
+                                            key=lambda x: x["count"], reverse=True)
+            result.update(risk_label="", risk_score=0, password_strength={})
         result["pastes"] = _int((data.get("PastesSummary") or {}).get("cnt"))
         return result
 
@@ -852,6 +883,9 @@ class EmailLookup:
                 "breach_status": _worst_status(breaches, fallback, darkweb),
                 "retry_after": max((c["retry_after"] or 0 for c in coverage), default=0) or None,
                 "breach_count": breach_count,
+                # Constant on purpose: a note that appeared only when something
+                # was hidden would itself reveal a sensitive match.
+                "sensitive_policy": POLICY_NOTE,
                 "records_found": breaches.get("count", 0),
                 "records_exposed": darkweb["records_exposed"],
                 "risk_label": darkweb["risk_label"],

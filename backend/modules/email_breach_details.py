@@ -5,6 +5,7 @@ from urllib.parse import quote
 import requests
 from modules.email_enrichment import text
 from modules.email_public_profiles import bounded_json
+from modules.sensitive_breaches import is_sensitive
 
 
 def normalize_breach_details(payload, email):
@@ -21,6 +22,8 @@ def normalize_breach_details(payload, email):
             continue
         source = row["source"]
         name = text(source.get("name"), 160)
+        if name and is_sensitive(name):
+            continue  # Never listed, never counted as unattributable either.
         if not name:
             discarded += 1
             continue
