@@ -42,7 +42,7 @@ test('watch FAQ schema matches visible answers and keeps verification limits', (
 });
 
 test('watch page retains the existing live discovery routes', () => {
-  for (const route of ['/username-checker.html', '/boost.html', '/browser.html', '/goal.html', '/directory.html']) {
+  for (const route of ['/username-checker.html', '/free-osint-tool.html', '/digital-footprint-checker.html', '/directory.html']) {
     assert.ok(html.includes(`href="${route}"`), route);
     assert.ok(fs.existsSync(path.join(root, route.slice(1))), route);
   }

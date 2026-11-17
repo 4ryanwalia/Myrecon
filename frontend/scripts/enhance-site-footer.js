@@ -17,7 +17,7 @@ const GROUPS = [
     ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
   ]],
   ["Compare", [
-    ["Top 10 OSINT tools", "/guides/top-10-osint-tools-2026"],
+    ["Best free OSINT tools", "/blog/best-free-osint-tools-for-investigators.html"],
     ["MyRecon vs Sherlock", "/vs/sherlock"],
     ["OSINT tool prices", "/osint-tool-pricing.html"],
     ["WhatsMyName alternatives", "/whatsmyname-alternatives.html"],

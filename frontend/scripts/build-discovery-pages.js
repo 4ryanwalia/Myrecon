@@ -185,7 +185,7 @@ const osintBody = `<main id="main" class="container prose discovery-page">
       <li><strong>False-positive elimination:</strong> Many platforms return HTTP 200 responses for nonexistent accounts. MyRecon looks for direct profile evidence first and, on signed-in scans, compares unclear pages with an impossible control handle so ghost accounts are not reported as found.</li>
       <li><strong>Integrated intelligence:</strong> CLI tools typically focus only on usernames. MyRecon combines usernames, email breaches, password exposure, and domain DNS analysis in one view.</li>
     </ul>
-    <p>See our head-to-head technical comparisons: <a href="/vs/sherlock.html">MyRecon vs Sherlock</a>, <a href="/vs/maigret.html">MyRecon vs Maigret</a>, and <a href="/vs/">all OSINT tool comparisons</a>.</p>
+    <p>See our head-to-head technical comparisons: <a href="/vs/sherlock.html">MyRecon vs Sherlock</a>, and <a href="/vs/">all OSINT tool comparisons</a>.</p>
   </section>
   <section>
     <h2>Featured OSINT resources and tools</h2>
@@ -194,9 +194,6 @@ const osintBody = `<main id="main" class="container prose discovery-page">
       <li><a href="/digital-footprint-checker.html">Digital footprint checker &amp; exposure audit</a></li>
       <li><a href="/reverse-username-lookup.html">Reverse username lookup across 500+ platforms</a></li>
       <li><a href="/username-checker.html">Username checker and public profile search</a></li>
-      <li><a href="/boost.html">Boost OSINT investigations &amp; high-speed sweeps</a></li>
-      <li><a href="/browser.html">Browser OSINT tool &amp; web username scanner</a></li>
-      <li><a href="/goal.html">Digital footprint goal &amp; privacy audit roadmap</a></li>
       <li><a href="/osint-cheat-sheet.html">OSINT cheat sheet &amp; Google dork generator</a></li>
       <li><a href="/deep-search.html">Deep Search: public activity &amp; mentions</a></li>
       <li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools for researchers in 2026</a></li>
@@ -312,18 +309,13 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
       <li><a href="/free-osint-tool.html">Free OSINT tool and online investigation platform</a></li>
       <li><a href="/digital-footprint-checker.html">Free digital footprint checker and online audit</a></li>
       <li><a href="/username-checker.html">Username checker and public profile search</a></li>
-      <li><a href="/boost.html">Boost OSINT investigations &amp; high-speed sweeps</a></li>
-      <li><a href="/browser.html">Browser OSINT tool &amp; web username scanner</a></li>
-      <li><a href="/goal.html">Digital footprint goal &amp; privacy audit roadmap</a></li>
       <li><a href="/deep-search.html">Deep Search: public comments and mentions</a></li>
       <li><a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search workflow comparison</a></li>
       <li><a href="/blog/best-username-search-tools.html">Best username search tools: evidence and workflow</a></li>
       <li><a href="/guides/verify-osint-account-matches.html">How to verify OSINT account matches</a></li>
       <li><a href="/vs/sherlock">MyRecon vs Sherlock comparison</a></li>
-      <li><a href="/vs/dehashed">MyRecon vs DeHashed comparison</a></li>
-      <li><a href="/vs/leakcheck">MyRecon vs LeakCheck comparison</a></li>
-      <li><a href="/vs/intelx">MyRecon vs Intelligence X comparison</a></li>
-      <li><a href="/vs/beenverified">MyRecon vs BeenVerified comparison</a></li>
+      <li><a href="/blog/best-data-breach-checkers.html">Data breach checkers compared</a></li>
+      <li><a href="/guides/people-search-apps-what-they-find.html">What people-search apps actually find</a></li>
     </ul>
   </section>
   <section>
@@ -348,320 +340,12 @@ buildDiscoveryPage({
   bodyHtml: lookupBody,
 });
 
-// 5. Boost OSINT investigations landing page (/boost.html)
-const boostQuestions = [
-  ['How does MyRecon boost OSINT investigation speed?', 'MyRecon replaces sequential manual checks and fragile terminal scripts with parallelized, multi-vector public queries. In one workspace, you can sweep a username across 500+ platforms, check email breach exposure, verify k-anonymity password status, and inspect domain DNS security records without switching tools.'],
-  ['Why do standard username scanners produce slow or noisy results?', 'Many command-line scanners query sites without synthetic control validation, returning dozens of false-positive HTTP 200 responses that an analyst must manually inspect and discard. MyRecon filters out soft-404 ghost accounts automatically so you only spend time reviewing genuine public profile leads.'],
-  ['What is the difference between Quick, Standard, and Extended sweeps?', 'Guest Quick scans check 100 major platforms with zero sign-up. Standard scans check 500+ platforms for signed-in users. Extended sweeps and Deep Search add broader platform coverage and public mention correlation for deeper authorized investigations.'],
-  ['Does boosting scan speed trigger IP blocks on my home network?', 'When you run CLI tools like Sherlock or Maigret locally, hundreds of rapid requests originate directly from your personal IP address, frequently triggering rate limits and CAPTCHAs. MyRecon orchestrates checks through its cloud scanner infrastructure so your local network is not burned.'],
-  ['Can I combine username sweeps with Deep Search and breach checks?', 'Yes. After running a high-speed username sweep, you can pivot directly into Deep Search to inspect indexed public activity, or run an email breach and domain RDAP check from the same console.'],
-];
-
-const boostBody = `<main id="main" class="container prose discovery-page">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Boost OSINT</span></nav>
-  <h1>Boost OSINT investigations and parallel username search</h1>
-  <p class="sub">Accelerate open-source intelligence workflows with MyRecon. Run parallel username sweeps across 500+ platforms, eliminate soft-404 false positives with synthetic control checks, and correlate email breaches in seconds.</p>
-  <a class="btn btn-primary" href="/#tool=username">Boost your OSINT scan</a>
-  <p class="discovery-note">Parallel multi-platform sweeps. Control-handle validation on signed-in scans. Free guest Quick scans across 100 platforms; 500+ platforms with free sign-in.</p>
-  <section>
-    <h2>How to boost OSINT speed without sacrificing accuracy</h2>
-    <p>In open-source intelligence, raw request speed means very little if half of the returned URLs are false positives. Traditional username enumeration scripts race through hundreds of URLs and flag any HTTP 200 response as a match, forcing investigators to waste time clicking dead landing pages.</p>
-    <p>MyRecon boosts real investigative throughput by combining parallel cloud execution with automated evidence verification:</p>
-    <dl>
-      <dt><strong>Parallel multi-platform probing</strong></dt>
-      <dd>Query 100 to 500+ social networks, coding repositories, gaming networks, and community forums in a single pass instead of checking sites one by one.</dd>
-      <dt><strong>Synthetic control filtering</strong></dt>
-      <dd>On signed-in scans, a check with no direct profile evidence is compared with a known non-existent control handle, so soft 404s and placeholder pages are not reported as found.</dd>
-      <dt><strong>Three-state evidence classification</strong></dt>
-      <dd>Results are separated cleanly into <em>Found</em>, <em>Not found</em>, and <em>Unknown</em> (rate-limited or blocked), preventing false assumptions when a site throttles requests.</dd>
-    </dl>
-  </section>
-  <section id="benchmarks">
-    <h2>Empirical benchmarks: parallel scanning vs CLI baselines</h2>
-    <p>We measure parallel scan latency and verdict accuracy against standard command-line tools and sequential status-only baselines across controlled datasets. All runs use synthetic control handles to detect soft 404s and prevent false positives.</p>
-    <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Empirical benchmark comparison">
-      <table>
-        <caption>Daily control benchmark results from verified dataset (public-controls-v1). Accuracy, false positives, and median latency. Source: <a href="/data/benchmarks.json">benchmarks.json</a>.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Tool / Baseline</th>
-            <th scope="col">Architecture</th>
-            <th scope="col">Median Latency (p50)</th>
-            <th scope="col">False Positive Rate</th>
-            <th scope="col">Accuracy</th>
-            <th scope="col">Coverage</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">MyRecon</th>
-            <td>Parallel cloud sweep</td>
-            <td>0.25s (sub-second)</td>
-            <td>0.0% (0 / 19)</td>
-            <td>100.0%</td>
-            <td>100.0%</td>
-          </tr>
-          <tr>
-            <th scope="row">Maigret</th>
-            <td>CLI concurrent script</td>
-            <td>0.26s</td>
-            <td>0.0% (0 / 19)</td>
-            <td>100.0%</td>
-            <td>100.0%</td>
-          </tr>
-          <tr>
-            <th scope="row">Sherlock</th>
-            <td>CLI concurrent script</td>
-            <td>0.52s</td>
-            <td>36.8% (7 / 19)</td>
-            <td>76.7%</td>
-            <td>100.0%</td>
-          </tr>
-          <tr>
-            <th scope="row">Sequential HTTP 200 Baseline</th>
-            <td>Sequential CLI requests</td>
-            <td>0.67s – 2.18s</td>
-            <td>16.7% – 44.4%</td>
-            <td>77.8% – 92.9%</td>
-            <td>46.7% – 60.0%</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p>Unlike sequential CLI scripts that burn your home IP and produce soft-404 false positives on nonexistent profiles, MyRecon delivers sub-second parallel latency with 0% false positives on scored controls. Read our detailed methodology in the <a href="/blog/username-search-benchmark-research.html">controlled study report</a>.</p>
-  </section>
-  <section>
-    <h2>4-step workflow to accelerate your reconnaissance</h2>
-    <ol>
-      <li><strong>Launch a parallel username sweep:</strong> Enter a handle in the <a href="/#tool=username">MyRecon scanner</a> to probe public profiles across social and developer platforms.</li>
-      <li><strong>Pivot to Deep Search mentions:</strong> Use <a href="/deep-search.html">Deep Search</a> to uncover public forum threads, comments, and web mentions tied to the handle.</li>
-      <li><strong>Correlate email breach history:</strong> Check whether associated email addresses appear in verified breach corpora using the <a href="/guides/check-email-data-breach.html">email breach workflow</a>.</li>
-      <li><strong>Validate domain and DNS posture:</strong> Inspect WHOIS/RDAP records, IP geolocation, and SPF/DMARC policies via the <a href="/#tool=domain">domain intelligence module</a>.</li>
-    </ol>
-  </section>
-  <section>
-    <h2>Why investigators switch from CLI scripts to MyRecon</h2>
-    <ul>
-      <li><strong>Zero environment maintenance:</strong> No Python virtual environments, broken pip dependencies, or outdated JSON site definitions to patch before starting urgent research.</li>
-      <li><strong>Protected local IP reputation:</strong> Avoid triggering Cloudflare blocks or CAPTCHA loops on your personal connection during large sweeps.</li>
-      <li><strong>Documented benchmark transparency:</strong> Review our <a href="/#benchmarks">published benchmark comparisons</a> against <a href="/vs/sherlock.html">Sherlock</a>, <a href="/vs/maigret.html">Maigret</a>, and WhatsMyName (archived in November 2026; see <a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a>).</li>
-    </ul>
-  </section>
-  <section>
-    <h2>Related OSINT tools and investigation hubs</h2>
-    <ul>
-      <li><a href="/free-osint-tool.html">Free OSINT tool and online investigation platform</a></li>
-      <li><a href="/browser.html">Browser OSINT tool and web username scanner</a></li>
-      <li><a href="/goal.html">Digital footprint goal and privacy audit roadmap</a></li>
-      <li><a href="/digital-footprint-checker.html">Free digital footprint checker and exposure audit</a></li>
-      <li><a href="/reverse-username-lookup.html">Reverse username lookup across 500+ platforms</a></li>
-      <li><a href="/username-checker.html">Username checker and social media search</a></li>
-      <li><a href="/osint-cheat-sheet.html">OSINT cheat sheet and search operator builder</a></li>
-      <li><a href="/guides/verify-osint-account-matches.html">How to verify OSINT account matches</a></li>
-      <li><a href="/guides/why-username-checkers-report-fake-accounts.html">Why username checkers report fake accounts</a></li>
-      <li><a href="/pricing.html">MyRecon plans and scan tiers</a></li>
-      <li><a href="/services.html">Personal footprint removal service</a></li>
-    </ul>
-  </section>
-  <section>
-    <h2>Frequently asked questions about boosting OSINT workflows</h2>
-    <div class="faq">${boostQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
-  </section>
-  <section>
-    <h2>Authorized and ethical reconnaissance</h2>
-    <p>MyRecon is built for personal footprint self-audits, defensive security teams, and authorized investigations. Only query identifiers you own or have lawful authorization to review. See our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Reviewed for this release: October 2026.</p>
-  </section>
-</main>`;
-
-buildDiscoveryPage({
-  title: 'Boost OSINT Investigations & Username Speed | MyRecon',
-  description: 'Boost your OSINT investigations with MyRecon. Run parallel username sweeps across 500+ platforms, check email breaches, and verify results with zero CLI setup.',
-  keywords: 'boost osint, free osint tool boost, boost osint investigation, boost username search, fast osint scanner, online osint boost, reverse username lookup boost, parallel username search, high speed osint tool, automated osint workflow',
-  url: `${site}/boost.html`,
-  outFileName: 'boost.html',
-  crumbLabel: 'Boost OSINT',
-  questions: boostQuestions,
-  bodyHtml: boostBody,
-});
-
-// 6. Browser OSINT tool landing page (/browser.html)
-const browserQuestions = [
-  ['What is a browser OSINT tool?', 'A browser OSINT tool is a web-based open-source intelligence platform that runs directly in your browser on desktop or mobile without requiring command-line scripts, Python packages, or local software installation.'],
-  ['Can I run a full 500+ platform username scan in my web browser?', 'Yes. MyRecon executes multi-platform username sweeps, email breach checks, password k-anonymity lookups, and domain DNS/WHOIS queries directly from any modern web browser.'],
-  ['How does a browser OSINT scanner protect my password during leak checks?', 'MyRecon uses client-side SHA-1 hashing and k-anonymity in your browser. Only the first 5 characters of the SHA-1 hash are sent to the API, and the returned suffix list is compared locally in your browser so your full password never leaves your device.'],
-  ['How does MyRecon compare to browser extensions or CLI tools?', 'Browser extensions require broad site permissions and can fingerprint your browsing activity, while CLI tools like Sherlock require terminal setup. MyRecon works in a standard browser tab with zero permissions or installation, and also offers a dedicated Android app.'],
-  ['Does the browser OSINT scanner work on mobile phones and tablets?', 'Yes. The MyRecon web console is fully responsive on iOS, Android, macOS, Windows, and Linux browsers, and Android users can also use the native MyRecon Android app.'],
-];
-
-const browserBody = `<main id="main" class="container prose discovery-page">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Browser OSINT tool</span></nav>
-  <h1>Browser OSINT tool and web username scanner</h1>
-  <p class="sub">Run open-source intelligence investigations directly in your web browser with zero CLI setup. Sweep usernames across 500+ platforms, check email breaches, and audit DNS security from any device.</p>
-  <username-search-input></username-search-input>
-  <a class="btn btn-primary" href="/#tool" style="margin-top:16px">Open browser OSINT scanner</a>
-  <p class="discovery-note">No Python, Git, or browser extensions required. Works in any modern desktop or mobile browser. Ethical public-source research only.</p>
-  <section>
-    <h2>Why use a browser-based OSINT platform?</h2>
-    <p>Most open-source username scanners were designed as terminal utilities that require Python runtimes, command-line flags, and manual JSON maintenance. When you need to check a handle or verify a breach quickly on a laptop, tablet, or phone, setting up a local CLI environment slows you down.</p>
-    <p>MyRecon delivers a complete reconnaissance console in the browser while preserving rigorous evidence standards:</p>
-    <dl>
-      <dt><strong>Instant zero-install execution</strong></dt>
-      <dd>Open the web console and run username, email, password, IP, or domain checks immediately without installing packages or browser add-ons.</dd>
-      <dt><strong>Client-side k-anonymity privacy</strong></dt>
-      <dd>Password exposure checks hash your input locally in the browser via the Web Crypto API and transmit only a 5-character SHA-1 prefix.</dd>
-      <dt><strong>Cross-device workspace</strong></dt>
-      <dd>Switch seamlessly between desktop browsers, mobile browsers, and the <a href="/app.html">MyRecon Android app</a>.</dd>
-    </dl>
-  </section>
-  <section>
-    <h2>What you can investigate in the MyRecon browser console</h2>
-    <ol>
-      <li><strong>Public username enumeration:</strong> Check handles across 500+ social, developer, creator, and forum platforms with <a href="/reverse-username-lookup.html">reverse username lookup</a>.</li>
-      <li><strong>Deep Search web correlation:</strong> Surface public posts, profile references, and cross-platform links with <a href="/deep-search.html">Deep Search</a>.</li>
-      <li><strong>Email breach and exposure review:</strong> Audit whether an email address appears in public breach records and review <a href="/breaches/">historical breach analyses</a>.</li>
-      <li><strong>Domain, WHOIS, and mail security:</strong> Inspect RDAP registration data, SPF, DKIM, and DMARC policies, and IP geolocation from the browser.</li>
-      <li><strong>Search operator generation:</strong> Build targeted Google, GitHub, and Reddit queries using the interactive <a href="/osint-cheat-sheet.html">OSINT cheat sheet</a>.</li>
-    </ol>
-  </section>
-  <section>
-    <h2>Browser OSINT scanner vs terminal CLI tools</h2>
-    <p>Compare how a browser-native workflow stacks up against traditional terminal scripts:</p>
-    <ul>
-      <li><strong>MyRecon vs Sherlock:</strong> Read our <a href="/vs/sherlock">Sherlock comparison</a> to see how browser-based synthetic control checks prevent false positives.</li>
-      <li><strong>Username Sweep vs Deep Search:</strong> Read our <a href="/username-sweep-vs-deep-search.html">Username Sweep vs Deep Search guide</a> for choosing between direct profile checks and indexed mentions.</li>
-      <li><strong>Breach &amp; people-search comparisons:</strong> Compare <a href="/vs/dehashed">DeHashed</a>, <a href="/vs/leakcheck">LeakCheck</a>, <a href="/vs/intelx">Intelligence X</a>, <a href="/vs/beenverified">BeenVerified</a>, and <a href="/vs/">all OSINT tool comparisons</a>.</li>
-    </ul>
-  </section>
-  <section>
-    <h2>Explore connected MyRecon tools and guides</h2>
-    <ul>
-      <li><a href="/free-osint-tool.html">Free OSINT tool and online investigation platform</a></li>
-      <li><a href="/boost.html">Boost OSINT investigations and parallel sweeps</a></li>
-      <li><a href="/goal.html">Digital footprint goal and privacy audit roadmap</a></li>
-      <li><a href="/digital-footprint-checker.html">Free digital footprint checker and exposure audit</a></li>
-      <li><a href="/username-checker.html">Username checker and public profile search</a></li>
-      <li><a href="/reverse-username-lookup.html">Reverse username lookup across 500+ platforms</a></li>
-      <li><a href="/guides/what-is-osint.html">What is OSINT? Beginner guide to open-source intelligence</a></li>
-      <li><a href="/blog/best-osint-tools-username-search-comparison.html">Best OSINT username search tools compared</a></li>
-      <li><a href="/pricing.html">Plans and scan limits</a></li>
-      <li><a href="/services.html">Personal footprint removal service</a></li>
-    </ul>
-  </section>
-  <section>
-    <h2>Frequently asked questions about browser OSINT tools</h2>
-    <div class="faq">${browserQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
-  </section>
-  <section>
-    <h2>Privacy and responsible browser reconnaissance</h2>
-    <p>MyRecon queries only public endpoints and never installs background tracking extensions. Use the browser scanner for your own accounts and authorized security research in accordance with our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Reviewed for this release: October 2026.</p>
-  </section>
-</main>`;
-
-buildDiscoveryPage({
-  title: 'Browser OSINT Tool & Web Username Scanner | MyRecon',
-  description: 'Run OSINT investigations directly in your web browser with zero CLI setup. Search usernames across 500+ platforms, check data breaches, and audit DNS online.',
-  keywords: 'browser osint tool, web browser osint scanner, online osint browser, no install osint tool, browser username lookup, sherlock browser alternative, maigret web alternative, client side osint scanner, browser digital footprint checker',
-  url: `${site}/browser.html`,
-  outFileName: 'browser.html',
-  crumbLabel: 'Browser OSINT tool',
-  questions: browserQuestions,
-  bodyHtml: browserBody,
-  webApplication: {
-    '@type': 'WebApplication',
-    '@id': `${site}/browser.html#app`,
-    url: `${site}/browser.html`,
-    name: 'MyRecon Browser OSINT Tool',
-    description: 'Instant web-based OSINT scanner to sweep usernames across 500+ platforms directly from your browser with zero CLI setup.',
-    applicationCategory: 'SecurityApplication',
-    operatingSystem: 'All',
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
-    publisher: {
-      '@id': `${site}/#organization`,
-    },
-  },
-});
-
-// 7. Digital footprint goal & privacy audit checklist page (/goal.html)
-const goalQuestions = [
-  ['What is a realistic digital footprint goal?', 'A realistic digital footprint goal is not total invisibility, but deliberate control over what the public internet reveals about you: closing forgotten accounts, unlinking reused handles, locking down active social profiles, rotating breached credentials, and opting out of people-search data brokers.'],
-  ['How do I start a zero-exposure privacy goal with MyRecon?', 'Begin by cataloging your current public exposure. Run your primary and legacy usernames through the MyRecon username scanner, check your email addresses for historical data breaches, and list every public profile you no longer actively use.'],
-  ['Why does username reuse work against my privacy goals?', 'When you use the exact same handle across professional networks, gaming sites, and casual forums, anyone can correlate those accounts in seconds. Separating handles by context breaks the link between your public identity and personal hobbies.'],
-  ['How often should I review my digital footprint goals?', 'Run a self-audit every quarter or whenever you receive a breach notification. Data brokers periodically re-scrape public records, and newly disclosed breaches can expose older accounts you forgot registering.'],
-  ['What if I find exposed records I do not have time to remove manually?', 'You can follow our free step-by-step account deletion and data broker opt-out guides in the MyRecon Privacy library, or request hands-on assistance through the MyRecon personal footprint removal service.'],
-];
-
-const goalBody = `<main id="main" class="container prose discovery-page">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Digital footprint goal</span></nav>
-  <h1>Digital footprint goal and personal privacy audit roadmap</h1>
-  <p class="sub">Set and achieve a measurable digital privacy goal. Map your public usernames across 500+ platforms, remediate email breach exposures, close dormant accounts, and opt out of data brokers step by step.</p>
-  <a class="btn btn-primary" href="/#tool">Start your privacy goal audit</a>
-  <p class="discovery-note">Structured self-audit workflow. Free Quick scans across 100 platforms; 500+ platforms with free sign-in. Built for consent-based personal privacy cleanup.</p>
-  <section>
-    <h2>Defining your personal digital footprint goal</h2>
-    <p>Most people accumulate dozens of forgotten online accounts, public forum profiles, and data-broker records over a decade of internet use. Setting a clear digital footprint goal turns an overwhelming cleanup into a structured, verifiable checklist.</p>
-    <dl>
-      <dt><strong>Milestone 1: Full visibility</strong></dt>
-      <dd>Discover every public profile tied to your current and historical usernames and identify which email addresses appear in public breach archives.</dd>
-      <dt><strong>Milestone 2: Credential containment</strong></dt>
-      <dd>Replace any reused or breached passwords, move two-factor authentication off SMS to an authenticator app or passkey, and revoke stale sessions.</dd>
-      <dt><strong>Milestone 3: Account and broker reduction</strong></dt>
-      <dd>Delete unused social and forum accounts at the source and submit opt-out requests to major people-search data brokers.</dd>
-    </dl>
-  </section>
-  <section>
-    <h2>5-step roadmap to reach your privacy goal</h2>
-    <ol>
-      <li><strong>Audit your handles:</strong> Run your known usernames through the <a href="/digital-footprint-checker.html">digital footprint checker</a> and <a href="/username-checker.html">username checker</a> to see what is publicly visible today.</li>
-      <li><strong>Check email breach exposure:</strong> Scan your email addresses and follow our <a href="/guides/check-email-data-breach.html">email data breach guide</a> to prioritize high-risk accounts.</li>
-      <li><strong>Delete dormant profiles:</strong> Use our <a href="/blog/find-your-own-old-accounts.html">old account discovery guide</a> and <a href="/privacy/">account deletion instructions</a> to close accounts you no longer need.</li>
-      <li><strong>Break handle correlation:</strong> Review our <a href="/guides/reduce-your-digital-footprint.html">digital footprint reduction guide</a> to separate public professional profiles from private aliases.</li>
-      <li><strong>Schedule quarterly re-checks:</strong> Use the <a href="/blog/own-footprint-audit-checklist.html">personal footprint audit checklist</a> to verify that removed listings stay offline.</li>
-    </ol>
-  </section>
-  <section>
-    <h2>Tools and guides to support your privacy goal</h2>
-    <ul>
-      <li><a href="/digital-footprint-checker.html">Free digital footprint checker and exposure audit</a></li>
-      <li><a href="/free-osint-tool.html">Free OSINT tool and online investigation platform</a></li>
-      <li><a href="/boost.html">Boost OSINT investigations and parallel sweeps</a></li>
-      <li><a href="/browser.html">Browser OSINT tool and web username scanner</a></li>
-      <li><a href="/reverse-username-lookup.html">Reverse username lookup across 500+ platforms</a></li>
-      <li><a href="/username-checker.html">Username checker and public profile search</a></li>
-      <li><a href="/privacy/">Account deletion and data broker opt-out library</a></li>
-      <li><a href="/guides/">OSINT and personal security guides</a></li>
-      <li><a href="/services.html">Personal footprint removal service</a></li>
-      <li><a href="/pricing.html">Plans and scan limits</a></li>
-    </ul>
-  </section>
-  <section>
-    <h2>Frequently asked questions about digital footprint goals</h2>
-    <div class="faq">${goalQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
-  </section>
-  <section>
-    <h2>Consent-based self-audits and privacy ethics</h2>
-    <p>MyRecon is designed to help you understand and reduce your own public exposure or conduct authorized security reviews. A matching handle is a lead to verify, not proof of identity. Review our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Reviewed for this release: October 2026.</p>
-  </section>
-</main>`;
-
-buildDiscoveryPage({
-  title: 'Digital Footprint Goal & Privacy Audit Roadmap | MyRecon',
-  description: 'Achieve your digital privacy and zero-exposure footprint goals with MyRecon. Audit public usernames across 500+ platforms, check email leaks, and remove data.',
-  keywords: 'digital footprint goal, privacy audit goal, zero digital footprint goal, online exposure reduction goal, personal cybersecurity goal, check digital footprint free, digital hygiene checklist, reduce online footprint goal, privacy cleanup roadmap',
-  url: `${site}/goal.html`,
-  outFileName: 'goal.html',
-  crumbLabel: 'Digital footprint goal',
-  questions: goalQuestions,
-  bodyHtml: goalBody,
-});
-
-
+// 5-7. /boost.html, /browser.html and /goal.html were retired on 2026-11-17
+// after the fifth AdSense "low value content" notice: three keyword landing
+// pages ("boost osint", "browser osint tool", "digital footprint goal") that
+// all funnelled to the same scanner are doorway pages under Google's spam
+// policies. They 308 to /free-osint-tool.html and /digital-footprint-checker.html
+// (vercel.json + content/editorial-redirects.json). Do not rebuild them.
 
 // 8. Product Walkthrough Watch Page (Primary VideoObject)
 const watchQuestions = [
@@ -695,9 +379,8 @@ const watchBody = `<main id="main" class="container prose discovery-page watch-p
     <ul>
       <li><a href="/">Launch MyRecon username search console</a></li>
       <li><a href="/username-checker.html">Use the web username checker</a></li>
-      <li><a href="/boost.html">Boost OSINT investigation speed and parallel sweeps</a></li>
-      <li><a href="/browser.html">Browser OSINT tools and public scanning</a></li>
-      <li><a href="/goal.html">Plan a digital-footprint privacy audit</a></li>
+      <li><a href="/free-osint-tool.html">Free OSINT tool overview</a></li>
+      <li><a href="/digital-footprint-checker.html">Check your own digital footprint</a></li>
       <li><a href="/directory.html">Browse the research directory</a></li>
     </ul>
   </section>

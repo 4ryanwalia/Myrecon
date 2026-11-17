@@ -683,46 +683,13 @@ ${classes.map((c) => `        <li><b>${esc(c.name)}</b><span>${esc(c.why)}</span
 ${acts.map((a) => `        <li>${esc(a)}</li>`).join("\n")}
       </ol>
 
-      <!-- After the advice, never before it. The reader has just been told
-           what to do; this is for the ones who read that list and realised
-           they do not actually know where all their accounts are. -->
-      <aside class="bx-offer">
-        <h3>Not sure where all your accounts are?</h3>
-        <p>Most people have a decade of forgotten signups behind an old address, plus data-broker listings they never created in the first place. We find them by hand, confirm which are genuinely yours, and work through getting them removed.</p>
-        <p class="bx-offer-note">A paid service, and only ever on identifiers you own and can verify.</p>
-        <p><a class="btn btn-sm" href="/contact.html#report">Ask about a personal report →</a></p>
-      </aside>
-
-      <h2>Questions people ask about this ${isProfileScrape ? "incident" : "breach"}</h2>
-      <div class="bx-faq">
-        <h3>Was my email address in the ${esc(b.Title)} ${isProfileScrape ? "collection" : "breach"}?</h3>
-        <p>Use the email box on this page. The result applies only to this incident. If the provider does not cover this breach, we say so. A missing match does not prove you were unaffected.</p>
-
-        <h3>What data was included in the ${esc(b.Title)} ${isProfileScrape ? "collection" : "breach"}?</h3>
-        <p>${classes.length ? esc(classes.map((c) => c.name.toLowerCase()).join(", ")) + "." : "No field list has been published for this breach."} ${classes.length ? "Each one is explained above, along with what it means for the person it belongs to." : ""}</p>
-
-        <h3>When did it happen, and when was it added to HIBP?</h3>
-        <p>The ${isProfileScrape ? "incident" : "breach"} is dated ${esc(prettyDate(b.BreachDate))}. It was added to Have I Been Pwned on ${esc(prettyDate(b.AddedDate))}. The catalogue date does not establish when the data first became public.</p>
-
-        <h3>Is the ${esc(b.Title)} ${isProfileScrape ? "collection" : "breach"} real?</h3>
-        <p>${b.IsVerified
-          ? "Yes. Have I Been Pwned lists it as verified, meaning the data was checked against the source rather than taken on trust."
-          : "It is listed as unverified. The data exists and has been indexed, but it has not been confirmed against the named source, so treat the origin as unproven."}</p>
-
-        <h3>How many people were affected?</h3>
-        <p>${num(b.PwnCount)} ${emailCollection ? "email addresses" : "accounts"} are listed. This count does not necessarily equal the number of people affected.</p>
-      </div>
-
-      <!-- After the questions, once the reader is done with this breach. The
-           one thing a page about a past breach cannot do is tell them about
-           the next one. The note keeps the app's two alerts apart, as the app
-           does: only the per-address one sends anything. -->
-      <aside class="bx-offer">
-        <h3>Hear about the next breach</h3>
-        <p>MyRecon for Android checks once a day for newly published breaches and tells you who was hit and how many accounts were exposed. Enable breach alerts in the app to follow new reports.</p>
-        <p class="bx-offer-note">A separate switch can watch your own address as well. That check has to send the address to a breach lookup service, and the app says so before you turn it on.</p>
-        <p><a class="btn btn-sm" href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">Get breach alerts on Android →</a></p>
-      </aside>
+      <!-- AdSense "low value content" (5th notice, 2026-11-17): a 60-page
+           archive that repeats the same promo blocks and a templated FAQ
+           (which only restated the stats bar) reads as scaled content. The
+           page-specific record carries the article now; the two offers are
+           one line each, and the FAQ is gone. Do not reintroduce shared
+           paragraphs here: tests/editorial-quality checks the overlap. -->
+      <p class="bx-check-note">Do not know where all your old accounts are? <a href="/contact.html#report">Ask about a personal report</a> (paid, only for identifiers you own). For alerts on the next breach, <a href="${esc(PLAY_ALERTS)}" target="_blank" rel="noopener">MyRecon for Android</a> checks daily.</p>
 
 ${guideLinks(b).length ? `      <h2>Read next</h2>
       <ul class="bx-related">
@@ -732,7 +699,7 @@ ${guideLinks(b).map((g) => `        <li><a href="${g[1]}">${esc(g[2].charAt(0).t
 ${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${related}</ul>\n` : ""}      <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
 
-      <p class="bx-method">Three kinds of content appear on this page and they are kept apart deliberately. The breach description is quoted from Have I Been Pwned under its licence. The severity score, the field-by-field explanation and the advice are computed from the record itself, every sentence derives from a number or a flag in it, which is what stops the analysis drifting from the evidence. Anything under the "MyRecon's take" byline is editorial: our reading of this breach, presented as opinion rather than as a finding.</p>
+      <p class="bx-method">Description quoted from Have I Been Pwned (CC BY 4.0). Severity and advice are computed from the record; "MyRecon's take" is editorial opinion. The HIBP catalogue date does not establish when the data first became public. <a href="/breaches/#method">How these pages are made</a>.</p>
 
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
@@ -884,7 +851,7 @@ ${earlier.map(entry => `          <li><a href="${esc(entry.url)}">${esc(entry.ti
       </section>
 
 ` : ''}
-      <p class="bx-method">Breach records come from <a href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a> and are used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>. Severity scoring and the analysis of what each exposed field means are MyRecon's own, computed from the record so that every claim traces back to a value in it. Editorial commentary is marked as such on each article, and the long-form reporting lives in the <a href="/breaches/case-files/">case files</a>, where every page cites its sources.</p>
+      <p class="bx-method" id="method">Breach records come from <a href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a> and are used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>. Severity scoring and the analysis of what each exposed field means are MyRecon's own, computed from the record so that every claim traces back to a value in it. Editorial commentary is marked as such on each article, and the long-form reporting lives in the <a href="/breaches/case-files/">case files</a>, where every page cites its sources.</p>
     </div>
   </main>` +
     FOOT

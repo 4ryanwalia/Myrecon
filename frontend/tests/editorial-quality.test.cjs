@@ -54,3 +54,43 @@ test('internal page links resolve after consolidation', () => {
   walk(root);
   assert.deepEqual([...failures], []);
 });
+// The fifth AdSense "low value content" notice (2026-11-17) came while ~75 of
+// ~330 indexed pages were name-swapped copies of each other (best-*-2027
+// listicles, Black Friday deal pages, *-username-osint-tool guides, /vs/
+// pages) at up to 99% shared text. The renderer's intro check passed them
+// all, so this measures the rendered text itself: the share of a page's
+// five-word phrases that also appear on another indexed page.
+test('no two indexed article pages are near-duplicates of each other', () => {
+  const dirs = ['guides', 'vs', 'find', 'privacy', 'blog', 'breaches', 'breaches/case-files', 'templates'];
+  const shingles = new Map();
+  for (const dir of dirs) {
+    const full = path.join(root, dir);
+    if (!fs.existsSync(full)) continue;
+    for (const name of fs.readdirSync(full)) {
+      if (!name.endsWith('.html') || name === 'index.html') continue;
+      const html = fs.readFileSync(path.join(full, name), 'utf8');
+      if (/<meta[^>]+name="robots"[^>]+noindex/i.test(html)) continue;
+      const main = (html.match(/<main\b[^>]*>([\s\S]*)<\/main>/i) || [, html])[1]
+        .replace(/<(script|style|svg|nav)\b[\s\S]*?<\/\1>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').toLowerCase();
+      const words = main.split(/\s+/).filter(Boolean);
+      const set = new Set();
+      for (let i = 0; i + 5 <= words.length; i++) set.add(words.slice(i, i + 5).join(' '));
+      if (set.size > 50) shingles.set(`${dir}/${name}`, set);
+    }
+  }
+  const pages = [...shingles.keys()];
+  const offenders = [];
+  for (let i = 0; i < pages.length; i++) {
+    for (let j = i + 1; j < pages.length; j++) {
+      const a = shingles.get(pages[i]); const b = shingles.get(pages[j]);
+      const [small, big] = a.size <= b.size ? [a, b] : [b, a];
+      let shared = 0;
+      for (const s of small) if (big.has(s)) shared++;
+      const overlap = shared / small.size;
+      if (overlap > 0.75) offenders.push(`${pages[i]} <> ${pages[j]} ${(overlap * 100).toFixed(0)}%`);
+    }
+  }
+  assert.ok(pages.length > 100, 'expected the article sections to be scanned');
+  assert.deepEqual(offenders, [], 'near-duplicate pages: rewrite one or retire it with a redirect');
+});

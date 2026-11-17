@@ -329,30 +329,20 @@ test('reverse username lookup landing page exposes valid local links and matchin
   assert.ok(fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8').includes('https://www.myrecon.xyz/reverse-username-lookup.html'));
 });
 
-test('boost, browser, and goal pages are standalone discovery pages with canonical references, editorial shell, and intent features', () => {
-  for (const page of ['boost.html', 'browser.html', 'goal.html']) {
-    const html = fs.readFileSync(path.join(root, page), 'utf8');
-    assert.ok(html.includes(`canonical" href="https://www.myrecon.xyz/${page}"`));
-    assert.ok(!html.includes('http-equiv="refresh"'));
-    assert.ok(!/src="[^"]*\/app(?:\.[a-f0-9]{12})?\.js"/i.test(html), `${page} should not load 119KB app.js`);
-    assert.ok(/src="[^"]*editorial-shell(?:\.[a-f0-9]{12})?\.js"/i.test(html), `${page} should load lightweight editorial-shell.js`);
-    assert.ok(/<script\b[^>]*src="[^"]*recommendation-analytics[^"]*"[^>]*\bdefer\b/i.test(html), `${page} recommendation-analytics must be deferred`);
+test('retired doorway pages (boost, browser, goal) stay gone and redirect', () => {
+  // Retired 2026-11-17 after the fifth AdSense low-value notice: keyword
+  // landing pages funnelling to one scanner are doorway pages.
+  const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+  const sitemapXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  for (const alias of ['boost', 'browser', 'goal']) {
+    assert.ok(!fs.existsSync(path.join(root, `${alias}.html`)), `${alias}.html must not be rebuilt`);
+    assert.ok(!sitemapXml.includes(`/${alias}.html`), `${alias}.html must not be in sitemap.xml`);
+    for (const source of [`/${alias}`, `/${alias}.html`]) {
+      const redirect = vercel.redirects.find(r => r.source === source);
+      assert.ok(redirect && redirect.permanent, `vercel.json must redirect ${source}`);
+    }
+    assert.ok(!vercel.rewrites.some(r => r.source === `/${alias}`), `vercel.json must not rewrite /${alias}`);
   }
-
-  // browser.html interactive search intent & WebApplication schema
-  const browserHtml = fs.readFileSync(path.join(root, 'browser.html'), 'utf8');
-  assert.ok(/<username-search-input\b/i.test(browserHtml), 'browser.html must include <username-search-input> web component');
-  const browserSchemas = [...browserHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
-  const browserWebApp = browserSchemas.flatMap(s => s['@graph'] || [s]).find(s => s['@type'] === 'WebApplication');
-  assert.ok(browserWebApp, 'browser.html must include WebApplication schema in JSON-LD graph');
-  assert.equal(browserWebApp.url, 'https://www.myrecon.xyz/browser.html');
-
-  // boost.html empirical benchmark comparison table
-  const boostHtml = fs.readFileSync(path.join(root, 'boost.html'), 'utf8');
-  assert.ok(boostHtml.includes('id="benchmarks"'), 'boost.html must contain #benchmarks section');
-  assert.ok(boostHtml.includes('0.0% (0 / 19)'), 'boost.html must display 0% false positives for MyRecon');
-  assert.ok(boostHtml.includes('0.25s (sub-second)'), 'boost.html must display sub-second parallel latency');
-  assert.ok(boostHtml.includes('href="/data/benchmarks.json"'), 'boost.html must link to verified benchmarks.json');
 
   // site-footer.css touch targets
   const footerCss = fs.readFileSync(path.join(root, 'assets/css/site-footer.css'), 'utf8');
@@ -530,26 +520,8 @@ test('every indexable page is in sitemap.xml with valid hints and zero orphan or
   }
 });
 
-test('boost, browser, and goal routes and redirect pages are configured across HTML and the Vercel hosting configuration', () => {
+test('intent rewrites and the cheat sheet FAQ stay configured', () => {
   const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
-  const sitemapXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-
-  const expectedPages = [
-    { alias: 'boost', keyword: 'boost osint' },
-    { alias: 'browser', keyword: 'browser osint tool' },
-    { alias: 'goal', keyword: 'digital footprint goal' },
-  ];
-
-  for (const { alias, keyword } of expectedPages) {
-    const html = fs.readFileSync(path.join(root, `${alias}.html`), 'utf8');
-    assert.ok(html.includes(`canonical" href="https://www.myrecon.xyz/${alias}.html"`), `${alias}.html canonical mismatch`);
-    assert.ok(!html.includes('refresh" content="0; url='), `${alias}.html should not have meta refresh`);
-    assert.ok(html.toLowerCase().includes(keyword), `${alias}.html should include keyword "${keyword}"`);
-    assert.ok(sitemapXml.includes(`/${alias}.html`), `${alias}.html must be in sitemap.xml`);
-
-    const vercelRewrite = vercel.rewrites.find(r => r.source === `/${alias}`);
-    assert.ok(vercelRewrite && vercelRewrite.destination === `/${alias}.html`, `vercel.json missing rewrite for /${alias}`);
-  }
 
   const intentRewrites = [
     { source: '/plan', destination: '/pricing.html' },

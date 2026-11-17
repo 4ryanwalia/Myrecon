@@ -11,32 +11,34 @@ const ADSENSE_REGEX = /<!-- Google AdSense -->\s*<meta name="google-adsense-acco
 const ADSENSE_META_ONLY = /<meta name="google-adsense-account"[^>]*>\s*/gi;
 const ADSENSE_SCRIPT_ONLY = /<script async src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[^"]*" crossorigin="anonymous"><\/script>\s*/gi;
 
+// The tag goes only on pages whose main content is original writing. After
+// the fifth "low value content" notice (2026-11-17) this list was inverted:
+// it used to cover the HIBP-derived breach pages and the tool, app-promo and
+// services pages, while skipping the hand-written case files and guides.
+// Tool screens, promos, legal pages and record-derived archive pages stay
+// tag-free ("ads on screens without publisher content").
 const ALLOWED_ROOT_FILES = new Set([
   'index.html',
-  'username-checker.html',
-  'deep-search.html',
-  'features.html',
-  'services.html',
-  'app.html',
   'about.html',
-  'founder.html',
+  'osint-tool-pricing.html',
+  'whatsmyname-alternatives.html',
+  'username-sweep-vs-deep-search.html',
+]);
+// Promotional or thin pages inside otherwise editorial folders.
+const EXCLUDED = new Set([
+  'guides/myrecon-black-friday-sale-2026.html',
 ]);
 
 function shouldHaveAdSense(relPath) {
   const norm = relPath.replace(/\\/g, '/');
-  // Root level allowed files
-  if (!norm.includes('/')) {
-    return ALLOWED_ROOT_FILES.has(norm);
-  }
-  // Editorial Blog: index and individual articles
-  if (norm.startsWith('blog/')) {
-    return true;
-  }
-  // Editorial Breach analyses: only top level breaches/*.html, NOT case-files
-  if (norm.startsWith('breaches/') && !norm.startsWith('breaches/case-files/')) {
-    return true;
-  }
-  // All programmatic / template / legal / utility pages MUST NOT have AdSense
+  if (EXCLUDED.has(norm)) return false;
+  if (!norm.includes('/')) return ALLOWED_ROOT_FILES.has(norm);
+  // Long-form original writing: blog articles, guides, and the case files.
+  if (norm.startsWith('blog/') || norm.startsWith('guides/')) return true;
+  if (norm.startsWith('breaches/case-files/')) return true;
+  // Everything else (breach archive entries built from the HIBP record,
+  // generated /find/ /vs/ /privacy/ pages, videos, templates, legal and
+  // utility pages) MUST NOT carry the tag.
   return false;
 }
 
