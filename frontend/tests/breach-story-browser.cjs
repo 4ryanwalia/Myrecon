@@ -51,7 +51,9 @@ const server = http.createServer((req, res) => {
       for (const article of ['advanceautoparts', 'case-files/adobe-2013']) {
         await page.goto(base + '/breaches/' + article + '.html');
         for (const id of ['story','how','motive','outcome']) assert.equal(await page.locator('#' + id).count(), 1);
-        assert.equal(await page.locator('script[src*="adsbygoogle"]').count(), 0);
+        // Ad tag policy (install-adsense-tag.js, 2026-11-17): none on record-derived
+        // breach entries, present on hand-written case files.
+        assert.equal(await page.locator('script[src*="adsbygoogle"]').count(), article.startsWith('case-files/') ? 1 : 0);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
         await page.locator('input[type=email]').fill('fixture@example.com');
         for (state of ['found','not_found','unsupported','rate_limited','unavailable','http-error']) {

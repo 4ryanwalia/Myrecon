@@ -656,8 +656,16 @@ function article(b, editorial, siblings) {
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
-      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav>
-      <form class="bx-check" data-breach-check data-targets="${esc(JSON.stringify([{name: b.Name, breach_date: b.BreachDate}]))}">
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a>${b.IsSensitive ? "" : `<a href="#bxEmail">Were you part of it?</a>`}</nav>
+      <!-- Sensitive entries (HIBP IsSensitive: adult sites, political
+           correspondence, health-adjacent data) get no lookup. A form that
+           answers for any typed address would tell a stranger whether someone
+           was on, say, an adult site. HIBP shows these only to a verified owner. -->
+${b.IsSensitive ? `      <aside class="bx-check" id="bxSensitive">
+        <h2>Why there is no email check on this page</h2>
+        <p>Have I Been Pwned flags this breach as sensitive, because appearing in it can reveal something private about a person. It shows sensitive breaches only to someone who has verified they own the address, and MyRecon follows the same rule: this page does not answer for an address typed into it. To check your own address, use <a href="https://haveibeenpwned.com/NotifyMe" target="_blank" rel="noopener">Have I Been Pwned's notification service</a>, which verifies ownership by email first.</p>
+      </aside>
+` : `      <form class="bx-check" data-breach-check data-targets="${esc(JSON.stringify([{name: b.Name, breach_date: b.BreachDate}]))}">
         <h2>Was your email in this ${isProfileScrape ? "collection" : "breach"}?</h2>
         <label for="bxEmail">Check your email for ${esc(b.Title)}</label>
         <div class="bx-check-row">
@@ -669,7 +677,7 @@ function article(b, editorial, siblings) {
         <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
         <noscript><p>Enable JavaScript to check your email here.</p></noscript>
       </form>
-
+`}
 ${editorial ? `      <section class="bx-editorial">
         <span class="bx-byline">MyRecon's take</span>
 ${editorial}

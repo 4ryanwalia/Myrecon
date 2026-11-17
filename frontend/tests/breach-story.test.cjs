@@ -78,3 +78,15 @@ test('breach entries without a substantial take are noindex', () => {
   const long = `<p>${'word '.repeat(MIN_TAKE_WORDS)}</p>`;
   assert.match(article(record, long, [record]), /<meta name="robots" content="index, follow">/);
 });
+
+// A lookup on a sensitive entry tells a stranger whether someone was on, for
+// example, an adult site. HIBP restricts these to verified owners; so do we.
+test('sensitive breach entries carry no email lookup', () => {
+  const base = { Name: 'ExampleCo', Title: 'ExampleCo', BreachDate: '2026-01-01', AddedDate: '2026-02-01', PwnCount: 1000, DataClasses: ['Email addresses'], Description: 'ExampleCo suffered a data breach.', IsVerified: true };
+  const sensitive = article({ ...base, IsSensitive: true }, '', [base]);
+  assert.doesNotMatch(sensitive, /data-breach-check|id="bxEmail"|href="#bxEmail"/);
+  assert.match(sensitive, /Why there is no email check on this page/);
+  const ordinary = article(base, '', [base]);
+  assert.match(ordinary, /data-breach-check/);
+  assert.match(ordinary, /href="#bxEmail"/);
+});
