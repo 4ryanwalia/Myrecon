@@ -296,3 +296,19 @@ def test_password_cli_empty_and_upstream_error(monkeypatch, capsys):
     assert rc == 1
     err_data = json.loads(capsys.readouterr().out)
     assert err_data["status"] == "error"
+
+
+@pytest.mark.parametrize("body", [
+    "", "<html>Service unavailable</html>", "{suffix}:7oops", "{suffix}:7\r\ntruncated", "ABC:9",
+])
+def test_password_cli_unreadable_range(monkeypatch, capsys, body):
+    secret = "range-test"
+    suffix = hashlib.sha1(secret.encode()).hexdigest().upper()[5:]
+    monkeypatch.setattr(cli_main.getpass, "getpass", lambda prompt: secret)
+    monkeypatch.setattr(password_check.requests, "get", lambda *args, **kwargs:
+                        _DummyResponse(200, body.format(suffix=suffix)))
+    assert cli_main.main(["password", "--json"]) == 1
+    result = json.loads(capsys.readouterr().out)
+    assert result["status"] == "error"
+    assert "unreadable" in result["error"]
+    assert "breached" not in result

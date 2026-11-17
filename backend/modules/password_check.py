@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+import re
 from typing import Any
 
 import requests
@@ -122,17 +123,22 @@ def pwned_count(password: str, timeout: int = _TIMEOUT) -> tuple[str, int]:
             f"Breach corpus is unavailable right now (HTTP {resp.status_code})."
         )
 
-    for raw_line in resp.text.splitlines():
-        line = raw_line.strip()
-        if not line or ":" not in line:
-            continue
-        suf, _, cnt_str = line.partition(":")
-        if suf.strip().upper() == suffix:
-            try:
-                return prefix, max(0, int(cnt_str.strip()))
-            except ValueError:
-                return prefix, 0
-    return prefix, 0
+    lines = resp.text.strip().splitlines()
+    invalid_response = "The breach service returned unreadable data. Try again."
+    if not lines:
+        raise RuntimeError(invalid_response)
+    count = 0
+    for line in lines:
+        row = re.fullmatch(r"([A-Fa-f0-9]{35}):([0-9]+)", line)
+        if not row:
+            raise RuntimeError(invalid_response)
+        try:
+            row_count = int(row[2])
+        except ValueError:
+            raise RuntimeError(invalid_response) from None
+        if row[1].upper() == suffix:
+            count = max(count, row_count)
+    return prefix, count
 
 
 def check_password(password: str) -> dict[str, Any]:

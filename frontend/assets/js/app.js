@@ -1663,13 +1663,17 @@
     const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
       headers: { "Add-Padding": "true" },
     });
-    if (!res.ok) throw new Error(`Breach corpus is unavailable right now (HTTP ${res.status}).`);
+    if (res.status !== 200) throw new Error(`Breach corpus is unavailable right now (HTTP ${res.status}).`);
 
-    for (const line of (await res.text()).split("\n")) {
-      const [suf, cnt] = line.trim().split(":");
-      if (suf === suffix) return parseInt(cnt, 10) || 0;
+    let count = 0;
+    for (const line of (await res.text()).trim().split(/\r?\n/)) {
+      const row = /^([a-f0-9]{35}):([0-9]+)$/i.exec(line);
+      if (!row || !Number.isSafeInteger(Number(row[2]))) {
+        throw new Error("The breach service returned unreadable data. Try again.");
+      }
+      if (row[1].toUpperCase() === suffix) count = Math.max(count, Number(row[2]));
     }
-    return 0; // not in the corpus, padding rows always carry a count of 0
+    return count;
   }
 
   // Entropy from the character pool actually used. This measures resistance to
