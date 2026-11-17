@@ -41,7 +41,7 @@ function walk(dir) {
         const schema = {
           '@context': 'https://schema.org',
           '@graph': [
-            { '@type': 'Article', headline: 'Is MyRecon legit? Six checks you can review', url: 'https://www.myrecon.xyz/is-myrecon-legit.html', dateModified: '2026-10-03', author: { '@type': 'Organization', name: 'MyRecon' } },
+            { '@type': 'Article', headline: 'Is MyRecon legit? Six checks you can review', url: 'https://www.myrecon.xyz/is-myrecon-legit.html', dateModified: '2026-11-18', author: { '@type': 'Organization', name: 'MyRecon' } },
             { '@type': 'BreadcrumbList', itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'MyRecon', item: 'https://www.myrecon.xyz/' },
               { '@type': 'ListItem', position: 2, name: 'Is MyRecon legit?', item: 'https://www.myrecon.xyz/is-myrecon-legit.html' },
