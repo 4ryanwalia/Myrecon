@@ -3907,6 +3907,24 @@
       ]
     },
     {
+      "source": "/footprint",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src https://api.github.com https://dev.to https://hacker-news.firebaseio.com https://hn.algolia.com; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/assets/footprint/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src https://api.github.com https://dev.to https://hacker-news.firebaseio.com https://hn.algolia.com; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'"
+        }
+      ]
+    },
+    {
       "source": "/data/(.*)",
       "headers": [
         {
@@ -4063,6 +4081,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/footprint",
+      "destination": "/assets/footprint/index.html"
+    },
     {
       "source": "/pricing",
       "destination": "/pricing.html"
