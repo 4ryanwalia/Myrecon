@@ -67,3 +67,14 @@ test('decimal counts stay intact and a company sale is not an attacker motive', 
   assert.equal(story.motive[0], 'A file of 5.4 million accounts was offered for sale.');
   assert.equal(story.motive.length, 1);
 });
+
+// AdSense low-value notice (2026-11-17): record-only archive entries must not
+// be indexed. The scheduled job adds new HIBP records without a take.
+test('breach entries without a substantial take are noindex', () => {
+  const { MIN_TAKE_WORDS } = require('../scripts/build-breaches.js');
+  const record = { Name: 'ExampleCo', Title: 'ExampleCo', BreachDate: '2026-01-01', AddedDate: '2026-02-01', PwnCount: 1000, DataClasses: ['Email addresses'], Description: 'ExampleCo suffered a data breach.', IsVerified: true };
+  assert.match(article(record, '', [record]), /<meta name="robots" content="noindex, follow">/);
+  assert.match(article(record, '<p>Short take.</p>', [record]), /noindex, follow/);
+  const long = `<p>${'word '.repeat(MIN_TAKE_WORDS)}</p>`;
+  assert.match(article(record, long, [record]), /<meta name="robots" content="index, follow">/);
+});

@@ -461,7 +461,7 @@ const HEAD = (opts) => `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(opts.title)}</title>
   <meta name="description" content="${esc(opts.description)}">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="${esc(opts.robots || "index, follow")}">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${esc(opts.url)}">
   <meta property="og:type" content="${opts.ogType || "website"}">
@@ -532,8 +532,18 @@ function logoFor(b) {
   return p && !/List\.png$/i.test(p) ? p : null;
 }
 
+// An entry is indexed only once it carries a substantial take. The scheduled
+// Breach Files job adds new HIBP records with no take; without this they would
+// go live as record-derived pages, the "low value content" AdSense rejected
+// (fifth notice, 2026-11-17). They still build for visitors, but noindex.
+const MIN_TAKE_WORDS = 250;
+function takeWords(editorial) {
+  return editorial ? String(editorial).replace(/<[^>]*>/g, " ").split(/\s+/).filter(Boolean).length : 0;
+}
+
 function article(b, editorial, siblings) {
   const story = breachStory(b, editorial);
+  const indexable = takeWords(editorial) >= MIN_TAKE_WORDS;
   const storyParagraphs = values => values.map(value => `<p>${esc(value)}</p>`).join('\n');
   const sev = severity(b);
   const url = `${SITE}/breaches/${slug(b.Name)}.html`;
@@ -616,6 +626,7 @@ function article(b, editorial, siblings) {
       // stays in the JSON-LD (where a logo is the right shape) and the card
       // uses the site image rather than a letterboxed mark.
       ogTitle: phrase,
+      robots: indexable ? "index, follow" : "noindex, follow",
       jsonLd,
       extraLd: crumbs,
     }) +
@@ -954,7 +965,7 @@ async function main() {
   items.forEach((b) => {
     const editorial = readEditorial(b.Name);
     if (editorial) edited += 1;
-    else unwritten.push(b.Name);
+    if (takeWords(editorial) < MIN_TAKE_WORDS) unwritten.push(b.Name);
     fs.writeFileSync(
       path.join(OUT_DIR, `${slug(b.Name)}.html`),
       article(b, editorial, items),
@@ -1025,7 +1036,7 @@ async function main() {
   // by name, because "27 of 43" scrolls past and a list of filenames does not.
   if (unwritten.length) {
     console.warn(
-      `[breaches] no editorial take for ${unwritten.length}: ${unwritten.join(", ")}
+      `[breaches] noindex until a take of ${MIN_TAKE_WORDS}+ words exists, ${unwritten.length}: ${unwritten.join(", ")}
 ` +
         `[breaches] write content/breaches/<Name>.html for each, then rebuild`,
     );
@@ -1039,4 +1050,4 @@ if (require.main === module) main().catch((err) => {
   process.exit(process.env.MYRECON_REQUIRE_FRESH_BREACHES === "1" || !fs.existsSync(path.join(OUT_DIR, "index.html")) ? 1 : 0);
 });
 
-module.exports = { article, earlierArchiveEntries, index, select };
+module.exports = { article, earlierArchiveEntries, index, select, MIN_TAKE_WORDS };
