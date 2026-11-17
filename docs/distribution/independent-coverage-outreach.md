@@ -21,6 +21,11 @@ Prior GitHub issues/PRs in OSINT Framework and OSINT Tools Library were searched
 for MyRecon on this date; no matches were returned. Recheck before sending a
 later suggestion. Do not submit both a form and PR for the same recipient.
 
+Unsent drafts prepared 18 November 2026 (AlternativeTo listing, r/OSINT post,
+one follow-up each for OSINT Framework #880, Sector035 and My OSINT Training,
+and a breach API note) are in [outreach-drafts-2026-11-18.md](outreach-drafts-2026-11-18.md).
+Record them here only once actually sent.
+
 ## Shared evidence
 
 - [Review kit](../review-kit/README.md): source-pinned reproduction, limitations,
