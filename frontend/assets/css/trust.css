@@ -20,6 +20,10 @@ body.tool-mode .hero-copy { display:none; }
 .tool-support { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; margin-top:14px; font-size:.78rem; }
 .tool-support a { color:var(--text-dim); }
 .tool-support a:hover { color:var(--accent-text); }
+.tool-support { align-items:center; }
+.tool-support a.tool-support__feature { display:inline-flex; align-items:center; gap:7px; padding:5px 12px 5px 6px; border:1px solid var(--border-strong, var(--border)); border-radius:999px; background:var(--surface-2, var(--surface)); color:var(--text); font-weight:600; text-decoration:none; transition:border-color .15s, background .15s; }
+.tool-support a.tool-support__feature:hover { border-color:var(--accent-text); color:var(--text); }
+.tool-support__tag { padding:2px 7px; border-radius:999px; background:var(--accent); color:var(--bg, #fff); font-size:.66rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
 .home-page .tool-foot { line-height:1.8; }
 .privacy-disclosure { margin:14px 0 0; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text-dim); font-size:.86rem; overflow:hidden; }
 .privacy-disclosure summary { display:flex; align-items:center; gap:12px; padding:15px 16px; cursor:pointer; color:var(--text); list-style:none; }

@@ -9,7 +9,7 @@ const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(
 const GROUPS = [
   ["Products", [
     ["Username search", "/#tool"], ["Features", "/features.html"], ["Android app", "/app.html"],
-    ["Username checker", "/username-checker.html"], ["Deep Search", "/deep-search.html"], ["Badges & widgets", "/badge.html"],
+    ["Username checker", "/username-checker.html"], ["Footprint tools", "/footprint"], ["Deep Search", "/deep-search.html"], ["Badges & widgets", "/badge.html"],
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [

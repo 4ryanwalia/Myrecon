@@ -102,7 +102,8 @@ test('all five tools work on a phone viewport and only explicit scrapbook saves 
     await page.getByLabel('Public link to hide').selectOption({index:3});
     assert.match(await results.innerText(), /Still connected via/);
     await page.getByRole('link', {name:'Handle tryout',exact:true}).click();
-    await page.getByText('503 of 503 platforms selected').waitFor();
+    // Popular platforms are the quick default; the full catalog is one click away.
+    await page.getByText(/^3 of 503 platforms selected · popular set/).waitFor();
     await page.getByText('Choose platforms', {exact:true}).click();
     await button('Clear selection').click();
     assert.equal(await button('Compare handles').isDisabled(), true);
@@ -119,6 +120,18 @@ test('all five tools work on a phone viewport and only explicit scrapbook saves 
     assert.equal(await report.getByRole('link', {name:'Open public profile ↗'}).getAttribute('href'), 'https://github.com/orbit');
     assert.equal(batches.filter(b => b.handle === 'orbit').length, 1);
     assert(batches.every(b => b.platforms.length === 3));
+    const summary = page.locator('#tryout-summary');
+    const summaryRow = handle => summary.locator('tr', {has: page.getByRole('button', {name: 'Filter results to @' + handle, exact: true})});
+    assert.deepEqual(await summaryRow('orbit').locator('td').allInnerTexts(), ['1', '1', '1']);
+    assert.match(await summaryRow('orb_it').innerText(), /Fewest public uses[\s\S]*3 of 3 checked · 1 in use as nearby spellings/);
+    assert.doesNotMatch(await summaryRow('orbit').innerText(), /Fewest public uses/);
+    // Hacker News is inconclusive for every name, so it never decides the badge.
+    assert.match(await summary.innerText(), /compares the 2 of 3 platforms that gave every name a clear answer/);
+    await summary.getByRole('button', {name: 'Filter results to @orbit', exact: true}).click();
+    assert.equal(await page.getByLabel('Find a result').inputValue(), '@orbit');
+    assert.equal(await page.locator('#tryout-rows .record').count(), 3);
+    assert.doesNotMatch(await page.locator('#tryout-rows').innerText(), /orbitpress/);
+    await page.getByLabel('Find a result').fill('');
     await page.getByLabel('Show results').selectOption('unknown');
     assert.match(await page.locator('#tryout-rows').innerText(), /Inconclusive/);
     await page.getByLabel('Show results').selectOption('not_found');

@@ -56,7 +56,7 @@ const SECTIONS = [
   { test: (u) => u.startsWith("/blog/"), changefreq: "monthly", priority: "0.8" },
   { test: (u) => u === "/services.html" || u === "/app.html" || u === "/deep-search.html" || u === "/osint-cheat-sheet.html" || u === "/badge.html", changefreq: "monthly", priority: "0.9" },
   { test: (u) => u === "/pricing" || u === "/features" || u === "/privacy-audit" || u === "/enterprise-osint-api", changefreq: "monthly", priority: "0.9" },
-  { test: (u) => ["/username-checker.html", "/digital-footprint-checker.html", "/reverse-username-lookup.html", "/free-osint-tool.html", "/watch.html"].includes(u), changefreq: "monthly", priority: "0.8" },
+  { test: (u) => ["/username-checker.html", "/footprint", "/digital-footprint-checker.html", "/reverse-username-lookup.html", "/free-osint-tool.html", "/watch.html"].includes(u), changefreq: "monthly", priority: "0.8" },
   // The three explainer pages. High-intent search targets ("is X legit",
   // "X vs Y"), so they sit above About and below the tool pages. Without an
   // entry here they would fall through to the 0.3 catch-all, which is where
@@ -195,6 +195,10 @@ function collectEntries({ root = ROOT, environment = process.env, today, gitDate
   const changedDates = renderedChangeDates(environment, today);
   const config = fs.existsSync(path.join(root, 'vercel.json')) ? JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8')) : {};
   const redirected = new Set((config.redirects || []).filter(rule => !rule.source.includes(':') && !rule.has && !rule.missing).map(rule => rule.source));
+  // Clean URLs served by an exact rewrite to a local page, such as /footprint.
+  const rewritten = new Map((config.rewrites || [])
+    .filter(rule => !/[:(*]/.test(rule.source) && !rule.has && !rule.missing && /^\/[^?#:]+\.html$/.test(rule.destination || ''))
+    .map(rule => [rule.source, fileForUrl(rule.destination, root)]));
 
   for (const file of walk(root)) {
     const html = fs.readFileSync(file, "utf8");
@@ -216,7 +220,7 @@ function collectEntries({ root = ROOT, environment = process.env, today, gitDate
       continue;
     }
 
-    if (redirected.has(url) || fileForUrl(url, root) !== file) {
+    if (redirected.has(url) || (fileForUrl(url, root) || rewritten.get(url)) !== file) {
       skipped.push(`${url} (redirect, duplicate or missing canonical target)`);
       continue;
     }

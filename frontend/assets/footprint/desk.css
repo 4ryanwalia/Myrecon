@@ -50,6 +50,7 @@ header {
   background: var(--surface);
 }
 header span,
+.site-title,
 .muted,
 small {
   color: var(--muted);
@@ -121,7 +122,8 @@ h2,
   font-weight: 500;
   letter-spacing: -.035em;
 }
-h1 {
+.tab-title,
+.paper h1 {
   font-size: clamp(2.15rem, 4.4vw, 4rem);
   line-height: 1.04;
   max-width: 20ch;
@@ -371,7 +373,8 @@ summary {
   .paper {
     margin: 18px 12px;
   }
-  h1 {
+  .tab-title,
+  .paper h1 {
     font-size: 2.4rem;
   }
   .intro {
@@ -392,5 +395,100 @@ summary {
 @media (max-width: 370px) {
   .fields {
     grid-template-columns: 1fr;
+  }
+}
+.main-tool-link {
+  margin-left: auto;
+  font-size: .88rem;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.main-tool-link + .saved-link {
+  margin-left: 0;
+}
+#tryout-summary:empty {
+  display: none;
+}
+.tryout-table {
+  width: 100%;
+  margin: 14px 0 6px;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+.tryout-table caption {
+  text-align: left;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.tryout-table th,
+.tryout-table td {
+  padding: 9px 6px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  text-align: left;
+}
+.tryout-table tr:first-child th {
+  font-size: .78rem;
+  color: var(--muted);
+  font-weight: 650;
+}
+.tryout-table td,
+.tryout-table tr:first-child th:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.tryout-table th[scope=row] {
+  text-align: left;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+.tryout-table th[scope=row] small {
+  display: block;
+  font-size: .78rem;
+}
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+  cursor: pointer;
+}
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 1em;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: .74rem;
+  font-weight: 700;
+}
+@media (max-width: 520px) {
+  header {
+    gap: 12px;
+  }
+  .main-tool-link,
+  .saved-link {
+    font-size: .8rem;
+  }
+}
+.site-title {
+  margin: 0;
+  font: inherit;
+  font-size: 1rem;
+  letter-spacing: normal;
+}
+@media (max-width: 450px) {
+  .site-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }

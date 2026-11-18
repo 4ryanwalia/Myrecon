@@ -4,6 +4,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { toUrlPath, isNoindex, xmlEscape } = require('../scripts/build-sitemap');
 const root = path.resolve(__dirname, '..');
+// Clean URLs that vercel.json serves by an exact rewrite to a local page, such as
+// /footprint -> /assets/footprint/index.html. The walk skips assets/, so add them.
+const vercelConfig = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+const localRewrites = (vercelConfig.rewrites || []).filter(r => !/[:(*]/.test(r.source) && /^\/[^?#:]+\.html$/.test(r.destination || ''));
 
 test('sitemap excludes noindex directives regardless of meta attribute order', () => {
   assert.equal(isNoindex('<meta content="noindex, follow" name="robots">'), true);
@@ -31,7 +35,7 @@ test('username landing page exposes valid local links and matching FAQ schema', 
   assert.ok(!/[\u2013\u2014]/.test(html));
   for (const [, href] of html.matchAll(/href="(\/[^"?#]*)(?:[?#][^"]*)?"/g)) {
     const rel = href.slice(1);
-    assert.ok([rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
+    assert.ok(localRewrites.some(r => r.source === href.split(/[?#]/)[0]) || [rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
   }
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
   const faq = schemas.flatMap(s => s['@graph'] || [s]).find(s => s['@type'] === 'FAQPage');
@@ -284,7 +288,7 @@ test('free OSINT tool landing page exposes valid local links and matching FAQ sc
   assert.ok(!/[\u2013\u2014]/.test(html));
   for (const [, href] of html.matchAll(/href="(\/[^"?#]*)(?:[?#][^"]*)?"/g)) {
     const rel = href.slice(1);
-    assert.ok([rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
+    assert.ok(localRewrites.some(r => r.source === href.split(/[?#]/)[0]) || [rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
   }
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
   const faq = schemas.flatMap(s => s['@graph'] || [s]).find(s => s['@type'] === 'FAQPage');
@@ -301,7 +305,7 @@ test('digital footprint checker landing page exposes valid local links and match
   assert.ok(!/[\u2013\u2014]/.test(html));
   for (const [, href] of html.matchAll(/href="(\/[^"?#]*)(?:[?#][^"]*)?"/g)) {
     const rel = href.slice(1);
-    assert.ok([rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
+    assert.ok(localRewrites.some(r => r.source === href.split(/[?#]/)[0]) || [rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
   }
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
   const faq = schemas.flatMap(s => s['@graph'] || [s]).find(s => s['@type'] === 'FAQPage');
@@ -318,7 +322,7 @@ test('reverse username lookup landing page exposes valid local links and matchin
   assert.ok(!/[\u2013\u2014]/.test(html));
   for (const [, href] of html.matchAll(/href="(\/[^"?#]*)(?:[?#][^"]*)?"/g)) {
     const rel = href.slice(1);
-    assert.ok([rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
+    assert.ok(localRewrites.some(r => r.source === href.split(/[?#]/)[0]) || [rel, `${rel}.html`, `${rel}index.html`].some(p => fs.existsSync(path.join(root, p))), href);
   }
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
   const faq = schemas.flatMap(s => s['@graph'] || [s]).find(s => s['@type'] === 'FAQPage');
@@ -394,9 +398,18 @@ function walkAllHtml(dir, out = []) {
   return out;
 }
 
+function publicHtmlFiles() {
+  const files = walkAllHtml(root);
+  for (const rule of localRewrites) {
+    const file = path.join(root, rule.destination.slice(1));
+    if (fs.existsSync(file) && !files.includes(file)) files.push(file);
+  }
+  return files;
+}
+
 test('all indexable public HTML pages across the entire site pass static SEO checks', () => {
   const skipRedirect = new Set(['404.html', 'ops.html']);
-  const allFiles = walkAllHtml(root);
+  const allFiles = publicHtmlFiles();
   let checkedCount = 0;
 
   for (const file of allFiles) {
@@ -458,7 +471,7 @@ test('all indexable public HTML pages across the entire site pass static SEO che
 
 test('every indexable page is in sitemap.xml with valid hints and zero orphan or single-inbound pages', () => {
   const skipRedirect = new Set(['404.html', 'ops.html']);
-  const allFiles = walkAllHtml(root);
+  const allFiles = publicHtmlFiles();
   const sitemapXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
   const inbound = new Map();
   const aliasToCanon = new Map();
@@ -491,7 +504,7 @@ test('every indexable page is in sitemap.xml with valid hints and zero orphan or
     for (const [, href] of html.matchAll(/href=["\x27](\/[^"\x27#?]*)(?:[?#][^"\x27]*)?["\x27]/gi)) {
       if (href.startsWith('/assets/') || href.startsWith('/data/') || href === '/site.webmanifest') continue;
       const targetRel = href.slice(1);
-      const exists = href === '/' || [targetRel, `${targetRel}.html`, path.join(targetRel, 'index.html')].some(p => fs.existsSync(path.join(root, p)));
+      const exists = href === '/' || localRewrites.some(r => r.source === href) || [targetRel, `${targetRel}.html`, path.join(targetRel, 'index.html')].some(p => fs.existsSync(path.join(root, p)));
       assert.ok(exists, `Broken internal link on ${rel}: ${href}`);
 
       const targetCanon = aliasToCanon.get(href) || aliasToCanon.get(href.replace(/\.html$/, ''));

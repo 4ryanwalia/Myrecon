@@ -46,7 +46,7 @@ test('internal page links resolve after consolidation', () => {
           if (!href.startsWith('/') || href.startsWith('//') || href.startsWith('/assets/') || href.startsWith('/data/')) continue;
           const route = href.split(/[?#]/)[0];
           const disk = path.join(root, route.slice(1));
-          if (!fs.existsSync(disk) && !fs.existsSync(`${disk}.html`) && !fs.existsSync(path.join(disk, 'index.html')) && !config.redirects.some(r => r.source === route)) failures.add(`${path.relative(root, file)} -> ${route}`);
+          if (!fs.existsSync(disk) && !fs.existsSync(`${disk}.html`) && !fs.existsSync(path.join(disk, 'index.html')) && !config.redirects.some(r => r.source === route) && !config.rewrites.some(r => r.source === route && fs.existsSync(path.join(root, r.destination.slice(1))))) failures.add(`${path.relative(root, file)} -> ${route}`);
         }
       }
     }
