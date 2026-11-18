@@ -7,11 +7,6 @@ const sessions = Object.fromEntries(['timeline', 'recognize', 'unlink', 'handles
 const accounts = new Map(), confirmed = new Set();
 const renderPuzzle = puzzle($('#puzzle'));
 const storageKey = 'myrecon.footprint.scrapbook.v1';
-if (location.hostname === 'appassets.androidplatform.net') {
-  const brand = $('.brand');
-  brand.href = '/close';
-  brand.textContent = '‹ Lookup';
-}
 let view, hiddenEdge = '', book = [], storageError = '';
 function loadBook() {
   try {

@@ -8,10 +8,6 @@ export function puzzle(container) {
   async function share() {
     const url = publicBase + '/footprint?week=' + c.week + '#mystery';
     const text = 'I solved the MyRecon username mystery in ' + format(seconds) + '.';
-    if (location.hostname === 'appassets.androidplatform.net') {
-      location.href = '/share?week=' + c.week + '&seconds=' + seconds;
-      return;
-    }
     try {
       if (navigator.share) { await navigator.share({title: 'MyRecon weekly mystery', text, url}); return; }
       await navigator.clipboard.writeText(text + ' ' + url);

@@ -14,7 +14,7 @@ export function action(text, run, cls) {
 export function source(url, label = 'Open evidence ↗') {
   const a = el('a', label);
   a.href = url;
-  if (location.hostname !== 'appassets.androidplatform.net') a.target = '_blank';
+  a.target = '_blank';
   a.rel = 'noreferrer noopener';
   return a;
 }
