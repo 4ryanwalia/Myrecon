@@ -1,10 +1,12 @@
-import {platforms, validHandle, checkProfile, discover, compareHandles, graph, pathBetween, webUrl} from './evidence.mjs';
+import {platforms, validHandle, checkProfile, discover, graph, pathBetween, webUrl} from './evidence.mjs';
+import {handleTryout} from './handle-tryout.mjs';
 import {puzzle} from './puzzle.mjs';
 import {$, el, action, source, group} from './ui.mjs';
 
-const lookup = $('#lookup'), compare = $('#compare-form'), output = $('#results');
+const lookup = $('#lookup'), output = $('#results');
 const sessions = Object.fromEntries(['timeline', 'recognize', 'unlink', 'handles'].map(id => [id, {}]));
 const accounts = new Map(), confirmed = new Set();
+const openTryout = handleTryout();
 const renderPuzzle = puzzle($('#puzzle'));
 const storageKey = 'myrecon.footprint.scrapbook.v1';
 let view, hiddenEdge = '', book = [], storageError = '';
@@ -124,20 +126,6 @@ function simulation() {
   for (const edge of g.edges) evidence.append(group(source(edge.source, g.nodes.get(edge.from)), el('span', edge.label + ' →'), source(edge.target, g.nodes.get(edge.to))));
   box.append(evidence);
 }
-function comparison(s) {
-  if (!s.rows) return;
-  for (const handle of s.handles) {
-    const card = el('article', '', 'card'); card.append(el('h2', '@' + handle));
-    for (const r of s.rows.filter(r => r.handle === handle)) {
-      const line = el('div', '', 'record compact');
-      line.append(el('p', (r.handle === r.spelling ? 'Exact handle' : 'Similar spelling') + ' · @' + r.spelling + ' · ' + r.platform, 'meta'));
-      if (r.row) line.append(source(r.row.url, r.handle === r.spelling ? 'Existing public use ↗' : 'Potential spelling confusion · open public use ↗'));
-      else line.append(el('p', r.status === 'inconclusive' ? 'Inconclusive · the source could not confirm a result.' : 'No public profile returned.'));
-      card.append(line);
-    }
-    output.append(card);
-  }
-}
 function render() {
   const next = location.hash.slice(1);
   view = [...Object.keys(sessions), 'scrapbook', 'mystery'].includes(next) ? next : 'timeline';
@@ -153,7 +141,7 @@ function render() {
     'Selected communities receive this handle. Each can return a profile and up to 30 public projects, articles or stories.';
   const button = $('#search-button');
   button.textContent = s.busy ? 'Checking sources…' : ({timeline: 'Find public traces', recognize: 'Find my clues', unlink: 'Find my profiles'}[view] || 'Search');
-  button.disabled = Boolean(s.busy); compare.querySelector('button').disabled = Boolean(sessions.handles.busy);
+  button.disabled = Boolean(s.busy);
   $('#count').textContent = book.length;
   $('#status').textContent = [s.message, storageError].filter(Boolean).join(' ');
   output.replaceChildren();
@@ -162,7 +150,7 @@ function render() {
     if (!book.length) output.append(el('p', 'Your scrapbook is empty. Save a recognized find from the timeline or your game recap.', 'card'));
     for (const row of [...book].reverse()) output.append(record(row));
   } else if (view === 'unlink') { simulation(); reports(s); }
-  else if (view === 'handles') comparison(s);
+  else if (view === 'handles') openTryout();
   else if (view === 'recognize') { recognition(s); reports(s); }
   else if (s.rows) {
     output.append(el('h2', 'Timeline for @' + s.handle));
@@ -202,21 +190,6 @@ lookup.onsubmit = async event => {
       }
     }
   } catch { s.message = 'The lookup was interrupted. Try again.'; }
-  finally { s.busy = false; render(); }
-};
-compare.onsubmit = async event => {
-  event.preventDefault();
-  const s = sessions.handles;
-  if (s.busy) return;
-  const data = new FormData(compare);
-  const handles = [...new Set(['first','second','third'].map(n => data.get(n).trim().replace(/^@/, '')).filter(Boolean))];
-  const selected = data.getAll('service');
-  if (!selected.length || !handles.length || handles.some(h => !validHandle(h))) {
-    s.message = 'Enter valid handles starting with a letter or number and select at least one platform.'; render(); return;
-  }
-  Object.assign(s, {handles, busy: true, rows: null, message: 'Checking exact names and nearby spellings…'}); render();
-  try { s.rows = await compareHandles(handles, selected); s.message = 'Public uses for the selected names and spellings'; }
-  catch { s.message = 'The comparison was interrupted. Try again.'; }
   finally { s.busy = false; render(); }
 };
 window.addEventListener('storage', e => { if (!e.key || e.key === storageKey) { loadBook(); render(); } });

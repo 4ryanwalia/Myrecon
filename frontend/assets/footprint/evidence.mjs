@@ -121,22 +121,6 @@ export function nearby(handle) {
   return [...new Set(candidates)].filter(v => v !== handle && validHandle(v)).slice(0, 2);
 }
 
-export async function compareHandles(handles, selected) {
-  const memo = new Map();
-  const results = [];
-  for (const handle of handles) {
-    for (const spelling of [handle, ...nearby(handle)]) {
-      const checks = await Promise.all(selected.map(async platform => {
-        const key = platform + '/' + spelling;
-        if (!memo.has(key)) memo.set(key, checkProfile(platform, spelling));
-        return {platform, spelling, ...await memo.get(key)};
-      }));
-      results.push(...checks.map(check => ({handle, ...check})));
-    }
-  }
-  return results;
-}
-
 function nodeKey(raw) {
   const u = new URL(raw);
   u.hash = '';

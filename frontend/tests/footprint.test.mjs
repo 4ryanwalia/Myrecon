@@ -35,10 +35,28 @@ test('all five tools work on a phone viewport and only explicit scrapbook saves 
   const browser = await chromium.launch({channel: 'chrome', headless: true});
   try {
     const page = await browser.newPage({viewport: {width: 390, height: 844}, timezoneId: 'Asia/Kolkata'});
-    const errors = [], requests = [];
+    const errors = [], requests = [], batches = [];
+    const popular = ['GitHub', 'Dev.to', 'Hacker News'];
+    const names = [...popular, ...Array.from({length: 500}, (_, i) => 'Test site ' + i)];
+    let interruptBatch = false;
     page.on('pageerror', err => errors.push(err.message));
     await page.route('**/*', async route => {
       const u = new URL(route.request().url());
+      if (u.pathname === '/api/handle-tryout/platforms') return route.fulfill({json: {
+        status: 'ok', platforms: names.map(name => ({name, category: 'Community'})), popular, batchSize: 24
+      }});
+      if (u.pathname === '/api/handle-tryout/check') {
+        if (interruptBatch && batches.length === 1) {
+          interruptBatch = false;
+          return route.fulfill({status: 502, json: {}});
+        }
+        const {handle, platforms} = route.request().postDataJSON();
+        batches.push({handle, platforms});
+        const rows = platforms.map(platform => ({platform, reason: 'Source response',
+          ...(platform === 'GitHub' && handle === 'orbit' ? {verdict: 'found', url: 'https://github.com/orbit'} :
+            platform === 'Hacker News' ? {verdict: 'unknown'} : {verdict: 'not_found'})}));
+        return route.fulfill({json: {status: 'ok', handle, results: rows}});
+      }
       if (u.hostname === 'www.myrecon.xyz') {
         const filename = u.pathname === '/footprint' ? 'index.html' : u.pathname.split('/').pop();
         const path = fileURLToPath(new URL('../assets/footprint/' + filename, import.meta.url));
@@ -84,12 +102,53 @@ test('all five tools work on a phone viewport and only explicit scrapbook saves 
     await page.getByLabel('Public link to hide').selectOption({index:3});
     assert.match(await results.innerText(), /Still connected via/);
     await page.getByRole('link', {name:'Handle tryout',exact:true}).click();
+    await page.getByText('503 of 503 platforms selected').waitFor();
+    await page.getByText('Choose platforms', {exact:true}).click();
+    await button('Clear selection').click();
+    assert.equal(await button('Compare handles').isDisabled(), true);
+    await page.getByLabel('Find a platform').fill('github');
+    await page.locator('#platform-list').getByLabel('GitHub').check();
+    assert.match(await page.locator('#platform-count').innerText(), /^1 of 503/);
+    await button('Popular platforms').click();
+    await page.getByLabel('Include up to two nearby spellings per handle').check();
     await page.getByLabel('First handle').fill('orb_it'); await page.getByLabel('Second handle').fill('orbit');
     await page.getByLabel('Third handle').fill('orbitpress');
-    await button('Compare handles').click(); await page.getByRole('heading', {name:'@orbitpress',exact:true}).waitFor();
-    assert.match(await results.innerText(), /Potential spelling confusion/);
-    assert.match(await results.innerText(), /Inconclusive/);
-    assert.match(await results.innerText(), /No public profile returned/);
+    await button('Compare handles').click(); await page.getByText('Comparison complete.').waitFor();
+    const report = page.locator('#tryout-report');
+    assert.match(await report.innerText(), /Potential spelling confusion for @orb_it/);
+    assert.equal(await report.getByRole('link', {name:'Open public profile ↗'}).getAttribute('href'), 'https://github.com/orbit');
+    assert.equal(batches.filter(b => b.handle === 'orbit').length, 1);
+    assert(batches.every(b => b.platforms.length === 3));
+    await page.getByLabel('Show results').selectOption('unknown');
+    assert.match(await page.locator('#tryout-rows').innerText(), /Inconclusive/);
+    await page.getByLabel('Show results').selectOption('not_found');
+    assert.match(await page.locator('#tryout-rows').innerText(), /No public profile returned/);
+    batches.length = 0;
+    await button('Select all').click();
+    await page.getByLabel('Include up to two nearby spellings per handle').uncheck();
+    await page.getByLabel('Second handle').fill(''); await page.getByLabel('Third handle').fill('');
+    interruptBatch = true;
+    await button('Compare handles').click(); await button('Resume this comparison').waitFor();
+    assert.match(await page.locator('#tryout-counts').innerText(), /24 of 503 results/);
+    await button('Resume this comparison').click(); await page.getByText('Comparison complete.').waitFor();
+    assert.deepEqual(batches.flatMap(b => b.platforms).sort(), [...names].sort());
+    assert.match(await page.locator('#tryout-counts').innerText(), /503 of 503 results/);
+    assert.equal(await page.locator('#tryout-rows .record').count(), 20);
+    await button('Next').click(); assert.equal(await page.locator('#tryout-page').innerText(), '2 of 26');
+    await page.getByLabel('Find a result').fill('GitHub');
+    assert.equal(await page.locator('#tryout-rows .record').count(), 1);
+    // A busy server supplies a cancellable backoff. Resuming uses the original selection.
+    await page.route('**/api/handle-tryout/check', route => route.fulfill({
+      status:503, headers:{'Retry-After':'10'}, json:{status:'error'}
+    }), {times:1});
+    await button('Compare handles').click();
+    await page.getByText(/Retrying in 10 seconds/).waitFor();
+    await button('Stop checking').click();
+    await page.getByText(/Comparison stopped/).waitFor();
+    assert.match(await page.locator('#tryout-counts').innerText(), /0 of 503/);
+    await button('Resume this comparison').click();
+    await page.getByText('Comparison complete.').waitFor();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     const count = requests.length;
     await page.goto('https://www.myrecon.xyz/footprint?week=2026-11-16#mystery');
     // Fix the clock so this test also runs before the first published edition.

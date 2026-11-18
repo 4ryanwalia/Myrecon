@@ -299,6 +299,33 @@ summary {
 .keep {
   background: var(--tint);
 }
+#platform-picker {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+#platform-picker summary { color: var(--accent); font-weight: 650; }
+#platform-picker > label, .result-filters { margin: 14px 0 8px; }
+.result-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 195px), 1fr));
+  gap: 8px 14px;
+}
+.platform-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  max-height: 16rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  gap: 2px 12px;
+}
+.platform-list input { flex: none; }
+#tryout-report h2 { margin-top: 0; }
+#tryout-report progress { width: 100%; accent-color: var(--accent); }
+#tryout-counts { font-variant-numeric: tabular-nums; }
+#tryout-status { color: var(--accent); }
+#tryout-status:empty { display: none; }
 :focus-visible {
   outline: 3px solid #98465f;
   outline-offset: 3px;

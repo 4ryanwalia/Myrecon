@@ -466,6 +466,8 @@ def _guest_username_event(event):
 # ── Routes ───────────────────────────────────────────────────────
 
 def _register_routes(app: Flask) -> None:
+    from services import handle_tryout
+    handle_tryout.register(app, _json_body)
     from services import scan_job_api
     scan_job_api.register(app, sys.modules[__name__])
     from core.android_referrals import register_routes as register_android_referrals
