@@ -80,14 +80,15 @@ take the measurement, with the affiliation stated up front. Rewrite it in your
 own voice: posts that read as generated text get removed in many subreddits.
 
 **Title:** Measured: on 6 of 24 sites, a real username and an invented one get
-byte-identical responses
+the same response
 
 > Disclosure first: I build MyRecon, a username search tool, and the
 > measurements below are from its write-ups. Nothing to buy in this post.
 >
 > On 6 Sep 2026 we requested profile URLs on 24 platforms twice each, once for
-> a handle known to exist and once for one invented seconds earlier. On six of
-> them the two responses were byte-for-byte identical. On those sites an HTTP
+> a handle known to exist and once for one invented seconds earlier. On five of
+> them the two responses were byte-for-byte identical, and a sixth differed
+> only by the handle echoed back. On those sites an HTTP
 > 200 tells you the website is up, not that the account exists, so any checker
 > that scores a hit from the status code alone will report an account there for
 > every handle you type.
@@ -142,7 +143,7 @@ reply. One message, then stop.
 > the developer of MyRecon, so this isn't independent, and there's no
 > expectation of coverage. The item that may be useful for your readers is the
 > measurement rather than the tool: on 6 of 24 sites we tested, a real username
-> and an invented one returned byte-identical responses, which is why
+> and an invented one returned the same response, which is why
 > status-code-only checkers over-report. Method and raw data:
 > https://www.myrecon.xyz/guides/why-username-checkers-report-fake-accounts.html
 >
