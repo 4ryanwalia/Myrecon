@@ -11,7 +11,7 @@ class Clock:
         return self.now
 
     def sleep(self, seconds):
-        assert 0 <= seconds <= 10
+        assert 0 <= seconds <= 90
         self.now += seconds
 
 
@@ -48,6 +48,23 @@ def test_default_worker_stays_available_for_ten_hours_and_retries_outage(monkeyp
     assert max(calls) >= 9 * 60 * 60
     assert worker.http.closed
     assert worker.token == ''
+
+
+def test_repeated_render_failures_back_off_and_recovery_resets_delay(monkeypatch):
+    worker, clock = make_worker(monkeypatch)
+    calls = []
+
+    def claim(action, payload):
+        if action == "stopped":
+            return {}
+        calls.append(clock.now)
+        if clock.now in (0, 10, 30, 72):
+            raise RuntimeError("Render is unavailable")
+        return {"job": None}
+
+    monkeypatch.setattr(worker, "call", claim)
+    worker.run(duration_minutes=2)
+    assert calls[:7] == [0, 10, 30, 70, 72, 82, 84]
 
 
 def test_invalid_worker_configuration_stops_instead_of_retrying(monkeypatch):

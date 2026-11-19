@@ -62,7 +62,8 @@ def _touch(worker_id, state, label=None, versions=None):
         unchanged_idle = bool(cached and cached[0] == validate_label(label)
                               and cached[1] == clean_versions
                               and 0 <= now - cached[2] and 0 <= now - cached[3] < 60)
-        if unchanged_idle and now - cached[2] < 10:
+        # Leave at least half the freshness window for the next idle poll.
+        if unchanged_idle and now - cached[2] < min(20, config.SCAN_WORKER_FRESH_SECONDS / 2):
             return
     elif state != "idle":
         _idle_cache.pop(cache_key, None)

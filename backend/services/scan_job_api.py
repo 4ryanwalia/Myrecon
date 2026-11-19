@@ -419,6 +419,12 @@ def register(app, api):
         if access != "allowed":
             return responses.error("This Google account is not allowed to use the private worker console.", 403,
                                    "worker_console_not_owner")
-        response, status = responses.ok({**_operator_snapshot(), "launcher_url": workers.launcher_url()})
+        from services.colab_recovery import status as recovery_status
+        recovery = recovery_status()
+        response, status = responses.ok({
+            **_operator_snapshot(),
+            "launcher_url": workers.launcher_url(),
+            "recovery": {key: recovery[key] for key in ("stage", "updated_at", "retry_at")},
+        })
         response.headers["Cache-Control"] = "no-store"
         return response, status

@@ -1,6 +1,9 @@
 import ast
 import io
 from pathlib import Path
+import subprocess
+import threading
+from types import SimpleNamespace
 import zipfile
 
 from core import store as storage
@@ -61,17 +64,21 @@ def test_child_termination_waits_before_releasing_control():
     assert events == ["terminate", "wait"]
 
 
-def test_child_status_discards_provider_text_and_credentials():
-    from types import SimpleNamespace
-    recovery.read_stages(SimpleNamespace(stdout=io.StringIO(
-        "authorizing\nprovider error containing secret\nworker-live\n")))
-    assert recovery.status()["stage"] == "worker-live"
+def test_child_status_discards_provider_text_and_credentials(monkeypatch):
+    monkeypatch.setattr(recovery, "_status", dict(recovery._status))
+    child = SimpleNamespace(stdout=io.StringIO(
+        "authorizing\nprovider error containing secret\nworker-live\nworker-pulse\n"))
+    recovery.read_stages(child, threading.Event(), threading.Event())
+    snapshot = recovery.status()
+    assert snapshot["stage"] == "worker-live"
+    assert "secret" not in str(snapshot)
 
 
 def test_recovery_status_requires_operator_token(monkeypatch):
     import app as api
     import config
     monkeypatch.setattr(config, "SCAN_WORKER_STATUS_TOKEN", "status-token-" * 4)
+    monkeypatch.setattr(recovery, "ensure_started", lambda: (_ for _ in ()).throw(AssertionError()))
     client = api.app.test_client()
     assert client.get("/api/operator/colab-recovery").status_code == 401
     response = client.get("/api/operator/colab-recovery", headers={
@@ -99,13 +106,50 @@ def test_is_enabled_respects_flags_and_credentials(monkeypatch):
 
 
 def test_recovery_backoff_resets_after_live_worker():
-    import threading
-    from types import SimpleNamespace
     healthy = threading.Event()
-    recovery.read_stages(SimpleNamespace(stdout=io.StringIO("worker-live\n")), healthy)
+    recovery.read_stages(SimpleNamespace(stdout=io.StringIO("worker-live\n")), healthy, threading.Event())
     assert healthy.is_set()
-    assert recovery.retry_delay(900, 1, healthy.is_set()) == 30
+    assert recovery.retry_delay(900, 1, True) == 30
     assert recovery.retry_delay(60, 1) == 120
     assert recovery.retry_delay(900, 1) == 900
-    assert recovery.retry_delay(900, 0) == 30
+    assert recovery.retry_delay(60, 0) == 120
     assert recovery.retry_delay(900, 75, True) == 1800
+
+
+def test_supervisor_times_out_only_after_worker_goes_silent(monkeypatch):
+    activity = threading.Event()
+    healthy = threading.Event()
+    now = 0
+    renewals = []
+
+    class Child:
+        def wait(self, timeout):
+            nonlocal now
+            now += timeout
+            if now <= 480:
+                activity.set()
+                healthy.set()
+            raise subprocess.TimeoutExpired("controller", timeout)
+
+    monkeypatch.setattr(recovery.time, "monotonic", lambda: now)
+    monkeypatch.setattr(recovery, "renew", lambda owner: renewals.append(now) or True)
+    assert recovery.wait_for_child(Child(), "owner", activity, healthy) == (1, True)
+    assert 480 + recovery.PULSE_TIMEOUT <= now < 480 + recovery.PULSE_TIMEOUT + recovery.LEASE_RENEW_SECONDS
+    assert renewals[-1] == now - recovery.LEASE_RENEW_SECONDS
+
+
+def test_supervisor_times_out_a_silent_startup_without_resetting_backoff(monkeypatch):
+    activity = threading.Event()
+    healthy = threading.Event()
+    now = 0
+
+    class Child:
+        def wait(self, timeout):
+            nonlocal now
+            now += timeout
+            raise subprocess.TimeoutExpired("controller", timeout)
+
+    monkeypatch.setattr(recovery.time, "monotonic", lambda: now)
+    monkeypatch.setattr(recovery, "renew", lambda owner: True)
+    assert recovery.wait_for_child(Child(), "owner", activity, healthy) == (1, False)
+    assert recovery.STARTUP_TIMEOUT <= now < recovery.STARTUP_TIMEOUT + recovery.LEASE_RENEW_SECONDS

@@ -198,6 +198,7 @@ def test_idle_renewals_preserve_freshness_and_refresh_metadata(setup, monkeypatc
     calls = []
     clock = [1000.0]
     workers._idle_cache.clear()
+    monkeypatch.setattr(config, "SCAN_WORKER_FRESH_SECONDS", 30)
     monkeypatch.setattr(workers.time, "time", lambda: clock[0])
 
     class ChildStore:
@@ -222,7 +223,7 @@ def test_idle_renewals_preserve_freshness_and_refresh_metadata(setup, monkeypatc
         record = memory.get(path)
         assert workers._state(record, clock[0])[0] == "idle"
         assert record["catalogues"] == versions
-    assert [method for method, _ in calls] == ["transaction"] + ["set"] * 5 + ["transaction"]
+    assert [method for method, _ in calls] == ["transaction"] + ["set"] * 3 + ["transaction"]
     assert all(p == path + "/last_seen_at" for method, p in calls if method == "set")
 
     # Changed catalogue metadata and state transitions must bypass throttling.
@@ -238,6 +239,7 @@ def test_idle_renewals_preserve_freshness_and_refresh_metadata(setup, monkeypatc
 def test_failed_idle_renewal_is_retried_without_advancing_cache(setup, monkeypatch):
     memory, _ = setup
     workers._idle_cache.clear()
+    monkeypatch.setattr(config, "SCAN_WORKER_FRESH_SECONDS", 30)
     clock = [1000.0]
     monkeypatch.setattr(workers.time, "time", lambda: clock[0])
 
@@ -254,7 +256,7 @@ def test_failed_idle_renewal_is_retried_without_advancing_cache(setup, monkeypat
     monkeypatch.setattr(storage, "store", child)
     worker_id = "worker-idle-retry-123456"
     workers.seen_claim(worker_id, "Worker 01", None, {})
-    clock[0] += 10
+    clock[0] += 15
     for _ in range(2):
         with pytest.raises(OSError):
             workers.seen_claim(worker_id, "Worker 01", None, {})

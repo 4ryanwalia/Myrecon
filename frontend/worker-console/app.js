@@ -9,6 +9,7 @@
   let hasSnapshot = false;
   let activeUserId = null;
   let requestVersion = 0;
+  let inFlight = null;
   const count = (value) => Number.isSafeInteger(value) && value >= 0 ? value : null;
   const number = (value) => count(value) === null ? "Unavailable" : value.toLocaleString();
   const liveMismatch = (worker) => ["idle", "busy", "recovering", "incompatible"].includes(worker.state) &&
@@ -89,6 +90,31 @@
     root.append(details);
   }
 
+  function renderRecovery(recovery) {
+    const labels = {
+      disabled: "Automatic recovery is disabled.",
+      "offload-unavailable": "Automatic recovery is waiting for the configured scan backend.",
+      "waiting-for-controller-lease": "Waiting for the previous controller to release control.",
+      starting: "Starting the Colab controller.",
+      authorizing: "Checking the Colab account and compute balance.",
+      assigned: "Colab assigned a runtime.",
+      bootstrapping: "Starting the worker in Colab.",
+      "worker-live": "The managed worker has checked in.",
+      "render-unavailable": "The Colab worker is backing off while reconnecting to Render.",
+      retrying: "The controller will try to restore the runtime.",
+      "waiting-for-compute-units": "Waiting for the next compute balance check.",
+      "needs-authorization": "Check the Colab authorization and worker configuration on Render.",
+      "controller-error": "The controller will retry after a startup or connection error.",
+      "supervisor-fatal-error": "The recovery supervisor stopped. Check the Render logs.",
+    };
+    const stage = recovery?.stage;
+    const detail = Object.hasOwn(labels, stage) ? labels[stage] : "";
+    byId("recovery").hidden = !detail;
+    const retry = recovery?.retry_at;
+    const when = Number.isSafeInteger(retry) ? " Next attempt around " + new Date(retry * 1000).toLocaleTimeString() + "." : "";
+    byId("recovery-detail").textContent = detail ? detail + when : "";
+  }
+
   function renderWorkers(workers) {
     const root = byId("workers");
     root.replaceChildren();
@@ -156,9 +182,11 @@
   }
 
   async function loadStatus() {
-    const version = ++requestVersion;
     const state = account().state();
     const userId = state.user && state.user.uid;
+    if (inFlight && !inFlight.signal.aborted && activeUserId === userId) return;
+    inFlight?.abort();
+    const version = ++requestVersion;
     if (activeUserId !== userId) {
       activeUserId = userId;
       hasSnapshot = false;
@@ -166,6 +194,7 @@
       byId("workers").replaceChildren();
       byId("queue").replaceChildren();
       byId("queue").hidden = true;
+      renderRecovery(null);
       byId("launcher").hidden = true;
       byId("launcher").removeAttribute("href");
     }
@@ -179,11 +208,14 @@
     byId("sign-in").hidden = true;
     byId("refresh").hidden = false;
     message("");
+    const controller = new AbortController();
+    inFlight = controller;
+    const timeout = setTimeout(() => controller.abort(), 20_000);
     try {
       const headers = await account().authHeaders();
       if (version !== requestVersion || account().state().user?.uid !== userId) return;
       const response = await fetch(base() + "/api/operator/worker-console", {
-        headers, cache: "no-store",
+        headers, cache: "no-store", signal: controller.signal,
       });
       const data = await response.json().catch(() => ({}));
       if (version !== requestVersion || account().state().user?.uid !== userId) return;
@@ -197,6 +229,7 @@
       const launcher = byId("launcher");
       launcher.hidden = !data.launcher_url;
       if (data.launcher_url) launcher.href = data.launcher_url;
+      renderRecovery(data.recovery);
       renderQueue(data.queue);
       renderWorkers(data.workers || []);
       for (const worker of data.workers || []) foregroundNotification(worker);
@@ -208,6 +241,9 @@
         ? "Showing the last successful status. Live refresh is unavailable."
         : "Live worker status is unavailable.";
       message(responseMessage(error.data || {}, error.status || 0) || error.message, true);
+    } finally {
+      clearTimeout(timeout);
+      if (inFlight === controller) inFlight = null;
     }
   }
 

@@ -9,6 +9,7 @@ import hmac
 import json
 import os
 from pathlib import Path
+import signal
 import sys
 import tempfile
 import uuid
@@ -24,7 +25,7 @@ def bootstrap(archive, origin, token):
     payload = base64.b64encode(archive).decode("ascii")
     digest = hashlib.sha256(archive).hexdigest()
     return f'''
-import base64, hashlib, importlib.metadata, io, pathlib, subprocess, sys, zipfile
+import base64, hashlib, importlib.metadata, io, pathlib, subprocess, sys, time, zipfile
 requirements = importlib.metadata.requires('google-colab') or []
 requests_requirement = next((r for r in requirements if r.lower().startswith('requests')), 'requests')
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', requests_requirement, 'urllib3'])
@@ -36,10 +37,23 @@ with zipfile.ZipFile(io.BytesIO(payload)) as bundle:
     assert all((root / item.filename).resolve().is_relative_to(root.resolve()) for item in bundle.infolist())
     bundle.extractall(root)
 sys.path.insert(0, str(root))
-from tools.colab_worker import Worker
-worker = Worker({origin!r}, {token!r}, concurrency=16, worker_label='Auto CPU worker')
+from tools.colab_worker import Worker, WorkerConfigurationError
+
+class Activity:
+    next_pulse = 0
+
+    def __call__(self):
+        now = time.monotonic()
+        if now >= self.next_pulse:
+            self.next_pulse = now + 60
+            print('MYRECON_WORKER_PULSE', flush=True)
+
+worker = Worker({origin!r}, {token!r}, concurrency=16,
+                worker_label='Auto CPU worker', on_activity=Activity())
 try:
     worker.run(duration_minutes=600)
+except WorkerConfigurationError:
+    print('MYRECON_WORKER_CONFIGURATION_ERROR', flush=True)
 finally:
     del worker
 '''
@@ -97,16 +111,25 @@ def run():
             archive = build(Path(directory)).read_bytes()
         proxy = assignment.runtime_proxy_info
         runtime = ColabRuntime(proxy.url, proxy.token)
+        configuration_error = False
+
         def observe(output):
+            nonlocal configuration_error
             if output.get("output_type") == "stream":
-                message = output.get("text", "")
-                if "Live status confirmed for Auto CPU worker." in message:
-                    print("worker-live", flush=True)
-                elif "Render is temporarily unavailable" in message:
-                    print("render-unavailable", flush=True)
+                for message in output.get("text", "").splitlines():
+                    if message == "MYRECON_WORKER_CONFIGURATION_ERROR":
+                        configuration_error = True
+                    elif message == "MYRECON_WORKER_PULSE":
+                        print("worker-pulse", flush=True)
+                    elif message == "Live status confirmed for Auto CPU worker.":
+                        print("worker-live", flush=True)
+                    elif message == "Render is temporarily unavailable; retrying while this session remains active.":
+                        print("render-unavailable", flush=True)
         print("bootstrapping", flush=True)
         # No CLI history logger or file containing remote code/worker credentials.
         outputs = runtime.execute_code(bootstrap(archive, origin, token), timeout=0, output_hook=observe)
+        if configuration_error:
+            return 78
         return 1 if any(item.get("output_type") == "error" for item in outputs) else 0
     except Exception as error:
         from google.auth.exceptions import RefreshError
@@ -120,7 +143,12 @@ def run():
         session.close()
 
 
+def terminate(signum, frame):
+    raise SystemExit(1)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, terminate)
     try:
         sys.exit(run())
     except Exception:

@@ -305,14 +305,15 @@ Check Render Metrics > Outbound Bandwidth and workspace Billing after a full
 24-hour window. Colab availability and customer traffic vary; these changes
 cannot promise that the remaining allowance lasts until the reset.
 
-### November 15 idle heartbeat refinement
+### Idle heartbeat bandwidth
 
 Unchanged idle presence renewals now write only `last_seen_at` to the worker's
-RTDB child. The ten-second write throttle and all freshness thresholds remain
-unchanged. A full conditional presence transaction runs at least every sixty
+RTDB child. These writes are throttled to half the worker freshness window,
+with a 20-second cap. On the default 30-second freshness window, the write
+throttle is 15 seconds. A full conditional presence transaction runs every sixty
 seconds, on metadata changes, and on state transitions. Failed renewals do not
-advance the cache, so the next claim retries. This removes the ETag read and
-repeated catalogue-hash upload from five of every six steady idle renewals.
+advance the cache, so the next claim retries. Timestamp-only writes avoid
+the ETag read and repeated catalogue-hash upload.
 Job polling, pickup windows, active lease heartbeats, scan concurrency and
 catalogue coverage are unchanged. Existing notebooks benefit immediately.
 Actual monthly savings depend on worker uptime and other outbound traffic.

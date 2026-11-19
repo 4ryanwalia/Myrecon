@@ -13,22 +13,25 @@ from core.store import Abort
 log = logging.getLogger("myrecon.colab_recovery")
 ROOT = "web/colab_controller"
 LEASE_SECONDS = 120
+LEASE_RENEW_SECONDS = 40
+STARTUP_TIMEOUT = 180
+PULSE_TIMEOUT = 300
+MAX_SESSION_AGE = 11 * 3600
 _started = False
 _thread = None
-_child = None
-_last_error = None
-_last_stdout_line = None
-_last_code = None
-_last_stderr = None
-_last_lease = None
 _lock = threading.Lock()
-_status = {"stage": "disabled", "updated_at": 0}
+_status = {"stage": "disabled", "updated_at": 0, "retry_at": None}
 _STAGES = {"authorizing", "assigned", "bootstrapping", "worker-live", "render-unavailable"}
 
 
-def note(stage):
+def note(stage, retry_in=None):
     with _lock:
-        _status.update(stage=stage, updated_at=int(time.time()))
+        now = int(time.time())
+        if _status["stage"] == stage and retry_in is None:
+            return False
+        _status.update(stage=stage, updated_at=now,
+                       retry_at=now + retry_in if retry_in is not None else None)
+        return True
 
 
 def _is_enabled():
@@ -41,66 +44,36 @@ def _is_enabled():
 
 
 def status():
-    ensure_started()
     with _lock:
         data = dict(_status)
-    from core.scan_jobs import available
-    backend = Path(__file__).resolve().parents[1]
-    executable = backend / ".venv/colab/bin/python"
-    import sys, traceback
-    stack = None
-    if _thread and _thread.ident and _thread.ident in sys._current_frames():
-        stack = [f"{Path(f.filename).name}:{f.lineno} in {f.name}"
-                 for f in traceback.extract_stack(sys._current_frames()[_thread.ident])[-6:]]
-    all_threads = {}
-    frames = sys._current_frames()
-    for th in threading.enumerate():
-        if th.ident and th.ident in frames:
-            all_threads[th.name] = [f"{Path(f.filename).name}:{f.lineno} in {f.name}"
-                                    for f in traceback.extract_stack(frames[th.ident])[-5:]]
     data["diagnostics"] = {
         "enabled": _is_enabled(),
-        "storage_backend": storage.store.backend,
-        "jobs_available": available(),
-        "has_google_credentials": bool(os.getenv("COLAB_GOOGLE_CREDENTIALS_JSON")),
-        "has_worker_token": bool(os.getenv("SCAN_WORKER_TOKEN")),
         "thread_alive": bool(_thread and _thread.is_alive()),
-        "executable_exists": executable.exists(),
-        "last_error": _last_error,
-        "last_stdout": _last_stdout_line,
-        "last_code": _last_code,
-        "last_stderr": _last_stderr,
-        "thread_stack": stack,
-        "child_running": bool(_child and _child.poll() is None),
-        "all_threads": all_threads,
-        "lease": _last_lease,
-        "server_now": int(time.time()),
     }
     return data
 
 
-def read_stages(child, healthy=None):
-    global _last_stdout_line
+def read_stages(child, healthy, activity):
     for line in iter(lambda: child.stdout.readline(4096), ""):
-        stripped = line.strip()
-        _last_stdout_line = stripped[:64]
-        if stripped in _STAGES:
-            if stripped == "worker-live" and healthy is not None:
-                healthy.set()
-            note(stripped)
-            log.info("Colab recovery: %s", stripped)
+        stage = line.strip()
+        if stage == "worker-live":
+            healthy.set()
+        elif stage == "render-unavailable":
+            healthy.clear()
+        if stage in {"worker-live", "worker-pulse", "render-unavailable"}:
+            activity.set()
+        if stage in _STAGES and note(stage):
+            log.info("Colab recovery: %s", stage)
 
 
 def renew(owner, now=None):
-    global _last_lease
     now = time.time() if now is None else now
 
     def change(current):
-        global _last_lease
-        _last_lease = dict(current) if isinstance(current, dict) else current
-        current = current or {}
+        current = current if isinstance(current, dict) else {}
         expires_at = current.get("expires_at", 0)
-        if current.get("owner") != owner and now < expires_at <= now + LEASE_SECONDS * 2:
+        if (current.get("owner") != owner and type(expires_at) in (int, float)
+                and now < expires_at <= now + LEASE_SECONDS * 2):
             raise Abort()
         return {"owner": owner, "expires_at": now + LEASE_SECONDS}
 
@@ -122,17 +95,42 @@ def stop_child(child):
 
 
 def retry_delay(previous, code, healthy=False):
-    """Back off consecutive failures, not failures separated by a live worker."""
+    """Require a sustained live session before resetting the retry delay."""
     if code == 75:
         return 1800
-    if code == 0 or healthy:
+    if healthy:
         return 30
-    return min(900, previous * 2)
+    return min(900, max(60, previous * 2))
+
+
+def wait_for_child(child, owner, activity, healthy):
+    started = last_activity = time.monotonic()
+    first_live_activity = None
+    stable = False
+    timeout = STARTUP_TIMEOUT
+    while True:
+        try:
+            return child.wait(timeout=LEASE_RENEW_SECONDS), stable
+        except subprocess.TimeoutExpired:
+            now = time.monotonic()
+        if activity.is_set():
+            activity.clear()
+            last_activity = now
+            timeout = PULSE_TIMEOUT
+            if not healthy.is_set():
+                first_live_activity = None
+            elif first_live_activity is None:
+                first_live_activity = now
+            elif now - first_live_activity >= PULSE_TIMEOUT:
+                stable = True
+        if now - last_activity >= timeout:
+            log.warning("Colab controller stopped reporting activity.")
+            return 1, stable
+        if now - started >= MAX_SESSION_AGE or not renew(owner):
+            return 1, stable
 
 
 def supervise():
-    global _last_error, _child, _last_code, _last_stderr
-    note("supervisor-booting")
     try:
         owner = secrets.token_hex(16)
         backend = Path(__file__).resolve().parents[1]
@@ -154,44 +152,35 @@ def supervise():
                 note("starting")
                 child = subprocess.Popen([str(executable), "tools/colab_controller.py"],
                     cwd=backend, env=env, stdin=subprocess.DEVNULL,
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                _child = child
+                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 healthy = threading.Event()
-                threading.Thread(target=read_stages, args=(child, healthy), daemon=True).start()
-                started = time.monotonic()
-                while child.poll() is None:
-                    time.sleep(20)
-                    if not renew(owner) or time.monotonic() - started > 11 * 3600:
-                        stop_child(child)
-                        break
-                code = child.returncode
-                _last_code = code
-                if code != 0 and child.stderr:
-                    try:
-                        _last_stderr = child.stderr.read(512).strip()
-                    except Exception:
-                        pass
+                activity = threading.Event()
+                reader = threading.Thread(target=read_stages, args=(child, healthy, activity), daemon=True)
+                reader.start()
+                try:
+                    code, stable = wait_for_child(child, owner, activity, healthy)
+                finally:
+                    stop_child(child)
+                    reader.join(timeout=2)
+                child = None
                 if code == 78:
                     note("needs-authorization")
                     log.error("Colab recovery needs Google/worker credential configuration; disabled until restart.")
                     return
-                delay = retry_delay(delay, code, healthy.is_set())
-                note("waiting-for-compute-units" if code == 75 else "retrying")
+                delay = retry_delay(delay, code, stable)
+                note("waiting-for-compute-units" if code == 75 else "retrying", retry_in=delay)
                 log.info("Colab controller finished (code %s); retrying in %ss. Render fallback remains available.", code, delay)
             except Exception as e:
-                _last_error = f"{type(e).__name__}: {e}"
-                note("controller-error")
+                delay = retry_delay(delay, 1)
+                note("controller-error", retry_in=delay)
                 # Never log provider exception text, tokens or source sent to Jupyter.
                 log.warning("Colab recovery paused after a controller/lease failure (%s).", type(e).__name__)
-                delay = min(900, delay * 2)
             finally:
                 stop_child(child)
-                _child = None
             time.sleep(delay)
-    except BaseException as e:
-        _last_error = f"FATAL_{type(e).__name__}: {e}"
+    except Exception as e:
         note("supervisor-fatal-error")
-        log.exception("Colab recovery supervisor fatal error")
+        log.error("Colab recovery supervisor fatal error (%s).", type(e).__name__)
 
 
 def ensure_started():
@@ -200,13 +189,15 @@ def ensure_started():
         return
     from core.scan_jobs import available
     if not available() or storage.store.backend != "rtdb":
-        log.warning("Colab recovery requires the durable scan queue.")
+        note("offload-unavailable")
+        log.warning("Colab recovery requires RTDB-backed worker coordination.")
         return
     if not os.getenv("COLAB_GOOGLE_CREDENTIALS_JSON"):
+        note("needs-authorization")
         log.warning("Colab recovery is waiting for Google authorization.")
         return
     with _lock:
-        if _thread is None or not _thread.is_alive():
-            _started = True
+        if not _started:
             _thread = threading.Thread(target=supervise, name="colab-recovery", daemon=True)
             _thread.start()
+            _started = True

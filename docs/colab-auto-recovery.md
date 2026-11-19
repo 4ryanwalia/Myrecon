@@ -16,10 +16,10 @@ Google AI trials may not include Colab compute benefits.
 ## Behavior
 
 `wsgi.py` starts a supervisor only when `COLAB_AUTO_RECOVERY_ENABLED=true`,
-the durable RTDB scan queue is available and Google credentials are configured.
+RTDB-backed worker coordination is available and Google credentials are configured.
 The supervisor shares the existing Render service; no second free service or
 paid worker is created. A transactional 120-second RTDB lease excludes other
-Gunicorn workers and overlapping deployments; it is renewed every 20 seconds.
+Gunicorn workers and overlapping deployments. It is renewed every 40 seconds.
 If renewal fails, the local controller process is terminated.
 
 The child uses google-colab-cli 0.7.5 in a separate virtual environment. It
@@ -28,23 +28,29 @@ only, and sends the matching source-only worker bundle plus dedicated worker
 token to Colab. Firebase, payment, search and Google OAuth credentials are
 never sent to the worker. The controller suppresses provider error bodies,
 remote source and CLI execution histories because they can contain secrets.
-The authenticated `/api/operator/colab-recovery` endpoint reports only a fixed
-startup/retry stage and timestamp. Unlike the full worker console snapshot it
-does not read the scan queue. Only allowlisted child stage messages are logged.
+The private Worker Console shows the recovery stage and the next scheduled
+retry when applicable. The token-authenticated recovery endpoint reads the
+same in-memory status. Only allowlisted child stage changes are logged.
 
 An HMAC-derived stable notebook identity lets a replacement controller reclaim
 its own orphaned assignment. It never stops unrelated manually opened notebooks.
 After a session ends, it releases its assignment and retries with backoff.
-An empty compute balance waits 30 minutes; invalid Google authorization stops
-retries until the service restarts with corrected credentials. The worker still
-has its existing ten-hour execution limit. A controller process is bounded to
-eleven hours by its parent.
+Startup has a three-minute timeout and a running worker has a five-minute
+activity timeout, both checked at the lease interval. The managed worker
+reports activity from existing claim and heartbeat responses. During a Render
+outage the same session backs off between attempts, up to 90 seconds, and
+reports that it is still alive. Repeated Colab failures back off up to 15
+minutes. An empty compute balance waits 30 minutes. Invalid Google or worker
+authorization stops retries until the service restarts with corrected
+credentials. The worker still has its ten-hour execution limit and the
+controller process is bounded to eleven hours.
 
 When Colab is polling, its requests provide real inbound Render traffic. If
 both services are stopped, the existing `Keep API Awake` GitHub workflow can
 wake Render via `/api/health`; a real user request can do the same. GitHub
 schedules can be delayed or disabled, and Render can suspend free services at
-its usage limit. Outages and startup delays therefore remain possible.
+its usage limit. The coordinator falls back to Render while the worker
+recovers, as long as Render is available.
 
 ## Activation
 

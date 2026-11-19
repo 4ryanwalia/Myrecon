@@ -1,4 +1,4 @@
-const CACHE = "myrecon-worker-console-v3";
+const CACHE = "myrecon-worker-console-v4";
 const SHELL = [
   "/worker-console/",
   "/worker-console/index.html",
@@ -23,7 +23,8 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET" || new URL(event.request.url).origin !== self.location.origin) return;
+  const url = new URL(event.request.url);
+  if (event.request.method !== "GET" || url.origin !== self.location.origin || !SHELL.includes(url.pathname)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     try {

@@ -22,10 +22,15 @@ class LeaseLost(Exception):
     pass
 
 
+class WorkerConfigurationError(ValueError):
+    pass
+
+
 class Worker:
     _LABEL = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 ._-]{0,39}$")
 
-    def __init__(self, api_url, token, concurrency=16, worker_label="Colab worker", http=None):
+    def __init__(self, api_url, token, concurrency=16, worker_label="Colab worker",
+                 http=None, on_activity=None):
         parts = urlsplit(api_url)
         if (parts.scheme != "https" or not parts.hostname or parts.username or parts.password
                 or parts.query or parts.fragment or parts.path not in ("", "/")):
@@ -43,9 +48,12 @@ class Worker:
         self.catalogues = {scope: scan_engine.fingerprint(scope) for scope in ("standard", "full", "extended")}
         self.catalogues["standard:deep"] = scan_engine.fingerprint("standard", True)
         self._presence_recorded = None
+        self._on_activity = on_activity
 
     def note_presence(self, response):
         """Tell the notebook whether Render recorded the operator health check-in."""
+        if self._on_activity is not None:
+            self._on_activity()
         recorded = response.get("presence_recorded") if isinstance(response, dict) else None
         if recorded is None or recorded == self._presence_recorded:
             return
@@ -66,9 +74,11 @@ class Worker:
                     timeout=(10, 25), allow_redirects=False)
                 if response.status_code == 409:
                     raise LeaseLost()
-                if response.status_code in (401, 403, 404, 422):
-                    raise ValueError("Worker configuration or payload was refused (HTTP "
-                                     + str(response.status_code) + ")")
+                if response.status_code in (401, 403, 404):
+                    raise WorkerConfigurationError(
+                        f"Worker configuration was refused (HTTP {response.status_code})")
+                if response.status_code == 422:
+                    raise ValueError("Worker payload was refused (HTTP 422)")
                 if response.status_code == 429 or response.status_code >= 500:
                     if attempt < 2:
                         time.sleep(2 ** attempt)
@@ -87,11 +97,17 @@ class Worker:
             raise ValueError("Worker bundle does not match the deployed scanner")
         lease = {"job_id": job["id"], "lease_token": job["token"]}
         stop, lost = threading.Event(), threading.Event()
+        configuration_error = None
 
         def renew():
+            nonlocal configuration_error
             while not stop.wait(10):
                 try:
                     self.note_presence(self.call("heartbeat", lease))
+                except WorkerConfigurationError as error:
+                    configuration_error = error
+                    lost.set()
+                    return
                 except Exception:
                     lost.set()
                     return
@@ -130,6 +146,8 @@ class Worker:
                 pass
             raise
         except LeaseLost:
+            if configuration_error is not None:
+                raise configuration_error
             print("Lease ended. The coordinator will handle this job.")
         except Exception:
             try:
@@ -146,6 +164,7 @@ class Worker:
         end = time.monotonic() + duration * 60
         print("CPU worker started for up to " + str(duration) + " minutes. "
               "Colab may end the runtime earlier. Stop the cell to disconnect.")
+        retry_in = 10
         try:
             while time.monotonic() < end:
                 try:
@@ -154,25 +173,19 @@ class Worker:
                         "protocol": scan_engine.PROTOCOL,
                         "wait_seconds": min(10, max(0, end - time.monotonic()))})
                     self.note_presence(response)
-                except RuntimeError:
-                    print("Render is temporarily unavailable; retrying while this session remains active.")
-                    time.sleep(min(10, max(0, end - time.monotonic())))
-                    continue
-                job = response.get("job")
-                if job:
-                    print("Running a " + job["scope"] + " scan.")
-                    try:
+                    job = response.get("job")
+                    if job:
+                        print("Running a " + job["scope"] + " scan.")
                         self.execute(job)
-                    except RuntimeError:
-                        # execute() has already attempted to release the lease.
-                        # Keep the same worker/session alive after a transient
-                        # Render outage; auth/protocol ValueErrors still stop it.
-                        print("Render is temporarily unavailable during this scan; "
-                              "the coordinator retains its checkpoints. Retrying "
-                              "while this session remains active.")
-                        time.sleep(min(10, max(0, end - time.monotonic())))
+                    else:
+                        time.sleep(min(2, max(0, end - time.monotonic())))
+                except RuntimeError:
+                    self._presence_recorded = None
+                    print("Render is temporarily unavailable; retrying while this session remains active.")
+                    time.sleep(min(retry_in, max(0, end - time.monotonic())))
+                    retry_in = min(90, retry_in * 2)
                 else:
-                    time.sleep(min(2, max(0, end - time.monotonic())))
+                    retry_in = 10
         finally:
             try:
                 self.call("stopped", {"worker_id": self.worker_id})

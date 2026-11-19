@@ -29,7 +29,7 @@ class ControllerSDKTests(unittest.TestCase):
         self.env.start()
         self.addCleanup(self.env.stop)
 
-    def invoke(self, balance=1, assignments=None, fail=False):
+    def invoke(self, balance=1, assignments=None, fail=False, stream=None):
         with patch("colab_cli.client.Client", autospec=True) as client_type, \
              patch("colab_cli.runtime.ColabRuntime", autospec=True) as runtime_type, \
              patch("google.auth.transport.requests.AuthorizedSession", autospec=True):
@@ -40,6 +40,11 @@ class ControllerSDKTests(unittest.TestCase):
             runtime.execute_code.return_value = []
             if fail:
                 runtime.execute_code.side_effect = RuntimeError("provider error containing secret")
+            elif stream is not None:
+                def execute(*args, output_hook, **kwargs):
+                    output_hook({"output_type": "stream", "text": stream})
+                    return []
+                runtime.execute_code.side_effect = execute
             result = controller.run()
             return result, client, runtime
 
@@ -70,6 +75,11 @@ class ControllerSDKTests(unittest.TestCase):
     def test_failed_remote_execution_releases_assignment(self):
         result, client, _ = self.invoke(fail=True)
         self.assertEqual(result, 1)
+        client.unassign.assert_called_once_with("owned")
+
+    def test_worker_configuration_failure_parks_recovery_after_releasing_assignment(self):
+        result, client, _ = self.invoke(stream="MYRECON_WORKER_CONFIGURATION_ERROR\n")
+        self.assertEqual(result, 78)
         client.unassign.assert_called_once_with("owned")
 
 
