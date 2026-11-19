@@ -28,15 +28,25 @@ __version__ = "1.0.0"
 # The backend package uses absolute imports (`from services...`, `from
 # modules...`), so its directory has to be importable as a root, not as a
 # `backend.` package. Adding it here keeps those modules unmodified.
+#
+# From a clone the backend is the repo's backend/. In a pip install it ships
+# inside this package as _backend/, so `services`, `modules`, `core` and
+# friends are never installed as top-level names in site-packages; they only
+# become importable inside a running CLI process.
 _CLI_DIR = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(_CLI_DIR)
-_BACKEND = os.path.join(_ROOT, "backend")
+_BUNDLED = os.path.join(_CLI_DIR, "_backend")
+_BACKEND = _BUNDLED if os.path.isdir(_BUNDLED) else os.path.join(_ROOT, "backend")
 
-for _path in (_BACKEND, _ROOT):
+for _path in ((_BACKEND,) if _BACKEND == _BUNDLED else (_BACKEND, _ROOT)):
     if _path not in sys.path:
         sys.path.insert(0, _path)
 
-from cli import ui, views  # noqa: E402 - must follow the sys.path setup above
+if __package__:
+    from . import ui, views  # noqa: E402 - must follow the sys.path setup above
+else:  # run as a plain script: python cli/__main__.py
+    sys.path.insert(0, _ROOT)
+    from cli import ui, views  # noqa: E402
 
 
 # Filled in by _build_parser so the home screen quotes each command's real help
@@ -284,7 +294,14 @@ def _cmd_platforms(args) -> tuple:
 def _cmd_serve(args) -> tuple:
     """Run the API locally — the same entry point `backend/dev.py` uses."""
     os.environ.setdefault("FLASK_ENV", "development")
-    from app import app
+    try:
+        from app import app
+    except ModuleNotFoundError as exc:
+        # The lookups need only the base install; the API server also loads
+        # sign-in and billing code. Those packages are the "server" extra.
+        if exc.name in ("jwt", "cryptography"):
+            raise SystemExit('serve needs the server extras: pip install "myrecon[server]"')
+        raise
 
     ui.success("API on http://" + args.host + ":" + str(args.port) +
                "  (health: /api/health)")

@@ -12,7 +12,7 @@ supports. Accounts that merely share a handle are labelled as exactly that.
 
 from __future__ import annotations
 
-from cli import ui
+from . import ui
 
 
 def _truncate(text, limit: int = 70) -> str:

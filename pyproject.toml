@@ -1,14 +1,15 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=77.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "myrecon"
 version = "1.0.0"
-description = "Open-source OSINT toolkit for authorized digital-footprint audits, username sweeps across 500+ platforms, and breach checks."
-readme = "README.md"
+description = "MyRecon CLI: open-source OSINT lookups for authorized footprint audits. Username search, breach exposure, DNS, WHOIS and IP, same engine as myrecon.xyz."
+readme = "PYPI-README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
   { name = "Aryan Walia", email = "aryan@bugsnaps.in" },
 ]
@@ -25,7 +26,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Information Technology",
   "Intended Audience :: System Administrators",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
@@ -40,6 +40,14 @@ dependencies = [
   "beautifulsoup4>=4.12.0",
 ]
 
+[project.optional-dependencies]
+# Only `myrecon serve` (the local API) needs these: it loads sign-in and
+# billing code that the lookup commands never import.
+server = [
+  "PyJWT[crypto]>=2.8.0",
+  "cryptography>=42.0.0",
+]
+
 [project.urls]
 "Homepage" = "https://www.myrecon.xyz"
 "Documentation" = "https://www.myrecon.xyz/developers.html"
@@ -50,4 +58,29 @@ dependencies = [
 "Breach Archive" = "https://www.myrecon.xyz/breaches/"
 
 [project.scripts]
-myrecon = "cli.__main__:main"
+myrecon = "myrecon_cli.__main__:main"
+
+# The repository is a flat monorepo (website, API, CLI, tools), so package
+# discovery is explicit. A pip install ships only the CLI, installed as
+# `myrecon_cli`, with the backend it runs in-process bundled inside it as
+# `myrecon_cli/_backend`. Backend tests and tools are not shipped. From a clone,
+# `python myrecon.py` still runs the same code straight from cli/ and backend/.
+[tool.setuptools]
+include-package-data = false
+packages = [
+  "myrecon_cli",
+  "myrecon_cli._backend",
+  "myrecon_cli._backend.core",
+  "myrecon_cli._backend.data",
+  "myrecon_cli._backend.modules",
+  "myrecon_cli._backend.services",
+  "myrecon_cli._backend.utils",
+]
+
+[tool.setuptools.package-dir]
+"myrecon_cli" = "cli"
+"myrecon_cli._backend" = "backend"
+
+[tool.setuptools.package-data]
+"myrecon_cli._backend.core" = ["*.json"]
+"myrecon_cli._backend.data" = ["*.json"]

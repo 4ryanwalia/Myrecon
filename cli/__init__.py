@@ -16,5 +16,5 @@ __all__ = ["main"]
 
 
 def main(argv=None) -> int:
-    from cli.__main__ import main as _main
+    from .__main__ import main as _main
     return _main(argv)
