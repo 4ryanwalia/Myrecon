@@ -425,6 +425,7 @@ def register(app, api):
             **_operator_snapshot(),
             "launcher_url": workers.launcher_url(),
             "recovery": {key: recovery[key] for key in ("stage", "updated_at", "retry_at")},
+            "recovery_workers": recovery["workers"],
         })
         response.headers["Cache-Control"] = "no-store"
         return response, status

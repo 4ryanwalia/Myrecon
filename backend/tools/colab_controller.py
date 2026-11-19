@@ -1,4 +1,4 @@
-"""One managed CPU session using Google's pinned Colab CLI library.
+"""Manage one assigned CPU worker using Google's pinned Colab CLI library.
 
 Run only in .venv/colab. Never logs credentials, remote code or provider errors.
 The parent renews a durable lease and supplies only the dedicated worker token.
@@ -15,13 +15,16 @@ import tempfile
 import uuid
 
 
-def notebook_id(token):
+def notebook_id(token, slot=1):
     # Stable across Render restarts; never attaches to the user's other notebooks.
-    digest = hmac.new(token.encode(), b"myrecon-colab-auto-cpu-v1", hashlib.sha256).digest()
+    identity = "myrecon-colab-auto-cpu-v1"
+    if slot != 1:
+        identity += f":{slot}"
+    digest = hmac.new(token.encode(), identity.encode(), hashlib.sha256).digest()
     return uuid.UUID(bytes=digest[:16])
 
 
-def bootstrap(archive, origin, token):
+def bootstrap(archive, origin, token, worker_label="Auto CPU worker"):
     payload = base64.b64encode(archive).decode("ascii")
     digest = hashlib.sha256(archive).hexdigest()
     return f'''
@@ -49,7 +52,7 @@ class Activity:
             print('MYRECON_WORKER_PULSE', flush=True)
 
 worker = Worker({origin!r}, {token!r}, concurrency=16,
-                worker_label='Auto CPU worker', on_activity=Activity())
+                worker_label={worker_label!r}, on_activity=Activity())
 try:
     worker.run(duration_minutes=600)
 except WorkerConfigurationError:
@@ -61,7 +64,7 @@ finally:
 
 def run():
     # Imports are intentionally isolated from Flask and GHunt dependencies.
-    from colab_cli.client import Accelerator, Client, PostAssignmentResponse, Prod, Variant
+    from colab_cli.client import Accelerator, Client, PostAssignmentResponse, Prod, TooManyAssignmentsError, Variant
     from colab_cli.runtime import ColabRuntime
     from google.auth.transport.requests import AuthorizedSession
     from google.oauth2.credentials import Credentials
@@ -74,6 +77,11 @@ def run():
         token = os.environ["SCAN_WORKER_TOKEN"].strip()
         if len(token) < 32:
             return 78
+        slot = int(os.getenv("COLAB_WORKER_SLOT", "1"))
+        if slot not in (1, 2):
+            return 78
+        worker_label = "Auto CPU worker" if slot == 1 else "Auto CPU worker 2"
+        identity = notebook_id(token, slot)
         # Fix the refresh destination; never trust a supplied token_uri.
         credentials = Credentials(None, refresh_token=info["refresh_token"],
             token_uri="https://oauth2.googleapis.com/token",
@@ -95,7 +103,7 @@ def run():
         balance = client.get_consumption_user_info().paid_compute_units_balance
         if balance <= 0:
             return 75  # Wait for included units; never purchase or change accounts.
-        assignment = client.assign(notebook_id(token), variant=Variant.DEFAULT,
+        assignment = client.assign(identity, variant=Variant.DEFAULT,
                                    accelerator=Accelerator.NONE)
         endpoint = assignment.endpoint
         # Reap only our stable assignment, including any process orphaned by a
@@ -103,7 +111,7 @@ def run():
         if not isinstance(assignment, PostAssignmentResponse):
             client.unassign(endpoint)
             endpoint = None
-            assignment = client.assign(notebook_id(token), variant=Variant.DEFAULT,
+            assignment = client.assign(identity, variant=Variant.DEFAULT,
                                        accelerator=Accelerator.NONE)
             endpoint = assignment.endpoint
         print("assigned", flush=True)
@@ -121,16 +129,19 @@ def run():
                         configuration_error = True
                     elif message == "MYRECON_WORKER_PULSE":
                         print("worker-pulse", flush=True)
-                    elif message == "Live status confirmed for Auto CPU worker.":
+                    elif message == f"Live status confirmed for {worker_label}.":
                         print("worker-live", flush=True)
                     elif message == "Render is temporarily unavailable; retrying while this session remains active.":
                         print("render-unavailable", flush=True)
         print("bootstrapping", flush=True)
         # No CLI history logger or file containing remote code/worker credentials.
-        outputs = runtime.execute_code(bootstrap(archive, origin, token), timeout=0, output_hook=observe)
+        outputs = runtime.execute_code(bootstrap(archive, origin, token, worker_label),
+                                       timeout=0, output_hook=observe)
         if configuration_error:
             return 78
         return 1 if any(item.get("output_type") == "error" for item in outputs) else 0
+    except TooManyAssignmentsError:
+        return 69
     except Exception as error:
         from google.auth.exceptions import RefreshError
         return 78 if isinstance(error, RefreshError) else 1

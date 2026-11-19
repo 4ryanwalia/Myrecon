@@ -90,7 +90,7 @@
     root.append(details);
   }
 
-  function renderRecovery(recovery) {
+  function renderRecovery(recovery, workers) {
     const labels = {
       disabled: "Automatic recovery is disabled.",
       "offload-unavailable": "Automatic recovery is waiting for the configured scan backend.",
@@ -102,17 +102,27 @@
       "worker-live": "The managed worker has checked in.",
       "render-unavailable": "The Colab worker is backing off while reconnecting to Render.",
       retrying: "The controller will try to restore the runtime.",
+      "waiting-for-colab-capacity": "Colab has reached its active session limit. Waiting to retry.",
       "waiting-for-compute-units": "Waiting for the next compute balance check.",
       "needs-authorization": "Check the Colab authorization and worker configuration on Render.",
       "controller-error": "The controller will retry after a startup or connection error.",
       "supervisor-fatal-error": "The recovery supervisor stopped. Check the Render logs.",
     };
-    const stage = recovery?.stage;
-    const detail = Object.hasOwn(labels, stage) ? labels[stage] : "";
-    byId("recovery").hidden = !detail;
-    const retry = recovery?.retry_at;
-    const when = Number.isSafeInteger(retry) ? " Next attempt around " + new Date(retry * 1000).toLocaleTimeString() + "." : "";
-    byId("recovery-detail").textContent = detail ? detail + when : "";
+    const entries = Array.isArray(workers) ? workers : [recovery];
+    const details = byId("recovery-detail");
+    details.replaceChildren();
+    for (const entry of entries) {
+      if (!Object.hasOwn(labels, entry?.stage)) continue;
+      const detail = document.createElement("p");
+      const worker = entries.length > 1 ? `Worker ${entry.slot} · ` : "";
+      const retry = entry.retry_at;
+      const when = Number.isSafeInteger(retry)
+        ? " Next attempt around " + new Date(retry * 1000).toLocaleTimeString() + "."
+        : "";
+      detail.textContent = worker + labels[entry.stage] + when;
+      details.append(detail);
+    }
+    byId("recovery").hidden = !details.childElementCount;
   }
 
   function renderWorkers(workers) {
@@ -229,7 +239,7 @@
       const launcher = byId("launcher");
       launcher.hidden = !data.launcher_url;
       if (data.launcher_url) launcher.href = data.launcher_url;
-      renderRecovery(data.recovery);
+      renderRecovery(data.recovery, data.recovery_workers);
       renderQueue(data.queue);
       renderWorkers(data.workers || []);
       for (const worker of data.workers || []) foregroundNotification(worker);

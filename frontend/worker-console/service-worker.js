@@ -1,4 +1,4 @@
-const CACHE = "myrecon-worker-console-v4";
+const CACHE = "myrecon-worker-console-v5";
 const SHELL = [
   "/worker-console/",
   "/worker-console/index.html",

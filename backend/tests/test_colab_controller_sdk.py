@@ -25,7 +25,8 @@ class ControllerSDKTests(unittest.TestCase):
         self.env = patch.dict(controller.os.environ, {
             "COLAB_GOOGLE_CREDENTIALS_JSON": '{"type":"authorized_user","client_id":"id",'
                 '"client_secret":"secret","refresh_token":"refresh"}',
-            "SCAN_WORKER_TOKEN": "dedicated-test-worker-token-" * 2})
+            "SCAN_WORKER_TOKEN": "dedicated-test-worker-token-" * 2,
+            "COLAB_WORKER_SLOT": "1"})
         self.env.start()
         self.addCleanup(self.env.stop)
 
@@ -71,6 +72,21 @@ class ControllerSDKTests(unittest.TestCase):
         self.assertEqual(client.assign.call_count, 2)
         self.assertEqual([call.args for call in client.unassign.call_args_list], [("owned",), ("owned",)])
         client.list_assignments.assert_not_called()
+
+    def test_secondary_uses_its_own_notebook_and_reports_live(self):
+        with patch.dict(controller.os.environ, {"COLAB_WORKER_SLOT": "2"}), patch("builtins.print") as report:
+            result, client, runtime = self.invoke(stream="Live status confirmed for Auto CPU worker 2.\n")
+            identity = controller.notebook_id(controller.os.environ["SCAN_WORKER_TOKEN"], 2)
+        self.assertEqual(result, 0)
+        self.assertEqual(client.assign.call_args.args[0], identity)
+        self.assertIn("Auto CPU worker 2", runtime.execute_code.call_args.args[0])
+        report.assert_any_call("worker-live", flush=True)
+
+    def test_capacity_limit_leaves_existing_assignments_alone(self):
+        from colab_cli.client import TooManyAssignmentsError
+        result, client, _ = self.invoke(assignments=[TooManyAssignmentsError("capacity")])
+        self.assertEqual(result, 69)
+        client.unassign.assert_not_called()
 
     def test_failed_remote_execution_releases_assignment(self):
         result, client, _ = self.invoke(fail=True)

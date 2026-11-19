@@ -203,6 +203,20 @@ def test_global_render_capacity_and_queue_bound(setup, monkeypatch):
     assert jobs.claim("colab:worker", versions())["id"] != first["id"]
 
 
+def test_two_colab_workers_claim_different_jobs(setup):
+    _, client = setup
+    first = queued()
+    second = queued("b" * 32)
+    headers = {"Authorization": "Bearer " + config.SCAN_WORKER_TOKEN}
+    replies = [client.post("/api/scan-worker/claim", json={
+        "worker_id": f"worker-fixture-00{slot}", "catalogues": versions(),
+        "protocol": scan_engine.PROTOCOL,
+    }, headers=headers) for slot in (1, 2)]
+    assert [reply.status_code for reply in replies] == [200, 200]
+    assert {reply.json["job"]["id"] for reply in replies} == {first["id"], second["id"]}
+    assert jobs.get(first["id"])["executor"] != jobs.get(second["id"])["executor"]
+
+
 def test_worker_catalogue_mismatch_is_not_dispatched(setup):
     queued()
     assert jobs.claim("colab:old-worker", {"full": "old-version"}) is None
