@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-11-19",
+  "generated": "2026-11-20",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -12,9 +12,86 @@
     "licence": "https://creativecommons.org/licenses/by/4.0/",
     "notice": "Breach data originates from Have I Been Pwned and is licensed CC BY 4.0. If you publish it you must credit Have I Been Pwned. A link to https://www.myrecon.xyz/breaches/ is appreciated but not required by the licence."
   },
-  "count": 60,
-  "total_accounts": 5958834441,
+  "count": 61,
+  "total_accounts": 5962443862,
   "breaches": [
+    {
+      "name": "Careers360",
+      "title": "Careers360",
+      "slug": "careers360",
+      "url": "https://www.myrecon.xyz/breaches/careers360.html",
+      "domain": "careers360.com",
+      "breach_date": "2026-11-14",
+      "added_date": "2026-11-20T03:44:54Z",
+      "accounts": 3609421,
+      "data_classes": [
+        "Academic records",
+        "Castes",
+        "Email addresses",
+        "Genders",
+        "Names",
+        "Phone numbers"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Careers360.png",
+      "severity": 56,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In November 2026, data allegedly taken from the Indian education and careers platform Careers360 appeared on a public hacking forum. The 22M records included 3.6M unique email addresses alongside names, phone numbers, genders and caste categories, and most also contained students' entrance exam results, including ranks and marks.",
+      "story": {
+        "background": [
+          "In November 2026, data allegedly taken from the Indian education and careers platform Careers360 appeared on a public hacking forum . The 22M records included 3.6M unique email addresses alongside names, phone numbers, genders and caste categories, and most also contained students' entrance exam results, including ranks and marks."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "3,609,421 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Academic records, Castes, Email addresses, Genders, Names, Phone numbers."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "Careers360",
+          "breach_date": "2026-11-14"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        },
+        {
+          "name": "Academic records",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Castes",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Genders",
+          "why": "Small on its own; useful to anyone assembling a fuller profile."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": "That is about 13% of the population of Australia."
+    },
     {
       "name": "CastleRAT",
       "title": "CastleRAT",

@@ -1,6 +1,6 @@
 {
   "api_version": 1,
-  "generated": "2026-11-19",
+  "generated": "2026-11-20",
   "documentation": "https://www.myrecon.xyz/developers.html",
   "licence": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": {
@@ -14,6 +14,83 @@
   },
   "count": 10,
   "breaches": [
+    {
+      "name": "Careers360",
+      "title": "Careers360",
+      "slug": "careers360",
+      "url": "https://www.myrecon.xyz/breaches/careers360.html",
+      "domain": "careers360.com",
+      "breach_date": "2026-11-14",
+      "added_date": "2026-11-20T03:44:54Z",
+      "accounts": 3609421,
+      "data_classes": [
+        "Academic records",
+        "Castes",
+        "Email addresses",
+        "Genders",
+        "Names",
+        "Phone numbers"
+      ],
+      "verified": true,
+      "sensitive": false,
+      "stealer_log": false,
+      "logo": "https://logos.haveibeenpwned.com/Careers360.png",
+      "severity": 56,
+      "band": "Serious",
+      "data_provider": null,
+      "summary": "In November 2026, data allegedly taken from the Indian education and careers platform Careers360 appeared on a public hacking forum. The 22M records included 3.6M unique email addresses alongside names, phone numbers, genders and caste categories, and most also contained students' entrance exam results, including ranks and marks.",
+      "story": {
+        "background": [
+          "In November 2026, data allegedly taken from the Indian education and careers platform Careers360 appeared on a public hacking forum . The 22M records included 3.6M unique email addresses alongside names, phone numbers, genders and caste categories, and most also contained students' entrance exam results, including ranks and marks."
+        ],
+        "how": [
+          "The published account does not explain the exact way the data was obtained."
+        ],
+        "motive": [],
+        "outcome": [
+          "3,609,421 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+          "The reported exposed data includes Academic records, Castes, Email addresses, Genders, Names, Phone numbers."
+        ],
+        "editorial": []
+      },
+      "check_targets": [
+        {
+          "name": "Careers360",
+          "breach_date": "2026-11-14"
+        }
+      ],
+      "fields": [
+        {
+          "name": "Phone numbers",
+          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
+        },
+        {
+          "name": "Names",
+          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+        },
+        {
+          "name": "Email addresses",
+          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+        },
+        {
+          "name": "Academic records",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Castes",
+          "why": "Adds detail to a profile that can be assembled from several breaches at once."
+        },
+        {
+          "name": "Genders",
+          "why": "Small on its own; useful to anyone assembling a fuller profile."
+        }
+      ],
+      "actions": [
+        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
+        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+      ],
+      "scale_line": "That is about 13% of the population of Australia."
+    },
     {
       "name": "CastleRAT",
       "title": "CastleRAT",
@@ -822,98 +899,6 @@
       "actions": [
         "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
         "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
-        "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
-        "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
-      ],
-      "scale_line": null
-    },
-    {
-      "name": "Neogen",
-      "title": "Neogen",
-      "slug": "neogen",
-      "url": "https://www.myrecon.xyz/breaches/neogen.html",
-      "domain": "neogen.com",
-      "breach_date": "2026-08-29",
-      "added_date": "2026-10-09T07:06:25Z",
-      "accounts": 435963,
-      "data_classes": [
-        "Email addresses",
-        "Employers",
-        "Job titles",
-        "Names",
-        "Phone numbers",
-        "Physical addresses",
-        "Salutations"
-      ],
-      "verified": true,
-      "sensitive": false,
-      "stealer_log": false,
-      "logo": "https://logos.haveibeenpwned.com/Neogen.png",
-      "severity": 56,
-      "band": "Serious",
-      "data_provider": null,
-      "summary": "In August 2026, the food and animal safety organisation Neogen was the target of a ShinyHunters \"pay or leak\" extortion attempt. The group later published data it claimed had been obtained from Neogen. The data consisted largely of corporate contact records and included 436k unique email addresses from mailing lists, employee records and other contacts.",
-      "story": {
-        "background": [
-          "In August 2026, the food and animal safety organisation Neogen was the target of a ShinyHunters \"pay or leak\" extortion attempt . The group later published data it claimed had been obtained from Neogen. The data consisted largely of corporate contact records and included 436k unique email addresses from mailing lists, employee records and other contacts."
-        ],
-        "how": [
-          "The published account does not explain the exact way the data was obtained."
-        ],
-        "motive": [
-          "In August 2026, the food and animal safety organisation Neogen was the target of a ShinyHunters \"pay or leak\" extortion attempt ."
-        ],
-        "outcome": [
-          "435,963 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
-          "The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Salutations."
-        ],
-        "editorial": [
-          "This is one of a run of entries in the archive with the same shape: a ShinyHunters \"pay or leak\" demand, followed by publication of what is mostly corporate contact data. Neogen's set is mailing lists, employee records and business contacts, so most people in it are not customers in the consumer sense. They are buyers, suppliers, lab staff and people who once filled in a form.",
-          "Contact records sound harmless until you look at what they combine: name, salutation, employer, job title, direct phone number and work address. That is the exact kit needed for a convincing business email compromise.",
-          "An invoice that appears to come from a real supplier, addressed to the right person by title, and followed up by a phone call to their actual desk number is far more persuasive than a generic phishing email. If your work address is in this set, the people to warn are colleagues in accounts payable.",
-          "Any request to change a supplier's bank details, especially one that arrives with urgency, should be confirmed by calling a number you already had on file, not one in the message. Neogen works in food safety and animal health, so the business contacts in this file sit in supply chains that run on trust and paperwork: laboratories, farms, food manufacturers and distributors.",
-          "A fake certificate request, a fake test-kit order or a fake change to a recall notice would reach people who handle exactly those documents every week, and the leaked job titles make it easy to send each message to the right desk. Salutations appear in the field list too, which is a small but telling detail.",
-          "A message that addresses someone as \"Dr.\" or by their correct title reads as if it came from someone who knows them, and formality is one of the cues people use to judge whether an email is genuine. Teams in this file can blunt that by agreeing that urgent document or payment requests, however correctly addressed, are confirmed by phone before anyone acts on them."
-        ]
-      },
-      "check_targets": [
-        {
-          "name": "Neogen",
-          "breach_date": "2026-08-29"
-        }
-      ],
-      "fields": [
-        {
-          "name": "Physical addresses",
-          "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
-        },
-        {
-          "name": "Phone numbers",
-          "why": "Enables SIM-swap attacks against SMS two-factor codes, and puts the number on scam-call lists indefinitely."
-        },
-        {
-          "name": "Employers",
-          "why": "Connects a personal account to a workplace, which is how attackers pivot from a person to a company."
-        },
-        {
-          "name": "Names",
-          "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
-        },
-        {
-          "name": "Email addresses",
-          "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
-        },
-        {
-          "name": "Job titles",
-          "why": "Identifies who has access to what, which is how targets for business email compromise are picked."
-        },
-        {
-          "name": "Salutations",
-          "why": "Adds detail to a profile that can be assembled from several breaches at once."
-        }
-      ],
-      "actions": [
-        "Move two-factor authentication off SMS and onto an authenticator app, which a SIM swap cannot intercept.",
         "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
         "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
       ],
