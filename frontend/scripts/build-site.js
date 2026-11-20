@@ -88,6 +88,7 @@ try { for (const script of scripts) {
 fs.writeFileSync(homepagePath, homepageContents);
 }
 require('./enhance-article-promotion');
+require('./install-app-nudge').run();
 require('./enrich-story-experience');
 require('./canonicalize-links').canonicalizeLinks(ROOT);
 // Last, so headings added by the enhancers above get an id too.
