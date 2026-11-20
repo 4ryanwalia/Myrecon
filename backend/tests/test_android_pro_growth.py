@@ -70,20 +70,47 @@ def test_award_both_parties_and_replay(db):
         g._award(REF, "receipt-for-install-1", invited=True)
     assert db.get(g._path(UID))["bonusDeepCredits"] == 2
     assert db.get(g._path(REF))["bonusDeepCredits"] == 2
+    assert db.get(g._path(UID))["bonusExtendedCredits"] == 2
+    assert db.get(g._path(REF))["bonusExtendedCredits"] == 2
     assert db.get(g._path(REF))["invitesCompleted"] == 1
     with pytest.raises(g.proof.Rejected):
         g._award(UID, "another-welcome", referred_by=CODE)
 
 
-def test_banked_cap_can_refill_after_spend(db):
+def test_credits_are_not_capped(db):
     g.initialize(UID, CODE)
     for i in range(20):
         g._award(UID, str(i), invited=True)
-    assert db.get(g._path(UID))["bonusDeepCredits"] == 10
+    assert db.get(g._path(UID))["bonusDeepCredits"] == 40
+    assert db.get(g._path(UID))["bonusExtendedCredits"] == 40
     g.consume(UID, str(uuid.uuid4()))
     g._award(UID, "another-referral", invited=True)
-    assert db.get(g._path(UID))["bonusDeepCredits"] == 10
+    assert db.get(g._path(UID))["bonusDeepCredits"] == 41
     assert db.get(g._path(UID))["invitesCompleted"] == 21
+
+
+def test_pools_are_spent_separately(db):
+    g.initialize(UID, CODE)
+    g._award(UID, "welcome")
+    assert g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
+    record = db.get(g._path(UID))
+    assert record["bonusExtendedCredits"] == 1 and record["bonusDeepCredits"] == 2
+    assert g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
+    assert not g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
+    assert db.get(g._path(UID))["bonusDeepCredits"] == 2
+    with pytest.raises(g.proof.Rejected):
+        g.consume(UID, str(uuid.uuid4()), pool="qr")
+
+
+def test_legacy_record_without_extended_field(db):
+    g.initialize(UID, CODE)
+    record = db.get(g._path(UID))
+    record.pop("bonusExtendedCredits", None)
+    record.pop("extendedDebits", None)
+    db.set(g._path(UID), record)
+    assert not g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
+    g._award(UID, "welcome")
+    assert db.get(g._path(UID))["bonusExtendedCredits"] == 2
 
 
 def test_concurrent_last_credit_never_goes_negative(db):
@@ -126,8 +153,9 @@ def test_ledger_contains_no_query_data(db):
     g.initialize(UID, CODE)
     g._award(UID, "welcome", referred_by=REFCODE)
     record = db.get(g._path(UID))
-    assert set(record) == {"code", "referredBy", "bonusDeepCredits", "invitesCompleted", "awards", "debits"}
-    assert set(g._public(record)) == {"code", "referredBy", "bonusDeepCredits", "invitesCompleted"}
+    assert set(record) == {"code", "referredBy", "bonusDeepCredits", "bonusExtendedCredits", "invitesCompleted",
+                           "awards", "debits", "extendedDebits"}
+    assert set(g._public(record)) == {"code", "referredBy", "bonusDeepCredits", "bonusExtendedCredits", "invitesCompleted"}
 
 
 def test_integrity_failure_cannot_award(db, monkeypatch):

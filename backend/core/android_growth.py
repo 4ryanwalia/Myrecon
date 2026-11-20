@@ -15,22 +15,29 @@ from core import android_referrals as proof, store as storage, validation
 from core.firebase_auth import AuthError, verify_id_token
 
 
+AWARD_CREDITS = 2
+# Each pool keeps its own replay receipts. Extended has its own action, so an
+# app newer than this server gets a 404 instead of spending a Deep credit.
+_POOLS = {"deep": ("bonusDeepCredits", "debits"), "extended": ("bonusExtendedCredits", "extendedDebits")}
+
+
 def _path(uid):
     return "android_installs/" + uid + "/referral"
 
 
 def _empty(code=""):
-    return {"code": code, "referredBy": "", "bonusDeepCredits": 0, "invitesCompleted": 0,
-            "awards": {}, "debits": {}}
+    return {"code": code, "referredBy": "", "bonusDeepCredits": 0, "bonusExtendedCredits": 0,
+            "invitesCompleted": 0, "awards": {}, "debits": {}, "extendedDebits": {}}
 
 
 def _public(record):
     return {k: record.get(k, default) for k, default in (
-        ("code", ""), ("referredBy", ""), ("bonusDeepCredits", 0), ("invitesCompleted", 0))}
+        ("code", ""), ("referredBy", ""), ("bonusDeepCredits", 0), ("bonusExtendedCredits", 0),
+        ("invitesCompleted", 0))}
 
 
 def _project(uid, record):
-    # The API returns only these four fields. Rules hide anonymous replay receipts.
+    # The API returns only these five fields. Rules hide anonymous replay receipts.
     return _public(record)
 
 
@@ -92,7 +99,9 @@ def _award(uid, receipt, invited=False, referred_by=None):
             raise proof.Rejected()
         awards = record.setdefault("awards", {})
         if receipt not in awards:
-            record["bonusDeepCredits"] = min(10, int(record.get("bonusDeepCredits", 0)) + 2)
+            # Each award gives both people +2 Deep Search and +2 Extended Scan. No cap since 2026-11-21.
+            record["bonusDeepCredits"] = int(record.get("bonusDeepCredits", 0)) + AWARD_CREDITS
+            record["bonusExtendedCredits"] = int(record.get("bonusExtendedCredits", 0)) + AWARD_CREDITS
             record["invitesCompleted"] = int(record.get("invitesCompleted", 0)) + int(invited)
             awards[receipt] = True
         if referred_by:
@@ -132,23 +141,24 @@ def redeem(uid, body):
     return {"claim": "counted", **_public(storage.store.get(_path(uid)))}
 
 
-def consume(uid, operation):
-    if not isinstance(operation, str) or not proof._UUID.fullmatch(operation):
+def consume(uid, operation, pool="deep"):
+    if not isinstance(operation, str) or not proof._UUID.fullmatch(operation) or pool not in _POOLS:
         raise proof.Rejected()
+    balance_key, receipts_key = _POOLS[pool]
     outcome = {"consumed": False}
     def debit(record):
         outcome["consumed"] = False
         if not record:
             raise proof.Rejected()
-        receipts = record.setdefault("debits", {})
+        receipts = record.setdefault(receipts_key, {})
         if operation in receipts:
             outcome["consumed"] = True
             return record
-        if record.get("bonusDeepCredits", 0) > 0:
-            record["bonusDeepCredits"] -= 1
+        if record.get(balance_key, 0) > 0:
+            record[balance_key] -= 1
             receipts[operation] = int(time.time() * 1000)
             # Old retries can spend another credit, but can never create one.
-            record["debits"] = dict(sorted(receipts.items(), key=lambda pair: pair[1])[-32:])
+            record[receipts_key] = dict(sorted(receipts.items(), key=lambda pair: pair[1])[-32:])
             outcome["consumed"] = True
         return record
     record = storage.store.transaction(_path(uid), debit)
@@ -186,6 +196,7 @@ def register_routes(app, json_body, responses):
             elif action == "challenge": result = challenge(uid, body)
             elif action == "redeem": result = redeem(uid, body)
             elif action == "consume": result = consume(uid, body.get("operation"))
+            elif action == "consume-extended": result = consume(uid, body.get("operation"), pool="extended")
             elif action == "counts": result = sync_counts(uid, body)
             else: return responses.error("Unknown action", status=404)
             return responses.ok(result)
