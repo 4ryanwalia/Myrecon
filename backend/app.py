@@ -1268,7 +1268,7 @@ def _register_errors(app: Flask) -> None:
         elif err.scope == "extended":
             message = "Get 10 Extended scans across 3,000+ platforms for ₹99."
         else:
-            message = "Standard 500+ platform scans are free after sign-in."
+            message = "Standard 560+ platform scans are free after sign-in."
         return jsonify({
             "status": "error", "code": "upgrade_required", "scope": err.scope,
             "error": message,

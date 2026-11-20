@@ -108,7 +108,7 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
 const usernameQuestions = [
   ['What is a username checker?', 'A username checker searches supported services for public profiles using a handle. MyRecon returns profile leads for source review. A matching handle does not prove who owns an account.'],
   ['Can I check username availability with MyRecon?', 'MyRecon checks public profile presence. A not-found result does not guarantee that a username is available to register. A platform may reserve a name, suspend an account or restrict its visibility. Confirm availability in the official signup or account settings flow.'],
-  ['Is the username checker free?', 'MyRecon offers free guest Quick scans across 100 platforms with no sign-up required. Guests get 5 Quick scans daily with only the first 2 result cards visible. Signed-in free accounts get 5 Standard scans daily across 500+ platforms; Quick and Standard share that account allowance. Paid plans add features such as Deep Search and Extended scans; check the current pricing page for limits.'],
+  ['Is the username checker free?', 'MyRecon offers free guest Quick scans across 100 platforms with no sign-up required. Guests get 5 Quick scans daily with only the first 2 result cards visible. Signed-in free accounts get 5 Standard scans daily across 560+ platforms; Quick and Standard share that account allowance. Paid plans add features such as Deep Search and Extended scans; check the current pricing page for limits.'],
   ['Can I search every social media platform?', 'No. MyRecon checks a supported catalogue of more than 500 platforms, not every website. Login walls, anti-bot controls, timeouts and platform changes can leave a check unknown.'],
   ['How do I find my old accounts by username?', 'Search handles you remember using, then open each candidate profile and compare it with your own records. Use saved passwords, signup emails and the official account recovery process to confirm ownership.'],
 ];
@@ -118,7 +118,7 @@ const usernameBody = fs.readFileSync(path.join(root, 'content/discovery/username
 
 buildDiscoveryPage({
   title: 'Username Lookup & Social Media Username Checker | MyRecon',
-  description: 'Check public usernames across 500+ platforms with MyRecon. Review social media profile leads, unknown results and username availability limits.',
+  description: 'Check public usernames across 560+ platforms with MyRecon. Review social media profile leads, unknown results and username availability limits.',
   keywords: 'username checker, social media username search, username lookup, check username across platforms, find accounts by username, public profile search, handle checker, username availability vs search, browser username checker, osint username search',
   url: `${site}/username-checker.html`,
   outFileName: 'username-checker.html',
@@ -131,18 +131,18 @@ buildDiscoveryPage({
 // 2. Free OSINT tool discovery page
 const osintQuestions = [
   ['What is a free OSINT tool?', 'An OSINT (Open-Source Intelligence) tool collects and analyzes information from publicly accessible online sources, such as social platforms, developer profiles, breach repositories, domain registrations, and DNS records. MyRecon provides a free browser-based OSINT scanner to map your digital footprint or conduct authorized security investigations without installing software.'],
-  ['Is MyRecon really free to use for OSINT investigations?', 'Yes. MyRecon provides free guest Quick scans across 100 platforms with zero setup or sign-in required. Users with an account can run Standard scans across 500+ platforms, query email breach exposure, check password exposure via k-anonymity, and audit domain DNS configurations at no cost. Paid plans add Deep Search and Extended 3,000+ platform sweeps.'],
+  ['Is MyRecon really free to use for OSINT investigations?', 'Yes. MyRecon provides free guest Quick scans across 100 platforms with zero setup or sign-in required. Users with an account can run Standard scans across 560+ platforms, query email breach exposure, check password exposure via k-anonymity, and audit domain DNS configurations at no cost. Paid plans add Deep Search and Extended 3,000+ platform sweeps.'],
   ['How does MyRecon compare to CLI tools like Sherlock and Maigret?', 'Command-line tools like Sherlock and Maigret require Python environments, Git, and package management, running requests from your terminal IP. MyRecon runs directly in your web browser or Android app with zero installation. Additionally, MyRecon tests against synthetic control handles to eliminate false-positive 200 OK responses and integrates email breach and DNS intelligence in a unified dashboard.'],
   ['Can a free OSINT tool find private or hidden social accounts?', 'No. Legitimate OSINT tools only query publicly accessible endpoints, indexed profiles, and public registries. They do not bypass passwords, exploit vulnerabilities, or intercept private communications. If a profile is restricted, suspended, or behind a login wall, MyRecon transparently reports the result as unknown rather than assuming it is absent.'],
-  ['What investigation modules are included in MyRecon\'s free OSINT suite?', 'MyRecon includes reverse username search across 500+ platforms, email breach detection against billions of compromised records, password leak checking using k-anonymity SHA-1 prefixes, domain WHOIS and RDAP registration lookup, and DNS mail-authentication checks for SPF and DMARC spoofing defense.'],
+  ['What investigation modules are included in MyRecon\'s free OSINT suite?', 'MyRecon includes reverse username search across 560+ platforms, email breach detection against billions of compromised records, password leak checking using k-anonymity SHA-1 prefixes, domain WHOIS and RDAP registration lookup, and DNS mail-authentication checks for SPF and DMARC spoofing defense.'],
 ];
 
 const osintBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Free OSINT tool</span></nav>
   <h1>Free OSINT tool and online investigation platform</h1>
-  <p class="sub">MyRecon is a browser-based Open-Source Intelligence (OSINT) platform for reverse username search, digital footprint audits, email breach detection, and domain intelligence across 500+ sources. Search instantly with zero installation.</p>
+  <p class="sub">MyRecon is a browser-based Open-Source Intelligence (OSINT) platform for reverse username search, digital footprint audits, email breach detection, and domain intelligence across 560+ sources. Search instantly with zero installation.</p>
   <a class="btn btn-primary" href="/#tool">Start free OSINT investigation</a>
-  <p class="discovery-note">Zero setup required. Free guest Quick scans across 100 platforms. Standard scans cover 500+ platforms. Ethical public-source research only.</p>
+  <p class="discovery-note">Zero setup required. Free guest Quick scans across 100 platforms. Standard scans cover 560+ platforms. Ethical public-source research only.</p>
   <section>
     <h2>What is an OSINT tool and how does it work?</h2>
     <p>Open-Source Intelligence (OSINT) refers to intelligence derived from publicly accessible data. A free OSINT tool automates the collection and correlation of public data across social networks, developer hubs, public registries, and breached credential archives.</p>
@@ -160,7 +160,7 @@ const osintBody = `<main id="main" class="container prose discovery-page">
     <h2>Core OSINT investigation modules</h2>
     <p>MyRecon integrates multiple reconnaissance capabilities into a single unified workspace:</p>
     <ol>
-      <li><strong>Reverse username lookup:</strong> Sweep handles across 500+ platforms, including Instagram, GitHub, TikTok, Reddit, X (Twitter), Discord, and YouTube. Read our <a href="/username-checker.html">username checker guide</a> and <a href="/reverse-username-lookup.html">reverse username search overview</a>.</li>
+      <li><strong>Reverse username lookup:</strong> Sweep handles across 560+ platforms, including Instagram, GitHub, TikTok, Reddit, X (Twitter), Discord, and YouTube. Read our <a href="/username-checker.html">username checker guide</a> and <a href="/reverse-username-lookup.html">reverse username search overview</a>.</li>
       <li><strong>Email breach intelligence:</strong> Verify whether an email address has surfaced in historical corporate leaks or data breaches. Read our <a href="/guides/check-email-data-breach.html">breach checking guide</a>.</li>
       <li><strong>Password exposure audits:</strong> Check password status using k-anonymity SHA-1 prefixes, ensuring credentials are never transmitted over the network in plaintext.</li>
       <li><strong>Domain &amp; DNS security checks:</strong> Query domain RDAP/WHOIS registrations and verify SPF, DKIM, and DMARC configurations to detect email spoofing risks.</li>
@@ -192,7 +192,7 @@ const osintBody = `<main id="main" class="container prose discovery-page">
     <p>Explore our research library, cheat sheets, and specialized investigation workflows:</p>
     <ul>
       <li><a href="/digital-footprint-checker.html">Digital footprint checker &amp; exposure audit</a></li>
-      <li><a href="/reverse-username-lookup.html">Reverse username lookup across 500+ platforms</a></li>
+      <li><a href="/reverse-username-lookup.html">Reverse username lookup across 560+ platforms</a></li>
       <li><a href="/username-checker.html">Username checker and public profile search</a></li>
       <li><a href="/osint-cheat-sheet.html">OSINT cheat sheet &amp; Google dork generator</a></li>
       <li><a href="/deep-search.html">Deep Search: public activity &amp; mentions</a></li>
@@ -218,7 +218,7 @@ const osintBody = `<main id="main" class="container prose discovery-page">
 
 buildDiscoveryPage({
   title: 'Free OSINT Tool & Online Investigation Platform | MyRecon',
-  description: 'Free OSINT tool to search usernames across 500+ platforms, check email breach exposure, and audit digital footprints. Start your free investigation online.',
+  description: 'Free OSINT tool to search usernames across 560+ platforms, check email breach exposure, and audit digital footprints. Start your free investigation online.',
   keywords: 'free osint tool, free osint tools, free osint search, open source intelligence tool, osint tools online, browser osint tool, web browser osint scanner, boost osint investigation, best free osint tools, free reverse username lookup, free digital footprint checker, social media osint tool, email osint tool, online osint investigation, cyber reconnaissance, sherlock alternative free, find accounts by username free, search username across platforms',
   url: `${site}/free-osint-tool.html`,
   outFileName: 'free-osint-tool.html',
@@ -256,7 +256,7 @@ buildDiscoveryPage({
 // 4. Reverse username lookup discovery page
 const lookupQuestions = [
   ['What is a reverse username lookup?', 'A reverse username lookup is an OSINT reconnaissance technique that takes a single username or handle and queries hundreds of web platforms to identify registered public profiles associated with that handle.'],
-  ['Is reverse username lookup free on MyRecon?', 'Yes. MyRecon allows anyone to run free guest Quick scans across 100 platforms with no login required. Creating a free account unlocks Standard scans across 500+ platforms with complete result cards, exportable summaries, and saved search history.'],
+  ['Is reverse username lookup free on MyRecon?', 'Yes. MyRecon allows anyone to run free guest Quick scans across 100 platforms with no login required. Creating a free account unlocks Standard scans across 560+ platforms with complete result cards, exportable summaries, and saved search history.'],
   ['How does reverse username search differ from searching Google?', 'Traditional search engines only index pages that have been discovered and crawled, often missing new profiles, profile changes, and niche platforms. A reverse username lookup queries the platform\'s public URL endpoint directly in real time, detecting accounts even if Google has not indexed them.'],
   ['How does MyRecon prevent false positives during username searches?', 'Many social networks return HTTP 200 OK status codes for non-existent users (soft 404s). MyRecon first looks for direct evidence, such as an API user record or profile markup naming the handle. On signed-in scans, when that evidence is missing, it also fetches a made-up control handle on the same platform, and if the site responds identically for both, the result is not reported as found. Guest Quick scans rely on soft-404 and login-wall detection instead.'],
   ['Can a reverse username search prove who owns an account?', 'No. A matching username is an investigative lead, not conclusive proof of identity. Different people can independently choose the same handle on different websites. Always verify account ownership by reviewing profile content, joined dates, and cross-linked social profiles.'],
@@ -265,19 +265,19 @@ const lookupQuestions = [
 const lookupBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse username lookup</span></nav>
   <h1>Free reverse username lookup &amp; social media account search</h1>
-  <p class="sub">Query handles across 500+ social platforms, developer hubs, and forums simultaneously. Discover profile leads, cut false positives with control-handle checks on signed-in scans, and map online accounts instantly.</p>
+  <p class="sub">Query handles across 560+ social platforms, developer hubs, and forums simultaneously. Discover profile leads, cut false positives with control-handle checks on signed-in scans, and map online accounts instantly.</p>
   <a class="btn btn-primary" href="/#tool=username">Start reverse username lookup</a>
-  <p class="discovery-note">No terminal setup required. Free guest Quick scans across 100 platforms. Standard scans cover 500+ platforms. Public evidence research only.</p>
+  <p class="discovery-note">No terminal setup required. Free guest Quick scans across 100 platforms. Standard scans cover 560+ platforms. Public evidence research only.</p>
   <section>
     <h2>What is reverse username lookup and how does it work?</h2>
     <p>A reverse username search takes a known handle, alias, or screen name and probes hundreds of online services to find matching public profiles. Because people frequently reuse the same username across different websites, a reverse lookup connects fragmented profiles into a unified digital footprint.</p>
-    <p>Instead of manual searching or maintaining complex command-line scripts, MyRecon runs browser-based multi-threaded queries against 500+ platforms including Instagram, GitHub, Reddit, TikTok, X (Twitter), YouTube, Discord, and Telegram.</p>
+    <p>Instead of manual searching or maintaining complex command-line scripts, MyRecon runs browser-based multi-threaded queries against 560+ platforms including Instagram, GitHub, Reddit, TikTok, X (Twitter), YouTube, Discord, and Telegram.</p>
   </section>
   <section>
     <h2>How to perform an effective reverse username search</h2>
     <ol>
       <li><strong>Enter the target username:</strong> Input the exact handle into the <a href="/#tool=username">reverse username tool</a>.</li>
-      <li><strong>Choose your scan scope:</strong> Start with a Quick scan (100 top platforms) or sign in for a Standard scan covering 500+ platforms.</li>
+      <li><strong>Choose your scan scope:</strong> Start with a Quick scan (100 top platforms) or sign in for a Standard scan covering 560+ platforms.</li>
       <li><strong>Evaluate evidence-backed states:</strong> Review results categorized as found, not found, or unknown. MyRecon never guesses; if a site rate-limits or blocks a query, it remains unknown.</li>
       <li><strong>Verify leads at the source:</strong> Click the reported profile URLs to confirm account activity, creation dates, and public profile bios. Read our guide on <a href="/guides/verify-osint-account-matches.html">verifying OSINT account matches</a>.</li>
     </ol>
@@ -331,7 +331,7 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
 
 buildDiscoveryPage({
   title: 'Reverse Username Lookup & Social Media Search | MyRecon',
-  description: 'Free reverse username lookup to search handles across 500+ social media networks, forums, and developer sites. Check accounts with zero installation.',
+  description: 'Free reverse username lookup to search handles across 560+ social media networks, forums, and developer sites. Check accounts with zero installation.',
   keywords: 'reverse username lookup, reverse username search, reverse username search free, free reverse username lookup, social media username search, find accounts by username, username lookup, reverse social media lookup, browser reverse username lookup, sherlock online alternative, maigret alternative online, search username across social media, find someone by username',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
@@ -351,7 +351,7 @@ buildDiscoveryPage({
 const watchQuestions = [
   ['How long is the MyRecon product video?', 'The MyRecon product video runs for 60 seconds. Use the current product pages and guides for detailed workflows, supported checks and plan limits.'],
   ['Does a username match prove who owns an account?', 'No. A matching handle is a public-profile lead. Open the original source and compare independent evidence before attributing the profile to someone. Blocks, timeouts and ambiguous responses can leave a check unknown.'],
-  ['Can I try the search features shown in the video for free?', 'Yes. Guests can run free Quick sweeps without creating an account or providing payment information. Standard scans across 500+ platforms are available with a free account.'],
+  ['Can I try the search features shown in the video for free?', 'Yes. Guests can run free Quick sweeps without creating an account or providing payment information. Standard scans across 560+ platforms are available with a free account.'],
   ['Where is the video hosted?', 'This page embeds YouTube\'s privacy-enhanced player at youtube-nocookie.com. YouTube provides playback; review the relevant privacy policies before watching.'],
   ['How can I audit or remove accounts found during a search?', 'First confirm which accounts are yours. Review their public details and use the official service settings to secure, change or delete them. MyRecon\'s privacy guides explain the process and its limits; a search result does not automatically remove an account.'],
 ];

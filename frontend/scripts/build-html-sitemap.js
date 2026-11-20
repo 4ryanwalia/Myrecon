@@ -289,7 +289,7 @@ function main() {
       <p>Direct navigation index across all ${allPages.length} public tools, breach investigations, threat intelligence analyses, and privacy defense guides published on MyRecon.</p>
       <div class="directory-stats">
         <div class="directory-stat"><strong>${allPages.length}+</strong> Public Pages</div>
-        <div class="directory-stat"><strong>500+</strong> Supported Platforms</div>
+        <div class="directory-stat"><strong>560+</strong> Supported Platforms</div>
         <div class="directory-stat"><strong>50+</strong> Breach Case Studies</div>
         <div class="directory-stat"><strong>100%</strong> Public Source Evidence</div>
       </div>

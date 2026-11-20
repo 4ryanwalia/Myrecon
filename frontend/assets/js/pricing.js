@@ -232,7 +232,7 @@
     const pack = Number(acct.extended_pack_scans_left) || 0;
     const legacy = Number(acct.extended_legacy_scans_left) || 0;
     $("#acctUsage").textContent = (acct.standard_scans_unlimited
-      ? "Unlimited standard 500+ platform scans and Deep Search included with your paid plan. "
+      ? "Unlimited standard 560+ platform scans and Deep Search included with your paid plan. "
       : `${acct.standard_scans_left} of 5 free standard scans left today. Resets at midnight UTC (${new Date(acct.standard_resets_at).toLocaleString()}). `)
       + (acct.subscription_scans_left ? `${acct.subscription_scans_left} subscription scans left until ${new Date(acct.subscription_until).toLocaleString()}. ` : "")
       + (pack ? `${pack} Extended pack scans left, no expiry. ` : "")

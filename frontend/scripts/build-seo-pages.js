@@ -46,7 +46,7 @@ function guideTheme(record) {
   const themes = [
     { match: /black-friday|cyber-monday|cheapest-pro/, color: "#e4ae80", steps: ["Compare Pro plans", "Lock 50% off rate", "Run 3,000+ scan"] },
     { match: /best-osint|top-10-osint|best-free-osint|best-browser-osint|best-android-osint|best-digital-footprint/, color: "#84c5d3", steps: ["Pick target scope", "Run browser check", "Verify source URL"] },
-    { match: /instagram|tiktok|twitter|reddit|discord|telegram|github|linkedin|snapchat|youtube|twitch/, color: "#91b9dc", steps: ["Enter exact handle", "Sweep 500+ sites", "Confirm public bio"] },
+    { match: /instagram|tiktok|twitter|reddit|discord|telegram|github|linkedin|snapchat|youtube|twitch/, color: "#91b9dc", steps: ["Enter exact handle", "Sweep 560+ sites", "Confirm public bio"] },
     { match: /image/, color: "#84c5d3", steps: ["Reference image", "Reverse search", "Original source"] },
     { match: /impersonation|brand/, color: "#e4ae80", steps: ["Official account", "Lookalike signal", "Report with evidence"] },
     { match: /breach|exposure|email|phone/, color: "#e3b582", steps: ["Known identifier", "Public signal", "Risk review"] },

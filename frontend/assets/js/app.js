@@ -420,7 +420,7 @@
           body = "Guests get 5 Quick scans a day across 100 platforms. The allowance resets at midnight UTC.";
           break;
         }
-        body = "Guests get 5 Quick scans a day across 100 platforms. Sign in with Google for 5 free Standard 500+ platform scans a day and complete results.";
+        body = "Guests get 5 Quick scans a day across 100 platforms. Sign in with Google for 5 free Standard 560+ platform scans a day and complete results.";
         action = `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>`;
         break;
       case "standard_daily_limit":
@@ -433,7 +433,7 @@
         title = err.code === "auth_invalid" ? "Please sign in again"
           : err.scope === "extended" ? "Extended scans require sign-in" : "Standard scans require sign-in";
         body = canSignIn
-          ? "Sign in with Google before running a Standard scan across 500+ platforms. Free accounts get 5 standard scans daily. Guests can run Quick scans across 100 platforms. Pro adds unlimited standard scans and 10 Extended scans."
+          ? "Sign in with Google before running a Standard scan across 560+ platforms. Free accounts get 5 standard scans daily. Guests can run Quick scans across 100 platforms. Pro adds unlimited standard scans and 10 Extended scans."
           : "Sign-in is temporarily unavailable. Guests can still run Quick scans across 100 platforms.";
         action = (canSignIn ? `<button type="button" class="btn btn-primary" data-gate="signin">Sign in with Google</button>` : "")
           + `<button type="button" class="btn btn-ghost" data-gate="standard">Run a Quick scan</button>`;
@@ -763,7 +763,7 @@
 
   function fullScanNudge() {
     return `<div class="panel gate slim"><p>This was the 100-platform Quick scan. ${signedIn() ? "Run" : "Sign in to run"} a
-      <strong>Standard scan across 500+ platforms</strong> with complete results.</p>
+      <strong>Standard scan across 560+ platforms</strong> with complete results.</p>
       <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="${signedIn() ? "full" : "signin-full"}">${signedIn() ? "Run Standard scan" : "Sign in for Standard"}</button></div></div>`;
   }
 
@@ -1886,8 +1886,8 @@
   }
 
   // ---- Scan size and account state ---------------------------------
-  // Platform counts are shown rounded (500+, 3,000+) on purpose.
-  const FULL_LABEL = "500+";
+  // Platform counts are shown rounded (560+, 3,000+) on purpose.
+  const FULL_LABEL = "560+";
   const EXTENDED_LABEL = "3,000+";
 
   function currentScope() {
@@ -1920,7 +1920,7 @@
       return;
     }
     if (!st || !st.user) {
-      note.textContent = "Standard scans require sign-in. Sign in with Google for 5 free scans a day across 500+ platforms with complete results.";
+      note.textContent = "Standard scans require sign-in. Sign in with Google for 5 free scans a day across 560+ platforms with complete results.";
       return;
     }
     if (scope === "extended") {
@@ -1933,7 +1933,7 @@
         : "Pro includes 10 Extended scans per paid month or 120 per paid year.");
       return;
     }
-    const label = scope === "full" ? "Standard 500+ platform scans" : "Quick 100-platform scans";
+    const label = scope === "full" ? "Standard 560+ platform scans" : "Quick 100-platform scans";
     note.textContent = acct && acct.standard_scans_unlimited
       ? `${label}: unlimited with your paid plan. Extended credits are separate.`
       : `${label}: ${acct ? acct.standard_scans_left : 5} of 5 free scans left today, shared across quick and standard scans. Resets at midnight UTC. Pro unlocks unlimited standard scans.`;
