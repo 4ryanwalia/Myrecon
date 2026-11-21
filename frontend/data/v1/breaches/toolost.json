@@ -1,0 +1,137 @@
+{
+  "api_version": 1,
+  "generated": "2026-11-21",
+  "documentation": "https://www.myrecon.xyz/developers.html",
+  "licence": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": {
+    "required": true,
+    "source": "Have I Been Pwned",
+    "source_url": "https://haveibeenpwned.com/",
+    "distributor": "MyRecon",
+    "distributor_url": "https://www.myrecon.xyz",
+    "licence": "https://creativecommons.org/licenses/by/4.0/",
+    "notice": "Breach data originates from Have I Been Pwned and is licensed CC BY 4.0. If you publish it you must credit Have I Been Pwned. A link to https://www.myrecon.xyz/breaches/ is appreciated but not required by the licence."
+  },
+  "breach": {
+    "name": "TooLost",
+    "title": "Too Lost",
+    "slug": "toolost",
+    "url": "https://www.myrecon.xyz/breaches/toolost.html",
+    "domain": "toolost.com",
+    "breach_date": "2026-11-02",
+    "added_date": "2026-11-20T19:17:16Z",
+    "accounts": 724323,
+    "data_classes": [
+      "Dates of birth",
+      "Driver's licenses",
+      "Email addresses",
+      "Government issued IDs",
+      "IP addresses",
+      "Names",
+      "Partial credit card data",
+      "Passport numbers",
+      "Passwords",
+      "Payment histories",
+      "Physical addresses",
+      "Places of birth",
+      "Social media profiles",
+      "Usernames"
+    ],
+    "verified": true,
+    "sensitive": false,
+    "stealer_log": false,
+    "logo": "https://logos.haveibeenpwned.com/TooLost.png",
+    "severity": 62,
+    "band": "Severe",
+    "data_provider": null,
+    "summary": "In November 2026, an unauthorised party claimed to have obtained data from the music distributor for independent artists, Too Lost. The data contained 724k unique email addresses belonging to artists, their collaborators and fans. Some records also contained bcrypt password hashes, while a small subset included partial credit card data (last 4 digits and card type), identity verification…",
+    "story": {
+      "background": [
+        "In November 2026, an unauthorised party claimed to have obtained data from the music distributor for independent artists, Too Lost. The data contained 724k unique email addresses belonging to artists, their collaborators and fans.",
+        "Some records also contained bcrypt password hashes, while a small subset included partial credit card data (last 4 digits and card type), identity verification information (in some cases, passport, driver's licence or national ID numbers), and payouts made to artists. Too Lost advised that its investigation remains ongoing, external forensic specialists have been engaged, and measures have been taken to secure affected systems and credentials.",
+        "The company is also working with advisors to coordinate communications and support for affected individuals."
+      ],
+      "how": [
+        "The published account does not explain the exact way the data was obtained."
+      ],
+      "motive": [],
+      "outcome": [
+        "724,323 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.",
+        "The reported exposed data includes Dates of birth, Driver's licenses, Email addresses, Government issued IDs, IP addresses, Names, Partial credit card data, Passport numbers, Passwords, Payment histories, Physical addresses, Places of birth, Social media profiles, Usernames."
+      ],
+      "editorial": []
+    },
+    "check_targets": [
+      {
+        "name": "TooLost",
+        "breach_date": "2026-11-02"
+      }
+    ],
+    "fields": [
+      {
+        "name": "Government issued IDs",
+        "why": "Passport and licence numbers are used to prove identity to banks and telecoms, and they are effectively permanent."
+      },
+      {
+        "name": "Passwords",
+        "why": "Anyone reusing this password elsewhere has those accounts exposed too, credential stuffing is automated and tries them all within days."
+      },
+      {
+        "name": "Physical addresses",
+        "why": "Where someone actually lives. Combined with a name this moves the risk off the internet."
+      },
+      {
+        "name": "Dates of birth",
+        "why": "One of the three things call centres ask to verify identity, and it never changes."
+      },
+      {
+        "name": "Partial credit card data",
+        "why": "Not enough to spend, but enough to convince a victim that a caller is genuinely from their bank."
+      },
+      {
+        "name": "Payment histories",
+        "why": "Shows what someone buys and from whom, the detail that makes a phishing message land."
+      },
+      {
+        "name": "IP addresses",
+        "why": "Approximate location at the time of use, and a way to correlate accounts across services."
+      },
+      {
+        "name": "Names",
+        "why": "Turns an anonymous address into an identified person, which is what makes targeted phishing possible."
+      },
+      {
+        "name": "Email addresses",
+        "why": "An exposed address may be used in phishing attempts. Treat unexpected messages with caution."
+      },
+      {
+        "name": "Usernames",
+        "why": "A matching handle can be a lead to other profiles, but does not prove shared ownership."
+      },
+      {
+        "name": "Driver's licenses",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Passport numbers",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Places of birth",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      },
+      {
+        "name": "Social media profiles",
+        "why": "Adds detail to a profile that can be assembled from several breaches at once."
+      }
+    ],
+    "actions": [
+      "Change this password anywhere you reused it, starting with your email account, that is the one that can reset all the others.",
+      "Check statements for the months after the breach date and ask your bank for a replacement card if the number was full.",
+      "Consider a credit freeze. A government identifier cannot be changed, so limiting what can be opened in your name is the only real control.",
+      "Be sceptical of post and callers who already know your address, knowing it is no longer evidence of anything.",
+      "Be alert to phishing. A message may use details from exposed or collected records to appear familiar; verify requests through the service directly."
+    ],
+    "scale_line": null
+  }
+}
