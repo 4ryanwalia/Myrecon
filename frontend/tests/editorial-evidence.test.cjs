@@ -14,7 +14,7 @@ test('every sitemap URL is discoverable by following links from the homepage', (
   const reached = new Set(), queue = ['/'];
   while (queue.length) {
     let route = queue.shift();
-    route = config.redirects.find(r => r.source === route)?.destination || route;
+    route = config.redirects.find(r => r.source === route && !r.has && !r.missing)?.destination || route;
     if (reached.has(route)) continue;
     reached.add(route);
     const file = fileFor(route);

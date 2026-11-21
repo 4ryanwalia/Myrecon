@@ -13,8 +13,8 @@ test('canonical links retain tool state and external destinations', () => {
 test('canonical sitemap URLs never redirect; alternate routes have one final destination', () => {
   const sitemap = fs.readFileSync(path.join(__dirname, '../sitemap.xml'), 'utf8');
   const routes = new Set([...sitemap.matchAll(/<loc>https:\/\/www.myrecon.xyz([^<]*)<\/loc>/g)].map(m => m[1]));
-  const redirects = new Map(config.redirects.filter(r => !r.source.includes(':')).map(r => [r.source, r.destination]));
-  assert.equal(redirects.size, config.redirects.filter(r => !r.source.includes(':')).length, 'unique sources');
+  const redirects = new Map(config.redirects.filter(r => !r.source.includes(':') && !r.has && !r.missing).map(r => [r.source, r.destination]));
+  assert.equal(redirects.size, config.redirects.filter(r => !r.source.includes(':') && !r.has && !r.missing).length, 'unique sources');
   for (const route of routes) assert.ok(!redirects.has(route), route);
   for (const [source, dest] of redirects) assert.ok(!redirects.has(dest), `chain: ${source} -> ${dest}`);
 });
