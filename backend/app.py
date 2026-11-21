@@ -400,6 +400,13 @@ def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
         if entry not in selected:
             selected.append(entry)
     selected = selected[:2]
+    # A found Instagram account is always shown, even past the two free cards:
+    # it is the profile most guests came to look up, and in a live scan it is
+    # among the slowest to answer, so "first two to arrive" almost never
+    # included it.
+    selected.extend(entry for entry in cards
+                    if entry[0] == "profiles" and entry[1].get("platform") == "Instagram"
+                    and entry not in selected)
     results = {kind: [card for group, card in selected if group == kind]
                for kind in ("profiles", "documents", "mentions")}
     summary = {key: value for key, value in (data.get("summary") or {}).items()
@@ -416,6 +423,12 @@ def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
         "guest_preview": {"visible_cards": len(selected),
                           "hidden_cards": max(0, len(cards) - len(selected)),
                           "requires_sign_in": True},
+        # Only the verdict, so the page can offer a manual Instagram link when
+        # our server could not read Instagram. No hidden card detail leaves.
+        "instagram_check": next(
+            ({"verdict": check.get("verdict", "unknown")}
+             for check in data.get("platform_checks") or []
+             if check.get("platform") == "Instagram"), None),
     }
 
 def _guest_quick_event(event: dict, seen: set, visible: list):
@@ -427,7 +440,7 @@ def _guest_quick_event(event: dict, seen: set, visible: list):
         if key in seen:
             return None
         seen.add(key)
-        if len(visible) < 2:
+        if len(visible) < 2 or result.get("platform") == "Instagram":
             visible.append(key)
             return event
         return {"type": "found_locked", "count": len(seen) - len(visible)}

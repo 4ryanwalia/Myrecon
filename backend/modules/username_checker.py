@@ -558,11 +558,11 @@ class UsernameChecker:
         if self._stop_flag:
             return result
 
+        if name == "Instagram":
+            return self._check_instagram(result, username)
+
         timeout = self.SLOW_TIMEOUT if name in SLOW_PLATFORMS else self.TIMEOUT
         headers = self.HEADERS
-        # Instagram serves richer OG tags to a mobile UA.
-        if name == "Instagram":
-            headers = {**self.HEADERS, "User-Agent": MOBILE_UA}
 
         try:
             resp = requests.get(_fetchable(url), headers=headers,
@@ -603,6 +603,48 @@ class UsernameChecker:
             result["reason"] = rejection_reason(
                 result["status_code"], result.get("match_score")
             )
+        return result
+
+    def _check_instagram(self, result: dict, username: str) -> dict:
+        """
+        Instagram through the full sweep's probe, so all three tiers agree.
+
+        The generic scoring here cannot read Instagram. A mobile-browser
+        request gets the same logged-out shell for a real account and an
+        impossible one (score 0, which used to be reported as "possible"),
+        and a login bounce scored -10, which read as "no account". The sweep
+        asks with the Instagram app's UA, needs the handle in the title or an
+        embedded profile object, and keeps blocks and walls unknown.
+        """
+        from modules.sweep import CATALOGUE, FOUND, NOT_FOUND, Sweep
+
+        platform = next((p for p in CATALOGUE if p["name"] == "Instagram"), None)
+        if platform is None:
+            result.update(status_code=-3, reason="request failed")
+            return result
+        try:
+            hit = Sweep(username, deadline_seconds=self.SLOW_TIMEOUT * 3,
+                        concurrency=2).probe(platform)
+        except Exception:  # noqa: BLE001 - one platform must not fail a scan
+            result.update(status_code=-3, reason="request failed")
+            return result
+
+        status = hit.get("status_code") or 0
+        result["status_code"] = status
+        if hit["verdict"] == FOUND:
+            result.update(exists=True, match_score=4,
+                          confidence="high" if hit.get("confidence") == "high" else "medium")
+            if hit.get("profile_pic_url"):
+                result["profile_pic_url"] = hit["profile_pic_url"]
+            if hit.get("display_name"):
+                # Instagram's title encodes the at-sign as &#064;.
+                result["display_name"] = _html.unescape(hit["display_name"])[:100]
+        elif hit["verdict"] == NOT_FOUND:
+            result.update(match_score=-10, reason=hit.get("reason") or rejection_reason(status, -10))
+        else:
+            if not status:
+                result["status_code"] = -3
+            result["reason"] = hit.get("reason") or "the platform could not verify this handle"
         return result
 
     def scan(self, username: str, callback=None, deep: bool = False) -> list[dict]:

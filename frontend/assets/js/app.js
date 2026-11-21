@@ -651,6 +651,8 @@
 
     if (!guest) html += exposuresPanel(data.exposures || []);
 
+    html += instagramCheckCard(data, profiles);
+
     if (!profiles.length && !documents.length && !mentions.length) {
       html += emptyState(data.partial ? "No confirmed findings from the completed checks. Some sources could not be checked." : "No public profiles were found for this username.");
     } else {
@@ -759,6 +761,24 @@
         <span class="hint">these sites can't be verified automatically</span></summary>
       <div class="rj-scroll"><table class="rj-table"><tbody>${items}</tbody></table></div>
     </details>`;
+  }
+
+  // Instagram often shows our server one logged-out page for every handle, so
+  // a scan can end with Instagram undecided. It is the profile most people
+  // search for, so say so up top with a direct link instead of leaving it in
+  // the check log. Never a found card, never counted or exported.
+  function instagramCheckCard(data, profiles) {
+    const handle = String(data.query?.username || "").replace(/^@+/, "");
+    if (!/^[A-Za-z0-9._]{1,30}$/.test(handle)) return "";
+    if (profiles.some((p) => p.platform === "Instagram")) return "";
+    const check = (data.platform_checks || []).find((c) => c.platform === "Instagram")
+      || ((data.unverified || []).some((c) => c.platform === "Instagram") ? { verdict: "unknown" } : null)
+      || data.instagram_check;
+    if (!check || check.verdict !== "unknown") return "";
+    const url = `https://www.instagram.com/${encodeURIComponent(handle)}/`;
+    return `<div class="panel gate slim instagram-check" role="status">
+      <p><strong>Instagram: not confirmed.</strong> Instagram hid its profile page from our server, so this scan could not tell whether <strong>@${esc(handle)}</strong> has an account there. Open it to check. The MyRecon Android app checks Instagram from your own phone.</p>
+      <div class="gate-actions"><a class="btn btn-ghost btn-sm" href="${esc(url)}" target="_blank" rel="noopener nofollow">Open @${esc(handle)} on Instagram</a></div></div>`;
   }
 
   function fullScanNudge() {
