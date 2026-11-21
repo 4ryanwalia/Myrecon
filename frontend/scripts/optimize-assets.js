@@ -21,7 +21,8 @@ function optimizeAssets(root = ROOT) {
   const selfHostedFonts = fs.existsSync(path.join(root, 'assets/css/fonts.css'));
   for (const file of pages) {
     const before = fs.readFileSync(file, 'utf8');
-    const after = bundleStyles(root, selfHostFonts(before, selfHostedFonts).replace(pattern, (all, attr, quote, url, kind, name, extension) => {
+    const responsive = sizeStoryPhotos(before, path.dirname(file) === path.join(root, 'find'));
+    const after = bundleStyles(root, selfHostFonts(responsive, selfHostedFonts).replace(pattern, (all, attr, quote, url, kind, name, extension) => {
       if (kind !== extension || name === 'env') return all;
       const source = `/assets/${kind}/${name}.${extension}`;
       if (!assets.has(source)) {
@@ -57,6 +58,23 @@ function optimizeAssets(root = ROOT) {
   const values = [...assets.values()];
   console.log(`[optimize] ${assets.size} shared assets: ${values.reduce((s, a) => s + a.before, 0)} -> ${values.reduce((s, a) => s + a.after, 0)} bytes; ${pages.length} pages`);
   return report;
+}
+// The profile lookup layout puts its opening photo in the first screen.
+// Other article photos are lazy and can use the browser's actual layout width.
+function sizeStoryPhotos(html, isProfileLookup) {
+  return html.replace(/(<figure class="story-photo">)(<img\b[^>]+>)/g, (figure, opening, img) => {
+    const src = img.match(/\bsrc="(https:\/\/images\.unsplash\.com\/photo-[^"]+)"/);
+    if (!src || /\bsrcset=/.test(img)) return figure;
+    const url = new URL(src[1].replaceAll('&amp;', '&'));
+    const candidates = [400, 720, 960, 1200].map(width => {
+      url.searchParams.set('w', width);
+      return `${url.href.replaceAll('&', '&amp;')} ${width}w`;
+    });
+    const sizes = '(max-width: 900px) calc(100vw - 40px), 860px';
+    if (isProfileLookup) img = img.replace('loading="lazy"', 'fetchpriority="high"');
+    const auto = img.includes('loading="lazy"') ? 'auto, ' : '';
+    return opening + img.replace(/>$/, ` srcset="${candidates.join(', ')}" sizes="${auto}${sizes}">`);
+  });
 }
 // Google Fonts costs two extra connections before first paint. The same Inter and
 // JetBrains Mono files are served from this origin by assets/css/fonts.css.

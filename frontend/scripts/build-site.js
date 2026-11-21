@@ -87,6 +87,7 @@ try { for (const script of scripts) {
 } } finally {
 fs.writeFileSync(homepagePath, homepageContents);
 }
+require('./build-username-chart').buildUsernameChart(ROOT);
 require('./enhance-article-promotion');
 require('./install-app-nudge').run();
 require('./enrich-story-experience');

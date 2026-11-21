@@ -5,6 +5,18 @@
   "redirects": [
     {
       "source": "/",
+      "has": [{ "type": "host", "value": "myrecon-jet.vercel.app" }],
+      "destination": "https://www.myrecon.xyz/",
+      "permanent": true
+    },
+    {
+      "source": "/:path((?!(?:api|assets|data|\\.well-known|worker-console|_vercel)(?:/|$)).+)",
+      "has": [{ "type": "host", "value": "myrecon-jet.vercel.app" }],
+      "destination": "https://www.myrecon.xyz/:path",
+      "permanent": true
+    },
+    {
+      "source": "/",
       "has": [
         {
           "type": "host",

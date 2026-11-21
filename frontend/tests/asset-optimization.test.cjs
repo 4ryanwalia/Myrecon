@@ -65,3 +65,21 @@ test('head stylesheets are joined in order, never across an inline style, and Go
   assert.match(html.slice(html.indexOf('<body>')), /\/assets\/optimized\/css\/d\.[a-f0-9]{12}\.css/, 'body stylesheets are left alone');
   assert.match(fs.readFileSync(path.join(root, 'other.html'), 'utf8'), /fonts\.googleapis\.com/, 'other families keep Google Fonts');
 });
+
+test('story photos offer responsive widths and prioritize the profile lookup opening', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'myrecon-photo-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(root, 'find'));
+  const photo = '<figure class="story-photo"><img src="https://images.unsplash.com/photo-123?w=1200&amp;q=80" alt="Desk" width="1200" height="800" loading="lazy"><figcaption>Photo credit</figcaption></figure>';
+  const pages = ['article.html', 'find/profile.html'];
+  for (const file of pages) fs.writeFileSync(path.join(root, file), photo);
+  optimizeAssets(root);
+  for (const file of pages) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    for (const width of [400, 720, 960, 1200]) assert.ok(html.includes(`w=${width}&amp;q=80 ${width}w`));
+    assert.match(html, /alt="Desk" width="1200" height="800"/);
+    assert.match(html, /<figcaption>Photo credit<\/figcaption>/);
+    if (file.startsWith('find/')) assert.match(html, /fetchpriority="high"/);
+    else assert.match(html, /loading="lazy".*sizes="auto,/);
+  }
+});

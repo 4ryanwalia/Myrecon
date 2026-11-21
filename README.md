@@ -129,7 +129,7 @@ it is not an independent review.
 
 [Username OSINT guide](https://www.myrecon.xyz/guides/username-osint-search.html) · [Platform profile lookups](https://www.myrecon.xyz/find/) · [Privacy guides](https://www.myrecon.xyz/privacy/) · [OSINT tool comparisons](https://www.myrecon.xyz/vs/)
 
-The [public benchmark dashboard](https://www.myrecon.xyz/#benchmarks) publishes daily measurements for 10 fixed usernames across GitHub, GitLab and Hacker News. Inspect [raw runs and methodology](frontend/data/benchmarks.json) for timestamps, verdicts, coverage and unknown outcomes. Compare actual MyRecon, Sherlock and Maigret runs, with recorded versions and coverage, or select the HTTP 200 heuristic. This small regression sample shares API evidence with the reference; it is not an independent accuracy audit or a full-catalogue ranking. [Reproduce the named-tool benchmark](docs/NAMED-TOOL-BENCHMARKS.md).
+The [homepage benchmark chart](https://www.myrecon.xyz/#benchmarks) compares the full catalogues and the addresses shared by all three tools in the recorded single-handle study. A separate [daily evidence file](https://www.myrecon.xyz/data/benchmarks.json) contains observations for ten fixed usernames across GitHub, GitLab and Hacker News. Each run records versions, verdicts, coverage and unknown outcomes. The reference and MyRecon share some API evidence, which limits conclusions about accuracy. [Reproduce the named-tool benchmark](docs/NAMED-TOOL-BENCHMARKS.md).
 
 ## Try the verdict demo
 

@@ -27,8 +27,8 @@
   if (typeof document === "undefined") return;
   const node = (tag, value) => { const n = document.createElement(tag); if (value !== undefined) n.textContent = value; return n; };
   const put = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-  function drawComparison(data, scope) {
-    const series = comparisonSeries(data, scope), max = Math.max(1, ...series.map((s) => s.total));
+  function drawComparison(series, scope, sharedAddressCount) {
+    const max = Math.max(1, ...series.map((s) => s.total));
     const chart = document.getElementById("usernameCaseGraph");
     const categories = [["supported", "Source-supported"], ["falsePositives", "Observed false positives"], ["unverified", "Unverified"]];
     const legend = node("div"); legend.className = "case-legend";
@@ -48,7 +48,7 @@
     });
     chart.replaceChildren(legend, ...rows);
     const highest = [...series].sort((a, b) => b.total - a.total)[0];
-    put("usernameCaseGraphNote", `${highest.label} returned the most unique leads in this view (${highest.total}). Bar lengths share one scale; they count unique profile URLs, so duplicate hits are excluded. ${scope === "shared" ? `All three tools checked the same ${data.shared_address_count} profile addresses.` : "Catalogue sizes differ. More reported leads does not mean more verified profiles."}`);
+    put("usernameCaseGraphNote", `${highest.label} returned the most unique leads in this view (${highest.total}). Bar lengths share one scale; they count unique profile URLs, so duplicate hits are excluded. ${scope === "shared" ? `All three tools checked the same ${sharedAddressCount} profile addresses.` : "Catalogue sizes differ. More reported leads does not mean more verified profiles."}`);
   }
   function table(headings, rows, caption) {
     const t = node("table"); t.className = "benchmark-table";
@@ -77,7 +77,7 @@
     put("usernameCaseDiagnostic", `Sherlock's unfiltered bundled rules reported ${data.sherlock_bundled_diagnostic.summary.reported} hits, including ${data.sherlock_bundled_diagnostic.excluded_reported} on sites its current exclusion list removes. The main comparison honors that list.`);
     const draw = () => {
       const shared = scope === "shared";
-      drawComparison(data, scope);
+      drawComparison(comparisonSeries(data, scope), scope, data.shared_address_count);
       const rows = engines.map((tool) => {
         const stats = data.tools[tool][shared ? "shared_summary" : "summary"];
         return [labels[tool], stats.checked, stats.reported, stats.unique_reported, stats.source_supported,
@@ -129,5 +129,16 @@
       put("usernameCaseTakeaway", "The interactive chart is unavailable. Read the research article below for the recorded results and limitations.");
     } finally { clearTimeout(timeout); }
   }
-  load();
+  const embedded = document.getElementById("usernameCaseChartData");
+  if (embedded) {
+    const chart = JSON.parse(embedded.textContent);
+    const scope = document.getElementById("usernameCaseScope");
+    const draw = () => drawComparison(chart[scope.value], scope.value, chart.sharedAddressCount);
+    scope.addEventListener("change", draw);
+    put("usernameCaseWhen", `Local runs: ${chart.date}. This is a recorded case study.`);
+    draw();
+    document.getElementById("usernameCaseContent").hidden = false;
+  } else {
+    load();
+  }
 }());

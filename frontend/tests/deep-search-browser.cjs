@@ -20,12 +20,12 @@ const result = {
 let mode = 'guest';
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;
-  if (pathname === '/assets/js/account.js') {
+  if (/^\/assets\/(?:optimized\/)?js\/account(?:\.[a-f0-9]{12})?\.js$/.test(pathname)) {
     const state = mode === 'guest' ? { user: null, account: null } : { user: { uid: 'fixture-user' }, account: { deep_search_enabled: mode === 'paid' } };
     res.setHeader('Content-Type', 'application/javascript');
     return res.end(`window.MyReconAccount={enabled:true,ready:Promise.resolve(),state:()=>(${JSON.stringify(state)}),onChange:()=>{},refreshAccount:async()=>{},authHeaders:async()=>({Authorization:'Bearer fixture-token'})};`);
   }
-  if (pathname === '/assets/js/config.js') {
+  if (/^\/assets\/(?:optimized\/)?js\/config(?:\.[a-f0-9]{12})?\.js$/.test(pathname)) {
     res.setHeader('Content-Type', 'application/javascript');
     return res.end('window.MYRECON_API_BASE=location.origin;\n' + fs.readFileSync(path.join(root, 'assets/js/config.js'), 'utf8'));
   }
@@ -51,6 +51,10 @@ const server = http.createServer((req, res) => {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
+    const benchmarkRequests = [];
+    page.on('request', request => {
+      if (new URL(request.url()).pathname === '/data/username-benchmark.json') benchmarkRequests.push(request.url());
+    });
     await page.route('**/*', (route) => route.request().url().startsWith(base) ? route.continue() : route.abort());
     await page.goto(base + '/index.html');
     await page.locator('.case-graph-row').first().waitFor();
@@ -60,6 +64,7 @@ const server = http.createServer((req, res) => {
     await page.locator('#usernameCaseScope').selectOption('shared');
     assert.deepEqual(await page.locator('.case-graph-total strong').allTextContents(), ['8', '11', '10']);
     await page.locator('#usernameCaseScope').selectOption('full');
+    assert.deepEqual(benchmarkRequests, [], 'both chart views should use the embedded measurements');
     assert.equal(await page.locator('#tab-deepsearch').count(), 1);
     assert.equal(await page.locator('.quick-link').count(), 0);
     assert.equal(await page.locator('.home-resource-list > a').count(), 3);
@@ -74,16 +79,19 @@ const server = http.createServer((req, res) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.screenshot({ path: path.join(output, 'homepage-mobile.png'), fullPage: true });
     await page.locator('#tab-deepsearch').click();
-    await page.locator('#dsPreviewTitle').waitFor();
-    assert.equal(await page.locator('.deep-search-preview-footer a').getAttribute('href'), '/pricing.html');
+    await page.getByRole('heading', { name: 'Run a guest investigation' }).waitFor();
+    assert.equal(await page.locator('#runBtn').isEnabled(), true);
+    assert.equal(await page.locator('#dsPreview').isVisible(), false);
     await page.screenshot({ path: path.join(output, 'guest-preview-mobile.png'), fullPage: true });
     await page.setViewportSize({ width: 1280, height: 900 });
     for (mode of ['guest', 'free', 'paid']) {
       await page.goto(base + '/deep-search.html');
-      await page.waitForFunction(() => document.querySelector('#dsAccessTitle').textContent !== 'Checking Deep Search access');
-      assert.equal(await page.locator('#dsRun').isDisabled(), mode !== 'paid');
-      assert.equal(await page.locator('#dsPreview').isVisible(), mode !== 'paid');
-      if (mode !== 'paid') assert.equal(await page.locator('#dsUpgrade').isVisible(), true);
+      const accessHeading = { guest: 'Run a guest investigation', free: 'Deep Search requires', paid: 'Deep Search is ready' }[mode];
+      await page.locator('#dsAccessTitle').filter({ hasText: accessHeading }).waitFor();
+      assert.equal(await page.locator('#dsRun').isDisabled(), mode === 'free');
+      assert.equal(await page.locator('#dsPreview').isVisible(), mode === 'free');
+      assert.equal(await page.locator('#dsUpgrade').isVisible(), mode === 'free');
+      if (mode === 'free') assert.equal(await page.locator('#dsUpgrade').getAttribute('href'), '/pricing');
       if (mode === 'guest') {
         await page.screenshot({ path: path.join(output, 'guest-preview-desktop.png'), fullPage: true });
         for (const width of [375, 390, 768]) {
@@ -109,13 +117,15 @@ const server = http.createServer((req, res) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.locator('#themeToggle').click();
     await page.screenshot({ path: path.join(output, 'mobile-dark.png'), fullPage: true });
-    await page.locator('.ds-plan summary').click();
-    assert.equal(await page.getByRole('link', { name: 'site:instagram.com/nasa ↗', exact: true }).isVisible(), true);
+    const originalPage = page.locator('.ds-result-action a[href="https://www.instagram.com/nasa/"]');
+    assert.equal(await originalPage.isVisible(), true);
     const download = page.waitForEvent('download');
     await page.locator('#dsExport').click();
-    assert.equal((await download).suggestedFilename(), 'myrecon-deep-search.json');
+    const report = await download;
+    assert.equal(report.suggestedFilename(), 'myrecon-deep-search.json');
+    assert.deepEqual(JSON.parse(fs.readFileSync(await report.path(), 'utf8')).plan, result.plan);
     assert.deepEqual(errors, []);
-    console.log('Browser checks passed: homepage rows, three-tool graph and scope switch, daily comparison, guest preview and upgrade link, guest/free/paid access, streamed results, themes, 375/390/768px widths and report download.');
+    console.log('Browser checks passed for the homepage chart, guest/free/paid access, upgrade link, streamed results, themes, 375/390/768px widths and report download.');
     console.log('Screenshots: ' + output);
   } finally { await browser.close(); server.close(); }
 })().catch((error) => { console.error(error); server.close(); process.exitCode = 1; });
