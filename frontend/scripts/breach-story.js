@@ -23,7 +23,7 @@ const caseMotiveEvidence = s => motiveEvidence(s) && /ransom demand|demanded.{0,
 function breachStory(b, editorial) {
   const text = plain(b.Description);
   const mechanism = sentences(text).filter(s => /SQL injection|unsecured|unprotected|misconfigur|without authentication|unauthenticated|vulnerab|phishing|social engineering|credential stuffing|stolen credentials|information.steal|malware|scrap(?:ed|ing)|unauthori[sz]ed access|exposed (?:API|database)|compromised (?:credentials|account)/i.test(s));
-  const emailCollection = b.Name === 'LinkedInScrape' || b.Name === 'ThePostMillennial';
+  const emailCollection = b.IsStealerLog || b.Name === 'LinkedInScrape' || b.Name === 'ThePostMillennial';
   const count = Number(b.PwnCount || 0).toLocaleString('en-GB');
   return {
     background: paragraphs(text),

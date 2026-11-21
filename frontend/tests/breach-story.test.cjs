@@ -27,10 +27,11 @@ test('timeline enrichment preserves collection-specific email counts', t => {
   fs.copyFileSync(path.join(__dirname, '../content/editorial-photography.json'), path.join(root, 'content/editorial-photography.json'));
   fs.writeFileSync(path.join(root, 'assets/data/case-files.json'), JSON.stringify({ cases: [] }));
   const records = [
+    { Name: 'AlienStealerLogs', Title: 'ALIEN TXTBASE Stealer Logs', slug: 'alienstealerlogs', PwnCount: 284132969, IsStealerLog: true, BreachDate: '2025-02-15', AddedDate: '2025-02-25', Description: 'Email addresses occurred in stealer logs.', DataClasses: ['Email addresses', 'Passwords'] },
     { Name: 'LinkedInScrape', Title: 'LinkedIn Scraped Data (2021)', slug: 'linkedinscrape', PwnCount: 125698496, BreachDate: '2021-04-08', AddedDate: '2021-10-02', Description: 'Public profiles were scraped.', DataClasses: ['Email addresses'] },
     { Name: 'ThePostMillennial', Title: 'The Post Millennial', slug: 'thepostmillennial', PwnCount: 56973345, BreachDate: '2024-05-02', AddedDate: '2024-05-10', Description: 'A breach and mailing lists were reported.', DataClasses: ['Email addresses'] },
   ];
-  const feed = records.map(b => ({ name: b.Name, slug: b.slug, breach_date: b.BreachDate, added_date: b.AddedDate, story: breachStory(b) }));
+  const feed = records.map(b => ({ name: b.Name, slug: b.slug, stealer_log: !!b.IsStealerLog, breach_date: b.BreachDate, added_date: b.AddedDate, story: breachStory(b) }));
   fs.writeFileSync(path.join(root, 'assets/data/breaches.json'), JSON.stringify({ breaches: feed }));
   for (const b of records) fs.writeFileSync(path.join(root, 'breaches', b.slug + '.html'), designArticle(article(b, '', [b]), `breaches/${b.slug}.html`));
   execFileSync(process.execPath, [path.join(root, 'scripts/enrich-story-experience.js')]);
@@ -43,6 +44,10 @@ test('timeline enrichment preserves collection-specific email counts', t => {
     assert.doesNotMatch(html, /Behind the exposed accounts|the whole point of a breach like this/);
   }
   const post = fs.readFileSync(path.join(root, 'breaches/thepostmillennial.html'), 'utf8');
+  const logs = fs.readFileSync(path.join(root, 'breaches/alienstealerlogs.html'), 'utf8');
+  assert.match(logs, /284,132,969 unique email addresses/);
+  assert.match(logs, /HIBP record date/);
+  assert.doesNotMatch(logs, /was breached|Accounts exposed|Reported breach date|population of/);
   assert.match(post, /mailing lists/);
   assert.doesNotMatch(post, /56,973,345 accounts were exposed/);
 });

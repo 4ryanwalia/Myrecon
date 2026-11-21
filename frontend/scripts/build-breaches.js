@@ -35,6 +35,7 @@ const path = require("path");
 const { breachStory, unknownMotive } = require('./breach-story');
 const { attribute, toUrlPath, fileForUrl } = require('./build-sitemap');
 
+const numCompact = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 0 }).format;
 const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "breaches");
 const DATA_DIR = path.join(ROOT, "assets", "data");
@@ -557,17 +558,19 @@ function article(b, editorial, siblings) {
   const year = (b.BreachDate || "").slice(0, 4);
   const isProfileScrape = b.Name === "LinkedInScrape";
   const isPostMillennial = b.Name === "ThePostMillennial";
-  const emailCollection = isProfileScrape || isPostMillennial;
+  const emailCollection = isProfileScrape || isPostMillennial || b.IsStealerLog;
 
   const lead = isProfileScrape
     ? `In 2021, public LinkedIn profile data was scraped and circulated. HIBP lists ${num(b.PwnCount)} unique email addresses in the collection.`
     : isPostMillennial
     ? `In May 2024, The Post Millennial was defaced and several datasets circulated. HIBP lists ${num(b.PwnCount)} email addresses across the collection, including mailing lists.`
+    : b.IsStealerLog
+    ? `HIBP lists ${num(b.PwnCount)} unique email addresses in the ${b.Title} collection. A website in the logs identifies where credentials were used.`
     : `On ${prettyDate(b.BreachDate)}, ${b.Title} was breached. ${num(b.PwnCount)} accounts were exposed` +
       (classes.length ? `, including ${classes.slice(0, 3).map((c) => c.name.toLowerCase()).join(", ")}` : "") +
       `. MyRecon rates it ${sev.score}/100, ${sev.band.toLowerCase()}.`;
 
-  const phrase = isProfileScrape ? "LinkedIn Scraped Data (2021)" : breachPhrase(b.Title);
+  const phrase = isProfileScrape ? "LinkedIn Scraped Data (2021)" : b.IsStealerLog ? b.Title : breachPhrase(b.Title);
 
   const crumbs = JSON.stringify({
     "@context": "https://schema.org",
@@ -603,13 +606,13 @@ function article(b, editorial, siblings) {
   const related = Array.from({ length: Math.min(3, pool.length) }, (_, i) => pool[(start + i) % pool.length])
     .map(
       (s) =>
-        `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a>: ${num(s.PwnCount)} accounts</li>`,
+        `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a>: ${num(s.PwnCount)} ${s.IsStealerLog ? "email addresses" : "accounts"}</li>`,
     )
     .join("");
 
   return (
     HEAD({
-      title: isProfileScrape ? "LinkedIn Public Profile Scrape (2021) | MyRecon" : isPostMillennial ? "The Post Millennial Breach and Mailing Lists | MyRecon" : fitTitle([
+      title: b.IsStealerLog ? fitTitle([`${b.Title}: ${numCompact(b.PwnCount)} Email Addresses Explained`, `${b.Title}: Reading the Email Count`]) : isProfileScrape ? "LinkedIn Public Profile Scrape (2021) | MyRecon" : isPostMillennial ? "The Post Millennial Breach and Mailing Lists | MyRecon" : fitTitle([
         `${phrase}: ${num(b.PwnCount)} Accounts Exposed | MyRecon`,
         `${phrase}: ${num(b.PwnCount)} Accounts Exposed`,
         `${phrase}: ${num(b.PwnCount)} Accounts | MyRecon`,
@@ -639,9 +642,9 @@ function article(b, editorial, siblings) {
       <header class="bx-head">
         ${logo ? `<img class="bx-logo" src="${esc(logo)}" referrerpolicy="no-referrer" alt="" width="72" height="72" loading="lazy">` : ""}
         <div>
-          <span class="kicker">${esc(year)} · ${isProfileScrape ? "Public data scrape" : "Data breach"}</span>
+          <span class="kicker">${esc(year)} · ${b.IsStealerLog ? "Stealer log collection" : isProfileScrape ? "Public data scrape" : "Data breach"}</span>
           <h1>${esc(b.Title)}</h1>
-          <p class="meta">${isProfileScrape ? "Incident date" : "Breached"} ${esc(prettyDate(b.BreachDate))} · Added to HIBP ${esc(prettyDate(b.AddedDate))}${b.Domain ? ` · ${esc(b.Domain)}` : ""}</p>
+          <p class="meta">${b.IsStealerLog ? "HIBP record date" : isProfileScrape ? "Incident date" : "Breached"} ${esc(prettyDate(b.BreachDate))} · Added to HIBP ${esc(prettyDate(b.AddedDate))}${b.Domain ? ` · ${esc(b.Domain)}` : ""}</p>
         </div>
       </header>
 
@@ -853,7 +856,7 @@ ${items
               <span>${esc(prettyDate(b.BreachDate))}</span>
             </div>
           </div>
-          <p class="bx-card-count">${num(b.PwnCount)} <span>accounts</span></p>
+          <p class="bx-card-count">${num(b.PwnCount)} <span>${b.IsStealerLog ? "email addresses" : "accounts"}</span></p>
           <p class="bx-card-classes">${esc((b.DataClasses || []).slice(0, 4).join(" · "))}</p>
           <span class="bx-badge ${bandClass(sev.band)}">${esc(sev.band)} · ${sev.score}</span>
         </a>`;
@@ -892,11 +895,12 @@ function rssFeed(items) {
     .map((b) => {
       const sev = severity(b);
       const link = `${SITE}/breaches/${slug(b.Name)}.html`;
+      const countLabel = b.IsStealerLog ? "email addresses listed" : "accounts exposed";
       const summary =
-        `${num(b.PwnCount)} accounts exposed. Severity ${sev.score}/100 (${sev.band}). ` +
+        `${num(b.PwnCount)} ${countLabel}. Severity ${sev.score}/100 (${sev.band}). ` +
         `Data exposed: ${(b.DataClasses || []).join(", ") || "not published"}.`;
       return `    <item>
-      <title>${esc(b.Title)} data breach: ${num(b.PwnCount)} accounts exposed</title>
+      <title>${esc(b.Title)}${b.IsStealerLog ? "" : " data breach"}: ${num(b.PwnCount)} ${countLabel}</title>
       <link>${link}</link>
       <guid isPermaLink="true">${link}</guid>
       <pubDate>${new Date(b.AddedDate || b.BreachDate || Date.now()).toUTCString()}</pubDate>
@@ -1005,6 +1009,7 @@ async function main() {
         verified: !!b.IsVerified,
         sensitive: !!b.IsSensitive,
         stealer_log: !!b.IsStealerLog,
+        ...(b.IsStealerLog ? { count_unit: "unique_email_addresses" } : {}),
         logo: logoFor(b),
         severity: sev.score,
         band: sev.band,
@@ -1022,7 +1027,7 @@ async function main() {
           .sort((a, z) => z.weight - a.weight)
           .map(({ name, why }) => ({ name, why })),
         actions: actions(b),
-        scale_line: scaleLine(b.PwnCount),
+        scale_line: b.IsStealerLog ? "" : scaleLine(b.PwnCount),
       };
     }),
   };
