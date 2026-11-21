@@ -1,6 +1,6 @@
 # Independent coverage outreach
 
-Checked 1 November 2026. Goal: invite honest external testing and editorial
+Initial outreach on 1 November 2026. Publication status checked on 22 November 2026. Goal: invite honest external testing and editorial
 evaluation of MyRecon. Documentation and drafts were prepared with AI assistance.
 The developer's affiliation must remain visible in every submission.
 
@@ -8,7 +8,8 @@ The developer's affiliation must remain visible in every submission.
 
 | Recipient | Fit and public route | Status / constraint |
 | --- | --- | --- |
-| OSINT Newsletter / OSINT Tools Library | Reviewed directory and tool coverage. [Submission guide](https://tools.osintnewsletter.com/submission-guide) links its [tool form](https://forms.gle/kFE3Ddj4rbzsnxyUA). | Submitted 1 Nov 2026; form confirmed "Your response has been recorded." [Exact submission](osint-newsletter-submission-2026-11-01.json), [receipt](osint-newsletter-receipt-2026-11-01.jpg). Editorial decision pending. |
+| OSINT Newsletter / OSINT Tools Library | Reviewed directory and tool coverage. [Submission guide](https://tools.osintnewsletter.com/submission-guide) links its [tool form](https://forms.gle/kFE3Ddj4rbzsnxyUA). | Submitted 1 Nov 2026; form confirmed "Your response has been recorded." [Exact submission](osint-newsletter-submission-2026-11-01.json), [receipt](osint-newsletter-receipt-2026-11-01.jpg). [Published tool entry and guest test](https://tools.osintnewsletter.com/osint-tools/myrecon). The entry credits the developer submission and reports broken profile links in the reviewer’s test. [Publisher repository record, 16 November](https://github.com/The-OSINT-Newsletter/OSINT-Tools-Library/commit/7cda901e47041080abae7c2f22602873f9e79748). |
+| OSINT Namecheckers List | Curated list of username tools maintained by soxoj. | The [13 November addition](https://github.com/soxoj/osint-namecheckers-list/commit/931d03edab82) links to the MyRecon homepage. GitHub marks the rendered link as nofollow. |
 | OSINT Framework | Public/free OSINT discovery. [Repository guidelines](https://github.com/lockfale/OSINT-Framework#contribute-with-a-github-pull-request) welcome a PR or issue. | Submitted 1 Nov 2026: [issue #880](https://github.com/lockfale/OSINT-Framework/issues/880), open and awaiting evaluation. Hosted freemium limits and affiliation disclosed. |
 | Sector035 | Researcher and Week in OSINT publisher. [Homepage](https://sector035.nl/) invites useful tips at sector035@pm.me. | Invitation sent 1 Nov 2026 at 22:20 IST; Gmail displayed "Message sent" and the sent conversation was verified. No reply/publication yet. Current publishing cadence is unconfirmed (visible archive includes 2024). |
 | My OSINT Training / instructor team | Security educators, including WhatsMyName creator Micah Hoffman. [Company contact](https://sg.linkedin.com/company/my-osint-training) lists support@myosint.training; [instructor page](https://www.myosint.training/pages/instructors) establishes fit. | Invitation sent 1 Nov 2026; Gmail confirmed "Message sent." [Exact invitation](my-osint-training-invitation-2026-11-01.md). Response/publication pending. |
@@ -18,7 +19,7 @@ The developer's affiliation must remain visible in every submission.
 | Bellingcat toolkit | [Official introduction](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/) links its [contribution form](https://forms.gle/dZvsJzuEjTNjJ9HWA). | Excluded: the live form says not to suggest your own tools. Toolkit email also excludes tool suggestions. |
 
 Prior GitHub issues/PRs in OSINT Framework and OSINT Tools Library were searched
-for MyRecon on this date; no matches were returned. Recheck before sending a
+for MyRecon on 1 November; no matches were returned. Recheck before sending a
 later suggestion. Do not submit both a form and PR for the same recipient.
 
 Unsent drafts prepared 18 November 2026 (AlternativeTo listing, r/OSINT post,
