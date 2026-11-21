@@ -189,16 +189,19 @@ function fileForUrl(url, root = ROOT) {
   return candidates.find(candidate => candidate.endsWith('.html') && fs.existsSync(candidate) && fs.statSync(candidate).isFile()) || null;
 }
 
+function htmlRewrites(config, root) {
+  return new Map((config.rewrites || [])
+    .filter(rule => !/[:(*]/.test(rule.source) && !rule.has && !rule.missing && /^\/[^?#:]+\.html$/.test(rule.destination || ''))
+    .map(rule => [rule.source, fileForUrl(rule.destination, root)]));
+}
+
 function collectEntries({ root = ROOT, environment = process.env, today, gitDateFor = gitDate } = {}) {
   const entries = [];
   const skipped = [];
   const changedDates = renderedChangeDates(environment, today);
   const config = fs.existsSync(path.join(root, 'vercel.json')) ? JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8')) : {};
   const redirected = new Set((config.redirects || []).filter(rule => !rule.source.includes(':') && !rule.has && !rule.missing).map(rule => rule.source));
-  // Clean URLs served by an exact rewrite to a local page, such as /footprint.
-  const rewritten = new Map((config.rewrites || [])
-    .filter(rule => !/[:(*]/.test(rule.source) && !rule.has && !rule.missing && /^\/[^?#:]+\.html$/.test(rule.destination || ''))
-    .map(rule => [rule.source, fileForUrl(rule.destination, root)]));
+  const rewritten = htmlRewrites(config, root);
 
   for (const file of walk(root)) {
     const html = fs.readFileSync(file, "utf8");
@@ -353,4 +356,4 @@ function isNoindex(html) {
 }
 
 if (require.main === module) buildSitemap();
-module.exports = { isNoindex, xmlEscape, attribute, toUrlPath, validDate, lastmod, fileForUrl, collectEntries, renderSitemap, buildSitemap };
+module.exports = { isNoindex, xmlEscape, attribute, toUrlPath, validDate, lastmod, fileForUrl, htmlRewrites, collectEntries, renderSitemap, buildSitemap };

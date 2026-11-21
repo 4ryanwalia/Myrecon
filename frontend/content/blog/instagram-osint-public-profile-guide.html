@@ -1,11 +1,11 @@
 <!--
 {
-  "title": "Instagram OSINT: Public Profile Checks & Limits | MyRecon",
-  "headline": "Instagram OSINT: Review Your Public Profile With Clear Evidence",
-  "description": "Check public Instagram bios, links and profile clues. Follow an evidence checklist, understand private-account limits, and reduce your own exposure.",
+  "title": "Instagram OSINT: How to Verify a Public Profile | MyRecon",
+  "headline": "Instagram OSINT: How to Verify a Public Profile",
+  "description": "See why two Instagram URLs both returned HTTP 200 in our recorded check. Compare the profile evidence, then use the checklist to review your own account.",
   "category": "Social media OSINT",
   "datePublished": "2026-10-08",
-  "dateModified": "2026-10-25",
+  "dateModified": "2026-11-21",
   "keywords": [
     "instagram osint",
     "instagram osint tools",
@@ -31,6 +31,11 @@
 -->
 <h2 id="quick-answer">Quick answer: what Instagram OSINT can show</h2>
 <p class="lead">Instagram OSINT means assessing openly available Instagram information. For your own profile or an account you are authorised to manage, it can reveal which bio details, links and public posts expose more than intended. Public-source research cannot bypass a private account, and repeated handles or photos do not prove that accounts share an owner.</p>
+
+<h2 id="two-instagram-pages">Why did two different Instagram pages both return HTTP 200?</h2>
+<p>On 30 September 2026, MyRecon checked its publisher's handle and a generated control. Instagram delivered a page for each address. The publisher's page title named the exact handle, and the page included a matching account record. The control had a generic Instagram title and no matching account record. Counting successful page loads would have treated both alike.</p>
+<table class="data-table"><caption>Two observations from the same signed-out source review</caption><thead><tr><th scope="col">Requested handle</th><th scope="col">HTTP status</th><th scope="col">What the page supported</th></tr></thead><tbody><tr><th scope="row">4ryanwalia</th><td>200</td><td>Public profile at the requested handle</td></tr><tr><th scope="row">mrbenchq8v17zz</th><td>200</td><td>Inconclusive. The response had no profile-specific evidence.</td></tr></tbody></table>
+<p>When reviewing your own handle, record what you can see at the final address. A generic landing page or a login prompt leaves the question open. For the original observations, find <code>https://instagram.com/4ryanwalia</code> in the <a href="/data/username-benchmark.json">published evidence file</a> and compare its reference and control entries. The <a href="/blog/username-search-benchmark-research.html">research article</a> explains how the publisher selected and reviewed this case.</p>
 
 <h2>Choose a useful question before collecting anything</h2>
 <p>A self-audit might ask whether a profile publishes a personal contact address, whether an old post discloses a routine, or whether your business links to the correct official account. These questions have actions you can complete. “Find everything about this person” has no sensible stopping point and encourages collecting information that does not serve the review.</p>

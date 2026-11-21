@@ -5,12 +5,21 @@
   "description": "Recorded MyRecon, Sherlock and Maigret results for 4ryanwalia, with shared-address tables, run dates, source reviews, reproducible methods and limitations.",
   "category": "Research",
   "datePublished": "2026-11-01",
-  "dateModified": "2026-11-01",
-  "editorial_review": "2026-11-01"
+  "dateModified": "2026-11-21",
+  "editorial_review": "2026-11-21"
 }
 -->
 <p class="lead">In a recorded search for <code>4ryanwalia</code> on <strong>30 September 2026</strong>, MyRecon reported 12 hits, Sherlock 19 and Maigret 35. Reviewing the unique profile addresses supported 12, 11 and 10 leads respectively. On the 210 exact addresses checked by all three engines, the supported counts were 8, 9 and 9. Those two views answer different questions; neither establishes an overall accuracy ranking.</p>
 <p><strong>Published and reviewed:</strong> <time datetime="2026-11-01">1 November 2026</time> by MyRecon. This is a publisher-run study of our own product and competing tools. The September observations are historical; publishing this article did not rerun those scans. A separate daily control sample is dated below. A supported public profile is a research lead, not proof of ownership or username availability.</p>
+
+<h2 id="november-controls">How often did a username check give an inconclusive result?</h2>
+<p>On GitHub, a check based only on HTTP status gave an inconclusive result in 6 of 200 observations. On Hacker News, the same check was inconclusive in all 200. MyRecon recorded 20 runs from 1 through 21 November 2026. Each run checked the same ten handles on each service. The difference matters if you are deciding whether to spend time reviewing a possible match.</p>
+<table class="data-table"><caption>HTTP-status baseline compared with the official API reference, 200 repeated observations per platform</caption>
+<thead><tr><th scope="col">Platform</th><th scope="col">Agreed with reference</th><th scope="col">Contradicted reference</th><th scope="col">Inconclusive</th></tr></thead>
+<tbody><tr><th scope="row">GitHub</th><td>194</td><td>0</td><td>6</td></tr><tr><th scope="row">GitLab</th><td>60</td><td>20</td><td>120</td></tr><tr><th scope="row">Hacker News</th><td>0</td><td>0</td><td>200</td></tr></tbody></table>
+<p>The 20 GitLab contradictions came from repeated checks of the same handle. A single misleading page can therefore look like many separate mistakes in a daily total. On GitHub, five of the six inconclusive checks concerned a handle the reference found. Treating every inconclusive result as absent would have hidden those profiles.</p>
+<p>To reproduce the table, open the <a href="https://raw.githubusercontent.com/4ryanwalia/Myrecon/b60d65e7fdc476999301e313196b852fa4f70efc/frontend/data/benchmarks.json">dated JSON snapshot</a>. In <code>runs</code>, select the UTC start dates from 1 through 21 November inclusive. There is no entry for 4 November. Group <code>checks</code> by platform. Count an <code>http200_baseline.verdict</code> of <code>unknown</code> as inconclusive, then compare each remaining verdict with <code>reference.verdict</code>. Every reference in this window returned a definite verdict. These are repeated observations of ten fixed handles per service. They cannot estimate a failure rate for random usernames.</p>
+<p>For a check you can do by hand, use the <a href="/find/github-profile">GitHub username lookup and profile privacy checklist</a>. The <a href="/blog/instagram-osint-public-profile-guide.html#two-instagram-pages">two recorded Instagram responses</a> show a different way that HTTP status can leave a profile unresolved.</p>
 
 <h2 id="findings">Findings from the full-catalogue case study</h2>
 <p><strong>Expanded original testing, 1 November 2026:</strong> the <a href="/blog/username-search-controlled-study-2026.html">35-control study across eight platforms</a> adds platform-specific upstream testing fixtures and generated candidates, with current reference verification, all tool outcomes, pinned versions, a CSV and a downloadable evidence ZIP. Its sample and scored denominators are separate from the historical case below.</p>

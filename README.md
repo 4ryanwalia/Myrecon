@@ -120,6 +120,8 @@ MyRecon brings public username signals, supported breach exposure checks, and do
 
 ## Guides and measured benchmarks
 
+The [three-platform username check results](https://www.myrecon.xyz/blog/username-search-benchmark-research.html#november-controls) include a dated data snapshot and instructions for reproducing the counts. For a single worked example, compare [two Instagram pages that both returned HTTP 200](https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html#two-instagram-pages).
+
 Reviewers and educators: use the [independent review kit](docs/review-kit/README.md)
 for source-pinned reproduction, raw first-party evidence, known limitations and
 a worksheet for your own tests. The kit is published by the MyRecon developer;

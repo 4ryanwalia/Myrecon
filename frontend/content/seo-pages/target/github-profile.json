@@ -2,19 +2,66 @@
   "kind": "target",
   "slug": "github-profile",
   "status": "published",
-  "title": "Find a GitHub Profile: Search Syntax & Privacy Checks",
-  "description": "Use GitHub user search, distinguish personal and organization profiles, and audit profile email separately from public commit email.",
-  "h1": "Find a GitHub Profile: Search Syntax & Privacy Checks",
+  "title": "GitHub Username Lookup and Public Profile Privacy Checklist",
+  "description": "Find the exact GitHub profile for a username, search personal accounts or organizations, and check which README, activity and email details are public.",
+  "h1": "Find a GitHub profile by username",
   "focus_keyword": "github profile username lookup",
-  "intro": "GitHub has separate personal and organization accounts, public repositories and profile fields. An exact handle URL is a useful starting point, but repository activity and a display name do not identify a person. This guide shows the GitHub search syntax and the fields worth checking in your own public profile.",
+  "intro": "If you know the username, open github.com/USERNAME. For a partial handle, search GitHub Users with in:login. If you only remember the display name, use in:name. Once you find your profile, open it while signed out to see which details other visitors can read.",
   "sections": [
     {
       "heading": "Search a handle or restrict the account type",
-      "body": "Open https://github.com/HANDLE with the known handle, or use GitHub user search. The documented query user:octocat selects that username; octocat is GitHub's public example account. To restrict a broader search to personal accounts, add type:user. Use type:org for organizations. A query such as example in:login type:user searches username text; example in:name searches the displayed name. These fields answer different questions and a full-name result can contain many unrelated people."
+      "body": "Open https://github.com/HANDLE with the known handle, or use GitHub user search. The documented query user:octocat selects that username; octocat is GitHub's public example account. To restrict a broader search to personal accounts, add type:user. Use type:org for organizations. A query such as example in:login type:user searches username text; example in:name searches the displayed name. These fields answer different questions and a full-name result can contain many unrelated people.",
+      "link": {
+        "href": "https://github.com/search?q=octocat+in%3Alogin+type%3Auser&type=users",
+        "label": "Try a GitHub user search for octocat"
+      }
     },
     {
       "heading": "Read the profile separately from repositories",
       "body": "Confirm the final URL and whether it is a personal or organization page. Review the public biography, self-linked website and profile README. A repository owned by an organization is not proof that every contributor represents it. Forks are copies of repositories; their presence does not establish original authorship. Contribution graphs can include activity whose underlying repository is private, so a graph cannot reveal the private code or project contents."
+    },
+    {
+      "heading": "GitHub public profile privacy checklist",
+      "body": "Open your profile in a signed-out window and compare it with the settings you chose. GitHub lets you hide activity on your profile while some details you publish remain visible. Check these surfaces separately, especially if you recently made your profile private.",
+      "table": {
+        "caption": "Where to check your public footprint on GitHub",
+        "headers": [
+          "Surface",
+          "What to check",
+          "Where to make a change"
+        ],
+        "rows": [
+          [
+            "Bio and profile links",
+            "An old employer, location or personal website",
+            "Edit the public profile fields."
+          ],
+          [
+            "Profile README",
+            "Contact details, badges and links above pinned items",
+            "Edit the README in the matching username repository."
+          ],
+          [
+            "Pinned repositories",
+            "A pin that exposes an old project or contact detail",
+            "Adjust the pins and review the underlying public repository separately."
+          ],
+          [
+            "Contribution activity",
+            "Which activity a signed-out visitor sees",
+            "Review profile visibility and private contribution settings."
+          ],
+          [
+            "Commit email",
+            "Whether a public commit contains an old address",
+            "Review commit email settings for future commits. Existing commits retain their recorded address."
+          ]
+        ]
+      },
+      "link": {
+        "href": "https://docs.github.com/en/account-and-profile/concepts/personal-profile#private-profiles",
+        "label": "GitHub documentation on private profiles"
+      }
     },
     {
       "heading": "Audit your email exposure",
@@ -27,15 +74,24 @@
     {
       "heading": "What the MyRecon check covers",
       "body": "The standard release catalogue includes GitHub. Its username check supplies a public profile lead, not repository secret scanning, private repository access or an audit of every commit. MyRecon checks a catalogue of 560+ platforms; guests get previews and signed-in free accounts have daily limits. Paid Extended scans have a separate scope. Challenges or rate limits can leave a check unknown, and a failed request is not proof the profile was deleted."
+    },
+    {
+      "heading": "What did repeated GitHub username checks show?",
+      "body": "Across 20 recorded runs from 1 through 21 November 2026, MyRecon compared a status-only check with the official GitHub account API for the same ten handles. Six of the 200 status-only observations were inconclusive, including five for existing accounts. The other 194 agreed with the reference. Rechecking ten handles measures consistency on this sample. It cannot establish accuracy for other accounts.",
+      "link": {
+        "href": "/blog/username-search-benchmark-research.html#november-controls",
+        "label": "Inspect the dated evidence and reproduce the counts"
+      }
     }
   ],
   "sources": [
     "https://docs.github.com/en/search-github/searching-on-github/searching-users",
     "https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address",
-    "https://github.com/octocat"
+    "https://github.com/octocat",
+    "https://docs.github.com/en/account-and-profile/concepts/personal-profile"
   ],
-  "reviewed_at": "2026-10-03",
-  "modified_at": "2026-10-03",
+  "reviewed_at": "2026-11-21",
+  "modified_at": "2026-11-21",
   "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
@@ -70,11 +126,12 @@
   ],
   "scan_trigger": "username",
   "editorial_review": true,
-  "method": "The signed-out octocat page was opened and captured for this release. Other examples are illustrative and search syntax is attributed to GitHub documentation. Private-account settings and email-change flows were not exercised.",
+  "method": "The signed-out octocat screenshot records the 3 October 2026 example. On 21 November we checked the user-search and profile-visibility instructions against GitHub documentation and counted the GitHub observations in our published November control runs.",
   "evidence": {
     "image": "/assets/img/github-octocat-observed.png",
     "alt": "Signed-out GitHub octocat profile showing the exact username and public example repositories.",
     "caption": "Observed on October 3, 2026: the signed-out URL github.com/octocat displayed the octocat handle and public example repositories. This screenshot verifies that page view only; it does not test private access, identity or MyRecon detection accuracy.",
     "source": "https://github.com/octocat"
-  }
+  },
+  "published_at": "2026-10-03"
 }

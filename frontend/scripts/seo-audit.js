@@ -28,6 +28,9 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.myrecon.xyz';
+const { fileForUrl, htmlRewrites } = require('./build-sitemap');
+const config = JSON.parse(read('vercel.json'));
+const rewrites = htmlRewrites(config, ROOT);
 const args = process.argv.slice(2);
 const asJson = args.includes('--json');
 const gscIndex = args.indexOf('--gsc');
@@ -97,25 +100,16 @@ function jaccard(a, b) {
 }
 
 function urlToFile(urlPath) {
-  let p = decodeURI(urlPath.split('#')[0].split('?')[0]);
-  if (p.startsWith(SITE)) p = p.slice(SITE.length);
-  if (!p.startsWith('/')) return null;
-  const candidates = [];
-  if (p.endsWith('/')) candidates.push(p + 'index.html');
-  else if (p.endsWith('.html')) candidates.push(p);
-  else candidates.push(p + '.html', p + '/index.html');
-  for (const c of candidates) {
-    const rel = c.replace(/^\//, '');
-    if (fs.existsSync(path.join(ROOT, rel))) return rel;
-  }
-  return null;
+  const url = new URL(urlPath, SITE);
+  if (url.origin !== SITE) return null;
+  const file = fileForUrl(url.pathname, ROOT) || rewrites.get(url.pathname);
+  return file ? path.relative(ROOT, file).split(path.sep).join('/') : null;
 }
 
 // Vercel redirect sources, compiled to regexes. Host-conditional rules (apex
 // to www) are skipped: internal links are path-only.
 function loadRedirects() {
-  const cfg = JSON.parse(read('vercel.json'));
-  return (cfg.redirects || []).filter(r => !r.has).map(r => {
+  return (config.redirects || []).filter(r => !r.has).map(r => {
     const re = '^' + r.source
       .replace(/[.+?^${}()|[\]\\]/g, m => (m === '(' || m === ')' ? m : '\\' + m))
       .replace(/\/:[a-zA-Z]+\*/g, '(?:/.*)?')
@@ -219,14 +213,15 @@ function crawlBudget(pages, redirects) {
   const fileSet = new Set(pages.map(p => p.file));
   for (const p of pages) {
     const seen = new Set();
-    for (const m of p.html.matchAll(/<a\b[^>]*\bhref="([^"#][^"]*)"/gi)) {
+    const markup = p.html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>|<!--[\s\S]*?-->/gi, '');
+    for (const m of markup.matchAll(/<a\b[^>]*\bhref="([^"#][^"]*)"/gi)) {
       let href = decode(m[1]);
       if (/^(mailto:|tel:|javascript:|data:)/i.test(href)) continue;
       if (/^https?:\/\//i.test(href)) {
         if (!href.startsWith(SITE)) continue;
         href = href.slice(SITE.length) || '/';
       } else if (!href.startsWith('/')) {
-        href = path.posix.join('/' + path.posix.dirname(p.file), href);
+        href = new URL(href, p.loc).pathname;
       }
       const clean = href.split('#')[0].split('?')[0];
       if (!clean || /\.(png|jpe?g|webp|svg|gif|pdf|xml|txt|json|csv|md|mp4|webm|zip|apk|css|js|ico)$/i.test(clean)) continue;

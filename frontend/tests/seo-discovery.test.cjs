@@ -580,7 +580,8 @@ test('5-pillar SEO regression: zero duplicate assets, 40-60 char titles, 110-160
     const html = fs.readFileSync(file, 'utf8');
 
     // 1. No duplicate stylesheet or JS assets on any HTML page, and no accumulated blank lines
-    const cssMatches = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']\/assets\/(?:optimized\/)?css\/([\w-]+)(?:\.[a-f0-9]{12})?\.css(?:\?[^"']*)?["'][^>]*>/gi)].map(m => m[1].toLowerCase());
+    // Separate groups of stylesheets can produce different content-addressed bundles.
+    const cssMatches = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']\/assets\/(?:optimized\/)?css\/([\w-]+)(\.[a-f0-9]{12})?\.css(?:\?[^"']*)?["'][^>]*>/gi)].map(m => m[1] === 'bundle' ? m[1] + (m[2] || '') : m[1].toLowerCase());
     const jsMatches = [...html.matchAll(/<script\b[^>]*\bsrc=["']\/assets\/(?:optimized\/)?js\/([\w-]+)(?:\.[a-f0-9]{12})?\.js(?:\?[^"']*)?["'][^>]*><\/script>/gi)].map(m => m[1].toLowerCase());
     assert.equal(cssMatches.length, new Set(cssMatches).size, `${rel} has duplicate stylesheet link(s): ${cssMatches.join(', ')}`);
     assert.equal(jsMatches.length, new Set(jsMatches).size, `${rel} has duplicate script tag(s): ${jsMatches.join(', ')}`);

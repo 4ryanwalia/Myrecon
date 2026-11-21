@@ -4,7 +4,7 @@
  */
 const fs = require('node:fs');
 const path = require('node:path');
-const { toUrlPath, fileForUrl, validDate, attribute } = require('./build-sitemap.js');
+const { toUrlPath, fileForUrl, htmlRewrites, validDate, attribute } = require('./build-sitemap.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.myrecon.xyz';
@@ -15,6 +15,7 @@ const markdownLabel = value => String(value).replace(/[\r\n]+/g, ' ').replace(/(
 function normalizeInternalLinks(markdown, root = ROOT) {
   const configPath = path.join(root, 'vercel.json');
   const config = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
+  const rewrites = htmlRewrites(config, root);
   const redirects = new Map((config.redirects || []).filter(rule => !rule.source.includes(':') && !rule.has && !rule.missing).map(rule => [rule.source, rule.destination]));
   return markdown.replace(/\]\((https:\/\/(?:www\.)?myrecon\.xyz[^)\s]*)\)/g, (match, href) => {
     const url = new URL(href);
@@ -24,7 +25,7 @@ function normalizeInternalLinks(markdown, root = ROOT) {
       visited.add(url.pathname);
       url.pathname = redirects.get(url.pathname);
     }
-    const file = fileForUrl(url.pathname, root);
+    const file = fileForUrl(url.pathname, root) || rewrites.get(url.pathname);
     if (file) {
       const canonical = toUrlPath(file, fs.readFileSync(file, 'utf8'), root);
       if (!canonical) throw new Error(`llms.txt invalid canonical: ${href}`);

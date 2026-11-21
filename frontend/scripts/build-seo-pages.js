@@ -219,7 +219,7 @@ function jsonLd(record, route) {
       "@context": "https://schema.org", "@type": type, name: record.h1,
       headline: record.title, description: record.description, url,
       image: imageUrl,
-      datePublished: record.modified_at,
+      datePublished: record.published_at || record.modified_at,
       dateModified: record.modified_at, inLanguage: "en",
       isPartOf: { "@id": `${SITE}/#website` },
       author: { "@type": "Organization", name: "MyRecon", url: `${SITE}/about.html` },
@@ -248,7 +248,8 @@ function renderSections(record) {
       <h2>${esc(section.heading)}</h2>
       <p>${esc(section.body)}</p>${section.table ? `
       <div class="editorial-table-wrap"><table><caption>${esc(section.table.caption)}</caption><thead><tr>${section.table.headers.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${section.table.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}${section.download ? `
-      <p><a href="${esc(section.download.href)}" download>${esc(section.download.label)}</a></p>` : ''}
+      <p><a href="${esc(section.download.href)}" download>${esc(section.download.label)}</a></p>` : ''}${section.link ? `
+      <p><a href="${esc(section.link.href)}">${esc(section.link.label)}</a></p>` : ''}
     </section>`).join("");
 }
 function renderSpecific(record) {
