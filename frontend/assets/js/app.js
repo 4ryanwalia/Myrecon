@@ -2931,6 +2931,7 @@
         switchTool(linked);
         if (params.get("scan")) openSavedScan(params.get("scan"));
         else if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); }
+        else $("#tool")?.scrollIntoView({ block: "start" });
       }
       if (location.hash === "#deep-search") switchTool("deepsearch");
       window.addEventListener("hashchange", () => {
