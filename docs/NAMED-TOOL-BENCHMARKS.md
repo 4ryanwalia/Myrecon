@@ -46,6 +46,8 @@ public benchmark JSON.
 
 ## Scoring and exclusions
 
+For a fixed example, the [November 2026 HTTP status study](https://www.myrecon.xyz/blog/username-search-benchmark-research.html#november-controls) publishes the comparison for 600 observations, a downloadable CSV, and the commit-pinned source snapshot. Use the CSV to compare verdicts across platforms or group repeated observations of a fixture within one platform.
+
 Native `CLAIMED` maps to `found`; `AVAILABLE` maps to `not_found`. Preserve the
 native status in raw checks. Native errors, illegal handles, missing results,
 unsupported/disabled/protected sites and HTTP 401/403/429/5xx are `unknown`.

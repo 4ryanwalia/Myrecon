@@ -2,11 +2,22 @@
 {
   "title": "Username Search Benchmark: MyRecon vs Sherlock | MyRecon",
   "headline": "Username search benchmark: findings, evidence and limitations",
-  "description": "Recorded MyRecon, Sherlock and Maigret results for 4ryanwalia, with shared-address tables, run dates, source reviews, reproducible methods and limitations.",
+  "description": "Compare MyRecon, Sherlock and Maigret results, and download 600 repeated checks showing when HTTP status alone failed to establish whether a username existed.",
   "category": "Research",
   "datePublished": "2026-11-01",
-  "dateModified": "2026-11-21",
-  "editorial_review": "2026-11-21"
+  "dateModified": "2026-11-22",
+  "editorial_review": "2026-11-22",
+  "dataset": {
+    "name": "HTTP status and username lookup verdicts across GitHub, GitLab and Hacker News",
+    "description": "600 paired observations of HTTP status rules and official API reference verdicts. Twenty runs repeat the same ten fixtures per platform. The downloadable CSV uses platform-specific fixture IDs to preserve repeated-measurement groups.",
+    "temporalCoverage": "2026-11-01T10:38:27Z/2026-11-21T11:23:13Z",
+    "measurementTechnique": "Each run compared an HTTP-status-only check of a public username address with a separate official API reference check. The CSV preserves unknown verdicts and labels repeated fixtures within each platform.",
+    "keywords": ["username search", "HTTP status codes", "false positives", "GitHub", "GitLab", "Hacker News"],
+    "variableMeasured": ["Run start (UTC)", "Platform", "Platform fixture ID", "HTTP status", "HTTP status verdict", "Official API reference verdict"],
+    "distribution": [
+      { "url": "/assets/downloads/username-http-status-controls-november-2026.csv", "format": "text/csv" }
+    ]
+  }
 }
 -->
 <p class="lead">In a recorded search for <code>4ryanwalia</code> on <strong>30 September 2026</strong>, MyRecon reported 12 hits, Sherlock 19 and Maigret 35. Reviewing the unique profile addresses supported 12, 11 and 10 leads respectively. On the 210 exact addresses checked by all three engines, the supported counts were 8, 9 and 9. Those two views answer different questions; neither establishes an overall accuracy ranking.</p>
@@ -17,8 +28,9 @@
 <table class="data-table"><caption>HTTP-status baseline compared with the official API reference, 200 repeated observations per platform</caption>
 <thead><tr><th scope="col">Platform</th><th scope="col">Agreed with reference</th><th scope="col">Contradicted reference</th><th scope="col">Inconclusive</th></tr></thead>
 <tbody><tr><th scope="row">GitHub</th><td>194</td><td>0</td><td>6</td></tr><tr><th scope="row">GitLab</th><td>60</td><td>20</td><td>120</td></tr><tr><th scope="row">Hacker News</th><td>0</td><td>0</td><td>200</td></tr></tbody></table>
-<p>The 20 GitLab contradictions came from repeated checks of the same handle. A single misleading page can therefore look like many separate mistakes in a daily total. On GitHub, five of the six inconclusive checks concerned a handle the reference found. Treating every inconclusive result as absent would have hidden those profiles.</p>
-<p>To reproduce the table, open the <a href="https://raw.githubusercontent.com/4ryanwalia/Myrecon/b60d65e7fdc476999301e313196b852fa4f70efc/frontend/data/benchmarks.json">dated JSON snapshot</a>. In <code>runs</code>, select the UTC start dates from 1 through 21 November inclusive. There is no entry for 4 November. Group <code>checks</code> by platform. Count an <code>http200_baseline.verdict</code> of <code>unknown</code> as inconclusive, then compare each remaining verdict with <code>reference.verdict</code>. Every reference in this window returned a definite verdict. These are repeated observations of ten fixed handles per service. They cannot estimate a failure rate for random usernames.</p>
+<p>The 20 GitLab contradictions came from repeated checks of one fixture. Treating inconclusive checks as missing accounts would also have dropped 5 of 100 API-confirmed observations on GitHub and all 60 on Hacker News. GitLab had 60 API-confirmed observations and the status rule found all 60. These counts describe the fixed controls used in this study.</p>
+<p><a href="/assets/downloads/username-http-status-controls-november-2026.csv" download>Download the 600 observations as CSV</a>. Group by platform and compare the two verdict columns. Count <code>unknown</code> in the HTTP status verdict column as inconclusive. A blank HTTP status means the check recorded no status code. Fixture IDs repeat within a platform and should be grouped together when counting distinct controls.</p>
+<p>The CSV comes from the <a href="https://raw.githubusercontent.com/4ryanwalia/Myrecon/b60d65e7fdc476999301e313196b852fa4f70efc/frontend/data/benchmarks.json">dated JSON snapshot</a>. In <code>runs</code>, select the UTC start dates from 1 through 21 November inclusive. There is no entry for 4 November. Group <code>checks</code> by platform. Compare <code>http200_baseline.verdict</code> with <code>reference.verdict</code>. Every reference in this window returned a definite verdict. The sample consists of ten fixed handles per service repeated across 20 runs. A failure rate for random usernames would require a different sample.</p>
 <p>For a check you can do by hand, use the <a href="/find/github-profile">GitHub username lookup and profile privacy checklist</a>. The <a href="/blog/instagram-osint-public-profile-guide.html#two-instagram-pages">two recorded Instagram responses</a> show a different way that HTTP status can leave a profile unresolved.</p>
 
 <h2 id="findings">Findings from the full-catalogue case study</h2>
