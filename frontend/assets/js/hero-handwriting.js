@@ -4,6 +4,10 @@
   const title=document.querySelector('.hero-rotating-title');
   if(!title)return;
   const slots=[...title.querySelectorAll('[data-hero-slot]')],toggle=document.querySelector('.hero-rotate-toggle');
+  for (const slot of slots) {
+    const phrases = document.getElementById(`hero-${slot.dataset.heroSlot}-phrases`);
+    if (phrases) slot.append(phrases.content);
+  }
   const motion=matchMedia('(prefers-reduced-motion: reduce)'),cache=new Map();
   let index=0,paused=false,visible=true,busy=false,timer=0,run=null,lease=null,parking=null,fontsReady=false;
   const point=(x,y)=>({x,y});

@@ -29,6 +29,16 @@ test('homepage FAQ structured answers match visible questions and answers', () =
     assert.ok(html.includes(`<p>${q.acceptedAnswer.text}</p>`), q.name);
   }
 });
+test('the homepage heading contains the opening lines and keeps rotation copy out of snippets', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)[1];
+  const text = heading.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  assert.equal(text, 'Check your username. Know your footprint.');
+  for (const slot of ['lookup', 'outcome']) {
+    const template = html.match(new RegExp(`<template id="hero-${slot}-phrases">([\\s\\S]*?)<\\/template>`))[1];
+    assert.equal((template.match(/<span data-nosnippet>/g) || []).length, 9);
+  }
+});
 test('username landing page exposes valid local links and matching FAQ schema', () => {
   const html = fs.readFileSync(path.join(root, 'username-checker.html'), 'utf8');
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
