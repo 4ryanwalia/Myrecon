@@ -1,9 +1,9 @@
 {
-  "generated": "2026-11-21T08:20:13.541Z",
+  "generated": "2026-11-22T01:35:51.614Z",
   "source": "MyRecon Case Files",
   "index": "https://www.myrecon.xyz/breaches/case-files/",
   "count": 60,
-  "words": 55320,
+  "words": 55382,
   "cases": [
     {
       "slug": "irhythm-2026",
@@ -1451,10 +1451,10 @@
           {
             "title": "If you were a LastPass user",
             "paragraphs": [
-              "Assume your vault as of late 2022 is in someone's possession. That is the only safe assumption, and it does not change with time.",
-              "Rotate anything irreplaceable first. Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.",
-              "Then rotate by value: email, banking, anything holding payment details. Yes, it is a long weekend of work. It is also the only real remediation.",
-              "Keep using a manager, with a long master passphrase and maximum iterations. The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, how to choose one you can actually remember ."
+              "LastPass confirmed that a backup of customer vaults was copied. Its March 2023 incident update links to different bulletins for personal and business accounts. Use the bulletin for the account you had when the backup was taken.",
+              "Review the settings on your current vault. Follow LastPass's guidance for your account type, use a long and unique master passphrase, and review your multifactor authentication settings.",
+              "Change important passwords that were stored in the old vault and might still be in use. Start with your main email and other accounts that let you reset passwords elsewhere. Replacing the vault's master password protects the current vault. An earlier copy retains the credentials it already contained.",
+              "Review old recovery codes and other secrets separately. Check the issuing service's recovery instructions for replacing or revoking each one. Review recent account activity and keep a private checklist of the changes you made."
             ]
           }
         ]
@@ -1462,7 +1462,12 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "LastPass security incident notices and updates, August 2022 – March 2023"
+          "label": "LastPass, December 2022 notice describing the copied vault backup",
+          "url": "https://blog.lastpass.com/posts/notice-of-security-incident"
+        },
+        {
+          "label": "LastPass, March 2023 incident update and customer security bulletins",
+          "url": "https://blog.lastpass.com/posts/security-incident-update-recommended-actions"
         },
         {
           "label": "Analysis of cryptocurrency thefts linked to the breach by independent researchers, 2023–2024"
@@ -1489,10 +1494,10 @@
       ],
       "sort_date": "2022-12-22",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-22",
       "reading_minutes": 4,
-      "word_count": 907,
-      "sources": 3
+      "word_count": 938,
+      "sources": 4
     },
     {
       "slug": "aiims-delhi-2022",
@@ -4290,12 +4295,17 @@
             ]
           },
           {
-            "title": "If you were in it",
+            "title": "How to check whether the Equifax breach affected you",
             "paragraphs": [
-              "There is no remediation for a leaked Social Security number, only mitigation, and the mitigation is unglamorous:",
-              "Freeze your credit at all three bureaus : Equifax, Experian and TransUnion. It is free, it takes about ten minutes each, and it blocks the specific fraud this data enables: someone opening credit in your name. Unfreeze temporarily when you actually apply for something.",
-              "Assume identity-verification questions are compromised. Your date of birth, previous addresses and the name of your first street are in this file. Where a service offers a stronger option than knowledge-based verification, take it.",
-              "Expect the phone calls. Data this rich is what makes a scam call convincing. A caller who already knows your address and the last four of your Social Security number has not proved they are your bank; they have proved they have the file.",
+              "Start at the FTC's Equifax settlement page and follow its link to the official eligibility lookup. The deadline for new claims was January 22, 2024. People affected by the breach who discover identity misuse can still use the identity restoration benefit through January 2029. The lookup confirmation provides the contact and reference number."
+            ]
+          },
+          {
+            "title": "What to do if your credit information was exposed",
+            "paragraphs": [
+              "Consider freezing your credit at Equifax, Experian and TransUnion. The FTC's credit freeze guide explains how to freeze and unfreeze your credit for free. A freeze restricts access to your credit report and helps prevent new accounts from being opened in your name.",
+              "Review your credit reports. Look for accounts you do not recognise. If you find identity theft, IdentityTheft.gov provides a recovery plan.",
+              "Verify unexpected calls independently. An address or the last four digits of a Social Security number can be available from several sources. If someone claims to be your bank, call the number on your card or in the bank's app.",
               "Check your own exposure across other breaches too. Equifax was one file among many, and the ones that carry your reused passwords are the ones an attacker will try first, see how to check an email address against known breaches ."
             ]
           }
@@ -4336,9 +4346,9 @@
       ],
       "sort_date": "2017-09-07",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-22",
       "reading_minutes": 7,
-      "word_count": 1435,
+      "word_count": 1466,
       "sources": 4
     },
     {

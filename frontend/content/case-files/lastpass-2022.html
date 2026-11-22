@@ -16,7 +16,7 @@
   "exposed": ["Encrypted password vaults", "Website URLs stored in vaults (unencrypted)", "Names", "Billing addresses", "Email addresses", "Phone numbers", "IP addresses"],
   "sortDate": "2022-12-22",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
+  "updated": "2026-11-22",
   "related": ["snowflake-2024", "uber-2016", "collection-1-2019"],
   "faq": [
     { "q": "Were LastPass passwords decrypted?", "a": "Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall." },
@@ -25,7 +25,8 @@
     { "q": "Should I still use a password manager?", "a": "Yes. The alternative, reused passwords, or a notebook, fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached." }
   ],
   "sources": [
-    { "label": "LastPass security incident notices and updates, August 2022 – March 2023" },
+    { "label": "LastPass, December 2022 notice describing the copied vault backup", "url": "https://blog.lastpass.com/posts/notice-of-security-incident" },
+    { "label": "LastPass, March 2023 incident update and customer security bulletins", "url": "https://blog.lastpass.com/posts/security-incident-update-recommended-actions" },
     { "label": "Analysis of cryptocurrency thefts linked to the breach by independent researchers, 2023–2024" },
     { "label": "US Department of Justice forfeiture filings referencing a 2022 password manager compromise, 2024" }
   ]
@@ -81,9 +82,9 @@
 
 <h2>If you were a LastPass user</h2>
 
+<p>LastPass confirmed that a backup of customer vaults was copied. Its <a href="https://blog.lastpass.com/posts/security-incident-update-recommended-actions">March 2023 incident update</a> links to different bulletins for personal and business accounts. Use the bulletin for the account you had when the backup was taken.</p>
 <ol class="bx-actions">
-  <li><strong>Assume your vault as of late 2022 is in someone's possession.</strong> That is the only safe assumption, and it does not change with time.</li>
-  <li><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.</li>
-  <li><strong>Then rotate by value: email, banking, anything holding payment details.</strong> Yes, it is a long weekend of work. It is also the only real remediation.</li>
-  <li><strong>Keep using a manager, with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</li>
+  <li><strong>Review the settings on your current vault.</strong> Follow LastPass's guidance for your account type, use a long and unique master passphrase, and review your multifactor authentication settings.</li>
+  <li><strong>Change important passwords that were stored in the old vault and might still be in use.</strong> Start with your main email and other accounts that let you reset passwords elsewhere. Replacing the vault's master password protects the current vault. An earlier copy retains the credentials it already contained.</li>
+  <li><strong>Review old recovery codes and other secrets separately.</strong> Check the issuing service's recovery instructions for replacing or revoking each one. Review recent account activity and keep a private checklist of the changes you made.</li>
 </ol>

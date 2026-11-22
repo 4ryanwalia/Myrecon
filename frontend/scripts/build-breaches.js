@@ -815,7 +815,7 @@ function index(items, earlier = earlierArchiveEntries(items)) {
            story of a breach will not find it in a record. -->
       <aside class="bx-offer">
         <h2>Case Files: how the breaches that mattered actually happened</h2>
-        <p>In-depth write-ups of the landmark incidents, Equifax, Yahoo, Optus, MOVEit, Change Healthcare and more. The unpatched server, the contractor's password, the API nobody put a login on, and what happened to the people in the file afterwards. Written from regulatory findings, court records and company disclosures.</p>
+        <p>Read the evidence and see how the response depends on what was exposed. The <a href="/breaches/case-files/equifax-2017.html">Equifax case file</a> explains how to check eligibility for identity restoration. The <a href="/breaches/case-files/lastpass-2022.html">LastPass case file</a> explains what to review when a copy of an old password vault is stolen.</p>
         <p><a class="btn btn-sm" href="/breaches/case-files/">Read the case files →</a> <a class="btn btn-ghost btn-sm" href="/#tool=email">Check an email for breach exposure →</a></p>
       </aside>
 

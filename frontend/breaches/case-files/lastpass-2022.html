@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LastPass, 2022: the vaults were stolen, and then attacked offline","description":"An engineer's home media server was the way into a password manager's cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.","datePublished":"2026-09-14","dateModified":"2026-09-14","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"articleSection":"Case Files","about":{"@type":"Thing","name":"LastPass data breach"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html","wordCount":907}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LastPass, 2022: the vaults were stolen, and then attacked offline","description":"An engineer's home media server was the way into a password manager's cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.","datePublished":"2026-09-14","dateModified":"2026-11-22","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"articleSection":"Case Files","about":{"@type":"Thing","name":"LastPass data breach"},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html","wordCount":938}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Case Files","item":"https://www.myrecon.xyz/breaches/case-files/"},{"@type":"ListItem","position":4,"name":"LastPass data breach","item":"https://www.myrecon.xyz/breaches/case-files/lastpass-2022.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Were LastPass passwords decrypted?","acceptedAnswer":{"@type":"Answer","text":"Not by breaking the encryption. Vault contents were protected with AES-256 derived from each user's master password, and that scheme was not defeated. The risk is offline brute force: an attacker holding the vault file can guess master passwords indefinitely, at whatever speed their hardware allows, with no lockout and no alerting. Weak master passwords, and old accounts with low key-derivation iteration counts, are the ones that fall."}},{"@type":"Question","name":"What was not encrypted?","acceptedAnswer":{"@type":"Answer","text":"Metadata, including the website addresses stored in each vault, plus names, billing addresses, email addresses, phone numbers and IP addresses. Even without cracking anything, that tells an attacker which services a named person holds accounts with, including which cryptocurrency exchanges."}},{"@type":"Question","name":"How did they get in through someone's home computer?","acceptedAnswer":{"@type":"Answer","text":"The attackers used information from the earlier August incident to identify a senior DevOps engineer, then exploited a vulnerability in a third-party media software package running on that engineer's personal home computer. That gave them a keylogger, which captured the engineer's master password after multi-factor authentication, which opened a corporate vault holding the keys to cloud backups."}},{"@type":"Question","name":"Should I still use a password manager?","acceptedAnswer":{"@type":"Answer","text":"Yes. The alternative, reused passwords, or a notebook, fails far more often and far more quietly. What this case changes is the standard: a long, unique master password, the highest available key-derivation iteration count, two-factor authentication, and a willingness to rotate critical credentials if your provider is ever breached."}}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
@@ -83,7 +83,7 @@
         <div>
           <span class="kicker">2022 · Password manager</span>
           <h1>LastPass, 2022: the vaults were stolen, and then attacked offline</h1>
-          <p class="meta">Case file · 4 min read · Published 14 September 2026</p>
+          <p class="meta">Case file · 4 min read · Updated 22 November 2026</p>
         </div>
       </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">CASE FILE</span><h2 id="lastpass-data-breach">LastPass data breach</h2><p>An engineer&#39;s home media server was the way into a password manager&#39;s cloud backups. Customer vaults were copied, and attackers have been cracking them ever since.</p><a class="story-jump" href="#timelineHeading">Follow the timeline ↓</a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Server racks in a server room" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener">Kevin Ache / Unsplash</a> · Infrastructure · context photograph, not the affected systems</figcaption></figure></section>
 
@@ -153,11 +153,11 @@
 
 <h2 id="if-you-were-a-lastpass-user">If you were a LastPass user</h2>
 
+<p>LastPass confirmed that a backup of customer vaults was copied. Its <a href="https://blog.lastpass.com/posts/security-incident-update-recommended-actions">March 2023 incident update</a> links to different bulletins for personal and business accounts. Use the bulletin for the account you had when the backup was taken.</p>
 <fieldset class="story-checklist"><legend>Your next steps</legend><p>Tick off the actions you have taken. Progress lasts while this page is open.</p>
-  <label><input type="checkbox"><span><strong>Assume your vault as of late 2022 is in someone's possession.</strong> That is the only safe assumption, and it does not change with time.</span></label>
-  <label><input type="checkbox"><span><strong>Rotate anything irreplaceable first.</strong> Cryptocurrency seed phrases and recovery codes cannot be un-stolen once cracked, move the funds rather than changing a password.</span></label>
-  <label><input type="checkbox"><span><strong>Then rotate by value: email, banking, anything holding payment details.</strong> Yes, it is a long weekend of work. It is also the only real remediation.</span></label>
-  <label><input type="checkbox"><span><strong>Keep using a manager, with a long master passphrase and maximum iterations.</strong> The lesson of this case is not that vaults are bad; it is that the parameters matter more than anyone told you, <a href="/guides/strong-passwords-guide.html">how to choose one you can actually remember</a>.</span></label>
+  <label><input type="checkbox"><span><strong>Review the settings on your current vault.</strong> Follow LastPass's guidance for your account type, use a long and unique master passphrase, and review your multifactor authentication settings.</span></label>
+  <label><input type="checkbox"><span><strong>Change important passwords that were stored in the old vault and might still be in use.</strong> Start with your main email and other accounts that let you reset passwords elsewhere. Replacing the vault's master password protects the current vault. An earlier copy retains the credentials it already contained.</span></label>
+  <label><input type="checkbox"><span><strong>Review old recovery codes and other secrets separately.</strong> Check the issuing service's recovery instructions for replacing or revoking each one. Review recent account activity and keep a private checklist of the changes you made.</span></label>
 <output aria-live="polite">0 actions completed</output></fieldset></details>
 
       <!-- After the reporting, not before it. Somebody who has just read how a
@@ -204,7 +204,8 @@
 
       <h2 id="story-sources">Sources</h2>
       <ul class="cf-sources">
-        <li><b>LastPass security incident notices and updates, August 2022 – March 2023</b></li>
+        <li><a href="https://blog.lastpass.com/posts/notice-of-security-incident" target="_blank" rel="noopener nofollow">LastPass, December 2022 notice describing the copied vault backup</a></li>
+        <li><a href="https://blog.lastpass.com/posts/security-incident-update-recommended-actions" target="_blank" rel="noopener nofollow">LastPass, March 2023 incident update and customer security bulletins</a></li>
         <li><b>Analysis of cryptocurrency thefts linked to the breach by independent researchers, 2023–2024</b></li>
         <li><b>US Department of Justice forfeiture filings referencing a 2022 password manager compromise, 2024</b></li>
       </ul>
@@ -261,7 +262,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=7af3301dda"></script>
+  <script src="/assets/js/app.js?v=4e22ceff1d"></script>
   <script src="/assets/js/breach-check.js?v=445156aee6"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
