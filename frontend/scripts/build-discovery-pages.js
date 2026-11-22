@@ -252,46 +252,43 @@ buildDiscoveryPage({
 
 // 4. Reverse username lookup discovery page
 const lookupQuestions = [
-  ['What is a reverse username lookup?', 'A reverse username lookup is an OSINT reconnaissance technique that takes a single username or handle and queries hundreds of web platforms to identify registered public profiles associated with that handle.'],
-  ['Is reverse username lookup free on MyRecon?', 'Yes. MyRecon allows anyone to run free guest Quick scans across 100 platforms with no login required. Creating a free account unlocks Standard scans across 560+ platforms with complete result cards, exportable summaries, and saved search history.'],
-  ['How does reverse username search differ from searching Google?', 'Traditional search engines only index pages that have been discovered and crawled, often missing new profiles, profile changes, and niche platforms. A reverse username lookup queries the platform\'s public URL endpoint directly in real time, detecting accounts even if Google has not indexed them.'],
-  ['How does MyRecon prevent false positives during username searches?', 'Many social networks return HTTP 200 OK status codes for non-existent users (soft 404s). MyRecon first looks for direct evidence, such as an API user record or profile markup naming the handle. On signed-in scans, when that evidence is missing, it also fetches a made-up control handle on the same platform, and if the site responds identically for both, the result is not reported as found. Guest Quick scans rely on soft-404 and login-wall detection instead.'],
-  ['Can a reverse username search prove who owns an account?', 'No. A matching username is an investigative lead, not conclusive proof of identity. Different people can independently choose the same handle on different websites. Always verify account ownership by reviewing profile content, joined dates, and cross-linked social profiles.'],
+  ['What is a reverse username lookup?', 'A reverse username lookup checks supported public sources for a handle you already know. It can return candidate links to public profiles for you to review.'],
+  ['Is reverse username lookup free on MyRecon?', 'Guest Quick checks cover 100 supported platforms and show up to two result cards without a login. A free account includes five Standard username searches per day across 560+ supported platforms, with complete result cards.'],
+  ['How does reverse username search differ from searching Google?', 'Google returns pages it has indexed. A reverse username lookup checks supported public sources directly, and some sources may block requests or give an unclear response.'],
+  ['Why can reverse username search produce false positives?', 'A source can return HTTP 200 for a generic page or an error message. Open a source and check that it actually identifies the exact handle. If a source is blocked or ambiguous, keep the result unresolved.'],
+  ['Can a reverse username search prove who owns an account?', 'A shared handle can belong to different people. For your own accounts, confirm access through the platform. For other authorized work, look for owner-published links or another independent source before connecting profiles.'],
 ];
 
 const lookupBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse username lookup</span></nav>
-  <h1>Free reverse username lookup &amp; social media account search</h1>
-  <p class="sub">Query handles across 560+ social platforms, developer hubs, and forums simultaneously. Discover profile leads, cut false positives with control-handle checks on signed-in scans, and map online accounts instantly.</p>
-  <a class="btn btn-primary" href="/#tool=username">Start reverse username lookup</a>
-  <p class="discovery-note">No terminal setup required. Free guest Quick scans across 100 platforms. Standard scans cover 560+ platforms. Public evidence research only.</p>
+  <h1>Free reverse username lookup for public profiles</h1>
+  <p class="sub">Look for a username you use on social platforms, developer sites and forums. Review candidates by opening the original profile links.</p>
+  <a class="btn btn-primary" href="/#tool=username">Start a reverse username search</a>
+  <p class="discovery-note">Guest Quick covers 100 supported platforms and shows up to two result cards. A free account includes five Standard searches a day across 560+ supported platforms. <a href="/pricing">See current plans.</a></p>
+  <p><a href="/videos/reverse-username-search.html">Watch the 32-second walkthrough</a> or <a href="/username-checker.html#observed-demo">see a recorded guest result</a>.</p>
   <section>
     <h2>What is reverse username lookup and how does it work?</h2>
-    <p>A reverse username search takes a known handle, alias, or screen name and probes hundreds of online services to find matching public profiles. Because people frequently reuse the same username across different websites, a reverse lookup connects fragmented profiles into a unified digital footprint.</p>
-    <p>Instead of manual searching or maintaining complex command-line scripts, MyRecon runs browser-based multi-threaded queries against 560+ platforms including Instagram, GitHub, Reddit, TikTok, X (Twitter), YouTube, Discord, and Telegram.</p>
+    <p>A reverse username search checks where the same handle may appear. Use it to revisit your own forgotten accounts, then confirm each result through the service where it appeared. A shared username can occur across accounts owned by different people.</p>
   </section>
   <section>
     <h2>How to perform an effective reverse username search</h2>
     <ol>
-      <li><strong>Enter the target username:</strong> Input the exact handle into the <a href="/#tool=username">reverse username tool</a>.</li>
+      <li><strong>Enter a known username.</strong> Use a handle you own or have permission to review in the <a href="/#tool=username">reverse username tool</a>.</li>
       <li><strong>Choose your scan scope:</strong> Start with a Quick scan (100 top platforms) or sign in for a Standard scan covering 560+ platforms.</li>
-      <li><strong>Evaluate evidence-backed states:</strong> Review results categorized as found, not found, or unknown. MyRecon never guesses; if a site rate-limits or blocks a query, it remains unknown.</li>
+      <li><strong>Read each result label.</strong> Open candidate links and keep blocked, unavailable or ambiguous sources unresolved.</li>
       <li><strong>Verify leads at the source:</strong> Click the reported profile URLs to confirm account activity, creation dates, and public profile bios. Read our guide on <a href="/guides/verify-osint-account-matches.html">verifying OSINT account matches</a>.</li>
     </ol>
   </section>
   <section>
-    <h2>Overcoming false positives: The synthetic control advantage</h2>
-    <p>One major flaw in traditional CLI username tools like Sherlock and Maigret is susceptibility to soft 404s. Many modern web applications return an HTTP 200 OK status code with a "user not found" splash screen or redirect to a landing page, causing terminal tools to report ghost accounts.</p>
-    <p>On signed-in scans, MyRecon handles this with a control handle. When a page gives no direct profile evidence, it fetches an impossible handle on the same platform. If both responses look the same, MyRecon reports not found or unknown rather than claiming an account was found. Guest Quick scans use soft-404 and login-wall detection instead. Read our research on <a href="/guides/why-username-checkers-report-fake-accounts.html">why username checkers report fake accounts</a>.</p>
+    <h2 id="overcoming-false-positives-the-synthetic-control-advantage">Why a username result can be unconfirmed</h2>
+    <p>A page can respond successfully while showing a generic page, a sign-in screen or an account-missing message. In <a href="/blog/username-search-benchmark-research.html#http-200-username-evidence">MyRecon's recorded checks</a>, one GitLab fixture returned HTTP 200 in 20 repeated observations where the official API found no account. Use the exact username and profile evidence at the source when reviewing a candidate.</p>
   </section>
   <section>
     <h2>How do you corroborate a username match?</h2>
-    <p>A matching handle is a lead, not proof that two accounts belong to the same person. Before you treat a match as the same owner, look for at least one of these independent signals:</p>
+    <p>Confirm your own account by signing in through its official site or app. For authorized review, look for links the owner published. Use multiple independent sources before assigning ownership.</p>
     <ul>
       <li><strong>Cross-linked bios:</strong> one profile links to the other, or both link to the same personal site or verified handle.</li>
-      <li><strong>Matching images:</strong> the same avatar or photo crop appears on both accounts.</li>
-      <li><strong>Consistent timelines:</strong> creation dates and early posts fit one person's history. A 2012 account about college and a 2024 account run by a teenager are probably different people.</li>
-      <li><strong>Writing and activity patterns:</strong> the same phrasing, posting hours and communities across both accounts.</li>
+      <li><strong>Copied images and similar display names:</strong> record these as clues and look for a source that verifies the connection.</li>
     </ul>
     <p>See <a href="/guides/verify-osint-account-matches.html">how to verify OSINT account matches</a> for the full review checklist.</p>
   </section>
@@ -322,16 +319,16 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Ethical investigation guidelines</h2>
     <p>Reverse username lookups must be conducted responsibly. MyRecon queries publicly accessible endpoints and does not bypass private account settings or access restricted data. Use this tool for personal privacy audits, self-reconnaissance, and authorized security assessments. See our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Reviewed for this release: October 2026.</p>
+    <p>Access and evidence reviewed <time datetime="2026-11-22">22 November 2026</time>.</p>
   </section>
 </main>`;
 
 buildDiscoveryPage({
-  title: 'Reverse Username Lookup & Social Media Search | MyRecon',
-  description: 'Free reverse username lookup to search handles across 560+ social media networks, forums, and developer sites. Check accounts with zero installation.',
-  keywords: 'reverse username lookup, reverse username search, reverse username search free, free reverse username lookup, social media username search, find accounts by username, username lookup, reverse social media lookup, browser reverse username lookup, sherlock online alternative, maigret alternative online, search username across social media, find someone by username',
+  title: 'Free Reverse Username Search & Lookup | MyRecon',
+  description: 'Find public profile leads from a known handle. Start with a free guest check across 100 sites and verify each match at the original source.',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
+  modifiedAt: '2026-11-22',
   crumbLabel: 'Reverse username lookup',
   questions: lookupQuestions,
   bodyHtml: lookupBody,
