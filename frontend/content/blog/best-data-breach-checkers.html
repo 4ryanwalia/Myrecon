@@ -1,160 +1,75 @@
 <!--
 {
-  "title": "10 Best Data Breach Checkers & Apps in 2026 | MyRecon",
-  "headline": "The 10 Best Data Breach Checkers and Alert Apps in 2026, Ranked",
-  "description": "Check if your email or password leaked with these 10 data breach checkers and alert apps. Free and paid options ranked, plus what to do after a hit.",
+  "title": "Best Data Breach Checkers for Email & Passwords | MyRecon",
+  "headline": "Best Data Breach Checkers for Email and Password Alerts",
+  "description": "Compare free email breach checks, personal-account alerts and apps that monitor saved passwords. See exactly what each alert means before you act.",
   "category": "Breach checks",
   "datePublished": "2026-11-15",
-  "dateModified": "2026-11-15",
-  "editorial_review": "2026-11-15",
-  "keywords": ["best data breach checker", "data breach checker", "breach alert app", "check if my email was leaked", "password leak checker", "have i been pwned alternative"],
+  "dateModified": "2026-11-22",
+  "editorial_review": "2026-11-22",
+  "keywords": ["best data breach checker", "email breach alerts", "data leak monitoring app", "password breach monitoring", "personal account breach alerts"],
   "faq": [
-    {"question": "What is the best free data breach checker?", "answer": "Have I Been Pwned is the reference for breach data. For alerts on Android without handing over your email, we rank MyRecon first, and we publish it, because it compares the breach catalogue on your phone. Mozilla Monitor is a good free option for email alerts."},
-    {"question": "Is it safe to type my password into a breach checker?", "answer": "Only if it uses k-anonymity. Pwned Passwords, and tools built on it such as MyRecon's password check, hash the password on your device and send only the first five characters of the hash, so the service never sees the password."},
-    {"question": "My email was in a breach. What should I do?", "answer": "Change the password on the breached site and anywhere you reused it, turn on two-factor authentication, and watch for phishing that mentions the breached service. A breach result alone does not mean someone logged in."},
-    {"question": "Why do different breach checkers show different results?", "answer": "Each service indexes different datasets and names them differently. One may list a breach another never loaded. Checking two sources gives a fuller picture, and a clean result means no known record, not proof of safety."}
-  ],
-  "tools": [
-    {"name": "MyRecon", "url": "https://play.google.com/store/apps/details?id=com.Myrecon.osint", "description": "On-device breach alerts, email breach check from two sources, and a k-anonymity password check."},
-    {"name": "Have I Been Pwned", "url": "https://haveibeenpwned.com/", "description": "The reference breach search with free email notifications and Pwned Passwords."},
-    {"name": "Mozilla Monitor", "url": "https://monitor.mozilla.org/", "description": "Free breach scan and alerts tied to a Mozilla account."},
-    {"name": "Google Password Checkup", "url": "https://passwords.google.com/", "description": "Checks passwords saved in Google Password Manager against known leaks."},
-    {"name": "Apple Passwords", "url": "https://support.apple.com/en-us/120758", "description": "Security recommendations flag leaked and reused passwords on Apple devices."},
-    {"name": "XposedOrNot", "url": "https://xposedornot.com/", "description": "Free breach search and alerts with a timeline and risk score."},
-    {"name": "LeakCheck", "url": "https://leakcheck.io/", "description": "Breach search engine with a free public lookup."},
-    {"name": "1Password Watchtower", "url": "https://support.1password.com/watchtower/", "description": "Password manager feature that flags breached sites and weak or reused passwords."},
-    {"name": "Intelligence X", "url": "https://intelx.io/", "description": "Search engine for leaks and pastes, limited free search."},
-    {"name": "DeHashed", "url": "https://dehashed.com/", "description": "Paid search across breach records for investigators and security teams."}
+    {"question": "Which consumer apps monitor for stolen passwords?", "answer": "Google Password Manager and Apple Passwords check saved passwords for known compromises. 1Password Watchtower checks items already in your vault. For a single password, use a trusted checker such as Have I Been Pwned's Pwned Passwords."},
+    {"question": "Which services send email alerts about new data breaches?", "answer": "Have I Been Pwned, Mozilla Monitor and XposedOrNot offer free email breach alerts. Mozilla Monitor supports up to 20 addresses per account. MyRecon's Android app has separate catalogue alerts and opt-in monitoring for watched email addresses."},
+    {"question": "Can a breach alert tell me if a social account was taken over?", "answer": "A breach alert reports known exposure. For signs of account takeover, open the social platform directly, review recent sessions and sign-in alerts, and use its recovery controls if activity looks unfamiliar."},
+    {"question": "Why do two breach checkers show different results?", "answer": "Providers index different records, add them at different times and can restrict which results appear publicly. Treat an outage or rate limit as incomplete evidence. A completed no-match result covers only the sources that answered."}
   ]
 }
 -->
-<p class="lead"><strong>Quick answer:</strong> to check whether your email leaked, use <strong>Have I Been Pwned</strong> or MyRecon's free email check. For ongoing alerts on Android that do not require handing over your address, we rank <strong>MyRecon</strong> first. For passwords, use a checker built on k-anonymity, never one that asks for the password in plain text.</p>
+<p class="lead">Use Have I Been Pwned or Mozilla Monitor for breach alerts tied to your email. For stolen-password warnings, start with the password manager you already use. To get new breach announcements on Android without providing an email address, use MyRecon's public catalogue alerts. Check a specific email separately to see whether it appears in breach records.</p>
 
-<div class="callout"><p><strong>Publisher disclosure:</strong> MyRecon publishes this ranking and places its own app first, for a specific reason: it is the only checker here that runs breach alerts on your phone without asking for your email address first. For one-off lookups Have I Been Pwned is the reference and we say so. No tool paid to be listed and there are no affiliate links.</p></div>
+<div class="callout"><p>MyRecon publishes this guide and makes one of the products below. We compared the purpose of each check, the data it uses and the action each alert supports. We reviewed provider documentation on 22 November 2026 and checked MyRecon's web password flow with a synthetic browser fixture. <a href="https://github.com/4ryanwalia/Myrecon/blob/c18232c12de50fee1c49e3e3415defd8e52725f8/frontend/tests/password-exposure-browser.test.cjs">Browser check and test input</a></p></div>
 
-<h2>What a breach checker can and cannot tell you</h2>
-<p>A breach checker compares your email address, phone number or password against data that leaked from companies in the past. A hit tells you three useful things: which service lost your data, roughly when, and what kinds of data went with it (passwords, phone numbers, addresses, security questions).</p>
-<p>It cannot tell you whether anyone used that data against you, and a clean result is not a guarantee. Many breaches are never made public, some leaked datasets are never indexed, and different services load different datasets. Our article on <a href="/blog/breach-check-no-results-meaning.html">what a clean breach check means</a> covers this in detail.</p>
-<p>We ranked these tools on four things: <strong>privacy of the check itself</strong> (do you have to give up your email or password to use it?), <strong>quality of the breach data</strong>, <strong>whether it alerts you to new breaches</strong>, and <strong>how clearly it tells you what to do next</strong>.</p>
+<h2 id="what-a-breach-checker-can-and-cannot-tell-you">Choose the alert you need</h2>
+<ul>
+  <li><strong>Email found in a breach.</strong> A provider found that address in an indexed breach. Open the affected service directly and check its notice for the exposure date and data types.</li>
+  <li><strong>Saved password compromised.</strong> The password manager can point you to a saved login to update. Start there, then change the password on any other account where you reused it.</li>
+  <li><strong>New breach announced.</strong> A company or product you recognise appeared in a public catalogue. Check your own address or wait for the provider's notice before treating your account as affected.</li>
+  <li><strong>Unfamiliar login.</strong> Review sessions and security alerts inside the affected account. This is where you can check for possible account takeover and revoke access.</li>
+</ul>
 
-<h2>The 10 best data breach checkers</h2>
-
-<section class="rank-top" aria-label="Number one pick">
-  <div class="rank-top-copy">
-    <span class="rank-badge">#1 breach alert app</span>
-    <h3>1. MyRecon: breach alerts without handing over your email</h3>
-    <p>Every hosted breach alert service asks for your email address up front. MyRecon flips that: the Android app downloads the public breach catalogue and compares it on your device, so by default no address leaves your phone. If you want the stronger per-address check, it is a separate switch with its own disclosure.</p>
-    <p>The app also includes a password leak check that hashes the password on the handset and sends only the first five characters of the hash, and the web version runs a free email check against two breach sources (LeakCheck and XposedOrNot) with a timeline and plain next steps. You can also read the story behind major breaches in our <a href="/breaches/">breach archive</a>.</p>
-    <ol class="rank-steps">
-      <li>Install MyRecon and turn on breach alerts.</li>
-      <li>Run the password check on the passwords you reuse most.</li>
-      <li>Follow the next steps for each breach: change, de-duplicate, add 2FA.</li>
-    </ol>
-    <p class="rank-cta"><a class="btn" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_listicle_breach">Get MyRecon on Google Play</a> <a href="/#tool">or check an email now</a></p>
-    <small>Free download · Android 11+ · Contains ads · Alert coverage depends on public breach disclosures.</small>
-  </div>
-  <div class="rank-phone" aria-hidden="true">
-    <div class="rank-screen">
-      <div class="rank-screen-bar"><span>MyRecon</span><span>Alerts</span></div>
-      <div class="rank-input">On-device check<span class="rank-caret"></span></div>
-      <span class="rank-scan"></span>
-      <ul>
-        <li><b>Catalogue</b><em class="ok">UPDATED</em></li>
-        <li><b>New breach</b><em class="unk">ALERT</em></li>
-        <li><b>Password</b><em class="unk">SEEN 3x</em></li>
-        <li><b>Email sent</b><em class="ok">NO</em></li>
-        <li><b>2FA tip</b><em class="ok">READY</em></li>
-        <li><b>Story</b><em class="ok">READ</em></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<p><strong>Where it falls short:</strong> MyRecon does not use Have I Been Pwned's paid API, so a breach HIBP loads today may reach us later. The free app shows ads. It only checks what has been publicly disclosed, like every tool on this list.</p>
-
-<div class="rank-list">
-  <article class="rank-card"><div class="rank-num">2</div><div>
-    <h3><a href="https://haveibeenpwned.com/">Have I Been Pwned</a></h3>
-    <p>The reference. Search an address for free, sign up for free notifications, and use Pwned Passwords, which introduced the k-anonymity method most password checkers now use. If a journalist says "the breach affected X million accounts", the number usually comes from here. Our <a href="/vs/have-i-been-pwned">MyRecon vs HIBP</a> page explains how the two fit together.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Authoritative one-off checks</dd></div><div><dt>Alerts</dt><dd>Yes, free by email</dd></div><div><dt>Cost</dt><dd>Free, paid API</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">3</div><div>
-    <h3><a href="https://monitor.mozilla.org/">Mozilla Monitor</a></h3>
-    <p>Mozilla's free monitor scans your email against known breaches and alerts you to new ones, with clear advice per breach. It needs a Mozilla account. A paid tier in some countries adds data broker removal.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Simple free email alerts</dd></div><div><dt>Alerts</dt><dd>Yes, with account</dd></div><div><dt>Cost</dt><dd>Free, paid extras</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">4</div><div>
-    <h3><a href="https://passwords.google.com/">Google Password Checkup</a></h3>
-    <p>If you save passwords in Google Password Manager, Password Checkup flags the ones found in known leaks, plus weak and reused ones, and links straight to the change-password page. It checks passwords, not your email.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Chrome and Android users</dd></div><div><dt>Alerts</dt><dd>Built into Chrome and Android</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">5</div><div>
-    <h3><a href="https://support.apple.com/en-us/120758">Apple Passwords</a></h3>
-    <p>On iPhone, iPad and Mac, the Passwords app's security recommendations flag saved passwords that appear in data leaks and warn about reuse. Turn on "Detect compromised passwords" if it is off.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Apple users</dd></div><div><dt>Alerts</dt><dd>On device</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">6</div><div>
-    <h3><a href="https://xposedornot.com/">XposedOrNot</a></h3>
-    <p>A free, community-minded breach search with a breach timeline, risk rating and email alerts. MyRecon uses its public API as one of two breach sources, so the two often agree.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Free analytics and alerts</dd></div><div><dt>Alerts</dt><dd>Yes, by email</dd></div><div><dt>Cost</dt><dd>Free</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">7</div><div>
-    <h3><a href="https://leakcheck.io/">LeakCheck</a></h3>
-    <p>LeakCheck's free lookup returns which breaches an address appears in and when. Paid plans unlock full records for security work. A good second source when HIBP comes back clean.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>A second opinion</dd></div><div><dt>Alerts</dt><dd>Paid plans</dd></div><div><dt>Cost</dt><dd>Free lookup, paid plans</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">8</div><div>
-    <h3><a href="https://support.1password.com/watchtower/">1Password Watchtower</a></h3>
-    <p>If you already pay for 1Password, Watchtower flags vault items on breached sites, plus weak, reused and 2FA-capable logins. The breach alert is only as good as the habit of acting on it.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Existing 1Password users</dd></div><div><dt>Alerts</dt><dd>In app</dd></div><div><dt>Cost</dt><dd>Part of a paid subscription</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">9</div><div>
-    <h3><a href="https://intelx.io/">Intelligence X</a></h3>
-    <p>Intelligence X searches leaks, paste sites and archives. Free accounts see limited results. It is more an investigator's tool than a consumer checker, but it can surface pastes the big services skip.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Pastes and archives</dd></div><div><dt>Alerts</dt><dd>Paid tiers</dd></div><div><dt>Cost</dt><dd>Limited free, paid</dd></div></dl>
-  </div></article>
-  <article class="rank-card"><div class="rank-num">10</div><div>
-    <h3><a href="https://dehashed.com/">DeHashed</a></h3>
-    <p>DeHashed is a paid search engine over breach records, used by investigators and security teams to look up emails, usernames, IPs and more. Overkill for a personal check, useful for authorized professional work.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Professional investigations</dd></div><div><dt>Alerts</dt><dd>Paid</dd></div><div><dt>Cost</dt><dd>Paid</dd></div></dl>
-  </div></article>
-</div>
-
-<h2>Breach checkers compared</h2>
+<h2 id="breach-checkers-compared">Breach checkers compared</h2>
+<div class="blog-table-wrap" tabindex="0" role="region" aria-label="Scrollable breach alert comparison table">
 <table>
-  <caption>Data breach checkers by privacy and alerts, as of 15 November 2026</caption>
-  <thead><tr><th>Tool</th><th>Checks</th><th>Must share email to get alerts?</th><th>Cost</th></tr></thead>
+  <caption>What each tool checks and how you receive a warning</caption>
+  <thead><tr><th scope="col">Tool</th><th scope="col">What it checks</th><th scope="col">Alerts and requirements</th></tr></thead>
   <tbody>
-    <tr><td>MyRecon</td><td>Email, password, breach catalogue</td><td>No, on-device by default</td><td>Free</td></tr>
-    <tr><td>Have I Been Pwned</td><td>Email, password</td><td>Yes</td><td>Free</td></tr>
-    <tr><td>Mozilla Monitor</td><td>Email</td><td>Yes, plus account</td><td>Free, paid extras</td></tr>
-    <tr><td>Google Password Checkup</td><td>Saved passwords</td><td>Uses your Google account</td><td>Free</td></tr>
-    <tr><td>Apple Passwords</td><td>Saved passwords</td><td>No, on device</td><td>Free</td></tr>
-    <tr><td>XposedOrNot</td><td>Email</td><td>Yes</td><td>Free</td></tr>
-    <tr><td>LeakCheck</td><td>Email, username</td><td>Paid plans</td><td>Free lookup</td></tr>
-    <tr><td>1Password Watchtower</td><td>Vault items</td><td>Uses your vault</td><td>Paid</td></tr>
-    <tr><td>Intelligence X</td><td>Many selectors</td><td>Paid tiers</td><td>Limited free</td></tr>
-    <tr><td>DeHashed</td><td>Many selectors</td><td>Paid</td><td>Paid</td></tr>
+    <tr><th scope="row"><a href="https://haveibeenpwned.com/NotifyMe">Have I Been Pwned</a></th><td>Email exposure. Pwned Passwords provides a separate password check.</td><td>Free email notifications after you verify the address.</td></tr>
+    <tr><th scope="row"><a href="https://support.mozilla.org/en-US/kb/monitor-plus-shutting-down">Mozilla Monitor</a></th><td>Email exposure for up to 20 addresses.</td><td>Free monitoring with a Mozilla account. Monitor Plus data broker removal has ended.</td></tr>
+    <tr><th scope="row"><a href="https://xposedornot.com/faq">XposedOrNot</a></th><td>Email exposure, breach details and data types.</td><td>Free email alerts through its Alert Me service.</td></tr>
+    <tr><th scope="row"><a href="https://support.google.com/accounts/answer/9457609">Google Password Manager</a></th><td>Saved passwords that are exposed, reused or weak.</td><td>Password Checkup and optional compromised-password alerts for saved logins.</td></tr>
+    <tr><th scope="row"><a href="https://support.apple.com/guide/security/sec7f0432063/web">Apple Passwords</a></th><td>Saved passwords that are compromised, reused or weak.</td><td>Security recommendations in Apple Passwords with compromised-password detection enabled.</td></tr>
+    <tr><th scope="row"><a href="https://support.1password.com/watchtower/">1Password Watchtower</a></th><td>Vault items associated with breaches and other login risks.</td><td>Watchtower in your existing 1Password subscription.</td></tr>
+    <tr><th scope="row"><a href="/app.html">MyRecon</a></th><td>Public breach announcements or specific email exposure, depending on which Android alert mode you enable.</td><td>Catalogue alerts need no address. Personal email alerts require separate opt-in. The web lookup checks one address at a time.</td></tr>
   </tbody>
 </table>
+</div>
 
-<h2>What to do after a breach hit</h2>
+<h2 id="mobile-breach-alerts">Which breach alerts work on a phone?</h2>
+<p>For iPhone, start with the Passwords app for warnings about saved logins and choose verified email alerts if you also want address monitoring. On Android, Google Password Manager checks your saved passwords. MyRecon adds new public breach announcements and a separate opt-in email monitoring feature. Email notifications from services such as Have I Been Pwned and Mozilla Monitor can reach either phone through your inbox.</p>
+
+<h3>What MyRecon sends for each check</h3>
+<ul>
+  <li><strong>Android catalogue alerts.</strong> The app downloads public breach information and checks for new entries on your device. The catalogue request needs no watched address. An alert here means there is a new announcement to review.</li>
+  <li><strong>Android email monitoring or a one-off web email check.</strong> The selected email is sent to breach data providers to look for matching records. Android email monitoring is a separate choice from catalogue alerts.</li>
+  <li><strong>Web password exposure check.</strong> The browser hashes the input locally and requests a padded response from Pwned Passwords using just the first five characters of the hash. The browser compares the rest of the hash locally. In our browser test, malformed or partial responses returned an unavailable result. <a href="/privacy.html#password">MyRecon password privacy policy</a> · <a href="https://haveibeenpwned.com/API/V3#PwnedPasswords">Pwned Passwords documentation</a></li>
+</ul>
+<p><a class="btn" href="/#tool=email">Check your email for known breaches</a> <a href="/app.html">See the Android app</a></p>
+
+<h2 id="what-to-do-after-a-breach-hit">What to do after a breach hit</h2>
 <ol>
-  <li><strong>Change the password on the breached service</strong>, and on every other site where you used the same one. Reuse is how one breach becomes five account takeovers.</li>
-  <li><strong>Turn on two-factor authentication</strong>, preferably an authenticator app or passkey rather than SMS.</li>
-  <li><strong>Watch for targeted phishing.</strong> Emails that mention the breached company by name are the most common follow-up.</li>
-  <li><strong>If financial or ID data leaked</strong>, follow the company's notice and consider a credit freeze where available.</li>
-  <li><strong>Note the date.</strong> The breach date and the disclosure date are often years apart; our explainer on <a href="/blog/breach-date-vs-disclosure-date.html">breach versus disclosure dates</a> helps you work out which passwords were exposed.</li>
+  <li>Open the service directly. Verify the breach name, date and data types against the provider's notice or account security page.</li>
+  <li>Replace any exposed or reused password. Use a unique password or a passkey where you can. Review sessions, sign out unfamiliar devices and enable two-factor authentication.</li>
+  <li>Check the date carefully if you changed the password recently. A provider may add an old breach to its catalogue long after it happened. <a href="/blog/breach-date-vs-disclosure-date.html">Breach date vs. disclosure date</a></li>
 </ol>
-<p>Our step-by-step <a href="/blog/how-to-check-email-data-breaches.html">email breach check guide</a> walks through each step in order.</p>
+<p>If one provider finds nothing, look at its coverage and whether the check completed. An error or rate limit leaves the question open. A completed search covers the records that provider indexed. <a href="/blog/breach-check-no-results-meaning.html">How to read a no-match result</a> · <a href="/blog/how-to-check-email-data-breaches.html">Step-by-step email breach check</a></p>
 
-<h2>Frequently asked questions</h2>
-<h3>What is the best free data breach checker?</h3>
-<p>Have I Been Pwned is the reference for breach data. For alerts on Android without handing over your email, we rank MyRecon first, and we publish it, because it compares the breach catalogue on your phone. Mozilla Monitor is a good free option for email alerts.</p>
-<h3>Is it safe to type my password into a breach checker?</h3>
-<p>Only if it uses k-anonymity. Pwned Passwords, and tools built on it such as MyRecon's password check, hash the password on your device and send only the first five characters of the hash, so the service never sees the password.</p>
-<h3>My email was in a breach. What should I do?</h3>
-<p>Change the password on the breached site and anywhere you reused it, turn on two-factor authentication, and watch for phishing that mentions the breached service. A breach result alone does not mean someone logged in.</p>
-<h3>Why do different breach checkers show different results?</h3>
-<p>Each service indexes different datasets and names them differently. One may list a breach another never loaded. Checking two sources gives a fuller picture, and a clean result means no known record, not proof of safety.</p>
-<p>More rankings: <a href="/blog/best-email-osint-tools.html">best email OSINT tools</a>, <a href="/blog/best-osint-apps-for-android.html">best OSINT apps for Android</a>, <a href="/blog/best-username-search-apps.html">best username search apps</a> and <a href="/blog/best-deep-search-tools.html">best deep search tools</a>.</p>
+<h2 id="frequently-asked-questions">Frequently asked questions</h2>
+<h3>Which consumer apps monitor for stolen passwords?</h3>
+<p>Google Password Manager and Apple Passwords check saved passwords for known compromises. 1Password Watchtower checks items already in your vault. For a single password, use a trusted checker such as Have I Been Pwned's Pwned Passwords.</p>
+<h3>Which services send email alerts about new data breaches?</h3>
+<p>Have I Been Pwned, Mozilla Monitor and XposedOrNot offer free email breach alerts. Mozilla Monitor supports up to 20 addresses per account. MyRecon's Android app has separate catalogue alerts and opt-in monitoring for watched email addresses.</p>
+<h3>Can a breach alert tell me if a social account was taken over?</h3>
+<p>A breach alert reports known exposure. For signs of account takeover, open the social platform directly, review recent sessions and sign-in alerts, and use its recovery controls if activity looks unfamiliar.</p>
+<h3>Why do two breach checkers show different results?</h3>
+<p>Providers index different records, add them at different times and can restrict which results appear publicly. Treat an outage or rate limit as incomplete evidence. A completed no-match result covers only the sources that answered.</p>
