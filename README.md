@@ -120,7 +120,7 @@ MyRecon brings public username signals, supported breach exposure checks, and do
 
 ## Guides and measured benchmarks
 
-The [three-platform username check results](https://www.myrecon.xyz/blog/username-search-benchmark-research.html#november-controls) include a dated data snapshot and instructions for reproducing the counts. For a single worked example, compare [two Instagram pages that both returned HTTP 200](https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html#two-instagram-pages).
+The [three-platform username check results](https://www.myrecon.xyz/blog/username-search-benchmark-research.html#november-controls) include a [CSV of 600 repeated observations](https://www.myrecon.xyz/assets/downloads/username-http-status-controls-november-2026.csv) and instructions for reproducing the counts. The separate [35-control study across eight platforms](https://www.myrecon.xyz/blog/username-search-controlled-study-2026.html) publishes tool versions, individual verdicts and downloadable evidence. For a single worked example, compare [two Instagram pages that both returned HTTP 200](https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html#two-instagram-pages).
 
 Reviewers and educators: use the [independent review kit](docs/review-kit/README.md)
 for source-pinned reproduction, raw first-party evidence, known limitations and
@@ -157,7 +157,7 @@ No dependencies, account, API key, or network needed. Four **synthetic examples*
 
 **Open-source software and hosted access are different.** This repository is MIT-licensed. Hosted web features have their own guest, signed-in and paid limits, and the CLI, website and Android app do not have identical coverage. See the [current web plans](https://www.myrecon.xyz/pricing) and [Android details](https://www.myrecon.xyz/app.html) for current availability.
 
-The [Android app](https://myrecon.xyz/app.html) is maintained separately; its source is not in this repository.
+The [Android app](https://www.myrecon.xyz/app.html) is maintained separately; its source is not in this repository.
 
 ## How username verdicts work
 
@@ -167,7 +167,7 @@ The [Android app](https://myrecon.xyz/app.html) is maintained separately; its so
 | `not_found` | The platform returned negative evidence, such as a 404/410, a missing-user message, or the same page as a known missing-user control. |
 | `unknown` | The platform blocked the request or did not provide enough evidence. This includes challenges, login walls, timeouts, and ambiguous redirects. |
 
-Network conditions and platform behaviour change. Treat results as leads and verify important findings at the source. See [how to verify an OSINT finding](https://myrecon.xyz/guides/verify-an-osint-finding.html).
+Network conditions and platform behaviour change. Treat results as leads and verify important findings at the source. See [how to verify an OSINT finding](https://www.myrecon.xyz/guides/verify-an-osint-finding.html).
 
 ## Run the website locally
 
@@ -205,7 +205,7 @@ Selected routes include `POST /api/username`, `POST /api/username/stream`, `POST
 | [`cli/`](cli/) | CLI commands and terminal output. |
 | [`backend/tests/`](backend/tests/) | Backend tests. |
 
-The web frontend is deployed from Vercel using [`frontend/vercel.json`](frontend/vercel.json); the API has a Render blueprint at [`backend/render.yaml`](backend/render.yaml). The site also publishes [Breach Files](https://myrecon.xyz/breaches/) and [practical guides](https://myrecon.xyz/guides/).
+The web frontend is deployed from Vercel using [`frontend/vercel.json`](frontend/vercel.json); the API has a Render blueprint at [`backend/render.yaml`](backend/render.yaml). The site also publishes [Breach Files](https://www.myrecon.xyz/breaches/) and [practical guides](https://www.myrecon.xyz/guides/).
 
 ## Configuration and tests
 
