@@ -867,11 +867,13 @@
     const platform = r.platform || r.source || hostOf(r.url) || "Result";
     const cat = r.category || "mention";
     const fallback = (platform[0] || "?").toUpperCase();
+    const unconfirmed = r.confidence === "low";
+    const linkLabel = unconfirmed ? "Check source page" : "Open profile";
     let meta = `<span class="meta-tag">Same username · identity unverified</span>`;
     // "low" is reported, not hidden: the platform answered without an error but
     // served nothing that distinguishes a real account from a missing one. The
     // label has to say that, or an unverifiable hit reads as a confirmed one.
-    if (r.confidence === "low") meta += `<span class="meta-tag conf-low" title="This platform returns the same page whether or not the account exists">Unconfirmed</span>`;
+    if (unconfirmed) meta += `<span class="meta-tag conf-low" title="MyRecon could not confirm an account at this address">Unconfirmed</span>`;
     else if (r.confidence === "medium") meta += `<span class="meta-tag conf-medium">Possible match</span>`;
     else if (r.confidence === "high") meta += `<span class="meta-tag conf-high">Account found · ownership unverified</span>`;
     if (r.followers || r.followers === 0) meta += `<span class="meta-tag">${fmtNum(r.followers)} followers</span>`;
@@ -896,7 +898,7 @@
         ${avatarHTML(r, fallback)}
         <div style="min-width:0">
           <div class="card-title">${esc(platform)}</div>
-          <div class="card-url">${hasDetails && href ? `<a href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow">Open profile ${icon("external", 12)}</a>` : `${esc(hostOf(r.url))}${href ? ` <span class="open-ico">${icon("external", 12)}</span>` : ""}`}</div>
+          <div class="card-url">${hasDetails && href ? `<a href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow">${linkLabel} ${icon("external", 12)}</a>` : `${esc(hostOf(r.url))}${href ? ` <span class="open-ico">${icon("external", 12)}</span>` : ""}`}</div>
         </div>
         <span class="tag ${esc(cat)}">${esc(cat)}</span>
       </div>
@@ -904,12 +906,13 @@
       ${r.bio ? `<div class="card-bio">${esc(r.bio.slice(0, 150))}</div>` : ""}
       ${r.metadata_source ? `<div class="hint">Source: ${safeUrl(r.metadata_source.url) ? `<a href="${esc(safeUrl(r.metadata_source.url))}" target="_blank" rel="noopener nofollow">${esc(r.metadata_source.platform || platform)} public account data</a>` : esc(r.metadata_source.platform || platform)}</div>` : ""}
       ${publicLinks.length ? `<div class="card-bio">Public links: ${publicLinks.map(u => `<a href="${esc(safeUrl(u))}" target="_blank" rel="noopener nofollow">${esc(hostOf(u))}</a>`).join(" · ")}</div>` : ""}
-      <p class="hint">${esc(r.evidence || "Appeared in the supported-source lookup for this handle. Review the source and confidence label.")}</p>
+      ${r.evidence || !unconfirmed ? `<p class="hint">${esc(r.evidence || "Appeared in the supported-source lookup for this handle. Review the source and confidence label.")}</p>` : ""}
+      ${unconfirmed ? `<p class="hint">Check whether the page shows this exact username. A sign-in screen, homepage or missing-page message leaves the account unconfirmed.</p>` : ""}
       ${meta ? `<div class="card-meta">${meta}</div>` : ""}
       ${!live ? window.MyReconMatchChoices?.controls(r.url) || "" : ""}`;
     if (href && !hasDetails) {
       return `<a class="card card-link" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow"
-        aria-label="Open ${esc(platform)} profile in a new tab">${inner}</a>`;
+        aria-label="Open ${esc(platform)} ${unconfirmed ? "source page" : "profile"} in a new tab">${inner}</a>`;
     }
     return `<div class="card">${inner}</div>`;
   }

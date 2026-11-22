@@ -33,6 +33,20 @@ test('live and final cards preserve zero statistics, source and safe public link
   }
 });
 
+test('unconfirmed source links explain what to check in both live and final results', () => {
+  const result = { platform: 'Fixture', url: 'https://example.com/fixture', confidence: 'low',
+    evidence: 'Fixture evidence' };
+  const { profileCard } = renderer();
+  for (const live of [true, false]) {
+    const html = profileCard(result, live);
+    assert.match(html, /href="https:\/\/example\.com\/fixture"/);
+    assert.match(html, /Fixture evidence/);
+    assert.match(html, /missing-page message leaves the account unconfirmed/);
+    assert.match(html, live ? /Open Fixture source page in a new tab/ : /Check source page/);
+    assert.doesNotMatch(html, /Open profile/);
+  }
+});
+
 test('text reports retain account metadata, supported stats and attribution', () => {
   const r = { ...profile, public_links: ['https://example.com'] };
   const text = renderer().buildTextSummary({ tool: 'username', query: 'alice',
