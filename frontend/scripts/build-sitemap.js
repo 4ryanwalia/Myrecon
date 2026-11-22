@@ -324,24 +324,28 @@ function buildSitemap(options = {}) {
   // whole file as changed on every build.
   writeIfChanged('sitemap.xml', xml.replace(/\r\n/g, '\n'));
 
-  // Both index URLs have been published. Keep the old underscore spelling
-  // current too, since it may still be submitted in search tools.
+  // Section sitemaps share the aggregate inventory. Keep their URLs stable for
+  // existing submissions and let crawlers fetch each section independently.
+  const sections = ['blog', 'breaches', 'find', 'guides', 'privacy', 'vs'];
+  const children = [
+    ['sitemap-core.xml', entries.filter(entry => !sections.some(section => entry.url.startsWith(`/${section}/`)))],
+    ...sections.map(section => [
+      `sitemap-${section}.xml`, entries.filter(entry => entry.url.startsWith(`/${section}/`)),
+    ]),
+  ];
+  for (const [filename, urls] of children) {
+    writeIfChanged(filename, renderSitemap(urls));
+  }
+
+  const links = children.filter(([, urls]) => urls.length)
+    .map(([filename]) => `  <sitemap><loc>${SITE}/${filename}</loc></sitemap>\n`);
   const index =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    `  <sitemap><loc>${SITE}/sitemap.xml</loc></sitemap>\n` +
+    links.join('') +
     `</sitemapindex>\n`;
   writeIfChanged('sitemap-index.xml', index);
   writeIfChanged('sitemap_index.xml', index);
-
-  // Historical section sitemap URLs may also remain submitted independently.
-  // Derive them from the same canonical inventory so they never advertise
-  // deleted pages, redirects, or obsolete freshness dates.
-  const sections = ['blog', 'breaches', 'find', 'guides', 'privacy', 'vs'];
-  for (const section of sections) {
-    writeIfChanged(`sitemap-${section}.xml`, renderSitemap(entries.filter(e => e.url.startsWith(`/${section}/`))));
-  }
-  writeIfChanged('sitemap-core.xml', renderSitemap(entries.filter(e => !sections.some(section => e.url.startsWith(`/${section}/`)))));
 
   console.log(`[sitemap] ${entries.length} URLs written`);
   if (skipped.length) console.log(`[sitemap] skipped ${skipped.length}: ${skipped.join(", ")}`);

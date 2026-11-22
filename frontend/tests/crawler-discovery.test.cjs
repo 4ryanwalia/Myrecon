@@ -93,7 +93,8 @@ test('unchanged sitemap rebuild preserves the child and index artifacts', t => {
   buildSitemap(options);
   assert.deepEqual(targets.map(target => fs.statSync(target).mtimeMs), stamps);
   const index = fs.readFileSync(targets[1], 'utf8');
-  assert.match(index, /<loc>https:\/\/www\.myrecon\.xyz\/sitemap\.xml<\/loc>/);
+  assert.match(index, /<loc>https:\/\/www\.myrecon\.xyz\/sitemap-core\.xml<\/loc>/);
+  assert.equal((index.match(/<loc>/g) || []).length, 1, 'empty sections stay out of the index');
   assert.ok(!index.includes('<lastmod>'));
 });
 
@@ -114,6 +115,14 @@ test('legacy sitemap URLs are refreshed from the current canonical inventory', t
   assert.doesNotMatch(blog, /old\.html/);
   assert.doesNotMatch(core, /\/blog\//);
   assert.doesNotMatch(find, /private\.html/);
+  const sitemapUrls = xml => [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+  const readSitemap = filename => fs.readFileSync(path.join(root, filename), 'utf8');
+  const childNames = sitemapUrls(readSitemap('sitemap-index.xml')).map(url => new URL(url).pathname.slice(1));
+  assert.deepEqual(childNames, ['sitemap-core.xml', 'sitemap-blog.xml']);
+  assert.deepEqual(
+    childNames.flatMap(filename => sitemapUrls(readSitemap(filename))).sort(),
+    sitemapUrls(readSitemap('sitemap.xml')).sort(),
+  );
   assert.equal(fs.readFileSync(path.join(root, 'sitemap_index.xml'), 'utf8'), fs.readFileSync(path.join(root, 'sitemap-index.xml'), 'utf8'));
 });
 
@@ -159,5 +168,5 @@ test('all named and future crawlers share public access and protected-path rules
   for (const route of ['/api/', '/content/', '/worker-console/']) assert.ok(group.rules.some(([type, value]) => type === 'disallow' && value === route), route);
   assert.ok(group.rules.some(([type, value]) => type === 'allow' && value === '/'));
   assert.ok(!group.rules.some(([type, value]) => type === 'disallow' && (value === '/' || value.includes('?'))));
-  assert.match(robots, /^Sitemap: https:\/\/www\.myrecon\.xyz\/sitemap-index\.xml$/m);
+  assert.deepEqual(robots.match(/^Sitemap:.*$/gm), ['Sitemap: https://www.myrecon.xyz/sitemap-index.xml']);
 });
