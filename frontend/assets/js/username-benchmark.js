@@ -129,16 +129,31 @@
       put("usernameCaseTakeaway", "The interactive chart is unavailable. Read the research article below for the recorded results and limitations.");
     } finally { clearTimeout(timeout); }
   }
-  const embedded = document.getElementById("usernameCaseChartData");
-  if (embedded) {
+  const content = document.getElementById("usernameCaseContent");
+  if (!content) return;
+  function initializeChart() {
+    const embedded = document.getElementById("usernameCaseChartData");
+    if (!embedded) {
+      load();
+      return;
+    }
     const chart = JSON.parse(embedded.textContent);
     const scope = document.getElementById("usernameCaseScope");
     const draw = () => drawComparison(chart[scope.value], scope.value, chart.sharedAddressCount);
     scope.addEventListener("change", draw);
     put("usernameCaseWhen", `Local runs: ${chart.date}. This is a recorded case study.`);
     draw();
-    document.getElementById("usernameCaseContent").hidden = false;
-  } else {
-    load();
+    content.hidden = false;
   }
+  const card = content.closest(".username-case");
+  if (!card || !("IntersectionObserver" in window)) {
+    initializeChart();
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    observer.disconnect();
+    initializeChart();
+  }, { rootMargin: "600px 0px" });
+  observer.observe(card);
 }());

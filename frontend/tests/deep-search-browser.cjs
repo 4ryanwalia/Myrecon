@@ -57,6 +57,8 @@ const server = http.createServer((req, res) => {
     });
     await page.route('**/*', (route) => route.request().url().startsWith(base) ? route.continue() : route.abort());
     await page.goto(base + '/index.html');
+    assert.equal(await page.locator('#usernameCaseContent').isHidden(), true, 'offscreen chart should wait for the reader');
+    await page.locator('#usernameCaseHeading').scrollIntoViewIfNeeded();
     await page.locator('.case-graph-row').first().waitFor();
     assert.equal(await page.locator('.case-graph-row').count(), 3);
     assert.deepEqual(await page.locator('.case-graph-total strong').allTextContents(), ['12', '18', '35']);
