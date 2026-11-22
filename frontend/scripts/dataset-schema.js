@@ -9,11 +9,13 @@
  *
  * Front matter in content/blog/<slug>.html opts in with a "dataset" object:
  *   name, description, temporalCoverage, measurementTechnique (strings),
+ *   datePublished, dateModified (optional calendar dates),
  *   keywords, variableMeasured (string arrays),
  *   distribution: [{ url: "/assets/...", format: "text/csv" }]
  * A license is emitted only when the front matter states one; never assume it.
  */
 
+const { validDate } = require('./build-sitemap');
 const SITE = 'https://www.myrecon.xyz';
 
 function datasetSchema(article) {
@@ -23,6 +25,11 @@ function datasetSchema(article) {
     if (typeof d[field] !== 'string' || !d[field].trim()) throw new Error(`${article.slug}: dataset.${field} is required`);
   }
   if (!Array.isArray(d.distribution) || !d.distribution.length) throw new Error(`${article.slug}: dataset.distribution needs at least one file`);
+  const datePublished = d.datePublished ?? article.datePublished;
+  const dateModified = d.dateModified ?? article.dateModified;
+  if (!validDate(datePublished) || !validDate(dateModified) || dateModified < datePublished) {
+    throw new Error(`${article.slug}: invalid Dataset publication or modification date`);
+  }
   const value = {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
@@ -31,8 +38,8 @@ function datasetSchema(article) {
     description: d.description,
     url: article.url,
     creator: { '@type': 'Organization', '@id': `${SITE}/#organization`, name: 'MyRecon', url: `${SITE}/` },
-    datePublished: article.datePublished,
-    dateModified: article.dateModified,
+    datePublished,
+    dateModified,
     temporalCoverage: d.temporalCoverage,
     isAccessibleForFree: true,
     measurementTechnique: d.measurementTechnique,

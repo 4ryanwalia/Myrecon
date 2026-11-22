@@ -6,6 +6,26 @@ const path = require('node:path');
 const { toUrlPath, validDate, lastmod, collectEntries, renderSitemap, buildSitemap } = require('../scripts/build-sitemap.js');
 const { buildLlms } = require('../scripts/build-llms.js');
 const { getPageMetadata } = require('../scripts/build-html-sitemap.js');
+const { datasetSchema } = require('../scripts/dataset-schema.js');
+
+test('Dataset dates reflect the release of the data on an older article', () => {
+  const article = {
+    slug: 'research', url: 'https://www.myrecon.xyz/blog/research.html',
+    datePublished: '2026-01-01', dateModified: '2026-02-01',
+    dataset: {
+      name: 'Sample', description: 'A sample of observations.',
+      temporalCoverage: '2026-01-15/2026-01-16', measurementTechnique: 'A recorded measurement.',
+      distribution: [{ url: '/assets/sample.csv', format: 'text/csv' }],
+    },
+  };
+  assert.equal(datasetSchema(article).datePublished, '2026-01-01');
+  article.dataset.datePublished = '2026-01-17';
+  article.dataset.dateModified = '2026-01-17';
+  assert.equal(datasetSchema(article).datePublished, '2026-01-17');
+  assert.equal(datasetSchema(article).dateModified, '2026-01-17');
+  article.dataset.dateModified = '2026-01-16';
+  assert.throws(() => datasetSchema(article), /invalid Dataset publication or modification date/);
+});
 
 test('directory metadata preserves punctuation and decodes one layer of HTML entities', t => {
   const root = fixture(t);
