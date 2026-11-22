@@ -356,4 +356,4 @@ function isNoindex(html) {
 }
 
 if (require.main === module) buildSitemap();
-module.exports = { isNoindex, xmlEscape, attribute, toUrlPath, validDate, lastmod, fileForUrl, htmlRewrites, collectEntries, renderSitemap, buildSitemap };
+module.exports = { isNoindex, xmlEscape, attribute, decodeHtml, toUrlPath, validDate, lastmod, fileForUrl, htmlRewrites, collectEntries, renderSitemap, buildSitemap };

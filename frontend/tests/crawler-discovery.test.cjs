@@ -5,6 +5,16 @@ const os = require('node:os');
 const path = require('node:path');
 const { toUrlPath, validDate, lastmod, collectEntries, renderSitemap, buildSitemap } = require('../scripts/build-sitemap.js');
 const { buildLlms } = require('../scripts/build-llms.js');
+const { getPageMetadata } = require('../scripts/build-html-sitemap.js');
+
+test('directory metadata preserves punctuation and decodes one layer of HTML entities', t => {
+  const root = fixture(t);
+  const file = write(root, 'guide.html', `<title>Accounts &amp; privacy | MyRecon</title>
+    <meta content="What's public? Read the owner&#39;s guide to &quot;account &amp; privacy&quot;." name="description">`);
+  const { title, desc } = getPageMetadata(file);
+  assert.equal(title, 'Accounts & privacy');
+  assert.equal(desc, `What's public? Read the owner's guide to "account & privacy".`);
+});
 
 const site = 'https://www.myrecon.xyz';
 const today = '2026-10-08';

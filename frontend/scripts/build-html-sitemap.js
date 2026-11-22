@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { attribute, decodeHtml, isNoindex } = require('./build-sitemap');
 
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.myrecon.xyz';
@@ -25,17 +26,18 @@ function esc(value) {
 
 function getPageMetadata(file) {
   const html = fs.readFileSync(file, 'utf8');
-  if (require('./build-sitemap').isNoindex(html)) return null;
+  if (isNoindex(html)) return null;
   const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const title = titleMatch ? titleMatch[1].trim().replace(/\s*\|\s*MyRecon\s*$/i, '') : path.basename(file, '.html');
+  const title = titleMatch ? decodeHtml(titleMatch[1]).trim().replace(/\s*\|\s*MyRecon\s*$/i, '') : path.basename(file, '.html');
   
   const cm = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']*)["']/i)
     || html.match(/<link[^>]*href=["']([^"']*)["'][^>]*rel=["']canonical["']/i);
   let url = cm ? cm[1].replace(SITE, '') : '/' + path.relative(ROOT, file).replace(/\\/g, '/');
   if (url === '/index.html') url = '/';
 
-  const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i);
-  const desc = descMatch ? descMatch[1].trim() : '';
+  const descTag = (html.match(/<meta\b[^>]*>/gi) || [])
+    .find(tag => attribute(tag, 'name')?.toLowerCase() === 'description');
+  const desc = decodeHtml(attribute(descTag || '', 'content') || '').trim();
 
   return { title, url, desc, file };
 }
@@ -144,7 +146,7 @@ function main() {
         .map(
           (p) =>
             `<li class="directory-item"><a href="${esc(p.url)}">${esc(p.title)}</a>${
-              p.desc ? `<p class="directory-item-desc">${esc(p.desc.slice(0, 130))}...</p>` : ''
+              p.desc ? `<p class="directory-item-desc">${esc(p.desc)}</p>` : ''
             }</li>`
         )
         .join('\n');
@@ -313,4 +315,4 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { main };
+module.exports = { main, getPageMetadata };
