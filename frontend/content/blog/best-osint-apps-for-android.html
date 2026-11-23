@@ -1,18 +1,18 @@
 <!--
 {
-  "title": "10 Best OSINT Apps for Android in 2026, Ranked | MyRecon",
-  "headline": "The 10 Best OSINT Apps for Android in 2026, Ranked",
-  "description": "Ten Android apps for open-source research: username search, breach checks, network scans, image search and Wi-Fi mapping. What each is best for, ranked.",
+  "title": "10 Free OSINT Tools for Android and Their Limits | MyRecon",
+  "headline": "10 Free OSINT Tools for Android and Their Limits",
+  "description": "Compare free Android tools for username searches, breach checks, image research and app traffic. See what works without root and where paid features begin.",
   "category": "OSINT tools",
   "datePublished": "2026-11-15",
-  "dateModified": "2026-11-22",
-  "editorial_review": "2026-11-22",
-  "keywords": ["best osint apps for android", "osint android app", "android osint tools", "osint app", "username search app android", "best osint app"],
+  "dateModified": "2026-11-23",
+  "editorial_review": "2026-11-23",
+  "keywords": ["free osint tools for android", "best osint apps for android", "osint android app", "android osint tools", "username search app android"],
   "faq": [
     {"question": "What is the best OSINT app for Android?", "answer": "For username search and breach checks without a terminal, we rank MyRecon first, and we publish it. For network work pick Fing or Network Analyzer, for images Google Lens, and for running command-line tools such as Sherlock use Termux."},
-    {"question": "Can I run Sherlock or Maigret on an Android phone?", "answer": "Yes, inside Termux, which gives you a Linux shell with Python. Install Python, clone the project and run it as you would on a laptop. Expect slower runs and more blocked requests than a desktop, and keep the tool updated."},
-    {"question": "Do OSINT apps need root access?", "answer": "None of the ten apps on this list needs root. PCAPdroid captures traffic through Android's VPN interface, and Termux runs in its own app sandbox."},
-    {"question": "Is it legal to use OSINT apps?", "answer": "Looking at public information is legal in most places, but what you do with it matters. Harassment, stalking and unauthorized access are crimes regardless of the tool. Use these apps on yourself, your own assets or with permission."}
+    {"question": "Can I run Sherlock or Maigret on an Android phone?", "answer": "Termux provides Python on Android. Check the tool's current Python and package requirements before installing. Android compatibility and site responses can vary."},
+    {"question": "Do OSINT apps need root access?", "answer": "The workflows listed here work without root. PCAPdroid can monitor app connections through Android's VPN interface, and Termux runs in its own app sandbox."},
+    {"question": "Is it legal to use OSINT apps?", "answer": "It depends on what you collect, your authorization and local rules. Use these apps on your own accounts or devices, or get permission for the work you are doing."}
   ],
   "tools": [
     {"name": "MyRecon", "url": "https://play.google.com/store/apps/details?id=com.Myrecon.osint", "description": "Android username sweep, breach alerts, QR link safety, password leak check and domain lookups."},
@@ -28,14 +28,32 @@
   ]
 }
 -->
-<p class="lead"><strong>Quick answer:</strong> the best OSINT app for Android depends on the job. For finding where a username or email shows up, and whether it leaked in a breach, we rank <strong>MyRecon</strong> first. For networks use Fing or Network Analyzer, for images Google Lens, and for anything command-line, Termux.</p>
+<p class="lead">For a free Android username search, use MyRecon's core tools or try the browser preview without installing anything. Google Lens can find other copies of an image, and PCAPdroid can show which servers an app contacts. Termux gives you a terminal for compatible tools. Check the free limits before installing.</p>
 
 <div class="callout"><p><strong>Publisher disclosure:</strong> MyRecon publishes this list and ranks its own app first. The order is our editorial judgement for one kind of reader: someone on an Android phone who wants answers with source links, without installing a terminal or creating an account. If you are comfortable in a shell, Termux plus open-source tools will reach further than any single app, and we say so below. No app paid to be listed and there are no affiliate links.</p></div>
+
+<h2>Quick comparison table</h2>
+<table>
+  <caption>Free starting options for common Android OSINT tasks</caption>
+  <thead><tr><th scope="col">App</th><th scope="col">What to use it for</th><th scope="col">Free use and limits</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>Find public profile leads for a username you control.</td><td><a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint">Free download with ads</a>. Core checks need no MyRecon account. Deep Search has its own access terms.</td></tr>
+    <tr><th scope="row">Google Lens</th><td>Find other copies of an image.</td><td>Free in the Google app. Results depend on what Google can find.</td></tr>
+    <tr><th scope="row">PCAPdroid</th><td>Review connections made by apps on your own phone.</td><td><a href="https://play.google.com/store/apps/details?id=com.emanuelef.remote_capture">Free connection monitoring</a>. The developer lists firewall rules and malware detection as paid features.</td></tr>
+    <tr><th scope="row">Network Analyzer</th><td>Read DNS records and troubleshoot your own connection.</td><td><a href="https://play.google.com/store/apps/details?id=net.techet.netanalyzerlite.an">Free Lite app with ads</a>. Pro adds tools such as visual traceroute.</td></tr>
+    <tr><th scope="row">Termux</th><td>Run compatible command-line tools.</td><td>Free terminal. You install and maintain each tool separately.</td></tr>
+    <tr><th scope="row">Fing</th><td>List devices on a network you administer.</td><td>Free core; paid features are available.</td></tr>
+    <tr><th scope="row">WiGLE</th><td>Review recorded Wi-Fi observations on the public map.</td><td>Free app. Uploading collects separate location data.</td></tr>
+    <tr><th scope="row">Orbot</th><td>Route selected apps through Tor.</td><td>Free and open source. Check which apps are routed.</td></tr>
+    <tr><th scope="row">Google Earth</th><td>Compare visible landmarks in public imagery.</td><td>Free to use. Imagery dates and coverage vary.</td></tr>
+    <tr><th scope="row">ExifTool</th><td>Read metadata in a file you are authorized to inspect.</td><td>Free and open source. Android setup uses a terminal.</td></tr>
+  </tbody>
+</table>
 
 <h2>How we picked and ordered these apps</h2>
 <p>Open-source intelligence on a phone is a different job from OSINT on a laptop. The screen is small, background work gets killed to save battery, and copying results into notes is clumsy. So the apps that earn a place here do one of two things well: they answer a common research question in a few taps, or they open the phone up to tools that would otherwise need a computer.</p>
 <p>We judged each app on four things. First, <strong>what question it answers</strong>, stated plainly. Second, <strong>whether it shows its sources</strong>, so you can check where a result came from. Third, <strong>setup cost</strong>. A ready-to-use app is easier to start with, while a terminal lets you choose more specialized tools. Fourth, <strong>how it handles uncertainty</strong>. In our <a href="/blog/username-search-benchmark-research.html#november-controls">controlled test of three websites</a>, the HTTP status check alone missed the evidence needed to decide all 200 Hacker News observations. The official API found accounts in 60 of those observations. When trying a username app, check how it labels an inconclusive result and whether you can open the source from your phone.</p>
-<p>Everything here runs without root. Prices change, so we describe the cost model rather than quoting numbers that will go stale.</p>
+<p>The tasks shown here can be done without root. The access comparison is based on public listings and documentation. Network responses and Android package compatibility vary by device and setup.</p>
 
 <h2>The 10 best OSINT apps for Android</h2>
 
@@ -44,13 +62,13 @@
     <span class="rank-badge">#1 pick for Android</span>
     <h3>1. MyRecon: username, breach and domain checks in one app</h3>
     <p>MyRecon turns the most common OSINT questions into one search box. Type a handle and the app sweeps social, developer, gaming, marketplace and forum sites from your own phone, then labels each result by confidence instead of calling every response a match. Anything it could not confirm says "unknown" rather than pretending.</p>
-    <p>The sweep runs on the handset, not on a server. That matters more than it sounds: platforms block datacentre IP ranges far harder than mobile ones, so the same check a cloud tool gets refused for is often answered for a phone.</p>
+    <p>The standard sweep runs from your handset. Sites may still throttle or block a check, so review unresolved results and open the original profile before acting.</p>
     <ol class="rank-steps">
       <li>Install MyRecon from Google Play (free, Android 11 or newer).</li>
-      <li>Type a username, then watch confirmed profiles appear as the sweep runs.</li>
+      <li>Search a username you control and review the profile leads.</li>
       <li>Open each source link to verify it, or switch to breach, QR or domain checks.</li>
     </ol>
-    <p class="rank-cta"><a class="btn" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_listicle_android">Get MyRecon on Google Play</a> <a href="/#tool">or try it in your browser</a></p>
+    <p class="rank-cta"><a class="btn" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_listicle_android">Get MyRecon on Google Play</a> <a href="/#tool=username">Try the browser preview</a></p>
     <small>Free download · Android 11+ · Contains ads · Deep Search unlock requirements are shown in the app.</small>
   </div>
   <div class="rank-phone" aria-hidden="true">
@@ -72,11 +90,12 @@
 
 <p>What else is in the app: <strong>breach alerts</strong> that compare the public breach catalogue on your device, so your address is not sent anywhere by default; a <strong>password leak check</strong> that hashes the password on the phone and sends only the first five characters of the hash; a <strong>QR link checker</strong> that shows the full redirect chain before you open it; <strong>domain, DNS and IP lookups</strong> from public, keyless sources; and identity correlation that groups accounts that look related, with the signals behind the score. A matching handle alone is never treated as proof that two accounts belong to one person.</p>
 <p><strong>Where it falls short:</strong> MyRecon only sees public information. It cannot open private profiles, it does not do reverse face search, and it does not turn a phone number into a name. The free app shows ads. If you need scripting or bulk jobs, pair it with Termux below.</p>
+<p>See <a href="/app.html">Android compatibility and how MyRecon handles each check</a>.</p>
 
 <div class="rank-list">
   <article class="rank-card"><div class="rank-num">2</div><div>
     <h3><a href="https://termux.dev/">Termux</a></h3>
-    <p>Termux is a full Linux terminal for Android. It is not an OSINT tool by itself; it is the reason a phone can run the OSINT tools that matter. Install Python and you can run Sherlock, Maigret, theHarvester or ExifTool exactly as on a laptop. Its maintainers recommend installing from F-Droid or GitHub rather than older store builds.</p>
+    <p>Termux supplies a terminal and packages such as Python. Supported OSINT tools depend on their dependencies and your Android build. Use the <a href="https://github.com/termux/termux-app#installation">maintainer's installation notes</a> for the differences between distribution channels.</p>
     <dl class="rank-meta"><div><dt>Best for</dt><dd>Running command-line tools on the go</dd></div><div><dt>Setup</dt><dd>High: packages, Python, updates</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
   </div></article>
   <article class="rank-card"><div class="rank-num">3</div><div>
@@ -86,7 +105,7 @@
   </div></article>
   <article class="rank-card"><div class="rank-num">4</div><div>
     <h3><a href="https://www.fing.com/">Fing</a></h3>
-    <p>Fing lists every device on the Wi-Fi network you are connected to, with vendor names and open services. It is the quickest way to answer "what is on my home network" or "is there a camera on this rental's Wi-Fi". Use it only on networks you own or are allowed to scan.</p>
+    <p>Fing can list devices it discovers on your own network. Some devices may be hidden or unreachable, so a device list alone cannot establish that the network is free of unwanted devices.</p>
     <dl class="rank-meta"><div><dt>Best for</dt><dd>Device discovery on your network</dd></div><div><dt>Setup</dt><dd>Low</dd></div><div><dt>Cost</dt><dd>Free core, paid extras</dd></div></dl>
   </div></article>
   <article class="rank-card"><div class="rank-num">5</div><div>
@@ -97,7 +116,7 @@
   <article class="rank-card"><div class="rank-num">6</div><div>
     <h3><a href="https://github.com/emanuele-f/PCAPdroid">PCAPdroid</a></h3>
     <p>PCAPdroid shows which servers every app on your phone talks to, without root, by routing traffic through Android's local VPN interface. It is the honest way to see what a "free" app is sending and where. You can export captures for Wireshark.</p>
-    <dl class="rank-meta"><div><dt>Best for</dt><dd>Auditing app traffic</dd></div><div><dt>Setup</dt><dd>Medium</dd></div><div><dt>Cost</dt><dd>Free, open source</dd></div></dl>
+    <dl class="rank-meta"><div><dt>Best for</dt><dd>Auditing app traffic</dd></div><div><dt>Setup</dt><dd>Medium</dd></div><div><dt>Cost</dt><dd>Free core, optional paid features</dd></div></dl>
   </div></article>
   <article class="rank-card"><div class="rank-num">7</div><div>
     <h3><a href="https://wigle.net/">WiGLE WiFi Wardriving</a></h3>
@@ -121,28 +140,10 @@
   </div></article>
 </div>
 
-<h2>Quick comparison table</h2>
-<table>
-  <caption>Android OSINT apps by question answered, as of 15 November 2026</caption>
-  <thead><tr><th>App</th><th>Question it answers</th><th>Needs a terminal?</th><th>Shows sources?</th></tr></thead>
-  <tbody>
-    <tr><td>MyRecon</td><td>Where does this username appear? Was this email in a breach?</td><td>No</td><td>Yes, every result links out</td></tr>
-    <tr><td>Termux</td><td>Can I run Sherlock, Maigret or theHarvester here?</td><td>Yes</td><td>Depends on the tool</td></tr>
-    <tr><td>Google Lens</td><td>Where else does this image appear?</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Fing</td><td>What devices are on this network?</td><td>No</td><td>Local scan</td></tr>
-    <tr><td>Network Analyzer</td><td>Who owns and hosts this domain?</td><td>No</td><td>Raw lookups</td></tr>
-    <tr><td>PCAPdroid</td><td>Which servers does this app contact?</td><td>No</td><td>Raw traffic</td></tr>
-    <tr><td>WiGLE</td><td>Where has this Wi-Fi network been seen?</td><td>No</td><td>Public map</td></tr>
-    <tr><td>Orbot</td><td>How do I keep research off my own IP?</td><td>No</td><td>Not applicable</td></tr>
-    <tr><td>Google Earth</td><td>Where was this photo taken?</td><td>No</td><td>Imagery</td></tr>
-    <tr><td>ExifTool</td><td>What is hidden in this file?</td><td>Yes</td><td>Raw metadata</td></tr>
-  </tbody>
-</table>
-
 <h2>Which app should you start with?</h2>
 <ul>
   <li><strong>Checking your own digital footprint:</strong> start with MyRecon. Search every username you have used, then run the breach check on your email. Our <a href="/blog/find-your-own-old-accounts.html">guide to finding your old accounts</a> turns the results into a cleanup list.</li>
-  <li><strong>Vetting a seller, landlord or online match:</strong> Google Lens on their photos first, then a username search on the handle they gave you. A reused stock photo is the most common red flag.</li>
+  <li><strong>Checking a photo in a public listing:</strong> use Google Lens to look for earlier copies. A repeated image can prompt a follow-up question about its source.</li>
   <li><strong>Suspicious link or QR code:</strong> MyRecon's QR checker, then Network Analyzer for the domain's age and host.</li>
   <li><strong>Learning OSINT properly:</strong> Termux, then work through Sherlock and ExifTool by hand. Understanding why a tool returns a false positive teaches more than any app.</li>
 </ul>
@@ -152,15 +153,15 @@
 <p>Three habits keep you honest. Open the original source for every result you plan to rely on. Look for two independent signals before linking accounts, such as the same profile photo and the same external website. And write down what you checked and when, because public pages change. Our explainer on <a href="/username-sweep-vs-deep-search.html">username sweeps versus Deep Search</a> goes deeper into why tools disagree.</p>
 
 <h2>Use these apps responsibly</h2>
-<p>These apps are built for checking yourself, protecting your family, verifying people you are about to trust, and authorized security work. Using them to monitor, track or harass someone is not research, and in most countries it is a crime. If you are worried that someone is tracking you, our <a href="/blog/doxxing-prevention-personal-cybersecurity-guide.html">doxxing prevention guide</a> covers what to lock down first.</p>
+<p>Use these tools for your own digital footprint and for research you have permission to do. If someone is exposing your information, the <a href="/blog/doxxing-prevention-personal-cybersecurity-guide.html">doxxing prevention guide</a> covers ways to reduce what strangers can see.</p>
 
 <h2>Frequently asked questions</h2>
 <h3>What is the best OSINT app for Android?</h3>
 <p>For username search and breach checks without a terminal, we rank MyRecon first, and we publish it. For network work pick Fing or Network Analyzer, for images Google Lens, and for running command-line tools such as Sherlock use Termux.</p>
 <h3>Can I run Sherlock or Maigret on an Android phone?</h3>
-<p>Yes, inside Termux, which gives you a Linux shell with Python. Install Python, clone the project and run it as you would on a laptop. Expect slower runs and more blocked requests than a desktop, and keep the tool updated.</p>
+<p>Termux provides Python on Android. Check the tool's current Python and package requirements before installing. Android compatibility and site responses can vary.</p>
 <h3>Do OSINT apps need root access?</h3>
-<p>None of the ten apps on this list needs root. PCAPdroid captures traffic through Android's VPN interface, and Termux runs in its own app sandbox.</p>
+<p>The workflows listed here work without root. PCAPdroid can monitor app connections through Android's VPN interface, and Termux runs in its own app sandbox.</p>
 <h3>Is it legal to use OSINT apps?</h3>
-<p>Looking at public information is legal in most places, but what you do with it matters. Harassment, stalking and unauthorized access are crimes regardless of the tool. Use these apps on yourself, your own assets or with permission.</p>
+<p>It depends on what you collect, your authorization and local rules. Use these apps on your own accounts or devices, or get permission for the work you are doing.</p>
 <p>More rankings: <a href="/blog/best-username-search-apps.html">best username search apps</a>, <a href="/blog/best-email-osint-tools.html">best email OSINT tools</a>, <a href="/blog/best-data-breach-checkers.html">best data breach checkers</a>, <a href="/blog/best-deep-search-tools.html">best deep search tools</a> and <a href="/blog/best-sherlock-alternatives.html">best Sherlock alternatives</a>.</p>
