@@ -1,63 +1,46 @@
 <!--
 {
-  "title": "Doxxing Prevention & Anti-Harassment Guide (2026) | MyRecon",
-  "headline": "Doxxing Prevention Guide: How to Protect Your Identity from Malicious Exposure",
-  "description": "Learn how to defend against doxxing and online harassment. Follow our step-by-step checklist to lock down usernames, public records, and home addresses.",
+  "title": "Doxxing Prevention: Protect Your Personal Info | MyRecon",
+  "headline": "Doxxing Prevention and What to Do If You’re Doxxed",
+  "description": "Learn how to protect yourself from doxxing, report exposed contact details, request Google Search removal, and verify whether each step worked.",
   "category": "Personal Security",
   "datePublished": "2026-10-14",
-  "dateModified": "2026-10-14"
+  "dateModified": "2026-11-23",
+  "editorial_review": "2026-11-23"
 }
 -->
-<p class="lead">Doxxing—the act of uncovering and publicly posting private details about an individual to encourage harassment, stalking, or real-world intimidation—is one of the most destructive threats on the modern web. Here is how attackers compile personal dossiers, and how you can systematically harden your digital footprint against them.</p>
+<p class="lead">To reduce the risk of doxxing, review which contact details are public, remove old people-search listings and keep personal accounts separate from public profiles. If your details are already being shared to threaten or harass you, preserve the evidence privately, report the original post and request removal from search where eligible.</p>
+<p><a href="#what-to-do-if-doxxed">What to do if you’re doxxed</a> · <a href="#prevent-doxxing">Prevention checklist</a> · <a href="#verify-removal">How to verify removal</a></p>
 
-<h2>How Attackers Build a Doxxing Dossier (The OSINT Kill Chain)</h2>
-<p>Doxxers rarely possess advanced zero-day hacking tools. Instead, they exploit common privacy hygiene oversights across a predictable five-stage methodology:</p>
+<h2 id="what-to-do-if-doxxed">What should you do if you’ve been doxxed?</h2>
+<p>If you believe someone is in immediate physical danger, contact local emergency services first. For ongoing harassment, tell someone you trust and use the reporting resources available where you live. CISA’s <a href="https://www.cisa.gov/sites/default/files/publications/cisa_insights_mitigating_the_impacts_of_doxing_508.pdf">guide to responding to doxxing</a> covers documentation and reporting.</p>
 <ol>
-  <li><strong>Handle Enumeration:</strong> The attacker takes your gaming or social handle and searches it across platforms using tools like <a href="/#tool">MyRecon</a> to find older, unmaintained profiles from years ago.</li>
-  <li><strong>Email &amp; Breach Correlation:</strong> Once an associated email address is discovered, they query breach databases to see leaked plaintext passwords, security questions, or linked real names.</li>
-  <li><strong>Data Broker &amp; Public Records Query:</strong> Armed with a city and real name, they query commercial aggregator directories (Spokeo, BeenVerified, Radaris) to find current home addresses, telephone numbers, and relatives.</li>
-  <li><strong>Metadata &amp; Background Extraction:</strong> They inspect your photo uploads for EXIF GPS tags, unblurred street signs, school badges, or reflective surfaces that disclose physical location.</li>
-  <li><strong>Weaponization:</strong> The compiled dossier is posted to toxic forums or social media groups to direct harassment campaigns, swatting calls, or financial fraud.</li>
+  <li><strong>Keep a private record.</strong> Save the original URL, posting account, date, time and screenshots showing the relevant details or threats. Store them somewhere you control. Share the minimum necessary through the platform’s official reporting channel.</li>
+  <li><strong>Report the original post or page.</strong> Use the platform’s privacy or harassment reporting flow. For a standalone site, use its published abuse or privacy contact if it’s safe to do so. Record the report number if you receive one.</li>
+  <li><strong>Check the Google Search result separately.</strong> Check Google’s <a href="https://support.google.com/websearch/answer/9673730?hl=en">personal information and doxxing policy</a> and use its <a href="https://support.google.com/websearch/contact/content_removal_form">removal form</a> if the result qualifies. Google can remove eligible Search results while the original page remains accessible at its direct URL.</li>
+  <li><strong>Secure affected accounts.</strong> If a password or recovery code was exposed, replace it, review active sessions and enable multifactor authentication. For exposed banking or payment details, contact the provider through a known official channel.</li>
 </ol>
 
-<h2>Step 1: Eliminate Username Reuse Across Public Services</h2>
-<p>Username reuse is the single most common bridge connecting your anonymous online personas to your real-world identity:</p>
-<ul>
-  <li><strong>Silo your identities:</strong> Never use the same username for professional networks (LinkedIn, GitHub) and casual or controversial platforms (Reddit, Discord, gaming servers).</li>
-  <li><strong>Scan your exposure:</strong> Run a <a href="/#tool">MyRecon username search</a> on your current handles to see which services are publicly discoverable.</li>
-  <li><strong>Delete legacy accounts:</strong> Close forgotten accounts from your childhood or teenage years using our <a href="/blog/delete-old-online-accounts.html">account deletion guide</a>.</li>
-</ul>
+<h2 id="verify-removal">How can you tell if personal information was removed?</h2>
+<p>Check the <strong>original page</strong> and the <strong>search result</strong> separately. Record a date for each check. Use a signed-out session to check public visibility if doing so is safe. A login prompt or access error leaves the page’s status unresolved.</p>
+<table>
+  <caption>What to do after checking a page and its Google Search result</caption>
+  <thead><tr><th scope="col">What you see</th><th scope="col">Next step</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">The details are still on the original page</th><td>Follow up with the host or platform. If Google also shows the result, check its personal information removal policy.</td></tr>
+    <tr><th scope="row">The details are gone from the page but still appear in Google’s snippet</th><td>Ask Google to <a href="https://support.google.com/websearch/answer/6349986?hl=en">refresh outdated content</a>.</td></tr>
+    <tr><th scope="row">The Google result has disappeared, but the page still shows the details</th><td>Continue the host or platform report and follow up on any copies at separate URLs.</td></tr>
+  </tbody>
+</table>
+<p><strong>Fictional example:</strong> A platform tells you it removed your phone number from a forum post. Reopen that specific post, verify the number is gone and record the date. If Google’s snippet still shows the number, submit the original post’s URL for a refresh and record that request separately. The report receipt confirms the request was received. Rechecking the page and the snippet tells you what changed.</p>
 
-<h2>Step 2: Scrub Your Home Address and Phone from Data Brokers</h2>
-<p>Anyone with internet access can purchase or browse your residential address unless you actively opt out:</p>
-<ul>
-  <li>Submit manual opt-out requests to primary people-search registries: <a href="/privacy/opt-out-spokeo.html">Spokeo</a>, <a href="/privacy/remove-beenverified-record.html">BeenVerified</a>, and <a href="/privacy/delete-whitepages-info.html">Whitepages</a>.</li>
-  <li>Request Google search delisting using Google’s <a href="https://support.google.com/websearch/troubleshooter/3111061" target="_blank" rel="noopener noreferrer">Personally Identifiable Information Removal Tool</a> for your home address and phone numbers.</li>
-  <li>Review property deed registries in your county if you own real estate; consider holding property in a privacy trust or LLC where permitted.</li>
-</ul>
-
-<h2>Step 3: Sanitize Image Metadata and Visual Backgrounds</h2>
-<p>Modern smartphone cameras embed rich metadata into every photograph unless stripped:</p>
-<ul>
-  <li><strong>Disable camera location permissions:</strong> Go into your phone settings &rarr; Camera &rarr; Location &rarr; <em>Never</em>.</li>
-  <li><strong>Strip EXIF data:</strong> Before uploading images to forums or cloud shares, scrub EXIF tags using metadata cleaners like ExifTool or mobile photo scrubbers.</li>
-  <li><strong>Scrutinize visual backgrounds:</strong> Avoid posting photos showing exterior house numbers, distinctive window views, vehicle license plates, flight boarding passes, or package delivery labels.</li>
-</ul>
-
-<h2>Step 4: Protect Domain Names with WHOIS Privacy</h2>
-<p>If you own a personal website, blog, or portfolio domain, your registrar may publish your full legal name, home address, and telephone number in the global WHOIS database:</p>
-<ul>
-  <li>Check your domain using the <a href="/#tool=domain">MyRecon WHOIS &amp; Domain tool</a> to see what information is currently public.</li>
-  <li>Enable <strong>WHOIS Privacy Protection</strong> (offered for free by modern registrars like Cloudflare and Namecheap) to proxy your registration details behind anonymous forwarding handles.</li>
-</ul>
-
-<h2>Step 5: Lock Down Financial &amp; Telecom Security (Anti-Swatting)</h2>
-<p>To defend against the most severe real-world harms:</p>
-<ul>
-  <li><strong>SIM Lock / Carrier PIN:</strong> Contact your cellular carrier (AT&amp;T, Verizon, T-Mobile, Airtel, Jio) and set a strict verbal passcode or port freeze to prevent unauthorized SIM swaps.</li>
-  <li><strong>Anti-Swatting Registry:</strong> If you are a high-profile streamer, journalist, or creator, many municipal police departments offer voluntary "anti-swatting" lists that require officers to verify threats before deploying SWAT teams to your address.</li>
-</ul>
-
-<h2>Comprehensive Defense Summary</h2>
-<p>Defending against doxxing is about reducing attack surfaces. When an attacker cannot connect your online handle to a real name, or your real name to a physical address, the chain breaks.</p>
-<p><a href="/digital-footprint-checker.html">Audit your digital footprint today</a> · <a href="/#tool">Run a free username check</a> · <a href="/blog/how-to-remove-yourself-from-the-internet.html">Step-by-step internet deletion checklist</a></p>
+<h2 id="prevent-doxxing">How can you protect yourself from doxxing?</h2>
+<h3 id="step-1-eliminate-username-reuse-across-public-services">Review the profiles you already own</h3>
+<p>Check public bios and old accounts for personal contact details, workplace information and links you no longer want public. Use a separate contact channel for public work where practical. If you use the <a href="/username-checker.html">username checker</a> for a self-audit, confirm each match at the source before treating it as your account. Save what you need before <a href="/blog/delete-old-online-accounts.html">closing accounts you no longer use</a>.</p>
+<h3 id="step-2-scrub-your-home-address-and-phone-from-data-brokers">Opt out of people-search listings</h3>
+<p>Use the listing site’s official opt-out procedure. Start with the sites where you have confirmed your own record. MyRecon has instructions for <a href="/privacy/opt-out-spokeo.html">Spokeo</a>, <a href="/privacy/remove-beenverified-record.html">BeenVerified</a> and <a href="/privacy/delete-whitepages-info.html">Whitepages</a>. The <a href="https://consumer.ftc.gov/articles/what-know-about-people-search-sites-sell-your-information">FTC’s people-search guide</a> explains why a listing can reappear and why a broker opt-out leaves underlying public records in place.</p>
+<h3 id="step-3-sanitize-image-metadata-and-visual-backgrounds">Check photos and location sharing</h3>
+<p>Review what a photo visibly reveals before posting. Turn off camera location access when you don’t need it and check whether the copy you’re about to share includes a location tag. Review who can see your live location, past check-ins and public posts.</p>
+<h3 id="step-4-protect-domain-names-with-whois-privacy">Check your domain registration</h3>
+<p>If you run a personal site, check its public registration fields through <a href="https://lookup.icann.org/en/faq">ICANN’s registration data lookup</a>. Visible fields vary by registrar and domain. Ask your registrar what its privacy option covers and recheck the public result after any change.</p>
+<p>For account deletion and longer-term cleanup, follow the <a href="/blog/how-to-remove-yourself-from-the-internet.html">personal information removal guide</a>.</p>
