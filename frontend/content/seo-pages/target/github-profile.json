@@ -2,18 +2,32 @@
   "kind": "target",
   "slug": "github-profile",
   "status": "published",
-  "title": "GitHub Username Lookup and Public Profile Privacy Checklist",
-  "description": "Find the exact GitHub profile for a username, search personal accounts or organizations, and check which README, activity and email details are public.",
-  "h1": "Find a GitHub profile by username",
-  "focus_keyword": "github profile username lookup",
-  "intro": "If you know the username, open github.com/USERNAME. For a partial handle, search GitHub Users with in:login. If you only remember the display name, use in:name. Once you find your profile, open it while signed out to see which details other visitors can read.",
+  "title": "GitHub User Search: Find a Profile by Name or Username",
+  "description": "Find GitHub users and organizations by name or handle. Copy an example search, verify the profile URL, and review what your own account shows publicly.",
+  "h1": "Find GitHub profiles by name or username",
+  "focus_keyword": "github user search",
+  "intro": "If you know the exact GitHub username, open github.com/USERNAME. For part of a username, search GitHub Users with in:login. If you only know the display name, use in:name. Add type:user for personal accounts or type:org for organizations.",
   "sections": [
     {
-      "heading": "Search a handle or restrict the account type",
-      "body": "Open https://github.com/HANDLE with the known handle, or use GitHub user search. The documented query user:octocat selects that username; octocat is GitHub's public example account. To restrict a broader search to personal accounts, add type:user. Use type:org for organizations. A query such as example in:login type:user searches username text; example in:name searches the displayed name. These fields answer different questions and a full-name result can contain many unrelated people.",
+      "heading": "Copy a GitHub Users search",
+      "body": "Open the example in GitHub Users and replace its query with the one you need. Display names can belong to multiple accounts. Open the result and compare the username in the URL with a public link you already trust.",
+      "table": {
+        "caption": "Search queries for GitHub profiles",
+        "headers": [
+          "What you know",
+          "Example query",
+          "What GitHub searches"
+        ],
+        "rows": [
+          ["Exact username", "user:octocat", "One personal account by username"],
+          ["Part of a username", "octo in:login type:user", "Usernames of personal accounts"],
+          ["Part of a display name", "octocat in:name type:user", "Display names of personal accounts"],
+          ["Exact organization handle", "org:electron", "One organization by its account name"]
+        ]
+      },
       "link": {
-        "href": "https://github.com/search?q=octocat+in%3Alogin+type%3Auser&type=users",
-        "label": "Try a GitHub user search for octocat"
+        "href": "https://github.com/search?q=user%3Aoctocat&type=users",
+        "label": "Open the octocat example in GitHub Users"
       }
     },
     {
@@ -90,8 +104,8 @@
     "https://github.com/octocat",
     "https://docs.github.com/en/account-and-profile/concepts/personal-profile"
   ],
-  "reviewed_at": "2026-11-21",
-  "modified_at": "2026-11-21",
+  "reviewed_at": "2026-11-23",
+  "modified_at": "2026-11-23",
   "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
