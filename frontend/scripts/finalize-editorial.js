@@ -34,6 +34,9 @@ function walk(dir) {
       if (/<main\b[^>]*class="[^"]*seo-page/.test(text)) {
         text = text.replace('<header class="nav">', '<header class="nav editorial-nav">');
         if (!/\/assets\/(?:optimized\/)?css\/editorial(?:\.[a-f0-9]{12})?\.css/.test(text)) text = text.replace('</head>', '<link rel="stylesheet" href="/assets/css/editorial.css"></head>');
+        if (!/\/assets\/(?:optimized\/)?js\/editorial-shell(?:\.[a-f0-9]{12})?\.js/.test(text)) {
+          text = text.replace('</head>', '<script src="/assets/js/editorial-shell.js" defer></script></head>');
+        }
       }
       if (item.name === 'is-myrecon-legit.html') {
         text = text.replace(/<main\b[^>]*>[\s\S]*?<\/main>/i, fs.readFileSync(path.join(root, 'content/is-myrecon-legit-main.html'), 'utf8'));
