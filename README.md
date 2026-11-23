@@ -197,6 +197,8 @@ curl -X POST http://localhost:5000/api/dns -H "Content-Type: application/json" -
 
 Selected routes include `POST /api/username`, `POST /api/username/stream`, `POST /api/email`, `POST /api/domain`, `POST /api/dns`, `POST /api/whois`, `POST /api/ip`, and `GET /api/health`. Streaming routes send newline-delimited JSON progress and completion events. See [`backend/app.py`](backend/app.py) for the complete route list, including account and plan endpoints.
 
+For public incident metadata and case-file links, use the [free data breach API documentation](https://www.myrecon.xyz/developers.html) and [OpenAPI description](https://www.myrecon.xyz/data/v1/openapi.json). These public feeds require no key and include the source attribution and reuse terms.
+
 ## Project layout
 
 | Path | Purpose |

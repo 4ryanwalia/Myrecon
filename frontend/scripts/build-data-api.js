@@ -33,6 +33,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { buildOpenApi } = require("./breach-api-openapi");
 
 const ROOT = path.join(__dirname, "..");
 const SRC = path.join(ROOT, "assets", "data");
@@ -220,6 +221,7 @@ function main() {
         "No account, no API key, no rate limit beyond ordinary fair use.",
       licence: CC_BY,
       attribution: BREACH_ATTRIBUTION,
+      openapi: `${SITE}/data/v${API_VERSION}/openapi.json`,
       endpoints: {
         breaches: `${SITE}/data/v1/breaches.json`,
         breach_by_slug: `${SITE}/data/v1/breaches/{slug}.json`,
@@ -231,6 +233,7 @@ function main() {
       counts: { breaches: breaches.length, case_files: cases.length },
     })
   );
+  write("openapi.json", buildOpenApi(SITE, API_VERSION));
 
   console.log(
     `[data-api] v${API_VERSION}: ${breaches.length} breaches ` +

@@ -28,7 +28,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Free Data Breach API: JSON Feed, No Key | MyRecon</title>
-  <meta name="description" content="A free, keyless JSON API of data breach metadata for your own site. No account, no rate limit, CORS enabled. Plus a drop-in embed widget. CC BY 4.0.">
+  <meta name="description" content="Use MyRecon’s free data breach JSON API with no key. Get incident metadata, an OpenAPI description, sample requests and source attribution.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/developers.html">
@@ -37,7 +37,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Free Data Breach API: JSON, no key required">
-  <meta property="og:description" content="Breach metadata as versioned JSON for your own site. No account, no key, CORS enabled, rebuilt daily. Plus a drop-in embed widget.">
+  <meta property="og:description" content="Keyless public breach metadata as versioned JSON, with an OpenAPI description, sample requests and source attribution.">
   <meta property="og:url" content="https://www.myrecon.xyz/developers.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -46,7 +46,7 @@
   <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Free Data Breach API: JSON, no key required">
-  <meta name="twitter:description" content="Breach metadata as versioned JSON for your own site. No account, no key, CORS enabled, rebuilt daily.">
+  <meta name="twitter:description" content="Keyless public breach metadata as versioned JSON, with an OpenAPI description, sample requests and source attribution.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
 
@@ -86,28 +86,29 @@
     <article class="article">
       <span class="kicker">Developers</span>
       <h1>Free Data Breach API</h1>
-      <p class="meta">Updated 21 September 2026 · No key · CORS enabled · CC BY 4.0</p>
+      <p class="meta">Updated <time datetime="2026-11-23">23 November 2026</time> · No key · CORS enabled</p>
 
-      <p class="lead">If you are building something that needs data breach information, a security dashboard, a blog sidebar, a student project, a status page, you can take ours. It is static JSON on a CDN. There is no account to create, no key to rotate, no quota to watch and no paid tier waiting for you at the bottom of the page.</p>
+      <p class="lead">Get public data breach metadata as JSON without an API key. MyRecon’s selected catalogue includes reported incident dates, affected data categories, counts and links to source summaries. Use the feed in a dashboard, sidebar or project and credit Have I Been Pwned for the upstream data.</p>
 
       <section class="key-finding">
         <h2 id="start-here">Start here</h2>
         <p><strong>One request, no setup:</strong></p>
         <pre><code>curl https://www.myrecon.xyz/data/v1/latest.json</code></pre>
-        <p class="method">Every endpoint is listed at <code>/data/v1/index.json</code>. Attribution to Have I Been Pwned is required by the licence, details below, and the embed widget handles it for you.</p>
+        <p><a href="/data/v1/latest.json">View the latest JSON feed</a> · <a href="/data/v1/openapi.json" download>Download OpenAPI 3.1</a> · <a href="/data/v1/index.json">View the feed index</a></p>
+        <p class="method">Import the OpenAPI description into an API client for the six read-only operations, their response schemas and the slug parameter. The embed widget displays source credits automatically.</p>
       </section>
 
       <h2 id="endpoints">Endpoints</h2>
       <div class="table-wrap">
         <table class="data-table">
-          <caption>All endpoints are <code>GET</code>, return <code>application/json</code>, and need no authentication.</caption>
+          <caption>All endpoints use <code>GET</code> and return <code>application/json</code> on success. Access requires no authentication.</caption>
           <thead>
             <tr><th scope="col">Path</th><th scope="col">Returns</th></tr>
           </thead>
           <tbody>
             <tr><td><code>/data/v1/index.json</code></td><td>Discovery document, every endpoint, counts, licence</td></tr>
-            <tr><td><code>/data/v1/breaches.json</code></td><td>The full archive with total account figure</td></tr>
-            <tr><td><code>/data/v1/breaches/{slug}.json</code></td><td>A single breach, a few hundred bytes</td></tr>
+            <tr><td><code>/data/v1/breaches.json</code></td><td>The MyRecon catalogue with a sum of the reported incident counts</td></tr>
+            <tr><td><code>/data/v1/breaches/{slug}.json</code></td><td>One incident. An unknown slug returns HTTP 404 with an HTML error page.</td></tr>
             <tr><td><code>/data/v1/latest.json</code></td><td>The ten most recently added, newest first</td></tr>
             <tr><td><code>/data/v1/case-files.json</code></td><td>Index of our long-form incident write-ups</td></tr>
             <tr><td><code>/data/v1/stats.json</code></td><td>Headline counters for a single-number display</td></tr>
@@ -143,10 +144,11 @@
           <tbody>
             <tr><td><code>slug</code></td><td>string</td><td>Stable identifier. Use it as your key.</td></tr>
             <tr><td><code>breach_date</code></td><td>date</td><td>When the breach is believed to have occurred.</td></tr>
-            <tr><td><code>added_date</code></td><td>datetime</td><td>When it entered the archive. Sort by this for "latest".</td></tr>
-            <tr><td><code>accounts</code></td><td>number</td><td>Distinct accounts in the corpus, as reported upstream.</td></tr>
+            <tr><td><code>added_date</code></td><td>datetime</td><td>When the upstream source added the incident. The latest feed sorts by this value.</td></tr>
+            <tr><td><code>accounts</code></td><td>integer</td><td>The count reported upstream for this incident. Read <code>count_unit</code> when present. The same person or account may appear in several incidents.</td></tr>
             <tr><td><code>severity</code></td><td>0–100</td><td>Our score, weighted by which data classes were exposed.</td></tr>
-            <tr><td><code>band</code></td><td>string</td><td><code>Severe</code>, <code>Serious</code> or <code>Moderate</code>: the score bucketed.</td></tr>
+            <tr><td><code>band</code></td><td>string</td><td>The named bucket for the severity score, for example <code>Critical</code> or <code>Severe</code>.</td></tr>
+            <tr><td><code>domain</code>, <code>logo</code></td><td>string or null</td><td>The public domain and logo where the source provides them.</td></tr>
             <tr><td><code>verified</code></td><td>boolean</td><td>Upstream confirmed the corpus is genuine. Show this.</td></tr>
             <tr><td><code>sensitive</code></td><td>boolean</td><td>Membership alone could harm the person. Handle with care.</td></tr>
             <tr><td><code>stealer_log</code></td><td>boolean</td><td>From infostealer malware rather than a company breach.</td></tr>
@@ -163,6 +165,7 @@
 
       <h3>Browser JavaScript</h3>
       <pre><code>const res  = await fetch("https://www.myrecon.xyz/data/v1/latest.json");
+if (!res.ok) throw new Error(`Breach feed returned HTTP ${res.status}`);
 const data = await res.json();
 
 for (const b of data.breaches) {
@@ -226,7 +229,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
       <p>The archive rebuilds from upstream daily, and each payload carries a <code>generated</code> date so you can see how fresh your copy is. The CDN caches for an hour and serves a stale copy for up to a day rather than failing.</p>
 
       <h3>Can I check a specific email address?</h3>
-      <p>No, deliberately, see <a href="#main">What this API is not</a> above. Use <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener">HIBP's API</a> for that.</p>
+      <p>For your own address, open <a href="/#tool=email">MyRecon’s email checker</a>. For account-level programmatic access, see <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener">Have I Been Pwned’s API documentation</a>.</p>
 
       <h3>Can I use this commercially?</h3>
       <p>CC BY 4.0 permits commercial use with attribution. Credit Have I Been Pwned as described above and you are within the licence.</p>
