@@ -2,7 +2,7 @@
 {
   "title": "Username Search Benchmark: MyRecon vs Sherlock | MyRecon",
   "headline": "Username search benchmark: findings, evidence and limitations",
-  "description": "Compare MyRecon, Sherlock and Maigret results, and download 600 repeated checks showing when HTTP status alone failed to establish whether a username existed.",
+  "description": "See how Sherlock and Maigret results varied across 22 runs on GitHub, GitLab and Hacker News. Download the dated results, HTTP status study and methods.",
   "category": "Research",
   "datePublished": "2026-11-01",
   "dateModified": "2026-11-23",
@@ -24,6 +24,23 @@
 -->
 <p class="lead">In a recorded search for <code>4ryanwalia</code> on <strong>30 September 2026</strong>, MyRecon reported 12 hits, Sherlock 19 and Maigret 35. Reviewing the unique profile addresses supported 12, 11 and 10 leads respectively. On the 210 exact addresses checked by all three engines, the supported counts were 8, 9 and 9. Those two views answer different questions; neither establishes an overall accuracy ranking.</p>
 <p><strong>Published and reviewed:</strong> <time datetime="2026-11-01">1 November 2026</time> by MyRecon. This is a publisher-run study of our own product and competing tools. The September observations are historical; publishing this article did not rerun those scans. A separate daily control sample is dated below. A supported public profile is a research lead, not proof of ownership or username availability.</p>
+
+<h2 id="repeated-tool-checks">Did username search results change from day to day?</h2>
+<p>In <strong>22 runs from 1 to 23 November 2026</strong>, inconclusive GitHub results appeared in one Sherlock run and two Maigret runs. Every affected GitHub control had a definitive result in other runs. A different pattern repeated on Hacker News: the benchmark’s Sherlock configuration reported all ten controls as claimed in every run, although the official API consistently returned no account for seven of them.</p>
+<table class="data-table">
+  <caption>Historical benchmark results per platform, from 220 observations across ten repeated controls. Counts use the verdicts stored at the time.</caption>
+  <thead><tr><th scope="col">Platform</th><th scope="col">Sherlock disagreements</th><th scope="col">Sherlock inconclusive</th><th scope="col">Maigret disagreements</th><th scope="col">Maigret inconclusive</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">GitHub</th><td>0</td><td>4</td><td>0</td><td>16</td></tr>
+    <tr><th scope="row">GitLab</th><td>0</td><td>0</td><td>0</td><td>2</td></tr>
+    <tr><th scope="row">Hacker News</th><td>154</td><td>0</td><td>0</td><td>0</td></tr>
+  </tbody>
+</table>
+<p>Sherlock’s four inconclusive GitHub results all occurred on 8 November. Maigret had six that day and ten on 19 November, when all ten returned HTTP 403. On GitLab, Maigret had one inconclusive result each on 5 and 7 November. Those observations suggest that trying again later can help resolve an inconclusive check. Repeating the Hacker News check alone would have repeated the same unsupported claims.</p>
+<p>All 220 Sherlock Hacker News responses in this benchmark recorded HTTP 419 and the native verdict <code>CLAIMED</code>. MyRecon’s scoring accepted that verdict at the time, so the 154 disagreements count seven repeated controls, each observed 22 times. The normalized result now stays <code>unknown</code> on HTTP 419 in future benchmark runs, and the native verdict and status code are retained for review. The historical data below still shows what was recorded. The data does not identify which service or network layer generated those HTTP responses.</p>
+<h3>How to verify the 22 runs</h3>
+<p>The runs used the same ten handles on each of three platforms on GitHub Actions, with application caching bypassed. No qualifying run was recorded on 4 November. Each verdict was compared with the official API reference for the same control and run. The reference stayed consistent across all ten controls on each platform. The daily benchmark invokes the bundled Sherlock rules for the selected sites directly. In our <a href="/blog/username-search-controlled-study-2026.html#disagreements">separate eight-platform study</a>, Sherlock’s captured upstream exclusions omitted Hacker News. These observations describe the selected benchmark configuration, pinned tool revisions and one execution environment.</p>
+<p><a href="/assets/downloads/username-tool-repeatability-november-2026.csv" download>Download the 660 paired observations as CSV</a> or read the <a href="https://raw.githubusercontent.com/4ryanwalia/Myrecon/d98f85f9dea83ba0f548d54767d5b0b5d9483b90/frontend/data/benchmarks.json">frozen JSON snapshot</a>. The CSV uses fixture labels in place of handles. To reproduce the table, group by platform, count <code>unknown</code> as inconclusive and compare other verdicts with the reference. Group by fixture to distinguish repeated disagreements from distinct controls. See the <a href="https://github.com/4ryanwalia/Myrecon/blob/d98f85f9dea83ba0f548d54767d5b0b5d9483b90/backend/tools/requirements-benchmark.txt">pinned Sherlock and Maigret versions</a> and the <a href="https://github.com/HackerNews/API#users">Hacker News API documentation</a>.</p>
 
 <h2 id="november-controls">How often did a username check give an inconclusive result?</h2>
 <p>On GitHub, a check based only on HTTP status gave an inconclusive result in 6 of 200 observations. On Hacker News, the same check was inconclusive in all 200. MyRecon recorded 20 runs from 1 through 21 November 2026. Each run checked the same ten handles on each service. The difference matters if you are deciding whether to spend time reviewing a possible match.</p>

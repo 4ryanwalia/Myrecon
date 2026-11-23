@@ -98,8 +98,9 @@ def test_native_tool_status_and_upstream_failures_stay_distinct():
     assert result("CLAIMED", 200)["verdict"] == "found"
     assert result("AVAILABLE", 404)["verdict"] == "not_found"
     for native in ("CLAIMED", "AVAILABLE", "UNKNOWN", "ILLEGAL", "WAF"):
-        for code in (403, 429, 503):
+        for code in (403, 419, 429, 503):
             assert result(native, code)["verdict"] == "unknown"
+    assert result("CLAIMED", 419) == {"verdict": "unknown", "native_status": "CLAIMED", "status_code": 419}
     assert result("WAF", 200)["verdict"] == "unknown"
     assert result("ILLEGAL", None)["verdict"] == "unknown"
     assert result("CLAIMED", 200)["native_status"] == "CLAIMED"

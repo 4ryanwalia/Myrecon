@@ -32,8 +32,9 @@ def normalize_result(result):
     code = result.get("http_status")
     code = code if isinstance(code, int) and not isinstance(code, bool) else None
     verdict = {"CLAIMED": "found", "AVAILABLE": "not_found"}.get(native, "unknown")
-    # Never credit a known upstream outage or denial as a verified absence.
-    if code in (401, 403, 429) or code is not None and code >= 500:
+    # HTTP 419 was also observed on both present and absent Hacker News controls.
+    # Keep the native status, but do not score a failure response as a verdict.
+    if code in (401, 403, 419, 429) or code is not None and code >= 500:
         verdict = "unknown"
     return {"verdict": verdict, "native_status": native, "status_code": code}
 

@@ -5,7 +5,7 @@
   "description": "Sherlock vs Maigret compared on setup, site coverage and a dated 35-control test, plus MyRecon as the browser option. Methods and raw evidence included.",
   "category": "Tool comparisons",
   "datePublished": "2026-10-08",
-  "dateModified": "2026-11-18",
+  "dateModified": "2026-11-23",
   "editorial_review": "2026-10-08",
   "keywords": ["sherlock vs maigret", "sherlock alternative", "maigret alternative", "myrecon vs sherlock", "username search comparison"],
   "faq": [
@@ -38,6 +38,7 @@
 <p>For Maigret's configurable reporting and scope, consult its <a href="https://maigret.readthedocs.io/en/latest/command-line-options.html">command-line options</a>. MyRecon's full username workflow retains unresolved responses separately; that helps show the observation boundary, but does not remove the need to open important sources yourself.</p>
 
 <h2>Three reasons output counts disagree</h2>
+<p>Reruns can distinguish a temporary inconclusive check from a repeated disagreement. Across <a href="/blog/username-search-benchmark-research.html#repeated-tool-checks">22 dated runs on three platforms</a>, Sherlock’s inconclusive GitHub results clustered on one day, while Maigret’s clustered on two. The bundled Sherlock rule used by that benchmark reported the same seven Hacker News controls as claimed on every run even though their official API responses consistently indicated absence. See the underlying rows and configuration before applying these findings to a normal CLI run.</p>
 <p><strong>Different catalogues:</strong> tools may check different platform sets, mirrors or URL forms. Count exact account namespaces and source addresses before comparing totals. <strong>Different evidence rules:</strong> one checker may accept a page that another treats as ambiguous. <strong>Different conditions:</strong> blocks, timeouts, redirects and source changes can alter an observation even with the same handle.</p>
 <p>A report with 20 links is not automatically better than one with 12. Some may be duplicate addresses, mentions instead of profiles, generic pages or uncertain leads. Conversely, a conservative tool may miss a real account because it cannot obtain decisive public evidence. Both false positives and false negatives matter, and unknowns need their own count.</p>
 
