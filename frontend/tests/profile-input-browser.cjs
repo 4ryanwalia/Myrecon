@@ -91,7 +91,15 @@ const server = http.createServer((req, res) => {
     page.on('pageerror', error => errors.push(error.message));
     await page.route('**/*', route => route.request().url().startsWith(base) ? route.continue() : route.abort());
     signedIn = false;
-    await page.goto(base + '/index.html#tool=username');
+    await page.goto(base + '/index.html#tool=username&q=linked_example');
+    await page.waitForFunction(() => document.querySelector('#results').textContent.includes('Results for “linked_example”'));
+    assert.equal(scans.length, 1);
+    assert.equal(scans[0].body.username, 'linked_example');
+    assert.equal(new URL(page.url()).hash, '#tool=username');
+    await page.reload();
+    await page.locator('#queryInput').waitFor();
+    assert.equal(await page.locator('#queryInput').inputValue(), '');
+    assert.equal(scans.length, 1, 'the cleaned URL must not replay the lookup');
     await page.locator('input[name="scope"][value="standard"]').check();
     const paste = async text => page.locator('#queryInput').evaluate((input, text) => {
       const data = new DataTransfer(); data.setData('text/plain', text);
@@ -156,6 +164,11 @@ const server = http.createServer((req, res) => {
     await recap.waitFor({state:'detached'});
     await page.locator('[data-match-choice]').first().selectOption('not_mine');
     await page.waitForFunction(() => document.querySelector('[data-confirmed-count]').textContent === '0 accounts confirmed by you');
+    const scansBeforeSecretLink = scans.length;
+    await page.goto(base + '/index.html?ref=fixture#tool=password&q=secret_fixture');
+    await page.waitForURL(base + '/index.html?ref=fixture#tool=password');
+    assert.equal(await page.locator('#queryInput').inputValue(), '');
+    assert.equal(scans.length, scansBeforeSecretLink);
     assert.deepEqual(errors, []);
     console.log('Profile browser checks passed: auto paste, canonical handle, source label, duplicate suppression, ambiguity, cancel, manual submit.');
   } finally { server.closeAllConnections(); server.close(); await browser.close(); }

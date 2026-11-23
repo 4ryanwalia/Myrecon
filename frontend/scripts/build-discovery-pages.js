@@ -259,7 +259,7 @@ const lookupQuestions = [
 const lookupBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse username lookup</span></nav>
   <h1>Free reverse username lookup for public profiles</h1>
-  <p class="sub">Look for a username you use on social platforms, developer sites and forums. Review candidates by opening the original profile links.</p>
+  <p class="sub">Enter a username or paste a full Instagram, TikTok or GitHub profile link. Review candidates by opening the original profile links.</p>
   <a class="btn btn-primary" href="/#tool=username">Start a reverse username search</a>
   <p class="discovery-note">Guest Quick covers 100 supported platforms and shows up to two result cards. A free account includes five Standard searches a day across 560+ supported platforms. <a href="/pricing">See current plans.</a></p>
   <p><a href="/videos/reverse-username-search.html">Watch the 32-second walkthrough</a> or <a href="/username-checker.html#observed-demo">see a recorded guest result</a>.</p>
@@ -270,11 +270,16 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>How to perform an effective reverse username search</h2>
     <ol>
-      <li><strong>Enter a known username.</strong> Use a handle you own or have permission to review in the <a href="/#tool=username">reverse username tool</a>.</li>
+      <li><strong>Enter a known username or profile link.</strong> Use a handle you own or have permission to review in the <a href="/#tool=username">reverse username tool</a>.</li>
       <li><strong>Choose your scan scope:</strong> Start with a Quick scan (100 top platforms) or sign in for a Standard scan covering 560+ platforms.</li>
       <li><strong>Read each result label.</strong> Open candidate links and keep blocked, unavailable or ambiguous sources unresolved.</li>
       <li><strong>Verify leads at the source:</strong> Click the reported profile URLs to confirm account activity, creation dates, and public profile bios. Read our guide on <a href="/guides/verify-osint-account-matches.html">verifying OSINT account matches</a>.</li>
     </ol>
+  </section>
+  <section>
+    <h2>Can you paste a profile link instead of a username?</h2>
+    <p>The tool reads the handle from full profile URLs on Instagram, TikTok and GitHub. It removes share parameters from the source preview. For example, <code>instagram.com/example.name/?utm_source=share</code> becomes <code>example.name</code>. Formats like <code>tiktok.com/@example.name</code> and <code>github.com/example-name</code> also work.</p>
+    <p>Use the address of the profile itself. Posts, videos, repositories and short links don’t identify a profile for this input. For other sites, type the handle shown on the profile. The preview shows the address you supplied and the handle the tool read from it. Review the result cards and verify candidates at their sources.</p>
   </section>
   <section>
     <h2 id="overcoming-false-positives-the-synthetic-control-advantage">Why a username result can be unconfirmed</h2>
@@ -316,16 +321,16 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Ethical investigation guidelines</h2>
     <p>Reverse username lookups must be conducted responsibly. MyRecon queries publicly accessible endpoints and does not bypass private account settings or access restricted data. Use this tool for personal privacy audits, self-reconnaissance, and authorized security assessments. See our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Access and evidence reviewed <time datetime="2026-11-22">22 November 2026</time>.</p>
+    <p>Access and evidence reviewed <time datetime="2026-11-23">23 November 2026</time>.</p>
   </section>
 </main>`;
 
 buildDiscoveryPage({
   title: 'Free Reverse Username Search & Lookup | MyRecon',
-  description: 'Find public profile leads from a known handle. Start with a free guest check across 100 sites and verify each match at the original source.',
+  description: 'Start a free guest lookup from a handle or a full Instagram, TikTok or GitHub profile link. Check up to 100 supported sites and verify profile leads.',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
-  modifiedAt: '2026-11-22',
+  modifiedAt: '2026-11-23',
   crumbLabel: 'Reverse username lookup',
   questions: lookupQuestions,
   bodyHtml: lookupBody,

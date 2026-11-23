@@ -2926,11 +2926,20 @@
       // so a crafted link can never pre-fill, or auto-submit, a password.
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
       const linked = params.get("tool");
+      const linkedQuery = params.get("q");
+      if (params.has("q")) {
+        params.delete("q");
+        // Consume the input once. Keep the selected tool and other link state
+        // without leaving a lookup input in the address or current history entry.
+        const fragment = params.toString();
+        const target = location.pathname + location.search + (fragment ? `#${fragment}` : "");
+        history.replaceState(history.state, "", target);
+      }
       try { sessionStorage.removeItem(GUEST_REPORT_KEY); } catch {}
       if (linked && TOOLS[linked] && !TOOLS[linked].secret) {
         switchTool(linked);
         if (params.get("scan")) openSavedScan(params.get("scan"));
-        else if (params.get("q")) { $("#queryInput").value = params.get("q"); run(); }
+        else if (linkedQuery) { $("#queryInput").value = linkedQuery; run(); }
         else $("#tool")?.scrollIntoView({ block: "start" });
       }
       if (location.hash === "#deep-search") switchTool("deepsearch");
