@@ -110,6 +110,20 @@ async function submitSharedDeepSearch(page, byEnter = false) {
       assert.equal(new URL(page.url()).hash, '#deep-search');
       await page.goto(base + '/deep-search.html');
       await page.locator('#dsInput').waitFor({ state:'visible' });
+      assert.equal(await page.locator('#dsInput').inputValue(), '');
+      await page.goto(base + '/#deep-search');
+      await page.locator('#queryInput').fill('fixture@example.com');
+      await page.evaluate(() => {
+        window.MyReconDeepSearch = undefined;
+        sessionStorage.setItem('myrecon.deep-search.launch', JSON.stringify({ query: 'obsolete@example.com' }));
+      });
+      const countBeforeFallback = investigations.length;
+      await page.locator('#runBtn').click();
+      await page.waitForURL(base + '/deep-search.html');
+      await page.locator('#dsInput').waitFor({ state:'visible' });
+      assert.equal(await page.locator('#dsInput').inputValue(), '', 'fallback requires a new input');
+      assert.equal(await page.evaluate(() => sessionStorage.getItem('myrecon.deep-search.launch')), null);
+      assert.equal(investigations.length, countBeforeFallback, 'fallback does not submit a stored query');
       assert.deepEqual(errors, []);
       await page.close();
     }

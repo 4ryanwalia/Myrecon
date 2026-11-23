@@ -218,7 +218,7 @@
     deepsearch: {
       label: "Deep Search", icon: "search", placeholder: "Name, @handle or exact email",
       sub: "Investigate public profiles, indexed mentions and Google reviews. Guests can run an investigation; sign in with an eligible plan to view findings.",
-      examples: [], route: "/#deep-search",
+      examples: [], route: "/deep-search.html",
     },
     domain: {
       label: "Domain", icon: "globe", placeholder: "e.g. example.com",
@@ -1809,7 +1809,6 @@
         enterToolMode();
         return window.MyReconDeepSearch.run();
       }
-      try { sessionStorage.setItem("myrecon.deep-search.launch", JSON.stringify({ query: value })); } catch {}
       location.assign(tool.route);
       return;
     }

@@ -47,10 +47,6 @@
     restoreAttempt = "";
     try { sessionStorage.removeItem(GUEST_STORAGE); } catch {}
   }
-  function readGuestReport() {
-    try { sessionStorage.removeItem(GUEST_STORAGE); } catch {}
-  }
-
   const connectionLabels = {
     same_username: "Same username: handle matches; ownership is unverified.",
     profile_link: "Linked from this profile: the source profile contains this account link.",
@@ -630,14 +626,10 @@
     if (!inputNode()) return;
     if (!initEmbedded()) initChrome();
     modeHint();
-    let launchQuery = "";
     try {
-      const launch = JSON.parse(sessionStorage.getItem("myrecon.deep-search.launch") || "null");
       sessionStorage.removeItem("myrecon.deep-search.launch");
-      if (typeof launch?.query === "string") launchQuery = launch.query.slice(0, 254).trim();
+      sessionStorage.removeItem(GUEST_STORAGE);
     } catch {}
-    if (!launchQuery) readGuestReport();
-    else { inputNode().value = launchQuery; modeHint(); }
     inputNode()?.addEventListener("input", modeHint);
     if (!embedded) {
       inputNode()?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); run(); } });
@@ -703,6 +695,5 @@
     };
     if (A) { A.onChange(onState); await A.ready; }
     onState(accountState());
-    if (launchQuery) { inputNode().value = launchQuery; modeHint(); run(); }
   });
 })();

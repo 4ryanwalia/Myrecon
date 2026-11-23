@@ -79,7 +79,7 @@
   <!-- app-promo-layout:start --><div class="promo-layout"><main class="container legal" id="main">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">Privacy policy</span></nav>
     <h1>Privacy Policy</h1>
-    <p class="legal-meta">Last updated: 19 November 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
+    <p class="legal-meta">Last updated: 23 November 2026 · Applies to myrecon.xyz and the MyRecon Android app</p>
 
     <div class="legal-summary">
       <h2 id="the-short-version">The short version</h2>
@@ -172,7 +172,7 @@
               <td>The providers&rsquo; standard short retention</td>
             </tr>
             <tr>
-              <td><strong>Your theme, recent lookups and saved investigations</strong></td>
+              <td><strong>Your theme and investigations you choose to save</strong></td>
               <td>To make the tool behave the way you set it up</td>
               <td>Nowhere. Your browser&rsquo;s local storage only</td>
               <td>Until you clear it</td>
@@ -243,7 +243,7 @@
     <section id="forms">
       <h2 id="4-forms-and-the-email-links">4. Forms and the email links</h2>
       <h3>The breach-check box</h3>
-      <p>Breach articles carry a box asking for an email address. Submitting it does not send the address to us as a form: the page hands it to the lookup tool on the home page, in your browser, and the tool then runs an ordinary email lookup, processed exactly as <a href="#what">section 2</a> describes. Reports are not retained for later sign-in reveal or saved to account history. Because the address is passed in the address bar, it may appear in your browser history. Clear your history if that matters to you, or use the tool on the home page directly.</p>
+      <p>Some breach articles have a box for checking an email address against the listed incident. Submitting it sends the address and the incident selection to the MyRecon API in the HTTPS request body. The API checks available breach providers and displays the incident result on the same page. The address stays out of the page URL and account history. See <a href="#what">section 2</a> for handling by MyRecon and external providers.</p>
       <p>These boxes ask for an address and nothing else. We recommend you only check addresses that are yours.</p>
       <h3>The email links</h3>
       <p>There is no contact form anywhere on this site. Every &ldquo;contact&rdquo; control is a plain <code>mailto:</code> link that opens your own mail application with the subject and questions pre-filled. Nothing is transmitted until you press send in your own mail client, and what you send travels through your mail provider to our mailbox. You control exactly what goes in it.</p>
@@ -258,7 +258,7 @@
         <li><strong>Consent</strong> (Art. 6(1)(a)), analytics and advertising cookies where consent is required. The site&rsquo;s current consent message covers advertising; it does not manage Google Analytics consent.</li>
         <li><strong>Legal obligation</strong> (Art. 6(1)(c)), where we have to keep or produce something by law, including payment records for tax purposes.</li>
       </ul>
-      <p>Storing your theme, history and saved investigations in your browser is done on the basis that you asked for it: it is a preference you set and a feature you used, and nothing is transmitted to us.</p>
+      <p>Your theme choice and investigations you explicitly save are stored by the website in your browser when you use those controls.</p>
     </section>
 
     <section id="sharing">
@@ -342,10 +342,10 @@
 
     <section id="security">
       <h2 id="10-security">10. Security</h2>
-      <p>The measures that matter most here are architectural: guest lookups do not create account history, signed-in username scans are scoped to your account, and the password checker never sends us the password you type.</p>
+      <p>Guest and signed-in lookups use temporary processing and delivery buffers. The password checker hashes the password in your browser, as described in <a href="#password">section 3</a>.</p>
       <ul>
         <li>The site is served over HTTPS and sends HSTS, including subdomains, with preload. API requests are HTTPS-only.</li>
-        <li>The API is rate-limited; guest scans are not saved as account history.</li>
+        <li>The API is rate-limited for abuse prevention.</li>
         <li>The password checker is built so a password cannot reach our servers at all.</li>
         <li>Credentials for third-party services are held as environment variables, never in the codebase.</li>
       </ul>
@@ -356,7 +356,7 @@
       <h2 id="11-your-rights">11. Your rights</h2>
       <p>If you are in the UK or the EEA, you have the right to access your personal data, to have it corrected or erased, to restrict or object to processing, to data portability, and to withdraw consent at any time where consent is the basis.</p>
       <div class="legal-note">
-        <p>Guest browser history is yours to delete. If you sign in, we hold account details and saved username scans; you can delete scans in your account or ask us to delete the account. If you believe we hold something about you, write to us and we will look and answer.</p>
+        <p>You control investigations you explicitly save in your browser or download to your device. You can request deletion of your account and its associated data. See <a href="#retention">retention</a> for the timing and payment-record details.</p>
       </div>
       <p>To exercise any of these, email <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>. We do not charge for this and we will not ask you to create an account to do it.</p>
       <p>If you are unhappy with our answer, you may complain to your data protection authority, the <a href="https://ico.org.uk/" target="_blank" rel="noopener">ICO</a> in the UK, or your national supervisory authority in the EEA. We would rather you gave us the chance to fix it first.</p>
@@ -393,8 +393,7 @@
 
     <section id="subjects">
       <h2 id="15-if-you-were-searched-for">15. If you were searched for</h2>
-      <p>MyRecon surfaces information that is already public, from sources that publish it. Guest scans are not saved to account history. A signed-in user can save a username scan privately to their account and later delete it.</p>
-      <p>Removing a saved result here would not remove it from the platform or registry that publishes it. If information about you is public and you want it gone, the source is the place to ask, and we will help you work out where that is. Write to <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a> if you have a request about data held by MyRecon.</p>
+      <p>MyRecon returns public-source information for the current lookup. If a platform or registry publishes information you want removed, contact the source. Write to <a href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a> if you have a request about data held by MyRecon.</p>
       <p>If you believe the site is being used against you, for harassment, stalking or doxxing, tell us. That use is prohibited by our <a href="/terms.html">terms</a> and we act on reports.</p>
     </section>
 
