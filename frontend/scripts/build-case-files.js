@@ -34,6 +34,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const breachPageFooter = require('./breach-page-footer');
 const { caseStory, caseTargets, unknownMotive } = require('./breach-story');
 
 const ROOT = path.join(__dirname, "..");
@@ -188,23 +189,6 @@ ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n`
   </header>
 `;
 
-const FOOT = `
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
-  <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=23"></script>
-  <script src="/assets/js/breach-check.js?v=3"></script>
-  <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=8" defer></script>
-</body>
-</html>
-`;
-
 // ── Article ──────────────────────────────────────────────────────
 
 const factRow = (label, value) =>
@@ -351,9 +335,9 @@ ${facts ? `      <dl class="cf-facts">\n${facts}\n      </dl>\n` : ""}${c.expose
         <h2>Were you part of this breach?</h2>
         <label for="cfEmail">Check your email for this incident</label>
         <div class="bx-check-row">
-          <input id="cfEmail" type="email" name="email" inputmode="email" autocomplete="email"
+          <input id="cfEmail" type="email" disabled inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="cfEmailNote">
-          <button class="btn btn-sm" type="submit">Check my address</button>
+          <button class="btn btn-sm" type="submit" disabled>Check my address</button>
         </div>
         <p class="bx-check-note" id="cfEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Some incidents have no searchable email records.</p>
         <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
@@ -387,7 +371,7 @@ ${related.map((r) => `        <li><a href="${BASE}/${r.slug}.html">${esc(r.headl
       <p style="margin-top:28px"><a class="btn btn-ghost" href="${BASE}/">← All case files</a> <a class="btn btn-ghost" href="/breaches/">Breach archive →</a></p>
     </article>
   </main>` +
-      FOOT
+      breachPageFooter(true)
   );
 }
 
@@ -522,7 +506,7 @@ ${b.items.map(card).join("\n")}
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/#tool=email">Check an email for breach exposure →</a> <a class="btn btn-ghost" href="/breaches/">The live breach archive →</a> <a class="btn btn-ghost" href="/guides/">Guides →</a></p>
     </div>
   </main>` +
-      FOOT
+      breachPageFooter()
   );
 }
 

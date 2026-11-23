@@ -49,5 +49,7 @@
         form.removeAttribute('aria-busy');
       }
     });
+    input.disabled = false;
+    button.disabled = false;
   });
 })();

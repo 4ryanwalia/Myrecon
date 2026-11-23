@@ -12,6 +12,7 @@ let calls = 0;
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;
   if (pathname === '/api/breach-check') {
+    assert.equal(req.method, 'POST');
     let body = '';
     req.on('data', part => body += part);
     req.on('end', () => {
@@ -26,7 +27,7 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
-  if (pathname === '/assets/js/config.js') {
+  if (/^\/assets\/(?:optimized\/)?js\/config(?:\.[a-f0-9]{12})?\.js$/.test(pathname)) {
     res.setHeader('Content-Type', 'application/javascript');
     return res.end('window.MYRECON_API_BASE=location.origin;\n' + fs.readFileSync(path.join(root, 'assets/js/config.js'), 'utf8'));
   }
@@ -50,6 +51,15 @@ const server = http.createServer((req, res) => {
       page.on('pageerror', e => errors.push(e.message));
       for (const article of ['advanceautoparts', 'case-files/adobe-2013']) {
         await page.goto(base + '/breaches/' + article + '.html');
+        assert.equal(await page.locator('script[src*="/js/app."]').count(), 0);
+        assert.equal(await page.locator('script[src*="/js/editorial-shell."]').count(), 1);
+        if (width === 390) {
+          const menu = page.locator('#navToggle');
+          await menu.click();
+          assert.equal(await menu.getAttribute('aria-expanded'), 'true');
+          await page.keyboard.press('Escape');
+          assert.equal(await menu.getAttribute('aria-expanded'), 'false');
+        }
         for (const id of ['story','how','motive','outcome']) assert.equal(await page.locator('#' + id).count(), 1);
         // Ad tag policy (install-adsense-tag.js, 2026-11-17): none on record-derived
         // breach entries, present on hand-written case files.
@@ -74,6 +84,17 @@ const server = http.createServer((req, res) => {
       assert.deepEqual(errors, []);
       await page.close();
     }
-    console.log('PASS: desktop/mobile stories, scoped form results, outages, unsupported incident, no URL email or ads, no overflow or JS errors.');
+    const staticPage = await browser.newPage({ javaScriptEnabled: false });
+    await staticPage.route('**/*', route => route.request().url().startsWith(base) ? route.continue() : route.abort());
+    for (const article of ['advanceautoparts', 'case-files/adobe-2013']) {
+      await staticPage.goto(base + '/breaches/' + article + '.html');
+      const field = staticPage.locator('[data-breach-check] input[type=email]');
+      assert.equal(await field.isDisabled(), true);
+      assert.equal(await field.getAttribute('name'), null);
+      assert.equal(await staticPage.locator('[data-breach-check] button[type=submit]').isDisabled(), true);
+      assert.equal(await staticPage.locator('#story').isVisible(), true);
+    }
+    await staticPage.close();
+    console.log('PASS: desktop/mobile stories, lightweight navigation, scoped checks, outages, unsupported incidents and safe forms without JavaScript.');
   } finally { await browser.close(); server.close(); }
 })().catch(e => { console.error(e); server.close(); process.exitCode = 1; });

@@ -32,6 +32,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const breachPageFooter = require('./breach-page-footer');
 const { breachStory, unknownMotive } = require('./breach-story');
 const { attribute, toUrlPath, fileForUrl, validDate } = require('./build-sitemap');
 const archiveRevisions = require('../content/breach-archive-revisions.json');
@@ -523,23 +524,6 @@ ${opts.jsonLd ? `  <script type="application/ld+json">${opts.jsonLd}</script>\n`
   </header>
 `;
 
-const FOOT = `
-  <footer class="footer">
-    <div class="container"><div class="footer-bottom">
-      <span>&copy; 2026 MyRecon · myrecon.xyz</span>
-      <span><a href="/breaches/case-files/" style="color:var(--text-dim)">Case Files</a> · <a href="/breaches/" style="color:var(--text-dim)">Breaches</a> · <a href="/guides/" style="color:var(--text-dim)">Guides</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a> · <a href="/cookies.html">Cookies</a> · <a href="/terms.html">Terms</a> · <a href="/cookies.html#manage" data-cookie-settings>Cookie policy</a></span>
-    </div></div>
-  </footer>
-  <script src="/assets/js/env.js?v=10"></script>
-  <script src="/assets/js/config.js?v=10"></script>
-  <script src="/assets/js/app.js?v=23"></script>
-  <script src="/assets/js/breach-check.js?v=3"></script>
-  <script src="/assets/js/consent.js?v=10"></script>
-  <script src="/assets/js/fx.js?v=8" defer></script>
-</body>
-</html>
-`;
-
 const bandClass = (band) => "sev-" + band.toLowerCase();
 
 function logoFor(b) {
@@ -695,9 +679,9 @@ ${b.IsSensitive ? `      <aside class="bx-check" id="bxSensitive">
         <h2>Was your email in this ${isProfileScrape ? "collection" : "breach"}?</h2>
         <label for="bxEmail">Check your email for ${esc(b.Title)}</label>
         <div class="bx-check-row">
-          <input id="bxEmail" type="email" name="email" inputmode="email" autocomplete="email"
+          <input id="bxEmail" type="email" disabled inputmode="email" autocomplete="email"
                  placeholder="you@example.com" required aria-describedby="bxEmailNote">
-          <button class="btn btn-sm" type="submit">Check my address</button>
+          <button class="btn btn-sm" type="submit" disabled>Check my address</button>
         </div>
         <p class="bx-check-note" id="bxEmailNote">Only a result for this incident is shown. On submission, your email is sent through MyRecon to XposedOrNot for a breach lookup. MyRecon does not save this check to your history. Provider coverage can be incomplete.</p>
         <p class="bx-check-result" role="status" aria-live="polite" hidden></p>
@@ -749,7 +733,7 @@ ${related ? `      <h2>Also in the archive</h2>\n      <ul class="bx-related">${
       <p style="margin-top:28px"><a class="btn btn-ghost" href="/breaches/">← All breaches</a></p>
     </article>
   </main>` +
-    FOOT
+    breachPageFooter(!b.IsSensitive)
   );
 }
 
@@ -899,7 +883,7 @@ ${earlier.map(entry => `          <li><a href="${esc(entry.url)}">${esc(entry.ti
       <p class="bx-method" id="method">Breach records come from <a href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a> and are used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>. Severity scoring and the analysis of what each exposed field means are MyRecon's own, computed from the record so that every claim traces back to a value in it. Editorial commentary is marked as such on each article, and the long-form reporting lives in the <a href="/breaches/case-files/">case files</a>, where every page cites its sources.</p>
     </div>
   </main>` +
-    FOOT
+    breachPageFooter()
   );
 }
 
