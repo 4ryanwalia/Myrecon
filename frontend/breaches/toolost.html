@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<script src="/assets/js/recommendation-analytics.js?v=1"></script>
+<script src="/assets/js/recommendation-analytics.js?v=1" defer></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -13,20 +13,29 @@
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
       page_referrer: analyticsReferrer,
-    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
     });
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Too Lost Data Breach: 724,323 Accounts Exposed | MyRecon</title>
-  <meta name="description" content="On 2 November 2026, Too Lost was breached. 724,323 accounts were exposed, including dates of birth, driver&#39;s licenses, email addresses. MyRecon rates it…">
+  <title>Too Lost Data Breach: 724K Email Addresses Listed | MyRecon</title>
+  <meta name="description" content="HIBP records the Too Lost breach on 2 November 2026 and lists 724,323 email addresses. Reported data includes dates of birth, driver&#39;s licenses, email…">
   <meta name="robots" content="noindex, follow">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/toolost.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Too Lost Data Breach">
-  <meta property="og:description" content="On 2 November 2026, Too Lost was breached. 724,323 accounts were exposed, including dates of birth, driver&#39;s licenses, email addresses. MyRecon rates it…">
+  <meta property="og:description" content="HIBP records the Too Lost breach on 2 November 2026 and lists 724,323 email addresses. Reported data includes dates of birth, driver&#39;s licenses, email…">
   <meta property="og:url" content="https://www.myrecon.xyz/breaches/toolost.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -35,7 +44,7 @@
   <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Too Lost Data Breach">
-  <meta name="twitter:description" content="On 2 November 2026, Too Lost was breached. 724,323 accounts were exposed, including dates of birth, driver&#39;s licenses, email addresses. MyRecon rates it…">
+  <meta name="twitter:description" content="HIBP records the Too Lost breach on 2 November 2026 and lists 724,323 email addresses. Reported data includes dates of birth, driver&#39;s licenses, email…">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
@@ -52,7 +61,7 @@
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Too Lost data breach, 724,323 accounts exposed","description":"On 2 November 2026, Too Lost was breached. 724,323 accounts were exposed, including dates of birth, driver's licenses, email addresses. MyRecon rates it 62/100, severe.","datePublished":"2026-11-20","dateModified":"2026-11-20","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/toolost.html","image":"https://logos.haveibeenpwned.com/TooLost.png"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Too Lost Data Breach: 724,323 email addresses listed","description":"HIBP records the Too Lost breach on 2 November 2026 and lists 724,323 email addresses. Reported data includes dates of birth, driver's licenses, email addresses.","citation":{"@type":"CreativeWork","name":"Too Lost entry in Have I Been Pwned","url":"https://haveibeenpwned.com/Breach/TooLost"},"author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/toolost.html","image":"https://logos.haveibeenpwned.com/TooLost.png"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Too Lost","item":"https://www.myrecon.xyz/breaches/toolost.html"}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
@@ -78,22 +87,22 @@
         <div>
           <span class="kicker">2026 · Data breach</span>
           <h1>Too Lost</h1>
-          <p class="meta">Breached 2 November 2026 · Added to HIBP 20 November 2026 · toolost.com</p>
+          <p class="meta">Incident date in HIBP <time datetime="2026-11-02">2 November 2026</time> · Added to HIBP <time datetime="2026-11-20">20 November 2026</time> · toolost.com</p>
         </div>
       </header>
 
       <div class="bx-stats">
-        <div class="bx-stat"><b>724,323</b><span>Accounts exposed</span></div>
+        <div class="bx-stat"><b>724,323</b><span>Email addresses in HIBP</span></div>
         <div class="bx-stat sev-severe"><b>62/100</b><span>Severe severity</span></div>
         <div class="bx-stat"><b>14</b><span>Types of data</span></div>
         <div class="bx-stat"><b>Verified</b><span>By HIBP</span></div>
       </div>
 
-      <p class="lead">On 2 November 2026, Too Lost was breached. 724,323 accounts were exposed, including dates of birth, driver&#39;s licenses, email addresses. MyRecon rates it 62/100, severe.</p>
+      <p class="lead">HIBP records the Too Lost breach on 2 November 2026 and lists 724,323 email addresses. Reported data includes dates of birth, driver&#39;s licenses, email addresses.</p>
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
-      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>Reported breach date</summary><p>2026-11-02</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">02</span>Entry point</summary><p>The published account does not explain the exact way the data was obtained.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">03</span>Discovery and disclosure</summary><p>A separate discovery or company-disclosure date is not established by this feed record.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">04</span>Added to the breach catalogue</summary><p>2026-11-20. This is the catalogue date, not necessarily the disclosure date.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">05</span>Reported outcome</summary><p>724,323 accounts are listed in this breach. This is a count of accounts, not necessarily individual people. The reported exposed data includes Dates of birth, Driver&#39;s licenses, Email addresses, Government issued IDs, IP addresses, Names, Partial credit card data, Passport numbers, Passwords, Payment histories, Physical addresses, Places of birth, Social media profiles, Usernames.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li></ol></section>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>Reported breach date</summary><p>2026-11-02</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">02</span>Entry point</summary><p>The published account does not explain the exact way the data was obtained.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">03</span>Discovery and disclosure</summary><p>A separate discovery or company-disclosure date is not established by this feed record.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">04</span>Added to the breach catalogue</summary><p>2026-11-20. This is the catalogue date, not necessarily the disclosure date.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">05</span>Reported outcome</summary><p>Have I Been Pwned lists 724,323 email addresses in this breach record. An address total measures the source record&#39;s coverage. The reported exposed data includes Dates of birth, Driver&#39;s licenses, Email addresses, Government issued IDs, IP addresses, Names, Partial credit card data, Passport numbers, Passwords, Payment histories, Physical addresses, Places of birth, Social media profiles, Usernames.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/TooLost" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li></ol></section>
       <!-- Sensitive entries (HIBP IsSensitive: adult sites, political
            correspondence, health-adjacent data) get no lookup. A form that
            answers for any typed address would tell a stranger whether someone
@@ -117,12 +126,12 @@
         <p>In November 2026, an unauthorised party claimed to have obtained data from the music distributor for independent artists, Too Lost. The data contained 724k unique email addresses belonging to artists, their collaborators and fans.</p>
 <p>Some records also contained bcrypt password hashes, while a small subset included partial credit card data (last 4 digits and card type), identity verification information (in some cases, passport, driver&#39;s licence or national ID numbers), and payouts made to artists. Too Lost advised that its investigation remains ongoing, external forensic specialists have been engaged, and measures have been taken to secure affected systems and credentials.</p>
 <p>The company is also working with advisors to coordinate communications and support for affected individuals.</p>
-        <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#TooLost" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0 licence</a>.</p>
+        <p class="bx-credit">Breach description from the <a href="https://haveibeenpwned.com/Breach/TooLost" target="_blank" rel="noopener">Have I Been Pwned record for Too Lost</a>, used under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0 licence</a>.</p>
       </div>
 
       <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>The published account does not explain the exact way the data was obtained.</p></section>
       <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>The published account does not establish the motive. We cannot tell what the attackers intended from the exposed data alone.</p><p class="bx-check-note">Reported demands or attempts to sell data describe what happened, rather than prove every attacker's intention.</p></section>
-      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>724,323 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.</p>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Have I Been Pwned lists 724,323 email addresses in this breach record. An address total measures the source record&#39;s coverage.</p>
 <p>The reported exposed data includes Dates of birth, Driver&#39;s licenses, Email addresses, Government issued IDs, IP addresses, Names, Partial credit card data, Passport numbers, Passwords, Payment histories, Physical addresses, Places of birth, Social media profiles, Usernames.</p></section>
 
       <h2 id="what-was-exposed-and-why-it-matters">What was exposed, and why it matters</h2>
@@ -170,7 +179,7 @@
 
 
       <h2 id="also-in-the-archive">Also in the archive</h2>
-      <ul class="bx-related"><li><a href="/breaches/doublecounter.html">Double Counter</a>: 274,922 accounts</li><li><a href="/breaches/afd.html">AfD</a>: 345,439 accounts</li><li><a href="/breaches/medela.html">Medela</a>: 423,947 accounts</li></ul>
+      <ul class="bx-related"><li><a href="/breaches/doublecounter.html">Double Counter</a>: 274,922 email addresses listed</li><li><a href="/breaches/afd.html">AfD</a>: 345,439 email addresses listed</li><li><a href="/breaches/medela.html">Medela</a>: 423,947 email addresses listed</li></ul>
       <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
 
@@ -218,7 +227,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=4e22ceff1d"></script>
+  <script src="/assets/js/app.js?v=bc8f9ffeb6"></script>
   <script src="/assets/js/breach-check.js?v=445156aee6"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>

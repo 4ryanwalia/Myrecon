@@ -13,7 +13,16 @@
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
       page_referrer: analyticsReferrer,
-    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
     });
   </script>
   <meta charset="UTF-8">

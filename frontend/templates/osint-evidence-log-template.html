@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<script src="/assets/js/recommendation-analytics.js"></script>
+<script src="/assets/js/recommendation-analytics.js" defer></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -13,7 +13,16 @@
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
       page_referrer: analyticsReferrer,
-    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
     });
   </script>
   <meta charset="UTF-8">
@@ -58,7 +67,7 @@
   <link rel="stylesheet" href="/assets/css/editorial.css">
   <link rel="stylesheet" href="/assets/css/article-story.css">
   <link rel="stylesheet" href="/assets/css/android-promo.css">
-  <link rel="stylesheet" href="/assets/css/search-discovery.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Templates","item":"https://www.myrecon.xyz/templates/"},{"@type":"ListItem","position":3,"name":"Evidence log template","item":"https://www.myrecon.xyz/templates/osint-evidence-log-template.html"}]},{"@type":"Article","headline":"OSINT evidence log template (free CSV)","description":"Free OSINT evidence log template (CSV) with capture time, source URL, archive link, SHA-256 hash and confidence. Opens in Excel, Google Sheets and LibreOffice.","url":"https://www.myrecon.xyz/templates/osint-evidence-log-template.html","datePublished":"2026-11-15","dateModified":"2026-11-23","author":{"@type":"Organization","name":"MyRecon","@id":"https://www.myrecon.xyz/#organization"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"DigitalDocument","name":"OSINT evidence log template","encodingFormat":"text/csv","url":"https://www.myrecon.xyz/downloads/osint-evidence-log-template.csv","dateModified":"2026-11-15","isAccessibleForFree":true,"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an OSINT evidence log?","acceptedAnswer":{"@type":"Answer","text":"A table that records every piece of evidence captured during an investigation: when, by whom, from which URL, the saved file, its hash and what it shows. Findings in the final report point back to its item IDs."}},{"@type":"Question","name":"Why hash screenshots?","acceptedAnswer":{"@type":"Answer","text":"A SHA-256 hash proves a file has not changed since it was logged. If a capture is ever questioned, anyone can re-hash the file and compare."}},{"@type":"Question","name":"Can I use this template in Google Sheets?","acceptedAnswer":{"@type":"Answer","text":"Yes. In Google Sheets choose File, Import, and upload the CSV. Excel, Numbers and LibreOffice open it directly."}}]}]}</script></head>
+  <link rel="stylesheet" href="/assets/css/search-discovery.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Templates","item":"https://www.myrecon.xyz/templates/"},{"@type":"ListItem","position":3,"name":"Evidence log template","item":"https://www.myrecon.xyz/templates/osint-evidence-log-template.html"}]},{"@type":"Article","headline":"OSINT evidence log template (free CSV)","description":"Free OSINT evidence log template (CSV) with capture time, source URL, archive link, SHA-256 hash and confidence. Opens in Excel, Google Sheets and LibreOffice.","url":"https://www.myrecon.xyz/templates/osint-evidence-log-template.html","datePublished":"2026-11-15","dateModified":"2026-11-23","author":{"@type":"Organization","name":"MyRecon","@id":"https://www.myrecon.xyz/#organization"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"DigitalDocument","name":"OSINT evidence log template","encodingFormat":"text/csv","url":"https://www.myrecon.xyz/downloads/osint-evidence-log-template.csv","dateModified":"2026-11-15","isAccessibleForFree":true,"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an OSINT evidence log?","acceptedAnswer":{"@type":"Answer","text":"A table that records every piece of evidence captured during an investigation: when, by whom, from which URL, the saved file, its hash and what it shows. Findings in the final report point back to its item IDs."}},{"@type":"Question","name":"Why hash screenshots?","acceptedAnswer":{"@type":"Answer","text":"A SHA-256 hash proves a file has not changed since it was logged. If a capture is ever questioned, anyone can re-hash the file and compare."}},{"@type":"Question","name":"Can I use this template in Google Sheets?","acceptedAnswer":{"@type":"Answer","text":"Yes. In Google Sheets choose File, Import, and upload the CSV. Excel, Numbers and LibreOffice open it directly."}}]}]}</script><script src="/assets/js/editorial-shell.js" defer></script></head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav editorial-nav">
@@ -148,7 +157,7 @@
   </div>
 </footer>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=4e22ceff1d"></script>
+  <script src="/assets/js/app.js?v=bc8f9ffeb6"></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 <script src="/assets/js/app-nudge.js?v=544d2d5337" defer></script>

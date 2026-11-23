@@ -4,7 +4,7 @@
 <!-- Google AdSense -->
 <meta name="google-adsense-account" content="ca-pub-6109270472398539">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
-<script src="/assets/js/recommendation-analytics.js"></script>
+<script src="/assets/js/recommendation-analytics.js" defer></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -16,7 +16,16 @@
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
       page_referrer: analyticsReferrer,
-    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
     });
   </script>
   <meta charset="UTF-8">
@@ -61,7 +70,7 @@
   <link rel="stylesheet" href="/assets/css/editorial.css">
   <link rel="stylesheet" href="/assets/css/article-story.css">
   <link rel="stylesheet" href="/assets/css/android-promo.css">
-  <link rel="stylesheet" href="/assets/css/search-discovery.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"OSINT tool pricing","item":"https://www.myrecon.xyz/osint-tool-pricing.html"}]},{"@type":"Article","headline":"How much do OSINT tools cost? Prices checked 15 November 2026","description":"OSINT tool prices checked 15 Nov 2026 on vendor pages: free open-source tools, US$3 breach checks, EUR 3,000 suites and API plans near US$70,000 a year.","url":"https://www.myrecon.xyz/osint-tool-pricing.html","datePublished":"2026-11-15","dateModified":"2026-11-15","author":{"@type":"Organization","name":"MyRecon","@id":"https://www.myrecon.xyz/#organization"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are there free OSINT tools?","acceptedAnswer":{"@type":"Answer","text":"Yes. Sherlock, Maigret and SpiderFoot are free and open source under the MIT licence. Have I Been Pwned offers free browser breach searches, Maltego has a free Basic plan, and MyRecon gives signed-in users five free Standard username scans a day."}},{"@type":"Question","name":"What is the cheapest paid OSINT tool?","acceptedAnswer":{"@type":"Answer","text":"Of the prices published on 15 November 2026, LeakCheck Basic is the cheapest at US$2.99 for 24 hours. The cheapest monthly plans listed that day were MyRecon Pro at US$3.99 and Have I Been Pwned Core 1 at US$4.39 a month on annual billing."}},{"@type":"Question","name":"What is the most expensive OSINT tool?","acceptedAnswer":{"@type":"Answer","text":"The highest published price we found was Have I Been Pwned's High RPM 24000 plan at US$69,996 a year. Intelligence X Enterprise is EUR 20,000 a year. Enterprise suites such as Social Links, Skopenow and ShadowDragon do not publish prices."}},{"@type":"Question","name":"Why do OSINT tools charge in credits?","acceptedAnswer":{"@type":"Answer","text":"Each lookup costs the vendor money in data licences, proxies and compute, so credits tie the price to usage. Compare tools by cost per credit and by what one credit buys, because a credit means different things on different services."}},{"@type":"Question","name":"How current are these prices?","acceptedAnswer":{"@type":"Answer","text":"Every price was read from the vendor's own page on 15 November 2026. Vendors change prices without notice, so follow the source link in each row before you buy."}}]}]}</script></head>
+  <link rel="stylesheet" href="/assets/css/search-discovery.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"OSINT tool pricing","item":"https://www.myrecon.xyz/osint-tool-pricing.html"}]},{"@type":"Article","headline":"How much do OSINT tools cost? Prices checked 15 November 2026","description":"OSINT tool prices checked 15 Nov 2026 on vendor pages: free open-source tools, US$3 breach checks, EUR 3,000 suites and API plans near US$70,000 a year.","url":"https://www.myrecon.xyz/osint-tool-pricing.html","datePublished":"2026-11-15","dateModified":"2026-11-15","author":{"@type":"Organization","name":"MyRecon","@id":"https://www.myrecon.xyz/#organization"},"publisher":{"@id":"https://www.myrecon.xyz/#organization"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are there free OSINT tools?","acceptedAnswer":{"@type":"Answer","text":"Yes. Sherlock, Maigret and SpiderFoot are free and open source under the MIT licence. Have I Been Pwned offers free browser breach searches, Maltego has a free Basic plan, and MyRecon gives signed-in users five free Standard username scans a day."}},{"@type":"Question","name":"What is the cheapest paid OSINT tool?","acceptedAnswer":{"@type":"Answer","text":"Of the prices published on 15 November 2026, LeakCheck Basic is the cheapest at US$2.99 for 24 hours. The cheapest monthly plans listed that day were MyRecon Pro at US$3.99 and Have I Been Pwned Core 1 at US$4.39 a month on annual billing."}},{"@type":"Question","name":"What is the most expensive OSINT tool?","acceptedAnswer":{"@type":"Answer","text":"The highest published price we found was Have I Been Pwned's High RPM 24000 plan at US$69,996 a year. Intelligence X Enterprise is EUR 20,000 a year. Enterprise suites such as Social Links, Skopenow and ShadowDragon do not publish prices."}},{"@type":"Question","name":"Why do OSINT tools charge in credits?","acceptedAnswer":{"@type":"Answer","text":"Each lookup costs the vendor money in data licences, proxies and compute, so credits tie the price to usage. Compare tools by cost per credit and by what one credit buys, because a credit means different things on different services."}},{"@type":"Question","name":"How current are these prices?","acceptedAnswer":{"@type":"Answer","text":"Every price was read from the vendor's own page on 15 November 2026. Vendors change prices without notice, so follow the source link in each row before you buy."}}]}]}</script><script src="/assets/js/editorial-shell.js" defer></script></head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nav editorial-nav">
@@ -148,7 +157,7 @@
   </div>
 </footer>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=4e22ceff1d"></script>
+  <script src="/assets/js/app.js?v=bc8f9ffeb6"></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 <script src="/assets/js/app-nudge.js?v=544d2d5337" defer></script>

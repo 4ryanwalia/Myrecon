@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<script src="/assets/js/recommendation-analytics.js?v=1"></script>
+<script src="/assets/js/recommendation-analytics.js?v=1" defer></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
   <script>
@@ -13,20 +13,29 @@
     gtag('config', 'G-3L8YYC6NKF', {
       page_location: analyticsPage.origin + analyticsPage.pathname,
       page_referrer: analyticsReferrer,
-    send_page_view: !window.MyReconAnalytics?.isBenchmark()
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
     });
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neogen Data Breach: 435,963 Accounts Exposed | MyRecon</title>
-  <meta name="description" content="On 29 August 2026, Neogen was breached. 435,963 accounts were exposed, including email addresses, employers, job titles. MyRecon rates it 56/100, serious.">
+  <title>Neogen Data Breach: 436K Email Addresses Listed | MyRecon</title>
+  <meta name="description" content="HIBP records the Neogen breach on 29 August 2026 and lists 435,963 email addresses. Reported data includes email addresses, employers, job titles.">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="https://www.myrecon.xyz/breaches/neogen.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:title" content="Neogen Data Breach">
-  <meta property="og:description" content="On 29 August 2026, Neogen was breached. 435,963 accounts were exposed, including email addresses, employers, job titles. MyRecon rates it 56/100, serious.">
+  <meta property="og:description" content="HIBP records the Neogen breach on 29 August 2026 and lists 435,963 email addresses. Reported data includes email addresses, employers, job titles.">
   <meta property="og:url" content="https://www.myrecon.xyz/breaches/neogen.html">
   <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -35,7 +44,7 @@
   <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Neogen Data Breach">
-  <meta name="twitter:description" content="On 29 August 2026, Neogen was breached. 435,963 accounts were exposed, including email addresses, employers, job titles. MyRecon rates it 56/100, serious.">
+  <meta name="twitter:description" content="HIBP records the Neogen breach on 29 August 2026 and lists 435,963 email addresses. Reported data includes email addresses, employers, job titles.">
   <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
   <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
@@ -52,7 +61,7 @@
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
   <link rel="stylesheet" href="/assets/css/breaches.css?v=1a8ae53d15">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Neogen data breach, 435,963 accounts exposed","description":"On 29 August 2026, Neogen was breached. 435,963 accounts were exposed, including email addresses, employers, job titles. MyRecon rates it 56/100, serious.","datePublished":"2026-10-09","dateModified":"2026-10-09","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/neogen.html","image":"https://logos.haveibeenpwned.com/Neogen.png"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Neogen Data Breach: 435,963 email addresses listed","description":"HIBP records the Neogen breach on 29 August 2026 and lists 435,963 email addresses. Reported data includes email addresses, employers, job titles.","citation":{"@type":"CreativeWork","name":"Neogen entry in Have I Been Pwned","url":"https://haveibeenpwned.com/Breach/Neogen"},"author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/breaches/neogen.html","image":"https://logos.haveibeenpwned.com/Neogen.png"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"The Breach Files","item":"https://www.myrecon.xyz/breaches/"},{"@type":"ListItem","position":3,"name":"Neogen","item":"https://www.myrecon.xyz/breaches/neogen.html"}]}</script>
   <link rel="alternate" type="application/rss+xml" title="MyRecon: The Breach Files" href="https://www.myrecon.xyz/breaches/feed.xml">
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
@@ -80,22 +89,22 @@
         <div>
           <span class="kicker">2026 · Data breach</span>
           <h1>Neogen</h1>
-          <p class="meta">Breached 29 August 2026 · Added to HIBP 9 October 2026 · neogen.com</p>
+          <p class="meta">Incident date in HIBP <time datetime="2026-08-29">29 August 2026</time> · Added to HIBP <time datetime="2026-10-09">9 October 2026</time> · neogen.com</p>
         </div>
-      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">THE HUMAN IMPACT</span><h2 id="behind-the-exposed-accounts">Behind the exposed accounts</h2><p>In August 2026, the food and animal safety organisation Neogen was the target of a ShinyHunters &quot;pay or leak&quot; extortion attempt .</p><a class="story-jump" href="#story">Follow the story <span aria-hidden="true">↓</span></a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
+      </header><section class="story-feature" aria-label="Breach briefing"><div class="story-opening"><span class="story-eyebrow">THE HUMAN IMPACT</span><h2 id="behind-the-reported-breach">Behind the reported breach</h2><p>In August 2026, the food and animal safety organisation Neogen was the target of a ShinyHunters &quot;pay or leak&quot; extortion attempt .</p><a class="story-jump" href="#story">Follow the story <span aria-hidden="true">↓</span></a></div><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure></section>
 
       <div class="bx-stats">
-        <div class="bx-stat"><b>435,963</b><span>Accounts exposed</span></div>
+        <div class="bx-stat"><b>435,963</b><span>Email addresses in HIBP</span></div>
         <div class="bx-stat sev-serious"><b>56/100</b><span>Serious severity</span></div>
         <div class="bx-stat"><b>7</b><span>Types of data</span></div>
         <div class="bx-stat"><b>Verified</b><span>By HIBP</span></div>
       </div>
 
-      <p class="lead">On 29 August 2026, Neogen was breached. 435,963 accounts were exposed, including email addresses, employers, job titles. MyRecon rates it 56/100, serious.</p>
+      <p class="lead">HIBP records the Neogen breach on 29 August 2026 and lists 435,963 email addresses. Reported data includes email addresses, employers, job titles.</p>
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
-      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>Reported breach date</summary><p>2026-08-29</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">02</span>Entry point</summary><p>The published account does not explain the exact way the data was obtained.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">03</span>Discovery and disclosure</summary><p>A separate discovery or company-disclosure date is not established by this feed record.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">04</span>Added to the breach catalogue</summary><p>2026-10-09. This is the catalogue date, not necessarily the disclosure date.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">05</span>Reported outcome</summary><p>435,963 accounts are listed in this breach. This is a count of accounts, not necessarily individual people. The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Salutations.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/PwnedWebsites#Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li></ol></section>
+      <nav class="bx-story-nav" aria-label="In this story"><a href="#story">The story</a><a href="#how">How it happened</a><a href="#motive">The motive</a><a href="#outcome">The outcome</a><a href="#bxEmail">Were you part of it?</a></nav><section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol><li><details open><summary><span class="timeline-number">01</span>Reported breach date</summary><p>2026-08-29</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">02</span>Entry point</summary><p>The published account does not explain the exact way the data was obtained.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">03</span>Discovery and disclosure</summary><p>A separate discovery or company-disclosure date is not established by this feed record.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">04</span>Added to the breach catalogue</summary><p>2026-10-09. This is the catalogue date, not necessarily the disclosure date.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li><li><details><summary><span class="timeline-number">05</span>Reported outcome</summary><p>Have I Been Pwned lists 435,963 email addresses in this breach record. An address total measures the source record&#39;s coverage. The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Salutations.</p><p class="timeline-source"><a href="https://haveibeenpwned.com/Breach/Neogen" target="_blank" rel="noopener">Read the HIBP source record</a></p></details></li></ol></section>
       <!-- Sensitive entries (HIBP IsSensitive: adult sites, political
            correspondence, health-adjacent data) get no lookup. A form that
            answers for any typed address would tell a stranger whether someone
@@ -138,12 +147,12 @@ should be confirmed by calling a number you already had on file, not one in the 
       <h2 id="story">The story behind the breach</h2>
       <div class="bx-source">
         <p>In August 2026, the food and animal safety organisation Neogen was the target of a ShinyHunters &quot;pay or leak&quot; extortion attempt . The group later published data it claimed had been obtained from Neogen. The data consisted largely of corporate contact records and included 436k unique email addresses from mailing lists, employee records and other contacts.</p>
-        <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#Neogen" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0 licence</a>.</p>
+        <p class="bx-credit">Breach description from the <a href="https://haveibeenpwned.com/Breach/Neogen" target="_blank" rel="noopener">Have I Been Pwned record for Neogen</a>, used under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0 licence</a>.</p>
       </div>
 
       <section class="bx-story-section"><h2 id="how">How did it happen?</h2><p>The published account does not explain the exact way the data was obtained.</p></section>
       <section class="bx-story-section"><h2 id="motive">What was the motive?</h2><p>In August 2026, the food and animal safety organisation Neogen was the target of a ShinyHunters &quot;pay or leak&quot; extortion attempt .</p><p class="bx-check-note">Reported demands or attempts to sell data describe what happened, rather than prove every attacker's intention.</p></section>
-      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>435,963 accounts are listed in this breach. This is a count of accounts, not necessarily individual people.</p>
+      <section class="bx-story-section"><h2 id="outcome">What was the outcome?</h2><p>Have I Been Pwned lists 435,963 email addresses in this breach record. An address total measures the source record&#39;s coverage.</p>
 <p>The reported exposed data includes Email addresses, Employers, Job titles, Names, Phone numbers, Physical addresses, Salutations.</p></section>
 
       <h2 id="what-was-exposed-and-why-it-matters">What was exposed, and why it matters</h2>
@@ -182,7 +191,7 @@ should be confirmed by calling a number you already had on file, not one in the 
 
 
       <h2 id="also-in-the-archive">Also in the archive</h2>
-      <ul class="bx-related"><li><a href="/breaches/mckesson.html">McKesson</a>: 6,404,340 accounts</li><li><a href="/breaches/carhartt.html">Carhartt</a>: 12,933,413 accounts</li><li><a href="/breaches/sharecare.html">Sharecare</a>: 318,185 accounts</li></ul>
+      <ul class="bx-related"><li><a href="/breaches/mckesson.html">McKesson</a>: 6,404,340 email addresses listed</li><li><a href="/breaches/carhartt.html">Carhartt</a>: 12,933,413 email addresses listed</li><li><a href="/breaches/sharecare.html">Sharecare</a>: 318,185 email addresses listed</li></ul>
       <p class="bx-crumb" style="margin-top:18px"><a href="/breaches/case-files/">Case Files: how the landmark breaches actually happened →</a></p>
 
 
@@ -230,7 +239,7 @@ should be confirmed by calling a number you already had on file, not one in the 
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=4e22ceff1d"></script>
+  <script src="/assets/js/app.js?v=bc8f9ffeb6"></script>
   <script src="/assets/js/breach-check.js?v=445156aee6"></script>
   <script src="/assets/js/consent.js?v=10"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
