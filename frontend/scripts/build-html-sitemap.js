@@ -15,6 +15,8 @@ const { attribute, decodeHtml, isNoindex } = require('./build-sitemap');
 
 const ROOT = path.resolve(__dirname, '..');
 const SITE = 'https://www.myrecon.xyz';
+const TITLE = 'MyRecon Directory | OSINT Tools, Guides and Breaches';
+const DESCRIPTION = 'Find MyRecon’s OSINT tools, profile guides, privacy checklists and breach reports. Search the directory by topic, platform or incident name.';
 
 function esc(value) {
   return String(value == null ? '' : value)
@@ -66,46 +68,55 @@ function main() {
   const categories = {
     core: {
       name: 'Core OSINT Intelligence & Audit Tools',
+      jump: 'Tools',
       description: 'Zero-install browser tools for username sweeps, breach detection, password audits, and digital footprint analysis.',
       pages: [],
     },
     breaches: {
       name: 'Data Breach Analyses & Incident Archive',
+      jump: 'Breach archive',
       description: 'Technical analyses and credential exposure breakdown across 50+ major public data breaches.',
       pages: [],
     },
     caseFiles: {
       name: 'Breach Case Files & Historical Studies',
+      jump: 'Case files',
       description: 'In-depth historical investigations covering attack vectors, regulatory outcomes, and defense lessons.',
       pages: [],
     },
     find: {
       name: 'Social Media & Platform Lookup Guides',
+      jump: 'Platform lookups',
       description: 'Platform-specific guides to discovering accounts, handles, and public profile visibility.',
       pages: [],
     },
     guides: {
       name: 'OSINT & Cybersecurity Investigation Guides',
+      jump: 'Guides',
       description: 'Defensive methodologies, source verification protocols, and personal security workflows.',
       pages: [],
     },
     privacy: {
       name: 'Privacy Protection & Data Broker Opt-Outs',
+      jump: 'Privacy',
       description: 'Step-by-step removal guides for people-search sites, data brokers, and public search records.',
       pages: [],
     },
     vs: {
       name: 'OSINT Tool Technical Comparisons',
+      jump: 'Comparisons',
       description: 'Benchmark comparisons and feature evaluations against CLI scripts and commercial scanners.',
       pages: [],
     },
     blog: {
       name: 'Investigative Blog & Research Articles',
+      jump: 'Articles',
       description: 'Original research articles on digital privacy, threat intelligence, and OSINT techniques.',
       pages: [],
     },
     videos: {
       name: 'OSINT Video Walkthroughs & Explainers',
+      jump: 'Videos',
       description: 'Short captioned video walkthroughs covering public username checks, profile verification, and digital footprint cleanup.',
       pages: [],
     },
@@ -139,8 +150,11 @@ function main() {
     cat.pages.sort((a, b) => a.title.localeCompare(b.title));
   }
 
-  const categoryCards = Object.entries(categories)
-    .filter(([, cat]) => cat.pages.length > 0)
+  const populatedCategories = Object.entries(categories).filter(([, cat]) => cat.pages.length > 0);
+  const categoryLinks = populatedCategories
+    .map(([key, cat]) => `<a class="btn btn-ghost btn-sm" href="#${esc(key)}">${esc(cat.jump)}</a>`)
+    .join('\n');
+  const categoryCards = populatedCategories
     .map(([key, cat]) => {
       const items = cat.pages
         .map(
@@ -169,9 +183,9 @@ function main() {
         '@type': 'WebPage',
         '@id': `${SITE}/directory.html#page`,
         url: `${SITE}/directory.html`,
-        name: 'MyRecon Site Directory & OSINT Research Guides | MyRecon',
-        description: 'Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.',
-        dateModified: '2026-11-01',
+        name: TITLE,
+        description: DESCRIPTION,
+        dateModified: '2026-11-23',
         inLanguage: 'en',
         isPartOf: { '@id': `${SITE}/#website` },
         publisher: {
@@ -227,9 +241,8 @@ function main() {
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyRecon Site Directory &amp; OSINT Research Guides | MyRecon</title>
-  <meta name="description" content="Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
-  <meta name="keywords" content="myrecon directory, all osint tools, osint site map, public intelligence directory, username lookup list, breach archive, privacy guides, osint comparisons">
+  <title>${esc(TITLE)}</title>
+  <meta name="description" content="${esc(DESCRIPTION)}">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${SITE}/directory.html">
@@ -240,13 +253,13 @@ function main() {
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyRecon">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="MyRecon Site Directory &amp; OSINT Research Guides | MyRecon">
-  <meta property="og:description" content="Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
+  <meta property="og:title" content="${esc(TITLE)}">
+  <meta property="og:description" content="${esc(DESCRIPTION)}">
   <meta property="og:url" content="${SITE}/directory.html">
   <meta property="og:image" content="${SITE}/assets/img/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MyRecon Site Directory &amp; OSINT Research Guides | MyRecon">
-  <meta name="twitter:description" content="Explore public OSINT scanner tools, username search guides, data breach archives, privacy removal checklists, and comparison articles on MyRecon.">
+  <meta name="twitter:title" content="${esc(TITLE)}">
+  <meta name="twitter:description" content="${esc(DESCRIPTION)}">
   <meta name="twitter:image" content="${SITE}/assets/img/og-image.png">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/fx.css">
@@ -256,14 +269,19 @@ function main() {
     .directory-hero { padding: 48px 0 24px; text-align: left; }
     .directory-hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; color: var(--text); }
     .directory-hero p { font-size: 1.1rem; color: var(--text-dim); max-width: 800px; line-height: 1.6; }
-    .directory-stats { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
-    .directory-stat { background: var(--surface); border: 1px solid var(--border); padding: 12px 20px; border-radius: 8px; font-size: 0.95rem; color: var(--text-dim); }
-    .directory-stat strong { font-size: 1.3rem; color: var(--text); display: block; }
-    .directory-section { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 32px; }
+    .directory-filter { margin: 0 0 20px; max-width: 36rem; }
+    .directory-filter label { display: block; font-weight: 650; margin-bottom: 6px; }
+    .directory-filter-row { display: flex; gap: 8px; }
+    .directory-filter-row input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; }
+    .directory-filter-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .directory-filter [role="status"] { color: var(--text-dim); margin-top: 8px; }
+    .directory-jump { display: flex; flex-wrap: wrap; gap: 8px; }
+    .directory-filter[hidden], .directory-jump[hidden], .directory-section[hidden], .directory-item[hidden] { display: none; }
+    .directory-section { margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px; scroll-margin-top: 85px; }
     .directory-section h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
     .directory-count { font-size: 1rem; color: var(--text-dim); font-weight: 400; }
     .directory-section-desc { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 20px; }
-    .directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
+    .directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
     .directory-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; transition: border-color 0.2s, box-shadow 0.2s; }
     .directory-item:hover { border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .directory-item a { font-weight: 600; color: var(--accent); text-decoration: none; display: block; margin-bottom: 6px; line-height: 1.4; }
@@ -287,21 +305,23 @@ function main() {
       <a href="/">MyRecon</a> / <span aria-current="page">Site Directory</span>
     </nav>
     <header class="directory-hero">
-      <h1>MyRecon Site Directory &amp; Knowledge Index</h1>
-      <p>Direct navigation index across all ${allPages.length} public tools, breach investigations, threat intelligence analyses, and privacy defense guides published on MyRecon.</p>
-      <div class="directory-stats">
-        <div class="directory-stat"><strong>${allPages.length}+</strong> Public Pages</div>
-        <div class="directory-stat"><strong>560+</strong> Supported Platforms</div>
-        <div class="directory-stat"><strong>50+</strong> Breach Case Studies</div>
-        <div class="directory-stat"><strong>100%</strong> Public Source Evidence</div>
-      </div>
+      <h1>MyRecon directory</h1>
+      <p>Find an OSINT tool, a guide for a specific platform, or a report about a data breach.</p>
     </header>
+    <form class="directory-filter" role="search" aria-label="MyRecon directory" autocomplete="off" hidden>
+      <label for="directory-filter">Filter by topic or name</label>
+      <div class="directory-filter-row">
+        <input id="directory-filter" type="search" placeholder="e.g. GitHub, Ashley Madison">
+        <button class="btn btn-ghost btn-sm" type="button">Clear</button>
+      </div>
+      <p role="status"></p>
+    </form>
+    <nav class="directory-jump" aria-label="Directory categories">${categoryLinks}</nav>
 
     ${categoryCards}
   </main>
-  <script src="/assets/js/env.js"></script>
-  <script src="/assets/js/config.js"></script>
-  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/editorial-shell.js" defer></script>
+  <script src="/assets/js/directory-filter.js" defer></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js" defer></script>
 </body>
