@@ -1,9 +1,9 @@
 <main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Username checker</span></nav>
-  <h1>Browser username search: check public profile leads</h1>
-  <p class="sub">Enter a handle in MyRecon to look for public profiles without installing software. Use the results to revisit your own old accounts or review an authorized public-source question, then open each relevant source.</p>
-  <a class="btn btn-primary" href="/#tool=username">Search a username in your browser</a>
-  <p class="discovery-note">Guest Quick: 100 platforms, first 2 result cards visible. Standard: sign-in required, 560+ platforms. Access reviewed 1 November 2026; <a href="/pricing">current plans</a>.</p>
+  <h1>Free username search across social media</h1>
+  <p class="sub">Check a handle for public profiles in your browser. Use the results to revisit your own old accounts or review a handle you’re authorized to check, then open each relevant source.</p>
+  <a class="btn btn-primary" href="/#tool=username">Start a free username search</a>
+  <p class="discovery-note">Guest Quick covers 100 platforms and shows the first two result cards. A free account unlocks Standard searches across 560+ platforms. <a href="#access-limits">See daily limits and paid options</a>.</p>
 
   <section id="browser-walkthrough"><h2>Try a browser username search step by step</h2>
     <ol>
@@ -12,7 +12,7 @@
       <li><strong>Inspect the labels.</strong> Open visible profile links and compare the exact handle with the source page. Keep a found profile separate from confirmed ownership.</li>
       <li><strong>Resolve your own accounts.</strong> Check saved logins or signup records and sign in through the provider. Record an account action only after confirming control.</li>
     </ol>
-    <p>MyRecon is useful when you have a handle and want several public-source leads in one browser session. For a single known service, try the <a href="/find/github-profile">GitHub username lookup</a>. If you are choosing a new handle, <a href="/footprint#handles">compare up to three handles</a> before checking availability with the service itself. A <a href="/vs/sherlock">local Sherlock workflow</a> may fit better when you need repeatable terminal commands.</p>
+    <p>MyRecon is useful when you have a handle and want several public-source leads in one browser session. For a single known service, try the <a href="/find/github-profile">GitHub username lookup</a>. If you are choosing a new handle, <a href="#username-availability">check the service’s registration rules</a>. A <a href="/vs/sherlock">local Sherlock workflow</a> may fit better when you need repeatable terminal commands.</p>
   </section>
 
   <section id="observed-demo"><h2>Real demonstration: a guest Quick scan</h2>
@@ -39,9 +39,25 @@
     <ul>
       <li><strong>Guest:</strong> 5 Quick scans per day without signup, across 100 platforms. Only the first 2 result cards are visible.</li>
       <li><strong>Signed-in free account:</strong> 5 Standard scans per day across 560+ platforms with complete results. Quick and Standard share that account allowance.</li>
-      <li><strong>Optional paid pack:</strong> <span style="font-family:system-ui,sans-serif">₹</span>299/month through Indian checkout, or US$3.99 through an enabled international checkout, for unlimited Standard scans, Deep Search and 10 Extended scans across a separate 3,000+ catalogue. No automatic renewal; credits do not expire.</li>
+      <li><strong>Pro subscription:</strong> Adds unlimited Standard searches, Deep Search and a recurring Extended scan allowance. The subscription renews until cancelled.</li>
+      <li><strong>One-time Extended Scan Pack:</strong> An alternative to subscribing, with a separate set of Extended credits that carry forward without expiring.</li>
     </ul>
     <p>Daily allowances reset at midnight UTC, which is 05:30 in India. Catalogue sizes describe supported checks, not confirmed accounts or successful responses. Website limits are described here; Android access is shown in the app. Check <a href="/pricing">pricing</a> before choosing a paid scope.</p>
+  </section>
+
+  <section id="username-availability"><h2>How to check if a username is available</h2>
+    <p>Start by opening the exact public profile URL. A profile displaying that exact handle supports that the name is in use. An empty page, redirect to another handle or blocked response leaves availability unresolved. Enter the candidate in the platform’s official signup or change-username form to check whether it can be registered there.</p>
+    <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Username rules by platform"><table>
+      <caption>Why the same public-profile result can mean different things</caption>
+      <thead><tr><th scope="col">Platform</th><th scope="col">What the provider says</th><th scope="col">What to check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">GitHub</th><td>A renamed account’s former username becomes available for others to claim.</td><td>Use your account’s rename form to verify the name you want. <a href="https://docs.github.com/en/account-and-profile/concepts/username-changes">GitHub username changes</a></td></tr>
+        <tr><th scope="row">Reddit</th><td>A finalized username stays reserved after account deletion.</td><td>Use Reddit signup to confirm another candidate. <a href="https://support.reddithelp.com/hc/en-us/articles/204579479-Can-I-change-my-username">Reddit username rules</a></td></tr>
+        <tr><th scope="row">X</th><td>Suspended and deactivated accounts can keep a handle unavailable. The format also rules out dashes.</td><td>Check the exact handle and spelling in the official username setting. <a href="https://help.x.com/en/managing-your-account/x-username-rules">X username registration rules</a></td></tr>
+      </tbody>
+    </table></div>
+    <p>In MyRecon’s <a href="/blog/username-search-benchmark-research.html#november-controls">600-observation benchmark</a>, a check based on HTTP status alone gave no verdict in 326 observations. It also disagreed with the official API reference in 20 GitLab observations from one repeated fixture. Both checks measured public account existence. Registration availability requires the platform’s own form.</p>
+    <p>If you have a shortlist, <a href="/footprint#handles">compare up to three handles</a> and then check your preferred name on each service.</p>
   </section>
 
   <section><h2>What a username search can leave unresolved</h2>
@@ -50,5 +66,5 @@
   </section>
 
   <section><h2>Username checker questions</h2><div class="faq"><!-- faq --></div></section>
-  <section><h2>Sources and review</h2><p>MyRecon publishes this page. The live guest report demonstrates interface behavior; the historical benchmark documents a separate run with its own methodology. Neither proves general accuracy. Use the <a href="/privacy.html">privacy policy</a> and <a href="/terms.html">terms</a> to review data handling and authorized use. Updated 1 November 2026.</p></section>
+  <section><h2>Sources and review</h2><p>MyRecon publishes this page. The recorded guest report demonstrates the interface on 1 November 2026. The historical benchmark describes its own sample and methods. Use the <a href="/privacy.html">privacy policy</a> and <a href="/terms.html">terms</a> to review data handling and authorized use. Updated 23 November 2026.</p></section>
 </main>

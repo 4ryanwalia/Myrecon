@@ -114,15 +114,15 @@ const usernameBody = fs.readFileSync(path.join(root, 'content/discovery/username
   .replace('<!-- faq -->', usernameQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
-  title: 'Username Lookup & Social Media Username Checker | MyRecon',
-  description: 'Check public usernames across 560+ platforms with MyRecon. Review social media profile leads, unknown results and username availability limits.',
+  title: 'Free Username Search & Profile Checker | MyRecon',
+  description: 'Run a free username search for public profiles. See guest limits, confirm profile leads and learn where to check whether a handle can be registered.',
   keywords: 'username checker, social media username search, username lookup, check username across platforms, find accounts by username, public profile search, handle checker, username availability vs search, browser username checker, osint username search',
   url: `${site}/username-checker.html`,
   outFileName: 'username-checker.html',
   crumbLabel: 'Username checker',
   questions: usernameQuestions,
   bodyHtml: usernameBody,
-  modifiedAt: '2026-11-01',
+  modifiedAt: '2026-11-23',
 });
 
 // 2. Free OSINT tool discovery page
