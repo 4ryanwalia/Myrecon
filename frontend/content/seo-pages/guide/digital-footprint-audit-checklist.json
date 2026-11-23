@@ -2,12 +2,20 @@
   "kind": "guide",
   "slug": "digital-footprint-audit-checklist",
   "status": "published",
-  "title": "Digital Footprint Audit: A Practical Action Checklist",
-  "description": "Audit your own accounts using saved records, signed-out profile checks, a prioritized action log and verification after each privacy change.",
-  "h1": "Digital Footprint Audit: A Practical Action Checklist",
+  "title": "Digital Footprint Audit Checklist and Free Worksheet",
+  "description": "Audit your digital footprint with a free private worksheet. Confirm old accounts, prioritize privacy fixes and verify source and search changes separately.",
+  "h1": "Digital footprint audit checklist and free worksheet",
   "focus_keyword": "digital footprint audit checklist",
-  "intro": "A self-audit should end with an action list, not just a collection of profile URLs. Begin with identifiers you have used, confirm account ownership through your own records, inspect public exposure and then secure or close accounts through the service itself.",
+  "intro": "Use this audit checklist for accounts you own or manage. Start with a blank worksheet, confirm which accounts are yours, and check what a signed-out visitor can see. Track each change at the original source and in search results.",
   "sections": [
+    {
+      "heading": "Download the private digital footprint worksheet",
+      "body": "Save the blank text file on your device and make one entry per account or source page. Record the exact public URL, how you confirmed control, what you changed and when to recheck. Keep the completed copy private. Leave out passwords, recovery codes, government IDs and private messages. Downloading the blank file sends none of your completed notes to MyRecon.",
+      "download": {
+        "href": "/downloads/digital-footprint-worksheet.txt",
+        "label": "Download the free digital footprint worksheet"
+      }
+    },
     {
       "heading": "Make an identifier inventory",
       "body": "List current and old usernames, email addresses and services you remember joining. Keep that inventory private. Start with your password manager and signup emails: these can reveal accounts that a public search will miss. Do not paste password-manager exports into a search tool. Prioritize accounts connected to payment, recovery email or sensitive public information before abandoned hobby profiles."
@@ -18,11 +26,15 @@
     },
     {
       "heading": "Use discovery tools to find candidates",
-      "body": "Search old handles separately in the MyRecon username sweep. The standard catalogue covers 560+ platforms; guest previews, signed-in scan limits and paid Extended scope differ. Check current pricing before assuming all results are available. Open each candidate at the original source and confirm it using your records. MyRecon does not enumerate every email-linked account, access private profiles or close accounts for you."
+      "body": "Search old handles separately in the MyRecon username sweep. The standard catalogue covers 560+ platforms; guest previews, signed-in scan limits and paid Extended scope differ. Check current pricing before assuming all results are available. Open each candidate at the original source and confirm it using your records. MyRecon does not enumerate every email-linked account, access private profiles or close accounts for you.",
+      "link": {
+        "href": "/digital-footprint-checker.html",
+        "label": "Open the digital footprint checker"
+      }
     },
     {
       "heading": "Turn exposure into a prioritized task",
-      "body": "Use one row per confirmed account: URL, ownership confirmed, public fields, recovery checked, action and verification date. Choose keep and secure, reduce visibility, delete, or ownership unresolved. For kept accounts, use a unique password and multifactor authentication where available. Update the recovery email before losing access to an old address. For deleted accounts, export wanted material and remove linked application permissions through the provider."
+      "body": "Start with your main email and accounts that handle payments or show sensitive details. Use a unique password and multifactor authentication where available. Update recovery contacts before losing access to an old address. Before closing an account, export anything you need, settle billing and move dependent sign-ins. Log a separate task for any third-party site or search result that still shows the detail."
     },
     {
       "heading": "Worked example: an old forum profile",
@@ -31,14 +43,57 @@
     {
       "heading": "Recheck what changed",
       "body": "After a privacy change or deletion request, revisit the exact page and record the outcome. Search engines may retain old snippets after the source changes, and other users may have quoted posts. Schedule a review after your next job change, email migration or major handle rename. Keep the audit log short and delete redundant screenshots once actions are verified. The audit cannot certify that no information about you exists anywhere online."
+    },
+    {
+      "heading": "Measured example: verify a changed public URL",
+      "body": "On 23 November 2026 MyRecon sent a public HTTP GET to its retired footprint-checker guide with redirects disabled, then opened the returned location separately. The original URL returned HTTP 308 pointing to /digital-footprint-checker.html, and that destination returned HTTP 200. This example uses a site we control. In an audit, store the original and final URLs separately so a working redirect does not look like a deleted account.",
+      "table": {
+        "caption": "How to record the observed change in your worksheet",
+        "headers": [
+          "Check",
+          "Observed result",
+          "Worksheet entry"
+        ],
+        "rows": [
+          [
+            "Open the exact old URL",
+            "/blog/digital-footprint-checker-guide.html returned HTTP 308",
+            "Source status: moved"
+          ],
+          [
+            "Open the redirect destination",
+            "/digital-footprint-checker.html returned HTTP 200",
+            "Replacement URL: still public"
+          ],
+          [
+            "Check the old search result separately",
+            "Outside the scope of the HTTP check",
+            "Search status: not checked"
+          ]
+        ]
+      },
+      "link": {
+        "href": "/digital-footprint-checker.html",
+        "label": "Open the observed replacement page"
+      }
+    },
+    {
+      "heading": "Choose the right follow-up for a search result",
+      "body": "For a detail you control, edit the source first and revisit it signed out. If a third-party page still contains eligible personal information, follow the source site's process and check Google's removal criteria. If the page or detail has already disappeared while an old Google result remains, review Google's outdated content guidance. Record when you submitted a request and when you verified the source change or search update.",
+      "link": {
+        "href": "https://support.google.com/websearch/answer/12719076?hl=en",
+        "label": "Review Google's personal-information removal criteria"
+      }
     }
   ],
   "sources": [
     "https://www.cisa.gov/secure-our-world/turn-mfa",
-    "https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address"
+    "https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address",
+    "https://support.google.com/websearch/answer/12719076?hl=en",
+    "https://support.google.com/websearch/answer/6349986?hl=en"
   ],
-  "reviewed_at": "2026-10-03",
-  "modified_at": "2026-10-03",
+  "reviewed_at": "2026-11-23",
+  "modified_at": "2026-11-23",
   "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
@@ -59,11 +114,11 @@
     }
   ],
   "takeaways": [
-    "Make an identifier inventory",
-    "Inspect what a visitor can see",
-    "Use discovery tools to find candidates"
+    "Save a blank private worksheet",
+    "Confirm account control before changing anything",
+    "Recheck the original source and its search result separately"
   ],
-  "method": "Worked examples are illustrative unless explicitly labeled as observed. Product limits were checked against the release source; linked provider instructions describe external workflows, not a claim that every account flow was tested.",
+  "method": "The forum scenario is illustrative. The measured URL example uses two public GET requests to MyRecon pages on 23 November 2026. It records the HTTP status and redirect destination only.",
   "diagram_steps": [
     "Inventory accounts",
     "Prioritize actions",
