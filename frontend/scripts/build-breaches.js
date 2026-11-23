@@ -33,7 +33,8 @@
 const fs = require("fs");
 const path = require("path");
 const { breachStory, unknownMotive } = require('./breach-story');
-const { attribute, toUrlPath, fileForUrl } = require('./build-sitemap');
+const { attribute, toUrlPath, fileForUrl, validDate } = require('./build-sitemap');
+const archiveRevisions = require('../content/breach-archive-revisions.json');
 
 const numCompact = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 0 }).format;
 const ROOT = path.join(__dirname, "..");
@@ -44,6 +45,14 @@ const EDITORIAL_DIR = path.join(ROOT, "content", "breaches");
 const SITE = "https://www.myrecon.xyz";
 const SOURCE = "https://haveibeenpwned.com/api/v3/breaches";
 const LICENCE = "https://creativecommons.org/licenses/by/4.0/";
+const archiveUpdates = new Map(Object.entries(archiveRevisions)
+  .sort(([first], [second]) => first.localeCompare(second))
+  .flatMap(([date, { revision, records }]) => {
+    if (validDate(date) !== date || !/^[a-f0-9]{40}$/.test(revision)) {
+      throw new Error(`Invalid breach archive revision for ${date}`);
+    }
+    return records.map(name => [name, { date, revision }]);
+  }));
 
 // Use the default Play listing; this referrer distinguishes breach pages in
 // acquisition reports without being interpreted as an app invite.
@@ -550,6 +559,7 @@ function takeWords(editorial) {
 
 function article(b, editorial, siblings) {
   const story = breachStory(b, editorial);
+  const archiveUpdate = archiveUpdates.get(b.Name);
   const indexable = takeWords(editorial) >= MIN_TAKE_WORDS;
   const storyParagraphs = values => values.map(value => `<p>${esc(value)}</p>`).join('\n');
   const sev = severity(b);
@@ -598,7 +608,8 @@ function article(b, editorial, siblings) {
     "@type": "NewsArticle",
     headline: `${phrase}: ${num(b.PwnCount)} email addresses listed`,
     description: lead,
-    // Catalogue ingestion and correction dates belong to the source record.
+    // Use the dated MyRecon revision. HIBP dates belong to the source record.
+    dateModified: archiveUpdate?.date,
     citation: { "@type": "CreativeWork", name: `${b.Title} entry in Have I Been Pwned`, url: recordUrl },
     author: { "@type": "Organization", name: "MyRecon", url: `${SITE}/about.html` },
     publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
@@ -655,6 +666,7 @@ function article(b, editorial, siblings) {
         <div>
           <span class="kicker">${esc(year)} · ${b.IsStealerLog ? "Stealer log collection" : isProfileScrape ? "Public data scrape" : "Data breach"}</span>
           <h1>${esc(b.Title)}</h1>
+          ${archiveUpdate ? `<p class="meta">MyRecon source notes updated <time datetime="${archiveUpdate.date}">${prettyDate(archiveUpdate.date)}</time> · <a href="https://github.com/4ryanwalia/Myrecon/commit/${archiveUpdate.revision}">View the update</a></p>` : ""}
           ${timeline ? `<p class="meta">${timeline}</p>` : ""}
         </div>
       </header>

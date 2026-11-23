@@ -40,6 +40,22 @@ test('breach records label source dates and address counts without claiming arti
   assert.match(index([record], []), /One address can appear in more than one record/);
 });
 
+test('the audited archive revision is shown and marked separately from the incident date', () => {
+  const record = {
+    Name: 'AlienStealerLogs', Title: 'ALIEN TXTBASE Stealer Logs', IsStealerLog: true,
+    BreachDate: '2025-02-15', AddedDate: '2025-02-25', ModifiedDate: '2025-03-01',
+    PwnCount: 284132969, DataClasses: ['Email addresses', 'Passwords'],
+  };
+  const html = article(record, '', [record]);
+  const schema = [...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)]
+    .map(([, data]) => JSON.parse(data)).find(data => data['@type'] === 'NewsArticle');
+  assert.equal(schema.datePublished, undefined);
+  assert.equal(schema.dateModified, '2026-11-23');
+  assert.match(html, /MyRecon source notes updated <time datetime="2026-11-23">23 November 2026<\/time>/);
+  assert.match(html, /HIBP record updated <time datetime="2025-03-01">1 March 2025<\/time>/);
+  assert.match(html, /https:\/\/github\.com\/4ryanwalia\/Myrecon\/commit\/e0197d44[a-f0-9]+/);
+});
+
 test('timeline enrichment preserves collection-specific email counts', t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'myrecon-story-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
