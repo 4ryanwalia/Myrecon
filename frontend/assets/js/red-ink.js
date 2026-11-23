@@ -189,9 +189,9 @@
           if(state.operation===operation){state.mark=null;state.guide=false;state.sidePen=false;state.excursion=false;state.lifted=true;paintWriting();}
         }
       },
-      release(){if(!state.active)return;state.active=false;if(handwriting===state)handwriting=null;refresh=0;}
+      release(){if(!state.active)return;state.active=false;if(handwriting===state)handwriting=null;invalidateLayout();}
     };
-    state.api=api;return api;
+    state.api=api;wake();return api;
   }};
   function hint(){
     if(cueDrawn||hintRead>=14000||marks.some(m=>m.cue))return null;
@@ -212,7 +212,8 @@
     return {anchor,alpha:.85,width:1.65,cue:{x:left-r.left,y:labelY-r.top},lines:arrow(pt(sx,sy),pt(sx+(x-sx)*.5,sy-1),pt(x-6,-20),pt(x,-17),5)};
   }
   function tick(now){
-    if(media.matches||document.hidden){raf=0;return;}
+    raf=0;
+    if(media.matches||document.hidden)return;
     const dt=Math.min(60,now-lastFrame);lastFrame=now;
     const scrolling=now-lastScroll<240;
     if(now>refresh){measure();refresh=now+180;}
@@ -237,18 +238,29 @@
       for(const b of blocks){if(b.inkElement===tool)continue;const pad=tool.contains(b.inkElement)?3:14;ctx.clearRect(b.left-pad,b.top-pad,b.width+pad*2,b.height+pad*2);}
     }
     if(handwriting){paintWriting();raf=requestAnimationFrame(tick);return;}
-    if(engaged&&park){if(park.route){const t=Math.min(1,(now-park.start)/1200),e=t*t*(3-2*t);nib=along(park.route,e);}}
+    if(park){
+      const t=park.route?Math.min(1,(now-park.start)/1200):1;
+      if(park.route)nib=along(park.route,t*t*(3-2*t));
+      if(t===1)park=null;
+    }
     nib.x=Math.max(8,Math.min(innerWidth-33,nib.x));nib.y=Math.max(80,Math.min(innerHeight-12,nib.y));
     if(!safe(nib)){const clear=nearestSafe(nib);if(clear)nib=clear;}
     pen.style.opacity='.9';pen.style.transform=`translate(${nib.x}px,${nib.y-40}px) rotate(${(engaged?0:Math.sin(now/800)*4)+(lifted?8:0)}deg) scale(${lifted?1.06:1})`;
+    // Keep the parked pen visible without clearing a blank canvas every frame.
+    if(!engaged||park||marks.length)raf=requestAnimationFrame(tick);
+  }
+  function yieldToVisitor(e){if(!e.target.closest?.('#tool,#results,[role="dialog"]')||engaged)return;engaged=true;marks=[];const target=nearestSafe(pt(innerWidth-54,125));park={route:target&&travel(nib,target),start:performance.now()};host.dataset.mode='resting';wake();}
+  for(const event of ['focusin','input','pointerdown'])document.addEventListener(event,yieldToVisitor);
+  function wake(){
+    if(media.matches||document.hidden||raf)return;
+    lastFrame=performance.now();
     raf=requestAnimationFrame(tick);
   }
-  function yieldToVisitor(e){if(!e.target.closest?.('#tool,#results,[role="dialog"]')||engaged)return;engaged=true;marks=[];const target=nearestSafe(pt(innerWidth-54,125));park={route:target&&travel(nib,target),start:performance.now()};host.dataset.mode='resting';}
-  for(const event of ['focusin','input','pointerdown'])document.addEventListener(event,yieldToVisitor);
-  function resume(){host.hidden=media.matches;lastFrame=performance.now();if(!media.matches&&!document.hidden&&!raf)raf=requestAnimationFrame(tick);}
-  addEventListener('scroll',()=>{lastScroll=performance.now();refresh=0;},{passive:true});
-  addEventListener('resize',resize,{passive:true});
-  const layoutObserver=new ResizeObserver(()=>{refresh=0;});layoutObserver.observe(document.body);
+  function invalidateLayout(){refresh=0;wake();}
+  function resume(){host.hidden=media.matches;invalidateLayout();}
+  addEventListener('scroll',()=>{lastScroll=performance.now();invalidateLayout();},{passive:true});
+  addEventListener('resize',()=>{resize();wake();},{passive:true});
+  const layoutObserver=new ResizeObserver(invalidateLayout);layoutObserver.observe(document.body);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else resume();});
   media.addEventListener('change',()=>{marks=[];resume();});
   resize();resume();
