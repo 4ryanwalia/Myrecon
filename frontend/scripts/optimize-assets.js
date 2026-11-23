@@ -21,7 +21,7 @@ function optimizeAssets(root = ROOT) {
   const selfHostedFonts = fs.existsSync(path.join(root, 'assets/css/fonts.css'));
   for (const file of pages) {
     const before = fs.readFileSync(file, 'utf8');
-    const responsive = sizeStoryPhotos(before, path.dirname(file) === path.join(root, 'find'));
+    const responsive = sizeStoryPhotos(before);
     const after = bundleStyles(root, selfHostFonts(responsive, selfHostedFonts).replace(pattern, (all, attr, quote, url, kind, name, extension) => {
       if (kind !== extension || name === 'env') return all;
       const source = `/assets/${kind}/${name}.${extension}`;
@@ -59,9 +59,8 @@ function optimizeAssets(root = ROOT) {
   console.log(`[optimize] ${assets.size} shared assets: ${values.reduce((s, a) => s + a.before, 0)} -> ${values.reduce((s, a) => s + a.after, 0)} bytes; ${pages.length} pages`);
   return report;
 }
-// The profile lookup layout puts its opening photo in the first screen.
-// Other article photos are lazy and can use the browser's actual layout width.
-function sizeStoryPhotos(html, isProfileLookup) {
+// Lazy article photos can use the browser's actual layout width.
+function sizeStoryPhotos(html) {
   return html.replace(/(<figure class="story-photo">)(<img\b[^>]+>)/g, (figure, opening, img) => {
     const src = img.match(/\bsrc="(https:\/\/images\.unsplash\.com\/photo-[^"]+)"/);
     if (!src || /\bsrcset=/.test(img)) return figure;
@@ -71,7 +70,6 @@ function sizeStoryPhotos(html, isProfileLookup) {
       return `${url.href.replaceAll('&', '&amp;')} ${width}w`;
     });
     const sizes = '(max-width: 900px) calc(100vw - 40px), 860px';
-    if (isProfileLookup) img = img.replace('loading="lazy"', 'fetchpriority="high"');
     const auto = img.includes('loading="lazy"') ? 'auto, ' : '';
     return opening + img.replace(/>$/, ` srcset="${candidates.join(', ')}" sizes="${auto}${sizes}">`);
   });

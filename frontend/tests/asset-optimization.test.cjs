@@ -5,6 +5,7 @@ const path = require('node:path');
 const os = require('node:os');
 const vm = require('node:vm');
 const { optimizeAssets } = require('../scripts/optimize-assets');
+const { designArticle } = require('../scripts/article-story-design');
 
 test('deployment assets preserve behavior, share fingerprints and refresh only after source changes', t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'myrecon-assets-'));
@@ -66,13 +67,21 @@ test('head stylesheets are joined in order, never across an inline style, and Go
   assert.match(fs.readFileSync(path.join(root, 'other.html'), 'utf8'), /fonts\.googleapis\.com/, 'other families keep Google Fonts');
 });
 
-test('story photos offer responsive widths and prioritize the profile lookup opening', t => {
+test('lookup articles lead with their instructions and keep authored figures', () => {
+  const evidence = '<figure class="seo-guide-figure"><img src="/assets/img/observed.png" alt="Signed-out profile"></figure>';
+  const html = `<article><h1>Find a profile</h1><h2>Check it manually</h2>${evidence}</article>`;
+  assert.equal(designArticle(html, 'find/profile.html'), html);
+  assert.match(designArticle(html, 'blog/story.html'), /<figure class="story-photo">/);
+});
+
+test('authored story photos offer responsive widths and keep their loading behavior', t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'myrecon-photo-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   fs.mkdirSync(path.join(root, 'find'));
   const photo = '<figure class="story-photo"><img src="https://images.unsplash.com/photo-123?w=1200&amp;q=80" alt="Desk" width="1200" height="800" loading="lazy"><figcaption>Photo credit</figcaption></figure>';
   const pages = ['article.html', 'find/profile.html'];
-  for (const file of pages) fs.writeFileSync(path.join(root, file), photo);
+  for (const file of pages) fs.writeFileSync(path.join(root, file),
+    file.startsWith('find/') ? photo.replace('loading="lazy"', 'fetchpriority="high"') : photo);
   optimizeAssets(root);
   for (const file of pages) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
