@@ -1,60 +1,44 @@
 <!--
 {
-  "title": "Reverse Phone Lookup: Public Sources & Limits | MyRecon",
-  "headline": "Reverse Phone Lookup & Phone Number OSINT: How to Investigate Numbers Safely",
-  "description": "Learn technical methods to trace phone numbers using carrier lookups, HLR validation, messaging platform discovery, and ethical OSINT tools without scams.",
-  "category": "OSINT Investigation",
+  "title": "Reverse Phone Lookup: Check a Suspicious Call | MyRecon",
+  "headline": "Reverse Phone Lookup: How to Check a Suspicious Call",
+  "description": "See what caller ID and public phone listings can tell you. Verify a suspicious call through a trusted number, then block or report it if needed.",
+  "category": "Personal Security",
   "datePublished": "2026-10-14",
-  "dateModified": "2026-10-14"
+  "dateModified": "2026-11-24",
+  "editorial_review": "2026-11-24"
 }
 -->
-<p class="lead">From spam callers and SMS phishing (smishing) scams to due-diligence verifications, analyzing a telephone number is a vital branch of modern open-source intelligence. Here is how investigators and cybersecurity analysts dissect phone numbers using ethical, technical OSINT methods.</p>
+<p class="lead">A reverse phone lookup can match a displayed number to a public listing. Caller ID can be spoofed, so even a match to your bank leaves the caller’s identity unresolved. End a suspicious call and reach the organization using a number you already trust, such as the one on your card, statement or official app.</p>
+<p><a href="#verify-a-suspicious-call">Verify the call</a> · <a href="#reverse-lookup-evidence">Read the lookup result</a> · <a href="#where-to-report">Find the right reporting channel</a></p>
 
-<h2>Understanding Phone Number Anatomy (E.164 Format)</h2>
-<p>Every legitimate phone number follows the international telecom standard <strong>ITU E.164</strong>, formatted as <code>+[Country Code][National Destination Code][Subscriber Number]</code>.</p>
-<p>Breaking down a number provides the initial technical clues:</p>
-<ul>
-  <li><strong>Country Code (CC):</strong> Identifies the sovereign telecom regulatory authority (e.g., <code>+1</code> for North America, <code>+44</code> for the UK, <code>+91</code> for India).</li>
-  <li><strong>National Destination / Area Code:</strong> Identifies geographic region or telecom operator routing blocks.</li>
-  <li><strong>Line Type:</strong> Tells you whether the number is assigned to a physical <strong>Mobile/Cellular</strong> SIM, a legacy copper <strong>Landline</strong>, or a virtual <strong>VoIP (Voice over IP)</strong> provider (e.g., Google Voice, Twilio, Skype, or TextNow).</li>
-</ul>
-
-<h2>Step 1: Carrier &amp; Line Type Identification (The VoIP Check)</h2>
-<p>Determining whether a phone number is a physical mobile SIM or a virtual VoIP number is the single most important diagnostic step:</p>
+<h2 id="verify-a-suspicious-call">How to verify a suspicious call</h2>
 <ol>
-  <li><strong>VoIP Numbers:</strong> Widely used by scammers, spammers, and customer support desks because they can be created and discarded in seconds with zero physical SIM registration.</li>
-  <li><strong>Cellular / Mobile:</strong> In many jurisdictions, obtaining a physical SIM requires government identification (Know Your Customer / KYC laws), making mobile numbers more tightly bound to a real person.</li>
-  <li><strong>Free Carrier Check:</strong> You can query local Number Portability Administration Centers (NPAC) or open telecom tools like <em>PhoneInfoga</em> and telecom API lookup endpoints to identify the original and current ported carrier.</li>
+  <li><strong>End the call.</strong> Keep account credentials and verification codes to yourself. If the caller claims to be helping with an account problem, ask only for the organization’s name and a general description of the issue.</li>
+  <li><strong>Find the organization’s contact information independently.</strong> Open an app you already use, a statement or the official site you know. If the caller claimed to be someone you know, contact them using a number already in your contacts.</li>
+  <li><strong>Ask the organization to confirm the claim.</strong> For a bank alert, ask the fraud team to check for the activity or case the caller mentioned. Keep the incoming caller ID, any callback number they gave you and the verified contact you used as separate details.</li>
 </ol>
+<p>The <a href="https://consumer.ftc.gov/consumer-alerts/2026/01/how-handle-unexpected-calls-claim-your-money-risk">FTC’s guidance on unexpected bank and government calls</a> explains why a familiar number or an urgent request still warrants an independent callback.</p>
 
-<h2>Step 2: HLR (Home Location Register) Lookup</h2>
-<p>An HLR lookup queries the worldwide cellular signaling network (SS7/Diameter) to determine the real-time operational status of a mobile device:</p>
+<h2 id="reverse-lookup-evidence">What a reverse phone lookup can tell you</h2>
+<table>
+  <caption>How to interpret common phone lookup results</caption>
+  <thead><tr><th scope="col">What you found</th><th scope="col">What it establishes</th><th scope="col">Next step</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">The number appears on an organization’s official site</th><td>The organization publishes that number. Caller ID can display it even if another party made the call.</td><td>Contact the organization independently and verify the specific claim.</td></tr>
+    <tr><th scope="row">A caller ID app shows a name or spam label</th><td>The app has associated a label with the displayed number. The label is a lead and can reflect past reports.</td><td>Use the official contact for any organization named. Keep the label separate from the caller’s identity.</td></tr>
+    <tr><th scope="row">The number has a familiar area code or no public listing</th><td>The display looks local, or the directory you used found no entry. The origin of the call remains unresolved.</td><td>Let an unfamiliar caller leave a message. Verify any claim through an independent channel.</td></tr>
+  </tbody>
+</table>
+<p><strong>Fictional example.</strong> A call shows <code>+1 202-555-0142</code> and claims your card is frozen. You end the call, open your bank app and ask the fraud team whether it placed the call or needs you to take action. Record what the bank confirms separately from what the caller said. The example number uses <a href="https://www.nanpa.com/numbering/555-line-numbers">NANPA’s reserved fictional range</a>. The <a href="https://consumer.ftc.gov/features/pass-it-on/unwanted-calls-and-text-messages">FTC explains spoofed local and familiar numbers</a>.</p>
+
+<h2 id="where-to-report">Where to report an unwanted or fraudulent call</h2>
+<p>If you sent money or shared payment details, contact the payment provider or bank immediately through its official channel. Keep your receipt, the date and time, and any message or voicemail you received. Share evidence through the provider’s reporting channel.</p>
 <ul>
-  <li><strong>Active Status:</strong> Confirms whether the phone is turned on and communicating with a cell tower.</li>
-  <li><strong>Current Network:</strong> Reveals if the subscriber has ported their number from AT&amp;T to Verizon, or Vodafone to Airtel.</li>
-  <li><strong>Roaming State:</strong> Indicates whether the mobile device is currently registered in its home region or traveling abroad on a foreign carrier network.</li>
-  <li><strong>Zero Trace:</strong> HLR lookups do not ring the phone, send an alert, or notify the device owner.</li>
+  <li><strong>United States.</strong> Use <a href="https://reportfraud.ftc.gov/">FTC ReportFraud</a> for scams and the <a href="https://consumercomplaints.fcc.gov/hc/en-us/articles/115002234203-Unwanted-Calls-Texts-Phone">FCC’s unwanted calls and spoofing guidance</a> for call complaints.</li>
+  <li><strong>India.</strong> Use <a href="https://sancharsaathi.gov.in/sfc/">Chakshu on Sanchar Saathi</a> to report suspected fraud calls and messages. If you already lost money to cyber fraud, contact your bank promptly and report it through <a href="https://www.cybercrime.gov.in/">the National Cyber Crime Reporting Portal</a> or helpline <strong>1930</strong>.</li>
+  <li><strong>Elsewhere.</strong> Use your mobile carrier’s reporting channel and the national telecom or fraud reporting service for your country.</li>
 </ul>
 
-<h2>Step 3: Messaging App Profile Pivots (WhatsApp, Telegram, Signal)</h2>
-<p>Billions of users link their phone numbers to popular end-to-end encrypted messaging applications. These platforms often serve as public identity anchors:</p>
-<ul>
-  <li><strong>WhatsApp Web / API:</strong> Saving a phone number in your address book or opening <code>https://wa.me/&lt;number&gt;</code> allows you to check if a WhatsApp account is active. If the user's privacy settings permit public visibility, their profile photo, display name, and "About" bio can be examined.</li>
-  <li><strong>Telegram:</strong> Adding a number to a sandboxed research device’s contacts allows you to see if an associated Telegram account exists, often revealing their public <code>@username</code>. You can then take that username and run it through <a href="/#tool">MyRecon username search</a> to discover connected profiles across 560+ other platforms!</li>
-  <li><strong>Truecaller / Caller ID Databases:</strong> Crowdsourced caller ID directories aggregate contacts from users who upload their phone books. While effective, keep in mind that caller names reflect how other people saved the contact, not necessarily their official legal name.</li>
-</ul>
-
-<h2>Step 4: Search Engine Operators and Dorks for Phone Numbers</h2>
-<p>Numbers frequently surface in public business registries, resume uploads, forum sales listings, and real estate classifieds. Search engine syntax helps unearth these links:</p>
-<pre><code>"123-456-7890" OR "(123) 456-7890" OR "+11234567890"
-"phone_number" (resume OR curriculum OR contact OR invoice)
-site:facebook.com "phone_number"
-site:linkedin.com "phone_number"</code></pre>
-
-<h2>Defending Your Own Phone Privacy</h2>
-<p>Because phone numbers act as de facto universal identity tokens, exposing your real number creates significant security risks, including SIM swapping attacks and identity theft:</p>
-<ul>
-  <li><strong>Never use your personal number for public 2FA:</strong> Switch two-factor authentication from SMS to an authenticator app (like Aegis, 2FAS, or YubiKey) to prevent SIM hijacking.</li>
-  <li><strong>Use secondary numbers:</strong> Keep a dedicated secondary VoIP number (like Google Voice, MySudo, or a secondary prepaid eSIM) for shopping receipts, classifieds, and delivery apps.</li>
-  <li><strong>Remove your number from broker sites:</strong> Follow our <a href="/blog/how-to-remove-yourself-from-the-internet.html">data broker opt-out guide</a> to purge your phone number from public registries.</li>
-</ul>
+<h2 id="defending-your-own-phone-privacy">How to reduce exposure of your own number</h2>
+<p>Review the public contact details in profiles and listings you control. If a people-search site publishes your number, follow its official opt-out procedure. For copies in search results or other listings, follow the <a href="/blog/how-to-remove-yourself-from-the-internet.html">personal information removal guide</a>. If someone is posting your details to threaten you, see <a href="/blog/doxxing-prevention-personal-cybersecurity-guide.html#what-to-do-if-doxxed">how to document and report doxxing</a>.</p>
