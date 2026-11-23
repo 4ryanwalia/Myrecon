@@ -1,13 +1,13 @@
 <!--
 {
-  "title": "Best Username Search Tools: Evidence & Workflow | MyRecon",
-  "headline": "Best Username Search Tools: Choose by Evidence and Workflow",
-  "description": "Choose a username search tool for browser checks, local workflows or enriched reports. Learn how to compare coverage, false positives and unresolved results.",
+  "title": "Best OSINT Username Search Tools Compared | MyRecon",
+  "headline": "Best OSINT Username Search Tools Compared",
+  "description": "Compare MyRecon, Sherlock, Maigret and WhatsMyName by setup, source evidence and reporting. See how a basic check misread GitLab profiles in our test.",
   "category": "Username search",
   "datePublished": "2026-10-08",
-  "dateModified": "2026-10-13",
-  "editorial_review": "2026-10-13",
-  "keywords": ["best username search tools", "username search", "username lookup", "social media username search", "find accounts by username"],
+  "dateModified": "2026-11-23",
+  "editorial_review": "2026-11-23",
+  "keywords": ["best username search tools", "osint username search", "username lookup", "social media username search", "find accounts by username"],
   "faq": [
     {"question": "Does a username search prove that two profiles belong to one person?", "answer": "No. A handle may be reused by unrelated people, copied by an impersonator or reassigned. Confirm relationships with independent public evidence, and confirm your own account ownership through the platform."},
     {"question": "Is a username availability checker the same as an OSINT search?", "answer": "No. An availability checker asks whether a name can be registered on a service. An OSINT username search looks for public profile evidence. A reserved or unavailable name does not necessarily represent an existing public account."},
@@ -15,11 +15,39 @@
   ]
 }
 -->
-<p class="lead"><strong>Quick answer:</strong> choose a username search tool by the evidence it exposes and the workflow you can maintain. MyRecon is a browser option, Sherlock fits local handle checks, and Maigret supports enriched research reports. No single result count determines which is best for your task.</p>
+<p class="lead">Use MyRecon for a browser check with source links, Sherlock for a local username search, or Maigret when you need reports with public profile details. WhatsMyName still provides a downloadable set of detection rules, frozen since November 2026. Whatever you use, check whether the tool shows the original profile URL and tells you when a site gave no clear answer.</p>
 
 <h2>A Sherlock alternative without installing software</h2>
-<p>If your immediate task is to check a username online, MyRecon offers a browser workflow: enter a handle, inspect public profile leads and open the original sources. Sherlock is a different fit when you prefer a local command-line workflow. Maigret may suit research that needs public-page enrichment and reports. Compare the <a href="/blog/sherlock-vs-maigret-vs-myrecon.html">setup, evidence and reporting differences</a>; this is not a claim that a browser tool has better coverage or accuracy.</p>
-<p><a class="btn" href="/#tool">Check a username in your browser</a> · <a href="/pricing">Review guest and account limits</a></p>
+<p>Enter a username you control, inspect the leads and open the original profiles. MyRecon offers a guest preview and publishes this comparison. The <a href="/blog/sherlock-vs-maigret-vs-myrecon.html">Sherlock and Maigret comparison</a> links to the measured outcomes from a separate 35-control test.</p>
+<p><a class="btn" href="/#tool=username">Start a free username search</a> · <a href="/pricing">Review guest and account limits</a></p>
+
+<h2>Match the tool to the work</h2>
+<p>We reviewed the projects' official documentation on 23 November 2026 and compared setup, scope and the evidence each workflow lets you review.</p>
+<table>
+  <caption>Username tool choices and the tradeoffs to inspect</caption>
+  <thead><tr><th scope="col">Option</th><th scope="col">Useful when</th><th scope="col">Check before relying on it</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">MyRecon</th><td>You want public profile leads in a browser, with coverage context and available CSV/JSON exports.</td><td>Guest/sign-in/plan limits, unresolved sources and the actual profile pages.</td></tr>
+    <tr><th scope="row">Sherlock</th><td>You can run a local command-line workflow and need supported-site handle checks.</td><td>Your installed version, site rules, output settings and returned source URLs.</td></tr>
+    <tr><th scope="row">Maigret</th><td>You need page enrichment and configurable reporting for an authorized task.</td><td>The selected site scope, recursive searches and the provenance of extracted fields.</td></tr>
+    <tr><th scope="row">WhatsMyName</th><td>You want to inspect or reuse a documented set of site rules.</td><td>The original dataset was archived with 691 site records on 9 November 2026. Check which rules your chosen interface uses and verify important matches.</td></tr>
+    <tr><th scope="row">Manual source search</th><td>You have a few priority platforms or want to verify an automated lead.</td><td>Whether the page is a real profile, a login screen or a generic placeholder.</td></tr>
+  </tbody>
+</table>
+<p><a href="https://github.com/sherlock-project/sherlock">Sherlock's repository</a> documents its local checks and output options. <a href="https://maigret.readthedocs.io/en/latest/usage-examples.html">Maigret's examples</a> show its report workflows. The <a href="https://github.com/WebBreacher/WhatsMyName">WhatsMyName archive</a> documents the final data and lists tools built on it.</p>
+
+<h2 id="positive-and-missed-matches">What a match count can miss</h2>
+<p>In MyRecon's November benchmark, a simple HTTP-status rule reported 80 GitLab matches. GitLab's official reference supported 60 of them and showed no account for the other 20. On Hacker News, the same rule produced no matches even though the reference confirmed accounts in 60 observations. In that case, every web check was inconclusive.</p>
+<table>
+  <caption>Positive results from an HTTP-status rule, checked against official APIs</caption>
+  <thead><tr><th scope="col">Platform</th><th scope="col">Reported matches supported by the reference</th><th scope="col">Reference-confirmed observations the rule left inconclusive</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">GitHub</th><td>95 of 95</td><td>5 of 100</td></tr>
+    <tr><th scope="row">GitLab</th><td>60 of 80</td><td>0 of 60</td></tr>
+    <tr><th scope="row">Hacker News</th><td>No matches reported</td><td>60 of 60</td></tr>
+  </tbody>
+</table>
+<p>Each platform contributed 200 observations from the same ten handles checked across 20 runs. These counts measure the simple rule on those fixtures. The separate 35-control study covers the results of named tools. <a href="/blog/username-search-benchmark-research.html#november-controls">November methods and original data</a> · <a href="/assets/downloads/username-http-status-controls-november-2026.csv" download>Download the 600-row CSV</a></p>
 
 <h2>Find accounts you forgot, or review your brand's handles</h2>
 <p>For “find my old accounts,” search the handles you actually used, including remembered spelling changes. Compare candidate pages with your password manager and old welcome emails, then use the provider's recovery process to confirm control. Our <a href="/blog/find-your-own-old-accounts.html">old-account guide</a> turns those leads into a checklist.</p>
@@ -28,20 +56,6 @@
 <h2>Define what you mean by username search</h2>
 <p>A username lookup starts with a handle, such as one you use on a community forum, and searches for public pages using the same string. A social media username search may return candidate profiles, unrelated name collisions, outdated pages or inaccessible sources. It cannot tell you who controls each account without additional evidence.</p>
 <p>First decide whether you want to find your own old accounts, review a brand's public handles or investigate a specific public-source question. A name availability checker answers a different question: whether registration is allowed. Services may reserve names, suspend accounts or restrict registration without displaying a public profile. Do not count all those outcomes as found accounts.</p>
-
-<h2>Match the tool to the work</h2>
-<p><strong>Disclosure:</strong> MyRecon publishes this comparison. We reviewed the official documentation linked here on 8 October 2026; these are workflow choices, not independent performance awards.</p>
-<table>
-  <caption>Username tool choices and the tradeoffs to inspect</caption>
-  <thead><tr><th scope="col">Option</th><th scope="col">Useful when</th><th scope="col">Check before relying on it</th></tr></thead>
-  <tbody>
-    <tr><th scope="row">MyRecon</th><td>You want public profile leads in a browser, with coverage context and available CSV/JSON exports.</td><td>Guest/sign-in/plan limits, unresolved sources and the actual profile pages.</td></tr>
-    <tr><th scope="row">Sherlock</th><td>You can run a local command-line workflow and need supported-site handle checks.</td><td>Your installed version, site rules, output settings and returned source URLs.</td></tr>
-    <tr><th scope="row">Maigret</th><td>You need page enrichment and configurable reporting for an authorized task.</td><td>The selected site scope, recursive searches and the provenance of extracted fields.</td></tr>
-    <tr><th scope="row">Manual source search</th><td>You have a few priority platforms or want to verify an automated lead.</td><td>Whether the page is a real profile, a login screen or a generic placeholder.</td></tr>
-  </tbody>
-</table>
-<p><a href="https://github.com/sherlock-project/sherlock">Sherlock's repository</a> documents its local checks and output options. <a href="https://maigret.readthedocs.io/en/latest/usage-examples.html">Maigret's examples</a> describe its research and report workflows. MyRecon's <a href="/pricing.html">access page</a> explains current allowances. Choose the option that lets you retain source links and revisit doubtful findings.</p>
 
 <h2>Use a small evaluation set you understand</h2>
 <p>Before a larger self-audit, make a private checklist of a few accounts you control and can currently open. Note exact handle spelling, the canonical profile address and what a logged-out visitor can see. Include an authorized case with a renamed or deleted profile if you have one. Do not assume a random string is definitely unused: a real person may already use it.</p>
@@ -70,4 +84,4 @@
 <h3>Why do username search tools disagree?</h3>
 <p>They may check different sites, use different detection rules or encounter different blocks and timeouts. Compare exact profile addresses and original source evidence before treating a difference as an accuracy result.</p>
 
-<p><a href="/#tool">Check a username you control with MyRecon</a>, compare the <a href="/blog/sherlock-vs-maigret-vs-myrecon.html">three workflows in detail</a>, or follow the <a href="/blog/find-your-own-old-accounts.html">old-account discovery checklist</a>.</p>
+<p><a href="/#tool=username">Check a username you control with MyRecon</a>, compare the <a href="/blog/sherlock-vs-maigret-vs-myrecon.html">three workflows in detail</a>, or follow the <a href="/blog/find-your-own-old-accounts.html">old-account discovery checklist</a>.</p>
