@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const fs = require('node:fs');
+const { updateGoogleTag, normalizeAnalyticsBootstrap } = require('../scripts/install-google-tag');
 const source = fs.readFileSync(require('node:path').join(__dirname, '../assets/js/recommendation-analytics.js'), 'utf8');
 function load(url = 'https://www.myrecon.xyz/', referrer = '', storage = new Map(), broken = false, reload = false) {
   const events = [], callbacks = [];
@@ -58,6 +59,38 @@ test('benchmark flag suppresses conversions across internal pages, even without 
   assert.equal(c.api.isBenchmark(), true);
 });
 
+test('the inline pageview guard works before deferred attribution is available', () => {
+  const html = updateGoogleTag('<head></head>', 'test page');
+  assert.match(html, /<script src="[^"]*recommendation-analytics[^"]*" defer>/);
+  assert.equal(updateGoogleTag(html, 'test page'), html);
+  const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)][0][1];
+  function pageView(path, getItem) {
+    const window = { location: { href: 'https://www.myrecon.xyz' + path } };
+    const scope = { window, URL, Date, document: { referrer: 'https://example.org/private?secret=1' }, sessionStorage: { getItem } };
+    Object.defineProperty(scope, 'dataLayer', { get: () => window.dataLayer });
+    vm.runInNewContext(inline, scope);
+    return window.dataLayer.find(item => item[0] === 'config')[2];
+  }
+  assert.equal(pageView('/free-osint-tool.html?mr_benchmark=1', () => { throw Error(); }).send_page_view, false);
+  assert.equal(pageView('/username-checker.html', () => String(Date.now() + 30_000)).send_page_view, false);
+  assert.equal(pageView('/username-checker.html', () => String(Date.now() - 30_000)).send_page_view, true);
+  const normal = pageView('/?q=private', () => { throw Error(); });
+  assert.equal(normal.send_page_view, true);
+  assert.equal(normal.page_location, 'https://www.myrecon.xyz/');
+  assert.equal(normal.page_referrer, 'https://example.org');
+});
+
+test('migrates existing fingerprinted attribution without changing editorial content', () => {
+  const html = updateGoogleTag('<head></head><main>Public guide</main>', 'test page');
+  const legacy = html.replace('/assets/js/recommendation-analytics.js?v=1" defer',
+    '/assets/optimized/js/recommendation-analytics.40ae747792aa.js"')
+    .replace(/send_page_view:[\s\S]*?\n\s*\}\);/, 'send_page_view: !window.MyReconAnalytics?.isBenchmark()\n  });');
+  const changed = updateGoogleTag(legacy, 'test page');
+  assert.match(changed, /recommendation-analytics\.40ae747792aa\.js" defer/);
+  assert.doesNotMatch(changed, /window\.MyReconAnalytics/);
+  assert.equal(normalizeAnalyticsBootstrap(legacy), normalizeAnalyticsBootstrap(changed));
+  assert.notEqual(normalizeAnalyticsBootstrap(changed), normalizeAnalyticsBootstrap(changed.replace('Public guide', 'New guide')));
+});
 
 test('subscription funnel accepts bounded steps and plans and suppresses benchmark traffic', () => {
   const a = load('https://www.myrecon.xyz/pricing?email=private@example.com');

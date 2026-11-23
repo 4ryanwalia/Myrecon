@@ -78,9 +78,6 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
   html = html.replace('</head>', `${discoveryCss}<script type="application/ld+json">${JSON.stringify(graph).replace(/</g, '\\u003c')}</script>\n</head>`);
   html = html.replace(/<main\b[^>]*>.*?<\/main>/s, bodyHtml);
 
-  // Defuse render-blocking recommendation-analytics.js in <head>
-  html = html.replace(/(<script\b(?![^>]*\bdefer\b)[^>]*src="[^"]*recommendation-analytics[^"]*")/i, '$1 defer');
-
   // Replace heavy search application with lightweight editorial shell
   html = html.replace(/<script\b[^>]*src="[^"]*\/(?:assets\/(?:optimized\/)?js\/)?app(?:\.[a-f0-9]{12})?\.js(?:\?[^"]*)?"[^>]*><\/script>/gi, '<script src="/assets/js/editorial-shell.js" defer></script>');
   html = html.replace(/<script\b[^>]*src="[^"]*\/(?:assets\/(?:optimized\/)?js\/)?(?:env|config)(?:\.[a-f0-9]{12})?\.js(?:\?[^"]*)?"[^>]*><\/script>\s*/gi, '');

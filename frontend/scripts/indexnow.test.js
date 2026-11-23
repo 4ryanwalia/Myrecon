@@ -29,8 +29,9 @@ test('submits only pages whose rendered public HTML changed', () => {
     fs.mkdirSync(path.join(after, 'guides'), { recursive: true });
     fs.mkdirSync(path.join(after, 'content'), { recursive: true });
     const unchanged = '<title>Guide</title><link rel="canonical" href="https://www.myrecon.xyz/guides/">';
-    fs.writeFileSync(path.join(before, 'guides', 'index.html'), unchanged);
-    fs.writeFileSync(path.join(after, 'guides', 'index.html'), unchanged);
+    const attribution = '<script src="/assets/js/recommendation-analytics.js"></script>';
+    fs.writeFileSync(path.join(before, 'guides', 'index.html'), unchanged + attribution);
+    fs.writeFileSync(path.join(after, 'guides', 'index.html'), unchanged + attribution.replace('.js">', '.js" defer>'));
     fs.writeFileSync(path.join(before, 'guides', 'privacy.html'), '<title>Privacy</title><link rel="canonical" href="https://www.myrecon.xyz/guides/privacy">old');
     fs.writeFileSync(path.join(after, 'guides', 'privacy.html'), '<title>Privacy</title><link rel="canonical" href="https://www.myrecon.xyz/guides/privacy">new');
     fs.writeFileSync(path.join(after, 'guides', 'new.html'), '<title>New</title><link rel="canonical" href="https://www.myrecon.xyz/guides/new">');

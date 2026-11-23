@@ -2,6 +2,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync, spawnSync } = require('node:child_process');
+const { normalizeAnalyticsBootstrap } = require('./install-google-tag');
 
 const ROOT = path.resolve(__dirname, '..');
 const SKIP_DIRS = new Set(['.git', '.vercel', 'content', 'data', 'node_modules', 'scripts']);
@@ -25,7 +26,7 @@ function publicHtmlHashes(dir = ROOT, hashes = new Map()) {
     if (entry.isDirectory()) publicHtmlHashes(full, hashes);
     else if (entry.name.endsWith('.html')) {
       const rel = path.relative(ROOT, full).split(path.sep).join('/');
-      const normalized = normalizeAssetUrls(fs.readFileSync(full, 'utf8'));
+      const normalized = normalizeAssetUrls(normalizeAnalyticsBootstrap(fs.readFileSync(full, 'utf8')));
       hashes.set(rel, crypto.createHash('sha256').update(normalized).digest('hex'));
     }
   }

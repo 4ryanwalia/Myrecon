@@ -27,6 +27,7 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("node:child_process");
+const { normalizeAnalyticsBootstrap } = require("./install-google-tag");
 
 const HOST = "www.myrecon.xyz";
 const ENDPOINT = "https://api.indexnow.org/indexnow";
@@ -99,7 +100,7 @@ function renderedChangedUrls(beforeRoot, afterRoot) {
   const after = renderedHtml(path.resolve(afterRoot));
   const urls = new Set();
   for (const file of new Set([...before.keys(), ...after.keys()])) {
-    if (before.get(file) === after.get(file)) continue;
+    if (normalizeAnalyticsBootstrap(before.get(file)) === normalizeAnalyticsBootstrap(after.get(file))) continue;
     for (const html of [before.get(file), after.get(file)]) {
       if (!html) continue;
       const url = publicUrl(`frontend/${file}`, html);
