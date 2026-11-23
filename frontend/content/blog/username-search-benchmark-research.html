@@ -5,7 +5,7 @@
   "description": "Compare MyRecon, Sherlock and Maigret results, and download 600 repeated checks showing when HTTP status alone failed to establish whether a username existed.",
   "category": "Research",
   "datePublished": "2026-11-01",
-  "dateModified": "2026-11-22",
+  "dateModified": "2026-11-23",
   "editorial_review": "2026-11-22",
   "dataset": {
     "name": "HTTP status and username lookup verdicts across GitHub, GitLab and Hacker News",
@@ -37,6 +37,9 @@
 <p><a href="/assets/downloads/username-http-status-controls-november-2026.csv" download>Download the 600 observations as CSV</a>, published <time datetime="2026-11-22">22 November 2026</time>. Group by platform and compare the two verdict columns. Count <code>unknown</code> in the HTTP status verdict column as inconclusive. A blank HTTP status means the check recorded no status code. Fixture IDs repeat within a platform and should be grouped together when counting distinct controls.</p>
 <p>The CSV comes from the <a href="https://raw.githubusercontent.com/4ryanwalia/Myrecon/b60d65e7fdc476999301e313196b852fa4f70efc/frontend/data/benchmarks.json">dated JSON snapshot</a>. In <code>runs</code>, select the UTC start dates from 1 through 21 November inclusive. There is no entry for 4 November. Group <code>checks</code> by platform. Compare <code>http200_baseline.verdict</code> with <code>reference.verdict</code>. Every reference in this window returned a definite verdict. The sample consists of ten fixed handles per service repeated across 20 runs. A failure rate for random usernames would require a different sample.</p>
 <p>For a check you can do by hand, use the <a href="/find/github-profile">GitHub username lookup and profile privacy checklist</a>. The <a href="/blog/instagram-osint-public-profile-guide.html#two-instagram-pages">two recorded Instagram responses</a> show a different way that HTTP status can leave a profile unresolved.</p>
+
+<h3 id="cite-november-data">Cite the November dataset</h3>
+<p>MyRecon. (2026, November 22). <cite>HTTP status and username lookup verdicts across GitHub, GitLab and Hacker News</cite> [Data set]. Link to <a href="/blog/username-search-benchmark-research.html#november-controls">the method and results</a>. Use the <a href="https://raw.githubusercontent.com/4ryanwalia/Myrecon/d14c3fc08c2714c3959ce3288c31506d508ce0f5/frontend/assets/downloads/username-http-status-controls-november-2026.csv">CSV pinned to its publication commit</a> to recalculate the totals from the 600 observations.</p>
 
 <h2 id="findings">Findings from the full-catalogue case study</h2>
 <p><strong>Expanded original testing, 1 November 2026:</strong> the <a href="/blog/username-search-controlled-study-2026.html">35-control study across eight platforms</a> adds platform-specific upstream testing fixtures and generated candidates, with current reference verification, all tool outcomes, pinned versions, a CSV and a downloadable evidence ZIP. Its sample and scored denominators are separate from the historical case below.</p>

@@ -5,10 +5,12 @@
   "description": "Original MyRecon, Sherlock and Maigret control study: supported matches, false positives, unresolved checks, pinned versions and downloadable CSV/JSON evidence.",
   "category": "Research",
   "datePublished": "2026-11-01",
-  "dateModified": "2026-11-01",
+  "dateModified": "2026-11-23",
   "editorial_review": "2026-11-01",
   "dataset": {
     "name": "Username search control study: 35 controls, 8 platforms, 3 tools (1 November 2026)",
+    "datePublished": "2026-11-01",
+    "dateModified": "2026-11-01",
     "description": "35 platform-specific username controls on GitHub, GitLab, Hacker News, Docker Hub, Dev.to, npm, Keybase and PyPI, each checked against an independent public reference and then run through the MyRecon web engine, Sherlock and Maigret. Every outcome is recorded, including exclusions and unresolved checks.",
     "temporalCoverage": "2026-11-01T16:39:28Z/2026-11-01T16:41:33Z",
     "measurementTechnique": "Manifest fixed before predictions. A public reference observation runs first for each control, then each tool runs sequentially, one connection at a time, with no retries, supplied authentication or block bypass. Outcomes are scored against the reference verdict.",
@@ -74,6 +76,9 @@
 <p>Extract the ZIP and follow its README. Check out the recorded MyRecon revision, install the pinned third-party requirements in an isolated Python 3.12 environment, copy the included study harness, and run it with the provided manifest. A fresh run makes fresh network observations; it will not necessarily reproduce these historical outcomes. The ZIP contains retained, privacy-minimized observations and source-response hashes, rather than complete profile bodies.</p>
 
 <pre><code>python backend/tools/expanded_username_study.py --manifest controls.json --output output/new-study.json</code></pre>
+
+<h3 id="cite-study-data">Cite the control dataset</h3>
+<p>MyRecon. (2026, November 1). <cite>Username search control study: 35 controls, 8 platforms, 3 tools (1 November 2026)</cite> [Data set]. Link to <a href="/blog/username-search-controlled-study-2026.html">the method and results</a>. Use the <a href="https://raw.githubusercontent.com/4ryanwalia/Myrecon/24b7deb129966b54297e9d8777d274c73d128925/frontend/assets/downloads/username-controls-2026-11-01/checks.csv">CSV pinned to its publication commit</a> for the 105 recorded tool outcomes.</p>
 
 <h2 id="limits">Limitations and what this study supports</h2>
 

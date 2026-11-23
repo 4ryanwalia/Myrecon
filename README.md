@@ -122,6 +122,9 @@ MyRecon brings public username signals, supported breach exposure checks, and do
 
 The [three-platform username check results](https://www.myrecon.xyz/blog/username-search-benchmark-research.html#november-controls) include a [CSV of 600 repeated observations](https://www.myrecon.xyz/assets/downloads/username-http-status-controls-november-2026.csv) and instructions for reproducing the counts. The separate [35-control study across eight platforms](https://www.myrecon.xyz/blog/username-search-controlled-study-2026.html) publishes tool versions, individual verdicts and downloadable evidence. For a single worked example, compare [two Instagram pages that both returned HTTP 200](https://www.myrecon.xyz/blog/instagram-osint-public-profile-guide.html#two-instagram-pages).
 
+Use the [repository citation file](CITATION.cff) for the software or cite the
+specific dataset when referencing a measured finding.
+
 Reviewers and educators: use the [independent review kit](docs/review-kit/README.md)
 for source-pinned reproduction, raw first-party evidence, known limitations and
 a worksheet for your own tests. The kit is published by the MyRecon developer;
