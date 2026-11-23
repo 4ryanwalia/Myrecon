@@ -62,9 +62,9 @@ function publicUrl(file, html) {
 function changedUrls(before, after) {
   const git = args => execFileSync("git", args, { cwd: ROOT, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 });
   const files = git(["diff", "--name-only", "--no-renames", before, after, "--", "frontend"])
-    .trim().split(/\r?\n/).filter(file => file.endsWith(".html"));
+    .trim().split(/\r?\n/);
   const urls = new Set();
-  for (const file of files) {
+  for (const file of files.filter(file => file.endsWith(".html"))) {
     // Include the old canonical too when a page is deleted or its URL moves.
     for (const ref of [before, after]) {
       let html;
@@ -73,7 +73,34 @@ function changedUrls(before, after) {
       if (url) urls.add(url);
     }
   }
+  if (files.includes("frontend/vercel.json")) {
+    const configs = [before, after].map(ref => {
+      let json;
+      try { json = git(["show", `${ref}:frontend/vercel.json`]); } catch { return {}; }
+      return JSON.parse(json);
+    });
+    for (const url of changedRedirectUrls(...configs)) urls.add(url);
+  }
   return [...urls];
+}
+
+function literalRedirects(config) {
+  const routes = new Map();
+  for (const { source, destination, statusCode, permanent, has, missing } of config.redirects || []) {
+    // A conditional or patterned route doesn't identify a concrete public URL.
+    if (has || missing || typeof source !== "string" || !/^\/[a-z0-9._~/-]*$/i.test(source) ||
+        source.startsWith("//") || /^\/(?:api|content|worker-console|scripts|tests|node_modules)(?:\/|$)/.test(source)) continue;
+    const url = new URL(`https://${HOST}${source}`);
+    if (url.pathname !== source || routes.has(url.href)) continue;
+    routes.set(url.href, JSON.stringify([statusCode ?? (permanent === false ? 307 : 308), destination]));
+  }
+  return routes;
+}
+
+function changedRedirectUrls(beforeConfig, afterConfig) {
+  const before = literalRedirects(beforeConfig);
+  const after = literalRedirects(afterConfig);
+  return [...new Set([...before.keys(), ...after.keys()])].filter(url => before.get(url) !== after.get(url));
 }
 
 function renderedHtml(root) {
@@ -94,11 +121,15 @@ function renderedHtml(root) {
   return files;
 }
 
-/** Find public canonical URLs whose rendered HTML changed between two builds. */
+/** Find public URLs whose rendered HTML or redirect changed between two builds. */
 function renderedChangedUrls(beforeRoot, afterRoot) {
   const before = renderedHtml(path.resolve(beforeRoot));
   const after = renderedHtml(path.resolve(afterRoot));
-  const urls = new Set();
+  const configs = [beforeRoot, afterRoot].map(root => {
+    const file = path.join(root, "vercel.json");
+    return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
+  });
+  const urls = new Set(changedRedirectUrls(...configs));
   for (const file of new Set([...before.keys(), ...after.keys()])) {
     if (normalizeAnalyticsBootstrap(before.get(file)) === normalizeAnalyticsBootstrap(after.get(file))) continue;
     for (const html of [before.get(file), after.get(file)]) {

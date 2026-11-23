@@ -20,7 +20,7 @@ test('does not submit private, excluded, or external pages', () => {
   assert.equal(publicUrl('frontend/fragment.html', '<p>Fragment</p>'), null);
 });
 
-test('submits only pages whose rendered public HTML changed', () => {
+test('submits only URLs whose public HTML or redirect changed', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'myrecon-indexnow-'));
   const before = path.join(root, 'before');
   const after = path.join(root, 'after');
@@ -36,9 +36,32 @@ test('submits only pages whose rendered public HTML changed', () => {
     fs.writeFileSync(path.join(after, 'guides', 'privacy.html'), '<title>Privacy</title><link rel="canonical" href="https://www.myrecon.xyz/guides/privacy">new');
     fs.writeFileSync(path.join(after, 'guides', 'new.html'), '<title>New</title><link rel="canonical" href="https://www.myrecon.xyz/guides/new">');
     fs.writeFileSync(path.join(after, 'content', 'fragment.html'), '<title>Fragment</title>');
+    const stableRedirect = { source: '/same', destination: '/guides/' };
+    const conditional = { source: '/', has: [{ type: 'host', value: 'myrecon.xyz' }] };
+    const writeRoutes = (folder, redirects) => fs.writeFileSync(path.join(folder, 'vercel.json'), JSON.stringify({ redirects }));
+    writeRoutes(before, [
+      { ...stableRedirect, permanent: true },
+      { ...conditional, destination: 'https://www.myrecon.xyz/' },
+      { source: '/old-guide', destination: '/guides/' },
+      { source: '/removed-rule', destination: '/guides/' },
+      { source: '/status-change', destination: '/guides/', permanent: false },
+    ]);
+    writeRoutes(after, [
+      { source: '/status-change', destination: '/guides/', statusCode: 308 },
+      { source: '/old-guide', destination: '/guides/privacy' },
+      { ...conditional, destination: 'https://www.myrecon.xyz/guides/' },
+      { ...stableRedirect, statusCode: 308 },
+      { source: '/new-rule', destination: '/guides/new' },
+      { source: '/api/old', destination: '/api/new' },
+      { source: '/old/:slug*', destination: '/guides/:slug*' },
+    ]);
     assert.deepEqual(renderedChangedUrls(before, after), [
       'https://www.myrecon.xyz/guides/new',
       'https://www.myrecon.xyz/guides/privacy',
+      'https://www.myrecon.xyz/new-rule',
+      'https://www.myrecon.xyz/old-guide',
+      'https://www.myrecon.xyz/removed-rule',
+      'https://www.myrecon.xyz/status-change',
     ]);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });

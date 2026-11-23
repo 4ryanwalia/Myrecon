@@ -54,7 +54,7 @@ jobs:
           echo "Production deployment was not confirmed. Skipping crawler notification."
           exit 1
 
-      - name: Rebuild both revisions and submit changed canonical public URLs
+      - name: Rebuild both revisions and notify changes to public pages and redirects
         env:
           BEFORE: ${{ inputs.before || github.event.before }}
           AFTER: ${{ github.sha }}
