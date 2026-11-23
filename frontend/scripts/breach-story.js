@@ -33,7 +33,7 @@ function breachStory(b, editorial) {
     motive: sentences(text).filter(motiveEvidence).slice(0, 3),
     outcome: [emailCollection
       ? `${count} email addresses are listed in the collection. This does not establish the number of people or service accounts affected.`
-      : `${count} accounts are listed in this breach. This is a count of accounts, not necessarily individual people.`,
+      : `Have I Been Pwned lists ${count} email addresses in this breach record. An address total measures the source record's coverage.`,
       (b.DataClasses || []).length ? `The reported exposed data includes ${b.DataClasses.join(', ')}.` : 'The source does not list the exposed fields.'],
     editorial: editorial ? paragraphs(editorial) : [],
   };

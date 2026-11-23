@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { breachStory, caseStory } = require('../scripts/breach-story');
-const { article } = require('../scripts/build-breaches');
+const { article, index } = require('../scripts/build-breaches');
 const { designArticle } = require('../scripts/article-story-design');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -17,6 +17,27 @@ test('scraped LinkedIn data is described as public data rather than a private-da
   assert.doesNotMatch(html, /LinkedIn Scraped Data \(2021\) was breached/);
   assert.doesNotMatch(html, /during which the data was already out|confirmed, active target|A handle links this account/);
   assert.match(html, /catalogue date does not establish when the data first became public/);
+});
+
+test('breach records label source dates and address counts without claiming article publication dates', () => {
+  const record = {
+    Name: 'ExampleCo', Title: 'ExampleCo', BreachDate: '2025-11-05',
+    AddedDate: '2026-02-01T23:15:00Z', ModifiedDate: '2026-02-11T12:00:00Z',
+    PwnCount: 1200, DataClasses: ['Email addresses', 'Names'],
+  };
+  const html = article(record, '', [record]);
+  const schema = [...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)]
+    .map(([, data]) => JSON.parse(data)).find(data => data['@type'] === 'NewsArticle');
+  assert.equal(schema.datePublished, undefined);
+  assert.equal(schema.dateModified, undefined);
+  assert.equal(schema.citation.url, 'https://haveibeenpwned.com/Breach/ExampleCo');
+  assert.equal(schema.author.url, 'https://www.myrecon.xyz/about.html');
+  assert.match(html, /Incident date in HIBP <time datetime="2025-11-05">5 November 2025<\/time>/);
+  assert.match(html, /Added to HIBP <time datetime="2026-02-01">1 February 2026<\/time>/);
+  assert.match(html, /HIBP record updated <time datetime="2026-02-11">11 February 2026<\/time>/);
+  assert.match(html, /Have I Been Pwned lists 1,200 email addresses/);
+  assert.doesNotMatch(article({ ...record, ModifiedDate: record.AddedDate }, '', [record]), /HIBP record updated/);
+  assert.match(index([record], []), /One address can appear in more than one record/);
 });
 
 test('timeline enrichment preserves collection-specific email counts', t => {
@@ -38,6 +59,7 @@ test('timeline enrichment preserves collection-specific email counts', t => {
   for (const b of records) {
     const html = fs.readFileSync(path.join(root, 'breaches', b.slug + '.html'), 'utf8');
     assert.match(html, /data-story-timeline/);
+    assert.ok(html.includes(`href="https://haveibeenpwned.com/Breach/${b.Name}"`));
     assert.match(html, /email addresses are listed in the collection/);
     assert.doesNotMatch(html, /accounts are listed in this breach|during which the data was already out/);
     assert.match(html, /Behind the collected records/);

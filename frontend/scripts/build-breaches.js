@@ -189,21 +189,21 @@ function severity(b) {
   return { score, band };
 }
 
-/** Put a raw account count into human terms. */
+/** Compare the address count to a familiar scale. */
 function scaleLine(count) {
   if (!count) return null;
   for (const [place, pop] of POPULATIONS) {
     if (count >= pop) {
       const times = count / pop;
       if (times >= 1.5) {
-        return `That is about ${times.toFixed(1)}× the population of ${place}.`;
+        return `The address count is about ${times.toFixed(1)}× the population of ${place}.`;
       }
-      return `That is roughly everyone in ${place}.`;
+      return `The address count is roughly the size of the population of ${place}.`;
     }
   }
   const [place, pop] = POPULATIONS[POPULATIONS.length - 1];
   const share = Math.round((count / pop) * 100);
-  if (share >= 5) return `That is about ${share}% of the population of ${place}.`;
+  if (share >= 5) return `The address count is about ${share}% of the population of ${place}.`;
   return null;
 }
 
@@ -399,7 +399,13 @@ function prettyDate(iso) {
   if (!iso) return "";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+}
+
+function sourceDate(label, iso) {
+  const day = (iso || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || Number.isNaN(Date.parse(day))) return "";
+  return `${label} <time datetime="${day}">${esc(prettyDate(day))}</time>`;
 }
 
 /**
@@ -548,17 +554,23 @@ function article(b, editorial, siblings) {
   const storyParagraphs = values => values.map(value => `<p>${esc(value)}</p>`).join('\n');
   const sev = severity(b);
   const url = `${SITE}/breaches/${slug(b.Name)}.html`;
+  const recordUrl = `https://haveibeenpwned.com/Breach/${encodeURIComponent(b.Name)}`;
   const logo = logoFor(b);
   const classes = (b.DataClasses || []).map((c) => ({
     name: c,
     why: (DATA_CLASSES[c] || DEFAULT_CLASS).why,
   }));
-  const scale = scaleLine(b.PwnCount);
   const acts = actions(b);
   const year = (b.BreachDate || "").slice(0, 4);
   const isProfileScrape = b.Name === "LinkedInScrape";
   const isPostMillennial = b.Name === "ThePostMillennial";
   const emailCollection = isProfileScrape || isPostMillennial || b.IsStealerLog;
+  const timeline = [
+    sourceDate(b.IsStealerLog ? "HIBP record date" : "Incident date in HIBP", b.BreachDate),
+    sourceDate("Added to HIBP", b.AddedDate),
+    b.ModifiedDate?.slice(0, 10) !== b.AddedDate?.slice(0, 10) && sourceDate("HIBP record updated", b.ModifiedDate),
+    b.Domain && esc(b.Domain),
+  ].filter(Boolean).join(" · ");
 
   const lead = isProfileScrape
     ? `In 2021, public LinkedIn profile data was scraped and circulated. HIBP lists ${num(b.PwnCount)} unique email addresses in the collection.`
@@ -566,9 +578,8 @@ function article(b, editorial, siblings) {
     ? `In May 2024, The Post Millennial was defaced and several datasets circulated. HIBP lists ${num(b.PwnCount)} email addresses across the collection, including mailing lists.`
     : b.IsStealerLog
     ? `HIBP lists ${num(b.PwnCount)} unique email addresses in the ${b.Title} collection. A website in the logs identifies where credentials were used.`
-    : `On ${prettyDate(b.BreachDate)}, ${b.Title} was breached. ${num(b.PwnCount)} accounts were exposed` +
-      (classes.length ? `, including ${classes.slice(0, 3).map((c) => c.name.toLowerCase()).join(", ")}` : "") +
-      `. MyRecon rates it ${sev.score}/100, ${sev.band.toLowerCase()}.`;
+    : `HIBP records the ${b.Title} breach${b.BreachDate ? ` on ${prettyDate(b.BreachDate)}` : ""} and lists ${num(b.PwnCount)} email addresses.` +
+      (classes.length ? ` Reported data includes ${classes.slice(0, 3).map((c) => c.name.toLowerCase()).join(", ")}.` : "");
 
   const phrase = isProfileScrape ? "LinkedIn Scraped Data (2021)" : b.IsStealerLog ? b.Title : breachPhrase(b.Title);
 
@@ -585,11 +596,11 @@ function article(b, editorial, siblings) {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
-    headline: emailCollection ? `${phrase}: ${num(b.PwnCount)} email addresses listed` : `${b.Title} data breach, ${num(b.PwnCount)} accounts exposed`,
+    headline: `${phrase}: ${num(b.PwnCount)} email addresses listed`,
     description: lead,
-    datePublished: (b.AddedDate || b.BreachDate || "").slice(0, 10),
-    dateModified: (b.ModifiedDate || b.AddedDate || "").slice(0, 10),
-    author: { "@type": "Organization", name: "MyRecon" },
+    // Catalogue ingestion and correction dates belong to the source record.
+    citation: { "@type": "CreativeWork", name: `${b.Title} entry in Have I Been Pwned`, url: recordUrl },
+    author: { "@type": "Organization", name: "MyRecon", url: `${SITE}/about.html` },
     publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
     mainEntityOfPage: url,
     image: logo || `${SITE}/assets/img/og-image.png`,
@@ -606,17 +617,17 @@ function article(b, editorial, siblings) {
   const related = Array.from({ length: Math.min(3, pool.length) }, (_, i) => pool[(start + i) % pool.length])
     .map(
       (s) =>
-        `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a>: ${num(s.PwnCount)} ${s.IsStealerLog ? "email addresses" : "accounts"}</li>`,
+        `<li><a href="/breaches/${slug(s.Name)}.html">${esc(s.Title)}</a>: ${num(s.PwnCount)} email addresses listed</li>`,
     )
     .join("");
 
   return (
     HEAD({
       title: b.IsStealerLog ? fitTitle([`${b.Title}: ${numCompact(b.PwnCount)} Email Addresses Explained`, `${b.Title}: Reading the Email Count`]) : isProfileScrape ? "LinkedIn Public Profile Scrape (2021) | MyRecon" : isPostMillennial ? "The Post Millennial Breach and Mailing Lists | MyRecon" : fitTitle([
-        `${phrase}: ${num(b.PwnCount)} Accounts Exposed | MyRecon`,
-        `${phrase}: ${num(b.PwnCount)} Accounts Exposed`,
-        `${phrase}: ${num(b.PwnCount)} Accounts | MyRecon`,
-        `${phrase}: ${num(b.PwnCount)} Accounts`,
+        `${phrase}: ${numCompact(b.PwnCount)} Email Addresses Listed | MyRecon`,
+        `${phrase}: ${numCompact(b.PwnCount)} Email Addresses Listed`,
+        `${phrase}: ${numCompact(b.PwnCount)} Email Addresses | MyRecon`,
+        `${phrase}: ${numCompact(b.PwnCount)} Email Addresses`,
         `${phrase}, What Was Exposed | MyRecon`,
         `${phrase}, What Was Exposed`,
         `${phrase} | MyRecon`,
@@ -644,18 +655,18 @@ function article(b, editorial, siblings) {
         <div>
           <span class="kicker">${esc(year)} · ${b.IsStealerLog ? "Stealer log collection" : isProfileScrape ? "Public data scrape" : "Data breach"}</span>
           <h1>${esc(b.Title)}</h1>
-          <p class="meta">${b.IsStealerLog ? "HIBP record date" : isProfileScrape ? "Incident date" : "Breached"} ${esc(prettyDate(b.BreachDate))} · Added to HIBP ${esc(prettyDate(b.AddedDate))}${b.Domain ? ` · ${esc(b.Domain)}` : ""}</p>
+          ${timeline ? `<p class="meta">${timeline}</p>` : ""}
         </div>
       </header>
 
       <div class="bx-stats">
-        <div class="bx-stat"><b>${num(b.PwnCount)}</b><span>${emailCollection ? "Email addresses listed" : "Accounts exposed"}</span></div>
+        <div class="bx-stat"><b>${num(b.PwnCount)}</b><span>${emailCollection ? "Email addresses listed" : "Email addresses in HIBP"}</span></div>
         <div class="bx-stat ${bandClass(sev.band)}"><b>${sev.score}/100</b><span>${esc(sev.band)} severity</span></div>
         <div class="bx-stat"><b>${classes.length}</b><span>Types of data</span></div>
         <div class="bx-stat"><b>${b.IsVerified ? "Verified" : "Unverified"}</b><span>By HIBP</span></div>
       </div>
 
-      <p class="lead">${esc(lead)}${!emailCollection && scale ? " " + esc(scale) : ""}</p>
+      <p class="lead">${esc(lead)}</p>
 
       <!-- Above the fold on purpose. Someone arriving from "was my email in
            the X breach" wants the answer, not a link to it further down. -->
@@ -688,7 +699,7 @@ ${editorial}
       <h2 id="story">The story behind the ${isProfileScrape ? "scrape" : "breach"}</h2>
       <div class="bx-source">
         ${storyParagraphs(story.background)}
-        <p class="bx-credit">Breach description from <a href="https://haveibeenpwned.com/PwnedWebsites#${esc(b.Name)}" target="_blank" rel="noopener">Have I Been Pwned</a>, used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>.${b.Attribution ? ` Data provided to HIBP by ${esc(b.Attribution)}.` : ""}</p>
+        <p class="bx-credit">Breach description from the <a href="${esc(recordUrl)}" target="_blank" rel="noopener">Have I Been Pwned record for ${esc(b.Title)}</a>, used under a <a href="${LICENCE}" target="_blank" rel="noopener">CC BY 4.0 licence</a>.${b.Attribution ? ` Data provided to HIBP by ${esc(b.Attribution)}.` : ""}</p>
       </div>
 ${b.DisclosureUrl ? `      <p><a class="btn btn-ghost btn-sm" href="${esc(b.DisclosureUrl)}" target="_blank" rel="noopener nofollow">Read the original disclosure ↗</a></p>\n` : ""}
       <section class="bx-story-section"><h2 id="how">How did it happen?</h2>${storyParagraphs(story.how)}</section>
@@ -772,8 +783,7 @@ function index(items, earlier = earlierArchiveEntries(items)) {
 
   const url = `${SITE}/breaches/`;
   const description =
-    `Data breach archive: what was taken, from whom, how many people it touched and what to do about it. ` +
-    `${num(total)} accounts across ${items.length} breaches, updated daily.`;
+    `Browse ${items.length} data breach records with sourced dates, reported exposure and next steps. Check what each address count measures.`;
 
   return (
     HEAD({
@@ -801,13 +811,14 @@ function index(items, earlier = earlierArchiveEntries(items)) {
       <nav class="breadcrumb bx-crumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">The Breach Files</span></nav>
       <span class="kicker">The Breach Files</span>
       <h1 class="bx-title">Every breach worth understanding</h1>
-      <p class="sub">Who was hit, what was taken, how many people it reached, and what it means for you. Built from public breach records and updated every day.</p>
+      <p class="sub">See when breaches were reported, what data was exposed and what you can do next. The archive uses public records from Have I Been Pwned.</p>
 
       <div class="bx-summary">
-        <div class="bx-stat"><b>${num(total)}</b><span>Accounts exposed</span></div>
+        <div class="bx-stat"><b>${num(total)}</b><span>Address entries across records</span></div>
         <div class="bx-stat"><b>${items.length}</b><span>Breaches in the current feed</span></div>
         <div class="bx-stat"><b>${years.length}</b><span>Years covered</span></div>
       </div>
+      <p class="bx-check-note">The total adds address counts across records. One address can appear in more than one record.</p>
 
       <!-- The archive answers "what was taken". The case files answer "how",
            which is the question people actually arrive with. Promoted here
@@ -830,7 +841,7 @@ function index(items, earlier = earlierArchiveEntries(items)) {
         <p><a class="btn btn-sm" href="/developers.html">Read the API documentation →</a></p>
       </aside>
 
-${years.length ? `      <h2 class="bx-h2">By year</h2>
+${years.length ? `      <h2 class="bx-h2">Address entries by incident year</h2>
       <div class="bx-years">
 ${years
   .map(
@@ -856,7 +867,7 @@ ${items
               <span>${esc(prettyDate(b.BreachDate))}</span>
             </div>
           </div>
-          <p class="bx-card-count">${num(b.PwnCount)} <span>${b.IsStealerLog ? "email addresses" : "accounts"}</span></p>
+          <p class="bx-card-count">${num(b.PwnCount)} <span>email addresses</span></p>
           <p class="bx-card-classes">${esc((b.DataClasses || []).slice(0, 4).join(" · "))}</p>
           <span class="bx-badge ${bandClass(sev.band)}">${esc(sev.band)} · ${sev.score}</span>
         </a>`;
@@ -895,7 +906,7 @@ function rssFeed(items) {
     .map((b) => {
       const sev = severity(b);
       const link = `${SITE}/breaches/${slug(b.Name)}.html`;
-      const countLabel = b.IsStealerLog ? "email addresses listed" : "accounts exposed";
+      const countLabel = "email addresses listed";
       const summary =
         `${num(b.PwnCount)} ${countLabel}. Severity ${sev.score}/100 (${sev.band}). ` +
         `Data exposed: ${(b.DataClasses || []).join(", ") || "not published"}.`;

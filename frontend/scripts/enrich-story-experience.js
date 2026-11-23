@@ -31,7 +31,7 @@ function timeline(html,route){
     html=html.replace('<h2>Sources</h2>','<h2 id="story-sources">Sources</h2>');
   }else{
     steps=[[b.stealer_log?'HIBP record date':b.name==='LinkedInScrape'?'Reported incident date':'Reported breach date',b.breach_date||'Not recorded'],['Entry point',(b.story?.how||[]).join(' ')||'The available record does not establish the entry point.'],['Discovery and disclosure','A separate discovery or company-disclosure date is not established by this feed record.'],['Added to the breach catalogue',`${b.added_date?.slice(0,10)||'Date not recorded'}. This is the catalogue date, not necessarily the disclosure date.`],['Reported outcome',(b.story?.outcome||[]).join(' ')||'A final outcome is not recorded.']];
-    source=`<a href="https://haveibeenpwned.com/PwnedWebsites#${encodeURIComponent(b.name)}" target="_blank" rel="noopener">Read the HIBP source record</a>`;
+    source=`<a href="https://haveibeenpwned.com/Breach/${encodeURIComponent(b.name)}" target="_blank" rel="noopener">Read the HIBP source record</a>`;
   }
   const block=`<section class="story-timeline" data-story-timeline aria-labelledby="timelineHeading"><div class="story-section-heading"><span class="story-eyebrow">FOLLOW THE RECORD</span><h2 id="timelineHeading">How the story unfolded</h2><p>Open a step to read the detail. Missing dates stay unknown.</p></div><ol>${steps.map(([title,text],i)=>`<li><details${i===0?' open':''}><summary><span class="timeline-number">${String(i+1).padStart(2,'0')}</span>${esc(title)}</summary><p>${esc(text)}</p><p class="timeline-source">${source}</p></details></li>`).join('')}</ol></section>`;
   return html.replace(/(<nav class="bx-story-nav"[\s\S]*?<\/nav>)/,`$1${block}`);
