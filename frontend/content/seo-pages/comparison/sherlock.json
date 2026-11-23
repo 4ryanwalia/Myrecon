@@ -2,17 +2,17 @@
   "kind": "comparison",
   "slug": "sherlock",
   "status": "published",
-  "title": "Sherlock Username Search Alternatives: MyRecon and Maigret",
-  "description": "Compare MyRecon browser search with Sherlock and Maigret. See a recorded username demonstration, current access limits and how to verify public leads.",
-  "h1": "Sherlock alternatives: when browser username search helps",
-  "focus_keyword": "sherlock alternative",
-  "intro": "This page is about Sherlock, the open-source username search tool published at sherlockproject.xyz, and is unrelated to other products named Sherlock. If you want a Sherlock alternative without a local installation, MyRecon provides a browser workflow for public username leads. Keep Sherlock when local commands and repeatable output matter; consider Maigret for enriched reports. MyRecon publishes this comparison. These choices describe workflows, not an independent accuracy ranking.",
+  "title": "Sherlock Project vs MyRecon | OSINT Username Search",
+  "description": "Compare Sherlock Project and MyRecon for public username search. See browser and command-line options and why two tools differed on the same 35 checks.",
+  "h1": "Sherlock Project vs MyRecon for username search",
+  "focus_keyword": "sherlock project username search",
+  "intro": "Sherlock Project is the open-source username checker at sherlockproject.xyz. Choose it for local command-line checks and file exports. Use MyRecon for public profile leads in a browser, or Maigret for enriched reports. MyRecon publishes this comparison and ran the linked study.",
   "sections": [
     {
-      "heading": "Choose for your task: MyRecon, Sherlock or Maigret",
+      "heading": "Choose a browser, terminal or report workflow",
       "body": "MyRecon suits a one-off browser review or a device where you cannot install tools. Sherlock suits local command automation and output files you manage. Maigret documents enriched research reports, a web interface and library use. Each needs source review; a larger advertised catalogue cannot establish who owns a profile.",
       "table": {
-        "caption": "Publisher comparison of workflow choices, reviewed 1 November 2026.",
+        "caption": "What each public username search workflow needs",
         "headers": [
           "Option",
           "Useful when",
@@ -44,44 +44,60 @@
     },
     {
       "heading": "Current MyRecon website access limits",
-      "body": "Guests get 5 Quick scans daily across 100 platforms, with only the first 2 result cards visible. Signed-in free accounts get 5 Standard scans daily across 560+ platforms; Quick and Standard share that account allowance. Resets are midnight UTC (05:30 India). Pro is an optional subscription: new subscribers get a 3-day free trial with Deep Search and 3 Extended scans, then US$3.99/month or US$19.99/year with PayPal, or ₹299/month or ₹1,999/year with Razorpay. Paid Pro adds unlimited Standard scans, Deep Search and 10 Extended scans per paid month (120 per paid year) across a separate 3,000+ catalogue. Subscriptions renew automatically until cancelled. The Android app is available globally on Google Play; Android access is shown in the app. Review the linked pricing page before choosing a plan."
+      "body": "Guests get five Quick scans per UTC day across 100 platforms, with up to two result cards visible. Signed-in free accounts get five daily scans and can use Standard Search across 560+ platforms. Pro is a renewing subscription. The one-time Extended Scan Pack has its own terms. The pricing page carries the current allowances, plan terms and payment options.",
+      "link": {
+        "label": "Try the free username search",
+        "href": "/#tool=username"
+      }
     },
     {
       "heading": "Reproduce a small browser and local review",
-      "body": "Choose one handle you own. In MyRecon select Quick as a guest, or sign in for Standard. For Sherlock, its official repository documents pipx install sherlock-project, followed by sherlock YOUR_HANDLE --site GitHub --csv for a bounded example; replace YOUR_HANDLE with your own handle and review --help for the installed version. Record the query, date, version, selected sites, source URL and unresolved responses. This is a reproducible procedure, not a claim that we ran a new Sherlock benchmark for this update. Sherlock --json supplies a site-data file; it is not a JSON report-export switch."
+      "body": "Choose a handle you control and a short list of platforms you can check directly. Record the tool version, selected platforms, date, source URL and unresolved responses. Sherlock documents CSV and XLSX output. Its JSON option loads site definitions. A browser preview can limit visible results, so record the scope and access you actually used."
     },
     {
-      "heading": "Real demonstration: inspect one dated measurement",
-      "body": "The published 30 September 2026 case used the owner-requested public handle 4ryanwalia. MyRecon checked 561 catalogue entries and Sherlock checked 430; these unequal scopes prevent a general coverage ranking. On the GitHub address, both recorded found. MyRecon also retained a Reddit challenge as unknown. Open the linked raw data for versions, check records and source observations. The example establishes how to review evidence, not account ownership or current results.",
+      "heading": "Why Sherlock recorded two fewer supported matches",
+      "body": "In our 1 November 2026 study of 35 controls, Sherlock supported four matches. The MyRecon web engine and Maigret each supported those same four plus one on Hacker News and one on Dev.to. Sherlock excluded both platforms in the run, accounting for the full two-match gap in this sample. Its nine excluded controls are counted among its 20 unresolved or unscored results. The downloadable rows C10 and C18 show the difference.",
       "table": {
-        "caption": "Selected observations from the recorded case. The raw data preserves the complete context.",
+        "caption": "Results on 35 public controls per tool, using the pinned versions in the study",
         "headers": [
-          "Recorded check",
-          "Observed output",
-          "What it supports"
+          "Tool",
+          "Supported matches",
+          "Supported absences",
+          "Unresolved or unscored"
         ],
         "rows": [
           [
-            "GitHub / 4ryanwalia",
-            "MyRecon: api_user; Sherlock: found",
-            "Profile existence with source evidence; ownership not authenticated"
+            "Sherlock 0.16.2",
+            "4",
+            "11",
+            "20"
           ],
           [
-            "Reddit / 4ryanwalia",
-            "MyRecon: unknown, challenge",
-            "Unresolved access; no negative account conclusion"
+            "MyRecon web engine",
+            "6",
+            "18",
+            "11"
           ],
           [
-            "Clubhouse / @4ryanwalia",
-            "MyRecon: not_found, HTTP 404",
-            "The requested profile path was absent at check time"
+            "Maigret 0.6.6",
+            "6",
+            "18",
+            "11"
           ]
         ]
+      },
+      "link": {
+        "label": "Read the study methods and control results",
+        "href": "/blog/username-search-controlled-study-2026.html#results"
+      },
+      "download": {
+        "label": "Download the 105-row comparison CSV",
+        "href": "/assets/downloads/username-controls-2026-11-01/checks.csv"
       }
     },
     {
       "heading": "What to do when tools disagree",
-      "body": "Compare the exact public profile address, not only a brand or platform name. Open the source using ordinary permitted access. A profile-specific page can support existence; a login wall, challenge, timeout or generic success response can leave a check unknown. Retain unknowns and duplicate URLs when reviewing the raw report, then deduplicate addresses before counting leads. Confirm your own accounts through provider access and saved records before changing them."
+      "body": "Compare the exact profile address, the supported sites and the outcome for each. A policy exclusion means the tool did not check that site. A challenge, login wall or ambiguous response can leave a check unresolved. Deduplicate profile addresses before counting leads and use the provider's account controls to verify ownership."
     },
     {
       "heading": "When MyRecon is useful, and when another workflow fits",
@@ -90,13 +106,21 @@
     {
       "heading": "Data handling and limits at the source",
       "body": "Local Sherlock execution still sends requests to third-party sites; MyRecon uses hosted services as described in its privacy policy. Neither is automatically anonymous. Rate limits, login restrictions, changing site rules and provider outages affect what can be observed. Use bounded authorized inputs and keep exports private. A paid scan expands product scope, not your access rights on the source platform."
+    },
+    {
+      "heading": "Which Sherlock does this page compare?",
+      "body": "The Sherlock Project is a public username search tool. A separate company called Sherlock provides blockchain security reviews and smart contract auditing.",
+      "link": {
+        "label": "Official Sherlock Project documentation",
+        "href": "https://sherlockproject.xyz/"
+      }
     }
   ],
   "sources": [
     "https://github.com/sherlock-project/sherlock",
+    "https://sherlockproject.xyz/",
+    "/blog/username-search-controlled-study-2026.html",
     "https://maigret.readthedocs.io/en/latest/usage-examples.html",
-    "/data/username-benchmark.json",
-    "/#benchmarks",
     "/username-checker.html",
     "/blog/find-your-own-old-accounts.html",
     "/digital-footprint-checker.html",
@@ -104,12 +128,12 @@
     "/pricing",
     "/privacy.html"
   ],
-  "reviewed_at": "2026-11-01",
-  "modified_at": "2026-11-18",
+  "reviewed_at": "2026-11-23",
+  "modified_at": "2026-11-23",
   "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
-    "href": "/"
+    "href": "/#tool=username"
   },
   "faq": [
     {
@@ -117,8 +141,8 @@
       "answer": "It offers free guest Quick previews and a signed-in daily Standard allowance, with optional paid features. Guest results show only the first 2 cards; see pricing for current limits."
     },
     {
-      "question": "Does this comparison prove one tool is more accurate?",
-      "answer": "No. The linked historical case covers one username and unequal catalogues. It cannot establish general accuracy or current source availability."
+      "question": "Why did the tools return different match counts?",
+      "answer": "In this 35-control study, the two additional supported matches came from Hacker News and Dev.to. Sherlock had excluded those sites in the run. The result describes the tested versions and settings."
     },
     {
       "question": "When is Sherlock a better fit?",
@@ -159,10 +183,10 @@
   ],
   "cons": [
     "Guest preview and daily account limits apply",
-    "Historical demonstration is not a general accuracy benchmark",
+    "Test results apply to the recorded controls and versions",
     "Public leads do not authenticate ownership"
   ],
   "migration_note": "Keep a local Sherlock workflow if its script integration matters. Evaluate MyRecon on an authorized handle with source review before changing your process.",
   "editorial_review": true,
-  "method": "Product access was checked against the current release source and live guest interface on 1 November 2026. The demonstration uses the linked 30 September 2026 recorded data; no new comparative Sherlock or Maigret run is claimed. Provider documentation supports setup choices. Ownership and personal account recovery were not tested."
+  "method": "The publisher reviewed access and official documentation on 23 November 2026 and compared the recorded CSV by control ID. The observations are from 1 November 2026. No false positives or false negatives were observed on the scored controls. The limited sample and unresolved cases leave population-wide accuracy unmeasured."
 }
