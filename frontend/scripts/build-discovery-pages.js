@@ -122,7 +122,7 @@ buildDiscoveryPage({
   crumbLabel: 'Username checker',
   questions: usernameQuestions,
   bodyHtml: usernameBody,
-  modifiedAt: '2026-11-23',
+  modifiedAt: '2026-11-24',
 });
 
 // 2. Free OSINT tool discovery page
@@ -245,7 +245,7 @@ buildDiscoveryPage({
   crumbLabel: 'Digital footprint checker',
   questions: footprintQuestions,
   bodyHtml: footprintBody,
-  modifiedAt: '2026-11-01',
+  modifiedAt: '2026-11-24',
 });
 
 // 4. Reverse username lookup discovery page
@@ -331,7 +331,7 @@ buildDiscoveryPage({
   description: 'Find social media accounts by username, free and with no sign-up. Paste a handle or an Instagram, TikTok or GitHub link and check 100+ sites.',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
-  modifiedAt: '2026-11-23',
+  modifiedAt: '2026-11-24',
   crumbLabel: 'Reverse username lookup',
   questions: lookupQuestions,
   bodyHtml: lookupBody,
@@ -366,6 +366,16 @@ const emailBody = `<main id="main" class="container prose discovery-page">
       <dd>Turn on "Also check linked accounts" and the lookup asks 100+ services, among them Spotify, Instagram, Pinterest, Amazon and Duolingo, whether the address is registered with them. This uses Holehe, an open-source tool, plus a few checks MyRecon maintains. It sends the address to every service it tests, so it is off unless you choose it.</dd>
     </dl>
     <p>Sensitive breaches, such as dating or adult sites that Have I Been Pwned marks as sensitive, are never listed against an address, and every result carries a note explaining that rule.</p>
+  </section>
+  <section>
+    <h2 id="holehe-online">Holehe online, without installing Python</h2>
+    <p>Holehe is an open-source command-line tool that checks whether an email address is registered on a service by reading how that service's sign-up or password-reset screen answers. Running it yourself means installing Python and the package, then reading raw output in a terminal.</p>
+    <p>The linked-account option in this lookup runs a pinned copy of Holehe on MyRecon's server, plus two checks MyRecon maintains for Hugging Face and HackerRank, and shows the answers as a list: registered, no signal, or could not check. Rate limits and blocks are counted as "could not check", never as "not registered". As with Holehe itself, each service it tests receives the address.</p>
+  </section>
+  <section>
+    <h2 id="google-reviews-by-email">Find Google reviews by email</h2>
+    <p>Some people leave public Google Maps reviews under a contributor profile tied to their email address. <a href="/deep-search.html">Deep Search</a> takes an exact email, asks a public Google source for a contributor profile, and then collects the public Maps reviews for it: the place, rating, date, text and any owner reply that comes back.</p>
+    <p>Guests can preview one finding; an eligible paid account unlocks the full results. Coverage can be partial or capped, and no profile or reviews does not prove that the address has no Google account or activity.</p>
   </section>
   <section>
     <h2 id="how-to-run-a-reverse-email-lookup">How to run a reverse email lookup</h2>
@@ -406,7 +416,7 @@ const emailBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Using email lookups responsibly</h2>
     <p>Look up your own addresses, or addresses you are authorized to review for security work. Do not use the results to harass, track or impersonate anyone. Read the <a href="/terms.html">terms of use</a> and the <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Sources and behaviour reviewed <time datetime="2026-11-24">24 November 2026</time>.</p>
+    <p>Sources and behaviour reviewed <time datetime="2026-11-25">25 November 2026</time>.</p>
   </section>
 </main>`;
 
@@ -415,7 +425,7 @@ buildDiscoveryPage({
   description: 'Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.',
   url: `${site}/reverse-email-lookup.html`,
   outFileName: 'reverse-email-lookup.html',
-  modifiedAt: '2026-11-24',
+  modifiedAt: '2026-11-25',
   crumbLabel: 'Reverse email lookup',
   questions: emailQuestions,
   bodyHtml: emailBody,

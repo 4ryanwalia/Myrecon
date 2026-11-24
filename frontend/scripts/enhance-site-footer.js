@@ -20,7 +20,7 @@ const GROUPS = [
   ]],
   ["Explore", [
     ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
-    ["Platform lookups", "/find/"], ["Privacy guides", "/privacy/"], ["Free templates", "/templates/"],
+    ["Platform lookups", "/find/"], ["Instagram username lookup", "/find/instagram-account"], ["GitHub profile lookup", "/find/github-profile"], ["Discord user lookup", "/find/discord-user"], ["Privacy guides", "/privacy/"], ["Free templates", "/templates/"],
   ]],
   ["Compare", [
     ["MyRecon vs Sherlock", "/vs/sherlock"],
