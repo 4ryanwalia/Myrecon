@@ -287,7 +287,7 @@ def _mentions_handle(text: str, uname: str) -> bool:
     return re.search(rf"(?<![0-9a-z]){re.escape(uname)}(?![0-9a-z])", text) is not None
 
 
-def confidence_score(resp, username: str, meta: dict) -> int:
+def confidence_score(resp, username: str, meta: dict, detail: "dict | None" = None) -> int:
     """
     Score how strongly the response corroborates a *real* profile for
     `username`. A hard negative (soft 404 / bounced to a landing page)
@@ -354,6 +354,11 @@ def confidence_score(resp, username: str, meta: dict) -> int:
             if has_username_field and has_profile_field:
                 score = 2
 
+    if detail is not None:
+        # Whether anything rendered for this specific account fired. Callers
+        # use it to decide that corroboration alone needs a control check.
+        detail["direct"] = score > 0
+
     # ── Corroboration ─────────────────────────────────────────
     #
     # These used to count only once account-specific evidence had fired, and
@@ -377,6 +382,18 @@ def confidence_score(resp, username: str, meta: dict) -> int:
     if len(og_desc) > 40:                                # substantive description
         score += 1
     return score
+
+
+_SWEEP_BY_NAME = None
+
+
+def _sweep_platforms() -> dict:
+    """The full sweep's catalogue keyed by lower-case platform name, loaded once."""
+    global _SWEEP_BY_NAME
+    if _SWEEP_BY_NAME is None:
+        from modules.sweep import CATALOGUE
+        _SWEEP_BY_NAME = {p["name"].lower(): p for p in CATALOGUE}
+    return _SWEEP_BY_NAME
 
 
 def _confidence_label(score: int) -> str:
@@ -584,7 +601,8 @@ class UsernameChecker:
                     else:
                         result.update(match_score=-1, reason="the exact creator profile could not be verified")
                     return result
-                score = confidence_score(resp, username, meta)
+                evidence: dict = {}
+                score = confidence_score(resp, username, meta, evidence)
                 # Recorded either way: the score is what the rejection panel
                 # explains itself with.
                 result["match_score"] = score
@@ -592,6 +610,13 @@ class UsernameChecker:
                     result["exists"] = True
                     result["confidence"] = _confidence_label(score)
                     extract_metadata(result, meta)
+                    # On a site that puts the requested handle into the page for
+                    # anyone (the sweep marks these echoes_handle; Telegram titles
+                    # its no-such-user page "Contact @handle"), a title mention
+                    # is not evidence either.
+                    echoes = (_sweep_platforms().get(name.lower()) or {}).get("echoes_handle")
+                    if not evidence.get("direct") or echoes:
+                        self._confirm_with_sweep(result, name, username)
         except requests.exceptions.Timeout:
             result["status_code"] = -1
         except requests.exceptions.ConnectionError:
@@ -599,11 +624,52 @@ class UsernameChecker:
         except Exception:
             result["status_code"] = -3
 
-        if not result["exists"]:
+        if not result["exists"] and not result.get("reason"):
             result["reason"] = rejection_reason(
                 result["status_code"], result.get("match_score")
             )
         return result
+
+    def _confirm_with_sweep(self, result: dict, name: str, username: str) -> None:
+        """
+        Settle a hit that has no account-specific evidence with the full
+        sweep's probe, which compares the page against an impossible control
+        handle. The page score alone cannot: measured 24 Nov 2026, the
+        impossible handle "qzxvbnwkplrt" scored medium on HackerRank (where
+        the real "torvalds" page scored low) and medium on Twitch from
+        Render, and 15 more sites returned a "low" hit for it. The probe
+        found nothing for that handle on all 17 of those sites, and still
+        confirmed torvalds on Pinterest, Spotify, Steam, Bitbucket and VK.
+
+        Found keeps the card; not found becomes a verified absence; anything
+        else (an echo page, a bot check) becomes unknown, never "no account".
+        Platforms the sweep does not know keep their page-score label.
+        """
+        from modules.sweep import FOUND, NOT_FOUND, Sweep
+        platform = _sweep_platforms().get(name.lower())
+        if platform is None:
+            return
+        try:
+            hit = Sweep(username, deadline_seconds=self.SLOW_TIMEOUT * 3,
+                        concurrency=2).probe(platform)
+        except Exception:  # noqa: BLE001 - keep the page-score result
+            return
+        if hit["verdict"] == FOUND:
+            # Confirmed against the control, so never left as a weak "low".
+            result["confidence"] = "high" if hit.get("confidence") == "high" else "medium"
+            result["match_score"] = max(result.get("match_score") or 0, 2)
+            return
+        result["exists"] = False
+        for field in ("confidence", "display_name", "bio", "profile_pic_url",
+                      "followers", "following", "metadata_source"):
+            result.pop(field, None)
+        if hit["verdict"] == NOT_FOUND:
+            result["match_score"] = -10
+            result["reason"] = hit.get("reason") or "the platform reported no such account"
+        else:
+            # Not <= -10, so the platform check reads as unknown.
+            result["match_score"] = None
+            result["reason"] = hit.get("reason") or "the platform could not verify this handle"
 
     def _check_instagram(self, result: dict, username: str) -> dict:
         """
