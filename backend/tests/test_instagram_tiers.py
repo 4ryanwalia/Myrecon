@@ -86,17 +86,18 @@ def test_guest_slots_go_to_confirmed_profiles_before_weak_ones():
     strong = [_card(f"Strong{i}") for i in range(4)]
     cards = weak[:2] + strong[:2] + weak[2:] + strong[2:]
     data = {"results": {"profiles": cards}}
-    # Live: a weak echo arriving first never claims a free slot.
+    # Live: a weak echo is neither shown nor counted as a locked result.
     seen, visible = set(), []
     events = [app_module._guest_quick_event({"type": "found", "result": c}, seen, visible)
               for c in cards]
-    assert [e["result"]["platform"] for e in events if e["type"] == "found"] == [
-        "Strong0", "Strong1", "Strong2", "Strong3"]
-    # Final: a weak card stays behind sign-in, where it is labelled low.
+    assert [e and e["type"] for e in events] == [None, None, "found", "found", None, None, "found", "found"]
+    # Final: weak cards are only an "unconfirmed" count, never findings.
     shown = app_module._guest_quick_preview(data, visible)
     names = [c["platform"] for c in shown["results"]["profiles"]]
     assert names == ["Strong0", "Strong1", "Strong2", "Strong3"]
-    assert shown["guest_preview"]["hidden_cards"] == 4
+    assert shown["guest_preview"]["hidden_cards"] == 0
+    assert shown["guest_preview"]["unconfirmed"] == 4
+    assert shown["summary"]["total"] == 4
     # Cached/non-stream path ranks the same way.
     cached = app_module._guest_quick_preview(data)
     assert [c["platform"] for c in cached["results"]["profiles"]] == names
@@ -111,3 +112,17 @@ def test_guest_preview_passes_only_the_instagram_verdict():
     assert [c["platform"] for c in shown["results"]["profiles"]] == list("ABCDE")
     assert shown["instagram_check"] == {"verdict": "unknown"}
     assert app_module._guest_quick_preview({"results": {}})["instagram_check"] is None
+
+
+def test_a_handle_with_only_echo_pages_shows_no_locked_findings():
+    # Measured 24 Nov 2026: an impossible handle gets ~15 "low" echo pages on Quick.
+    cards = [dict(_card(f"Echo{i}"), confidence="low") for i in range(15)]
+    seen, visible = set(), []
+    events = [app_module._guest_quick_event({"type": "found", "result": c}, seen, visible)
+              for c in cards]
+    assert events == [None] * 15
+    shown = app_module._guest_quick_preview({"results": {"profiles": cards}}, visible)
+    assert shown["guest_preview"] == {"visible_cards": 0, "hidden_cards": 0,
+                                      "unconfirmed": 15, "requires_sign_in": True}
+    assert shown["summary"]["total"] == 0
+    assert "echo0.example" not in str(shown)

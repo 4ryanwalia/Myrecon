@@ -761,7 +761,7 @@ def test_guest_quick_exposes_five_cards_without_mutating_shared_cache(client, mo
             assert [e["count"] for e in received if e["type"] == "found_locked"] == [1, 2]
     else:
         shown = response.get_json()
-    assert shown["guest_preview"] == {"visible_cards": 5, "hidden_cards": 2, "requires_sign_in": True}
+    assert shown["guest_preview"] == {"visible_cards": 5, "hidden_cards": 2, "unconfirmed": 0, "requires_sign_in": True}
     assert shown["results"]["profiles"] == cards[:5]
     assert shown["summary"]["total"] == 7
     assert "HiddenSixth" not in wire and "hiddensixth.example" not in wire
@@ -824,7 +824,7 @@ def test_guest_quick_stream_still_works(client, monkeypatch, cached):
     assert r.status_code == 200
     shown = json.loads(r.get_data(as_text=True))["data"]
     assert shown["query"] == quick["query"]
-    assert shown["guest_preview"] == {"visible_cards": 0, "hidden_cards": 0, "requires_sign_in": True}
+    assert shown["guest_preview"] == {"visible_cards": 0, "hidden_cards": 0, "unconfirmed": 0, "requires_sign_in": True}
     assert calls == [("octocat", False, "standard")]
 
 

@@ -632,6 +632,10 @@
 
     if (preview) html += previewNotice(preview);
     if (guest && allCards.length) html += `<div class="preview-notice" role="status"><strong>Guest preview</strong><span>Up to 5 result cards are shown in full, strongest matches first. Sign in to run Standard and see complete results.</span></div>`;
+    // Weak matches are pages a site serves for any username; Quick cannot
+    // tell them from a real profile, so guests get a count, not cards.
+    const unconfirmed = guest ? Number(data.guest_preview?.unconfirmed) || 0 : 0;
+    if (unconfirmed) html += `<p class="hint">${unconfirmed} weak ${unconfirmed === 1 ? "match was" : "matches were"} not counted: ${unconfirmed === 1 ? "that site shows" : "those sites show"} the same page for any username, so ${unconfirmed === 1 ? "it proves" : "they prove"} nothing on their own. Standard re-checks them against a made-up username.</p>`;
 
     // A score based on a few visible cards would misstate the complete report.
     const exp = null; // Profile counts are not an exposure score.

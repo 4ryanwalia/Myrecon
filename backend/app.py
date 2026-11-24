@@ -434,9 +434,15 @@ def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
                     and entry not in selected)
     results = {kind: [card for group, card in selected if group == kind]
                for kind in ("profiles", "documents", "mentions")}
+    # Weak cards are not guest findings at all: measured 24 Nov 2026, an
+    # impossible 12-letter handle gets 15 of them on Quick (sites that answer
+    # every handle alike), so counting them would show locked "results" for a
+    # name that exists nowhere. They are reported only as a separate count.
+    counted = [entry for entry in cards
+               if _guest_slot_eligible(entry[1]) or entry in selected]
     summary = {key: value for key, value in (data.get("summary") or {}).items()
                if key in ("total", "profiles", "documents", "mentions", "checked", "rejected")}
-    summary.update(total=len(cards), clusters=0, exposures=0)
+    summary.update(total=len(counted), clusters=0, exposures=0)
     return {
         "status": data.get("status", "ok"), "query": data.get("query") or {},
         "summary": summary, "results": results,
@@ -446,7 +452,8 @@ def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
                     "message": "Some checks could not complete. Displaying completed guest results."}
                    for error in data.get("errors", [])],
         "guest_preview": {"visible_cards": len(selected),
-                          "hidden_cards": max(0, len(cards) - len(selected)),
+                          "hidden_cards": max(0, len(counted) - len(selected)),
+                          "unconfirmed": len(cards) - len(counted),
                           "requires_sign_in": True},
         # Only the verdict, so the page can offer a manual Instagram link when
         # our server could not read Instagram. No hidden card detail leaves.
@@ -461,12 +468,14 @@ def _guest_quick_event(event: dict, seen: set, visible: list):
     kind = event.get("type")
     if kind == "found":
         result = event.get("result") or {}
+        instagram = result.get("platform") == "Instagram"
+        if not (_guest_slot_eligible(result) or instagram):
+            return None  # a weak card is neither shown nor counted as locked
         key = _card_key(result)
         if key in seen:
             return None
         seen.add(key)
-        if ((len(visible) < GUEST_VISIBLE_CARDS and _guest_slot_eligible(result))
-                or result.get("platform") == "Instagram"):
+        if len(visible) < GUEST_VISIBLE_CARDS or instagram:
             visible.append(key)
             return event
         return {"type": "found_locked", "count": len(seen) - len(visible)}
