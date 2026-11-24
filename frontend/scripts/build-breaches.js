@@ -537,6 +537,18 @@ function logoFor(b) {
 // go live as record-derived pages, the "low value content" AdSense rejected
 // (fifth notice, 2026-11-17). They still build for visitors, but noindex.
 const MIN_TAKE_WORDS = 250;
+// Owner's decision, 25 Nov 2026: archive pages that earned zero Search
+// Console impressions over the 90 days to 24 Nov and were already more than a
+// month old are noindex, follow. They still build, stay linked from the
+// archive and keep their take; they just stop asking Google to index them.
+// Pages newer than a month were left alone until they have had time to rank.
+// Re-check before adding to or removing from this list; slugs, not HIBP Names.
+const NOINDEX_NO_IMPRESSIONS = new Set([
+  "addi", "advanceautoparts", "bloomstoday", "canadiantire", "doublecounter",
+  "genesismarket", "mckesson", "neogen", "nitro", "notsocradar", "pdl",
+  "prosper", "soundcloud", "suno", "synthientcredentialstuffingthreatdata",
+  "synthientstealerlogthreatdata", "tokopedia", "underarmour", "wattpad",
+]);
 function takeWords(editorial) {
   return editorial ? String(editorial).replace(/<[^>]*>/g, " ").split(/\s+/).filter(Boolean).length : 0;
 }
@@ -544,7 +556,7 @@ function takeWords(editorial) {
 function article(b, editorial, siblings) {
   const story = breachStory(b, editorial);
   const archiveUpdate = archiveUpdates.get(b.Name);
-  const indexable = takeWords(editorial) >= MIN_TAKE_WORDS;
+  const indexable = takeWords(editorial) >= MIN_TAKE_WORDS && !NOINDEX_NO_IMPRESSIONS.has(slug(b.Name));
   const storyParagraphs = values => values.map(value => `<p>${esc(value)}</p>`).join('\n');
   const sev = severity(b);
   const url = `${SITE}/breaches/${slug(b.Name)}.html`;
@@ -1070,4 +1082,4 @@ if (require.main === module) main().catch((err) => {
   process.exit(process.env.MYRECON_REQUIRE_FRESH_BREACHES === "1" || !fs.existsSync(path.join(OUT_DIR, "index.html")) ? 1 : 0);
 });
 
-module.exports = { article, earlierArchiveEntries, index, select, MIN_TAKE_WORDS };
+module.exports = { article, earlierArchiveEntries, index, select, MIN_TAKE_WORDS, NOINDEX_NO_IMPRESSIONS };
