@@ -302,6 +302,10 @@ function renderPage(record, siblings = []) {
     : `<a href="/">Home</a> <span aria-hidden="true">/</span> <a href="${categoryRoute}">${esc(label)}</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(record.h1)}</span>`;
   // Comparison pages answer "can I run this in a browser instead?", so their
   // search box sits right under the intro; other pages keep it after the body.
+  // The top box has no heading on purpose: article-story-design.js puts its
+  // photo before the article's first <h2>, and a heading here pulled the photo
+  // above the input (measured live: input at y=873 on a 1366x768 screen).
+  const seoCtaTop = `<section class="seo-cta seo-cta-top" aria-label="Search a username"><username-search-input sample="octocat"></username-search-input><p>Free with no sign-up: 100 sites, up to 5 results shown in full.</p></section>`;
   const seoCta = `<section class="seo-cta"><h2>Check a public username</h2><p>Free with no sign-up: 100 sites, up to 5 results shown in full. Verify each candidate at its source.</p><username-search-input sample="octocat"></username-search-input></section>`;
   return `<!doctype html>
 <html lang="en" data-theme="light">
@@ -325,7 +329,7 @@ ${jsonLd(record, route)}
     .seo-page h1{line-height:1.14;margin:0 0 16px}.seo-page .seo-intro{font-size:1.1rem;line-height:1.7;max-width:72ch}
     .seo-section{margin:34px 0}.seo-section h2{margin:0 0 12px}.seo-section p,.seo-section li{line-height:1.75}.seo-section li{margin:8px 0}
     .seo-cta{margin:32px 0;padding:24px;border:1px solid var(--border,#394252);border-radius:14px;background:var(--surface,#101722)}
-    .seo-cta h2{margin:0 0 8px}.seo-faq{margin-top:42px}.seo-faq details{padding:14px 0;border-bottom:1px solid var(--border,#394252)}
+    .seo-cta h2{margin:0 0 8px}.seo-cta-top{margin:16px 0 14px;padding:4px 18px 14px}.seo-cta-top>p{margin-top:8px;font-size:.9rem;color:var(--text-dim)}.seo-faq{margin-top:42px}.seo-faq details{padding:14px 0;border-bottom:1px solid var(--border,#394252)}
     .seo-faq summary{font-weight:700;cursor:pointer}.seo-faq details p{margin-top:10px;line-height:1.7}.seo-sources{font-size:.92rem}
     .seo-table-wrap{overflow-x:auto}.seo-table-wrap table{width:100%;border-collapse:collapse}.seo-table-wrap th,.seo-table-wrap td{padding:10px;border:1px solid var(--border,#394252);text-align:left;vertical-align:top}
     .seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}
@@ -343,7 +347,7 @@ ${jsonLd(record, route)}
   </div></header>
   <main id="main" class="container prose seo-page">
     <nav class="seo-breadcrumb" aria-label="Breadcrumb">${crumbHtml}</nav>
-    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p><p class="seo-sources">MyRecon editorial · Updated ${esc(record.modified_at)}</p>${record.kind === "comparison" ? seoCta : ""}${record.kind === "guide" ? `
+    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p>${record.kind === "comparison" ? seoCtaTop : ""}<p class="seo-sources">MyRecon editorial · Updated ${esc(record.modified_at)}</p>${record.kind === "guide" ? `
       <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>Workflow illustration, not a screenshot or a recorded test.</figcaption></figure>` : ""}
       ${renderSpecific(record)}${renderSections(record)}
       ${record.evidence ? `<figure class="seo-guide-figure"><img src="${esc(record.evidence.image)}" alt="${esc(record.evidence.alt)}" width="1280" height="800" loading="lazy" style="max-width:100%;height:auto"><figcaption>${esc(record.evidence.caption)} <a href="${esc(record.evidence.source)}" target="_blank" rel="noopener noreferrer">Original source</a>.</figcaption></figure>` : ''}
