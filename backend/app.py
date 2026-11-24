@@ -385,25 +385,50 @@ _full_slots = threading.BoundedSemaphore(1 if config.SCAN_OFFLOAD_ENABLED else m
 def _card_key(result: dict) -> tuple:
     return (result.get("platform") or result.get("source"), result.get("url"))
 
+# Guest Quick scans show this many result cards in full (owner's choice,
+# 24 Nov 2026: raised from 2). Every other tier is unchanged.
+GUEST_VISIBLE_CARDS = 5
+
+# Visible guest slots go to the strongest evidence first. A "low" card is a
+# 200 page with nothing account-specific on it, which on sites that answer
+# every handle the same way is indistinguishable from no account, so it must
+# never take a free slot ahead of a confirmed profile.
+_CONFIDENCE_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
+
+
+def _confidence_rank(card: dict) -> int:
+    return _CONFIDENCE_RANK.get(card.get("confidence"), 1)
+
+
+def _guest_slot_eligible(card: dict) -> bool:
+    """A live card may claim a visible slot the moment it arrives."""
+    return _confidence_rank(card) < 2
+
+
 def _guest_quick_preview(data: dict, visible_keys=None) -> dict:
-    """Return two guest cards and counts, without hidden details or cache mutation."""
+    """Return the guest's visible cards and counts, without hidden details or cache mutation."""
     groups = data.get("results") or {}
     cards = [(kind, card) for kind in ("profiles", "documents", "mentions")
              for card in groups.get(kind, [])]
     selected = []
     if visible_keys:
+        # A live stream already decided which cards the guest saw; the final
+        # report reveals exactly those, never a different one.
         for key in visible_keys:
-            selected.extend((kind, card) for kind, card in cards if _card_key(card) == key)
-    for entry in ([] if visible_keys else cards):
-        if len(selected) >= 2:
-            break
-        if entry not in selected:
-            selected.append(entry)
-    selected = selected[:2]
-    # A found Instagram account is always shown, even past the two free cards:
+            selected.extend((kind, card) for kind, card in cards
+                            if _card_key(card) == key and (kind, card) not in selected)
+    else:
+        # Same slot rule as the live path, best evidence first. sorted() is
+        # stable, so equal confidence keeps the scan's own order.
+        for entry in sorted(cards, key=lambda entry: _confidence_rank(entry[1])):
+            if len(selected) >= GUEST_VISIBLE_CARDS:
+                break
+            if _guest_slot_eligible(entry[1]):
+                selected.append(entry)
+    selected = selected[:GUEST_VISIBLE_CARDS]
+    # A found Instagram account is always shown, even past the free cards:
     # it is the profile most guests came to look up, and in a live scan it is
-    # among the slowest to answer, so "first two to arrive" almost never
-    # included it.
+    # among the slowest to answer, so "first to arrive" often missed it.
     selected.extend(entry for entry in cards
                     if entry[0] == "profiles" and entry[1].get("platform") == "Instagram"
                     and entry not in selected)
@@ -440,7 +465,8 @@ def _guest_quick_event(event: dict, seen: set, visible: list):
         if key in seen:
             return None
         seen.add(key)
-        if len(visible) < 2 or result.get("platform") == "Instagram":
+        if ((len(visible) < GUEST_VISIBLE_CARDS and _guest_slot_eligible(result))
+                or result.get("platform") == "Instagram"):
             visible.append(key)
             return event
         return {"type": "found_locked", "count": len(seen) - len(visible)}

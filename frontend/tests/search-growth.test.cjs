@@ -20,7 +20,9 @@ test('watch pages expose playable assets, captions, source links and matching vi
   // A merged article's video links to the page it was merged into.
   const retired = JSON.parse(fs.readFileSync(path.join(root,'content/editorial-redirects.json'),'utf8'))[`/blog/${slug}`];
   assert.ok(html.includes(`href="${retired || `/blog/${slug}.html`}"`));
-  assert.ok(sitemap.includes('https://www.myrecon.xyz'+route));
+  // Thin watch pages are noindex, follow since 24 Nov 2026; the articles carry the video.
+  assert.ok(!sitemap.includes('https://www.myrecon.xyz'+route));
+  assert.ok(html.includes('<meta name="robots" content="noindex, follow">'));
   assert.ok(html.includes('aria-current="page"'));
   for(const url of [video.contentUrl,video.thumbnailUrl]) assert.ok(fs.existsSync(path.join(root,new URL(url).pathname)));
  }

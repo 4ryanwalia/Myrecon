@@ -62,29 +62,52 @@ def _card(name):
 
 
 def test_guest_preview_always_shows_a_found_instagram():
-    cards = [_card("TikTok"), _card("Flickr"), _card("Hidden"), _card("Instagram")]
+    free = ["TikTok", "Flickr", "GitHub", "Reddit", "Twitch"]
+    cards = [_card(n) for n in free] + [_card("Hidden"), _card("Instagram")]
     data = {"status": "ok", "query": {"username": "h"}, "summary": {},
             "results": {"profiles": cards, "documents": [], "mentions": []},
             "platform_checks": [{"platform": "Instagram", "verdict": "found", "url": "x"}]}
-    # Live scan order: Instagram answered last, after the two free cards.
+    # Live scan order: Instagram answered last, after the free cards.
     seen, visible = set(), []
     events = [app_module._guest_quick_event({"type": "found", "result": c}, seen, visible)
               for c in cards]
-    assert events[3]["type"] == "found" and events[3]["result"]["platform"] == "Instagram"
-    assert events[2]["type"] == "found_locked"
+    assert events[6]["type"] == "found" and events[6]["result"]["platform"] == "Instagram"
+    assert events[5]["type"] == "found_locked"
     shown = app_module._guest_quick_preview(data, visible)
     names = [c["platform"] for c in shown["results"]["profiles"]]
-    assert names == ["TikTok", "Flickr", "Instagram"]
+    assert names == free + ["Instagram"]
     assert shown["guest_preview"]["hidden_cards"] == 1
     assert shown["instagram_check"] == {"verdict": "found"}
     assert "hidden.example" not in str(shown)
 
 
+def test_guest_slots_go_to_confirmed_profiles_before_weak_ones():
+    weak = [dict(_card(f"Weak{i}"), confidence="low") for i in range(4)]
+    strong = [_card(f"Strong{i}") for i in range(4)]
+    cards = weak[:2] + strong[:2] + weak[2:] + strong[2:]
+    data = {"results": {"profiles": cards}}
+    # Live: a weak echo arriving first never claims a free slot.
+    seen, visible = set(), []
+    events = [app_module._guest_quick_event({"type": "found", "result": c}, seen, visible)
+              for c in cards]
+    assert [e["result"]["platform"] for e in events if e["type"] == "found"] == [
+        "Strong0", "Strong1", "Strong2", "Strong3"]
+    # Final: a weak card stays behind sign-in, where it is labelled low.
+    shown = app_module._guest_quick_preview(data, visible)
+    names = [c["platform"] for c in shown["results"]["profiles"]]
+    assert names == ["Strong0", "Strong1", "Strong2", "Strong3"]
+    assert shown["guest_preview"]["hidden_cards"] == 4
+    # Cached/non-stream path ranks the same way.
+    cached = app_module._guest_quick_preview(data)
+    assert [c["platform"] for c in cached["results"]["profiles"]] == names
+    assert "weak0.example" not in str(shown) and "weak0.example" not in str(cached)
+
+
 def test_guest_preview_passes_only_the_instagram_verdict():
-    data = {"results": {"profiles": [_card("A"), _card("B"), _card("C")]},
+    data = {"results": {"profiles": [_card(n) for n in "ABCDEF"]},
             "platform_checks": [{"platform": "Instagram", "verdict": "unknown",
                                  "url": "https://www.instagram.com/h/", "reason": "secret"}]}
     shown = app_module._guest_quick_preview(data)
-    assert [c["platform"] for c in shown["results"]["profiles"]] == ["A", "B"]
+    assert [c["platform"] for c in shown["results"]["profiles"]] == list("ABCDE")
     assert shown["instagram_check"] == {"verdict": "unknown"}
     assert app_module._guest_quick_preview({"results": {}})["instagram_check"] is None

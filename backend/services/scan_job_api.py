@@ -103,16 +103,20 @@ def _owner(api):
 def _visible(api, job, data):
     if job.get("uid"):
         return data
-    # Reconstruct the same two arrival-order cards for streams and job polls.
+    # Reconstruct the same arrival-order visible cards for streams and job
+    # polls, with the same slot rule as api._guest_quick_event.
     from services.search import _live_view
     visible = []
     for ref in job.get("refs", []):
         for row in jobs.chunk(job["id"], ref):
             if row.get("exists"):
-                key = api._card_key(_live_view(row, job["username"]))
+                view = _live_view(row, job["username"])
+                if not api._guest_slot_eligible(view):
+                    continue
+                key = api._card_key(view)
                 if key not in visible:
                     visible.append(key)
-                if len(visible) == 2:
+                if len(visible) == api.GUEST_VISIBLE_CARDS:
                     return api._guest_quick_preview(data, visible)
     return api._guest_quick_preview(data, visible)
 

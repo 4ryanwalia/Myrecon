@@ -14,7 +14,10 @@ function walk(dir) { return fs.readdirSync(dir, {withFileTypes:true}).flatMap(e 
 let count = 0;
 for (const file of walk(root)) {
   let html = fs.readFileSync(file, 'utf8');
-  if (isNoindex(html) || !/<main\b/.test(html) || /aria-label=["']breadcrumbs?["']/i.test(html)) continue;
+  // Video watch pages are noindex since 24 Nov 2026 but still visited from
+  // their articles, so they keep a visible trail.
+  const watchPage = file.includes(path.sep + 'videos' + path.sep);
+  if ((isNoindex(html) && !watchPage) || !/<main\b/.test(html) || /aria-label=["']breadcrumbs?["']/i.test(html)) continue;
   let crumbs;
   for (const [, raw] of html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)) { crumbs = find(JSON.parse(raw)); if (crumbs) break; }
   if (!crumbs || crumbs.itemListElement.length < 2) continue;

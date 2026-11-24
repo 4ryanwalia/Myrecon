@@ -99,3 +99,28 @@
 @media (forced-colors: active) {
   .home-page .hero-footprint { background: none; -webkit-text-fill-color: currentColor; }
 }
+/* The H1's own static text: what the page is, for readers and crawlers.
+   The rotating lines below it are decoration and stay aria-hidden. */
+.home-page .hero-copy h1 .hero-h1-kicker {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--text-mute, var(--text-dim));
+  -webkit-text-fill-color: currentColor;
+  font: 500 .72rem/1.4 'JetBrains Mono', 'Courier New', monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: normal;
+  text-wrap: balance;
+}
+.home-page .hero-copy h1 .hero-h1-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+  vertical-align: 1px;
+}
+@media (max-width: 380px) {
+  .home-page .hero-copy h1 .hero-h1-kicker { font-size: .66rem; margin-bottom: 12px; }
+}

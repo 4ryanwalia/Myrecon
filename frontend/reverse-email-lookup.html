@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<script src="/assets/js/recommendation-analytics.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer,
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Reverse Email Lookup: Accounts &amp; Breaches | MyRecon</title>
+  <meta name="description" content="Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/reverse-email-lookup.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Free Reverse Email Lookup: Accounts &amp; Breaches | MyRecon">
+  <meta property="og:description" content="Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.">
+  <meta property="og:url" content="https://www.myrecon.xyz/reverse-email-lookup.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Reverse Email Lookup: Accounts &amp; Breaches | MyRecon">
+  <meta name="twitter:description" content="Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
+<link rel="stylesheet" href="/assets/css/android-promo.css">
+<link rel="stylesheet" href="/assets/css/discovery.css?v=9b1d396b36">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://www.myrecon.xyz/reverse-email-lookup.html#page","url":"https://www.myrecon.xyz/reverse-email-lookup.html","name":"Free Reverse Email Lookup: Accounts & Breaches | MyRecon","description":"Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.","dateModified":"2026-11-24","inLanguage":"en","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Reverse email lookup","item":"https://www.myrecon.xyz/reverse-email-lookup.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the reverse email lookup free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Email lookups are free for every visitor and need no account. They do not use the username scan allowance, and MyRecon does not save the address to an account history."}},{"@type":"Question","name":"What does a reverse email lookup show?","acceptedAnswer":{"@type":"Answer","text":"Reported breaches that list the address and the data types each one exposed, plus public profiles tied to it such as Gravatar and GitHub commits. With linked-account checks on, it also shows registration signals from 100+ services. Each result names its source."}},{"@type":"Question","name":"Does the person who owns the email get notified?","acceptedAnswer":{"@type":"Answer","text":"Breach and public-profile checks do not contact the address. The optional linked-account checks send the address to each service they test, so a service could log the request. That is why the option is off by default."}},{"@type":"Question","name":"Can it tell me who owns an email address?","acceptedAnswer":{"@type":"Answer","text":"Not by itself. A public profile, a breach record or a registration signal is a lead about the address, not proof of identity. Confirm anything important with an independent source before you rely on it."}},{"@type":"Question","name":"Why does an address with no results still matter?","acceptedAnswer":{"@type":"Answer","text":"No result means the sources checked had nothing they could report. It does not prove the address was never breached or never used to sign up somewhere. Some services block automated checks, and those are shown as unresolved, not as clean."}}]},{"@type":"WebApplication","name":"MyRecon reverse email lookup","url":"https://www.myrecon.xyz/reverse-email-lookup.html","applicationCategory":"SecurityApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/blog/">Blog</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container prose discovery-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse email lookup</span></nav>
+  <h1>Reverse email lookup: find accounts and breaches linked to an email</h1>
+  <p class="sub">Enter an email address to see the breaches that list it, the data each one exposed, and public profiles tied to it. Free, with no sign-in.</p>
+  <username-search-input tool="email"></username-search-input>
+  <p class="discovery-note">The lookup opens in the MyRecon tool and runs straight away. Nothing is saved to an account.</p>
+  <section>
+    <h2 id="what-the-lookup-checks">What the email lookup checks</h2>
+    <dl>
+      <dt><strong>Reported breaches</strong></dt>
+      <dd>The address is checked against two free breach sources, LeakCheck and XposedOrNot. You see each named breach, its date where the source gives one, and the types of data it exposed, such as passwords, phone numbers or physical addresses. Large combined lists of old credentials are counted separately, so they do not inflate the number of distinct breaches.</dd>
+      <dt><strong>Public profiles for the exact address</strong></dt>
+      <dd>A public Gravatar profile and the accounts it lists, GitHub commits made with the address, and keys.openpgp.org, which only lists an address after its owner confirms it. These are things the owner of the address chose to publish.</dd>
+      <dt><strong>Linked-account checks (optional)</strong></dt>
+      <dd>Turn on "Also check linked accounts" and the lookup asks 100+ services, among them Spotify, Instagram, Pinterest, Amazon and Duolingo, whether the address is registered with them. This uses Holehe, an open-source tool, plus a few checks MyRecon maintains. It sends the address to every service it tests, so it is off unless you choose it.</dd>
+    </dl>
+    <p>Sensitive breaches, such as dating or adult sites that Have I Been Pwned marks as sensitive, are never listed against an address, and every result carries a note explaining that rule.</p>
+  </section>
+  <section>
+    <h2 id="how-to-run-a-reverse-email-lookup">How to run a reverse email lookup</h2>
+    <ol>
+      <li><strong>Enter the address.</strong> Use one you own or have permission to review. Paste it exactly; the lookup checks that address only, not variations of it.</li>
+      <li><strong>Decide on linked-account checks.</strong> Leave them off for a breach and public-profile check that contacts no one. Turn them on when you want registration signals and accept that each service sees the request.</li>
+      <li><strong>Read the result in three parts.</strong> Breaches tell you what was exposed and when. Public profiles tell you what the owner published. Registration signals tell you where the address appears to have an account.</li>
+      <li><strong>Act on it.</strong> Change any password that was reused on a breached service, turn on two-factor sign-in, and close accounts you no longer use. The <a href="/guides/check-email-data-breach.html">email breach guide</a> walks through each step.</li>
+    </ol>
+  </section>
+  <section>
+    <h2 id="reading-registration-signals">How to read a registration signal</h2>
+    <p>A registration check looks at how a service answers when asked about an address, usually on its sign-up or password-reset screen. If the answer differs for a registered address, that difference is the signal. It is good evidence that an account exists. It is not proof of who controls the account today.</p>
+    <p>Services change these screens without notice, and many rate-limit or block automated requests. MyRecon reports those as unresolved and counts them, so a partial run never reads as "no accounts". A service that is missing from the results means the lookup found no evidence there, not that no account exists.</p>
+  </section>
+  <section>
+    <h2 id="breach-results">What a breach result means for you</h2>
+    <p>A breach entry means the address appeared in data that a service lost or that was later traded. The exposed data types matter more than the count. A breach that included passwords means any password you used on that service, and anywhere you reused it, should be treated as known. A breach that included phone numbers raises the risk of SIM-swap and text-message scams.</p>
+    <p>Breach dates are when the incident happened according to the source, which is often months before it was disclosed. For background on a specific incident, open the <a href="/breaches/">breach archive</a>, which explains individual breaches from their published records.</p>
+  </section>
+  <section>
+    <h2 id="email-lookup-compared">How this compares with other email lookup tools</h2>
+    <p>Holehe is the open-source command-line tool behind the linked-account checks; running it yourself needs Python and gives you the raw answers. Have I Been Pwned is the reference for breach notifications and offers its own alerts. MyRecon puts breach data, public profiles and registration signals in one browser lookup and labels what it could not check. See the <a href="/blog/best-email-osint-tools.html">email OSINT tools comparison</a> and the <a href="/blog/best-data-breach-checkers.html">breach checker comparison</a> for more options.</p>
+  </section>
+  <section>
+    <h2 id="related-tools">Related tools</h2>
+    <ul>
+      <li><a href="/reverse-username-lookup.html">Reverse username lookup</a> for a handle that appears in your results</li>
+      <li><a href="/digital-footprint-checker.html">Digital footprint checker</a> for a combined email and username audit</li>
+      <li><a href="/#tool=password">Password exposure check</a>, which never sends the password itself</li>
+      <li><a href="/guides/spf-dkim-dmarc-explained.html">SPF, DKIM and DMARC explained</a> if the address is on a domain you run</li>
+    </ul>
+  </section>
+  <section>
+    <h2 id="frequently-asked-questions">Frequently asked questions</h2>
+    <div class="faq"><details><summary>Is the reverse email lookup free?</summary><p>Yes. Email lookups are free for every visitor and need no account. They do not use the username scan allowance, and MyRecon does not save the address to an account history.</p></details><details><summary>What does a reverse email lookup show?</summary><p>Reported breaches that list the address and the data types each one exposed, plus public profiles tied to it such as Gravatar and GitHub commits. With linked-account checks on, it also shows registration signals from 100+ services. Each result names its source.</p></details><details><summary>Does the person who owns the email get notified?</summary><p>Breach and public-profile checks do not contact the address. The optional linked-account checks send the address to each service they test, so a service could log the request. That is why the option is off by default.</p></details><details><summary>Can it tell me who owns an email address?</summary><p>Not by itself. A public profile, a breach record or a registration signal is a lead about the address, not proof of identity. Confirm anything important with an independent source before you rely on it.</p></details><details><summary>Why does an address with no results still matter?</summary><p>No result means the sources checked had nothing they could report. It does not prove the address was never breached or never used to sign up somewhere. Some services block automated checks, and those are shown as unresolved, not as clean.</p></details></div>
+  </section>
+  <section>
+    <h2 id="using-email-lookups-responsibly">Using email lookups responsibly</h2>
+    <p>Look up your own addresses, or addresses you are authorized to review for security work. Do not use the results to harass, track or impersonate anyone. Read the <a href="/terms.html">terms of use</a> and the <a href="/privacy.html">privacy policy</a>.</p>
+    <p>Sources and behaviour reviewed <time datetime="2026-11-24">24 November 2026</time>.</p>
+  </section>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">EXPLORE YOUR FOOTPRINT</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>Your next discovery.<br>On your phone.</h2><p>Take MyRecon with you. Search public usernames, explore breach stories and check your digital footprint on Android.</p><ul class="promo-features"><li>Deep Search</li><li>Username search</li><li>Breach stories</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_general">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.</small></div></aside></div></div><!-- app-promo-layout:end -->
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Tools">
+  <p class="site-footer__heading">Tools</p>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <p class="site-footer__heading">Explore</p>
+  <ul><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li><li><a href="/find/">Platform lookups</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/templates/">Free templates</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <p class="site-footer__heading">Compare</p>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <p class="site-footer__heading">Company</p>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <p class="site-footer__heading">Legal</p>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/editorial-shell.js" defer></script>
+  <script src="/assets/js/consent.js"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+  <script src="/assets/js/username-search-input.js?v=fea1c56464" defer></script>
+<script src="/assets/js/app-nudge.js?v=544d2d5337" defer></script>
+</body>
+</html>

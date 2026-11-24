@@ -300,6 +300,9 @@ function renderPage(record, siblings = []) {
   const crumbHtml = record.kind === "core"
     ? `<a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(record.h1)}</span>`
     : `<a href="/">Home</a> <span aria-hidden="true">/</span> <a href="${categoryRoute}">${esc(label)}</a> <span aria-hidden="true">/</span> <span aria-current="page">${esc(record.h1)}</span>`;
+  // Comparison pages answer "can I run this in a browser instead?", so their
+  // search box sits right under the intro; other pages keep it after the body.
+  const seoCta = `<section class="seo-cta"><h2>Check a public username</h2><p>Free with no sign-up: 100 sites, up to 5 results shown in full. Verify each candidate at its source.</p><username-search-input sample="octocat"></username-search-input></section>`;
   return `<!doctype html>
 <html lang="en" data-theme="light">
 <head>
@@ -340,11 +343,11 @@ ${jsonLd(record, route)}
   </div></header>
   <main id="main" class="container prose seo-page">
     <nav class="seo-breadcrumb" aria-label="Breadcrumb">${crumbHtml}</nav>
-    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p><p class="seo-sources">MyRecon editorial · Updated ${esc(record.modified_at)}</p>${record.kind === "guide" ? `
+    <article><span class="kicker">${esc(label)}</span><h1>${esc(record.h1)}</h1><p class="seo-intro">${esc(record.intro)}</p><p class="seo-sources">MyRecon editorial · Updated ${esc(record.modified_at)}</p>${record.kind === "comparison" ? seoCta : ""}${record.kind === "guide" ? `
       <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="${guideMobileImagePath(record)}" width="640" height="850"><img src="${guideImagePath(record)}" alt="${esc(`${record.h1}: ${guideTheme(record).steps.join(', then ')}.`)}" width="1200" height="450" decoding="async"></picture><figcaption>Workflow illustration, not a screenshot or a recorded test.</figcaption></figure>` : ""}
       ${renderSpecific(record)}${renderSections(record)}
       ${record.evidence ? `<figure class="seo-guide-figure"><img src="${esc(record.evidence.image)}" alt="${esc(record.evidence.alt)}" width="1280" height="800" loading="lazy" style="max-width:100%;height:auto"><figcaption>${esc(record.evidence.caption)} <a href="${esc(record.evidence.source)}" target="_blank" rel="noopener noreferrer">Original source</a>.</figcaption></figure>` : ''}
-      ${record.slug === 'protect-researcher-notes' || record.slug === 'discord-user' ? '' : `<section class="seo-cta"><h2>Check a public username</h2><p>Guest previews and account limits apply. See <a href="/pricing">current pricing</a>. Verify each candidate at its source.</p><username-search-input></username-search-input></section>`}
+      ${record.kind === 'comparison' || record.slug === 'protect-researcher-notes' || record.slug === 'discord-user' ? '' : seoCta}
       <section class="seo-faq"><h2>Frequently asked questions</h2>${record.faq.map((item) => `<details><summary>${esc(item.question)}</summary><p>${esc(item.answer)}</p></details>`).join("")}</section>
       <nav class="seo-library-link" aria-label="Related libraries">${relatedPeers.map((peer) => `<a href="${esc(routeFor(peer))}">${esc(peer.h1)}</a>`).join("")}<a href="/username-checker.html">Username checker</a><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a><a href="/pricing">Pricing</a><a href="/about.html#editorial-method">Editorial method and corrections</a></nav>
       ${sourceList.length ? `<section class="seo-section seo-sources"><h2>Sources and method</h2><p>${esc(record.method)}</p><ul>${sourceList.map((source) => `<li><a href="${esc(source)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a></li>`).join("")}</ul></section>` : ""}

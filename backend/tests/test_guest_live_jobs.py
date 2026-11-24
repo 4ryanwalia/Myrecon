@@ -1,4 +1,4 @@
-"""Durable guest streams and job polls must expose the same two card identities."""
+"""Durable guest streams and job polls must expose the same visible card identities."""
 import json
 
 import app as api
@@ -7,9 +7,9 @@ from services import scan_job_api as jobs_api
 
 def test_live_job_cards_match_the_final_and_polled_guest_preview(monkeypatch):
     cards = [{"platform": name, "url": f"https://{name.lower()}.example/profile", "exists": True}
-             for name in ("First", "Second", "HiddenThird")]
+             for name in ("First", "Second", "Third", "Fourth", "Fifth", "HiddenSixth")]
     job = {"id": "a" * 32, "username": "fixture", "scope": "standard", "deep": False,
-           "uid": None, "checked": 3, "status": "scanning", "refs": [{"path": "chunk"}]}
+           "uid": None, "checked": 6, "status": "scanning", "refs": [{"path": "chunk"}]}
     final = {"status": "ok", "query": {}, "results": {"profiles": list(reversed(cards))},
              "exposures": [{"email": "hidden@example.com"}]}
     reads = iter([job, {**job, "status": "complete"}])
@@ -21,11 +21,11 @@ def test_live_job_cards_match_the_final_and_polled_guest_preview(monkeypatch):
     monkeypatch.setattr("services.search._live_view", lambda row, _: row)
     emitted = [json.loads(line) for line in jobs_api.events(api, job["id"])]
     visible = [e["result"]["platform"] for e in emitted if e["type"] == "found"]
-    assert visible == ["First", "Second"]
+    assert visible == ["First", "Second", "Third", "Fourth", "Fifth"]
     assert [e["count"] for e in emitted if e["type"] == "found_locked"] == [1]
     projected = emitted[-1]["data"]
     assert [r["platform"] for r in projected["results"]["profiles"]] == visible
     assert jobs_api._visible(api, job, final) == projected
-    assert "HiddenThird" not in json.dumps(emitted)
+    assert "HiddenSixth" not in json.dumps(emitted)
     assert "hidden@example.com" not in json.dumps(emitted)
-    assert final["results"]["profiles"][0]["platform"] == "HiddenThird"
+    assert final["results"]["profiles"][0]["platform"] == "HiddenSixth"

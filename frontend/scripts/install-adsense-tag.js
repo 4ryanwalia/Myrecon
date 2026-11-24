@@ -17,13 +17,17 @@ const ADSENSE_SCRIPT_ONLY = /<script async src="https:\/\/pagead2\.googlesyndica
 // services pages, while skipping the hand-written case files and guides.
 // Tool screens, promos, legal pages and record-derived archive pages stay
 // tag-free ("ads on screens without publisher content").
+//
+// 24 Nov 2026 (owner's choice): no ad script on pages whose first screen is a
+// live search tool either. The homepage keeps only the account meta tag, the
+// AdSense site-verification method, so the property stays verified.
 const ALLOWED_ROOT_FILES = new Set([
-  'index.html',
   'about.html',
   'osint-tool-pricing.html',
-  'whatsmyname-alternatives.html',
   'username-sweep-vs-deep-search.html',
 ]);
+const VERIFY_ONLY = new Set(['index.html']);
+const META_TAG = `<meta name="google-adsense-account" content="${PUB_ID}">`;
 // Promotional or thin pages inside otherwise editorial folders.
 const EXCLUDED = new Set([
   'guides/myrecon-black-friday-sale-2026.html',
@@ -74,7 +78,16 @@ function visit(directory) {
     let html = fs.readFileSync(file, 'utf8');
     const allowed = shouldHaveAdSense(relPath);
 
-    if (allowed) {
+    if (VERIFY_ONLY.has(relPath.split(path.sep).join('/'))) {
+      const before = html;
+      html = html.replace(ADSENSE_REGEX, META_TAG + '\n');
+      html = html.replace(ADSENSE_SCRIPT_ONLY, '');
+      if (!html.includes(META_TAG)) {
+        const head = /<head\b[^>]*>/i.exec(html);
+        if (head) html = html.slice(0, head.index + head[0].length) + '\n' + META_TAG + html.slice(head.index + head[0].length);
+      }
+      if (html !== before) { safeWrite(file, html); removedCount++; }
+    } else if (allowed) {
       if (!html.includes(PUB_ID)) {
         const head = /<head\b[^>]*>/i.exec(html);
         if (head) {

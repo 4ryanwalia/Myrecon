@@ -722,17 +722,17 @@ def test_history_id_is_validated(client):
 
 @pytest.mark.parametrize("stream", [False, True])
 @pytest.mark.parametrize("cached", [False, True])
-def test_guest_quick_exposes_two_cards_without_mutating_shared_cache(client, monkeypatch, stream, cached):
+def test_guest_quick_exposes_five_cards_without_mutating_shared_cache(client, monkeypatch, stream, cached):
     import copy
     import services.search as search
     cards = [{"platform": name, "url": f"https://{name.lower()}.example/octocat",
               "category": "profile", "confidence": "high"}
-             for name in ("First", "Second", "HiddenThird", "HiddenFourth")]
+             for name in ("First", "Second", "Third", "Fourth", "Fifth", "HiddenSixth", "HiddenSeventh")]
     full = {"status": "ok", "query": {"username": "octocat", "scope": "standard", "deep": True},
-            "summary": {"total": 4, "profiles": 4, "checked": 100},
+            "summary": {"total": 7, "profiles": 7, "checked": 100},
             "results": {"profiles": cards, "documents": [], "mentions": []},
-            "identity_clusters": [{"profiles": cards}], "exposures": [{"url": cards[2]["url"]}],
-            "platform_checks": cards, "user_scanner": {"hidden": cards[3]}}
+            "identity_clusters": [{"profiles": cards}], "exposures": [{"url": cards[5]["url"]}],
+            "platform_checks": cards, "user_scanner": {"hidden": cards[6]}}
     original = copy.deepcopy(full)
     monkeypatch.setattr(config, "CACHE_ENABLED", True)
     key = app_module._cache_key("username", "octocat", True)
@@ -757,20 +757,20 @@ def test_guest_quick_exposes_two_cards_without_mutating_shared_cache(client, mon
         received = [json.loads(line) for line in wire.splitlines()]
         shown = received[-1]["data"]
         if not cached:
-            assert len([e for e in received if e["type"] == "found"]) == 2
+            assert len([e for e in received if e["type"] == "found"]) == 5
             assert [e["count"] for e in received if e["type"] == "found_locked"] == [1, 2]
     else:
         shown = response.get_json()
-    assert shown["guest_preview"] == {"visible_cards": 2, "hidden_cards": 2, "requires_sign_in": True}
-    assert shown["results"]["profiles"] == cards[:2]
-    assert shown["summary"]["total"] == 4
-    assert "HiddenThird" not in wire and "hiddenthird.example" not in wire
-    assert "HiddenFourth" not in wire and "hiddenfourth.example" not in wire
+    assert shown["guest_preview"] == {"visible_cards": 5, "hidden_cards": 2, "requires_sign_in": True}
+    assert shown["results"]["profiles"] == cards[:5]
+    assert shown["summary"]["total"] == 7
+    assert "HiddenSixth" not in wire and "hiddensixth.example" not in wire
+    assert "HiddenSeventh" not in wire and "hiddenseventh.example" not in wire
     assert full == original and app_module._cache.get(key) is None
     signed = client.post(endpoint, json={"username": "octocat", "deep": True, "scope": "standard"},
                          headers={"Authorization": f"Bearer {_token()}"})
     signed_wire = signed.get_data(as_text=True)
-    assert "HiddenThird" in signed_wire and "HiddenFourth" in signed_wire
+    assert "HiddenSixth" in signed_wire and "HiddenSeventh" in signed_wire
     assert "guest_preview" not in signed_wire
 
 def test_guest_gets_five_quick_scans_a_day(client):

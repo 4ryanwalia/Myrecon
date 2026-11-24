@@ -625,15 +625,15 @@
     const preview = previewMeta(data);
     const guest = !signedIn() || data.guest_preview?.requires_sign_in === true;
     const allCards = profiles.concat(documents, mentions);
-    const hiddenCards = guest ? Math.max(0, Number(data.guest_preview?.hidden_cards) || allCards.length - 2) : 0;
+    const hiddenCards = guest ? Math.max(0, Number(data.guest_preview?.hidden_cards) || allCards.length - 5) : 0;
     let html = resultsHeader(`Results for “${data.query.username}”`, `${s.total || 0} ${preview ? "visible findings" : "findings"}`);
     html += window.MyReconPartial?.notice(data) || "";
     if (data.supplied_profile) html += `<p class="hint">User-supplied profile (not verification): ${esc(data.supplied_profile)}</p>`;
 
     if (preview) html += previewNotice(preview);
-    if (guest && allCards.length) html += `<div class="preview-notice" role="status"><strong>Guest preview</strong><span>Only the first 2 result cards are visible. Sign in to run Standard and see complete results.</span></div>`;
+    if (guest && allCards.length) html += `<div class="preview-notice" role="status"><strong>Guest preview</strong><span>Up to 5 result cards are shown in full, strongest matches first. Sign in to run Standard and see complete results.</span></div>`;
 
-    // A score based on two visible cards would misstate the complete report.
+    // A score based on a few visible cards would misstate the complete report.
     const exp = null; // Profile counts are not an exposure score.
     lastExposure = exp;
     if (exp && (s.profiles || 0) > 0) html += exposureGauge(exp);
@@ -1968,7 +1968,7 @@
     const trialLink = $("#scopeTrial");
     if (trialLink) trialLink.hidden = !["full", "extended"].includes(scope) || !!acct?.standard_scans_unlimited;
     if (scope !== "full" && scope !== "extended" && (!st || !st.user)) {
-      note.textContent = "Guest login: Quick scans only, across 100 platforms. First 2 cards visible; the rest are blurred. No sign-up required. 5 free scans a day.";
+      note.textContent = "Guest login: Quick scans only, across 100 platforms. Up to 5 cards shown in full, strongest first. No sign-up required. 5 free scans a day.";
       return;
     }
     if (scope === "extended" && (!st || !st.user)) {
@@ -2960,6 +2960,10 @@
       const params = new URLSearchParams(location.hash.replace(/^#/, ""));
       const linked = params.get("tool");
       const linkedQuery = params.get("q");
+      // Landing-page email forms ask for the optional account checks with
+      // linked=1. Only ever switches the toggle on, and only for Email.
+      const linkedAccounts = linked === "email" && params.get("linked") === "1";
+      params.delete("linked");
       if (params.has("q")) {
         params.delete("q");
         // Consume the input once. Keep the selected tool and other link state
@@ -2971,6 +2975,8 @@
       try { sessionStorage.removeItem(GUEST_REPORT_KEY); } catch {}
       if (linked && TOOLS[linked] && !TOOLS[linked].secret) {
         switchTool(linked);
+        const toggle = $("#linkedAccountsToggle");
+        if (linkedAccounts && toggle) toggle.checked = true;
         if (params.get("scan")) openSavedScan(params.get("scan"));
         else if (linkedQuery) { $("#queryInput").value = linkedQuery; run(); }
         else $("#tool")?.scrollIntoView({ block: "start" });

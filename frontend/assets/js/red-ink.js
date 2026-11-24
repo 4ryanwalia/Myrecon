@@ -97,6 +97,10 @@
     if(media.matches||document.hidden)return null;
     if(handwriting)return handwriting.owner===owner?handwriting.api:null;
     measure();
+    // The pen starts at a fixed spot near the right edge. Around 700-1100px
+    // that spot is on the orbit's pause button and the layout leaves no free
+    // spot at all, so a claimed pen sat on the button. Move it, or decline.
+    if(!safe(nib)){const clear=nearestSafe(nib);if(!clear){pen.style.opacity='0';return null;}nib=clear;}
     const departure=new Set(textBoxes.filter(r=>overlap(penBounds(nib),r)).map(r=>r.inkElement));
     nib.x=Math.max(8,Math.min(innerWidth-49,nib.x));
     const state={owner,lifted:true,active:true,api:null};handwriting=state;
@@ -244,8 +248,8 @@
       if(t===1)park=null;
     }
     nib.x=Math.max(8,Math.min(innerWidth-33,nib.x));nib.y=Math.max(80,Math.min(innerHeight-12,nib.y));
-    if(!safe(nib)){const clear=nearestSafe(nib);if(clear)nib=clear;}
-    pen.style.opacity='.9';pen.style.transform=`translate(${nib.x}px,${nib.y-40}px) rotate(${(engaged?0:Math.sin(now/800)*4)+(lifted?8:0)}deg) scale(${lifted?1.06:1})`;
+    let homeless=false;if(!safe(nib)){const clear=nearestSafe(nib);if(clear)nib=clear;else homeless=true;}
+    pen.style.opacity=homeless?'0':'.9';pen.style.transform=`translate(${nib.x}px,${nib.y-40}px) rotate(${(engaged?0:Math.sin(now/800)*4)+(lifted?8:0)}deg) scale(${lifted?1.06:1})`;
     // Keep the parked pen visible without clearing a blank canvas every frame.
     if(!engaged||park||marks.length)raf=requestAnimationFrame(tick);
   }

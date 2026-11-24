@@ -105,7 +105,7 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
 const usernameQuestions = [
   ['What is a username checker?', 'A username checker searches supported services for public profiles using a handle. MyRecon returns profile leads for source review. A matching handle does not prove who owns an account.'],
   ['Can I check username availability with MyRecon?', 'MyRecon checks public profile presence. A not-found result does not guarantee that a username is available to register. A platform may reserve a name, suspend an account or restrict its visibility. Confirm availability in the official signup or account settings flow.'],
-  ['Is the username checker free?', 'MyRecon offers free guest Quick scans across 100 platforms with no sign-up required. Guests get 5 Quick scans daily with only the first 2 result cards visible. Signed-in free accounts get 5 Standard scans daily across 560+ platforms; Quick and Standard share that account allowance. Paid plans add features such as Deep Search and Extended scans; check the current pricing page for limits.'],
+  ['Is the username checker free?', 'MyRecon offers free guest Quick scans across 100 platforms with no sign-up required. Guests get 5 Quick scans daily with up to 5 result cards shown in full, strongest matches first. Signed-in free accounts get 5 Standard scans daily across 560+ platforms; Quick and Standard share that account allowance. Paid plans add features such as Deep Search and Extended scans; check the current pricing page for limits.'],
   ['Can I search every social media platform?', 'No. MyRecon checks a supported catalogue of more than 500 platforms, not every website. Login walls, anti-bot controls, timeouts and platform changes can leave a check unknown.'],
   ['How do I find my old accounts by username?', 'Search handles you remember using, then open each candidate profile and compare it with your own records. Use saved passwords, signup emails and the official account recovery process to confirm ownership.'],
 ];
@@ -114,8 +114,8 @@ const usernameBody = fs.readFileSync(path.join(root, 'content/discovery/username
   .replace('<!-- faq -->', usernameQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
-  title: 'Free Username Search & Profile Checker | MyRecon',
-  description: 'Run a free username search for public profiles. See guest limits, confirm profile leads and learn where to check whether a handle can be registered.',
+  title: 'Social Media Username Checker, Free in Browser | MyRecon',
+  description: 'Check a username across 100 sites free with no sign-up, or 560+ with a free account. See which profiles exist and which checks stayed unknown.',
   keywords: 'username checker, social media username search, username lookup, check username across platforms, find accounts by username, public profile search, handle checker, username availability vs search, browser username checker, osint username search',
   url: `${site}/username-checker.html`,
   outFileName: 'username-checker.html',
@@ -128,7 +128,7 @@ buildDiscoveryPage({
 // 2. Free OSINT tool discovery page
 const osintQuestions = [
   ['What is a free OSINT tool?', 'An open-source intelligence tool helps you collect and review publicly accessible information. MyRecon combines browser tools for checking your own public usernames, email breach exposure and domain records.'],
-  ['Can I use MyRecon without signing in?', 'Yes. Run a guest Quick username check across 100 supported platforms with up to two result cards visible. Email breach results are available to guests. Sign in for five free Standard username searches per day across 560+ supported platforms, with complete result cards.'],
+  ['Can I use MyRecon without signing in?', 'Yes. Run a guest Quick username check across 100 supported platforms with up to five result cards visible. Email breach results are available to guests. Sign in for five free Standard username searches per day across 560+ supported platforms, with complete result cards.'],
   ['How does MyRecon compare to Sherlock and Maigret?', 'MyRecon offers username checks and other tools in a browser. Sherlock and Maigret run from your terminal and let you review their source and settings. Results from any tool should be checked against the original profile before you rely on a match.'],
   ['Can a free OSINT tool find private or hidden social accounts?', 'MyRecon searches supported public sources. A blocked request or a sign-in screen leaves the public profile check unresolved.'],
   ['What can I check for free?', 'MyRecon includes free public username checks, email breach lookup, password exposure checks and tools for reviewing domain registration, DNS and IP information. Read the plans page for account and usage limits.'],
@@ -138,12 +138,13 @@ const osintBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Free OSINT tool</span></nav>
   <h1>Free OSINT tools online for checking your own footprint</h1>
   <p class="sub">Search for a username you use, check an email address for reported breaches, or review public records for a domain you control. The web tools run in your browser.</p>
-  <a class="btn btn-primary" href="/#tool">Open free username search</a>
-  <p class="discovery-note">Guest Quick checks cover 100 supported platforms and show up to two result cards. A free account includes five Standard username searches a day across 560+ supported platforms. <a href="/pricing">See current plans and limits.</a></p>
+  <username-search-input sample="octocat"></username-search-input>
+  <p>Starting from an email instead? Use the <a href="/reverse-email-lookup.html">reverse email lookup</a>.</p>
+  <p class="discovery-note">Guest Quick checks cover 100 supported platforms and show up to five result cards. A free account includes five Standard username searches a day across 560+ supported platforms. <a href="/pricing">See current plans and limits.</a></p>
   <section>
     <h2 id="core-osint-investigation-modules">Choose a free OSINT tool</h2>
     <dl>
-      <dt><strong><a href="/#tool=email">Check an email for breach exposure</a></strong></dt>
+      <dt><strong><a href="/reverse-email-lookup.html">Check an email for breaches and linked accounts</a></strong></dt>
       <dd>See reported breaches and the types of data listed by supported sources. Returned breach results are available without signing in.</dd>
       <dt><strong><a href="/#tool">Find public profiles for a username</a></strong></dt>
       <dd>Use Quick for a guest preview or sign in for Standard results. Open each reported source to confirm the exact handle.</dd>
@@ -211,11 +212,11 @@ const osintBody = `<main id="main" class="container prose discovery-page">
 </main>`;
 
 buildDiscoveryPage({
-  title: 'Free OSINT Tools Online for Self-Audits | MyRecon',
-  description: 'Run free OSINT checks in your browser. See guest limits for username search, check email breach exposure, and open domain and DNS tools.',
+  title: 'Free OSINT Tools Online: Username, Email, DNS & IP | MyRecon',
+  description: 'Free OSINT search in your browser, no install: find accounts by username, look up an email for breaches, and check domain, DNS and IP records.',
   url: `${site}/free-osint-tool.html`,
   outFileName: 'free-osint-tool.html',
-  modifiedAt: '2026-11-22',
+  modifiedAt: '2026-11-24',
   crumbLabel: 'Free OSINT tool',
   questions: osintQuestions,
   bodyHtml: osintBody,
@@ -236,8 +237,8 @@ const footprintBody = fs.readFileSync(path.join(root, 'content/discovery/digital
   .replace('<!-- faq -->', footprintQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
-  title: 'Digital Footprint Checker by Email & Username | MyRecon',
-  description: 'Check public username profiles and email breach exposure. Learn what each result means and follow practical steps to reduce your digital footprint.',
+  title: 'Digital Footprint Checker: Email & Username Scan | MyRecon',
+  description: 'Check your digital footprint free: scan an email for breaches and linked accounts, search your usernames, then follow steps to clean up what you find.',
   keywords: 'digital footprint checker, free digital footprint checker, digital footprint search, digital footprint audit, check digital footprint free, online footprint audit, how to check digital footprint, digital footprint scanner, reverse digital footprint, personal privacy audit, privacy goal checklist, digital footprint cleanup goal, zero footprint goal, check online exposure free, search digital footprint by name',
   url: `${site}/digital-footprint-checker.html`,
   outFileName: 'digital-footprint-checker.html',
@@ -250,7 +251,7 @@ buildDiscoveryPage({
 // 4. Reverse username lookup discovery page
 const lookupQuestions = [
   ['What is a reverse username lookup?', 'A reverse username lookup checks supported public sources for a handle you already know. It can return candidate links to public profiles for you to review.'],
-  ['Is reverse username lookup free on MyRecon?', 'Guest Quick checks cover 100 supported platforms and show up to two result cards without a login. A free account includes five Standard username searches per day across 560+ supported platforms, with complete result cards.'],
+  ['Is reverse username lookup free on MyRecon?', 'Guest Quick checks cover 100 supported platforms and show up to five result cards without a login. A free account includes five Standard username searches per day across 560+ supported platforms, with complete result cards.'],
   ['How does reverse username search differ from searching Google?', 'Google returns pages it has indexed. A reverse username lookup checks supported public sources directly, and some sources may block requests or give an unclear response.'],
   ['Why can reverse username search produce false positives?', 'A source can return HTTP 200 for a generic page or an error message. Open a source and check that it actually identifies the exact handle. If a source is blocked or ambiguous, keep the result unresolved.'],
   ['Can a reverse username search prove who owns an account?', 'A shared handle can belong to different people. For your own accounts, confirm access through the platform. For other authorized work, look for owner-published links or another independent source before connecting profiles.'],
@@ -260,8 +261,8 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse username lookup</span></nav>
   <h1>Free reverse username lookup for public profiles</h1>
   <p class="sub">Enter a username or paste a full Instagram, TikTok or GitHub profile link. Review candidates by opening the original profile links.</p>
-  <a class="btn btn-primary" href="/#tool=username">Start a reverse username search</a>
-  <p class="discovery-note">Guest Quick covers 100 supported platforms and shows up to two result cards. A free account includes five Standard searches a day across 560+ supported platforms. <a href="/pricing">See current plans.</a></p>
+  <username-search-input sample="octocat"></username-search-input>
+  <p class="discovery-note">Guest Quick covers 100 supported platforms and shows up to five result cards. A free account includes five Standard searches a day across 560+ supported platforms. <a href="/pricing">See current plans.</a></p>
   <p><a href="/videos/reverse-username-search.html">Watch the 32-second walkthrough</a> or <a href="/username-checker.html#observed-demo">see a recorded guest result</a>.</p>
   <section>
     <h2>What is reverse username lookup and how does it work?</h2>
@@ -326,14 +327,107 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
 </main>`;
 
 buildDiscoveryPage({
-  title: 'Free Reverse Username Search & Lookup | MyRecon',
-  description: 'Start a free guest lookup from a handle or a full Instagram, TikTok or GitHub profile link. Check up to 100 supported sites and verify profile leads.',
+  title: 'Reverse Username Lookup: Find Accounts by Handle | MyRecon',
+  description: 'Find social media accounts by username, free and with no sign-up. Paste a handle or an Instagram, TikTok or GitHub link and check 100+ sites.',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
   modifiedAt: '2026-11-23',
   crumbLabel: 'Reverse username lookup',
   questions: lookupQuestions,
   bodyHtml: lookupBody,
+});
+
+// 8. Reverse email lookup (24 Nov 2026). The Email tool already ran free for
+// every visitor but had no page of its own; this is that page, with the
+// lookup form first. Every claim below must match backend/services/email.py,
+// modules/email_lookup.py and modules/registered_accounts.py.
+const emailQuestions = [
+  ['Is the reverse email lookup free?', 'Yes. Email lookups are free for every visitor and need no account. They do not use the username scan allowance, and MyRecon does not save the address to an account history.'],
+  ['What does a reverse email lookup show?', 'Reported breaches that list the address and the data types each one exposed, plus public profiles tied to it such as Gravatar and GitHub commits. With linked-account checks on, it also shows registration signals from 100+ services. Each result names its source.'],
+  ['Does the person who owns the email get notified?', 'Breach and public-profile checks do not contact the address. The optional linked-account checks send the address to each service they test, so a service could log the request. That is why the option is off by default.'],
+  ['Can it tell me who owns an email address?', 'Not by itself. A public profile, a breach record or a registration signal is a lead about the address, not proof of identity. Confirm anything important with an independent source before you rely on it.'],
+  ['Why does an address with no results still matter?', 'No result means the sources checked had nothing they could report. It does not prove the address was never breached or never used to sign up somewhere. Some services block automated checks, and those are shown as unresolved, not as clean.'],
+];
+
+const emailBody = `<main id="main" class="container prose discovery-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse email lookup</span></nav>
+  <h1>Reverse email lookup: find accounts and breaches linked to an email</h1>
+  <p class="sub">Enter an email address to see the breaches that list it, the data each one exposed, and public profiles tied to it. Free, with no sign-in.</p>
+  <username-search-input tool="email"></username-search-input>
+  <p class="discovery-note">The lookup opens in the MyRecon tool and runs straight away. Nothing is saved to an account.</p>
+  <section>
+    <h2 id="what-the-lookup-checks">What the email lookup checks</h2>
+    <dl>
+      <dt><strong>Reported breaches</strong></dt>
+      <dd>The address is checked against two free breach sources, LeakCheck and XposedOrNot. You see each named breach, its date where the source gives one, and the types of data it exposed, such as passwords, phone numbers or physical addresses. Large combined lists of old credentials are counted separately, so they do not inflate the number of distinct breaches.</dd>
+      <dt><strong>Public profiles for the exact address</strong></dt>
+      <dd>A public Gravatar profile and the accounts it lists, GitHub commits made with the address, and keys.openpgp.org, which only lists an address after its owner confirms it. These are things the owner of the address chose to publish.</dd>
+      <dt><strong>Linked-account checks (optional)</strong></dt>
+      <dd>Turn on "Also check linked accounts" and the lookup asks 100+ services, among them Spotify, Instagram, Pinterest, Amazon and Duolingo, whether the address is registered with them. This uses Holehe, an open-source tool, plus a few checks MyRecon maintains. It sends the address to every service it tests, so it is off unless you choose it.</dd>
+    </dl>
+    <p>Sensitive breaches, such as dating or adult sites that Have I Been Pwned marks as sensitive, are never listed against an address, and every result carries a note explaining that rule.</p>
+  </section>
+  <section>
+    <h2 id="how-to-run-a-reverse-email-lookup">How to run a reverse email lookup</h2>
+    <ol>
+      <li><strong>Enter the address.</strong> Use one you own or have permission to review. Paste it exactly; the lookup checks that address only, not variations of it.</li>
+      <li><strong>Decide on linked-account checks.</strong> Leave them off for a breach and public-profile check that contacts no one. Turn them on when you want registration signals and accept that each service sees the request.</li>
+      <li><strong>Read the result in three parts.</strong> Breaches tell you what was exposed and when. Public profiles tell you what the owner published. Registration signals tell you where the address appears to have an account.</li>
+      <li><strong>Act on it.</strong> Change any password that was reused on a breached service, turn on two-factor sign-in, and close accounts you no longer use. The <a href="/guides/check-email-data-breach.html">email breach guide</a> walks through each step.</li>
+    </ol>
+  </section>
+  <section>
+    <h2 id="reading-registration-signals">How to read a registration signal</h2>
+    <p>A registration check looks at how a service answers when asked about an address, usually on its sign-up or password-reset screen. If the answer differs for a registered address, that difference is the signal. It is good evidence that an account exists. It is not proof of who controls the account today.</p>
+    <p>Services change these screens without notice, and many rate-limit or block automated requests. MyRecon reports those as unresolved and counts them, so a partial run never reads as "no accounts". A service that is missing from the results means the lookup found no evidence there, not that no account exists.</p>
+  </section>
+  <section>
+    <h2 id="breach-results">What a breach result means for you</h2>
+    <p>A breach entry means the address appeared in data that a service lost or that was later traded. The exposed data types matter more than the count. A breach that included passwords means any password you used on that service, and anywhere you reused it, should be treated as known. A breach that included phone numbers raises the risk of SIM-swap and text-message scams.</p>
+    <p>Breach dates are when the incident happened according to the source, which is often months before it was disclosed. For background on a specific incident, open the <a href="/breaches/">breach archive</a>, which explains individual breaches from their published records.</p>
+  </section>
+  <section>
+    <h2 id="email-lookup-compared">How this compares with other email lookup tools</h2>
+    <p>Holehe is the open-source command-line tool behind the linked-account checks; running it yourself needs Python and gives you the raw answers. Have I Been Pwned is the reference for breach notifications and offers its own alerts. MyRecon puts breach data, public profiles and registration signals in one browser lookup and labels what it could not check. See the <a href="/blog/best-email-osint-tools.html">email OSINT tools comparison</a> and the <a href="/blog/best-data-breach-checkers.html">breach checker comparison</a> for more options.</p>
+  </section>
+  <section>
+    <h2 id="related-tools">Related tools</h2>
+    <ul>
+      <li><a href="/reverse-username-lookup.html">Reverse username lookup</a> for a handle that appears in your results</li>
+      <li><a href="/digital-footprint-checker.html">Digital footprint checker</a> for a combined email and username audit</li>
+      <li><a href="/#tool=password">Password exposure check</a>, which never sends the password itself</li>
+      <li><a href="/guides/spf-dkim-dmarc-explained.html">SPF, DKIM and DMARC explained</a> if the address is on a domain you run</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Frequently asked questions</h2>
+    <div class="faq">${emailQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
+  </section>
+  <section>
+    <h2>Using email lookups responsibly</h2>
+    <p>Look up your own addresses, or addresses you are authorized to review for security work. Do not use the results to harass, track or impersonate anyone. Read the <a href="/terms.html">terms of use</a> and the <a href="/privacy.html">privacy policy</a>.</p>
+    <p>Sources and behaviour reviewed <time datetime="2026-11-24">24 November 2026</time>.</p>
+  </section>
+</main>`;
+
+buildDiscoveryPage({
+  title: 'Free Reverse Email Lookup: Accounts & Breaches | MyRecon',
+  description: 'Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.',
+  url: `${site}/reverse-email-lookup.html`,
+  outFileName: 'reverse-email-lookup.html',
+  modifiedAt: '2026-11-24',
+  crumbLabel: 'Reverse email lookup',
+  questions: emailQuestions,
+  bodyHtml: emailBody,
+  webApplication: {
+    '@type': 'WebApplication',
+    name: 'MyRecon reverse email lookup',
+    url: `${site}/reverse-email-lookup.html`,
+    applicationCategory: 'SecurityApplication',
+    operatingSystem: 'Any',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
 });
 
 // 5-7. /boost.html, /browser.html and /goal.html were retired on 2026-11-17

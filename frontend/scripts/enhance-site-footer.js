@@ -6,21 +6,27 @@ const crypto = require("crypto");
 const ROOT = path.resolve(__dirname, "..");
 const logoHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, "assets/img/logo.svg"))).digest("hex").slice(0, 10);
 const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, "assets/css/site-footer.css"))).digest("hex").slice(0, 10);
+// Sitewide links are the strongest internal signal the site sends, so they go
+// to the pages people search for (the tools and their landing pages), not to
+// utility pages. The HTML sitemap and badge page are noindexed and linked
+// from the pages that need them instead.
 const GROUPS = [
-  ["Products", [
-    ["Username search", "/#tool"], ["Features", "/features.html"], ["Android app", "/app.html"],
-    ["Username checker", "/username-checker.html"], ["Footprint tools", "/footprint"], ["Deep Search", "/deep-search.html"], ["Badges & widgets", "/badge.html"],
+  ["Tools", [
+    ["Username search", "/#tool"], ["Reverse email lookup", "/reverse-email-lookup.html"],
+    ["Reverse username lookup", "/reverse-username-lookup.html"], ["Username checker", "/username-checker.html"],
+    ["Digital footprint checker", "/digital-footprint-checker.html"], ["Free OSINT tools", "/free-osint-tool.html"],
+    ["Deep Search", "/deep-search.html"], ["Footprint tools", "/footprint"], ["All features", "/features.html"], ["Android app", "/app.html"],
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [
-    ["Site directory", "/directory.html"], ["Watch MyRecon", "/watch.html"], ["Video guides", "/videos/"], ["OSINT cheat sheet", "/osint-cheat-sheet.html"], ["Free templates", "/templates/"], ["Platform directory", "/find/"], ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Privacy guides", "/privacy/"],
-    ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
+    ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
+    ["Platform lookups", "/find/"], ["Privacy guides", "/privacy/"], ["Free templates", "/templates/"],
   ]],
   ["Compare", [
-    ["Best free OSINT tools", "/blog/best-free-osint-tools-for-investigators.html"],
     ["MyRecon vs Sherlock", "/vs/sherlock"],
-    ["OSINT tool prices", "/osint-tool-pricing.html"],
     ["WhatsMyName alternatives", "/whatsmyname-alternatives.html"],
+    ["Best free OSINT tools", "/blog/best-free-osint-tools-for-investigators.html"],
+    ["OSINT tool prices", "/osint-tool-pricing.html"],
     ["Choose a research workflow", "/vs/"],
   ]],
   ["Company", [
@@ -37,7 +43,7 @@ function esc(value) { return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;"
 
 function renderFooter() {
   const groups = GROUPS.map(([heading, links]) => `<nav class="site-footer__group" aria-label="${esc(heading)}">
-  <h2 class="site-footer__heading">${esc(heading)}</h2>
+  <p class="site-footer__heading">${esc(heading)}</p>
   <ul>${links.map(([label, href, attr = ""]) => `<li><a href="${href}"${attr}>${esc(label)}</a></li>`).join("")}</ul>
 </nav>`).join("\n");
   return `<footer class="site-footer">

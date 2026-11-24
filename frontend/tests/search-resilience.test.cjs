@@ -64,7 +64,7 @@ test("guest report keeps two card details, locked placeholders and an honest cop
   api.renderUsername(data);
   assert.equal((results.innerHTML.match(/>Open profile /g) || []).length, 2);
   assert.equal((results.innerHTML.match(/class="card card-locked"/g) || []).length, 3);
-  assert.match(results.innerHTML, /Only the first 2 result cards are visible/);
+  assert.match(results.innerHTML, /Up to 5 result cards are shown in full/);
   assert.match(results.innerHTML, /https:\/\/first.example/);
   assert.match(results.innerHTML, /https:\/\/second.example/);
   const copied = api.buildTextSummary({ tool: "username", query: "guest-fixture", data });

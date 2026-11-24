@@ -243,7 +243,7 @@ function main() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(TITLE)}</title>
   <meta name="description" content="${esc(DESCRIPTION)}">
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="robots" content="noindex, follow">
   <meta name="theme-color" content="#f7f7f4">
   <link rel="canonical" href="${SITE}/directory.html">
   <link rel="icon" href="/favicon.ico" sizes="any">

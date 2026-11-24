@@ -18,7 +18,12 @@ function page(title, description, route, body, extra = []) {
     .replace(/(<meta\b[^>]*(?:name="(?:description|twitter:description)"|property="og:description")[^>]*content=")[^"]*/g, (_, before) => before + esc(description))
     .replace(/(<meta\b[^>]*(?:name="twitter:title"|property="og:title")[^>]*content=")[^"]*/g, (_, before) => before + esc(title))
     .replace(/https:\/\/www\.myrecon\.xyz\/about\.html/g, url)
-    .replace(/<main\b[^>]*>[\s\S]*?<\/main>/, `<main id="main" class="container"><article class="article"><h1>${esc(title)}</h1>${body}</article></main>`);
+    .replace(/<main\b[^>]*>[\s\S]*?<\/main>/, `<main id="main" class="container"><article class="article"><h1>${esc(title)}</h1>${body}</article></main>`)
+    // Watch pages are ~130 words around a 32-second clip, and each restates a
+    // full article that embeds the same video. Since 24 Nov 2026 they (and
+    // their hub) are noindex, follow so they stop competing with those
+    // articles; visitors and links still reach them.
+    .replace(/(<meta\b[^>]*name="robots"[^>]*content=")[^"]*/i, (_, before) => before + 'noindex, follow');
   const schema = { '@context': 'https://schema.org', '@graph': [{ '@type': 'BreadcrumbList', itemListElement: crumbs }, ...extra] };
   const searchCss = /\/assets\/(?:optimized\/)?css\/search-discovery(?:\.[a-f0-9]{12})?\.css/.test(html) ? '' : '<link rel="stylesheet" href="/assets/css/search-discovery.css">';
   return html.replace(/[ \t]+$/gm, '').replace('</head>', `${searchCss}<script type="application/ld+json">${json(schema)}</script></head>`);

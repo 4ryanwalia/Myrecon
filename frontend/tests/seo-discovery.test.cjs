@@ -33,7 +33,7 @@ test('the homepage heading contains the opening lines and keeps rotation copy ou
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)[1];
   const text = heading.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  assert.equal(text, 'Check your username. Know your footprint.');
+  assert.equal(text, 'Free username search &amp; digital footprint checker Check your username. Know your footprint.');
   for (const slot of ['lookup', 'outcome']) {
     const template = html.match(new RegExp(`<template id="hero-${slot}-phrases">([\\s\\S]*?)<\\/template>`))[1];
     assert.equal((template.match(/<span data-nosnippet>/g) || []).length, 9);
