@@ -17,7 +17,10 @@ from urllib.parse import urlsplit
 import config
 from core import notifications, paypal, razorpay, store, trial_tracking
 
-TRIAL_DAYS = 3
+# New trials only. A trial already running keeps the length it was sold with
+# (stored on its checkout intent; intents from before this field are 3 days).
+TRIAL_DAYS = 7
+LEGACY_TRIAL_DAYS = 3
 TRIAL_SCANS = 3
 CATALOG = {
     "monthly": {"amount": 399, "currency": "USD", "interval": "MONTH", "scans": 10},
@@ -40,12 +43,16 @@ def configured_plan(provider, key, trial=True):
     if provider == "razorpay":
         env = config.BASIC_RAZORPAY_YEARLY_PLAN_ID if key == "inr_yearly" else config.BASIC_RAZORPAY_MONTHLY_PLAN_ID
     else:
-        env = getattr(config, "BASIC_PAYPAL_" + key.upper() + ("_TRIAL" if trial else "_PAID") + "_PLAN_ID")
+        # Trial plans are named by length, so a stale override for an older
+        # trial length (env or catalog) can never be picked up by mistake.
+        suffix = ("_TRIAL_" + str(TRIAL_DAYS) + "D") if trial else "_PAID"
+        env = getattr(config, "BASIC_PAYPAL_" + key.upper() + suffix + "_PLAN_ID", "")
     if env:
         return env
     catalog_file = Path(__file__).with_name("billing_catalog.json")
     catalog = json.loads(catalog_file.read_text()) if catalog_file.exists() else {}
-    return catalog.get(_namespace(provider), {}).get(key + ("_trial" if trial else "_paid"), "")
+    name = key + (("_trial_" + str(TRIAL_DAYS) + "d") if (trial and provider == "paypal") else ("_trial" if trial else "_paid"))
+    return catalog.get(_namespace(provider), {}).get(name, "")
 
 
 def _razorpay_ready():
@@ -110,7 +117,7 @@ def _period_end(start, interval):
 def provision_plan(provider, key, trial):
     """Create immutable, server-priced provider plans, cached in persistent storage."""
     offer = CATALOG[key]
-    path = "web/subscription_plans/" + _namespace(provider) + "/v1_" + key + ("_trial" if trial else "_paid")
+    path = "web/subscription_plans/" + _namespace(provider) + "/v1_" + key + (("_trial_" + str(TRIAL_DAYS) + "d") if trial else "_paid")
     cached = store.store.get(path)
     if cached:
         return cached["id"]
@@ -123,14 +130,14 @@ def provision_plan(provider, key, trial):
             store.store.set(product_path, {"id": product["id"]})
         cycles = []
         if trial:
-            cycles.append({"frequency": {"interval_unit": "DAY", "interval_count": 3},
+            cycles.append({"frequency": {"interval_unit": "DAY", "interval_count": TRIAL_DAYS},
                            "tenure_type": "TRIAL", "sequence": 1, "total_cycles": 1,
                            "pricing_scheme": {"fixed_price": {"value": "0", "currency_code": "USD"}}})
         cycles.append({"frequency": {"interval_unit": offer["interval"], "interval_count": 1},
                        "tenure_type": "REGULAR", "sequence": len(cycles) + 1, "total_cycles": 0,
                        "pricing_scheme": {"fixed_price": {"value": f'{offer["amount"] / 100:.2f}', "currency_code": "USD"}}})
         result = paypal._call("POST", "/v1/billing/plans",
-                              request_id="basic-v1-" + key + ("-trial" if trial else "-paid"),
+                              request_id="basic-v1-" + key + (("-trial-" + str(TRIAL_DAYS) + "d") if trial else "-paid"),
                               json={"product_id": product["id"], "name": "Basic " + key,
                                     "status": "ACTIVE", "billing_cycles": cycles,
                                     "payment_preferences": {"auto_bill_outstanding": False,
@@ -182,7 +189,7 @@ def _plan(provider, key, trial):
             first = cycles[0] if cycles else {}
             cost = (first.get("pricing_scheme") or {}).get("fixed_price") or {}
             valid = valid and (first.get("tenure_type") == "TRIAL" and first.get("total_cycles") == 1
-                               and first.get("frequency") == {"interval_unit": "DAY", "interval_count": 3}
+                               and first.get("frequency") == {"interval_unit": "DAY", "interval_count": TRIAL_DAYS}
                                and Decimal(str(cost.get("value", "0"))) == 0)
     if not valid or plan.get("id") != plan_id:
         raise ValueError("The provider plan does not match the advertised price. Contact support.")
@@ -275,6 +282,8 @@ def checkout(uid, key, email=""):
     # On an ambiguous provider timeout retain the reservation: automatically
     # retrying a non-idempotent create could leave two billable subscriptions.
     intent["provider_plan"] = plan_id
+    if intent["trial"]:
+        intent["trial_days"] = TRIAL_DAYS
     store.store.set("web/subscription_attempts/" + binding, intent)
     if provider == "paypal":
         result = paypal._call("POST", "/v1/billing/subscriptions", request_id=binding, json={
@@ -379,7 +388,8 @@ def sync(provider, sid, uid=None):
             period, count = "paid:" + str(paid_at), offer["scans"]
         elif intent["trial"] and status == "active":
             start = _stamp(remote.get("start_time"))
-            trial_until = start + TRIAL_DAYS * 86400000 if start else 0
+            days = int(intent.get("trial_days") or LEGACY_TRIAL_DAYS)
+            trial_until = start + days * 86400000 if start else 0
             if start <= now < trial_until:
                 until, period, count = trial_until, "trial", TRIAL_SCANS
     else:
@@ -416,7 +426,7 @@ def sync(provider, sid, uid=None):
         return cur
     record = store.store.transaction(_user(intent["uid"]), apply)
 
-    # Track 3-day trial lifecycle and dispatch notifications
+    # Track free trial lifecycle and dispatch notifications
     user_email = intent.get("email")
     if not user_email:
         u_rec = store.store.get(_user(intent["uid"])) or {}

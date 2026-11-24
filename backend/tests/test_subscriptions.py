@@ -31,7 +31,7 @@ def setup(monkeypatch):
                         "PAYPAL_ENV": "sandbox", "RAZORPAY_KEY_ID": "rzp_test_key", "RAZORPAY_KEY_SECRET": "secret",
                         "RAZORPAY_WEBHOOK_SECRET": "hook", "BASIC_RAZORPAY_MONTHLY_PLAN_ID": "plan_basic"}.items():
         monkeypatch.setattr(config, name, value)
-    for key in ("MONTHLY_TRIAL", "YEARLY_TRIAL", "MONTHLY_PAID", "YEARLY_PAID"):
+    for key in ("MONTHLY_TRIAL_7D", "YEARLY_TRIAL_7D", "MONTHLY_PAID", "YEARLY_PAID"):
         monkeypatch.setattr(config, "BASIC_PAYPAL_" + key + "_PLAN_ID", "P-" + key)
 
 
@@ -54,7 +54,7 @@ def remote(status="ACTIVE", paid=False, amount="3.99"):
 def test_catalog_and_fail_closed_without_configuration(monkeypatch):
     assert [(o["amount"], o["scans"]) for o in sub.offers()] == [(399, 10), (1999, 120), (29900, 10), (199900, 120)]
     assert [o["provider"] for o in sub.offers()] == ["paypal", "paypal", "razorpay", "razorpay"]
-    assert all(o["trial_days"] == 3 for o in sub.offers())
+    assert all(o["trial_days"] == 7 for o in sub.offers())
     monkeypatch.setattr(config, "BASIC_PAYPAL_YEARLY_PAID_PLAN_ID", "")
     assert not sub.enabled("paypal")
     monkeypatch.setattr(config, "RAZORPAY_WEBHOOK_SECRET", "")
@@ -295,7 +295,7 @@ def test_razorpay_yearly_offer_is_enabled_and_provisions_verified_plan(monkeypat
     assert created_plan["period"] == "yearly" and created_plan["interval"] == 1
     assert created_plan["item"] == {"name": "MyRecon Pro yearly", "amount": 199900, "currency": "INR"}
     payload = next(iter(state["subs"].values()))
-    assert payload["total_count"] == 10 and payload["start_at"] == NOW + 3 * 86400
+    assert payload["total_count"] == 10 and payload["start_at"] == NOW + 7 * 86400
     # The provisioned plan is cached; a second account reuses it.
     store.store.set(sub._user(UID), {})
     sub.checkout(UID, "inr_yearly")
@@ -416,7 +416,7 @@ def test_abandoned_paypal_checkout_allows_a_new_trial(monkeypatch):
         if path.startswith("/v1/billing/plans/"):
             plan_id = path.rsplit("/", 1)[1]
             return {"id": plan_id, "status": "ACTIVE", "billing_cycles": [
-                {"tenure_type": "TRIAL", "total_cycles": 1, "frequency": {"interval_unit": "DAY", "interval_count": 3},
+                {"tenure_type": "TRIAL", "total_cycles": 1, "frequency": {"interval_unit": "DAY", "interval_count": 7},
                  "pricing_scheme": {"fixed_price": {"value": "0", "currency_code": "USD"}}},
                 {"tenure_type": "REGULAR", "total_cycles": 0, "frequency": {"interval_unit": "YEAR", "interval_count": 1},
                  "pricing_scheme": {"fixed_price": {"value": "19.99", "currency_code": "USD"}}}]}
@@ -448,3 +448,49 @@ def test_paypal_outage_does_not_close_a_pending_checkout(monkeypatch):
     with pytest.raises(paypal.PayPalError):
         sub.current(UID)
     assert store.store.get(sub._user(UID))["subscription"]["status"] == "pending"
+
+
+
+def test_new_trials_last_seven_days_and_running_three_day_trials_keep_three(monkeypatch):
+    # A checkout made after the change stores its length; it runs 7 days.
+    seed()
+    store.store.transaction(sub._path("paypal", SID), lambda cur: {**cur, "trial_days": 7})
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: remote())
+    assert sub.sync("paypal", SID, UID)["trial_until"] == (NOW + 7 * 86400) * 1000
+    monkeypatch.setattr(plans, "_now_ms", lambda: (NOW + 5 * 86400) * 1000)
+    assert plans.get_account(UID)["standard_scans_unlimited"]
+    monkeypatch.setattr(plans, "_now_ms", lambda: (NOW + 7 * 86400) * 1000)
+    assert not plans.get_account(UID)["standard_scans_unlimited"]
+
+
+def test_trial_started_before_the_change_still_ends_after_three_days(monkeypatch):
+    seed()  # intent without trial_days, like every checkout made before 7-day trials
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: remote())
+    assert sub.sync("paypal", SID, UID)["trial_until"] == (NOW + 3 * 86400) * 1000
+
+
+def test_checkout_records_trial_length_and_uses_the_seven_day_plan(monkeypatch):
+    seen = {}
+    def fake_plan(provider, key, trial):
+        seen["plan"] = sub.configured_plan(provider, key, trial)
+        return seen["plan"]
+    monkeypatch.setattr(sub, "_plan", fake_plan)
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: {"id": SID, "links": [
+        {"rel": "approve", "href": "https://www.sandbox.paypal.com/webapps/billing/subscriptions?ba_token=x"}]})
+    sub.checkout(UID, "monthly")
+    assert seen["plan"] == "P-MONTHLY_TRIAL_7D"
+    assert store.store.get(sub._path("paypal", SID))["trial_days"] == 7
+
+
+def test_old_three_day_override_is_never_used_for_new_trials(monkeypatch):
+    monkeypatch.setattr(config, "BASIC_PAYPAL_MONTHLY_TRIAL_7D_PLAN_ID", "")
+    monkeypatch.setattr(config, "BASIC_PAYPAL_MONTHLY_TRIAL_PLAN_ID", "P-OLD-3-DAY")
+    assert sub.configured_plan("paypal", "monthly", True) != "P-OLD-3-DAY"
+
+
+def test_live_catalog_names_the_seven_day_plans(monkeypatch):
+    monkeypatch.setattr(config, "BASIC_PAYPAL_MONTHLY_TRIAL_7D_PLAN_ID", "")
+    monkeypatch.setattr(config, "BASIC_PAYPAL_YEARLY_TRIAL_7D_PLAN_ID", "")
+    monkeypatch.setattr(sub, "_namespace", lambda provider: "paypal_d7fbb5238d8421f1")
+    assert sub.configured_plan("paypal", "monthly", True) == "P-1F202362H6697354ENMC3F2A"
+    assert sub.configured_plan("paypal", "yearly", True) == "P-9HA58789662516357NMC3F2Q"

@@ -43,7 +43,7 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
     // Outside India: PayPal in USD only, never both buttons.
     assert.equal(await page.locator('.plan .provider-btn:visible').count(), 1);
     assert.equal(await page.locator('[data-subscribe="razorpay"]').isVisible(), false);
-    assert.match(await page.locator('[data-subscribe="paypal"]').innerText(), /Try Pro free for 3 days/);
+    assert.match(await page.locator('[data-subscribe="paypal"]').innerText(), /Try Pro free for 7 days/);
     assert.equal(await page.locator('#proPrice').innerText(), '$3.99');
     assert.equal(await page.locator('.plans > section').count(),2);
     assert.equal(await page.locator('select').count(),0);
@@ -79,10 +79,10 @@ test('pricing switches periods and providers, requires fresh consent, and fits r
 
     assert.match(await page.locator('#proCredits').innerText(),/120/);
     await useRegion('in');
-    // India: Razorpay in INR only, with the label "Try Pro free for 3 days".
+    // India: Razorpay in INR only, with the label "Try Pro free for 7 days".
     assert.equal(await page.locator('.plan .provider-btn:visible').count(), 1);
     assert.equal(await page.locator('[data-subscribe="paypal"]').isVisible(), false);
-    assert.match(await page.locator('[data-subscribe="razorpay"]').innerText(), /Try Pro free for 3 days/);
+    assert.match(await page.locator('[data-subscribe="razorpay"]').innerText(), /Try Pro free for 7 days/);
     assert.equal(await page.locator('#proPrice').innerText(), '₹1,999');
     assert.equal(await page.locator('#proAnchor').innerText(), '₹3,588');
     assert.equal(await page.locator('#yearlyBadge').innerText(), '44% OFF');

@@ -1,5 +1,5 @@
 """
-Tests for 3-day trial tracking, conversion metrics, notifications, and analytics endpoint.
+Tests for free trial tracking, conversion metrics, notifications, and analytics endpoint.
 """
 
 from datetime import datetime, timezone
@@ -136,7 +136,7 @@ def test_trial_start_records_and_dispatches_notification(monkeypatch):
     call_args = dispatched[0][1]
     to_email, subject, text_body = call_args[0], call_args[1], call_args[2]
     assert to_email == "owner@myrecon.xyz"
-    assert "New 3-Day Free Trial Started" in subject
+    assert "New Free Trial Started" in subject
     # Alerts say that a trial started, never who started it.
     assert USER_EMAIL not in subject and USER_EMAIL not in text_body and UID not in text_body
     assert sid not in text_body and USER_EMAIL not in call_args[3]
@@ -159,7 +159,7 @@ def test_trial_converted_to_paid_records_and_dispatches_notification(monkeypatch
     monkeypatch.setattr(paypal, "_call", lambda *a, **k: remote_sub("ACTIVE", paid=False))
     sub.sync("paypal", sid, UID)
     assert len(dispatched) == 1
-    assert "New 3-Day Free Trial Started" in dispatched[0][1][1]
+    assert "New Free Trial Started" in dispatched[0][1][1]
 
     # 2. Trial converts to paid (first payment captured after 3 days)
     monkeypatch.setattr(paypal, "_call", lambda *a, **k: remote_sub("ACTIVE", paid=True, amount="3.99"))
@@ -224,7 +224,7 @@ def test_webhook_alert_carries_no_customer_details(monkeypatch):
     sub.sync("paypal", sid, UID)
     assert len(posted) == 1
     body = str(posted[0])
-    assert "New 3-Day Free Trial Started" in body
+    assert "New Free Trial Started" in body
     assert USER_EMAIL not in body and UID not in body and sid not in body
 
 

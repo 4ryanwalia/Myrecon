@@ -1,10 +1,10 @@
 """
-Trial tracking & conversion analytics for 3-day free trials.
+Trial tracking & conversion analytics for free trials.
 
 Tracks:
-1. Total users subscribing for a 3-day trial
+1. Total users subscribing for a free trial
 2. Active trials currently in flight
-3. Cancellations before the 3-day trial ends
+3. Cancellations before the trial ends
 4. Trial conversions into paid subscriptions (money received)
 5. Conversion ratio and cancellation ratio
 """
@@ -80,7 +80,7 @@ def record_trial_started(
     email: str = "",
     trial_until: int = 0,
 ) -> Tuple[dict, bool]:
-    """Record a newly started 3-day trial. Idempotent: returns (record, is_new)."""
+    """Record a newly started free trial. Idempotent: returns (record, is_new)."""
     now = _now_ms()
     path = _trial_path(provider, sid)
     existing = store.store.get(path)
@@ -115,7 +115,7 @@ def record_trial_started(
         return cur
 
     store.store.transaction(PATH_SUMMARY, update_summary)
-    log.info("Recorded 3-day trial started for %s (%s, %s)", sid, email or uid, plan)
+    log.info("Recorded free trial started for %s (%s, %s)", sid, email or uid, plan)
     return record, True
 
 
@@ -167,7 +167,7 @@ def record_trial_cancelled(
     sid: str,
     reason: str = "",
 ) -> Tuple[dict, bool]:
-    """Record cancellation of a trial before the 3-day period ends. Idempotent."""
+    """Record cancellation of a trial before the trial period ends. Idempotent."""
     now = _now_ms()
     path = _trial_path(provider, sid)
     existing = store.store.get(path) or {}

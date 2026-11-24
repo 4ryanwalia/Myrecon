@@ -120,11 +120,11 @@
     const offer = offers.find((o) => o.id === selected());
     const trial = subscription?.trial_eligible !== false;
     $("#basicTerms").textContent = trial
-      ? `3 days free, then ${labels[selected()]} automatically until cancelled. Cancel before the first charge to pay no subscription fee. One trial per account. Your exact first charge date is shown by the payment provider.`
+      ? `7 days free, then ${labels[selected()]} automatically until cancelled. Cancel before the first charge to pay no subscription fee. One trial per account. Your exact first charge date is shown by the payment provider.`
       : `${labels[selected()]} starting today, automatically renewing until cancelled. Your account has already used its free trial.`;
     $("#basicAllowance").textContent = `${selected().endsWith("yearly") ? "120 Extended scans per paid year" : "10 Extended scans per paid month"}; 3 during your free trial. Unused subscription scans expire at the end of their period.`;
     $("#startBasic").disabled = busy || checkoutConflict() || !A?.enabled || !offer?.enabled || !$("#basicConsent").checked;
-    $("#startBasic").textContent = busy ? "Please wait…" : trial ? "Start 3-day free trial" : "Subscribe to Pro";
+    $("#startBasic").textContent = busy ? "Please wait…" : trial ? "Start 7-day free trial" : "Subscribe to Pro";
     $("#basicPlan").disabled = busy;
     if ($("#checkoutManage")) $("#checkoutManage").hidden = !checkoutConflict();
     if ($("#checkoutNotice")) {
@@ -146,7 +146,7 @@
     });
     const setText = (id, text) => { if ($(id)) $(id).textContent = text; };
     setText("#pricingHeading", trial ? "Follow more public leads. Try Pro free." : "Follow more public leads with Pro.");
-    setText("#pricingIntroCopy", trial ? `Explore Deep Search and 3,000+ platforms for 3 days. Cancel before trial ends to pay ${copy.zero}.` : "Choose your billing period for Deep Search, unlimited Standard scans and Extended scan credits.");
+    setText("#pricingIntroCopy", trial ? `Explore Deep Search and 3,000+ platforms for 7 days. Cancel before trial ends to pay ${copy.zero}.` : "Choose your billing period for Deep Search, unlimited Standard scans and Extended scan credits.");
     const inIndia = region() === "in";
     if ($("#bfCopy")) $("#bfCopy").innerHTML = inIndia
       ? "<strong>Limited-time drop:</strong> Pro Annually <s>₹3,588</s> <strong>₹1,999/yr</strong> (44% off) &middot; Monthly <strong>₹299/mo</strong>"
@@ -165,9 +165,9 @@
     setText("#timelineCharge", copy.charge);
     if ($("#trialTimeline")) $("#trialTimeline").hidden = !trial;
     if ($("#trialPill")) $("#trialPill").hidden = !trial;
-    document.querySelectorAll("[data-provider-cta]").forEach((el) => { el.textContent = trial ? "Try Pro free for 3 days" : "Subscribe"; });
-    setText("#trialSummary", trial ? `3 days free, then ${copy.summary}. Auto-renews until cancelled. New subscribers only.` : "Your free trial has been used. Billing starts today and renews automatically until cancelled. Cancel anytime from this page.");
-    setText("#checkoutHeading", trial ? "Start your 3-day free trial" : "Subscribe to Pro");
+    document.querySelectorAll("[data-provider-cta]").forEach((el) => { el.textContent = trial ? "Try Pro free for 7 days" : "Subscribe"; });
+    setText("#trialSummary", trial ? `7 days free, then ${copy.summary}. Auto-renews until cancelled. New subscribers only.` : "Your free trial has been used. Billing starts today and renews automatically until cancelled. Cancel anytime from this page.");
+    setText("#checkoutHeading", trial ? "Start your 7-day free trial" : "Subscribe to Pro");
     setText("#checkoutProvider", `${isRazorpay(selected()) ? "Razorpay" : "PayPal"} · ${labels[selected()]}`);
     const shown = provider();
     if ($(".provider-buttons")) $(".provider-buttons").dataset.region = region();
@@ -269,7 +269,7 @@
       say(result.trial_until ? `First subscription charge: ${price} on ${date(result.trial_until)}, then ${every}. Razorpay may require a refundable payment-method authorization.` : `${price} ${every}. Review and authorize recurring billing in Razorpay.`);
       const checkout = new window.Razorpay({
         key: result.key_id, subscription_id: result.id, name: "MyRecon Pro",
-        description: `${labels[key]} after a 3-day trial for eligible accounts`,
+        description: `${labels[key]} after a 7-day trial for eligible accounts`,
         theme: { color: "#6d001a" },
         handler: async () => {
           try { await refresh(); say(subscription?.active ? "Pro is ready. Manage or cancel your subscription below." : "Authorization is being confirmed. Check status shortly; do not subscribe again."); }

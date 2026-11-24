@@ -53,7 +53,7 @@ test("extended balances show permanent pack credits and legacy expiry separately
   await legacy.api.refreshScopeNote(false);
   assert.match(legacy.note.textContent, /2 from a previous pass expire/);
   pack.api.setGate({ code: "upgrade_required", scope: "extended", account: {} });
-  assert.match(pack.results.innerHTML, /3 Extended scans free over 3 days.*10 per paid month/);
+  assert.match(pack.results.innerHTML, /3 Extended scans free over 7 days.*10 per paid month/);
   assert.match(pack.results.innerHTML, /renew automatically/);
   assert.match(pack.results.innerHTML, /Run a free standard scan/);
 });
@@ -85,7 +85,7 @@ test("free daily limit is visible in scope notes and gives a paid upgrade action
   assert.match(free.note.textContent, /midnight UTC/);
   free.api.setGate({ code: "standard_daily_limit", account: {} });
   assert.match(free.results.innerHTML, /used today&#39;s 5 standard scans/);
-  assert.match(free.results.innerHTML, /Try Pro free for 3 days with unlimited Standard scans/);
+  assert.match(free.results.innerHTML, /Try Pro free for 7 days with unlimited Standard scans/);
   assert.match(free.results.innerHTML, /cancel before the trial ends/);
   assert.doesNotMatch(free.results.innerHTML, /data-gate="signin"/);
   const quick = app({ user: { uid: "u" }, account: { standard_scans_left: 2 } }, "standard");

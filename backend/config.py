@@ -233,6 +233,9 @@ EXTENDED_SCAN_DEADLINE_SECONDS = SWEEP_EXTENDED_DEADLINE_SECONDS
 # Recurring billing stays closed until provider plans are provisioned.
 BASIC_PAYPAL_MONTHLY_TRIAL_PLAN_ID = os.environ.get("BASIC_PAYPAL_MONTHLY_TRIAL_PLAN_ID", "").strip()
 BASIC_PAYPAL_YEARLY_TRIAL_PLAN_ID = os.environ.get("BASIC_PAYPAL_YEARLY_TRIAL_PLAN_ID", "").strip()
+# Current trial plans are keyed by trial length (see subscriptions.configured_plan).
+BASIC_PAYPAL_MONTHLY_TRIAL_7D_PLAN_ID = os.environ.get("BASIC_PAYPAL_MONTHLY_TRIAL_7D_PLAN_ID", "").strip()
+BASIC_PAYPAL_YEARLY_TRIAL_7D_PLAN_ID = os.environ.get("BASIC_PAYPAL_YEARLY_TRIAL_7D_PLAN_ID", "").strip()
 BASIC_PAYPAL_MONTHLY_PAID_PLAN_ID = os.environ.get("BASIC_PAYPAL_MONTHLY_PAID_PLAN_ID", "").strip()
 BASIC_PAYPAL_YEARLY_PAID_PLAN_ID = os.environ.get("BASIC_PAYPAL_YEARLY_PAID_PLAN_ID", "").strip()
 BASIC_RAZORPAY_MONTHLY_PLAN_ID = os.environ.get("BASIC_RAZORPAY_MONTHLY_PLAN_ID", "").strip()

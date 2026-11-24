@@ -188,7 +188,7 @@ def _plan(trial: dict) -> tuple:
 
 
 def dispatch_trial_started(trial: dict, summary: dict):
-    """Notify the owner that someone started a 3-day trial."""
+    """Notify the owner that someone started a free trial."""
     plan, provider = _plan(trial)
     rows = [("Plan", plan), ("Provider", provider),
             ("Trial Started", _format_time(trial.get("trial_started_at"))),
@@ -197,9 +197,9 @@ def dispatch_trial_started(trial: dict, summary: dict):
              ("Active Trials", summary.get("active_trials", 1)),
              ("Converted to Paid", summary.get("trials_converted_to_paid", 0)),
              ("Conversion Rate", summary.get("conversion_rate_display", "0.0%"))]
-    subject = f"🚀 [MyRecon] New 3-Day Free Trial Started ({plan}, {provider})"
-    _dispatch(_send_all, subject, _text("Someone just started a 3-day free trial on MyRecon.", rows, stats),
-              _html("3-Day Trial", "#38bdf8", "🚀 New trial started", rows, stats), dict(rows + stats))
+    subject = f"🚀 [MyRecon] New Free Trial Started ({plan}, {provider})"
+    _dispatch(_send_all, subject, _text("Someone just started a free trial on MyRecon.", rows, stats),
+              _html("Free Trial", "#38bdf8", "🚀 New trial started", rows, stats), dict(rows + stats))
 
 
 def dispatch_trial_converted(trial: dict, summary: dict):
@@ -213,7 +213,7 @@ def dispatch_trial_converted(trial: dict, summary: dict):
              ("Cancelled Before End", summary.get("trials_cancelled_before_end", 0)),
              ("Conversion Rate", summary.get("conversion_rate_display", "100.0%"))]
     subject = f"💰 [MyRecon] Money Received! Trial Converted: {money}"
-    _dispatch(_send_all, subject, _text("A 3-day trial just converted to a paid subscription.", rows, stats),
+    _dispatch(_send_all, subject, _text("A free trial just converted to a paid subscription.", rows, stats),
               _html("Payment Received", "#34d399", "💰 Trial converted to paid", rows, stats), dict(rows + stats))
 
 
@@ -228,6 +228,6 @@ def dispatch_trial_cancelled(trial: dict, summary: dict):
              ("Converted to Paid", summary.get("trials_converted_to_paid", 0)),
              ("Cancellation Rate", summary.get("cancellation_rate_display", "0.0%")),
              ("Conversion Rate", summary.get("conversion_rate_display", "0.0%"))]
-    subject = f"⚠️ [MyRecon] 3-Day Trial Cancelled ({plan}, {provider})"
-    _dispatch(_send_all, subject, _text("A 3-day trial was cancelled before it ended.", rows, stats),
+    subject = f"⚠️ [MyRecon] Free Trial Cancelled ({plan}, {provider})"
+    _dispatch(_send_all, subject, _text("A free trial was cancelled before it ended.", rows, stats),
               _html("Trial Cancelled", "#fbbf24", "⚠️ Trial cancelled", rows, stats), dict(rows + stats))

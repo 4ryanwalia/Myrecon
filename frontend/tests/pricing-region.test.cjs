@@ -43,7 +43,7 @@ test('pricing offers one checkout by country, falling back to the time zone', as
       await page.goto('https://pricing.test/pricing');
       await page.locator(`[data-subscribe="${expected}"]:enabled`).waitFor();
       assert.equal(await page.locator('.plan .provider-btn:visible').count(), 1, `${label}: exactly one checkout button`);
-      assert.match(await page.locator('.plan .provider-btn:visible').innerText(), /Try Pro free for 3 days/, label);
+      assert.match(await page.locator('.plan .provider-btn:visible').innerText(), /Try Pro free for 7 days/, label);
       assert.equal(await page.locator('#proPrice').innerText(), expected === 'razorpay' ? '₹299' : '$3.99', `${label}: price matches the checkout`);
       assert.equal(await page.locator('#proAnchor').isVisible(), expected === 'paypal', `${label}: monthly strike-through exists only in USD`);
       // The switch is the visitor's way out of a wrong guess, and it is remembered.

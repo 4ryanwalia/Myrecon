@@ -425,8 +425,8 @@
         break;
       case "standard_daily_limit":
         title = "You have used today's 5 standard scans";
-        body = "Your free allowance resets at midnight UTC. Want to keep exploring? Try Pro free for 3 days with unlimited Standard scans, Deep Search and 3 Extended scans. Then your selected plan renews automatically; cancel before the trial ends to avoid the first charge.";
-        action = `<a class="btn btn-primary" href="/pricing">Try Pro free for 3 days</a>`;
+        body = "Your free allowance resets at midnight UTC. Want to keep exploring? Try Pro free for 7 days with unlimited Standard scans, Deep Search and 3 Extended scans. Then your selected plan renews automatically; cancel before the trial ends to avoid the first charge.";
+        action = `<a class="btn btn-primary" href="/pricing">Try Pro free for 7 days</a>`;
         break;
       case "sign_in_required":
       case "auth_invalid":
@@ -440,8 +440,8 @@
         break;
       case "upgrade_required": {
         title = "Get more Extended scans";
-        body = "Explore 3,000+ platforms with Pro. Try 3 Extended scans free over 3 days, then get 10 per paid month or 120 per paid year. Cancel before the trial ends to avoid the first charge. Paid plans renew automatically.";
-        action = `<a class="btn btn-primary" href="/pricing">Try Pro free for 3 days</a>
+        body = "Explore 3,000+ platforms with Pro. Try 3 Extended scans free over 7 days, then get 10 per paid month or 120 per paid year. Cancel before the trial ends to avoid the first charge. Paid plans renew automatically.";
+        action = `<a class="btn btn-primary" href="/pricing">Try Pro free for 7 days</a>
           <button type="button" class="btn btn-ghost" data-gate="full">Run a free standard scan</button>`;
         break;
       }
@@ -815,7 +815,7 @@
     }
     const trial = acct.trial_eligible !== false;
     return `<div class="panel gate slim extended-nudge">${lead}
-      <div class="gate-actions"><a class="btn btn-sm" href="/pricing#plans">${trial ? "Try Pro free for 3 days" : "See Pro plans"}</a>
+      <div class="gate-actions"><a class="btn btn-sm" href="/pricing#plans">${trial ? "Try Pro free for 7 days" : "See Pro plans"}</a>
       <span class="hint">${trial
         ? "Includes 3 Extended scans during the trial, then 10 a month. Renews automatically until cancelled."
         : "Pro includes 10 Extended scans a month or 120 a year."}</span></div></div>`;
@@ -1972,7 +1972,7 @@
       return;
     }
     if (scope === "extended" && (!st || !st.user)) {
-      note.textContent = `Checks ${EXTENDED_LABEL} platforms in about 5 minutes. Sign in and try Pro free for 3 days.`;
+      note.textContent = `Checks ${EXTENDED_LABEL} platforms in about 5 minutes. Sign in and try Pro free for 7 days.`;
       return;
     }
     if (!st || !st.user) {
