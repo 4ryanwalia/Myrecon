@@ -170,6 +170,9 @@ def test_checkout_server_owns_plan_and_prevents_duplicate(monkeypatch):
     monkeypatch.setattr(sub, "_plan", lambda *a: "server-plan")
     calls = []
     def provider(method, path, **kwargs):
+        if method == "GET":  # the second checkout re-reads the first: still awaiting approval
+            intent = store.store.get(sub._path("paypal", SID))
+            return {"id": SID, "plan_id": "server-plan", "custom_id": intent["binding"], "status": "APPROVAL_PENDING"}
         calls.append(kwargs["json"])
         return {"id": SID, "links": [{"rel": "approve", "href": "https://www.sandbox.paypal.com/webapps/billing/subscriptions?ba_token=x"}]}
     monkeypatch.setattr(paypal, "_call", provider)
@@ -363,11 +366,18 @@ def test_failed_close_of_unauthorized_checkout_blocks_new_subscription(monkeypat
 def test_pending_paypal_approval_is_not_replaced_by_razorpay(monkeypatch):
     seed()
     store.store.transaction(sub._user(UID), lambda cur: {**cur, "subscription": {**cur["subscription"], "status": "approval_pending"}})
-    monkeypatch.setattr(paypal, "_call", lambda *a, **k: pytest.fail("must not contact PayPal"))
+    # PayPal is only read (is it still awaiting approval?), never written to.
+    reads = []
+    def paypal_read(method, path, **kwargs):
+        assert method == "GET", "must not change anything at PayPal"
+        reads.append(path)
+        return remote("APPROVAL_PENDING")
+    monkeypatch.setattr(paypal, "_call", paypal_read)
     monkeypatch.setattr(razorpay, "_call", lambda *a, **k: pytest.fail("must not contact Razorpay"))
     monkeypatch.setattr(sub, "_plan", lambda *a: pytest.fail("must not prepare a new plan"))
     with pytest.raises(ValueError, match="pending checkout"):
         sub.checkout(UID, "inr_yearly")
+    assert reads == ["/v1/billing/subscriptions/" + SID]
 
 
 def test_same_razorpay_plan_resumes_instead_of_closing(monkeypatch):
@@ -377,3 +387,64 @@ def test_same_razorpay_plan_resumes_instead_of_closing(monkeypatch):
     monkeypatch.setattr(razorpay, "_call", call)
     assert sub.checkout(UID, "inr_yearly")["id"] == "sub_TEST123456"
     assert [m for m, p, j in state["calls"]] == ["GET"]
+
+
+def _deleted_at_paypal(*args, **kwargs):
+    raise paypal.PayPalNotFound("PayPal could not find that record.")
+
+
+def test_abandoned_paypal_checkout_is_closed_not_stuck(monkeypatch):
+    # PayPal deletes a subscription the buyer never approved and then answers
+    # 404. That must close the checkout, not fail every later request.
+    seed()
+    monkeypatch.setattr(paypal, "_call", _deleted_at_paypal)
+    status = sub.current(UID)
+    assert status["status"] == "expired" and not status["active"] and status["trial_eligible"]
+    assert store.store.get(sub._path("paypal", SID))["status"] == "expired"
+    assert sub.current(UID)["status"] == "expired"  # terminal: no further PayPal call
+    assert sub.cancel(UID)["status"] == "expired"
+
+
+def test_abandoned_paypal_checkout_allows_a_new_trial(monkeypatch):
+    seed()
+    calls = []
+
+    def fake(method, path, request_id=None, **kwargs):
+        calls.append((method, path))
+        if path == "/v1/billing/subscriptions/" + SID:
+            raise paypal.PayPalNotFound("gone")
+        if path.startswith("/v1/billing/plans/"):
+            plan_id = path.rsplit("/", 1)[1]
+            return {"id": plan_id, "status": "ACTIVE", "billing_cycles": [
+                {"tenure_type": "TRIAL", "total_cycles": 1, "frequency": {"interval_unit": "DAY", "interval_count": 3},
+                 "pricing_scheme": {"fixed_price": {"value": "0", "currency_code": "USD"}}},
+                {"tenure_type": "REGULAR", "total_cycles": 0, "frequency": {"interval_unit": "YEAR", "interval_count": 1},
+                 "pricing_scheme": {"fixed_price": {"value": "19.99", "currency_code": "USD"}}}]}
+        if path == "/v1/billing/subscriptions":
+            return {"id": "I-NEWSUB123456", "links": [{"rel": "approve", "href": "https://www.sandbox.paypal.com/webapps/billing/x"}]}
+        raise AssertionError(path)
+    monkeypatch.setattr(paypal, "_call", fake)
+    # Another plan: previously "You already have a subscription or pending checkout".
+    started = sub.checkout(UID, "yearly")
+    assert started["id"] == "I-NEWSUB123456" and started["trial"] is True
+    assert store.store.get(sub._user(UID))["subscription"]["id"] == "I-NEWSUB123456"
+
+
+def test_paypal_404_never_closes_an_approved_subscription(monkeypatch):
+    seed()
+    monkeypatch.setattr(paypal, "_call", lambda *a, **k: remote())
+    assert sub.sync("paypal", SID, UID)["status"] == "active"
+    monkeypatch.setattr(paypal, "_call", _deleted_at_paypal)
+    with pytest.raises(paypal.PayPalNotFound):
+        sub.current(UID)
+    assert store.store.get(sub._user(UID))["subscription"]["status"] == "active"
+
+
+def test_paypal_outage_does_not_close_a_pending_checkout(monkeypatch):
+    seed()
+    def down(*a, **k):
+        raise paypal.PayPalError("PayPal is unavailable. Please try again.")
+    monkeypatch.setattr(paypal, "_call", down)
+    with pytest.raises(paypal.PayPalError):
+        sub.current(UID)
+    assert store.store.get(sub._user(UID))["subscription"]["status"] == "pending"

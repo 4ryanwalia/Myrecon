@@ -30,6 +30,11 @@ class PayPalError(Exception):
     pass
 
 
+class PayPalNotFound(PayPalError):
+    """PayPal answered 404: the object does not exist (for example, a
+    subscription the buyer never approved, which PayPal deletes)."""
+
+
 def configured():
     return bool(config.PAYPAL_CLIENT_ID and config.PAYPAL_CLIENT_SECRET
                 and config.PAYPAL_WEBHOOK_ID and config.PAYPAL_ENV in ("sandbox", "live")
@@ -48,6 +53,8 @@ def _base():
 def _request(method, path, **kwargs):
     try:
         response = requests.request(method, _base() + path, timeout=15, **kwargs)
+        if response.status_code == 404:
+            raise PayPalNotFound("PayPal could not find that record.")
         if response.status_code >= 400:
             raise PayPalError("PayPal request failed. Please try again.")
         if response.status_code == 204:

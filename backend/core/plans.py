@@ -131,6 +131,8 @@ def entitlements(record, now_ms=None) -> dict:
         "extended_pack_scans_left": pack_left,
         "extended_legacy_scans_left": legacy_left,
         "extended_legacy_until": pro.get("until") if legacy_left else None,
+        # Lets result pages offer the free trial only to accounts that still have it.
+        "trial_eligible": not bool(record.get("basic_trial_used")),
     }
 
 

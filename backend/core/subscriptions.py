@@ -234,6 +234,17 @@ def checkout(uid, key, email=""):
                     "trial": intent["trial"], "trial_until": intent.get("trial_until"), **CATALOG[key]}
     existing = store.store.get(_user(uid)) or {}
     pending = existing.get("subscription") or {}
+    # A PayPal checkout for another plan may have been abandoned and deleted at
+    # PayPal; refreshing it closes it (see _close_abandoned_paypal). If PayPal
+    # still holds it, or it was approved meanwhile, the guard below refuses.
+    if (pending.get("provider") == "paypal" and pending.get("id") and pending.get("status") in UNAPPROVED
+            and pending.get("until", 0) <= time.time() * 1000):
+        try:
+            sync("paypal", pending["id"], uid)
+        except paypal.PayPalError:
+            pass
+        existing = store.store.get(_user(uid)) or {}
+        pending = existing.get("subscription") or {}
     # An unauthorized Razorpay checkout for another plan or provider is closed
     # first; this is what lets a customer switch after abandoning Razorpay.
     if pending and pending.get("until", 0) <= time.time() * 1000 and _close_unauthorized_razorpay(uid, pending):
@@ -295,14 +306,57 @@ def checkout(uid, key, email=""):
             "trial": intent["trial"], "trial_until": intent.get("trial_until"), **CATALOG[key]}
 
 
+UNAPPROVED = ("pending", "approval_pending")
+
+
+def _close_abandoned_paypal(sid, intent, observed):
+    """Close a PayPal checkout the buyer never approved and PayPal has deleted.
+
+    PayPal removes an APPROVAL_PENDING subscription a few hours after the buyer
+    leaves without approving, and from then on answers 404. Left as "pending",
+    that record made every status check, cancel and new checkout fail for the
+    account. Only a record we never saw approved (no paid or trial period) is
+    closed; it is marked "expired" (terminal), nothing was ever charged, and
+    the trial stays unused. Returns None when the record does not qualify, so
+    the caller re-raises the 404.
+    """
+    if intent.get("status") not in UNAPPROVED + ("expired",):
+        return None
+    now = int(time.time() * 1000)
+
+    def close(cur):
+        cur = cur or {}
+        sub = cur.get("subscription") or {}
+        if sub.get("id") == sid and sub.get("status") == "expired":
+            return cur
+        if (sub.get("id") != sid or sub.get("provider") != "paypal" or sub.get("status") not in UNAPPROVED
+                or sub.get("period") or sub.get("until", 0) > now or cur.get("basic_trial_used") == sid):
+            return cur
+        sub.update(status="expired", observed=observed, checked_at=now, until=0)
+        cur["subscription"] = sub
+        return cur
+    record = store.store.transaction(_user(intent["uid"]), close)
+    sub = (record or {}).get("subscription") or {}
+    if sub.get("id") != sid or sub.get("status") != "expired":
+        return None
+    store.store.transaction(_path("paypal", sid), lambda cur: {**(cur or {}), "status": "expired"})
+    return public(record)
+
+
 def sync(provider, sid, uid=None):
     path = _path(provider, sid)
     intent = store.store.get(path)
     if not intent or (uid is not None and uid != intent["uid"]):
         raise ValueError("Subscription not found for this account.")
     observed = time.time_ns()
-    remote = (paypal._call("GET", "/v1/billing/subscriptions/" + sid) if provider == "paypal"
-              else razorpay._call("GET", "/subscriptions/" + sid))
+    try:
+        remote = (paypal._call("GET", "/v1/billing/subscriptions/" + sid) if provider == "paypal"
+                  else razorpay._call("GET", "/subscriptions/" + sid))
+    except paypal.PayPalNotFound:
+        closed = _close_abandoned_paypal(sid, intent, observed)
+        if closed is None:
+            raise
+        return closed
     binding = remote.get("custom_id") if provider == "paypal" else (remote.get("notes") or {}).get("binding")
     if remote.get("id") != sid or remote.get("plan_id") != intent["provider_plan"] or binding != intent["binding"]:
         raise ValueError("Subscription details do not match this checkout.")

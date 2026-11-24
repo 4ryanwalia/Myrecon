@@ -684,8 +684,15 @@
       html += unverifiedPanel(data.unverified || []);
       html += rejectedPanel(data.rejected || [], s.checked || 0);
     }
-    if (data.coverage && !guest && !preview) html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
-    else if (guest
+    if (data.coverage && !guest && !preview) {
+      html = html.replace(`<div class="summary-grid">`, coverageLine(data.coverage) + `<div class="summary-grid">`);
+      // Above the full per-platform log so it is seen without scrolling past 560 rows.
+      const nudge = extendedNudge(data.coverage);
+      if (nudge) {
+        const log = html.indexOf(`<details class="panel rejected platform-checks">`);
+        html = log >= 0 ? html.slice(0, log) + nudge + html.slice(log) : html + nudge;
+      }
+    } else if (guest
       && !preview && window.MyReconAccount && window.MyReconAccount.enabled) html += fullScanNudge();
     if (preview) html += previewUnlock(preview);
     r.innerHTML = html;
@@ -785,6 +792,33 @@
     return `<div class="panel gate slim"><p>This was the 100-platform Quick scan. ${signedIn() ? "Run" : "Sign in to run"} a
       <strong>Standard scan across 560+ platforms</strong> with complete results.</p>
       <div class="gate-actions"><button type="button" class="btn btn-ghost btn-sm" data-gate="${signedIn() ? "full" : "signin-full"}">${signedIn() ? "Run Standard scan" : "Sign in for Standard"}</button></div></div>`;
+  }
+
+  // Shown under a finished signed-in Standard scan, the moment someone has just
+  // seen what 560 sites turn up. It says what Extended covers, never that it
+  // will find more. Extended results (thousands of platforms) get no nudge.
+  function extendedNudge(coverage) {
+    const A = window.MyReconAccount;
+    const st = A && A.enabled ? A.state() : null;
+    const acct = st && st.user ? st.account : null;
+    const total = Number(coverage && coverage.total) || 0;
+    if (!acct || !total || total >= 1500) return "";
+    const left = Number(acct.extended_scans_left) || 0;
+    const paid = !!acct.standard_scans_unlimited;
+    if (paid && left <= 0) return "";
+    const lead = `<p>This Standard scan checked ${total.toLocaleString("en-US")} sites. An <strong>Extended scan checks ${EXTENDED_LABEL}</strong>,
+      over 5 times as many, adding thousands of smaller forums and community sites. It takes about 5 minutes.</p>`;
+    if (left > 0) {
+      return `<div class="panel gate slim extended-nudge">${lead}
+        <div class="gate-actions"><button type="button" class="btn btn-sm" data-gate="extended">Run Extended scan</button>
+        <span class="hint">Uses 1 of your ${left} Extended ${left === 1 ? "scan" : "scans"}.</span></div></div>`;
+    }
+    const trial = acct.trial_eligible !== false;
+    return `<div class="panel gate slim extended-nudge">${lead}
+      <div class="gate-actions"><a class="btn btn-sm" href="/pricing#plans">${trial ? "Try Pro free for 3 days" : "See Pro plans"}</a>
+      <span class="hint">${trial
+        ? "Includes 3 Extended scans during the trial, then 10 a month. Renews automatically until cancelled."
+        : "Pro includes 10 Extended scans a month or 120 a year."}</span></div></div>`;
   }
 
   // Addresses and identifiers the handle leaks, as opposed to where it exists.

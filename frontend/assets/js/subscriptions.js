@@ -201,6 +201,7 @@
       : `Pro ${labels[subscription.plan] || ""} · ${subscription.status}. `
       + (subscription.active ? `${subscription.scans_left || 0} Extended scans left. Access until ${date(subscription.until)}. ` : "")
       + (subscription.status === "cancelled" ? "Automatic billing is cancelled."
+        : subscription.status === "expired" && !subscription.active ? "This subscription has ended or its checkout was never completed. Nothing more will be charged. Choose a plan above to subscribe."
         : subscription.active ? `Next charge: ${date(subscription.until)}. Cancel before then to stop renewal.`
         : replaceable() ? "Unfinished Razorpay checkout: never authorized, nothing charged. Resume it, or choose another plan above and it will be closed for you."
         : "Check status after completing checkout. If checkout was interrupted, contact support before starting another subscription.");
