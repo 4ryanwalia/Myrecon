@@ -313,6 +313,7 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
       <li><a href="/vs/sherlock">MyRecon vs Sherlock comparison</a></li>
       <li><a href="/blog/best-data-breach-checkers.html">Data breach checkers compared</a></li>
       <li><a href="/guides/people-search-apps-what-they-find.html">What people-search apps actually find</a></li>
+      <li><a href="/guides/reverse-gamertag-lookup.html">Reverse gamertag lookup for Xbox, PSN and Steam names</a></li>
     </ul>
   </section>
   <section>

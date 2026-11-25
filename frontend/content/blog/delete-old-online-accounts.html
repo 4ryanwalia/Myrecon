@@ -1,34 +1,130 @@
 <!--
 {
-  "title": "How to Delete Old Online Accounts Safely | MyRecon",
-  "headline": "How to Delete Old Online Accounts Safely",
-  "description": "Find accounts you own, save important data, cancel linked services and request deletion in the right order. A practical checklist for closing old profiles.",
+  "title": "How to Find and Delete Old Online Accounts | MyRecon",
+  "headline": "How to Find and Delete Old Online Accounts Safely",
+  "description": "Find forgotten accounts through your inbox, Google and Apple sign-ins, breach records and your old usernames, then close them in the right order.",
   "category": "Account cleanup",
   "datePublished": "2026-09-27",
-  "dateModified": "2026-09-27"
+  "dateModified": "2026-11-25",
+  "faq": [
+    {
+      "question": "How do I find all my old online accounts?",
+      "answer": "Combine five sources: your password manager or browser's saved logins, an inbox search for welcome and verification emails, the apps listed under Sign in with Google, Sign in with Apple and Facebook login, a breach check of every email address you have used, and a username search for the handles you used years ago. No single source finds everything."
+    },
+    {
+      "question": "Is there a tool that deletes all my accounts at once?",
+      "answer": "No tool can delete accounts on your behalf across services, because each one needs you to sign in or prove ownership. Directories such as JustDeleteMe link straight to each service's deletion page, and tools such as MyRecon help you find the accounts. The deletion itself is one request per service."
+    },
+    {
+      "question": "What if I cannot log in to an old account?",
+      "answer": "Use the service's official account recovery first. If the email address is gone, contact the service's support or privacy team, say the account is yours and ask for it to be closed. Give only what their official process asks for and keep a copy of the request."
+    },
+    {
+      "question": "Should I delete or deactivate old accounts?",
+      "answer": "Delete accounts you will never use again. Deactivation usually only hides a profile and keeps your data. On some platforms deactivation is the first stage of deletion, so check the platform's recovery window before assuming the account is gone."
+    }
+  ]
 }
 -->
-<p class="lead">Dormant accounts can hold old posts, personal details, recovery addresses and reused passwords. Closing them takes a little preparation, especially when the service is tied to a subscription or another account.</p>
+<p class="lead">Most people have far more accounts than they remember: forums from school, shopping sites used once, apps signed into with Google in ten seconds. Each one can hold an old password, a phone number, an address or a public profile under a username you no longer think about. This guide finds them in the order that turns up the most for the least effort, then closes them without breaking anything you still use.</p>
 
-<h2>Make a list of accounts you control</h2>
-<p>Start with your password manager, browser-saved logins and inbox. Search your own email for phrases such as “welcome,” “verify your account,” “receipt,” “subscription” and “password reset.” Check old email addresses and payment records you can lawfully access. A public username search can suggest services where a handle appears, but similar names may belong to other people; confirm control by signing in or using the platform's recovery process.</p>
-<p>Keep a private checklist with the service, username or email used, whether you can still sign in, and the action you plan to take. Do not record passwords, recovery answers or one-time codes in that document.</p>
+<div class="callout"><p><strong>The short version.</strong> Build a list from five places: saved passwords, your inbox, your Google, Apple and Facebook sign-ins, breach records for your email addresses, and a search of your old usernames. Then, for each account: export what you want, cancel any billing, move any sign-ins that depend on it, and delete it. Keep the confirmation.</p></div>
 
-<h2>Prepare before you close the account</h2>
+<h2 id="why-delete-old-accounts">Why old accounts are worth deleting</h2>
+<p>An account you have forgotten is still an account someone can break into. If it shares a password with something you use today, a breach of the old site becomes a way into the new one, which is how most credential stuffing works. Old accounts also keep data you would not hand over today: a date of birth from a sign-up form, an address from one delivery, a phone number used for a verification code.</p>
+<p>The second reason is public. A forum profile or an abandoned social account under the same username as your current one lets anyone connect the two. That is often how strangers piece together a person's history, and it is the part of your footprint you can actually remove.</p>
+
+<h2 id="step-1-saved-passwords">Step 1: Start with saved passwords</h2>
+<p>Your password manager or browser already holds a list of sites you have signed in to. Export or scroll that list first. It is the fastest source and usually the largest.</p>
+<ul>
+<li><strong>Browser-saved passwords</strong> in Chrome, Edge, Firefox or Safari list every site where you let the browser remember a login, including ones from years ago if you have synced the same profile since.</li>
+<li><strong>A password manager</strong> shows the same, often with the date each entry was created, which helps you spot the forgotten ones.</li>
+<li>Write each entry into a private list with three columns: the service, the email or username used, and what you plan to do. Never copy the passwords themselves into that list.</li>
+</ul>
+
+<h2 id="step-2-search-your-inbox">Step 2: Search your inbox for sign-up emails</h2>
+<p>Almost every account sends a welcome, verification or receipt email. Searching for those finds accounts your browser never saved. In Gmail, these searches work as written (Outlook and most webmail accept the same words):</p>
+<div class="table-wrap">
+<table class="data-table">
+<caption>Inbox searches that surface forgotten accounts.</caption>
+<thead><tr><th scope="col">Search</th><th scope="col">What it finds</th></tr></thead>
+<tbody>
+<tr><td><code>subject:(welcome OR "confirm your" OR "verify your")</code></td><td>Sign-up and verification emails, the most reliable sign that an account exists</td></tr>
+<tr><td><code>subject:("reset your password" OR "password reset")</code></td><td>Accounts you used long enough to forget the password</td></tr>
+<tr><td><code>subject:(receipt OR "your order" OR invoice)</code></td><td>Shops that probably created an account during checkout</td></tr>
+<tr><td><code>unsubscribe older_than:2y</code></td><td>Services still emailing you that you stopped using years ago</td></tr>
+<tr><td><code>"your account" older_than:5y</code></td><td>The oldest accounts, which are the ones most likely to share an old password</td></tr>
+</tbody>
+</table>
+</div>
+<p>Repeat the searches in every email address you have used, including old school, work and ISP addresses you can still open. An address you no longer control is a problem of its own: see <a href="#when-you-cannot-sign-in">when you cannot sign in</a>.</p>
+
+<h2 id="step-3-sign-in-providers">Step 3: Check Google, Apple and Facebook sign-ins</h2>
+<p>Accounts created with "Sign in with Google", "Sign in with Apple" or a Facebook login often never send a welcome email and never get a saved password. The sign-in provider keeps the list for you.</p>
+<ul>
+<li><strong>Google:</strong> open your Google Account's <a href="https://myaccount.google.com/linkedapps" target="_blank" rel="noopener">linked apps page</a> and select <em>Sign in with Google</em>. Each app shows its details, and <em>Stop using Sign in with Google</em> removes the link. (<a href="https://support.google.com/accounts/answer/13533235" target="_blank" rel="noopener">Google's instructions</a>.)</li>
+<li><strong>Apple:</strong> on an iPhone or iPad, open Settings, tap your name, then tap <em>Sign in with Apple</em>. Select an app and tap <em>Delete</em> to stop using it. (<a href="https://support.apple.com/en-us/102571" target="_blank" rel="noopener">Apple's instructions</a>.)</li>
+<li><strong>Facebook:</strong> the apps, websites and games you logged in to with Facebook are listed in your Facebook settings. (<a href="https://www.facebook.com/help/218345114850283" target="_blank" rel="noopener">Meta's help page</a>.)</li>
+</ul>
+<p><strong>Removing the link does not delete the account on the other site.</strong> It only stops that sign-in method. Note each app in your list first, then close the account on the app's own site. If you remove the link first, you may lose the only way you had to sign in.</p>
+
+<h2 id="step-4-breach-records">Step 4: Use breach records as an account inventory</h2>
+<p>A data breach notice is unwelcome, but a list of the breaches your email address appears in is also a list of services where you had an account. Forums, games and shopping sites that closed or were sold years ago often show up here and nowhere else.</p>
+<p>Run each address through <a href="/#tool=email">MyRecon's email breach check</a>, which queries LeakCheck and XposedOrNot and says when a source could not answer instead of calling the address clean. For every breach it lists, ask two things: does the account still exist, and did you use that password anywhere else? The second question matters more. Change any reused password today, before you get to deleting anything. Our <a href="/guides/check-email-data-breach.html">breach check guide</a> explains how to read the results.</p>
+
+<h2 id="step-5-username-search">Step 5: Search the usernames you used to use</h2>
+<p>Old handles are the accounts strangers find first, because a username search connects them in seconds. Write down every username you have used: gamer tags, forum names, the handle you had at school, variations with numbers or underscores.</p>
+<p>Search each one with <a href="/#tool">MyRecon's username search</a>, which checks 560+ platforms on a free signed-in scan, or check a handle with the <a href="/username-checker.html">username checker</a>. Not every hit is yours: a common handle will match other people. Open each result and confirm it is your account before you plan to close it. Our guide to <a href="/guides/verify-osint-account-matches">verifying account matches</a> explains what counts as proof.</p>
+<p>Searching the web for your old handle in quotation marks also finds forum posts and profiles on small sites that no checker covers.</p>
+
+<h2 id="before-you-delete">Before you delete: four things to do first</h2>
 <ol>
-  <li><strong>Export what you want to keep.</strong> Save photos, contacts, receipts or files using the service's own download feature.</li>
-  <li><strong>Cancel billing separately.</strong> Deleting an app or profile may not stop a subscription managed by an app store or payment provider.</li>
-  <li><strong>Move sign-ins and recovery links.</strong> Update other accounts that use this address or account to sign in.</li>
-  <li><strong>Remove connected-app access.</strong> Revoke integrations you no longer need from both the service and any connected account.</li>
-  <li><strong>Check ownership and access.</strong> If you cannot sign in, use the provider's official recovery route before requesting closure.</li>
+<li><strong>Export what you want to keep.</strong> Photos, messages, purchase history and files. Use the service's own download or export option, and open the file to check it worked before closing the account.</li>
+<li><strong>Cancel billing separately.</strong> Deleting an account or an app may not stop a subscription that runs through the App Store, Google Play or a payment provider. Cancel there first and keep the confirmation.</li>
+<li><strong>Move anything that depends on it.</strong> If other services sign in through this account, or send password resets to this email address, change them first. Closing an email account that other accounts use for recovery can lock you out of all of them.</li>
+<li><strong>Remove personal details you can edit.</strong> On services that keep data after deletion, clearing your phone number, address and profile text first limits what remains.</li>
 </ol>
 
-<h2>Request deletion, then keep a record</h2>
-<p>Use the service's account or privacy settings and read the confirmation carefully. Deactivation, hiding a profile and deletion are different actions, and on some platforms deactivation is the first stage of deletion: see <a href="/blog/account-deletion-vs-deactivation.html">how deactivating and deleting differ on X, Snapchat, Instagram, LinkedIn and Discord</a>. Some providers offer a waiting period in which signing back in cancels the request; some retain limited records for legal, security or billing reasons. The service's current policy explains what applies.</p>
-<p>Save the confirmation and the date you submitted the request. After the stated waiting period, check whether the profile is still accessible while signed out. If it remains in a search engine, handle that as a separate removal request: search engines can remove a result from their listings, but the source page must be deleted or changed by the site that hosts it.</p>
+<h2 id="how-to-delete">How to delete each account</h2>
+<p>Look in the account, privacy or security settings for an option to delete or close the account. If you cannot find it, <a href="https://justdeleteme.xyz/" target="_blank" rel="noopener">JustDeleteMe</a> is a directory of direct links to deletion pages for many services, with notes on how hard each one is. Searching for the service's name plus "delete account" usually finds its official help page; use that, not a third-party form.</p>
+<p>Read the confirmation screen. Many services keep the account recoverable for a period after you ask, and signing back in during that time can cancel the deletion. Our comparison of <a href="/blog/account-deletion-vs-deactivation.html">deactivating and deleting</a> lists the recovery windows on X, Snapchat, Instagram, LinkedIn and Discord.</p>
+<p>Save the confirmation email or a screenshot with the date. Two to six weeks later, check whether the profile is still visible while signed out.</p>
 
-<h2>When an account will not close</h2>
-<p>Try the provider's privacy or support request route. Explain that it is your account, provide only the information the official process needs, and keep a copy of the request. Avoid sending identity documents to an address you found in an unofficial forum. If the account belongs to someone else or you cannot establish that it is yours, do not attempt to access or close it.</p>
-<p>MyRecon's <a href="/services.html">footprint removal service</a> can help with your own or formally authorised cleanup, including preparing requests where a site accepts them. Some account deletions still require the account holder to act directly. See also our <a href="/guides/reduce-your-digital-footprint.html">digital footprint guide</a>.</p>
+<h2 id="when-you-cannot-sign-in">When you cannot sign in</h2>
+<p>Try the service's official account recovery first. If the recovery email or phone number is gone, contact the service's support or privacy team. Say that the account is yours, that you no longer have access to the address on file, and that you want it closed. Offer the details only the owner would know, such as the username, the approximate sign-up date or a past order number, and follow whatever verification their official process asks for.</p>
+<p>Two cautions. Do not send identity documents to an address you found in a forum or a comment; use the contact route on the service's own site. And if the account is not yours, for example an impersonation profile using your photos, report it through the platform's impersonation process instead: see <a href="/blog/report-social-media-impersonation.html">how to report impersonation</a>.</p>
 
-<div class="callout"><p><strong>Deletion is not instant erasure.</strong> Cached snippets, screenshots, archives and copies held by other people may persist. Close the source account first, then follow up with the relevant search engine or site where its removal process applies.</p></div>
+<h2 id="deletion-request-template">A deletion request you can copy</h2>
+<p>Where a service has no delete button, a short written request usually works. Send it from the address on the account if you can. Residents of the EU and UK can cite the right to erasure in Article 17 of the GDPR; California residents have a right to delete under the CCPA. Elsewhere, ask anyway: many services honour the request regardless of where you live.</p>
+<pre><code>Subject: Request to delete my account
+
+Hello,
+
+I would like my account on [service] deleted, together with the
+personal data associated with it.
+
+Username: [username]
+Email on the account: [email address]
+Approximate sign-up date: [year]
+
+Please confirm when the account and data have been deleted, and
+tell me if any data will be kept and why.
+
+Thank you,
+[Your name]</code></pre>
+
+<h2 id="what-deletion-does-not-remove">What deleting an account does not remove</h2>
+<p>Closing the account removes the source, not every copy. Search results can take weeks to drop out, archives and screenshots may persist, and anything other people reposted stays with them. After the account is gone, ask search engines to drop stale results; our guide to <a href="/guides/remove-personal-info-from-search.html">removing personal information from search</a> covers that step.</p>
+<p>Deleting accounts also does not undo a past breach. If an old site leaked your password, the leak happened when it happened. What protects you now is making sure that password is not in use anywhere else.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>How do I find all my old online accounts?</h3>
+<p>Combine five sources: your password manager or browser's saved logins, an inbox search for welcome and verification emails, the apps listed under Sign in with Google, Sign in with Apple and Facebook login, a breach check of every email address you have used, and a username search for the handles you used years ago. No single source finds everything.</p>
+<h3>Is there a tool that deletes all my accounts at once?</h3>
+<p>No tool can delete accounts on your behalf across services, because each one needs you to sign in or prove ownership. Directories such as JustDeleteMe link straight to each service's deletion page, and tools such as MyRecon help you find the accounts. The deletion itself is one request per service.</p>
+<h3>What if I cannot log in to an old account?</h3>
+<p>Use the service's official account recovery first. If the email address is gone, contact the service's support or privacy team, say the account is yours and ask for it to be closed. Give only what their official process asks for and keep a copy of the request.</p>
+<h3>Should I delete or deactivate old accounts?</h3>
+<p>Delete accounts you will never use again. Deactivation usually only hides a profile and keeps your data. On some platforms deactivation is the first stage of deletion, so check the platform's recovery window before assuming the account is gone.</p>
+
+<p>MyRecon's <a href="/services.html">footprint removal service</a> can help with your own or formally authorised cleanup, including preparing requests where a site accepts them. Some deletions still need the account holder to act directly. For a wider cleanup plan, see the <a href="/guides/digital-footprint-audit-checklist">digital footprint audit checklist</a> and <a href="/blog/find-your-own-old-accounts.html">how to find your own old accounts</a>.</p>
