@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<!-- Google AdSense -->
+<meta name="google-adsense-account" content="ca-pub-6109270472398539">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+<script src="/assets/js/recommendation-analytics.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer,
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Breaches in India: What Leaked and What to Do | MyRecon</title>
+  <meta name="description" content="Ten Indian breaches side by side: Domino's, RailYatri, Angel One, Hathway, Star Health and more. What leaked, why phone numbers matter most, and what to do.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/india-data-breaches.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Data Breaches in India: What Leaked and What to Do">
+  <meta property="og:description" content="Ten Indian breaches side by side: Domino's, RailYatri, Angel One, Hathway, Star Health and more. What leaked, why phone numbers matter most, and what to do.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/india-data-breaches.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Data Breaches in India: What Leaked and What to Do">
+  <meta name="twitter:description" content="Ten Indian breaches side by side: Domino's, RailYatri, Angel One, Hathway, Star Health and more. What leaked, why phone numbers matter most, and what to do.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Data Breaches in India: What Leaked, and What to Do","description":"Ten Indian breaches side by side: Domino's, RailYatri, Angel One, Hathway, Star Health and more. What leaked, why phone numbers matter most, and what to do.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-11-25","dateModified":"2026-11-25","mainEntityOfPage":"https://www.myrecon.xyz/guides/india-data-breaches.html","about":{"@type":"Place","name":"India"}}</script>
+  <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Data Breaches in India: What Leaked, and What to Do","item":"https://www.myrecon.xyz/guides/india-data-breaches.html"}],"@context":"https://schema.org"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I check if my data was leaked in India?","acceptedAnswer":{"@type":"Answer","text":"Check your email address with a breach checker such as MyRecon's, then look at the list of Indian incidents above for services you used. For phone numbers, Aadhaar and PAN there is no free, reliable public check, so act on the steps for each data type if you used an affected service."}},{"@type":"Question","name":"What is the 1930 helpline?","acceptedAnswer":{"@type":"Answer","text":"It is the national helpline for victims of financial cyber fraud, listed on the National Cyber Crime Reporting Portal run by the Ministry of Home Affairs. Call it as soon as you notice money leaving your account, then file a complaint at cybercrime.gov.in."}},{"@type":"Question","name":"Do Indian companies have to tell me about a data breach?","acceptedAnswer":{"@type":"Answer","text":"CERT-In's 2022 Directions require organisations to report data breaches and data leaks to CERT-In within 6 hours, but that is a report to the government, not to you. India's Digital Personal Data Protection Act, 2023 deals with personal data more broadly; check MeitY for which of its breach provisions are in force."}},{"@type":"Question","name":"Was the Aadhaar database hacked?","acceptedAnswer":{"@type":"Answer","text":"The widely reported 2018 exposures concerned intermediaries and third-party systems that held Aadhaar numbers, and UIDAI disputed describing them as breaches of its database. Our case file sets out what the reports actually showed. Separately, you can lock your Aadhaar biometrics on the myAadhaar portal."}}]}</script>
+  <link rel="stylesheet" href="/assets/css/content-app-promo.css?v=804d909ebd">
+  <link rel="stylesheet" href="/assets/css/content-app-context.css">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
+<link rel="stylesheet" href="/assets/css/search-discovery.css">
+<link rel="stylesheet" href="/assets/css/article-story.css">
+<link rel="stylesheet" href="/assets/css/android-promo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container"><nav class="search-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="https://www.myrecon.xyz/">MyRecon</a></li><li><a href="https://www.myrecon.xyz/guides/">Guides</a></li><li><span aria-current="page">Data Breaches in India: What Leaked, and What to Do</span></li></ol></nav>
+    <article class="article">
+      <span class="kicker">Breaches · India</span>
+      <h1>Data Breaches in India: What Leaked, and What to Do</h1>
+
+      <p class="meta">Published 25 November 2026 · 12 min read</p>
+
+      <p class="lead">Most breach lists are written from the United States. Their advice assumes your bank sends you a letter and your identity number is a social security number. In India the identifiers are different, and so is the risk: a phone number is tied to UPI, OTPs and KYC, PAN and Aadhaar numbers move through brokers, insurers and telecoms, and in the Star Health case, records were handed out through Telegram bots before most customers knew anything had happened. This guide puts ten Indian incidents side by side, shows what the records have in common, and says what to do about each kind of exposed data.</p>
+
+      <section class="key-finding">
+        <figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="key-numbers">What our archive shows</h2>
+        <p>MyRecon's breach archive mirrors verified records from Have I Been Pwned. Five of them are Indian companies: Domino's India, RailYatri, Angel One, Hathway and Careers360. Together they list <strong>60.8 million breached accounts</strong> (one person can appear in more than one breach, so this is not a count of people).</p>
+        <ul>
+          <li><strong>Phone numbers were exposed in all five.</strong> So were names and email addresses. In India that combination is enough to run a convincing scam call.</li>
+          <li><strong>The median gap between the breach and its public record was 71 days.</strong> The range runs from 6 days (Careers360) to 1,285 days (Angel One, whose April 2023 breach reached the public record in October 2026).</li>
+          <li><strong>Four of the five are rated Severe</strong> on our 0 to 100 severity score; Careers360 is rated Serious.</li>
+        </ul>
+        <p class="method">Method: counts, dates and data classes are taken from the five records in <a href="/data/v1/breaches.json">our public breach feed</a>, generated 25 November 2026. The gap is the record's added date minus its breach date. Records are from Have I Been Pwned, licensed CC BY 4.0.</p>
+      </section>
+
+      <h2 id="ten-indian-incidents">Ten Indian incidents in one table</h2>
+      <p>The table combines the five archive records with five incidents we have written up as case files. Two of the ten were never confirmed by the organisation involved, and the table says so. An unconfirmed leak can still hurt you; it just means you cannot rely on a company notice to tell you about it.</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Indian breaches and exposures covered by MyRecon, oldest first.</caption>
+          <thead><tr><th scope="col">Incident</th><th scope="col">When</th><th scope="col">What was exposed</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+            <tr><td><a href="/breaches/case-files/aadhaar-exposures-2018.html">Aadhaar exposure reports</a></td><td>Reported January to March 2018</td><td>Names, Aadhaar numbers, addresses and other demographic details, as reported by journalists and researchers</td><td>Disputed: the reports concerned intermediaries and third-party systems, not the central database</td></tr>
+            <tr><td><a href="/breaches/case-files/mobikwik-2021.html">MobiKwik</a></td><td>Reported from January 2021</td><td>Phone numbers, email addresses, hashed passwords, addresses, alleged KYC documents including Aadhaar and PAN images</td><td>Never confirmed by the company; the RBI ordered a forensic audit</td></tr>
+            <tr><td><a href="/breaches/case-files/air-india-2021.html">Air India</a></td><td>February 2021, disclosed 21 May 2021</td><td>Names, dates of birth, contact details, passport and ticket information, frequent flyer data, some card data without CVV</td><td>Confirmed; about 4.5 million passengers, via the SITA passenger system</td></tr>
+            <tr><td><a href="/breaches/dominosindia.html">Domino's India</a></td><td>March 2021</td><td>Names, email addresses, phone numbers, physical addresses, order history</td><td>Verified; 22.5 million email addresses</td></tr>
+            <tr><td><a href="/breaches/case-files/aiims-delhi-2022.html">AIIMS Delhi</a></td><td>23 November 2022</td><td>Patient records (extent never verified) and hospital systems</td><td>Ransomware; services ran on paper for about two weeks</td></tr>
+            <tr><td><a href="/breaches/railyatri.html">RailYatri</a></td><td>December 2022</td><td>Names, email addresses, phone numbers, genders, ticket purchases</td><td>Verified; 23.2 million email addresses</td></tr>
+            <tr><td><a href="/breaches/angelone.html">Angel One</a></td><td>April 2023, confirmed July 2024</td><td>Names, email addresses, phone numbers, addresses, dates of birth, bank account numbers, PANs, portfolio holdings</td><td>Verified; 6.8 million email addresses</td></tr>
+            <tr><td><a href="/breaches/hathway.html">Hathway</a></td><td>December 2023</td><td>Names, email addresses, phone numbers, physical and IP addresses, password hashes, support tickets</td><td>Verified; 4.7 million email addresses</td></tr>
+            <tr><td><a href="/breaches/case-files/star-health-2024.html">Star Health</a></td><td>Surfaced August to September 2024</td><td>Names, phone numbers, addresses, dates of birth, identity and tax numbers, medical reports, policy documents, claim records</td><td>Unauthorised access confirmed by the insurer; data relating to around 31 million customers was claimed</td></tr>
+            <tr><td><a href="/breaches/careers360.html">Careers360</a></td><td>November 2026</td><td>Names, email addresses, phone numbers, genders, caste categories, entrance exam results</td><td>Verified; 3.6 million email addresses</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="what-they-have-in-common">What the records have in common</h2>
+
+      <h3 id="the-phone-number-is-the-key">The phone number is the key, not the password</h3>
+      <p>Every one of the five archive records includes phone numbers. Only one, Hathway, includes passwords. That pattern matters more in India than in most places. A mobile number receives the OTP for your bank, your UPI app and your Aadhaar services, and it is the number a caller dials when pretending to be your bank, your courier or your insurer.</p>
+      <p>A leaked password is fixed in a minute by changing it. A leaked phone number, with your name, address and order history next to it, cannot be changed in practice. What it gives an attacker is credibility. "Sir, this is about your pizza order from the Andheri branch" or "your policy number ending 4421" sounds real because it is real. The fix is a habit, not a setting: treat any call that quotes your own details back to you as unverified until you have called the company on a number you found yourself.</p>
+
+      <h3 id="government-ids-travel">Government IDs travel through companies</h3>
+      <p>The incidents that exposed PAN or Aadhaar numbers were a stockbroker (Angel One), an insurer (Star Health), a payments wallet (MobiKwik, alleged) and the Aadhaar ecosystem itself. None of these is a government database. The 2018 Aadhaar reports, as our case file explains, were about intermediaries and third-party systems that held Aadhaar numbers, not the central repository. Identity numbers leak from the companies that are required to collect them for KYC, which means every new account you open is one more place they are stored.</p>
+
+      <h3 id="suppliers-and-channels">Suppliers and sales channels</h3>
+      <p>Two cases show where the risk sits outside the company you dealt with. Air India's passengers lost passport details through SITA, a passenger service system shared by many airlines that most travellers had never heard of. Star Health's records were handed out through Telegram bots that returned policy documents on request, and the insurer went to court against the distribution channel as well as the attacker. In both cases the company you trusted was not the system that failed.</p>
+
+      <h3 id="silence-is-common">Silence is common</h3>
+      <p>Two of the ten incidents were never confirmed by the organisation involved. AIIMS Delhi, a ransomware attack on one of Delhi's largest public hospitals, produced very little verified public detail about what patient data was taken. If you are waiting for a notification email before acting, these cases suggest you may wait indefinitely.</p>
+
+      <h2 id="why-indian-breaches-show-up-late">Why Indian breaches show up late</h2>
+      <p>A breach has several dates: when the intruder got in, when the data appeared for sale, when the company admitted it, and when a breach index added it. The gap between the first and the last is the window in which your data is circulating and nothing tells you so.</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Days from breach date to the public breach record, for the five Indian records in our archive.</caption>
+          <thead><tr><th scope="col">Breach</th><th scope="col">Breach date</th><th scope="col">Added to the record</th><th scope="col">Gap</th></tr></thead>
+          <tbody>
+            <tr><td>Careers360</td><td>14 November 2026</td><td>20 November 2026</td><td>6 days</td></tr>
+            <tr><td>Hathway</td><td>17 December 2023</td><td>12 January 2024</td><td>26 days</td></tr>
+            <tr><td>Domino's India</td><td>24 March 2021</td><td>3 June 2021</td><td>71 days</td></tr>
+            <tr><td>RailYatri</td><td>26 December 2022</td><td>5 December 2023</td><td>344 days</td></tr>
+            <tr><td>Angel One</td><td>1 April 2023</td><td>7 October 2026</td><td>1,285 days</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Across all 63 breaches in our archive, Indian and foreign, the median gap is 61 days, so the Indian median of 71 days is in the same range. The tail is what stands out: Angel One's breach was more than three years old when it reached the index most people check, although its data had been online since at least mid-2024. Five records are too few to call this a trend, and we do not. The practical point holds anyway: a clean result today does not mean an old account is safe. Read <a href="/blog/breach-date-vs-disclosure-date.html">why breach dates and disclosure dates differ</a> for the general case.</p>
+
+      <h2 id="what-companies-must-report">What companies in India must report, and to whom</h2>
+      <p>The rule most often quoted is CERT-In's. Its Directions of 28 April 2022, issued under section 70B(6) of the Information Technology Act, 2000, say that service providers, intermediaries, data centres, body corporates and government organisations "shall mandatorily report cyber incidents" listed in its Annexure I to CERT-In "within 6 hours of noticing such incidents or being brought to notice about such incidents". Annexure I lists "Data Breach" and "Data Leak" among the reportable types. The same Directions require logs of all ICT systems to be kept "for a rolling period of 180 days" within Indian jurisdiction.</p>
+      <p>Two limits are worth knowing. First, the six-hour rule is a report to CERT-In, the national incident response team, not a notice to you. Nothing in it tells a customer that their data was taken. Second, it covers organisations, so it says nothing about a dataset that turns up for sale with no company owning up to it.</p>
+      <p>The Digital Personal Data Protection Act, 2023 is India's main personal data law. Check the <a href="https://www.meity.gov.in/" target="_blank" rel="noopener">Ministry of Electronics and Information Technology</a> for which of its provisions, including breach notification, are in force on the day you read this.</p>
+      <p class="method">Sources: <a href="https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf" target="_blank" rel="noopener">CERT-In Directions, 28 April 2022</a> and <a href="https://www.cert-in.org.in/PDF/FAQs_on_CyberSecurityDirections_May2022.pdf" target="_blank" rel="noopener">CERT-In FAQs, May 2022</a>, both read 25 November 2026.</p>
+
+      <h2 id="what-to-do">What to do, by what was exposed</h2>
+      <p>Start with the list of exposed data for the breach you were in, not with the headline. The steps below are ordered by how quickly the exposure can turn into a loss.</p>
+
+      <h3 id="if-you-lost-money">If you have already lost money</h3>
+      <p>Speed matters more than anything else on this page. The National Cyber Crime Reporting Portal, run by the Ministry of Home Affairs at <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener">cybercrime.gov.in</a>, says "Any victim of financial cyber fraud can dial helpline number 1930". Call 1930, then file the complaint on the portal, then call your bank on the number printed on your card or passbook. Keep the transaction IDs, the caller's number and screenshots.</p>
+
+      <h3 id="email-and-password">Email address and password</h3>
+      <p>Check the address with <a href="/#tool=email">MyRecon's email breach check</a> or <a href="/guides/check-email-data-breach.html">the step-by-step guide</a>. If a password was in the breach, or you reused the password from that site anywhere, change it everywhere it was used and turn on <a href="/guides/two-factor-authentication.html">two-factor authentication</a>, preferring an authenticator app to SMS where the service offers one.</p>
+
+      <h3 id="phone-number">Phone number</h3>
+      <p>There is no free, reliable way to check whether a specific Indian mobile number is in a leak, and we do not offer one. Assume it is if you used any of the services above. Never share a UPI PIN or an OTP on a call, whoever the caller says they are; no genuine bank, wallet or insurer needs them to help you. Be most careful with calls that know real details about you, because leaked order and policy data is what makes them convincing. Read <a href="/guides/sim-swap-attacks.html">how SIM swaps work</a> if your number suddenly loses signal.</p>
+
+      <h3 id="aadhaar">Aadhaar number</h3>
+      <p>UIDAI's <a href="https://myaadhaar.uidai.gov.in/" target="_blank" rel="noopener">myAadhaar portal</a> lets you "Lock / Unlock Biometrics", which locks your fingerprint and iris data, and "Lock / Unlock Aadhaar", which locks the number temporarily. Both need the mobile number linked to your Aadhaar for the OTP. When a company asks for a copy, the same portal offers a masked Aadhaar, which hides the first eight digits, and a 16-digit Virtual ID you can give in place of the number.</p>
+
+      <h3 id="pan-and-bank">PAN, bank account and investment details</h3>
+      <p>Turn on SMS and email alerts for every transaction, and check your credit report with a credit bureau for loans or cards you did not open. Lenders use a PAN, name and date of birth to check identity, so a loan or card you do not recognise on your report is the sign to act. If your broker or bank account details were exposed, tell your broker or bank and ask what extra verification they can add.</p>
+
+      <h3 id="health-and-insurance">Health and insurance records</h3>
+      <p>Medical data cannot be changed, so the risk is misuse: claim fraud and extortion. Policy numbers make fake claim-settlement and renewal calls believable. If someone calls about a claim or a "pending refund", hang up and call the insurer on the number in your policy document.</p>
+
+      <h2 id="what-we-can-and-cannot-check">What MyRecon can and cannot check</h2>
+      <p>MyRecon's email check queries LeakCheck's public API and XposedOrNot, both free, and says so when a source is rate limited or down, rather than reporting the address as clean. The archive on this site mirrors Have I Been Pwned's verified records. Neither covers every Indian leak: datasets that are sold privately or passed around on Telegram often never reach a public index. We do not check phone numbers, Aadhaar numbers or PANs, and we would be wary of any free site that says it can.</p>
+
+      <h2 id="faq">Common questions</h2>
+
+      <h3>How do I check if my data was leaked in India?</h3>
+      <p>Check your email address with a breach checker such as MyRecon's, then look at the list of Indian incidents above for services you used. For phone numbers, Aadhaar and PAN there is no free, reliable public check, so act on the steps for each data type if you used an affected service.</p>
+
+      <h3>What is the 1930 helpline?</h3>
+      <p>It is the national helpline for victims of financial cyber fraud, listed on the National Cyber Crime Reporting Portal run by the Ministry of Home Affairs. Call it as soon as you notice money leaving your account, then file a complaint at cybercrime.gov.in.</p>
+
+      <h3>Do Indian companies have to tell me about a data breach?</h3>
+      <p>CERT-In's 2022 Directions require organisations to report data breaches and data leaks to CERT-In within 6 hours, but that is a report to the government, not to you. India's Digital Personal Data Protection Act, 2023 deals with personal data more broadly; check MeitY for which of its breach provisions are in force.</p>
+
+      <h3>Was the Aadhaar database hacked?</h3>
+      <p>The widely reported 2018 exposures concerned intermediaries and third-party systems that held Aadhaar numbers, and UIDAI disputed describing them as breaches of its database. Our case file sets out what the reports actually showed. Separately, you can lock your Aadhaar biometrics on the myAadhaar portal.</p>
+
+      <h2 id="related-guides">Related guides</h2>
+      <ul class="related-guides">
+        <li><a href="/guides/check-email-data-breach.html">check an address against known breach data</a></li>
+        <li><a href="/guides/read-a-breach-notification.html">how to read a breach notice</a></li>
+        <li><a href="/guides/stealer-logs-explained.html">when your password leaks with no breach at all</a></li>
+        <li><a href="/guides/account-hacked-what-to-do.html">if the account is already taken</a></li>
+        <li><a href="/breaches/">the breach archive, incident by incident</a></li>
+        <li><a href="/breaches/case-files/">all breach case files</a></li>
+      </ul>
+
+      <p class="method">Breach records: <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Have I Been Pwned</a>, licensed <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Case file summaries are MyRecon's own research; each case file lists its sources.</p>
+
+      <p style="margin-top:28px"><a class="btn btn-ghost" href="/guides/">← All guides</a> <a class="btn btn-ghost" href="/#tool=email">Check an email for breach exposure →</a></p>
+
+</article>
+<p class="content-app-context" data-content-app-context>Follow breach reports and alerts on Android. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_guides_breach">Get it on Google Play</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">BREACH ALERTS + STORIES</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>Big breaches.<br>The story behind them.</h2><p>Turn on daily breach stories and alerts for newly reported breaches. Watch your email for new exposure that could affect you.</p><ul class="promo-features"><li>Daily stories</li><li>Breach alerts</li><li>Email watch</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_breach">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Enable alerts in the app. Coverage and delivery vary.</small></div></aside></div></div><!-- app-promo-layout:end -->
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Tools">
+  <p class="site-footer__heading">Tools</p>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <p class="site-footer__heading">Explore</p>
+  <ul><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li><li><a href="/find/">Platform lookups</a></li><li><a href="/find/instagram-account">Instagram username lookup</a></li><li><a href="/find/github-profile">GitHub profile lookup</a></li><li><a href="/find/discord-user">Discord user lookup</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/templates/">Free templates</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <p class="site-footer__heading">Compare</p>
+  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <p class="site-footer__heading">Company</p>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <p class="site-footer__heading">Legal</p>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/env.js?v=10"></script>
+  <script src="/assets/js/config.js?v=78156bad7a"></script>
+  <script src="/assets/js/app.js?v=7808c3999c"></script>
+  <script src="/assets/js/consent.js"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+
+</body>
+</html>
