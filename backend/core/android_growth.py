@@ -15,7 +15,13 @@ from core import android_referrals as proof, store as storage, validation
 from core.firebase_auth import AuthError, verify_id_token
 
 
-AWARD_CREDITS = 2
+# Since app 1.23 (2026-11-25, subscriptions paused) both pools are one
+# currency on the phone: "ad-free scans", spendable on any search. An invite
+# gives each person 5: 2 in the Deep pool + 3 in the Extended pool, so app
+# 1.22 (which reads the pools separately) still gets at least what it promised.
+AWARD_DEEP_CREDITS = 2
+AWARD_EXTENDED_CREDITS = 3
+AWARD_CREDITS = AWARD_DEEP_CREDITS + AWARD_EXTENDED_CREDITS
 # Each pool keeps its own replay receipts. Extended has its own action, so an
 # app newer than this server gets a 404 instead of spending a Deep credit.
 _POOLS = {"deep": ("bonusDeepCredits", "debits"), "extended": ("bonusExtendedCredits", "extendedDebits")}
@@ -99,9 +105,9 @@ def _award(uid, receipt, invited=False, referred_by=None):
             raise proof.Rejected()
         awards = record.setdefault("awards", {})
         if receipt not in awards:
-            # Each award gives both people +2 Deep Search and +2 Extended Scan. No cap since 2026-11-21.
-            record["bonusDeepCredits"] = int(record.get("bonusDeepCredits", 0)) + AWARD_CREDITS
-            record["bonusExtendedCredits"] = int(record.get("bonusExtendedCredits", 0)) + AWARD_CREDITS
+            # Each award gives both people 5 ad-free scans (2 Deep pool + 3 Extended pool). No cap.
+            record["bonusDeepCredits"] = int(record.get("bonusDeepCredits", 0)) + AWARD_DEEP_CREDITS
+            record["bonusExtendedCredits"] = int(record.get("bonusExtendedCredits", 0)) + AWARD_EXTENDED_CREDITS
             record["invitesCompleted"] = int(record.get("invitesCompleted", 0)) + int(invited)
             awards[receipt] = True
         if referred_by:

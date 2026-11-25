@@ -70,8 +70,8 @@ def test_award_both_parties_and_replay(db):
         g._award(REF, "receipt-for-install-1", invited=True)
     assert db.get(g._path(UID))["bonusDeepCredits"] == 2
     assert db.get(g._path(REF))["bonusDeepCredits"] == 2
-    assert db.get(g._path(UID))["bonusExtendedCredits"] == 2
-    assert db.get(g._path(REF))["bonusExtendedCredits"] == 2
+    assert db.get(g._path(UID))["bonusExtendedCredits"] == 3
+    assert db.get(g._path(REF))["bonusExtendedCredits"] == 3
     assert db.get(g._path(REF))["invitesCompleted"] == 1
     with pytest.raises(g.proof.Rejected):
         g._award(UID, "another-welcome", referred_by=CODE)
@@ -82,7 +82,7 @@ def test_credits_are_not_capped(db):
     for i in range(20):
         g._award(UID, str(i), invited=True)
     assert db.get(g._path(UID))["bonusDeepCredits"] == 40
-    assert db.get(g._path(UID))["bonusExtendedCredits"] == 40
+    assert db.get(g._path(UID))["bonusExtendedCredits"] == 60
     g.consume(UID, str(uuid.uuid4()))
     g._award(UID, "another-referral", invited=True)
     assert db.get(g._path(UID))["bonusDeepCredits"] == 41
@@ -94,7 +94,8 @@ def test_pools_are_spent_separately(db):
     g._award(UID, "welcome")
     assert g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
     record = db.get(g._path(UID))
-    assert record["bonusExtendedCredits"] == 1 and record["bonusDeepCredits"] == 2
+    assert record["bonusExtendedCredits"] == 2 and record["bonusDeepCredits"] == 2
+    assert g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
     assert g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
     assert not g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
     assert db.get(g._path(UID))["bonusDeepCredits"] == 2
@@ -110,7 +111,7 @@ def test_legacy_record_without_extended_field(db):
     db.set(g._path(UID), record)
     assert not g.consume(UID, str(uuid.uuid4()), pool="extended")["consumed"]
     g._award(UID, "welcome")
-    assert db.get(g._path(UID))["bonusExtendedCredits"] == 2
+    assert db.get(g._path(UID))["bonusExtendedCredits"] == 3
 
 
 def test_concurrent_last_credit_never_goes_negative(db):
