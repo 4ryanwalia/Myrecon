@@ -26,7 +26,7 @@ const GROUPS = [
     ["Upcoming OSINT tools 2026-2027", "/upcoming-osint-tools-2027.html"],
     ["MyRecon vs Sherlock", "/vs/sherlock"],
     ["WhatsMyName alternatives", "/whatsmyname-alternatives.html"],
-    ["Best free OSINT tools", "/blog/best-free-osint-tools-for-investigators.html"],
+    ["Best OSINT tools 2026-2027", "/blog/best-free-osint-tools-for-investigators.html"],
     ["OSINT tool prices", "/osint-tool-pricing.html"],
     ["Choose a research workflow", "/vs/"],
   ]],

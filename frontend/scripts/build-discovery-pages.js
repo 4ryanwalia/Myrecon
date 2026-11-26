@@ -122,7 +122,7 @@ buildDiscoveryPage({
   crumbLabel: 'Username checker',
   questions: usernameQuestions,
   bodyHtml: usernameBody,
-  modifiedAt: '2026-11-24',
+  modifiedAt: '2026-11-27',
 });
 
 // 2. Free OSINT tool discovery page
@@ -132,6 +132,7 @@ const osintQuestions = [
   ['How does MyRecon compare to Sherlock and Maigret?', 'MyRecon offers username checks and other tools in a browser. Sherlock and Maigret run from your terminal and let you review their source and settings. Results from any tool should be checked against the original profile before you rely on a match.'],
   ['Can a free OSINT tool find private or hidden social accounts?', 'MyRecon searches supported public sources. A blocked request or a sign-in screen leaves the public profile check unresolved.'],
   ['What can I check for free?', 'MyRecon includes free public username checks, email breach lookup, password exposure checks and tools for reviewing domain registration, DNS and IP information. Read the plans page for account and usage limits.'],
+  ['Why should I check the domain spelling when searching for free OSINT tools?', 'Phone keyboards frequently turn open-source intelligence queries into typos like osnit tool, oisnt, osnt, myrekon, myreocn, or open source inteligence. Verify the official myrecon.xyz address before running username or breach lookups.'],
 ];
 
 const osintBody = `<main id="main" class="container prose discovery-page">
@@ -191,8 +192,10 @@ const osintBody = `<main id="main" class="container prose discovery-page">
       <li><a href="/username-checker.html">Username checker and public profile search</a></li>
       <li><a href="/osint-cheat-sheet.html">OSINT cheat sheet &amp; Google dork generator</a></li>
       <li><a href="/deep-search.html">Deep Search: public activity &amp; mentions</a></li>
-      <li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools for researchers in 2026</a></li>
-      <li><a href="/blog/best-osint-tools-username-search-comparison.html">Top 8 OSINT username tools compared</a></li>
+      <li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools for 2026-2027</a></li>
+      <li><a href="/upcoming-osint-tools-2027.html">Best new and upcoming OSINT tools (2026-2027)</a></li>
+      <li><a href="/osint-glossary.html">OSINT glossary &amp; spelling clarifications</a></li>
+      <li><a href="/blog/best-username-search-tools.html">Best OSINT username search tools compared</a></li>
       <li><a href="/guides/build-a-breach-monitor.html">How to build a personal data breach monitor</a></li>
       <li><a href="/guides/photo-metadata-exif.html">EXIF and photo metadata investigation guide</a></li>
       <li><a href="/guides/read-an-email-header.html">How to read and analyze email headers for spoofing</a></li>
@@ -207,16 +210,16 @@ const osintBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Ethical OSINT research and guidelines</h2>
     <p>Open-source intelligence is a defensive discipline for security auditing, brand protection, and personal privacy. MyRecon only inspects publicly available web endpoints. Never use intelligence tools for harassment, unauthorized stalking, or illegal access. Read our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Access reviewed <time datetime="2026-11-22">22 November 2026</time>.</p>
+    <p>Access reviewed <time datetime="2026-11-27">27 November 2026</time>.</p>
   </section>
 </main>`;
 
 buildDiscoveryPage({
-  title: 'Free OSINT Tools Online: Username, Email, DNS & IP | MyRecon',
-  description: 'Free OSINT search in your browser, no install: find accounts by username, look up an email for breaches, and check domain, DNS and IP records.',
+  title: 'Free OSINT Tool Online (2026-2027): No Install | MyRecon',
+  description: 'Run free 2026-2027 OSINT tools in your browser with no install: search usernames across 560+ sites, check email breaches, and inspect DNS, WHOIS and IPs.',
   url: `${site}/free-osint-tool.html`,
   outFileName: 'free-osint-tool.html',
-  modifiedAt: '2026-11-24',
+  modifiedAt: '2026-11-27',
   crumbLabel: 'Free OSINT tool',
   questions: osintQuestions,
   bodyHtml: osintBody,
@@ -245,7 +248,7 @@ buildDiscoveryPage({
   crumbLabel: 'Digital footprint checker',
   questions: footprintQuestions,
   bodyHtml: footprintBody,
-  modifiedAt: '2026-11-24',
+  modifiedAt: '2026-11-27',
 });
 
 // 4. Reverse username lookup discovery page
@@ -325,7 +328,8 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Ethical investigation guidelines</h2>
     <p>Reverse username lookups must be conducted responsibly. MyRecon queries publicly accessible endpoints and does not bypass private account settings or access restricted data. Use this tool for personal privacy audits, self-reconnaissance, and authorized security assessments. See our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Access and evidence reviewed <time datetime="2026-11-23">23 November 2026</time>.</p>
+    <p>If a mobile search turns this tool into typos such as <em>revrese username lookup</em>, <em>usernmae search</em>, <em>useranme</em>, or <em>lokup</em>, verify you are on <code>myrecon.xyz</code> or check the <a href="/osint-glossary.html#search-and-spelling-clarifications">OSINT spelling reference</a>.</p>
+    <p>Access and evidence reviewed <time datetime="2026-11-27">27 November 2026</time>.</p>
   </section>
 </main>`;
 
@@ -334,7 +338,7 @@ buildDiscoveryPage({
   description: 'Find social media accounts by username, free and with no sign-up. Paste a handle or an Instagram, TikTok or GitHub link and check 100+ sites.',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
-  modifiedAt: '2026-11-24',
+  modifiedAt: '2026-11-27',
   crumbLabel: 'Reverse username lookup',
   questions: lookupQuestions,
   bodyHtml: lookupBody,
@@ -419,7 +423,8 @@ const emailBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Using email lookups responsibly</h2>
     <p>Look up your own addresses, or addresses you are authorized to review for security work. Do not use the results to harass, track or impersonate anyone. Read the <a href="/terms.html">terms of use</a> and the <a href="/privacy.html">privacy policy</a>.</p>
-    <p>Sources and behaviour reviewed <time datetime="2026-11-25">25 November 2026</time>.</p>
+    <p>When searching quickly for <em>revrese email lookup</em>, <em>emial breach check</em>, <em>holeh</em>, or <em>epeios</em> on a phone, confirm <code>myrecon.xyz</code> in the address bar before submitting an email address, or review the <a href="/osint-glossary.html#search-and-spelling-clarifications">spelling clarification reference</a>.</p>
+    <p>Sources and behaviour reviewed <time datetime="2026-11-27">27 November 2026</time>.</p>
   </section>
 </main>`;
 
@@ -428,7 +433,7 @@ buildDiscoveryPage({
   description: 'Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.',
   url: `${site}/reverse-email-lookup.html`,
   outFileName: 'reverse-email-lookup.html',
-  modifiedAt: '2026-11-25',
+  modifiedAt: '2026-11-27',
   crumbLabel: 'Reverse email lookup',
   questions: emailQuestions,
   bodyHtml: emailBody,
