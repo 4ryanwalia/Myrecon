@@ -106,6 +106,9 @@
     .cs-faq details { margin-bottom: 12px; padding: 14px 18px; background: var(--surface, #10161f); border: 1px solid var(--border, #273344); border-radius: 8px; }
     .cs-faq summary { font-weight: 600; cursor: pointer; color: var(--text, #f1f5f9); }
     .cs-faq details p { margin-top: 10px; font-size: 0.95rem; color: var(--text-dim, #94a3b8); line-height: 1.6; }
+    .cs-wrap { min-width: 0; }
+    .discovery-table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 16px 0; }
+    .discovery-table-wrap table { width: 100%; min-width: 480px; }
   </style>
 <link rel="stylesheet" href="/assets/css/android-promo.css">
 </head>
@@ -160,6 +163,90 @@
         <a href="/badge.html" class="btn btn-secondary" style="padding:12px 24px">Get Embeddable Badge</a>
       </div>
     </div>
+
+    <section class="prose" style="margin:36px 0">
+      <h2 id="how-to-structure-dork-audit">How should you run a Google Dork OSINT audit?</h2>
+      <p>Start with an exact identifier you own or are authorized to review, wrap multi-word phrases in quotes, and exclude noisy domains with <code>-site:</code>. Verify every indexed snippet directly at its live source URL before recording a finding, because search snippets often retain stale handles or renamed pages.</p>
+      <ol>
+        <li><strong>Scope the query:</strong> Choose one handle, domain, or email and write down the specific audit question before searching.</li>
+        <li><strong>Combine positive and negative filters:</strong> Pair <code>site:</code> or <code>filetype:</code> with exclusions like <code>-site:github.com/handle</code> to surface secondary mentions.</li>
+        <li><strong>Open the live destination:</strong> Confirm that the returned page still exists and refers to the same entity rather than an unrelated namesake.</li>
+        <li><strong>Log evidence separately:</strong> Save confirmed URLs, observation dates, and unresolved hits using our <a href="/guides/search-operators-osint.html">search operators guide</a> and <a href="/templates/osint-evidence-log-template.html">OSINT evidence log template</a>.</li>
+      </ol>
+    </section>
+
+    <section class="prose" style="margin:36px 0">
+      <h2 id="search-operator-syntax-reference">Search operator syntax reference</h2>
+      <p>These eight core operators cover most public-source dork workflows across handles, domains, and indexed documents:</p>
+      <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Search operator reference table">
+        <table style="width:100%;border-collapse:collapse;font-size:0.92rem;margin-top:12px">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)">Operator</th>
+              <th scope="col" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)">Example</th>
+              <th scope="col" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)">What it surfaces</th>
+              <th scope="col" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)">Common false-positive trap</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>site:</code></th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>site:github.com "handle"</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Restricts matches to one domain or subdomain</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Cached pages from deleted or renamed profiles</td>
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>inurl:</code></th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>inurl:johndoe</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Finds the handle inside profile paths or filenames</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Substrings inside unrelated longer slugs</td>
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>intitle:</code></th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>intitle:"index of /"</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Pages whose HTML title includes a phrase</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Generic software mirrors or honeypot listings</td>
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>intext:</code></th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>intext:"password"</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Matches words in visible page body text</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Documentation tutorials using dummy examples</td>
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>filetype:</code> / <code>ext:</code></th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>filetype:pdf "target"</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Indexed PDFs, spreadsheets, logs, and SQL dumps</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Archived templates sharing common field names</td>
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>"exact phrase"</code></th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>"user@example.com"</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Requires exact word order without fuzzy splits</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Scraped directories repeating the same string</td>
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>-exclusion</code></th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>-site:www.domain.com</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Removes known hosts or noisy terms</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Over-filtering can hide valid subdomain matches</td>
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left;padding:10px;border-bottom:1px solid var(--border,#273344)"><code>|</code> (OR)</th>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)"><code>ext:txt | ext:log</code></td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Combines alternate extensions or hosts in one query</td>
+              <td style="padding:10px;border-bottom:1px solid var(--border,#273344)">Unparenthesized OR chains change operator scope</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="prose" style="margin:36px 0">
+      <h2 id="search-operator-limits-and-ethics">What search operators miss and ethical limits</h2>
+      <p>Search engines only return pages they have crawled and retained. New profiles, pages blocked by <code>robots.txt</code> or <code>noindex</code> directives, and login-walled platforms such as Instagram, LinkedIn, or Discord will not appear reliably in dork results, while repeated automated queries can trigger CAPTCHAs and rate limits.</p>
+      <p>Treat an empty dork search as unindexed rather than absent. When you need direct endpoint checks across 560+ platforms or live infrastructure verification, switch to the <a href="/#tool=username">MyRecon username sweep</a> or <a href="/#tool=domain">domain RDAP and DNS lookup</a>, check our <a href="/osint-glossary.html">OSINT glossary</a> for key terminology, and restrict all checks to your own footprint or authorized defensive assessments.</p>
+    </section>
 
     <!-- FAQ Section -->
     <div class="cs-faq">
@@ -440,11 +527,11 @@
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <p class="site-footer__heading">Explore</p>
-  <ul><li><a href="/guides/">OSINT guides</a></li><li><a href="/blog/">Blog</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li><li><a href="/find/">Platform lookups</a></li><li><a href="/find/instagram-account">Instagram username lookup</a></li><li><a href="/find/github-profile">GitHub profile lookup</a></li><li><a href="/find/discord-user">Discord user lookup</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/templates/">Free templates</a></li></ul>
+  <ul><li><a href="/guides/">OSINT guides</a></li><li><a href="/osint-glossary.html">OSINT glossary</a></li><li><a href="/blog/">Blog</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li><li><a href="/find/">Platform lookups</a></li><li><a href="/find/instagram-account">Instagram username lookup</a></li><li><a href="/find/github-profile">GitHub profile lookup</a></li><li><a href="/find/discord-user">Discord user lookup</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/templates/">Free templates</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <p class="site-footer__heading">Compare</p>
-  <ul><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <p class="site-footer__heading">Company</p>

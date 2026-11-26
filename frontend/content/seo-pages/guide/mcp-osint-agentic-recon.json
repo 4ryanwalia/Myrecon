@@ -1,0 +1,145 @@
+{
+  "kind": "guide",
+  "slug": "mcp-osint-agentic-recon",
+  "status": "published",
+  "title": "MCP OSINT & Local Agentic Recon Guide | MyRecon",
+  "description": "Configure a local stdio MCP OSINT server using MyRecon allowlists, explicit authorization gates, untrusted-data framing and 8 KiB output caps.",
+  "h1": "MCP OSINT: safe local agentic recon architecture",
+  "focus_keyword": "mcp osint",
+  "intro": "Connecting an AI assistant to reconnaissance tools creates two concrete risks: prompt injection inside scraped profile bios and unbounded network sweeps. MyRecon ships a local stdio Model Context Protocol (MCP) developer prototype at tools/user-scanner-mcp/launcher.py with strict module allowlists, an explicit authorization gate, untrusted-data framing, and bounded output sizes.",
+  "sections": [
+    {
+      "heading": "Why agentic OSINT needs hard guardrails",
+      "body": "Autonomous tool loops fail safely only when permissions, network targets, and payload sizes are enforced in code rather than prompts. A malicious profile bio can embed text that looks like assistant commands, so the server must label returned fields as untrusted data and block unapproved pivoting or background updates.",
+      "link": {
+        "href": "/developers.html",
+        "label": "Review MyRecon developer and API documentation"
+      }
+    },
+    {
+      "heading": "Inside the local stdio MCP server",
+      "body": "MyRecon registers Server(\"myrecon-user-scanner-local\") over MCP stdio_server() transport with no HTTP or SSE listener and no automatic assistant config writes. At startup, launcher.py pins user-scanner[mcp]==1.5.2.1 via runtime version() checks and wraps backend/modules/user_scanner.py without importing upstream package handlers or auto-updaters.",
+      "table": {
+        "caption": "Local MCP launcher surface and safety bounds verified in tools/user-scanner-mcp/launcher.py on 26 November 2026.",
+        "headers": [
+          "Component or Bound",
+          "Configured Value",
+          "Purpose"
+        ],
+        "rows": [
+          [
+            "Transport",
+            "Local stdio_server() only",
+            "Prevents exposed HTTP/SSE endpoints and remote access"
+          ],
+          [
+            "Dependency pin",
+            "user-scanner[mcp]==1.5.2.1",
+            "Runtime version check blocks mismatched upstream packages"
+          ],
+          [
+            "Authorization gate",
+            "SCAN_AUTHORIZED = False",
+            "Blocks network sweeps until explicitly enabled in code"
+          ],
+          [
+            "Concurrency lock",
+            "scan_lock (1 active call)",
+            "Returns busy instead of spawning parallel sweeps"
+          ],
+          [
+            "Serialized output cap",
+            "MAX_RESPONSE_BYTES = 8192",
+            "Strips detail fields and sets detail_omitted if over 8 KiB"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "Tool surface and strict module allowlist",
+      "body": "The launcher exposes exactly three tools with additionalProperties set to False: list_available_modules, scan_username (1 to 39 characters), and scan_email (1 to 254 characters). Only two registry specs are allowlisted: username.github (api.github.com) and email.gravatar (en.gravatar.com), both defaulting to enabled=False.",
+      "link": {
+        "href": "/upcoming-osint-tools-2027.html",
+        "label": "See how local MCP fits into 2026-2027 OSINT workflows"
+      }
+    },
+    {
+      "heading": "Timeouts, evidence caps and untrusted-data framing",
+      "body": "Every call enforces allow_loud=False, cross_depth=0, concurrency=1, a 20-second scan deadline, 9-second worker timeout, 3-second HTTP timeout, and a 16 KiB worker output ceiling. Responses retain at most two evidence rows and wrap optional scalar metadata inside untrusted_profile_data alongside an explicit instruction warning.",
+      "table": {
+        "caption": "MCP tool schemas and default execution limits documented in docs/user-scanner-mcp.md.",
+        "headers": [
+          "MCP Tool Name",
+          "Accepted Arguments",
+          "Default Response Behavior"
+        ],
+        "rows": [
+          [
+            "list_available_modules",
+            "None (additionalProperties: false)",
+            "Lists username.github and email.gravatar status and policy"
+          ],
+          [
+            "scan_username",
+            "username, optional module, detail",
+            "Returns status: skipped when SCAN_AUTHORIZED is False"
+          ],
+          [
+            "scan_email",
+            "email, optional module, detail",
+            "Returns status: skipped with zero subprocess or web calls"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "Honest authorization model and prototype scope",
+      "body": "Because SCAN_AUTHORIZED is fixed to False in launcher.py and cannot be toggled by tool arguments or environment variables, default calls return skipped with zero subprocesses or network requests. This is strictly a local developer prototype in the repository, not a hosted MCP server on myrecon.xyz."
+    }
+  ],
+  "sources": [
+    "https://github.com/4ryanwalia/Myrecon/blob/main/tools/user-scanner-mcp/launcher.py",
+    "https://github.com/4ryanwalia/Myrecon/blob/main/docs/user-scanner-mcp.md",
+    "https://github.com/4ryanwalia/Myrecon/blob/main/backend/modules/user_scanner.py",
+    "https://github.com/4ryanwalia/Myrecon/blob/main/backend/modules/user_scanner_registry.py",
+    "/developers.html"
+  ],
+  "published_at": "2026-11-26",
+  "reviewed_at": "2026-11-26",
+  "modified_at": "2026-11-26",
+  "reviewer": "MyRecon editorial",
+  "cta": {
+    "label": "Run a browser handle check on MyRecon",
+    "href": "/#tool"
+  },
+  "faq": [
+    {
+      "question": "Does MyRecon host a public remote MCP OSINT server?",
+      "answer": "No. The myrecon-user-scanner-local server runs strictly over local stdio for developers inspecting the repository and is not exposed as a hosted endpoint on myrecon.xyz."
+    },
+    {
+      "question": "Why does scan_username return skipped by default in the MCP server?",
+      "answer": "launcher.py sets SCAN_AUTHORIZED = False and the registry modules default to enabled = False. This prevents an AI client from issuing live network requests until an operator explicitly wires authorized execution."
+    },
+    {
+      "question": "How does the MCP launcher mitigate prompt injection from profiles?",
+      "answer": "It truncates up to eight scalar metadata keys to 256 characters under untrusted_profile_data, enforces an 8192-byte JSON cap, and attaches a data_handling notice stating profile fields are untrusted data, never instructions."
+    },
+    {
+      "question": "Which modules are allowlisted in tools/user-scanner-mcp/launcher.py?",
+      "answer": "Only username.github (api.github.com) and email.gravatar (en.gravatar.com) are approved in APPROVED. Unknown tool names or unapproved arguments raise a ValueError."
+    }
+  ],
+  "takeaways": [
+    "Runs strictly over local stdio with pinned user-scanner[mcp]==1.5.2.1",
+    "Defaults to SCAN_AUTHORIZED = False so unapproved runs return skipped",
+    "Enforces 8192-byte JSON caps, single-flight locking, and untrusted-data framing"
+  ],
+  "method": "All transport names, dependency pins, timeout values, allowlists, and byte caps were verified directly against tools/user-scanner-mcp/launcher.py, backend/modules/user_scanner.py, and docs/user-scanner-mcp.md on 26 November 2026.",
+  "diagram_steps": [
+    "Verify local stdio",
+    "Check auth gate",
+    "Cap untrusted data"
+  ],
+  "editorial_review": true
+}

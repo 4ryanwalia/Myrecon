@@ -19,10 +19,11 @@ const GROUPS = [
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
   ]],
   ["Explore", [
-    ["OSINT guides", "/guides/"], ["Blog", "/blog/"], ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
+    ["OSINT guides", "/guides/"], ["OSINT glossary", "/osint-glossary.html"], ["Blog", "/blog/"], ["Breach archive", "/breaches/"], ["Breach case files", "/breaches/case-files/"],
     ["Platform lookups", "/find/"], ["Instagram username lookup", "/find/instagram-account"], ["GitHub profile lookup", "/find/github-profile"], ["Discord user lookup", "/find/discord-user"], ["Privacy guides", "/privacy/"], ["Free templates", "/templates/"],
   ]],
   ["Compare", [
+    ["Upcoming OSINT tools 2026-2027", "/upcoming-osint-tools-2027.html"],
     ["MyRecon vs Sherlock", "/vs/sherlock"],
     ["WhatsMyName alternatives", "/whatsmyname-alternatives.html"],
     ["Best free OSINT tools", "/blog/best-free-osint-tools-for-investigators.html"],

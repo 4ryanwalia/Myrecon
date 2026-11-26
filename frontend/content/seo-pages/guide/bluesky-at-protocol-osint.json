@@ -1,0 +1,120 @@
+{
+  "kind": "guide",
+  "slug": "bluesky-at-protocol-osint",
+  "status": "published",
+  "title": "Bluesky & AT Protocol OSINT Lookup Guide | MyRecon",
+  "description": "Investigate public Bluesky handles, DIDs, custom domains and AT Protocol feeds via public AppView XRPC endpoints with clear source limits.",
+  "h1": "Bluesky and AT Protocol OSINT: handles, DIDs and feeds",
+  "focus_keyword": "bluesky at protocol osint",
+  "intro": "Bluesky separates human-readable handles from permanent Decentralized Identifiers (DIDs) under the Authenticated Transfer (AT) Protocol. Because a user can rename a handle or attach a custom domain without changing their underlying DID, MyRecon helps investigators check both public AppView XRPC responses and independent domain corroboration before connecting profiles.",
+  "sections": [
+    {
+      "heading": "Handles versus immutable AT Protocol DIDs",
+      "body": "In backend/modules/deep_search_sources.py, a Bluesky handle without a dot automatically appends .bsky.social, while custom domain handles pass through verbatim. Resolving the handle yields an immutable did:plc: or did:web: identifier, which stays fixed even if the account owner later changes their display name or public handle."
+    },
+    {
+      "heading": "How public AppView XRPC resolution works",
+      "body": "MyRecon queries the public Bluesky AppView at public.api.bsky.app via the XRPC method app.bsky.actor.getProfile with the normalized actor parameter. After verifying case-insensitive handle equality and a valid did: prefix, Deep Search optionally calls app.bsky.feed.getAuthorFeed with limit=10 to inspect recent authored posts.",
+      "table": {
+        "caption": "Public AT Protocol XRPC endpoints and validation checks in backend/modules/deep_search_sources.py, reviewed 26 November 2026.",
+        "headers": [
+          "Step",
+          "XRPC Endpoint or Rule",
+          "Validation & Output Handling"
+        ],
+        "rows": [
+          [
+            "Handle normalization",
+            "Append .bsky.social if no dot present",
+            "Preserves custom domains such as example.com as-is"
+          ],
+          [
+            "Profile lookup",
+            "GET /xrpc/app.bsky.actor.getProfile",
+            "Requires same_handle() match and did: prefix; HTTP 404 yields Missing"
+          ],
+          [
+            "Feed lookup",
+            "GET /xrpc/app.bsky.feed.getAuthorFeed",
+            "Wrapped in c.optional(); unavailable feed keeps confirmed profile"
+          ],
+          [
+            "Post filtering",
+            "at://<did>/app.bsky.feed.post/<rkey>",
+            "Excludes reposts by other authors; retains up to 5 authored posts"
+          ],
+          [
+            "Network bounds",
+            "14s total deadline, 2 MB cap",
+            "Timeouts, 429s, or oversized payloads stay unknown/Unavailable"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "Custom domain verification as corroboration evidence",
+      "body": "When a Bluesky handle uses a custom domain, AT Protocol relies on DNS TXT records at _atproto.<domain> or an HTTPS file at /.well-known/atproto-did pointing to the exact DID. While deep_search_sources.py relies on the public AppView resolution, investigators can check those domain records directly as independent ownership corroboration.",
+      "link": {
+        "href": "/deep-search.html",
+        "label": "Explore how Deep Search inspects public Bluesky feeds"
+      }
+    },
+    {
+      "heading": "Worked verification workflow and false-positive checks",
+      "body": "Start by checking whether extracted bio links in declared fields point reciprocally back to a known website or GitHub profile. Confirm each post URL on bsky.app directly in a signed-out browser, and treat reposts or same-display-name accounts as unrelated unless corroborated.",
+      "link": {
+        "href": "/guides/verify-osint-account-matches",
+        "label": "Read how to corroborate cross-platform account matches"
+      }
+    },
+    {
+      "heading": "Honest source limits and unavailable feeds",
+      "body": "Public AppView queries never access private direct messages, muted lists, or accounts restricted from signed-out viewing. If getAuthorFeed hits a rate limit or timeout inside c.optional(), MyRecon preserves the confirmed profile while marking activity_available as False instead of erasing verified profile evidence."
+    }
+  ],
+  "sources": [
+    "https://github.com/4ryanwalia/Myrecon/blob/main/backend/modules/deep_search_sources.py",
+    "https://docs.bsky.app/docs/api/app-bsky-actor-get-profile",
+    "https://docs.bsky.app/docs/api/app-bsky-feed-get-author-feed",
+    "https://atproto.com/specs/handle",
+    "/deep-search.html"
+  ],
+  "published_at": "2026-11-26",
+  "reviewed_at": "2026-11-26",
+  "modified_at": "2026-11-26",
+  "reviewer": "MyRecon editorial",
+  "cta": {
+    "label": "Run a public handle sweep on MyRecon",
+    "href": "/#tool"
+  },
+  "faq": [
+    {
+      "question": "What happens if a Bluesky feed fails to load during lookup?",
+      "answer": "In deep_search_sources.py, getAuthorFeed runs inside c.optional(). If the feed endpoint times out or fails, MyRecon still returns the confirmed profile and sets activity_available to False."
+    },
+    {
+      "question": "How does AT Protocol verify a custom domain handle?",
+      "answer": "A domain owner publishes their exact DID in a _atproto.<domain> DNS TXT record or at https://<domain>/.well-known/atproto-did. Checking those records independently corroborates the handle shown by AppView."
+    },
+    {
+      "question": "Does MyRecon follow links listed in a Bluesky bio?",
+      "answer": "No. deep_search_sources.py extracts URLs from the profile description text into declared fields for analyst review without crawling external bio destinations."
+    },
+    {
+      "question": "Can public XRPC lookups read blocked or private Bluesky data?",
+      "answer": "No. Queries to public.api.bsky.app only inspect publicly accessible AppView records within a 14-second deadline and 2 MB response cap, and non-200 errors remain unresolved."
+    }
+  ],
+  "takeaways": [
+    "Resolve human handles to permanent did:plc or did:web identifiers",
+    "Filter author feeds by at://<did>/app.bsky.feed.post/ to exclude reposts",
+    "Corroborate custom domain handles via _atproto DNS TXT or .well-known checks"
+  ],
+  "method": "Endpoint paths, handle normalization, c.optional() feed fallback rules, and response caps were verified against backend/modules/deep_search_sources.py and official AT Protocol specifications on 26 November 2026.",
+  "diagram_steps": [
+    "Normalize handle",
+    "Resolve DID via XRPC",
+    "Corroborate domain"
+  ],
+  "editorial_review": true
+}

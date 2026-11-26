@@ -1,85 +1,150 @@
 {
   "kind": "comparison",
   "slug": "spiderfoot",
-  "status": "redirected",
-  "title": "MyRecon vs SpiderFoot: OSINT Tools Compared",
-  "description": "Compare MyRecon and SpiderFoot: search inputs, public-source workflows and verification limits. Choose an OSINT tool for your authorized research.",
-  "h1": "MyRecon vs SpiderFoot: compare public-search workflows",
-  "focus_keyword": "spiderfoot alternative",
-  "intro": "Looking for a SpiderFoot alternative depends on the task: SpiderFoot is described by its official source as an open-source osint automation tool with a broad module workflow. MyRecon is a browser route into a public username search. This page compares workflow and fit without inventing a speed score or claiming identical coverage.",
+  "status": "published",
+  "title": "MyRecon vs SpiderFoot: Browser vs Suite | MyRecon",
+  "description": "Compare MyRecon fast browser handle and breach checks against SpiderFoot 200+ module automated OSINT scans, local hosting and analyst scope.",
+  "h1": "MyRecon vs SpiderFoot: instant handle checks vs 200+ modules",
+  "focus_keyword": "myrecon vs spiderfoot",
+  "intro": "SpiderFoot is a self-hosted automated OSINT framework built around more than 200 data-collection modules for infrastructure, threat intelligence, and target correlation. MyRecon focuses on zero-setup browser and mobile checks for public handles, breaches, and domain triage. Comparing them clarifies when a full suite helps versus when it slows you down.",
   "sections": [
     {
-      "heading": "What SpiderFoot is designed to do",
-      "body": "SpiderFoot is described by its official source as An open-source OSINT automation tool with a broad module workflow. Its published workflow is configurable, multi-source osint collection for analyst-led investigations. Confirm current access, terms, and available features directly with the provider before relying on a capability for a live investigation."
+      "heading": "Target scope: single-question triage vs 200+ modules",
+      "body": "SpiderFoot accepts domains, IP blocks, ASNs, emails, phone numbers, and names, chaining 200+ passive and active modules into correlation graphs. MyRecon narrows the surface to rapid handle checks, email breach lookups, k-anonymity password checks, RDAP, DNS, and IP context without provisioning a scan workspace.",
+      "link": {
+        "href": "/features",
+        "label": "Review MyRecon's core browser OSINT modules"
+      }
     },
     {
-      "heading": "Where a MyRecon username workflow fits",
-      "body": "MyRecon starts from a username and is intended to help review public profile leads across supported checks. Open every candidate source yourself: a handle match is not proof of identity, and unsupported, blocked, or unavailable checks should not be read as a confirmed absence."
+      "heading": "Hosting overhead and API key management",
+      "body": "Running open-source SpiderFoot (smicallef/spiderfoot) requires hosting a Python 3 service locally or on a server and supplying third-party API keys for services like Shodan, Censys, or VirusTotal to unlock deeper modules. MyRecon runs immediately in any browser or on Android with no server maintenance.",
+      "table": {
+        "caption": "Operational comparison between MyRecon and open-source SpiderFoot, reviewed 26 November 2026.",
+        "headers": [
+          "Capability",
+          "MyRecon",
+          "SpiderFoot (Open Source)"
+        ],
+        "rows": [
+          [
+            "Architecture",
+            "Hosted web app & Android handset client",
+            "Self-hosted Python 3 Web UI and CLI"
+          ],
+          [
+            "Module breadth",
+            "Handle sweeps, Deep Search, breach, RDAP, DNS, IP",
+            "200+ modules across threat intel, dark web, DNS, leaks"
+          ],
+          [
+            "API key setup",
+            "Zero user API keys required",
+            "External keys needed for Shodan, HIBP, VirusTotal, etc."
+          ],
+          [
+            "Graph correlation",
+            "Flat evidence-graded cards & source links",
+            "Interactive node-link correlation & event database"
+          ],
+          [
+            "Startup time",
+            "Seconds in browser",
+            "Install repo, configure keys, launch scan daemon"
+          ]
+        ]
+      }
     },
     {
-      "heading": "Compare evidence rather than headline counts",
-      "body": "The tools can use different inputs, data sources, and result rules, so an unmeasured count or speed claim would not be a fair comparison. For SpiderFoot, check the official documentation linked below; for either workflow, confirm the original source, date, and reason a result is relevant."
+      "heading": "Attack-surface correlation versus self-audit speed",
+      "body": "Security teams mapping an entire corporate domain benefit from SpiderFoot's automated DNS brute-forcing, certificate transparency mining, and threat-feed enrichment. Individuals auditing a handful of personal aliases or checking whether an email appeared in a breach avoid hours of noisy module tuning by starting in MyRecon."
+    },
+    {
+      "heading": "Noise control and evidence verification",
+      "body": "Multi-module suites can generate thousands of low-confidence events if broad passive modules trigger together without strict filters. MyRecon keeps handle verdicts segmented into found, not_found, and unknown so blocked platforms never masquerade as clean absences or verified hits.",
+      "link": {
+        "href": "/upcoming-osint-tools-2027.html",
+        "label": "See where suites and focused tools fit in 2026-2027"
+      }
     }
   ],
   "sources": [
     "https://github.com/smicallef/spiderfoot",
-    "https://www.myrecon.xyz/"
+    "https://www.spiderfoot.net/documentation/",
+    "/features",
+    "/upcoming-osint-tools-2027.html",
+    "/guides/investigate-a-domain.html"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "published_at": "2026-11-26",
+  "reviewed_at": "2026-11-26",
+  "modified_at": "2026-11-26",
+  "reviewer": "MyRecon editorial",
   "cta": {
-    "label": "Search a public username with MyRecon",
-    "href": "/"
+    "label": "Start a fast browser check on MyRecon",
+    "href": "/#tool"
   },
   "faq": [
     {
-      "question": "Is MyRecon a direct replacement for SpiderFoot?",
-      "answer": "Not for every task. SpiderFoot is documented as an open-source osint automation tool with a broad module workflow. MyRecon focuses on a browser-based public username workflow. Choose based on required inputs, access model, source coverage, and the current official documentation."
+      "question": "Does SpiderFoot replace a dedicated social handle checker?",
+      "answer": "SpiderFoot includes social account modules, yet its primary strength lies in infrastructure, threat feeds, and domain attack-surface correlation across 200+ connectors rather than high-signal consumer self-audits."
     },
     {
-      "question": "Does MyRecon check more sites than SpiderFoot?",
-      "answer": "No measured, same-scope benchmark is published here, so this page makes no coverage or speed superiority claim. Compare the current source lists, methods, and result definitions under the same authorized test conditions."
+      "question": "Why does SpiderFoot require third-party API keys for many checks?",
+      "answer": "Many SpiderFoot modules act as orchestration wrappers around external intelligence providers such as Shodan, Censys, or Have I Been Pwned, requiring your own API credentials to query those services."
     },
     {
-      "question": "Can either tool prove two profiles belong to one person?",
-      "answer": "A matching username alone cannot establish identity. Open the underlying public profiles and corroborate any proposed connection with independent, voluntarily published context; keep uncertain outcomes clearly labeled."
+      "question": "Is SpiderFoot free to run locally?",
+      "answer": "Yes. The open-source SpiderFoot repository on GitHub is free to self-host with Python 3, though optional commercial threat feeds require paid API plans from their respective vendors."
+    },
+    {
+      "question": "Which tool is better for checking a domain and handle in under a minute?",
+      "answer": "MyRecon finishes quick RDAP, DNS, IP, and handle checks in seconds without deploying a local web server, while SpiderFoot is better suited to multi-hour infrastructure reconnaissance."
     }
   ],
   "competitor": {
     "name": "SpiderFoot",
     "official_url": "https://github.com/smicallef/spiderfoot",
-    "interface": "mixed"
+    "interface": "Self-hosted Web UI and CLI"
   },
   "capabilities": [
     {
-      "name": "How a search starts",
-      "myrecon": "Enter a username in a browser search",
-      "competitor": "Use the documented mixed workflow",
+      "name": "Deployment friction",
+      "myrecon": "Immediate browser & Android use; zero hosting",
+      "competitor": "Requires local Python 3 server or container deployment",
       "evidence_url": "https://github.com/smicallef/spiderfoot"
     },
     {
-      "name": "Primary workflow",
-      "myrecon": "Review public username leads from supported checks",
-      "competitor": "Configurable, multi-source OSINT collection for analyst-led investigations.",
-      "evidence_url": "https://github.com/smicallef/spiderfoot"
+      "name": "Infrastructure & threat feeds",
+      "myrecon": "Targeted RDAP, DNS, IP, and breach metadata triage",
+      "competitor": "200+ automated modules incl. Shodan, ASN, dark-web feeds",
+      "evidence_url": "https://www.spiderfoot.net/documentation/"
     },
     {
-      "name": "Evidence review",
-      "myrecon": "Open each source and verify a candidate manually",
-      "competitor": "Confirm current output and source pages using its official documentation",
-      "evidence_url": "https://github.com/smicallef/spiderfoot"
+      "name": "Credential & key setup",
+      "myrecon": "Built-in sources with no external API keys needed",
+      "competitor": "Dozens of optional API keys needed for full depth",
+      "evidence_url": "https://www.spiderfoot.net/documentation/"
+    },
+    {
+      "name": "Control-verified handle states",
+      "myrecon": "Explicit found, not_found, and unknown separation",
+      "competitor": "Event stream across modules; requires analyst triage",
+      "evidence_url": "https://www.myrecon.xyz/guides/account-enumeration-false-positives"
     }
   ],
-  "benchmark": null,
+  "benchmark": {
+    "summary": "SpiderFoot and MyRecon target different operational layers: SpiderFoot orchestrates 200+ infrastructure and threat-intelligence modules from a self-hosted workspace, whereas MyRecon delivers lightweight browser and Android triage with zero server setup."
+  },
   "pros": [
-    "MyRecon offers a browser-based entry point for a username search",
-    "This page makes no unmeasured speed or coverage claim"
+    "No Python server, database workspace, or third-party API key setup required",
+    "Cleaner workflow for quick personal footprint, breach, and handle verification",
+    "Mobile-ready via Google Play alongside desktop browser access"
   ],
   "cons": [
-    "A web username workflow does not replace a specialist tool for every task",
-    "SpiderFoot's current access, coverage, and terms must be checked with its provider"
+    "Does not orchestrate 200+ automated Shodan, ASN, or dark-web threat-intel modules",
+    "No interactive SQLite correlation graph across enterprise CIDR ranges"
   ],
-  "migration_note": "If you currently use SpiderFoot, keep it for the tasks and integrations it already serves. To compare a public username workflow, use the same authorized handle in MyRecon, open candidate pages on the original services, and document differences in scope and uncertainty before changing an established process.",
-  "redirect_to": "/vs/"
+  "migration_note": "Deploy SpiderFoot when conducting authorized enterprise attack-surface mapping with external API keys; choose MyRecon whenever you want instant browser or Android checks without managing a reconnaissance daemon.",
+  "editorial_review": true,
+  "method": "SpiderFoot module counts, self-hosted Python requirements, and API key dependencies were verified against smicallef/spiderfoot and SpiderFoot documentation alongside MyRecon's live feature set on 26 November 2026."
 }

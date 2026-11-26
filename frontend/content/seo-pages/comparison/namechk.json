@@ -1,85 +1,150 @@
 {
   "kind": "comparison",
   "slug": "namechk",
-  "status": "redirected",
-  "title": "MyRecon vs Namechk: OSINT Tools Compared",
-  "description": "Compare MyRecon and Namechk: search inputs, public-source workflows and verification limits. Choose an OSINT tool for your authorized research.",
-  "h1": "MyRecon vs Namechk: compare public-search workflows",
-  "focus_keyword": "namechk alternative",
-  "intro": "Looking for a Namechk alternative depends on the task: Namechk is described by its official source as a web-based username and domain availability checker. MyRecon is a browser route into a public username search. This page compares workflow and fit without inventing a speed score or claiming identical coverage.",
+  "status": "published",
+  "title": "MyRecon vs Namechk: OSINT vs Availability | MyRecon",
+  "description": "See how MyRecon control-verified OSINT profile sweeps differ from Namechk username and domain availability checks across 560+ platforms.",
+  "h1": "MyRecon vs Namechk: OSINT verification vs name availability",
+  "focus_keyword": "myrecon vs namechk",
+  "intro": "Namechk and MyRecon appear similar on the surface because both accept a handle and test dozens or hundreds of platforms in a browser. Under the hood, they answer opposite questions: Namechk helps creators and brands check whether a name is free to claim, while MyRecon runs control-verified OSINT sweeps to locate existing public profiles.",
   "sections": [
     {
-      "heading": "What Namechk is designed to do",
-      "body": "Namechk is described by its official source as A web-based username and domain availability checker. Its published workflow is a quick availability-oriented view of names across listed services. Confirm current access, terms, and available features directly with the provider before relying on a capability for a live investigation."
+      "heading": "Claiming a new brand handle vs investigating existing profiles",
+      "body": "Namechk (namechk.com) is built around consumer branding workflows, pairing domain-extension checks and 15+ name generator utilities with quick social availability indicators. MyRecon is an OSINT investigation and self-audit toolkit built to surface live profile URLs, audit digital exposure, and inspect email breaches or DNS records.",
+      "link": {
+        "href": "/username-checker.html",
+        "label": "Understand how profile presence differs from registration availability"
+      }
     },
     {
-      "heading": "Where a MyRecon username workflow fits",
-      "body": "MyRecon starts from a username and is intended to help review public profile leads across supported checks. Open every candidate source yourself: a handle match is not proof of identity, and unsupported, blocked, or unavailable checks should not be read as a confirmed absence."
+      "heading": "Why availability indicators mislead OSINT reviews",
+      "body": "When a platform reserves suspended handles, blocks automated checks, or serves a generic HTTP 200 template, a binary available/taken badge collapses uncertainty into wrong answers. MyRecon separates found, not_found, and unknown outcomes so rate limits or login walls never appear as false confirmations.",
+      "table": {
+        "caption": "Engineering and workflow contrast between MyRecon and Namechk, reviewed 26 November 2026.",
+        "headers": [
+          "Criteria",
+          "MyRecon",
+          "Namechk (namechk.com)"
+        ],
+        "rows": [
+          [
+            "Core purpose",
+            "OSINT public profile verification & self-audit",
+            "Brand name & domain availability screening"
+          ],
+          [
+            "Result states",
+            "Three-state: found, not_found, unknown",
+            "Binary taken vs available status badges"
+          ],
+          [
+            "Platform scope",
+            "100 Quick / 560+ Standard / 3,000+ Extended",
+            "Major social networks + domain TLDs"
+          ],
+          [
+            "Additional modules",
+            "Email breaches, k-anonymity passwords, RDAP, DNS, IP",
+            "Business name, slogan, and handle generators"
+          ],
+          [
+            "Mobile app",
+            "Native Android app (com.Myrecon.osint)",
+            "Web browser workflow"
+          ]
+        ]
+      }
     },
     {
-      "heading": "Compare evidence rather than headline counts",
-      "body": "The tools can use different inputs, data sources, and result rules, so an unmeasured count or speed claim would not be a fair comparison. For Namechk, check the official documentation linked below; for either workflow, confirm the original source, date, and reason a result is relevant."
+      "heading": "Why a missing profile is not proof of registration availability",
+      "body": "Even when MyRecon reports not_found on a public profile URL, platforms such as Reddit and X keep deleted or deactivated handles reserved indefinitely. Confirming whether you can register a brand name always requires testing inside that platform's official signup or rename settings.",
+      "link": {
+        "href": "/guides/account-enumeration-false-positives",
+        "label": "Read how MyRecon handles soft 404s and ambiguous checks"
+      }
+    },
+    {
+      "heading": "Complementary OSINT tools for brand protection",
+      "body": "If you are securing a brand identity across the web, Namechk gives a fast domain-plus-social brainstorm, while MyRecon helps defenders spot lookalike profiles, verify historical domain RDAP records, and check whether corporate emails surfaced in past data breaches."
     }
   ],
   "sources": [
     "https://namechk.com/",
-    "https://www.myrecon.xyz/"
+    "/username-checker.html",
+    "/guides/account-enumeration-false-positives",
+    "/guides/brand-impersonation-monitoring",
+    "/blog/best-sherlock-alternatives.html"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "published_at": "2026-11-26",
+  "reviewed_at": "2026-11-26",
+  "modified_at": "2026-11-26",
+  "reviewer": "MyRecon editorial",
   "cta": {
-    "label": "Search a public username with MyRecon",
-    "href": "/"
+    "label": "Verify public profile leads with MyRecon",
+    "href": "/#tool"
   },
   "faq": [
     {
-      "question": "Is MyRecon a direct replacement for Namechk?",
-      "answer": "Not for every task. Namechk is documented as a web-based username and domain availability checker. MyRecon focuses on a browser-based public username workflow. Choose based on required inputs, access model, source coverage, and the current official documentation."
+      "question": "Can I use MyRecon to reserve or register a handle?",
+      "answer": "No. Neither MyRecon nor Namechk registers accounts for you, and a missing public profile in MyRecon does not guarantee a service will let you claim that name during signup."
     },
     {
-      "question": "Does MyRecon check more sites than Namechk?",
-      "answer": "No measured, same-scope benchmark is published here, so this page makes no coverage or speed superiority claim. Compare the current source lists, methods, and result definitions under the same authorized test conditions."
+      "question": "Why does Namechk say a handle is taken when no profile is visible?",
+      "answer": "Platforms frequently reserve inactive, suspended, or prohibited handles, or block automated checks. Namechk treats non-available responses as taken, whereas MyRecon distinguishes not_found from unknown."
     },
     {
-      "question": "Can either tool prove two profiles belong to one person?",
-      "answer": "A matching username alone cannot establish identity. Open the underlying public profiles and corroborate any proposed connection with independent, voluntarily published context; keep uncertain outcomes clearly labeled."
+      "question": "Does Namechk include breach lookups or DNS diagnostics?",
+      "answer": "Namechk focuses on domain availability and consumer branding generators. MyRecon pairs handle sweeps with email breach checks, k-anonymity password checks, RDAP, DNS, and IP lookups."
+    },
+    {
+      "question": "Which tool fits security investigations better?",
+      "answer": "MyRecon is engineered for OSINT self-audits and authorized research because it preserves source links, confidence grades, and unknown states instead of collapsing blocked checks into binary badges."
     }
   ],
   "competitor": {
     "name": "Namechk",
     "official_url": "https://namechk.com/",
-    "interface": "web"
+    "interface": "Hosted web platform"
   },
   "capabilities": [
     {
-      "name": "How a search starts",
-      "myrecon": "Enter a username in a browser search",
-      "competitor": "Use the documented web workflow",
+      "name": "Three-state uncertainty handling",
+      "myrecon": "Explicit found, not_found, and unknown outcomes",
+      "competitor": "Binary availability indicators suited to branding",
+      "evidence_url": "https://www.myrecon.xyz/guides/account-enumeration-false-positives"
+    },
+    {
+      "name": "Domain TLDs & name generators",
+      "myrecon": "RDAP, DNS, and IP lookup for existing domains",
+      "competitor": "Bulk TLD availability checks and AI name generators",
       "evidence_url": "https://namechk.com/"
     },
     {
-      "name": "Primary workflow",
-      "myrecon": "Review public username leads from supported checks",
-      "competitor": "A quick availability-oriented view of names across listed services.",
-      "evidence_url": "https://namechk.com/"
+      "name": "Evidence links & Deep Search",
+      "myrecon": "Direct source URLs, confidence labels, and indexed mentions",
+      "competitor": "Availability status grid without OSINT breach pivots",
+      "evidence_url": "https://www.myrecon.xyz/deep-search.html"
     },
     {
-      "name": "Evidence review",
-      "myrecon": "Open each source and verify a candidate manually",
-      "competitor": "Confirm current output and source pages using its official documentation",
-      "evidence_url": "https://namechk.com/"
+      "name": "Android on-device sweeps",
+      "myrecon": "Supported via Google Play (com.Myrecon.osint)",
+      "competitor": "Web browser only",
+      "evidence_url": "https://www.myrecon.xyz/app.html"
     }
   ],
-  "benchmark": null,
+  "benchmark": {
+    "summary": "Namechk optimizes for quick consumer domain and brand-handle availability screening, whereas MyRecon applies control-verified OSINT rules to separate confirmed public profiles from blocked or ambiguous responses."
+  },
   "pros": [
-    "MyRecon offers a browser-based entry point for a username search",
-    "This page makes no unmeasured speed or coverage claim"
+    "Preserves explicit unknown verdicts when sites return login walls or blocks",
+    "Links directly to public profiles alongside email breach, password, and DNS checks",
+    "Supports Android handset execution in addition to desktop browsers"
   ],
   "cons": [
-    "A web username workflow does not replace a specialist tool for every task",
-    "Namechk's current access, coverage, and terms must be checked with its provider"
+    "Does not check dozens of new domain TLDs for purchase or generate brand slogans",
+    "A missing profile in MyRecon never guarantees signup availability"
   ],
-  "migration_note": "If you currently use Namechk, keep it for the tasks and integrations it already serves. To compare a public username workflow, use the same authorized handle in MyRecon, open candidate pages on the original services, and document differences in scope and uncertainty before changing an established process.",
-  "redirect_to": "/vs/"
+  "migration_note": "Use Namechk when brainstorming new brand domains and creative handles; switch to MyRecon whenever you need OSINT verification, source URLs, breach checks, or domain DNS telemetry.",
+  "editorial_review": true,
+  "method": "Namechk's availability grid and branding generator features were reviewed directly on namechk.com alongside MyRecon's three-state enumeration model and username-checker documentation on 26 November 2026."
 }

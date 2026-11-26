@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<!-- Google AdSense -->
+<meta name="google-adsense-account" content="ca-pub-6109270472398539">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109270472398539" crossorigin="anonymous"></script>
+<script src="/assets/js/recommendation-analytics.js?v=1" defer></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  var analyticsPage = new URL(window.location.href);
+  var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+  gtag('config', 'G-3L8YYC6NKF', {
+    page_location: analyticsPage.origin + analyticsPage.pathname,
+    page_referrer: analyticsReferrer,
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
+  });
+</script>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bluesky &amp; AT Protocol OSINT Lookup Guide | MyRecon</title><meta name="description" content="Investigate public Bluesky handles, DIDs, custom domains and AT Protocol feeds via public AppView XRPC endpoints with clear source limits.">
+  <meta name="robots" content="index, follow"><meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/guides/bluesky-at-protocol-osint">
+  <meta property="og:type" content="article"><meta property="og:site_name" content="MyRecon">
+  <meta property="og:title" content="Bluesky &amp; AT Protocol OSINT Lookup Guide | MyRecon"><meta property="og:description" content="Investigate public Bluesky handles, DIDs, custom domains and AT Protocol feeds via public AppView XRPC endpoints with clear source limits.">
+  <meta property="og:url" content="https://www.myrecon.xyz/guides/bluesky-at-protocol-osint"><meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Bluesky &amp; AT Protocol OSINT Lookup Guide | MyRecon">
+  <meta name="twitter:description" content="Investigate public Bluesky handles, DIDs, custom domains and AT Protocol feeds via public AppView XRPC endpoints with clear source limits."><meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9"><link rel="manifest" href="/site.webmanifest">
+  <style>*{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="stylesheet" href="/assets/css/editorial.css">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11"><link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","name":"Bluesky and AT Protocol OSINT: handles, DIDs and feeds","headline":"Bluesky & AT Protocol OSINT Lookup Guide | MyRecon","description":"Investigate public Bluesky handles, DIDs, custom domains and AT Protocol feeds via public AppView XRPC endpoints with clear source limits.","url":"https://www.myrecon.xyz/guides/bluesky-at-protocol-osint","image":"https://www.myrecon.xyz/assets/img/og-image.png","datePublished":"2026-11-26","dateModified":"2026-11-26","inLanguage":"en","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"author":{"@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/about.html"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"mainEntityOfPage":"https://www.myrecon.xyz/guides/bluesky-at-protocol-osint"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Bluesky and AT Protocol OSINT: handles, DIDs and feeds","item":"https://www.myrecon.xyz/guides/bluesky-at-protocol-osint"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What happens if a Bluesky feed fails to load during lookup?","acceptedAnswer":{"@type":"Answer","text":"In deep_search_sources.py, getAuthorFeed runs inside c.optional(). If the feed endpoint times out or fails, MyRecon still returns the confirmed profile and sets activity_available to False."}},{"@type":"Question","name":"How does AT Protocol verify a custom domain handle?","acceptedAnswer":{"@type":"Answer","text":"A domain owner publishes their exact DID in a _atproto.\u003cdomain> DNS TXT record or at https://\u003cdomain>/.well-known/atproto-did. Checking those records independently corroborates the handle shown by AppView."}},{"@type":"Question","name":"Does MyRecon follow links listed in a Bluesky bio?","acceptedAnswer":{"@type":"Answer","text":"No. deep_search_sources.py extracts URLs from the profile description text into declared fields for analyst review without crawling external bio destinations."}},{"@type":"Question","name":"Can public XRPC lookups read blocked or private Bluesky data?","acceptedAnswer":{"@type":"Answer","text":"No. Queries to public.api.bsky.app only inspect publicly accessible AppView records within a 14-second deadline and 2 MB response cap, and non-200 errors remain unresolved."}}]}</script>
+  <style>
+    .seo-page{max-width:900px;padding-top:42px;padding-bottom:56px}.seo-breadcrumb{font-size:.9rem;margin-bottom:18px;color:var(--text-dim)}
+    .seo-page h1{line-height:1.14;margin:0 0 16px}.seo-page .seo-intro{font-size:1.1rem;line-height:1.7;max-width:72ch}
+    .seo-section{margin:34px 0}.seo-section h2{margin:0 0 12px}.seo-section p,.seo-section li{line-height:1.75}.seo-section li{margin:8px 0}
+    .seo-cta{margin:32px 0;padding:24px;border:1px solid var(--border,#394252);border-radius:14px;background:var(--surface,#101722)}
+    .seo-cta h2{margin:0 0 8px}.seo-cta-top{margin:16px 0 14px;padding:4px 18px 14px}.seo-cta-top>p{margin-top:8px;font-size:.9rem;color:var(--text-dim)}.seo-faq{margin-top:42px}.seo-faq details{padding:14px 0;border-bottom:1px solid var(--border,#394252)}
+    .seo-faq summary{font-weight:700;cursor:pointer}.seo-faq details p{margin-top:10px;line-height:1.7}.seo-sources{font-size:.92rem}
+    .seo-table-wrap{overflow-x:auto}.seo-table-wrap table{width:100%;border-collapse:collapse}.seo-table-wrap th,.seo-table-wrap td{padding:10px;border:1px solid var(--border,#394252);text-align:left;vertical-align:top}
+    .seo-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.seo-link-grid a{display:block;padding:14px;border:1px solid var(--border,#394252);border-radius:10px}
+    .seo-library-link{margin-top:32px}.seo-library-link a{margin-right:12px}
+    .seo-guide-figure{margin:28px 0 34px}.seo-guide-figure img{display:block;width:100%;height:auto;border-radius:12px}.seo-guide-figure figcaption{margin-top:9px;color:var(--text-dim);font-size:.88rem;line-height:1.5}
+  </style>
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
+<script src="/assets/js/editorial-shell.js" defer></script><link rel="stylesheet" href="/assets/css/article-story.css">
+<link rel="stylesheet" href="/assets/css/android-promo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav editorial-nav"><div class="container nav-inner">
+    <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/guides/">Guides</a><a href="/find/">Find profiles</a><a href="/privacy/">Privacy</a><a href="/vs/">Compare</a><a href="/pricing">Pricing</a></nav>
+    <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+    <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+  </div></header>
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container prose seo-page">
+    <nav class="seo-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span aria-current="page">Bluesky and AT Protocol OSINT: handles, DIDs and feeds</span></nav>
+    <article><span class="kicker">Guides</span><h1>Bluesky and AT Protocol OSINT: handles, DIDs and feeds</h1><p class="seo-intro">Bluesky separates human-readable handles from permanent Decentralized Identifiers (DIDs) under the Authenticated Transfer (AT) Protocol. Because a user can rename a handle or attach a custom domain without changing their underlying DID, MyRecon helps investigators check both public AppView XRPC responses and independent domain corroboration before connecting profiles.</p><p class="seo-sources">MyRecon editorial · Updated 2026-11-26</p>
+      <figure class="seo-guide-figure"><picture><source media="(max-width: 640px)" srcset="/assets/img/guides/bluesky-at-protocol-osint-mobile.svg" width="640" height="850"><img src="/assets/img/guides/bluesky-at-protocol-osint.svg" alt="Bluesky and AT Protocol OSINT: handles, DIDs and feeds: Normalize handle, then Resolve DID via XRPC, then Corroborate domain." width="1200" height="450" decoding="async"></picture><figcaption>Workflow illustration, not a screenshot or a recorded test.</figcaption></figure>
+
+    <section class="seo-section"><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="key-takeaways">Key takeaways</h2><ul><li>Resolve human handles to permanent did:plc or did:web identifiers</li><li>Filter author feeds by at://&lt;did&gt;/app.bsky.feed.post/ to exclude reposts</li><li>Corroborate custom domain handles via _atproto DNS TXT or .well-known checks</li></ul></section>
+    <section class="seo-section" id="section-1">
+      <h2 id="handles-versus-immutable-at-protocol-dids">Handles versus immutable AT Protocol DIDs</h2>
+      <p>In backend/modules/deep_search_sources.py, a Bluesky handle without a dot automatically appends .bsky.social, while custom domain handles pass through verbatim. Resolving the handle yields an immutable did:plc: or did:web: identifier, which stays fixed even if the account owner later changes their display name or public handle.</p>
+    </section>
+    <section class="seo-section" id="section-2">
+      <h2 id="how-public-appview-xrpc-resolution-works">How public AppView XRPC resolution works</h2>
+      <p>MyRecon queries the public Bluesky AppView at public.api.bsky.app via the XRPC method app.bsky.actor.getProfile with the normalized actor parameter. After verifying case-insensitive handle equality and a valid did: prefix, Deep Search optionally calls app.bsky.feed.getAuthorFeed with limit=10 to inspect recent authored posts.</p>
+      <div class="editorial-table-wrap"><table><caption>Public AT Protocol XRPC endpoints and validation checks in backend/modules/deep_search_sources.py, reviewed 26 November 2026.</caption><thead><tr><th scope="col">Step</th><th scope="col">XRPC Endpoint or Rule</th><th scope="col">Validation &amp; Output Handling</th></tr></thead><tbody><tr><td>Handle normalization</td><td>Append .bsky.social if no dot present</td><td>Preserves custom domains such as example.com as-is</td></tr><tr><td>Profile lookup</td><td>GET /xrpc/app.bsky.actor.getProfile</td><td>Requires same_handle() match and did: prefix; HTTP 404 yields Missing</td></tr><tr><td>Feed lookup</td><td>GET /xrpc/app.bsky.feed.getAuthorFeed</td><td>Wrapped in c.optional(); unavailable feed keeps confirmed profile</td></tr><tr><td>Post filtering</td><td>at://&lt;did&gt;/app.bsky.feed.post/&lt;rkey&gt;</td><td>Excludes reposts by other authors; retains up to 5 authored posts</td></tr><tr><td>Network bounds</td><td>14s total deadline, 2 MB cap</td><td>Timeouts, 429s, or oversized payloads stay unknown/Unavailable</td></tr></tbody></table></div>
+    </section>
+    <section class="seo-section" id="section-3">
+      <h2 id="custom-domain-verification-as-corroboration-evidence">Custom domain verification as corroboration evidence</h2>
+      <p>When a Bluesky handle uses a custom domain, AT Protocol relies on DNS TXT records at _atproto.&lt;domain&gt; or an HTTPS file at /.well-known/atproto-did pointing to the exact DID. While deep_search_sources.py relies on the public AppView resolution, investigators can check those domain records directly as independent ownership corroboration.</p>
+      <p><a href="/deep-search.html">Explore how Deep Search inspects public Bluesky feeds</a></p>
+    </section>
+    <section class="seo-section" id="section-4">
+      <h2 id="worked-verification-workflow-and-false-positive-checks">Worked verification workflow and false-positive checks</h2>
+      <p>Start by checking whether extracted bio links in declared fields point reciprocally back to a known website or GitHub profile. Confirm each post URL on bsky.app directly in a signed-out browser, and treat reposts or same-display-name accounts as unrelated unless corroborated.</p>
+      <p><a href="/guides/verify-osint-account-matches">Read how to corroborate cross-platform account matches</a></p>
+    </section>
+    <section class="seo-section" id="section-5">
+      <h2 id="honest-source-limits-and-unavailable-feeds">Honest source limits and unavailable feeds</h2>
+      <p>Public AppView queries never access private direct messages, muted lists, or accounts restricted from signed-out viewing. If getAuthorFeed hits a rate limit or timeout inside c.optional(), MyRecon preserves the confirmed profile while marking activity_available as False instead of erasing verified profile evidence.</p>
+    </section>
+
+      <section class="seo-cta"><h2 id="check-a-public-username">Check a public username</h2><p>Free with no sign-up: 100 sites, up to 5 results shown in full. Verify each candidate at its source.</p><username-search-input sample="octocat"></username-search-input></section>
+      <section class="seo-faq"><h2 id="frequently-asked-questions">Frequently asked questions</h2><details><summary>What happens if a Bluesky feed fails to load during lookup?</summary><p>In deep_search_sources.py, getAuthorFeed runs inside c.optional(). If the feed endpoint times out or fails, MyRecon still returns the confirmed profile and sets activity_available to False.</p></details><details><summary>How does AT Protocol verify a custom domain handle?</summary><p>A domain owner publishes their exact DID in a _atproto.&lt;domain&gt; DNS TXT record or at https://&lt;domain&gt;/.well-known/atproto-did. Checking those records independently corroborates the handle shown by AppView.</p></details><details><summary>Does MyRecon follow links listed in a Bluesky bio?</summary><p>No. deep_search_sources.py extracts URLs from the profile description text into declared fields for analyst review without crawling external bio destinations.</p></details><details><summary>Can public XRPC lookups read blocked or private Bluesky data?</summary><p>No. Queries to public.api.bsky.app only inspect publicly accessible AppView records within a 14-second deadline and 2 MB response cap, and non-200 errors remain unresolved.</p></details></section>
+      <nav class="seo-library-link" aria-label="Related libraries"><a href="/guides/brand-impersonation-monitoring">Brand Impersonation: Review, Evidence &amp; Reporting</a><a href="/guides/digital-footprint-audit-checklist">Digital footprint audit checklist and free worksheet</a><a href="/guides/document-metadata-forensics-osint">Local document metadata forensics with the MyRecon CLI</a><a href="/username-checker.html">Username checker</a><a href="/find/">Platform lookups</a><a href="/guides/">OSINT guides</a><a href="/privacy/">Privacy guides</a><a href="/vs/">Tool comparisons</a><a href="/pricing">Pricing</a><a href="/about.html#editorial-method">Editorial method and corrections</a></nav>
+      <section class="seo-section seo-sources"><h2 id="sources-and-method">Sources and method</h2><p>Endpoint paths, handle normalization, c.optional() feed fallback rules, and response caps were verified against backend/modules/deep_search_sources.py and official AT Protocol specifications on 26 November 2026.</p><ul><li><a href="https://github.com/4ryanwalia/Myrecon/blob/main/backend/modules/deep_search_sources.py" target="_blank" rel="noopener noreferrer">https://github.com/4ryanwalia/Myrecon/blob/main/backend/modules/deep_search_sources.py</a></li><li><a href="https://docs.bsky.app/docs/api/app-bsky-actor-get-profile" target="_blank" rel="noopener noreferrer">https://docs.bsky.app/docs/api/app-bsky-actor-get-profile</a></li><li><a href="https://docs.bsky.app/docs/api/app-bsky-feed-get-author-feed" target="_blank" rel="noopener noreferrer">https://docs.bsky.app/docs/api/app-bsky-feed-get-author-feed</a></li><li><a href="https://atproto.com/specs/handle" target="_blank" rel="noopener noreferrer">https://atproto.com/specs/handle</a></li><li><a href="/deep-search.html" target="_blank" rel="noopener noreferrer">/deep-search.html</a></li></ul></section>
+    </article>
+<p class="content-app-context" data-content-app-context>Try MyRecon username search on Android. <a href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_guides">Get it on Google Play</a>.</p>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">USERNAME SEARCH ON ANDROID</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>From reading.<br>To discovering.</h2><p>Try username search on your Android phone. Review public profile leads and open their sources to verify them.</p><ul class="promo-features"><li>Username search</li><li>Public profile leads</li><li>Breach checks</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_research">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.<br>Use for your own accounts or authorized research.</small></div></aside></div></div><!-- app-promo-layout:end -->
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Tools">
+  <p class="site-footer__heading">Tools</p>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <p class="site-footer__heading">Explore</p>
+  <ul><li><a href="/guides/">OSINT guides</a></li><li><a href="/osint-glossary.html">OSINT glossary</a></li><li><a href="/blog/">Blog</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li><li><a href="/find/">Platform lookups</a></li><li><a href="/find/instagram-account">Instagram username lookup</a></li><li><a href="/find/github-profile">GitHub profile lookup</a></li><li><a href="/find/discord-user">Discord user lookup</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/templates/">Free templates</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <p class="site-footer__heading">Compare</p>
+  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <p class="site-footer__heading">Company</p>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <p class="site-footer__heading">Legal</p>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/username-search-input.js?v=fea1c56464" defer></script>
+</body></html>

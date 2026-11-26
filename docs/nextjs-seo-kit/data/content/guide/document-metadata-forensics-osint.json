@@ -1,0 +1,115 @@
+{
+  "kind": "guide",
+  "slug": "document-metadata-forensics-osint",
+  "status": "published",
+  "title": "Local Document Metadata Forensics CLI | MyRecon",
+  "description": "Analyze PDF, DOCX, XLSX and PPTX metadata locally with myrecon forensics: XMP streams, revision tags, SHA-256 hashes and zero cloud uploads.",
+  "h1": "Local document metadata forensics with the MyRecon CLI",
+  "focus_keyword": "document metadata forensics",
+  "intro": "Documents shared online often carry author names, editing applications, company fields, revision counts, and embedded XMP timestamps that never appear on the visible page. With MyRecon, document metadata inspection runs strictly offline via the local CLI subcommand myrecon forensics, keeping sensitive evidence on your own machine with zero cloud uploads.",
+  "sections": [
+    {
+      "heading": "CLI-only scope disclosure: zero browser uploads",
+      "body": "Document forensics for PDF, DOCX, XLSX, and PPTX files is available only in the local MyRecon CLI (myrecon forensics <path>), not as a web upload tool on myrecon.xyz. Running locally via backend/modules/image_forensics.py guarantees requires_network=False, deterministic output, and no third-party file transmission."
+    },
+    {
+      "heading": "OOXML provenance inspection for DOCX, XLSX and PPTX",
+      "body": "Office Open XML files are ZIP archives containing structured metadata XML files. For inputs up to 25 MB (with a 2 MB cap per XML member), extract_ooxml_metadata() uses Python's standard zipfile and xml.etree modules to parse docProps/core.xml and docProps/app.xml without external packages.",
+      "table": {
+        "caption": "Document formats and metadata fields inspected offline by myrecon forensics, verified 26 November 2026.",
+        "headers": [
+          "Format",
+          "Inspected Structures",
+          "Key Metadata & Provenance Signals"
+        ],
+        "rows": [
+          [
+            ".docx / .xlsx / .pptx",
+            "docProps/core.xml & app.xml",
+            "creator, lastModifiedBy, revision, Company, Application, timestamps"
+          ],
+          [
+            ".pdf",
+            "Info dictionary & FlateDecode streams",
+            "/Author, /Creator, /Producer, /CreationDate, /ModDate, /Encrypt"
+          ],
+          [
+            "Embedded XMP",
+            "<x:xmpmeta> / <rdf:RDF> packets",
+            "dc:creator, xmp:CreatorTool, pdf:Producer, create/modify dates"
+          ],
+          [
+            "All supported files",
+            "Raw file byte digest",
+            "SHA-256, MD5, size_bytes, multiple_authors, timestamp_mismatch"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "PDF Info dictionary and XMP stream extraction",
+      "body": "For files beginning with %PDF-, extract_pdf_metadata() inspects the PDF version header, /Encrypt protection flags, and Document Information tags (/Author, /Creator, /Producer, /CreationDate, /ModDate). It also decompresses small FlateDecode streams (up to 512 KB across 25 buffers) to extract embedded XML packets inside <x:xmpmeta>."
+    },
+    {
+      "heading": "Deterministic hashes, provenance flags and stdlib dependencies",
+      "body": "Every run computes SHA-256 and MD5 hashes alongside provenance flags such as author_present, multiple_authors, editing_software, company_present, and timestamp_mismatch. Document analysis uses Python's standard library alone with zero extra installs, whereas optional Pillow and numpy packages are only required when running forensics on image files for EXIF or pHash.",
+      "link": {
+        "href": "/guides/photo-metadata-exif.html",
+        "label": "Compare with our EXIF and image metadata guide"
+      }
+    },
+    {
+      "heading": "Chain-of-custody logging with evidence templates",
+      "body": "Run myrecon forensics <path> --json to save structured hashes and metadata fields directly into your local case folder. Because metadata tags can be forged or stripped before publication, treat author and software strings as corroborating clues and record file hashes inside an evidence log.",
+      "link": {
+        "href": "/templates/osint-evidence-log-template.html",
+        "label": "Download the OSINT evidence log template (CSV)"
+      }
+    }
+  ],
+  "sources": [
+    "https://github.com/4ryanwalia/Myrecon/blob/main/cli/__main__.py",
+    "https://github.com/4ryanwalia/Myrecon/blob/main/backend/modules/image_forensics.py",
+    "https://github.com/4ryanwalia/Myrecon/blob/main/README.md",
+    "/guides/photo-metadata-exif.html",
+    "/templates/osint-evidence-log-template.html"
+  ],
+  "published_at": "2026-11-26",
+  "reviewed_at": "2026-11-26",
+  "modified_at": "2026-11-26",
+  "reviewer": "MyRecon editorial",
+  "cta": {
+    "label": "Explore MyRecon web OSINT checks",
+    "href": "/#tool"
+  },
+  "faq": [
+    {
+      "question": "Can I upload PDF or DOCX files to myrecon.xyz for metadata forensics?",
+      "answer": "No. Document metadata forensics runs strictly offline via the myrecon forensics <path> CLI subcommand so sensitive files never leave your machine."
+    },
+    {
+      "question": "Do I need Pillow or numpy installed to inspect PDF and Office documents?",
+      "answer": "No. Document inspection for .pdf, .docx, .xlsx, and .pptx uses only Python standard library modules such as zipfile, zlib, hashlib, and xml.etree. Pillow and numpy are only required for image EXIF and pHash checks."
+    },
+    {
+      "question": "What file size limits apply in myrecon forensics?",
+      "answer": "backend/modules/image_forensics.py enforces a 25 MB maximum file size (MAX_BYTES) and a 2 MB cap per embedded XML or decompressed stream member."
+    },
+    {
+      "question": "Does a timestamp_mismatch or author field prove who created a file?",
+      "answer": "No. Metadata fields reflect whatever software or template last wrote the file and can be edited or left over from templates. Always corroborate metadata with file hashes and independent sources."
+    }
+  ],
+  "takeaways": [
+    "Runs 100% locally via myrecon forensics <path> with zero cloud uploads",
+    "Requires only Python stdlib for .pdf, .docx, .xlsx, and .pptx inspection",
+    "Outputs SHA-256/MD5 hashes, XMP/OOXML properties, and provenance flags"
+  ],
+  "method": "CLI flags, 25 MB / 2 MB bounds, stdlib module usage, and provenance flag names were verified against cli/__main__.py, backend/modules/image_forensics.py, and README.md on 26 November 2026.",
+  "diagram_steps": [
+    "Hash local file",
+    "Parse OOXML/PDF",
+    "Log provenance"
+  ],
+  "editorial_review": true
+}
