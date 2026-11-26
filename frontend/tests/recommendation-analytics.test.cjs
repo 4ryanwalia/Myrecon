@@ -5,15 +5,15 @@ const fs = require('node:fs');
 const { updateGoogleTag, normalizeAnalyticsBootstrap } = require('../scripts/install-google-tag');
 const source = fs.readFileSync(require('node:path').join(__dirname, '../assets/js/recommendation-analytics.js'), 'utf8');
 function load(url = 'https://www.myrecon.xyz/', referrer = '', storage = new Map(), broken = false, reload = false) {
-  const events = [], callbacks = [];
-  const window = { gtag: (...args) => events.push(args) };
+  const configs = [], events = [], callbacks = [];
+  const window = { gtag: (...args) => (args[0] === 'config' ? configs : events).push(args) };
   vm.runInNewContext(source, { window, URL, Date, location: new URL(url),
     performance: { getEntriesByType: () => [{type: reload ? 'reload' : 'navigate'}] },
     document: { referrer, readyState: 'loading', addEventListener: (_, cb) => callbacks.push(cb) },
     sessionStorage: { getItem(k) { if (broken) throw Error(); return storage.get(k); },
       setItem(k, v) { if (broken) throw Error(); storage.set(k, v); } } });
   callbacks.forEach(cb => cb());
-  return { api: window.MyReconAnalytics, events, storage };
+  return { api: window.MyReconAnalytics, configs, events, storage };
 }
 test('referral survives internal navigation; reports contain only bounded metadata', () => {
   const a = load('https://www.myrecon.xyz/?q=secret@example.com', 'https://chatgpt.com/c/private');
@@ -104,5 +104,24 @@ test('subscription funnel accepts bounded steps and plans and suppresses benchma
   assert.doesNotMatch(JSON.stringify(a.events), /private|email|purchase/);
   const b = load('https://www.myrecon.xyz/pricing?mr_benchmark=1');
   b.api.subscriptionStep('checkout_submit', 'monthly');
+  assert.equal(b.events.length, 0);
+});
+
+test('configures Google Ads tag AW-815111814 and fires bounded subscription conversion', () => {
+  const a = load('https://www.myrecon.xyz/pricing?subscription=return');
+  assert.deepEqual(JSON.parse(JSON.stringify(a.configs)), [['config', 'AW-815111814']]);
+  assert.equal(a.api.subscriptionConversion('monthly', 'I-BW4222222222'), true);
+  assert.equal(a.api.subscriptionConversion('yearly', 'private@example.com'), false);
+  assert.equal(a.api.subscriptionConversion('free', 'I-BW4222222222'), false);
+  assert.deepEqual(JSON.parse(JSON.stringify(a.events[0])), ['event', 'conversion', {
+    send_to: 'AW-815111814/keomCMi5pb4dEIa91oQD',
+    value: 3.99,
+    currency: 'USD',
+    transaction_id: 'I-BW4222222222',
+  }]);
+  assert.equal(a.events[1][1], 'subscription_confirmed');
+  const b = load('https://www.myrecon.xyz/pricing?mr_benchmark=1');
+  assert.equal(b.configs.length, 0);
+  assert.equal(b.api.subscriptionConversion('monthly', 'I-BW4222222222'), false);
   assert.equal(b.events.length, 0);
 });

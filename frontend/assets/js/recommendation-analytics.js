@@ -51,12 +51,51 @@
       return true;
     } catch { return false; }
   }
+  const ADS_ID = 'AW-815111814';
+  const ADS_SUBSCRIPTION_SEND_TO = 'AW-815111814/keomCMi5pb4dEIa91oQD';
+  const PLAN_VALUES = {
+    monthly: { value: 3.99, currency: 'USD' },
+    yearly: { value: 19.99, currency: 'USD' },
+    inr_monthly: { value: 299, currency: 'INR' },
+    inr_yearly: { value: 1999, currency: 'INR' },
+  };
+  const SUBSCRIPTION_ID_RE = /^(?:I-[A-Z0-9]{6,32}|sub_[A-Za-z0-9]{6,32})$/;
+  let adsConfigured = false;
+  function configureAds() {
+    try {
+      if (adsConfigured || isBenchmark() || typeof window.gtag !== 'function') return false;
+      window.gtag('config', ADS_ID);
+      adsConfigured = true;
+      return true;
+    } catch { return false; }
+  }
   window.MyReconAnalytics = Object.freeze({
     isBenchmark,
     subscriptionStep(step, plan) {
       if (!['billing_select', 'checkout_review', 'checkout_submit', 'provider_handoff'].includes(step)
           || !['monthly', 'yearly', 'inr_monthly', 'inr_yearly'].includes(plan)) return;
       send('subscription_' + step, { subscription_plan: plan, pricing_version: 'trial_clarity_v1' });
+    },
+    subscriptionConversion(plan, subscriptionId) {
+      const price = PLAN_VALUES[plan];
+      if (!price || !SUBSCRIPTION_ID_RE.test(String(subscriptionId || ''))) return false;
+      try {
+        if (isBenchmark() || typeof window.gtag !== 'function') return false;
+        configureAds();
+        window.gtag('event', 'conversion', {
+          send_to: ADS_SUBSCRIPTION_SEND_TO,
+          value: price.value,
+          currency: price.currency,
+          transaction_id: subscriptionId,
+        });
+        send('subscription_confirmed', {
+          subscription_plan: plan,
+          value: price.value,
+          currency: price.currency,
+          transaction_id: subscriptionId,
+        });
+        return true;
+      } catch { return false; }
     },
     scanComplete(tool, scope, partial) {
       if (!TOOLS.has(tool)) return;
@@ -68,6 +107,7 @@
   });
   if (referral) write(KEY, JSON.stringify(referral));
   function visit() {
+    configureAds();
     if (referral && !referral.visited && send('ai_referred_visit', {})) {
       referral.visited = true;
       write(KEY, JSON.stringify(referral));

@@ -207,12 +207,44 @@
         : "Check status after completing checkout. If checkout was interrupted, contact support before starting another subscription.");
   }
 
+  const PENDING_SUB_KEY = "mr_pending_sub_id";
+  const TRACKED_SUBS_KEY = "mr_tracked_sub_ids";
+  const trackedSubsMemory = new Set();
+  const returnedFromCheckout = new URLSearchParams(location.search).get("subscription") === "return";
+  function readStore(key) { try { return localStorage.getItem(key); } catch { return null; } }
+  function writeStore(key, val) { try { if (val == null) localStorage.removeItem(key); else localStorage.setItem(key, val); } catch {} }
+  function trackedSubs() {
+    const out = new Set(trackedSubsMemory);
+    try {
+      const parsed = JSON.parse(readStore(TRACKED_SUBS_KEY) || "[]");
+      if (Array.isArray(parsed)) parsed.forEach((id) => out.add(id));
+    } catch {}
+    return out;
+  }
+  function maybeTrackSubscription(sub) {
+    if (!sub?.active || !sub?.id) return;
+    const pendingId = readStore(PENDING_SUB_KEY);
+    if (!returnedFromCheckout && pendingId !== sub.id) return;
+    const seen = trackedSubs();
+    if (seen.has(sub.id)) {
+      if (pendingId === sub.id) writeStore(PENDING_SUB_KEY, null);
+      return;
+    }
+    if (window.MyReconAnalytics?.subscriptionConversion?.(sub.plan, sub.id)) {
+      trackedSubsMemory.add(sub.id);
+      seen.add(sub.id);
+      writeStore(TRACKED_SUBS_KEY, JSON.stringify([...seen].slice(-20)));
+      if (pendingId === sub.id) writeStore(PENDING_SUB_KEY, null);
+    }
+  }
+
   async function refresh(includeAccount = true) {
     const uid = A?.state().user?.uid;
     if (!uid) { subscription = null; render(); return; }
     const result = await api("");
     if (A.state().user?.uid !== uid) return;
     subscription = result.subscription;
+    maybeTrackSubscription(subscription);
     render();
     if (includeAccount) await A.refreshAccount();
   }
@@ -255,6 +287,7 @@
       say(replaceable() && subscription.plan !== key ? "Closing your unfinished Razorpay checkout and preparing this plan…" : "Preparing your subscription approval…");
       progressTimer = setTimeout(() => say("Still waiting for the payment provider. Please keep this page open; this can take up to 30 seconds."), 8000);
       const result = await api("", { plan: key, consent: true });
+      if (result?.id) writeStore(PENDING_SUB_KEY, result.id);
       window.MyReconAnalytics?.subscriptionStep?.("provider_handoff", key);
       if (A.state().user?.uid !== uid) return;
       clearTimeout(progressTimer);
