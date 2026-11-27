@@ -274,7 +274,27 @@ Request results are logged in section 7 as they happen.
 | 28 Nov | /breaches/case-files/lastpass-2022.html | URL is unknown to Google | Requested |
 | 28 Nov | /breaches/case-files/mgm-resorts-2023.html | URL is unknown to Google | **Quota exceeded**: request on the next run |
 
-The quota ran out after 10 requests today, 11 including the Discord tool requested earlier on 28 Nov. Next run: mgm-resorts-2023 first, then genesys, then the remaining Discovered case files and breach pages.
+The quota ran out after 10 requests today, 11 including the Discord tool requested earlier on 28 Nov.
+
+**Next run queue** (updated after the 28 Nov release, commit 9e666dcd):
+
+1. /breaches/case-files/mgm-resorts-2023.html
+2. /blog/genesys-october-2026-security-incident.html
+3. These 11 pages, upgraded on 28 Nov and already indexed. Request a recrawl so Google sees the new body:
+   - /blog/best-osint-apps-for-android.html
+   - /blog/account-deletion-vs-deactivation.html
+   - /blog/sherlock-vs-maigret-vs-myrecon.html
+   - /blog/instagram-osint-public-profile-guide.html
+   - /find/github-profile
+   - /whatsmyname-alternatives.html
+   - /osint-tool-pricing.html
+   - /blog/best-data-breach-checkers.html
+   - /reverse-email-lookup.html
+   - /username-checker.html
+   - /reverse-username-lookup.html
+4. The remaining Discovered case files: cambridge-analytica-2018, clearview-ai-2020, ebay-2014, home-depot-2014, irhythm-2026, jpmorgan-2014, morrisons-2014, twilio-0ktapus-2022, uber-2016. Also blog/irhythm-october-2026-data-breach-notice, and the indexable breach pages castlerat, harvard, sberspasibo and youhack (all `index, follow`, checked 28 Nov).
+
+**Never request these.** They sit in "Discovered" but are `noindex` by design (the build log of 28 Nov lists them): addi, advanceautoparts, canadiantire, doublecounter, mckesson, neogen, notsocradar, pdl, prosper, suno, both Synthient pages, tokopedia, wattpad, and the /videos/ pages.
 
 Live URL Inspection disagrees with the report's buckets. The report lists aadhaar, lastpass and mgm as "Discovered", but inspection says "URL is unknown to Google". The report lags, so trust the live inspection.
 

@@ -49,7 +49,7 @@ The user approved everything on 28 Nov ("do everything now"). Their own brief ma
 | 4 | Entity consistency (Organization `@id`) | 38 guides without it | 0 | `grep -L '#organization'` over sitemap pages |
 | 5 | Wrong-intent redirect | /privacy/how-to-delete-github-account → /privacy/ hub | → /guides/delete-github-account.html (exact match). That URL had no impressions, so the freeze does not apply | `curl -sI` after deploy |
 | 6 | LeakCheck attribution (open obligation since 25 Nov) | No "Powered by LeakCheck" link on results | Shown under email results whenever a LeakCheck source answered | Run an email check on the live site |
-| 7 | sitemap.xml "Couldn't fetch" | GSC: Couldn't fetch, last read blank, 0 discovered. File serves 200 with the same 237 URLs as sitemap-index.xml (Success) | Resubmitted after deploy (see below). No coverage was lost in the meantime | GSC Sitemaps, 5 Dec |
+| 7 | sitemap.xml "Couldn't fetch" | GSC: Couldn't fetch, last read blank, 0 discovered. File serves 200 with the same 237 URLs as sitemap-index.xml (Success) | Resubmitted on 28 Nov after the deploy. GSC accepted it (Submitted: Nov 28) and still shows the cached "Couldn't fetch" immediately afterwards. No coverage was lost, because sitemap-index.xml lists the same URLs | GSC Sitemaps, 5 Dec |
 | 8 | Redirect chains | 50 retired-but-indexed URLs checked | All single-hop; nothing to fix | Same curl loop |
 | 9 | Core Web Vitals on top landing pages | GSC: "No data" (too little traffic). The PageSpeed Insights keyless quota was used up on 28 Nov | Lab reading from the in-app browser: TTFB 22 to 80 ms, full load 1.0 to 1.6 s on /, /find/instagram-account and the Android listicle. LCP and CLS were not measurable that way. **Not ranked as a top issue; no change made** | PSI with a free API key, or a field-data check once GSC has some |
 
@@ -69,6 +69,17 @@ The user approved everything on 28 Nov ("do everything now"). Their own brief ma
 - The editorial overlap test (more than 75% shared 5-word phrases) passes.
 - No em dashes in any added line.
 - Commit hygiene: timestamp-only churn was reverted (breaches.json, case-files.json, feed.xml). The `app.js?v=` hash bumps are intended, because app.js changed.
+
+## Live verification after deploy (commit 9e666dcd, 28 Nov)
+
+- All 11 upgraded URLs return 200 with a self-canonical (curl).
+- /privacy/how-to-delete-github-account returns 308 to /guides/delete-github-account.html.
+- /downloads/whatsmyname-rule-replay-2026-11-27.csv returns 200 as text/csv.
+- The live optimized app bundle contains the "Powered by LeakCheck" link.
+- /find/github-profile sends a single Content-Security-Policy whose connect-src includes api.github.com. The .html variant 308s to it.
+- The live GitHub lookup for octocat (in-app browser) returned: User, created 2011-01-25, 8 public repos, "Requests left this hour: 59", and no console errors.
+- The IndexNow workflow succeeded for 9e666dcd.
+- The indexing quota for 28 Nov was already used, so the 11 upgraded URLs are queued (baseline doc §7) rather than requested.
 
 ## Re-measure plan
 
