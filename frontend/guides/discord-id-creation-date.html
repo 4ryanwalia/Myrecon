@@ -66,7 +66,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Discord ID to Creation Date: What a Discord ID Reveals","description":"Decode any Discord user, server or message ID to its exact creation date in your browser, and learn what a Discord ID does and does not reveal.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-11-25","dateModified":"2026-11-25","mainEntityOfPage":"https://www.myrecon.xyz/guides/discord-id-creation-date.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Discord ID to Creation Date: What a Discord ID Reveals","description":"Decode any Discord user, server or message ID to its exact creation date in your browser, and learn what a Discord ID does and does not reveal.","author":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"datePublished":"2026-11-25","dateModified":"2026-11-25","mainEntityOfPage":"https://www.myrecon.xyz/guides/discord-id-creation-date.html"}</script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"Discord ID to Creation Date: What a Discord ID Reveals","item":"https://www.myrecon.xyz/guides/discord-id-creation-date.html"}],"@context":"https://schema.org"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I see when a Discord account was created?","acceptedAnswer":{"@type":"Answer","text":"Yes. Copy the user ID with Developer Mode on and decode it: the first 42 bits are the creation time in milliseconds since the start of 2015. The decoder on this page does the calculation in your browser."}},{"@type":"Question","name":"Can a Discord ID reveal someone's IP address or location?","acceptedAnswer":{"@type":"Answer","text":"No. A Discord ID holds a creation timestamp and internal Discord counters. It contains no email, phone number, IP address, location or real name."}},{"@type":"Question","name":"Does a Discord ID change if the user changes their name?","acceptedAnswer":{"@type":"Answer","text":"No. Usernames, display names and server nicknames can change, but the user ID stays the same for the life of the account, which is why it is the best identifier to record in a report."}},{"@type":"Question","name":"Why does my spreadsheet give the wrong date for a Discord ID?","acceptedAnswer":{"@type":"Answer","text":"Discord IDs are up to 64 bits, larger than ordinary spreadsheet and JavaScript numbers can store exactly, so the last digits get rounded. Use a big-integer type for the calculation."}}]}</script>
   <link rel="stylesheet" href="/assets/css/content-app-promo.css?v=804d909ebd">
@@ -149,7 +149,8 @@
       </ul>
 
       <h2 id="what-it-does-not-reveal">What a Discord ID does not reveal</h2>
-      <p>An ID is not a lookup key into private data. It does not contain or reveal the person's email address, phone number, IP address, location or real name. Anyone who claims they can "find someone's IP from a Discord ID" is either running a scam or describing something that requires that person to click a link they control. It also does not prove who is operating the account: it identifies the account, not the human.</p>
+      <p>An ID is not a lookup key into private data. It does not contain or reveal the person's email address, phone number, IP address, location or real name. Anyone who claims they can "find someone's IP from a Discord ID" is either running a scam or describing something that requires that person to click a link they control.</p>
+<p>It also does not prove who is operating the account: it identifies the account, not the human.</p>
       <p>Names are a weaker identifier than they used to be for a different reason. Discord explains that usernames used to carry a four-digit tag, the discriminator, and that "we are removing tags/discriminators and introducing new, unique usernames and display names". Display names can be changed "from one minute to the next", and server nicknames override them inside a server. The ID is the one thing that stays fixed for the life of the account.</p>
 
       <h2 id="use-it-well">Using IDs in reports and evidence</h2>
@@ -224,7 +225,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=7808c3999c"></script>
+  <script src="/assets/js/app.js?v=0dcb6b7f16"></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 

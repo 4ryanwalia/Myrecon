@@ -67,7 +67,7 @@
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"Email Authentication Explained: SPF, DKIM and DMARC","description":"How SPF, DKIM, and DMARC stop spammers spoofing your domain, and how to read them.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-27","mainEntityOfPage":"https://www.myrecon.xyz/guides/spf-dkim-dmarc-explained.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"Email Authentication Explained: SPF, DKIM and DMARC","description":"How SPF, DKIM, and DMARC stop spammers spoofing your domain, and how to read them.","author":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"datePublished":"2026-07-12","dateModified":"2026-09-27","mainEntityOfPage":"https://www.myrecon.xyz/guides/spf-dkim-dmarc-explained.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"SPF, DKIM and DMARC Explained for Email Security","item":"https://www.myrecon.xyz/guides/spf-dkim-dmarc-explained.html"}],"@context":"https://schema.org"}</script>
   <link rel="stylesheet" href="/assets/css/content-app-promo.css?v=804d909ebd">
@@ -156,7 +156,8 @@
       <p>Which is why these three records are a floor rather than a defence. They stop your domain being used directly, and they make the remaining attacks take a shape a careful reader can notice. Our guide to <a href="/guides/how-to-spot-phishing.html">spotting phishing</a> covers that shape.</p>
 
       <h2 id="if-you-are-setting-it-up">If you are setting it up</h2>
-      <p>The order that avoids blocking your own mail: publish SPF listing every service that sends on your behalf, and end it in <span style="font-family:var(--mono)">~all</span> to start. Enable DKIM signing at every one of those providers. Publish DMARC at <span style="font-family:var(--mono)">p=none</span> with an <span style="font-family:var(--mono)">rua</span> address, and actually read the reports for a few weeks, they will show senders you had forgotten about, which is the entire point of this stage. Fix what they reveal, then move to <span style="font-family:var(--mono)">quarantine</span>, then to <span style="font-family:var(--mono)">reject</span>. Set <span style="font-family:var(--mono)">sp=reject</span> and publish a null SPF and a reject policy on every domain you own that sends no mail at all, including the ones you bought defensively, unused domains are the ones attackers reach for precisely because nobody protects them.</p>
+      <p>The order that avoids blocking your own mail: publish SPF listing every service that sends on your behalf, and end it in <span style="font-family:var(--mono)">~all</span> to start. Enable DKIM signing at every one of those providers. Publish DMARC at <span style="font-family:var(--mono)">p=none</span> with an <span style="font-family:var(--mono)">rua</span> address, and actually read the reports for a few weeks, they will show senders you had forgotten about, which is the entire point of this stage.</p>
+<p>Fix what they reveal, then move to <span style="font-family:var(--mono)">quarantine</span>, then to <span style="font-family:var(--mono)">reject</span>. Set <span style="font-family:var(--mono)">sp=reject</span> and publish a null SPF and a reject policy on every domain you own that sends no mail at all, including the ones you bought defensively, unused domains are the ones attackers reach for precisely because nobody protects them.</p>
 
       <div class="callout">
         <p>Check any domain's live SPF, DMARC and other TXT records with the <a href="/#tool">MyRecon domain tool</a>.</p>
@@ -225,7 +226,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=7808c3999c"></script>
+  <script src="/assets/js/app.js?v=0dcb6b7f16"></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 

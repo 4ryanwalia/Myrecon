@@ -67,7 +67,7 @@
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"IP Geolocation and Reverse DNS: What an IP Address Reveals","description":"How IP geolocation works, what ASN and hosting flags mean, and how reverse DNS helps.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-27","mainEntityOfPage":"https://www.myrecon.xyz/guides/ip-geolocation-reverse-dns.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"IP Geolocation and Reverse DNS: What an IP Address Reveals","description":"How IP geolocation works, what ASN and hosting flags mean, and how reverse DNS helps.","author":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"datePublished":"2026-07-12","dateModified":"2026-09-27","mainEntityOfPage":"https://www.myrecon.xyz/guides/ip-geolocation-reverse-dns.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"IP Geolocation and Reverse DNS Explained","item":"https://www.myrecon.xyz/guides/ip-geolocation-reverse-dns.html"}],"@context":"https://schema.org"}</script>
   <link rel="stylesheet" href="/assets/css/content-app-promo.css?v=804d909ebd">
@@ -154,7 +154,8 @@
       <p>This catches mainstream commercial VPNs reasonably well. It does not catch a private server someone rented and configured themselves, and it increasingly mislabels residential proxy networks, which route traffic through real consumer connections, sometimes with the consent of the person whose bandwidth is being used and sometimes without it. Both failure directions are common enough that a VPN flag belongs in the evidence pile, not at the end of it.</p>
 
       <h2 id="ipv6-changes-the-arithmetic">IPv6 changes the arithmetic</h2>
-      <p>IPv6 allocations are enormous, a single household typically receives a block far larger than the entire IPv4 internet. That has two consequences worth knowing. Sharing is much rarer, so an IPv6 address is a more specific identifier than an IPv4 one. But privacy extensions rotate the address a device uses for outbound connections, often daily, so the specific address is less stable even as the surrounding block stays put. Reason about the prefix, not the full address.</p>
+      <p>IPv6 allocations are enormous, a single household typically receives a block far larger than the entire IPv4 internet. That has two consequences worth knowing. Sharing is much rarer, so an IPv6 address is a more specific identifier than an IPv4 one. But privacy extensions rotate the address a device uses for outbound connections, often daily, so the specific address is less stable even as the surrounding block stays put.</p>
+<p>Reason about the prefix, not the full address.</p>
 
       <h2 id="where-addresses-come-from-in-real-work">Where addresses come from in real work</h2>
       <p>Two sources come up constantly, and both deserve a caveat. Email headers used to carry the sender's own address; major webmail providers have stripped that for years, so a header address now usually identifies the provider's outbound server, not the person. Server logs are the other, and there the address is genuine but subject to every caveat above, proxies, shared addresses, and the gap between an address and an account.</p>
@@ -236,7 +237,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=7808c3999c"></script>
+  <script src="/assets/js/app.js?v=0dcb6b7f16"></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 

@@ -256,9 +256,16 @@ function renderSections(record) {
     </section>`;
   }).join("");
 }
+const githubLookupTool = `
+    <section class="seo-section seo-cta gh-lookup" aria-labelledby="github-user-lookup"><h2 id="github-user-lookup">Look up a GitHub user</h2>
+      <p>Enter a username to see the account type, creation date and public counts. Your browser asks GitHub's public API directly; nothing is sent to MyRecon.</p>
+      <form id="gh-lookup-form" autocomplete="off"><label for="gh-lookup-input">GitHub username</label> <input id="gh-lookup-input" name="username" type="text" inputmode="text" spellcheck="false" maxlength="60" placeholder="octocat" required> <button class="btn" type="submit">Look up</button></form>
+      <div id="gh-lookup-result" class="seo-table-wrap" aria-live="polite" hidden></div>
+    </section>`;
+
 function renderSpecific(record) {
   if (record.kind === "target") {
-    return `
+    return `${record.slug === "github-profile" ? githubLookupTool : ""}
     <section class="seo-section"><h2>Check it manually</h2><ol>${record.manual_steps.map((step) => `<li>${esc(step)}</li>`).join("")}</ol>
       </section>`;
   }
@@ -362,7 +369,7 @@ ${jsonLd(record, route)}
     </article>
   </main>
   <footer class="footer"><div class="container"><div class="footer-bottom"><span>&copy; 2026 MyRecon</span><span><a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a></span></div></div></footer>
-  <script src="/assets/js/username-search-input.js" defer></script>
+  <script src="/assets/js/username-search-input.js" defer></script>${record.slug === "github-profile" ? '<script src="/assets/js/github-user-lookup.js" defer></script>' : ''}
 </body></html>
 `;
 }

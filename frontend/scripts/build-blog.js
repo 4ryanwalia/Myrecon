@@ -268,7 +268,7 @@ function articlePage(article, articles = []) {
     <article class="article">
       <span class="kicker">${esc(article.category)}</span>
       <h1>${esc(article.headline)}</h1>
-      <p class="meta">Updated <time datetime="${esc(article.dateModified)}">${displayDate}</time> · <a href="/about.html">MyRecon editorial</a></p>
+      <p class="meta">Updated <time datetime="${esc(article.dateModified)}">${displayDate}</time> · <a href="/about.html">MyRecon editorial</a> · <a href="/about.html#editorial-method">How we check facts</a></p>
       ${navigableContent}${explainer ? `\n      ${explainer}` : ''}
       <div class="callout">
         <p><strong>Use these checks for your own accounts or work you are authorised to do.</strong> MyRecon reports public-source results; a matching handle is not proof that two accounts belong to the same person. See our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</p>

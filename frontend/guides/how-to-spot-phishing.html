@@ -67,7 +67,7 @@
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","headline":"How to Spot a Phishing Email or Website","description":"The red flags of phishing, how to inspect a link safely, and what to do if you clicked.","author":{"@type":"Organization","name":"MyRecon"},"publisher":{"@type":"Organization","name":"MyRecon"},"datePublished":"2026-07-12","dateModified":"2026-09-27","mainEntityOfPage":"https://www.myrecon.xyz/guides/how-to-spot-phishing.html"}
+  {"@context":"https://schema.org","@type":"Article","headline":"How to Spot a Phishing Email or Website","description":"The red flags of phishing, how to inspect a link safely, and what to do if you clicked.","author":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/"},"datePublished":"2026-07-12","dateModified":"2026-09-27","mainEntityOfPage":"https://www.myrecon.xyz/guides/how-to-spot-phishing.html"}
   </script>
   <script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.myrecon.xyz/guides/"},{"@type":"ListItem","position":3,"name":"How to Spot a Phishing Email or Fake Website","item":"https://www.myrecon.xyz/guides/how-to-spot-phishing.html"}],"@context":"https://schema.org"}</script>
   <link rel="stylesheet" href="/assets/css/content-app-promo.css?v=804d909ebd">
@@ -151,7 +151,8 @@
       <p>An invoice or subscription renewal for something you did not buy, with no link at all, just a number to call and cancel. The number reaches the attacker, who talks you into installing remote access software. The absence of a link is what gets it past filters, and what makes it feel safe.</p>
 
       <h2 id="checking-a-sender-properly">Checking a sender properly</h2>
-      <p>Expand the actual address rather than trusting the display name, which is free text and set by the sender. Then check the reply-to, which is where your response actually goes and is frequently different. In a mail client that shows headers, an authentication summary indicating that SPF or DMARC failed is a strong signal, but note that it passing proves only that the message came from the domain it claims, and a lookalike domain passes its own checks perfectly. The <a href="/guides/spf-dkim-dmarc-explained.html">email authentication guide</a> explains exactly what those results cover.</p>
+      <p>Expand the actual address rather than trusting the display name, which is free text and set by the sender. Then check the reply-to, which is where your response actually goes and is frequently different.</p>
+<p>In a mail client that shows headers, an authentication summary indicating that SPF or DMARC failed is a strong signal, but note that it passing proves only that the message came from the domain it claims, and a lookalike domain passes its own checks perfectly. The <a href="/guides/spf-dkim-dmarc-explained.html">email authentication guide</a> explains exactly what those results cover.</p>
 
       <h2 id="if-you-have-already-clicked">If you have already clicked</h2>
       <p>Speed matters more than thoroughness, and the order matters.</p>
@@ -170,7 +171,8 @@
       </div>
 
       <h2 id="the-long-term-fix">The long-term fix</h2>
-      <p>Two changes make most credential phishing structurally impossible rather than merely detectable. A <strong>password manager</strong> will not autofill on a lookalike domain, because it matches the domain exactly, it declines to fill when you would have typed it in anyway, and that refusal is a warning you get before you make the mistake. And <strong>passkeys or security keys</strong> bind the credential to the real site's domain, so a convincing replica cannot use them at all; there is nothing to phish, because there is no secret you can be persuaded to hand over. Both are covered in <a href="/guides/two-factor-authentication.html">the two-factor guide</a>.</p>
+      <p>Two changes make most credential phishing structurally impossible rather than merely detectable. A <strong>password manager</strong> will not autofill on a lookalike domain, because it matches the domain exactly, it declines to fill when you would have typed it in anyway, and that refusal is a warning you get before you make the mistake.</p>
+<p>And <strong>passkeys or security keys</strong> bind the credential to the real site's domain, so a convincing replica cannot use them at all; there is nothing to phish, because there is no secret you can be persuaded to hand over. Both are covered in <a href="/guides/two-factor-authentication.html">the two-factor guide</a>.</p>
 
       <!-- After the guide, never inside it. Someone who has just read how to
            do this by hand is the reader most likely to want it done for them. -->
@@ -235,7 +237,7 @@
 </footer>
   <script src="/assets/js/env.js?v=10"></script>
   <script src="/assets/js/config.js?v=78156bad7a"></script>
-  <script src="/assets/js/app.js?v=7808c3999c"></script>
+  <script src="/assets/js/app.js?v=0dcb6b7f16"></script>
   <script src="/assets/js/consent.js"></script>
   <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
 

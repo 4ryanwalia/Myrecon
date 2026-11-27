@@ -1125,6 +1125,7 @@
       ${s.sensitive_policy ? `<p class="hint">${esc(s.sensitive_policy)} <a href="https://haveibeenpwned.com/NotifyMe" target="_blank" rel="noopener">Open the notification service</a>.</p>` : ""}
       ${outcome.partial ? `<p>Exposure score unavailable until all attempted sources respond.</p>` : ""}
       <ul class="source-coverage">${outcome.sources.map((source) => `<li><strong>${esc(source.name)}</strong>: ${esc(source.status === "ok" && source.checked !== false ? "checked" : source.status.replace(/_/g, " "))}${source.error ? ", " + esc(source.error) : ""}</li>`).join("")}</ul>
+      ${outcome.sources.some((source) => /^LeakCheck/.test(source.name)) ? `<p class="hint">Powered by <a href="https://leakcheck.io/" target="_blank" rel="noopener">LeakCheck</a>.</p>` : ""}
       ${outcome.partial ? `<button type="button" class="btn btn-ghost btn-sm" data-action="retry-email">Retry breach check</button>${s.retry_after ? `<p>Source suggests waiting ${esc(s.retry_after)} seconds before retrying.</p>` : ""}` : ""}
       ${breached ? `<div class="breach-metrics">
         ${dw.risk_label ? `<div class="bm"><span>Risk</span><strong>${esc(dw.risk_label)}</strong></div>` : ""}

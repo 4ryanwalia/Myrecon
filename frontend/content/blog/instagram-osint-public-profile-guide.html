@@ -5,7 +5,7 @@
   "description": "See why two Instagram URLs both returned HTTP 200 in our recorded check. Compare the profile evidence, then use the checklist to review your own account.",
   "category": "Social media OSINT",
   "datePublished": "2026-10-08",
-  "dateModified": "2026-11-24",
+  "dateModified": "2026-11-28",
   "keywords": [
     "instagram osint",
     "instagram osint tools",
@@ -23,6 +23,14 @@
       "answer": "A matching handle, photo or bio does not prove identity. Public clues can be copied or shared, so ownership can remain unresolved."
     },
     {
+      "question": "How do you search Instagram for OSINT?",
+      "answer": "Start from a handle you are authorised to review, open its profile in a signed-out browser and in your normal session, and record what each view shows. Automated signed-out checks no longer separate real Instagram accounts from made-up ones, so a tool's Instagram result needs a manual look."
+    },
+    {
+      "question": "Can an Instagram account be traced to a real person?",
+      "answer": "Not from public information alone. A handle, photo or bio can be copied, so matching details across sites gives a lead, not an identity. Requests to identify an account holder go through Instagram itself or legal process, not through OSINT tools."
+    },
+    {
       "question": "What should I record during an Instagram self-audit?",
       "answer": "Record the profile URL, review date, signed-in or signed-out context, visible detail and action you can take. Keep private messages, credentials and unrelated personal details out of the worksheet."
     }
@@ -36,6 +44,18 @@
 <p>On 30 September 2026, MyRecon checked its publisher's handle and a generated control. Instagram delivered a page for each address. The publisher's page title named the exact handle, and the page included a matching account record. The control had a generic Instagram title and no matching account record. Counting successful page loads would have treated both alike.</p>
 <table class="data-table"><caption>Two observations from the same signed-out source review</caption><thead><tr><th scope="col">Requested handle</th><th scope="col">HTTP status</th><th scope="col">What the page supported</th></tr></thead><tbody><tr><th scope="row">4ryanwalia</th><td>200</td><td>Public profile at the requested handle</td></tr><tr><th scope="row">mrbenchq8v17zz</th><td>200</td><td>Inconclusive. The response had no profile-specific evidence.</td></tr></tbody></table>
 <p>When reviewing your own handle, record what you can see at the final address. A generic landing page or a login prompt leaves the question open. For the original observations, find <code>https://instagram.com/4ryanwalia</code> in the <a href="/data/username-benchmark.json">published evidence file</a> and compare its reference and control entries. The <a href="/blog/username-search-benchmark-research.html">research article</a> explains how the publisher selected and reviewed this case.</p>
+
+<h2 id="signed-out-check-november-2026">What does Instagram show a signed-out check now?</h2>
+<p>A generic page, whether or not the account exists. On 27 November 2026 at 23:33 UTC, MyRecon requested three profile addresses without signing in: Instagram's own @instagram account, the publisher's handle from the September check above, and a made-up control. All three returned HTTP 200, a page of about 537.6 KB titled only "Instagram", and no profile title or account record.</p>
+<table class="data-table"><caption>Signed-out requests, 27 November 2026, same connection and desktop browser user agent</caption><thead><tr><th scope="col">Requested handle</th><th scope="col">HTTP status</th><th scope="col">Page size</th><th scope="col">Profile evidence in the page</th></tr></thead><tbody><tr><th scope="row">instagram (real)</th><td>200</td><td>537,626 bytes</td><td>None: generic "Instagram" title</td></tr><tr><th scope="row">4ryanwalia (real)</th><td>200</td><td>537,632 bytes</td><td>None: generic "Instagram" title</td></tr><tr><th scope="row">zq5c1e9a0b7d33f (made up)</th><td>200</td><td>537,631 bytes</td><td>None: generic "Instagram" title</td></tr></tbody></table>
+<p>The same run of the frozen WhatsMyName rules found the same thing: its Instagram rule read a known, real account as missing (<a href="/whatsmyname-alternatives.html#how-many-whatsmyname-checks-still-work">replay results</a>). In September the publisher's page still named the handle. So in November 2026 any tool that reports Instagram as "found" or "not found" from a signed-out request is guessing. MyRecon reports Instagram as not confirmed for this reason.</p>
+
+<h2 id="search-instagram-osint">How do you search Instagram for OSINT?</h2>
+<p>Start from a handle you are authorised to review, open its profile in a signed-out browser and in your normal session, and record what each view shows. Automated signed-out checks no longer separate real Instagram accounts from made-up ones, so a tool's Instagram result needs a manual look.</p>
+<p>Write down the exact profile URL, the date, which view you used and what was visible. If the profile links to other sites, open those links from the profile itself rather than trusting a search tool's list.</p>
+
+<h2 id="trace-instagram-account">Can an Instagram account be traced to a real person?</h2>
+<p>Not from public information alone. A handle, photo or bio can be copied, so matching details across sites gives a lead, not an identity. Requests to identify an account holder go through Instagram itself or legal process, not through OSINT tools.</p>
 
 <h2>Choose a useful question before collecting anything</h2>
 <p>A self-audit might ask whether a profile publishes a personal contact address, whether an old post discloses a routine, or whether your business links to the correct official account. These questions have actions you can complete. “Find everything about this person” has no sensible stopping point and encourages collecting information that does not serve the review.</p>

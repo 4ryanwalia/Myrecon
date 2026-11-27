@@ -114,7 +114,32 @@ const usernameQuestions = [
   ['How do I find my old accounts by username?', 'Search handles you remember using, then open each candidate profile and compare it with your own records. Use saved passwords, signup emails and the official account recovery process to confirm ownership.'],
 ];
 
+// Daily public-controls benchmark (data/benchmarks.json, refreshed by a scheduled job).
+// Scope is stated exactly: 10 fixed usernames on 3 platforms, not the full catalogue.
+function dailyBenchmarkSection() {
+  let data;
+  try { data = JSON.parse(fs.readFileSync(path.join(root, 'data/benchmarks.json'), 'utf8')); } catch { return ''; }
+  const run = data && data.latest;
+  if (!run || !run.tools || !run.tools.myrecon) return '';
+  const day = new Date(run.started_at_utc);
+  if (Number.isNaN(day.getTime())) return '';
+  const when = day.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const rows = [['myrecon', 'MyRecon'], ['sherlock', 'Sherlock (bundled rules)'], ['maigret', 'Maigret (bundled rules)'], ['http200_baseline', 'HTTP 200 only (no rules)']]
+    .filter(([key]) => run.tools[key])
+    .map(([key, label]) => {
+      const t = run.tools[key];
+      return `<tr><th scope="row">${label}</th><td>${t.TP}</td><td>${t.TN}</td><td>${t.FP}</td><td>${t.FN}</td><td>${t.unknown}</td><td>${t.coverage_percent}%</td></tr>`;
+    }).join('');
+  const m = run.tools.myrecon;
+  return `<section id="daily-benchmark"><h2>How often does a username checker get it wrong?</h2>
+    <p>On MyRecon's daily control set it made ${m.FP} false positives and ${m.FN} misses in ${m.total} checks on ${when}. That set is small on purpose: ${run.username_count} fixed usernames, 5 real and 5 made up, on ${run.platforms.join(', ').replace(/, ([^,]*)$/, ' and $1')}. It is not a score for all 560+ platforms, where login walls and blocks leave more checks unknown.</p>
+    <div class="table-wrap"><table><caption>Public-controls benchmark, run ${when} (${run.network_environment}); real and made-up handles checked against official API answers</caption><thead><tr><th scope="col">Engine</th><th scope="col">Real found</th><th scope="col">Made-up rejected</th><th scope="col">False positives</th><th scope="col">Misses</th><th scope="col">Unknown</th><th scope="col">Decided</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p>The run repeats every day on a schedule, and this table is rebuilt from the latest result each time the site is published. The reference shares some official API evidence with MyRecon's engine, so read it as a regression check, not an independent audit. <a href="/data/benchmarks.json">Raw results for every run</a> · <a href="/blog/username-search-benchmark-research.html">method and history</a></p>
+  </section>`;
+}
+
 const usernameBody = fs.readFileSync(path.join(root, 'content/discovery/username-checker.html'), 'utf8')
+  .replace('<!-- daily-benchmark -->', dailyBenchmarkSection())
   .replace('<!-- faq -->', usernameQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
@@ -126,7 +151,7 @@ buildDiscoveryPage({
   crumbLabel: 'Username checker',
   questions: usernameQuestions,
   bodyHtml: usernameBody,
-  modifiedAt: '2026-11-27',
+  modifiedAt: '2026-11-28',
 });
 
 // 2. Free OSINT tool discovery page
@@ -275,6 +300,24 @@ const lookupQuestions = [
   ['Can a reverse username search prove who owns an account?', 'A shared handle can belong to different people. For your own accounts, confirm access through the platform. For other authorized work, look for owner-published links or another independent source before connecting profiles.'],
 ];
 
+// A real, dated reverse lookup for one public handle, taken from the latest scheduled benchmark run.
+function octocatSampleSection() {
+  let run;
+  try { run = JSON.parse(fs.readFileSync(path.join(root, 'data/benchmarks.json'), 'utf8')).latest; } catch { return ''; }
+  const checks = run && Array.isArray(run.checks) ? run.checks.filter((c) => c.username === 'octocat' && c.myrecon && c.reference) : [];
+  if (!checks.length) return '';
+  const when = new Date(run.started_at_utc).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const label = (v) => ({ found: 'Found', not_found: 'Not found', unknown: 'Unknown' }[v] || v);
+  const rows = checks.map((c) => `<tr><th scope="row">${c.platform}</th><td>${label(c.myrecon.verdict)}</td><td>${label(c.reference.verdict)}</td><td><code>${c.reference.source_url.replace(/^https:\/\//, '')}</code></td></tr>`).join('');
+  const agree = checks.filter((c) => c.myrecon.verdict === c.reference.verdict).length;
+  const absent = checks.filter((c) => c.reference.verdict === 'not_found').map((c) => `${c.platform}'s API`);
+  return `  <section id="sample-result"><h2>What does a reverse username result look like?</h2>
+    <p>Here is a real one. On ${when} MyRecon looked up the public handle <code>octocat</code> on ${checks.length} platforms and agreed with each platform's own API on ${agree} of ${checks.length}.${absent.length ? ` A "Not found" is a result too: ${absent.join(' and ')} had no user by that name.` : ''}</p>
+    <div class="table-wrap"><table><caption>Reverse lookup for octocat, ${when}, compared with each platform's official API</caption><thead><tr><th scope="col">Platform</th><th scope="col">MyRecon said</th><th scope="col">Official API said</th><th scope="col">Reference source</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p>This sample is rebuilt from MyRecon's scheduled benchmark each time the site is published; a full search covers 100 platforms as a guest or 560+ signed in. Daily error counts are on the <a href="/username-checker.html#daily-benchmark">username checker page</a>.</p>
+  </section>`;
+}
+
 const lookupBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse username lookup</span></nav>
   <h1>Free reverse username search and lookup for public profiles</h1>
@@ -282,6 +325,7 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <username-search-input sample="octocat"></username-search-input>
   <p class="discovery-note">Guest Quick covers 100 supported platforms and shows up to five result cards. A free account includes five Standard searches a day across 560+ supported platforms. <a href="/pricing">See current plans.</a></p>
   <p><a href="/videos/reverse-username-search.html">Watch the 32-second walkthrough</a> or <a href="/username-checker.html#observed-demo">see a recorded guest result</a>.</p>
+${octocatSampleSection()}
   <section>
     <h2>What is reverse username lookup and how does it work?</h2>
     <p>A reverse username search checks where the same handle may appear across supported social networks, developer hubs, and forums. Whether you call it a username reverse lookup, username reverse search, or reverse search username check, it helps you find username reuse on your own forgotten accounts before confirming ownership directly at the source.</p>
@@ -353,7 +397,7 @@ buildDiscoveryPage({
   description: 'Run a free reverse username search and lookup across 100 sites as a guest or 560+ signed in. Paste a handle or profile URL and verify each lead.',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
-  modifiedAt: '2026-11-27',
+  modifiedAt: '2026-11-28',
   crumbLabel: 'Reverse username lookup',
   questions: lookupQuestions,
   bodyHtml: lookupBody,
@@ -393,6 +437,21 @@ const emailBody = `<main id="main" class="container prose discovery-page">
     <h2 id="holehe-online">Holehe online, without installing Python</h2>
     <p>Holehe is an open-source command-line tool that checks whether an email address is registered on a service by reading how that service's sign-up or password-reset screen answers. Running it yourself means installing Python and the package, then reading raw output in a terminal.</p>
     <p>The linked-account option in this lookup runs a pinned copy of Holehe on MyRecon's server, plus two checks MyRecon maintains for Hugging Face and HackerRank, and shows the answers as a list: registered, no signal, or could not check. Rate limits and blocks are counted as "could not check", never as "not registered". As with Holehe itself, each service it tests receives the address.</p>
+  </section>
+  <section>
+    <h2 id="holehe-services-skipped">Which Holehe checks does MyRecon skip, and why?</h2>
+    <p>Twelve. MyRecon pins Holehe at commit 14da70f, which has 123 service modules, and runs 111 of them plus its own Hugging Face and HackerRank checks. It skips the 12 whose check works by starting a password reset or an account sign-up, because that can send the address owner an email or create a pending account.</p>
+    <div class="table-wrap"><table><caption>Holehe modules in MyRecon's pinned catalogue, by how the check asks the service (catalogue dated 12 October 2026)</caption><thead><tr><th scope="col">How the module asks</th><th scope="col">Run</th><th scope="col">Skipped</th></tr></thead><tbody><tr><th scope="row">Sign-up form ("is this email taken?")</th><td>96</td><td>6</td></tr><tr><th scope="row">Login form</th><td>11</td><td>2</td></tr><tr><th scope="row">Password recovery</th><td>0</td><td>4</td></tr><tr><th scope="row">Other public endpoint</th><td>4</td><td>0</td></tr><tr><th scope="row">Total</th><td>111</td><td>12</td></tr></tbody></table></div>
+    <p>The skipped services are Adobe, Devrant, Discord, Mail.ru, Nutshell, Odnoklassniki, Parler, Samsung, SEOClerks, Tumblr, Xing and Yahoo. A "no signal" on this page therefore never covers those twelve. Running Holehe yourself checks them, at the cost of possibly alerting the address owner.</p>
+  </section>
+  <section>
+    <h2 id="what-this-lookup-does-not-do">What does this email lookup not do?</h2>
+    <p>It does not tell you who owns an address, find a phone number or home address, read anyone's mail, or confirm that an account belongs to a particular person. It reports breach records and registration signals for one address you enter, and each signal is a lead to check, not an identity.</p>
+    <ul>
+      <li><strong>No owner name.</strong> A breach record or a registered account says the address was used somewhere, not by whom.</li>
+      <li><strong>No silent mode for linked accounts.</strong> With "Also check linked accounts" on, each tested service receives the address. Leave it off to keep the lookup to breach sources.</li>
+      <li><strong>No guarantee of absence.</strong> "No signal" and "could not check" are reported separately, and a clean breach result covers only the sources that answered.</li>
+    </ul>
   </section>
   <section>
     <h2 id="google-reviews-by-email">Find Google reviews by email</h2>
@@ -447,7 +506,7 @@ buildDiscoveryPage({
   description: 'Look up an email address free, with no sign-in. See breaches that list it, the data they exposed, public profiles, and optional linked-account checks.',
   url: `${site}/reverse-email-lookup.html`,
   outFileName: 'reverse-email-lookup.html',
-  modifiedAt: '2026-11-27',
+  modifiedAt: '2026-11-28',
   crumbLabel: 'Reverse email lookup',
   questions: emailQuestions,
   bodyHtml: emailBody,

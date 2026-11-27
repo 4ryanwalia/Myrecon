@@ -9,6 +9,10 @@
   "intro": "If you know the exact GitHub username, open github.com/USERNAME. For part of a username, search GitHub Users with in:login. If you only know the display name, use in:name. Add type:user for personal accounts or type:org for organizations.",
   "sections": [
     {
+      "heading": "When was a GitHub account created?",
+      "body": "GitHub's public REST API returns a created_at date for every account through GET /users/{username}, and the lookup above shows it. GitHub Docs, checked 28 November 2026, list created_at in the user schema and set the unauthenticated limit at 60 requests per hour, counted per IP address. Each lookup runs from your own browser, so it uses your network's allowance, not MyRecon's. A 404 means no public account has that name now; it does not say whether the name was renamed, deleted or never used."
+    },
+    {
       "heading": "Copy a GitHub Users search",
       "body": "Open the example in GitHub Users and replace its query with the one you need. Display names can belong to multiple accounts. Open the result and compare the username in the URL with a public link you already trust.",
       "table": {
@@ -102,10 +106,12 @@
     "https://docs.github.com/en/search-github/searching-on-github/searching-users",
     "https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address",
     "https://github.com/octocat",
-    "https://docs.github.com/en/account-and-profile/concepts/personal-profile"
+    "https://docs.github.com/en/account-and-profile/concepts/personal-profile",
+    "https://docs.github.com/en/rest/users/users#get-a-user",
+    "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api"
   ],
   "reviewed_at": "2026-11-23",
-  "modified_at": "2026-11-25",
+  "modified_at": "2026-11-28",
   "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
@@ -144,7 +150,7 @@
   ],
   "scan_trigger": "username",
   "editorial_review": true,
-  "method": "The signed-out octocat screenshot records the 3 October 2026 example. On 21 November we checked the user-search and profile-visibility instructions against GitHub documentation and counted the GitHub observations in our published November control runs.",
+  "method": "The signed-out octocat screenshot records the 3 October 2026 example. On 21 November we checked the user-search and profile-visibility instructions against GitHub documentation and counted the GitHub observations in our published November control runs. On 28 November 2026 we added the in-browser lookup after reading GitHub's Get a user and REST rate-limit documentation.",
   "evidence": {
     "image": "/assets/img/github-octocat-observed.png",
     "alt": "Signed-out GitHub octocat profile showing the exact username and public example repositories.",
