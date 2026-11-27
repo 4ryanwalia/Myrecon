@@ -154,6 +154,64 @@
     return { box, r };
   };
 
+  // Public profile (name, avatar, banner colour, badges) comes from MyRecon's
+  // API, which asks Discord's GET /users/{id} with a bot token. Only the ID is
+  // sent. If the API has no token yet it answers "not_configured" and the
+  // decoder above is all the page shows.
+  const host = location.hostname;
+  const apiBase = typeof window.MYRECON_API_BASE === 'string' ? window.MYRECON_API_BASE
+    : (/^(localhost|127\.0\.0\.1)$/.test(host) ? 'http://localhost:5000' : 'https://myrecon.onrender.com');
+
+  const loadProfile = async (box, item, r) => {
+    const slot = el('div', { class: 'discord-profile', 'aria-live': 'polite' }, 'Looking up the public profile...');
+    box.querySelector('h3').after(slot);
+    const ambiguous = item.kind !== 'User';
+    let data;
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+      const res = await fetch(`${apiBase}/api/discord/user/${r.id}`, { credentials: 'omit', cache: 'no-store', signal: controller.signal });
+      clearTimeout(timer);
+      data = await res.json();
+    } catch {
+      data = { state: 'unavailable' };
+    }
+    slot.textContent = '';
+    if (data.state === 'found') {
+      if (data.accent_color) slot.style.borderColor = data.accent_color;
+      const row = el('div', { class: 'discord-profile-row' });
+      if (data.avatar_url) {
+        row.append(el('img', { src: data.avatar_url, alt: `Avatar of ${data.username || 'this user'}`, width: '72', height: '72', loading: 'lazy' }));
+      }
+      const names = el('div');
+      names.append(el('strong', {}, data.global_name || data.username || 'Unnamed user'));
+      names.append(el('span', { class: 'discord-handle' }, `@${data.username || ''}${data.bot ? '  (bot)' : ''}`));
+      if (data.badges && data.badges.length) names.append(el('span', { class: 'discord-badges' }, data.badges.join(' · ')));
+      row.append(names);
+      slot.append(row);
+      if (data.banner_url) slot.append(el('img', { class: 'discord-banner', src: data.banner_url, alt: 'Profile banner', loading: 'lazy' }));
+      slot.append(el('p', { class: 'discovery-note' }, 'Public profile as Discord returns it right now. Names and pictures can change; the ID and creation date cannot.'));
+      const fallback = box.querySelector('.discord-avatar');
+      if (fallback && data.avatar_url) fallback.remove();
+      const title = box.querySelector('h3');
+      if (ambiguous) title.textContent = `User: ${r.id}`;
+      return;
+    }
+    if (data.state === 'not_found') {
+      slot.textContent = ambiguous
+        ? 'Discord has no user with this ID. It is probably a server, channel or message ID, or a deleted account.'
+        : 'Discord has no user with this ID. The account may have been deleted.';
+      const fallback = box.querySelector('.discord-avatar');
+      if (fallback && ambiguous) fallback.remove();
+      return;
+    }
+    if (data.state === 'rate_limited') {
+      slot.textContent = `Profile lookups are busy. Try again in ${data.retry_after || 5} seconds; the date above is unaffected.`;
+      return;
+    }
+    slot.remove();
+  };
+
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     out.textContent = '';
@@ -171,7 +229,10 @@
       }
       const { box, r } = card(item);
       out.append(box);
-      if (!r.error) decoded.push({ item, r });
+      if (!r.error) {
+        decoded.push({ item, r });
+        if (/User/.test(item.kind)) loadProfile(box, item, r);
+      }
     }
     if (first.length === 1 && second.length === 1 && decoded.length === 2) {
       const [a, b] = decoded;

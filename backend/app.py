@@ -592,6 +592,24 @@ def _register_routes(app: Flask) -> None:
         resp.headers["Cache-Control"] = "no-store"
         return resp, status
 
+    from services.discord_lookup import lookup_user as _discord_lookup_user, valid_id as _discord_valid_id
+    cached_discord_user = cached("discord_user")(_discord_lookup_user)
+
+    @app.route("/api/discord/user/<user_id>", methods=["GET", "OPTIONS"])
+    def api_discord_user(user_id):
+        # Public profile fields only (services/discord_lookup.py). The ID is in
+        # the path, not personal data: it is the number Discord shows anyone
+        # with Developer Mode on.
+        if request.method == "OPTIONS":
+            return ("", 204)
+        if not _discord_valid_id(user_id):
+            raise validation.ValidationError("Enter a Discord ID: 15 to 20 digits.")
+        result = dict(cached_discord_user(user_id))
+        result.pop("status", None)
+        resp, status = responses.ok(result)
+        resp.headers["Cache-Control"] = "no-store"
+        return resp, status
+
     @app.route("/api/username", methods=["POST", "OPTIONS"])
     def api_username():
         if request.method == "OPTIONS":

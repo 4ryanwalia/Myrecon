@@ -87,7 +87,7 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
   }
 
   if (/id="discord-lookup-form"/.test(bodyHtml) && !/discord-id-lookup\.js/i.test(html)) {
-    html = html.replace(/<\/body>/i, '  <script src="/assets/js/discord-id-lookup.js" defer></script>\n</body>');
+    html = html.replace(/<\/body>/i, '  <script src="/assets/js/env.js"></script>\n  <script src="/assets/js/discord-id-lookup.js" defer></script>\n</body>');
   }
 
   const outPath = path.join(root, outFileName);
@@ -465,10 +465,11 @@ buildDiscoveryPage({
 // 9. Discord ID lookup (added 2026-11-28). "discord id lookup" is 10K-100K
 // searches a month worldwide in Keyword Planner (28 Nov 2026), low competition,
 // and the results are single-purpose tools. Everything is decoded in the
-// browser by assets/js/discord-id-lookup.js; it never calls Discord, so the
-// page must not claim to show names, custom avatars or anything private.
+// browser by assets/js/discord-id-lookup.js. The public name, avatar and
+// badges come from /api/discord/user/<id> (backend/services/discord_lookup.py),
+// which needs DISCORD_BOT_TOKEN on Render. Never claim anything private.
 const discordQuestions = [
-  ['Can I find a Discord user by ID?', 'An ID tells you when the account was created and which default avatar Discord gives it. It does not contain the username, email address, phone number or IP address. Inside Discord, Developer Mode lets you copy the ID of a user you can already see, which is the reliable way to keep track of them after a name change.'],
+  ['Can I find a Discord user by ID?', 'Yes, for the public profile. Paste a user ID and the lookup shows the current username, display name, avatar, banner and public badges that Discord returns for that ID, plus the creation date decoded from the number. It cannot show an email address, phone number, IP address or location, because Discord does not give those out.'],
   ['How do I tell how old a Discord account is?', 'Copy the user ID with Developer Mode switched on and paste it into the lookup. The first 42 bits of the ID are the creation time, so the result is exact to the millisecond and the account cannot change it.'],
   ['Does a Discord ID ever change?', 'No. Usernames, display names, server nicknames and avatars can all change, but the ID stays the same for the life of the account, server, channel or message.'],
   ['Is it safe to share a Discord ID?', 'An ID on its own reveals only a creation date. Share it with Discord or a server moderator when you report someone, but avoid posting it publicly next to private messages or personal details.'],
@@ -478,7 +479,7 @@ const discordQuestions = [
 const discordBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Discord ID lookup</span></nav>
   <h1>Discord ID lookup: decode any user, server or message ID</h1>
-  <p class="sub">Paste a Discord ID, a mention such as &lt;@175928847299117063&gt;, or a message link. You get the exact creation date, the account age and timestamp codes you can paste into Discord. It runs in your browser; nothing is sent to MyRecon or Discord.</p>
+  <p class="sub">Paste a Discord ID, a mention such as &lt;@175928847299117063&gt;, or a message link. You get the exact creation date, the account age, timestamp codes you can paste into Discord and, for user IDs, the public name and avatar. The date is decoded in your browser; for the profile, only the ID is sent to MyRecon, which asks Discord.</p>
   <form id="discord-lookup-form" class="discord-lookup" autocomplete="off">
     <label for="discord-lookup-input">Discord ID, mention or link</label>
     <input id="discord-lookup-input" inputmode="text" spellcheck="false" placeholder="175928847299117063">
@@ -495,13 +496,15 @@ const discordBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>What a Discord ID lookup shows</h2>
     <ul>
+      <li><strong>Public profile.</strong> Current username, display name, avatar, banner and public badges, as Discord returns them for a user ID.</li>
       <li><strong>Creation date and time.</strong> Exact to the millisecond, in UTC and in your own time zone.</li>
       <li><strong>Account age.</strong> How many years, months and days ago the account, server, channel or message was created.</li>
       <li><strong>Timestamp codes.</strong> All nine &lt;t:unix:style&gt; formats, ready to copy into a Discord message.</li>
       <li><strong>Default avatar.</strong> Which of Discord's six default avatars a user on the new username system gets if they have not uploaded a picture.</li>
       <li><strong>Which of two accounts is older.</strong> Paste a second ID to compare, which is the quickest check against an impersonator.</li>
     </ul>
-    <p>It does not show the current username, a custom avatar, the email address, phone number, IP address or location. None of those are stored in the ID. Sites that show a name and picture for an ID get them by asking Discord's API with a bot account; anything beyond that from an ID alone is not real.</p>
+    <p>It does not show an email address, phone number, IP address, location or server list. None of those are in the ID, and Discord's API does not give them to anyone looking up a user. A site that promises them from an ID alone is not telling the truth.</p>
+    <p>The profile is fetched with Discord's documented "Get User" request through a MyRecon bot account. If Discord says no user has that ID, the number is a server, channel or message ID, or the account was deleted.</p>
   </section>
 
   <section>
@@ -563,13 +566,13 @@ const discordBody = `<main id="main" class="container prose discovery-page">
 
   <section>
     <h2>Sources</h2>
-    <p>Snowflake layout, Discord epoch, mention formats, timestamp styles and the default avatar rule: Discord developer documentation, Reference ("Snowflakes", "Message Formatting", "Image Formatting"), read 28 November 2026. Updated 28 November 2026.</p>
+    <p>Snowflake layout, Discord epoch, mention formats, timestamp styles and the default avatar rule: Discord developer documentation, Reference ("Snowflakes", "Message Formatting", "Image Formatting"). Profile fields and badge names: Discord developer documentation, Users ("Get User", "User Flags"). Both read 28 November 2026. Updated 28 November 2026.</p>
   </section>
 </main>`;
 
 buildDiscoveryPage({
-  title: 'Discord ID Lookup: Account Age & Creation Date | MyRecon',
-  description: 'Free Discord ID lookup. Paste a user, server or message ID, mention or link to see when it was created, the account age and Discord timestamp codes.',
+  title: 'Discord ID Lookup: Profile, Avatar & Account Age | MyRecon',
+  description: 'Free Discord ID lookup. Paste a user, server or message ID to see the public profile, avatar and badges, the creation date and the account age.',
   url: `${site}/discord-id-lookup.html`,
   outFileName: 'discord-id-lookup.html',
   modifiedAt: '2026-11-28',
