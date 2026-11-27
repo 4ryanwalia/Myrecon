@@ -15,3 +15,26 @@
 .discovery-table-wrap caption { text-align: left; margin-bottom: 12px; color: var(--text-dim); }
 .discovery-page code { overflow-wrap: anywhere; }
 .discovery-table-wrap:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.discord-lookup { display: grid; gap: 10px; margin: 22px 0 8px; max-width: 640px; }
+.discord-lookup label { font-weight: 600; }
+.discord-lookup input { width: 100%; min-width: 0; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.discord-lookup input:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.discord-lookup details { color: var(--text-dim); }
+.discord-lookup details[open] { display: grid; gap: 8px; }
+.discord-lookup summary { cursor: pointer; font-size: .92rem; }
+.discord-lookup button[type="submit"] { justify-self: start; }
+#discord-lookup-result { max-width: 760px; }
+.discord-card { margin: 18px 0; padding: 18px 20px; border: 1px solid var(--border); border-radius: 12px; }
+.discord-card h3 { margin: 0 0 10px; font-size: 1.05rem; overflow-wrap: anywhere; }
+.discord-card dl { display: grid; grid-template-columns: minmax(150px, max-content) 1fr; gap: 4px 16px; margin: 0; }
+.discord-card dt { font-weight: 600; }
+.discord-card dd { margin: 0 0 6px; overflow-wrap: anywhere; }
+.discord-avatar { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+.discord-avatar img { border-radius: 50%; flex: none; }
+.discord-avatar figcaption { font-size: .88rem; color: var(--text-dim); }
+.discord-stamps { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: .92rem; }
+.discord-stamps th, .discord-stamps td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+.discord-copy { padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: .85rem; cursor: pointer; }
+.discord-verdict { padding: 12px 16px; border-left: 3px solid var(--text); font-weight: 600; }
+.discord-error { color: var(--text); font-weight: 600; }
+@media (max-width: 520px) { .discord-card dl { grid-template-columns: 1fr; } .discord-card dd { margin-bottom: 10px; } }

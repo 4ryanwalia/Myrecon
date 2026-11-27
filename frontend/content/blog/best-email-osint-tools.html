@@ -1,13 +1,13 @@
 <!--
 {
-  "title": "Free Email OSINT & Breach Check Guide (2027) | MyRecon",
-  "headline": "Best Free Email OSINT Tools for Checking Your Address (2026-2027)",
+  "title": "Free Email OSINT Tools to Check Your Address | MyRecon",
+  "headline": "Email OSINT tools for checking your own address",
   "description": "Choose a free email OSINT tool for your own address. Compare breach checks, email alerts and domain checks, with recorded examples and source limits.",
   "category": "Email security",
   "datePublished": "2026-11-15",
   "dateModified": "2026-11-27",
   "editorial_review": "2026-11-23",
-  "keywords": ["email OSINT tools", "best email osint tools 2027", "email exposure check", "check your own email for breaches", "email breach alerts", "email domain check"],
+  "keywords": ["email OSINT tools", "email osint", "email exposure check", "check your own email for breaches", "email breach alerts", "email domain check"],
   "faq": [
     {"question":"How can I check my own email exposure?","answer":"Use a breach lookup such as Have I Been Pwned, XposedOrNot or MyRecon. Review any named breaches, the dates and the data categories reported. Use verified breach notifications if you want to monitor the address after your check."},
     {"question":"What does a no-match email check mean?","answer":"The responding provider found no match in its available records. Check whether other sources timed out or were unavailable. A completed lookup and an incomplete check support different conclusions."},
@@ -35,8 +35,8 @@
 </div>
 
 <h2 id="comparison-at-a-glance">Read a no-match result alongside its source status</h2>
-<p>MyRecon’s recorded check on 1 November used an address at <code>example.com</code>. XposedOrNot returned no match and the LeakCheck response was unavailable. The record was marked partial. The useful report is “no match at the responding source, with one provider unavailable.” The account name used in the demo was illustrative. <a href="/guides/check-email-data-breach.html#observed-demo">See the recorded email result</a> · <a href="/downloads/email-breach-demo-2026-11-01.json" download>Download the original response</a></p>
-<p>Use the responding source’s status to decide what you can claim. If a provider shows a named breach and another is unavailable, retain the positive evidence and record the remaining coverage gap. If you get an unexpected breach notification, open the affected service directly and read its notice before acting. <a href="/blog/breach-check-no-results-meaning.html">How to interpret a clean check</a></p>
+<p>MyRecon’s recorded 1 November 2026 check on <code>example.com</code> returned no match from XposedOrNot while LeakCheck was unavailable, so the record stayed marked partial: “no match at the responding source, with one provider unavailable.”</p>
+<p>The account name in that demo was illustrative. <a href="/guides/check-email-data-breach.html#observed-demo">See the recorded email result</a> or <a href="/downloads/email-breach-demo-2026-11-01.json" download>download the original response</a>. Use the responding source’s status to decide what you can claim, and read <a href="/blog/breach-check-no-results-meaning.html">how to interpret a clean check</a>.</p>
 
 <h2 id="email-domain-dns-controls">Two DNS results that can look alike in an email lookup</h2>
 <p>We queried Google Public DNS for MX records on 23 November 2026. Both names below are reserved examples. This comparison uses DNS records, without sending a message or requesting access to an account.</p>
@@ -53,7 +53,8 @@
 <p>Both checks produce no usable mail route, for different reasons. Keep the DNS result separate from a breach record, which may describe earlier exposure. <a href="https://www.rfc-editor.org/rfc/rfc7505">RFC 7505 on null MX</a> · <a href="https://dns.google/resolve?name=example.com&amp;type=MX">Public DNS result for example.com</a> · <a href="https://dns.google/resolve?name=example.invalid&amp;type=MX">Public DNS result for example.invalid</a></p>
 
 <h2 id="a-sensible-email-investigation-order">Keep a self-check narrow</h2>
-<p>Use an address you control. MyRecon opens with <strong>Check linked accounts</strong> off. A basic lookup still shares the address with the providers needed for the selected checks. If you want ongoing email alerts, use a provider that asks you to verify the address. When you need to confirm an old account, use your own records or the service’s official account recovery. <a href="/privacy.html">MyRecon’s privacy policy</a> · <a href="/blog/find-your-own-old-accounts.html">Find and review your old accounts</a></p>
+<p>Use an address you control. MyRecon opens with <strong>Check linked accounts</strong> off by default, though a basic breach check still queries the selected breach providers.</p>
+<p>For ongoing alerts, choose a service that verifies address ownership first, and confirm old accounts through your own records or official recovery flows. See <a href="/privacy.html">MyRecon’s privacy policy</a> or <a href="/blog/find-your-own-old-accounts.html">find and review your old accounts</a>.</p>
 <p><a class="btn" href="/#tool=email">Open MyRecon’s email check</a> <a href="/guides/check-email-data-breach.html">Follow the email breach walkthrough</a></p>
 
 <h2 id="frequently-asked-questions">Frequently asked questions</h2>
@@ -65,5 +66,4 @@
 <p>Yes. Check linked accounts is a separate switch and is off when you open the email tool. Leave it off for a basic check. The email lookup still sends the address to providers required for the chosen checks.</p>
 <h3>What does a null MX result tell me?</h3>
 <p>A null MX record tells mail senders that the domain does not accept email. It describes the domain's current routing, so use separate evidence for any claim about a mailbox or a past breach.</p>
-<p>When typing queries such as <em>emial osint</em>, <em>revrese email</em>, <em>holeh</em>, or <em>epeios</em> on a phone, always confirm the official HTTPS domain before entering your email address (see the <a href="/osint-glossary.html#search-and-spelling-clarifications">typo safety table</a>).</p>
 <p>For comparisons of mobile password alerts and breach notifications, see the <a href="/blog/best-data-breach-checkers.html">consumer breach checkers guide</a>.</p>

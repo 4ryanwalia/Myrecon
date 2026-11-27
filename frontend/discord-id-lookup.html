@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<script src="/assets/js/recommendation-analytics.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3L8YYC6NKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var analyticsPage = new URL(window.location.href);
+    var analyticsReferrer = document.referrer ? new URL(document.referrer).origin : '';
+    gtag('config', 'G-3L8YYC6NKF', {
+      page_location: analyticsPage.origin + analyticsPage.pathname,
+      page_referrer: analyticsReferrer,
+    send_page_view: !(
+        analyticsPage.searchParams.get('mr_benchmark') === '1' ||
+        (() => {
+          try {
+            return Number(sessionStorage.getItem('mr_benchmark_until')) > Date.now();
+          } catch {
+            return false;
+          }
+        })()
+      )
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord ID Lookup: Account Age &amp; Creation Date | MyRecon</title>
+  <meta name="description" content="Free Discord ID lookup. Paste a user, server or message ID, mention or link to see when it was created, the account age and Discord timestamp codes.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="theme-color" content="#f7f7f4">
+  <link rel="canonical" href="https://www.myrecon.xyz/discord-id-lookup.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyRecon">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Discord ID Lookup: Account Age &amp; Creation Date | MyRecon">
+  <meta property="og:description" content="Free Discord ID lookup. Paste a user, server or message ID, mention or link to see when it was created, the account age and Discord timestamp codes.">
+  <meta property="og:url" content="https://www.myrecon.xyz/discord-id-lookup.html">
+  <meta property="og:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="MyRecon: investigate any digital footprint">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Discord ID Lookup: Account Age &amp; Creation Date | MyRecon">
+  <meta name="twitter:description" content="Free Discord ID lookup. Paste a user, server or message ID, mention or link to see when it was created, the account age and Discord timestamp codes.">
+  <meta name="twitter:image" content="https://www.myrecon.xyz/assets/img/og-image.png">
+  <meta name="twitter:image:alt" content="MyRecon: investigate any digital footprint">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg?v=ca5a312ec9">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>/* Inlined so the first paint is already correct. Without it the
+     browser paints one frame using its own default body{margin:8px}, then
+     drops it when styles.css applies, a whole-page shift measured at
+     0.1225 CLS, over Google's 0.1 threshold, on every page. */
+  *{box-sizing:border-box;margin:0;padding:0}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
+  <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
+  <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
+<link rel="stylesheet" href="/assets/css/android-promo.css">
+<link rel="stylesheet" href="/assets/css/discovery.css?v=03f82cc8b9">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://www.myrecon.xyz/discord-id-lookup.html#page","url":"https://www.myrecon.xyz/discord-id-lookup.html","name":"Discord ID Lookup: Account Age & Creation Date | MyRecon","description":"Free Discord ID lookup. Paste a user, server or message ID, mention or link to see when it was created, the account age and Discord timestamp codes.","dateModified":"2026-11-28","inLanguage":"en","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@type":"Organization","@id":"https://www.myrecon.xyz/#organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Discord ID lookup","item":"https://www.myrecon.xyz/discord-id-lookup.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I find a Discord user by ID?","acceptedAnswer":{"@type":"Answer","text":"An ID tells you when the account was created and which default avatar Discord gives it. It does not contain the username, email address, phone number or IP address. Inside Discord, Developer Mode lets you copy the ID of a user you can already see, which is the reliable way to keep track of them after a name change."}},{"@type":"Question","name":"How do I tell how old a Discord account is?","acceptedAnswer":{"@type":"Answer","text":"Copy the user ID with Developer Mode switched on and paste it into the lookup. The first 42 bits of the ID are the creation time, so the result is exact to the millisecond and the account cannot change it."}},{"@type":"Question","name":"Does a Discord ID ever change?","acceptedAnswer":{"@type":"Answer","text":"No. Usernames, display names, server nicknames and avatars can all change, but the ID stays the same for the life of the account, server, channel or message."}},{"@type":"Question","name":"Is it safe to share a Discord ID?","acceptedAnswer":{"@type":"Answer","text":"An ID on its own reveals only a creation date. Share it with Discord or a server moderator when you report someone, but avoid posting it publicly next to private messages or personal details."}},{"@type":"Question","name":"Can this tool see deleted accounts or private servers?","acceptedAnswer":{"@type":"Answer","text":"It decodes the number you paste and nothing else. It cannot tell whether an account still exists, was deleted or banned, or what a private server contains."}}]},{"@type":"WebApplication","name":"MyRecon Discord ID lookup","url":"https://www.myrecon.xyz/discord-id-lookup.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="MyRecon OSINT: home"><img class="logo" src="/assets/img/logo.svg?v=a46571ed6b" alt="" width="32" height="32"> MyRecon <small>OSINT</small></a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary"><a href="/#tool">Tool</a><a href="/services.html">Services</a><a href="/breaches/">Breaches</a><a href="/guides/">Guides</a><a href="/app.html">App</a><a href="/blog/">Blog</a><a href="/pricing">Pricing</a><a href="/about.html">About</a></nav>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg></button>
+    </div>
+  </header>
+
+  <!-- app-promo-layout:start --><div class="promo-layout"><main id="main" class="container prose discovery-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Discord ID lookup</span></nav>
+  <h1>Discord ID lookup: decode any user, server or message ID</h1>
+  <p class="sub">Paste a Discord ID, a mention such as &lt;@175928847299117063&gt;, or a message link. You get the exact creation date, the account age and timestamp codes you can paste into Discord. It runs in your browser; nothing is sent to MyRecon or Discord.</p>
+  <form id="discord-lookup-form" class="discord-lookup" autocomplete="off">
+    <label for="discord-lookup-input">Discord ID, mention or link</label>
+    <input id="discord-lookup-input" inputmode="text" spellcheck="false" placeholder="175928847299117063">
+    <details class="discord-compare-toggle">
+      <summary>Compare with a second ID (spot a newer copycat account)</summary>
+      <label for="discord-lookup-compare">Second Discord ID</label>
+      <input id="discord-lookup-compare" inputmode="text" spellcheck="false" placeholder="Another user ID">
+    </details>
+    <button type="submit" class="btn btn-primary">Look up ID</button>
+  </form>
+  <div id="discord-lookup-result" aria-live="polite"></div>
+  <p class="discovery-note">Try Discord's own documented example, 175928847299117063. It decodes to 30 April 2016, 11:18:25.796 UTC.</p>
+
+  <section>
+    <h2 id="what-a-discord-id-lookup-shows">What a Discord ID lookup shows</h2>
+    <ul>
+      <li><strong>Creation date and time.</strong> Exact to the millisecond, in UTC and in your own time zone.</li>
+      <li><strong>Account age.</strong> How many years, months and days ago the account, server, channel or message was created.</li>
+      <li><strong>Timestamp codes.</strong> All nine &lt;t:unix:style&gt; formats, ready to copy into a Discord message.</li>
+      <li><strong>Default avatar.</strong> Which of Discord's six default avatars a user on the new username system gets if they have not uploaded a picture.</li>
+      <li><strong>Which of two accounts is older.</strong> Paste a second ID to compare, which is the quickest check against an impersonator.</li>
+    </ul>
+    <p>It does not show the current username, a custom avatar, the email address, phone number, IP address or location. None of those are stored in the ID. Sites that show a name and picture for an ID get them by asking Discord's API with a bot account; anything beyond that from an ID alone is not real.</p>
+  </section>
+
+  <section>
+    <h2 id="what-you-can-paste">What you can paste</h2>
+    <p>The lookup reads the ID out of the common forms people copy from Discord:</p>
+    <ul>
+      <li>A bare ID, 17 to 20 digits for anything created in recent years.</li>
+      <li>A user mention, <code>&lt;@ID&gt;</code>, or the older <code>&lt;@!ID&gt;</code> form.</li>
+      <li>A role <code>&lt;@&amp;ID&gt;</code>, channel <code>&lt;#ID&gt;</code> or custom emoji <code>&lt;:name:ID&gt;</code>.</li>
+      <li>A message link, <code>discord.com/channels/server/channel/message</code>. The server, channel and message are decoded separately.</li>
+      <li>A profile link, <code>discord.com/users/ID</code>.</li>
+    </ul>
+    <p>To copy an ID inside Discord, switch on Developer Mode in the app's Advanced settings, then use Copy User ID, Copy Server ID or Copy Message Link from the right-click or long-press menu. The <a href="/guides/discord-id-creation-date.html">Discord ID creation date guide</a> walks through the menus on desktop and mobile.</p>
+  </section>
+
+  <section>
+    <h2 id="how-the-date-is-worked-out">How the date is worked out</h2>
+    <p>Discord IDs are 64-bit "snowflakes". Discord's developer reference documents the layout: bits 63 to 22 hold milliseconds since the Discord epoch, 1420070400000 (the first second of 2015), and the low 22 bits hold an internal worker ID, process ID and counter. The creation time is <code>(id &gt;&gt; 22) + 1420070400000</code>.</p>
+    <p>The tool does that shift with JavaScript's BigInt. Ordinary numbers in a spreadsheet or in JavaScript lose the last digits of an 18-digit integer, which is why some quick converters are off by a few seconds.</p>
+  </section>
+
+  <section>
+    <h2 id="using-account-age-to-check-an-impersonator">Using account age to check an impersonator</h2>
+    <p>Copycat accounts take a real person's name and picture, then message their friends or community. They cannot copy the ID. Put the real account's ID in the first box and the suspicious one in the second: if the real account dates from 2019 and the other from last Tuesday, you have your answer, and the ages go straight into your report to the server's moderators or to Discord.</p>
+    <p>Age is a signal, not proof. An old account can be stolen and a new one can be genuine, for example when someone has just lost access to their old login. For a full method, see <a href="/guides/brand-impersonation-monitoring">how to identify impersonation accounts</a> and <a href="/blog/report-social-media-impersonation.html">how to report impersonation</a>.</p>
+  </section>
+
+  <section>
+    <h2 id="discord-timestamp-codes">Discord timestamp codes</h2>
+    <p>Discord turns <code>&lt;t:UNIX:STYLE&gt;</code> into a date shown in each reader's own time zone. The Unix time is in seconds. Styles from Discord's message formatting reference:</p>
+    <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Discord timestamp styles">
+    <table>
+      <caption>Timestamp styles as listed by Discord</caption>
+      <thead><tr><th>Style</th><th>Example display</th></tr></thead>
+      <tbody>
+        <tr><td><code>t</code></td><td>16:20</td></tr>
+        <tr><td><code>T</code></td><td>16:20:30</td></tr>
+        <tr><td><code>d</code></td><td>20/04/2021</td></tr>
+        <tr><td><code>D</code></td><td>April 20, 2021</td></tr>
+        <tr><td><code>f</code> (default)</td><td>April 20, 2021 at 16:20</td></tr>
+        <tr><td><code>F</code></td><td>Tuesday, April 20, 2021 at 16:20</td></tr>
+        <tr><td><code>s</code></td><td>20/04/2021, 16:20</td></tr>
+        <tr><td><code>S</code></td><td>20/04/2021, 16:20:30</td></tr>
+        <tr><td><code>R</code></td><td>4 years ago</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="looking-for-a-person-rather-than-an-id">Looking for a person rather than an ID?</h2>
+    <p>If you know a handle rather than a number, a <a href="/reverse-username-lookup.html">reverse username lookup</a> checks where the same name appears across 560+ public platforms. Discord does not publish user profiles to the open web, so the <a href="/find/discord-user">Discord user lookup page</a> explains what can and cannot be found from a username.</p>
+  </section>
+
+  <section>
+    <h2 id="discord-id-lookup-questions">Discord ID lookup questions</h2>
+    <div class="faq"><details><summary>Can I find a Discord user by ID?</summary><p>An ID tells you when the account was created and which default avatar Discord gives it. It does not contain the username, email address, phone number or IP address. Inside Discord, Developer Mode lets you copy the ID of a user you can already see, which is the reliable way to keep track of them after a name change.</p></details><details><summary>How do I tell how old a Discord account is?</summary><p>Copy the user ID with Developer Mode switched on and paste it into the lookup. The first 42 bits of the ID are the creation time, so the result is exact to the millisecond and the account cannot change it.</p></details><details><summary>Does a Discord ID ever change?</summary><p>No. Usernames, display names, server nicknames and avatars can all change, but the ID stays the same for the life of the account, server, channel or message.</p></details><details><summary>Is it safe to share a Discord ID?</summary><p>An ID on its own reveals only a creation date. Share it with Discord or a server moderator when you report someone, but avoid posting it publicly next to private messages or personal details.</p></details><details><summary>Can this tool see deleted accounts or private servers?</summary><p>It decodes the number you paste and nothing else. It cannot tell whether an account still exists, was deleted or banned, or what a private server contains.</p></details></div>
+  </section>
+
+  <section>
+    <h2 id="sources">Sources</h2>
+    <p>Snowflake layout, Discord epoch, mention formats, timestamp styles and the default avatar rule: Discord developer documentation, Reference ("Snowflakes", "Message Formatting", "Image Formatting"), read 28 November 2026. Updated 28 November 2026.</p>
+  </section>
+</main><div class="promo-rail"><aside class="android-promo" aria-label="MyRecon for Android"><div class="promo-art" aria-hidden="true"><span class="promo-art-orbit"></span><svg viewBox="0 0 180 140" fill="none"><rect x="57" y="7" width="70" height="126" rx="15" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="M81 17h22M84 122h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="65" r="22" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="65" r="10" stroke="currentColor" stroke-width="2"/><path d="m107 81 13 13M91 36v8M62 65h8M112 65h8M91 86v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="promo-art-tag">EXPLORE YOUR FOOTPRINT</span></div><div class="promo-copy"><span class="android-promo-label">MYRECON FOR ANDROID</span><span class="promo-offer">Available on Google Play</span><h2>Your next discovery.<br>On your phone.</h2><p>Take MyRecon with you. Search public usernames, explore breach stories and check your digital footprint on Android.</p><ul class="promo-features"><li>Deep Search</li><li>Username search</li><li>Breach stories</li></ul><a class="android-promo-link" href="https://play.google.com/store/apps/details?id=com.Myrecon.osint&amp;referrer=utm_source%3Dmyrecon.xyz%26utm_medium%3Dwebsite%26utm_campaign%3Dwebsite_general">Get it on Google Play <span aria-hidden="true">↗</span></a><small>Android 11+ · Contains ads<br>Deep Search unlock requirements are shown in the app.</small></div></aside></div></div><!-- app-promo-layout:end -->
+
+  <footer class="site-footer">
+  <div class="site-footer__panel">
+    <div class="site-footer__top">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/" aria-label="MyRecon home"><img src="/assets/img/logo.svg?v=a46571ed6b" width="36" height="36" alt=""> <span>MyRecon</span></a>
+        <p>Public-source research tools for personal audits and authorized work.</p>
+        <a class="site-footer__email" href="mailto:aryan@bugsnaps.in">aryan@bugsnaps.in</a>
+        <p><a class="site-footer__email" data-preferred-source href="https://www.google.com/preferences/source?q=myrecon.xyz" target="_blank" rel="noopener noreferrer" style="margin-top:0">Add MyRecon as a preferred source on Google <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <nav class="site-footer__group" aria-label="Tools">
+  <p class="site-footer__heading">Tools</p>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/discord-id-lookup.html">Discord ID lookup</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Explore">
+  <p class="site-footer__heading">Explore</p>
+  <ul><li><a href="/guides/">OSINT guides</a></li><li><a href="/osint-glossary.html">OSINT glossary</a></li><li><a href="/blog/">Blog</a></li><li><a href="/breaches/">Breach archive</a></li><li><a href="/breaches/case-files/">Breach case files</a></li><li><a href="/find/">Platform lookups</a></li><li><a href="/find/instagram-account">Instagram username lookup</a></li><li><a href="/find/github-profile">GitHub profile lookup</a></li><li><a href="/find/discord-user">Discord user lookup</a></li><li><a href="/privacy/">Privacy guides</a></li><li><a href="/templates/">Free templates</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Compare">
+  <p class="site-footer__heading">Compare</p>
+  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Company">
+  <p class="site-footer__heading">Company</p>
+  <ul><li><a href="/about.html">About MyRecon</a></li><li><a href="/founder.html">Founder</a></li><li><a href="/services.html">Services</a></li><li><a href="/contact.html">Contact</a></li></ul>
+</nav>
+<nav class="site-footer__group" aria-label="Legal">
+  <p class="site-footer__heading">Legal</p>
+  <ul><li><a href="/privacy.html">Privacy policy</a></li><li><a href="/terms.html">Terms of use</a></li><li><a href="/refunds.html">Refund policy</a></li><li><a href="/cookies.html#manage" data-cookie-settings>Cookie settings</a></li></ul>
+</nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 MyRecon. Built by Aryan Walia.</span>
+      <span class="site-footer__note">Public sources. Careful review.</span>
+      <div class="site-footer__social"><a href="https://github.com/4ryanwalia/Myrecon" target="_blank" rel="noopener noreferrer" aria-label="MyRecon on GitHub">GitHub <span aria-hidden="true">↗</span></a><a href="mailto:aryan@bugsnaps.in" aria-label="Email MyRecon">Email</a></div>
+    </div>
+  </div>
+</footer>
+  <script src="/assets/js/editorial-shell.js" defer></script>
+  <script src="/assets/js/consent.js"></script>
+  <script src="/assets/js/fx.js?v=418d0bce30" defer></script>
+  <script src="/assets/js/discord-id-lookup.js" defer></script>
+<script src="/assets/js/app-nudge.js?v=544d2d5337" defer></script>
+</body>
+</html>

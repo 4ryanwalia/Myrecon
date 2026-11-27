@@ -243,14 +243,18 @@ function jsonLd(record, route) {
   return graph.map((item) => `  <script type="application/ld+json">${safeJson(item)}</script>`).join("\n");
 }
 function renderSections(record) {
-  return record.sections.map((section, index) => `
+  return record.sections.map((section, index) => {
+    const paragraphs = String(section.body || "").split(/\n\n+/).map(p => p.trim()).filter(Boolean)
+      .map(p => `<p>${esc(p)}</p>`).join("\n      ");
+    return `
     <section class="seo-section" id="section-${index + 1}">
       <h2>${esc(section.heading)}</h2>
-      <p>${esc(section.body)}</p>${section.table ? `
+      ${paragraphs}${section.table ? `
       <div class="editorial-table-wrap"><table><caption>${esc(section.table.caption)}</caption><thead><tr>${section.table.headers.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${section.table.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}${section.download ? `
       <p><a href="${esc(section.download.href)}" download>${esc(section.download.label)}</a></p>` : ''}${section.link ? `
       <p><a href="${esc(section.link.href)}">${esc(section.link.label)}</a></p>` : ''}
-    </section>`).join("");
+    </section>`;
+  }).join("");
 }
 function renderSpecific(record) {
   if (record.kind === "target") {
@@ -365,7 +369,7 @@ ${jsonLd(record, route)}
 function renderHub(kind, records) {
   const editorial = JSON.parse(fs.readFileSync(path.join(FRONTEND, "content", "editorial-hubs.json"), "utf8"))[kind];
   const section = CLUSTERS[kind];
-  const title = ({ target: "Username Search & Lookup by Platform | MyRecon", comparison: "OSINT Tool & Username Scanner Comparisons | MyRecon", guide: "OSINT & Digital Footprint Guides | MyRecon", deletion: "Account Deletion & Online Privacy Guides | MyRecon" })[kind];
+  const title = ({ target: "Find Public Profiles by Platform | MyRecon", comparison: "OSINT Tool Comparisons & Trade-Offs | MyRecon", guide: "OSINT & Digital Footprint Guides | MyRecon", deletion: "Account Deletion & Online Privacy Guides | MyRecon" })[kind];
   const description = editorial.description;
   const route = `/${section}/`;
   if (kind === 'guide') {

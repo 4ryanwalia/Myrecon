@@ -5,7 +5,7 @@
   "description": "Original MyRecon, Sherlock and Maigret control study: supported matches, false positives, unresolved checks, pinned versions and downloadable CSV/JSON evidence.",
   "category": "Research",
   "datePublished": "2026-11-01",
-  "dateModified": "2026-11-23",
+  "dateModified": "2026-11-27",
   "editorial_review": "2026-11-01",
   "dataset": {
     "name": "Username search control study: 35 controls, 8 platforms, 3 tools (1 November 2026)",
@@ -31,11 +31,16 @@
 
 <p><strong>Observation window:</strong> <time datetime="2026-11-01T16:39:28Z">2026-11-01T16:39:28Z</time> to <time datetime="2026-11-01T16:41:33Z">2026-11-01T16:41:33Z</time> (UTC). This is a dated snapshot. <a href="/assets/downloads/username-controls-2026-11-01/evidence.zip" download>Download the complete evidence ZIP</a>, <a href="/assets/downloads/username-controls-2026-11-01/checks.csv" download>105-row CSV</a>, <a href="/assets/downloads/username-controls-2026-11-01/study.json" download>JSON observations</a> and <a href="/assets/downloads/username-controls-2026-11-01/SHA256SUMS.txt" download>SHA-256 checksums</a>.</p>
 
+<h2 id="is-username-search-accurate">Is username search accurate?</h2>
+<p>Username search accuracy depends on whether a tool verifies profile-specific content and reports unknown responses honestly rather than trusting HTTP 200 status codes. In this 1 November 2026 study of 35 controls across eight platforms, MyRecon and Maigret scored 6 of 6 supported matches and 0 false positives across 18 scored negatives, while 11 checks stayed unresolved.</p>
+<p>Even with zero observed false positives on scored controls, a matching handle never proves two accounts belong to the same person, and blocked or rate-limited platforms leave coverage gaps. Always open candidate links at their source to confirm ownership.</p>
+
 <h2 id="results">Supported matches, false positives and unresolved checks</h2>
 
 <table id="study-results"><caption>All 35 controls per tool; excluded, failed and unknown cases remain in the denominator.</caption><thead><tr><th scope="col">Tool</th><th scope="col">Supported matches (TP)</th><th scope="col">False positives (FP)</th><th scope="col">False negatives (FN)</th><th scope="col">Supported absences (TN)</th><th scope="col">Unresolved / unscored</th><th scope="col">Scored / total</th><th scope="col">Coverage</th><th scope="col">FP / scored negatives</th></tr></thead><tbody><tr><th scope="row">MyRecon</th><td>6</td><td>0</td><td>0</td><td>18</td><td>11</td><td>24 / 35</td><td>68.57%</td><td>0 / 18</td></tr><tr><th scope="row">Sherlock</th><td>4</td><td>0</td><td>0</td><td>11</td><td>20</td><td>15 / 35</td><td>42.86%</td><td>0 / 11</td></tr><tr><th scope="row">Maigret</th><td>6</td><td>0</td><td>0</td><td>18</td><td>11</td><td>24 / 35</td><td>68.57%</td><td>0 / 18</td></tr></tbody></table>
 
-<p><strong>Supported match:</strong> a normalized positive agrees with current, account-specific reference evidence. <strong>False positive:</strong> a normalized positive contradicts explicit reference absence. <strong>False negative:</strong> a normalized negative contradicts a verified existing account. <strong>Unresolved / unscored:</strong> the reference or prediction is unknown, counted once per control. This includes upstream exclusions. Excluded entries were recorded without making a tool request. Zero observed false positives here is not a guarantee of zero errors elsewhere.</p>
+<p><strong>Supported match:</strong> a normalized positive agrees with current, account-specific reference evidence. <strong>False positive:</strong> a normalized positive contradicts explicit reference absence. <strong>False negative:</strong> a normalized negative contradicts a verified existing account.</p>
+<p><strong>Unresolved / unscored:</strong> the reference or prediction is unknown, counted once per control, including upstream exclusions recorded without a tool request. Zero observed false positives here is not a guarantee of zero errors elsewhere.</p>
 
 <p>Coverage is (TP + TN + FP + FN) / all 35 controls. The false-positive denominator is FP + TN; unknown predictions on reference negatives are excluded from that denominator and retained in the evidence. No whole-catalogue accuracy or speed ranking follows from this developer/community sample.</p>
 
@@ -47,7 +52,9 @@
 
 <h2 id="controls">How the controls were selected and verified</h2>
 
-<p>The predeclared manifest contains 11 upstream claimed fixtures, eight upstream unclaimed fixtures and 16 generated negative candidates. They span GitHub, GitLab, Hacker News, Docker Hub, Dev.to, npm, Keybase, PyPI. Each fixture is tested only on the platform that published it as a control; this is not a cross-platform identity search. Case variants in case-insensitive namespaces are deduplicated. The 35 pairs contain 23 literal handle spellings (22 case-folded strings); repeated handles do not represent independent people.</p>
+<p>The predeclared manifest contains 11 upstream claimed fixtures, eight upstream unclaimed fixtures, and 16 generated negative candidates across GitHub, GitLab, Hacker News, Docker Hub, Dev.to, npm, Keybase, and PyPI.</p>
+
+<p>Each fixture is tested only on the platform that published it as a control rather than as a cross-platform identity search. Case variants in case-insensitive namespaces are deduplicated; the 35 pairs contain 23 literal handle spellings (22 case-folded strings), and repeated handles do not represent independent people.</p>
 
 <p>The <a href="/assets/downloads/username-controls-2026-11-01/controls.json" download>selection manifest</a> records the upstream repository revision, source field, selected detection rule and rule hash for each fixture. Two deterministic 14-character alphanumeric candidates per platform are generated from the study ID, platform and index. Random-looking names are not assumed absent. Current source evidence determines their reference labels.</p>
 
@@ -82,7 +89,9 @@
 
 <h2 id="limits">Limitations and what this study supports</h2>
 
-<p>This expands the earlier single-handle case to eight selected platforms and a fixed set of platform-specific fixtures and controls. It supports the dated account-existence observations and per-tool outcomes shown here. The sample favors developer/community services, contains repeated fixtures and a GitHub organization, and includes no newly created owner-controlled positive accounts. Public fixtures are upstream test inputs; we make no claim about their ownership or consent to an identity investigation. Broader consumer social networks, authenticated profiles, the Android app and whole catalogues were not measured.</p>
+<p>This study expands the earlier single-handle case to eight developer and community platforms using a fixed set of upstream fixtures and generated controls. It supports the dated account-existence observations and per-tool verdicts recorded on 1 November 2026.</p>
+
+<p>Because the sample includes repeated fixtures, a GitHub organization, and no newly created owner-controlled positive accounts, it cannot measure broader consumer social networks, authenticated profiles, the Android app, or whole catalogues. Public fixtures are upstream test inputs with no claim of ownership or consent.</p>
 
 <p>The reference and MyRecon share some official API sources, so this is a publisher-run regression study rather than an independent audit. Thirty-five controls and one network window cannot estimate population error rates. Eighteen reference negatives and six positives were decisive; eleven references remained unknown. Exclusions reduce effective scope, which is why both the common planned scope and scored denominators are published. No production detection rules were changed in response to this study. Known fixtures are not a held-out evaluation, and a matching handle does not prove identity, common ownership or registration availability.</p>
 

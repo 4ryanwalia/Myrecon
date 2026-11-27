@@ -76,29 +76,35 @@
     <section class="seo-section"><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="key-takeaways">Key takeaways</h2><ul><li>1. Separate observations from secrets</li><li>2. Restrict the storage and sharing route</li><li>3. Test the permissions before storing evidence</li></ul></section>
     <section class="seo-section" id="section-1">
       <h2 id="1-separate-observations-from-secrets">1. Separate observations from secrets</h2>
-      <p>Create a case folder with three parts: a source log, restricted evidence and a report draft. Give the case an identifier such as CASE-014 rather than naming the folder after a person. In the source log record the public URL, observation time with timezone, the question it answers and whether the observation is confirmed or uncertain. Keep passwords, API keys, recovery codes and session cookies out of all three parts. If a screenshot contains an unrelated email address or browser notification, crop or redact it before sharing. Preserve an unredacted original only when the authorized purpose requires it, in the restricted evidence folder.</p>
+      <p>Create a case folder with three parts: a source log, restricted evidence, and a report draft, labeled with a neutral case ID like CASE-014 rather than a person&#39;s name.</p>
+      <p>Record the public URL, observation time with timezone, question answered, and confirmed-vs-uncertain status in the source log. Keep passwords, API keys, recovery codes, and session cookies out of all three parts, and crop unrelated emails or notifications before sharing screenshots.</p>
     </section>
     <section class="seo-section" id="section-2">
       <h2 id="2-restrict-the-storage-and-sharing-route">2. Restrict the storage and sharing route</h2>
-      <p>Use a device with disk encryption enabled, a screen lock and supported security updates. For cloud notes, choose a workspace you control, enable multifactor authentication, and share with named collaborators rather than an anyone-with-the-link URL. Check whether a shared parent folder gives access to the case automatically. Give report readers access to the report, not the entire evidence directory. Remove collaborators when their work ends. Disk encryption protects a locked device; it does not stop someone reading an unlocked laptop or an already signed-in cloud account.</p>
+      <p>Store research notes on a device with full-disk encryption, a screen lock, and current security updates, and restrict cloud workspaces to named collaborators with multifactor authentication.</p>
+      <p>Check whether a shared parent folder inherits access automatically, grant report readers access only to the report, and remove collaborators once work concludes. Disk encryption protects a locked device, not an unlocked laptop or active browser session.</p>
     </section>
     <section class="seo-section" id="section-3">
       <h2 id="3-test-the-permissions-before-storing-evidence">3. Test the permissions before storing evidence</h2>
-      <p>Create a harmless dummy file first. Copy its sharing link into a signed-out private browser window. If it opens without the intended account, disable public sharing and repeat the check. Then verify that an intended collaborator can open only the agreed files. This is a permission test you can perform with your own workspace, not a claim that MyRecon audits your cloud settings. Include exported PDFs, attachments, local sync folders and downloaded copies in the access review because changing a cloud link does not revoke a copy already downloaded.</p>
+      <p>Create a harmless dummy file first and paste its sharing link into a signed-out private browser window; if it opens without authentication, disable public sharing and retest.</p>
+      <p>Next verify that an intended collaborator can open only the agreed files. Include exported PDFs, attachments, local sync folders, and downloads in your review, because changing a cloud link never revokes copies already downloaded.</p>
     </section>
     <section class="seo-section" id="section-4">
       <h2 id="4-use-a-retention-log-including-backups">4. Use a retention log, including backups</h2>
-      <p>Before collection, write a retention decision: case owner, purpose, review date and deletion trigger. For example, an internal test case might be reviewed 30 days after its report is accepted; that is an illustrative choice, not a legal retention rule. At review, delete unnecessary screenshots, exports and temporary copies. Check the recycle bin, version history, email attachments and backup policy. Record what remains and why. Do not promise immediate erasure from immutable backups; restrict access and allow the documented backup lifecycle to expire copies.</p>
+      <p>Write a retention decision before collecting anything: record the case owner, purpose, review date, and deletion trigger (for example, an illustrative 30-day post-report review).</p>
+      <p>At review, remove unnecessary screenshots, exports, and temporary copies from the recycle bin, version history, and email attachments. Record what stays and why, and allow immutable backup lifecycles to expire copies rather than promising instant erasure.</p>
       <div class="editorial-table-wrap"><table><caption>A reviewable retention decision, illustrative only</caption><thead><tr><th scope="col">Record</th><th scope="col">Decision to write</th><th scope="col">Why it matters</th></tr></thead><tbody><tr><td>Purpose and owner</td><td>Identify the question and person responsible</td><td>Allows later review when the original researcher leaves</td></tr><tr><td>Access test</td><td>Signed-out dummy-file result and named viewers</td><td>Finds inherited or public sharing before evidence is stored</td></tr><tr><td>Copies</td><td>Exports, sync folders, attachments and backup expiry</td><td>Revoking a link does not recall downloaded copies</td></tr><tr><td>Retention trigger</td><td>Purpose ends; review necessary records and copies</td><td>Avoids retaining unrelated personal details indefinitely</td></tr></tbody></table></div>
       <p><a href="/assets/downloads/research-notes-retention.csv" download>Download the blank register with one illustrative example (CSV)</a></p>
     </section>
     <section class="seo-section" id="section-5">
       <h2 id="worked-example-a-safe-note-and-a-risky">Worked example: a safe note and a risky note</h2>
-      <p>Risky: a document containing a full copied profile, home address, private guesses and a reusable account token, shared by public link. Safer: CASE-014 / source URL / observed 2026-10-03 14:00 IST / public biography links to the official project / connection unresolved / screenshot stored under restricted evidence / review date assigned. The safer entry retains what supports the question and makes uncertainty visible. Before exporting, search the draft for secrets, hidden comments and identifying filenames, and inspect the export itself. A redaction box that merely covers text is not sufficient if the text can still be selected or copied.</p>
+      <p>A risky note dumps a copied profile, home address, guesses, and a session token into a public-link doc; a safer note logs CASE-014, source URL, IST timestamp, public bio clue, unresolved status, and review date.</p>
+      <p>Before exporting, search the draft for secrets, hidden comments, and identifying filenames, and inspect the exported PDF. A visual black box over selectable text is not true redaction.</p>
     </section>
     <section class="seo-section" id="section-6">
       <h2 id="if-notes-are-accidentally-exposed">If notes are accidentally exposed</h2>
-      <p>Disable the exposed link, revoke collaborator access where appropriate, and rotate any credentials that appeared in the notes. Establish which files and copies were accessible using the workspace audit features available to you. Notify the responsible project owner through your agreed incident process. Preserve the minimum incident record needed to explain the exposure; copying the entire leaked notebook into more channels creates additional copies. Follow applicable organizational requirements for further response.</p>
+      <p>Disable the exposed link immediately, revoke collaborator access where needed, and rotate any credentials or tokens that appeared inside the notebook.</p>
+      <p>Use workspace audit logs to determine which files were accessed and notify the project owner through your incident process. Keep a minimal incident record rather than forwarding the leaked notebook across extra channels.</p>
     </section>
 
 
@@ -119,7 +125,7 @@
       </div>
       <nav class="site-footer__group" aria-label="Tools">
   <p class="site-footer__heading">Tools</p>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/discord-id-lookup.html">Discord ID lookup</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <p class="site-footer__heading">Explore</p>
@@ -127,7 +133,7 @@
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <p class="site-footer__heading">Compare</p>
-  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best OSINT tools 2026-2027</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <p class="site-footer__heading">Company</p>

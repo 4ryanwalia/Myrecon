@@ -2,8 +2,8 @@
   "kind": "target",
   "slug": "github-profile",
   "status": "published",
-  "title": "GitHub User Search: Find a Profile by Name or Username",
-  "description": "Find GitHub users and organizations by name or handle. Copy an example search, verify the profile URL, and review what your own account shows publicly.",
+  "title": "GitHub User Search: Find Profiles by Name [Free] | MyRecon",
+  "description": "Search GitHub users and organizations by exact username, partial handle or display name. Copy tested search queries and audit public profile exposure.",
   "h1": "Find GitHub profiles by name or username",
   "focus_keyword": "github user search",
   "intro": "If you know the exact GitHub username, open github.com/USERNAME. For part of a username, search GitHub Users with in:login. If you only know the display name, use in:name. Add type:user for personal accounts or type:org for organizations.",
@@ -79,15 +79,15 @@
     },
     {
       "heading": "Audit your email exposure",
-      "body": "In your own GitHub settings review public profile email and commit email separately. Hiding your profile email does not remove an address embedded in old public commits. GitHub documents a no-reply commit address and controls for blocking command-line pushes that expose your email. Apply those settings for future commits, then inspect the public commit information in repositories you control. Rewriting shared history requires coordination; do not promise that removing an address from one repository removes every clone."
+      "body": "Review your GitHub public profile email and commit email separately, because hiding your profile address never strips addresses embedded in older public commits.\n\nGitHub documents a no-reply commit address and push-blocking controls for future commits. Apply those settings first, then inspect public commit logs in repositories you control; rewriting shared history requires coordination and cannot erase existing clones."
     },
     {
       "heading": "Worked example and verification limits",
-      "body": "Reproduce the documented query user:octocat and compare its result with https://github.com/octocat. This is a provider-documented public example, not a claim that the account belongs to you. For a project account, a link from the official project website can support a public association. A same-name profile, similar avatar or repository star is weaker evidence. Record the final profile URL and observation date, and keep current control or legal identity outside the conclusion."
+      "body": "Reproduce the documented query user:octocat and compare its result with https://github.com/octocat. This is a provider-documented public example, not a claim of ownership.\n\nFor a project account, an outbound link from the official project website is strong public corroboration, while a same-name profile or similar avatar is weak. Record the final profile URL and observation date, and keep legal identity outside the conclusion."
     },
     {
       "heading": "What the MyRecon check covers",
-      "body": "The standard release catalogue includes GitHub. Its username check supplies a public profile lead, not repository secret scanning, private repository access or an audit of every commit. MyRecon checks a catalogue of 560+ platforms; guests get previews and signed-in free accounts have daily limits. Paid Extended scans have a separate scope. Challenges or rate limits can leave a check unknown, and a failed request is not proof the profile was deleted."
+      "body": "MyRecon's standard 560+ platform catalogue includes GitHub and returns a public profile lead for manual verification, not repository secret scanning or private repo access.\n\nGuests receive previews and signed-in free accounts get daily Standard scans, while paid Extended scans cover a broader list. Rate limits or challenges leave a check unknown, and a failed request never proves a profile was deleted."
     },
     {
       "heading": "What did repeated GitHub username checks show?",

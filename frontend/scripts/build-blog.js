@@ -282,9 +282,9 @@ ${shellFoot()}`;
 
 function indexPage(articles) {
   const url = `${SITE}/blog/`;
-  const description = "Compare OSINT tools, search social media usernames, understand Instagram public profiles and check your digital footprint with sourced MyRecon articles.";
+  const description = "Read sourced OSINT tool benchmarks, social media verification guides, breach analyses and step-by-step digital footprint cleanup checklists.";
   const collection = JSON.stringify({
-    "@context": "https://schema.org", "@type": "CollectionPage", name: "MyRecon Blog: OSINT Tools, Username Search and Privacy",
+    "@context": "https://schema.org", "@type": "CollectionPage", name: "MyRecon OSINT Research, Privacy & Tool Guides",
     description, url, isPartOf: { "@id": `${SITE}/#website` }, publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
   }).replace(/</g, "\\u003c");
   const list = JSON.stringify({
@@ -300,7 +300,7 @@ function indexPage(articles) {
   }).replace(/</g, "\\u003c");
   const categories = [...new Set(articles.map(article => article.category))];
   const categoryId = category => `topic-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-  const html = `${shellHead({ title: "OSINT Tools, Username Search and Privacy Blog | MyRecon", description, url, crumbs: collection })}
+  const html = `${shellHead({ title: "MyRecon OSINT Research, Privacy & Tool Guides", description, url, crumbs: collection })}
   <main id="main" class="container prose" style="padding-top:44px;padding-bottom:56px">
     <nav class="breadcrumb" aria-label="Breadcrumb" style="font-size:.88rem;margin:0 0 20px;color:var(--text-dim)">
       <a href="/" style="color:var(--text-dim);text-decoration:none">Home</a>
@@ -308,7 +308,7 @@ function indexPage(articles) {
       <span style="color:var(--text);font-weight:500" aria-current="page">Blog</span>
     </nav>
     <span class="kicker" style="color:var(--accent);font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase">MyRecon Blog</span>
-    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin:8px 0 10px">OSINT tools, username search and online privacy</h1>
+    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin:8px 0 10px">OSINT methodology, privacy guides, and breach research</h1>
     <p class="sub" style="max-width:70ch">Choose a research workflow, compare public-source tools, search social media usernames and reduce your own digital footprint. Our articles explain what a result supports, what remains unknown and how to check the original source.</p>
     <section class="guide-card" style="margin:24px 0">
       <p><strong>Start with your own footprint.</strong> MyRecon's username search checks public profile pages; it does not reveal private content or prove identity. For cleanup help, our service works only on your own footprint or one you are formally authorised to manage.</p>

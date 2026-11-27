@@ -10,23 +10,23 @@
   "sections": [
     {
       "heading": "Understand the three outcomes",
-      "body": "Found means a supported check observed evidence consistent with a public profile; it still needs source review. Not found means the check observed the expected negative pattern for that service. Unknown means it could not make a reliable decision, for example because of a challenge, timeout or ambiguous response. These describe a specific check at a time, not all accounts belonging to a person. Public presence also differs from whether a handle is available to register."
+      "body": "Control-verified username checkers separate every platform response into three distinct states: found, not found, and unknown.\n\nFound means a check observed profile-specific evidence that still needs source review. Not found matches the expected absent pattern for that service. Unknown preserves timeouts, challenges, or ambiguous pages instead of guessing; public presence also differs from signup availability."
     },
     {
       "heading": "Inspect false-positive causes",
-      "body": "Open the returned URL. Watch for a generic login page, search page, redirect to the platform home, suspended-account notice or a profile type different from the expected user page. Compare the page title and visible handle with the candidate. A tool may be using a status-code heuristic that does not understand these cases. Platform templates can change and invalidate a previously working detector."
+      "body": "Open the returned URL and watch for a generic login screen, search page, redirect to the platform homepage, or suspended-account notice.\n\nCompare the page title and visible handle with your candidate. Many legacy scripts rely on HTTP status-code heuristics that break whenever a site updates its front-end template."
     },
     {
       "heading": "Use controls without inventing ground truth",
-      "body": "For an authorized evaluation, use a public account you control as a positive control and a second handle verified missing at the original service as a negative control. A random-looking string is not guaranteed to be unused. Record service, expected outcome, source evidence, observed result and date. Do not call an empty set of results a clean audit, and do not turn a tool's own output into its ground truth."
+      "body": "For an authorized evaluation, test one public account you control as a positive control and one handle verified missing at the original service as a negative control.\n\nA random-looking string is not guaranteed to be unused. Record the service, expected outcome, source evidence, observed result, and date without treating a tool's own output as ground truth."
     },
     {
       "heading": "Worked example: application shell",
-      "body": "Illustrative case: /user/known-handle and /user/verified-missing-handle both return status 200 and the same generic sign-in screen. A detector that checks only HTTP status labels both found. Your evidence supports unknown under that access context because neither response contains profile-specific information. If the official service displays an explicit missing-user message for the negative control, that may support not found. The distinction is the content observed, not the successful network request."
+      "body": "Illustrative case: /user/known-handle and /user/verified-missing-handle both return status 200 and the same generic sign-in screen, so a status-only detector falsely labels both found.\n\nBecause neither response contains profile-specific evidence, the sound verdict is unknown under that access context. An explicit missing-user message on the negative control supports not found, proving that response content matters more than HTTP 200."
     },
     {
       "heading": "Observed case: a successful GitLab request with no matching user",
-      "body": "The recorded October 2, 2026 regression run checked torvalds on GitLab. The official user-search API returned HTTP 200, while the recorded reference classified the exact handle as not found. The optional HTTP-200-only detector labeled it found. This is one observed false positive caused by treating request success as account evidence. The API result is about that GitLab handle at that time; it says nothing about the person associated with the same handle on GitHub. MyRecon and the reference share some API evidence, so their agreement is not an independent accuracy audit. The frozen raw run below includes source URLs, observation timestamps, versions and all 30 checks.",
+      "body": "The recorded October 2, 2026 regression run checked torvalds on GitLab: the official user-search API returned HTTP 200, the reference classified it as not found, and the HTTP-200-only baseline falsely labeled it found.\n\nThat single false positive shows why request success is not account evidence. The GitLab result says nothing about the same handle on GitHub, and because MyRecon and the reference share some API evidence, their agreement is not an independent accuracy audit. The frozen raw run below includes source URLs, timestamps, versions, and all 30 checks.",
       "table": {
         "caption": "Historical run completed 2026-10-02 09:54:59 UTC: 10 handles, three platforms",
         "headers": [
@@ -68,7 +68,7 @@
     },
     {
       "heading": "Reproduce the reasoning before trusting the label",
-      "body": "Open the reference source URL in the frozen record and check the exact username field in any returned user objects. An empty array can be a successful user-search response without a matching account. Compare that observation with the detector label, then record found, not found or unknown according to the evidence. A later response may differ from the dated run. If the endpoint now blocks you, retain unknown rather than claiming the historical result was reproduced. The same reasoning applies to HTML login shells, but this API observation does not demonstrate every platform uses the same failure mode."
+      "body": "Open the reference source URL in the frozen record and inspect the exact username field inside any returned user objects, because an empty JSON array still returns HTTP 200 without a matching account.\n\nCompare that observation with the detector label and record found, not found, or unknown accordingly. If the live endpoint later blocks requests, retain unknown rather than claiming the historical run reproduced; the same principle applies to HTML login shells."
     }
   ],
   "sources": [

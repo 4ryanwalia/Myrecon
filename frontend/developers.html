@@ -146,7 +146,7 @@
             <tr><td><code>breach_date</code></td><td>date</td><td>When the breach is believed to have occurred.</td></tr>
             <tr><td><code>added_date</code></td><td>datetime</td><td>When the upstream source added the incident. The latest feed sorts by this value.</td></tr>
             <tr><td><code>accounts</code></td><td>integer</td><td>The count reported upstream for this incident. Read <code>count_unit</code> when present. The same person or account may appear in several incidents.</td></tr>
-            <tr><td><code>severity</code></td><td>0–100</td><td>Our score, weighted by which data classes were exposed.</td></tr>
+            <tr><td><code>severity</code></td><td>0 to 100</td><td>Our score, weighted by which data classes were exposed.</td></tr>
             <tr><td><code>band</code></td><td>string</td><td>The named bucket for the severity score, for example <code>Critical</code> or <code>Severe</code>.</td></tr>
             <tr><td><code>domain</code>, <code>logo</code></td><td>string or null</td><td>The public domain and logo where the source provides them.</td></tr>
             <tr><td><code>verified</code></td><td>boolean</td><td>Upstream confirmed the corpus is genuine. Show this.</td></tr>
@@ -190,7 +190,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
       <pre><code>&lt;div id="myrecon-breaches"&gt;&lt;/div&gt;
 &lt;script src="https://www.myrecon.xyz/assets/js/embed.js"
         data-count="5" data-theme="auto" async&gt;&lt;/script&gt;</code></pre>
-      <p class="pre-label">Options: <code>data-count</code> (1–10, default 5), <code>data-theme</code> (<code>auto</code>, <code>dark</code>, <code>light</code>), <code>data-title</code>.</p>
+      <p class="pre-label">Options: <code>data-count</code> (1 to 10, default 5), <code>data-theme</code> (<code>auto</code>, <code>dark</code>, <code>light</code>), <code>data-title</code>.</p>
       <p>It sets no cookies, stores nothing, and sends no identifier, it is one GET for a static file. If that request fails it renders nothing rather than showing your visitors an error. The attribution footer is drawn by the widget itself, which is what keeps you compliant with the licence without having to think about it.</p>
 
       <h2 id="attribution-the-part-that-is-not-optional">Attribution: the part that is not optional</h2>
@@ -210,7 +210,8 @@ print(len(severe), "severe of", data["count"])</code></pre>
       </ul>
 
       <h2 id="free-breach-api-catalogue-data-or-an-email">Free breach API: catalogue data or an email lookup?</h2><p>This free breach API returns incident metadata, affected data categories and source links. It does not accept an email address or return leaked passwords. Use <a href="/data/v1/latest.json">latest.json</a> for recently added catalogue records and <a href="/data/v1/case-files.json">case-files.json</a> for researched case summaries. Both are rebuilt alongside the website and Android feeds.</p><p>Check <code>generated</code> before refreshing a local cache. Keep the previous successful response if a request fails; an unavailable feed is not an empty archive. Compare <code>added_date</code> with <code>breach_date</code> when showing new alerts. See <a href="/blog/breach-date-vs-disclosure-date.html">why those dates differ</a>.</p><h2 id="free-breach-apis-compared">Free data breach APIs compared</h2>
-<p>Most searches for a free breach API want one of three things: a list of known breaches, a check of one email address, or a check of one password. No single free API does all three. The table below lists the free options, with each limit quoted from the provider's own documentation (read 25 November 2026). MyRecon has called these services in production, so the notes under the table come from running them, not from reading about them.</p>
+<p>Most developers searching for a breach API free tier or breach data API want one of three jobs: an incident catalogue, a single email lookup, or a password hash check. No single free API covers all three.</p>
+<p>The table below compares live free options with limits quoted from each provider's own documentation (read 25 November 2026). MyRecon calls these services in production, so the notes underneath reflect observed runtime behavior.</p>
 <div class="table-wrap">
 <table class="data-table">
 <thead><tr><th scope="col">API and endpoint</th><th scope="col">Answers</th><th scope="col">Key</th><th scope="col">Stated limit</th><th scope="col">What you owe</th></tr></thead>
@@ -296,7 +297,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
       </div>
       <nav class="site-footer__group" aria-label="Tools">
   <p class="site-footer__heading">Tools</p>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/discord-id-lookup.html">Discord ID lookup</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <p class="site-footer__heading">Explore</p>
@@ -304,7 +305,7 @@ print(len(severe), "severe of", data["count"])</code></pre>
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <p class="site-footer__heading">Compare</p>
-  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best OSINT tools 2026-2027</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <p class="site-footer__heading">Company</p>

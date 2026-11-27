@@ -76,23 +76,28 @@
     <section class="seo-section"><figure class="story-photo"><img src="https://images.unsplash.com/photo-1564697259644-03cd5e7363fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A person using a laptop beside a desktop monitor" width="1200" height="800" loading="lazy" decoding="async"><figcaption><a href="https://unsplash.com/photos/person-using-laptop-mJ6E0ZQDMQ8" target="_blank" rel="noopener">Logan Jeffrey / Unsplash</a> · Personal research · context photograph, not an affected user</figcaption></figure><h2 id="key-takeaways">Key takeaways</h2><ul><li>Understand the three outcomes</li><li>Inspect false-positive causes</li><li>Use controls without inventing ground truth</li></ul></section>
     <section class="seo-section" id="section-1">
       <h2 id="understand-the-three-outcomes">Understand the three outcomes</h2>
-      <p>Found means a supported check observed evidence consistent with a public profile; it still needs source review. Not found means the check observed the expected negative pattern for that service. Unknown means it could not make a reliable decision, for example because of a challenge, timeout or ambiguous response. These describe a specific check at a time, not all accounts belonging to a person. Public presence also differs from whether a handle is available to register.</p>
+      <p>Control-verified username checkers separate every platform response into three distinct states: found, not found, and unknown.</p>
+      <p>Found means a check observed profile-specific evidence that still needs source review. Not found matches the expected absent pattern for that service. Unknown preserves timeouts, challenges, or ambiguous pages instead of guessing; public presence also differs from signup availability.</p>
     </section>
     <section class="seo-section" id="section-2">
       <h2 id="inspect-false-positive-causes">Inspect false-positive causes</h2>
-      <p>Open the returned URL. Watch for a generic login page, search page, redirect to the platform home, suspended-account notice or a profile type different from the expected user page. Compare the page title and visible handle with the candidate. A tool may be using a status-code heuristic that does not understand these cases. Platform templates can change and invalidate a previously working detector.</p>
+      <p>Open the returned URL and watch for a generic login screen, search page, redirect to the platform homepage, or suspended-account notice.</p>
+      <p>Compare the page title and visible handle with your candidate. Many legacy scripts rely on HTTP status-code heuristics that break whenever a site updates its front-end template.</p>
     </section>
     <section class="seo-section" id="section-3">
       <h2 id="use-controls-without-inventing-ground-truth">Use controls without inventing ground truth</h2>
-      <p>For an authorized evaluation, use a public account you control as a positive control and a second handle verified missing at the original service as a negative control. A random-looking string is not guaranteed to be unused. Record service, expected outcome, source evidence, observed result and date. Do not call an empty set of results a clean audit, and do not turn a tool&#39;s own output into its ground truth.</p>
+      <p>For an authorized evaluation, test one public account you control as a positive control and one handle verified missing at the original service as a negative control.</p>
+      <p>A random-looking string is not guaranteed to be unused. Record the service, expected outcome, source evidence, observed result, and date without treating a tool&#39;s own output as ground truth.</p>
     </section>
     <section class="seo-section" id="section-4">
       <h2 id="worked-example-application-shell">Worked example: application shell</h2>
-      <p>Illustrative case: /user/known-handle and /user/verified-missing-handle both return status 200 and the same generic sign-in screen. A detector that checks only HTTP status labels both found. Your evidence supports unknown under that access context because neither response contains profile-specific information. If the official service displays an explicit missing-user message for the negative control, that may support not found. The distinction is the content observed, not the successful network request.</p>
+      <p>Illustrative case: /user/known-handle and /user/verified-missing-handle both return status 200 and the same generic sign-in screen, so a status-only detector falsely labels both found.</p>
+      <p>Because neither response contains profile-specific evidence, the sound verdict is unknown under that access context. An explicit missing-user message on the negative control supports not found, proving that response content matters more than HTTP 200.</p>
     </section>
     <section class="seo-section" id="section-5">
       <h2 id="observed-case-a-successful-gitlab-request-with-no">Observed case: a successful GitLab request with no matching user</h2>
-      <p>The recorded October 2, 2026 regression run checked torvalds on GitLab. The official user-search API returned HTTP 200, while the recorded reference classified the exact handle as not found. The optional HTTP-200-only detector labeled it found. This is one observed false positive caused by treating request success as account evidence. The API result is about that GitLab handle at that time; it says nothing about the person associated with the same handle on GitHub. MyRecon and the reference share some API evidence, so their agreement is not an independent accuracy audit. The frozen raw run below includes source URLs, observation timestamps, versions and all 30 checks.</p>
+      <p>The recorded October 2, 2026 regression run checked torvalds on GitLab: the official user-search API returned HTTP 200, the reference classified it as not found, and the HTTP-200-only baseline falsely labeled it found.</p>
+      <p>That single false positive shows why request success is not account evidence. The GitLab result says nothing about the same handle on GitHub, and because MyRecon and the reference share some API evidence, their agreement is not an independent accuracy audit. The frozen raw run below includes source URLs, timestamps, versions, and all 30 checks.</p>
       <div class="editorial-table-wrap"><table><caption>Historical run completed 2026-10-02 09:54:59 UTC: 10 handles, three platforms</caption><thead><tr><th scope="col">Detector</th><th scope="col">False positives</th><th scope="col">Verified negatives scored</th><th scope="col">Unknown checks</th><th scope="col">Interpretation</th></tr></thead><tbody><tr><td>HTTP 200 baseline</td><td>1</td><td>6</td><td>16</td><td>One false positive out of six scored negatives; 13 more negatives unavailable</td></tr><tr><td>MyRecon</td><td>0</td><td>19</td><td>0</td><td>Agreement within this small sample; reference shares API evidence</td></tr></tbody></table></div>
       <p><a href="/assets/data/benchmark-observation-2026-10-02.json" download>Download the frozen October 2 raw run and methodology (JSON)</a></p>
     </section>
@@ -106,7 +111,8 @@
     </section>
     <section class="seo-section" id="section-8">
       <h2 id="reproduce-the-reasoning-before-trusting-the-label">Reproduce the reasoning before trusting the label</h2>
-      <p>Open the reference source URL in the frozen record and check the exact username field in any returned user objects. An empty array can be a successful user-search response without a matching account. Compare that observation with the detector label, then record found, not found or unknown according to the evidence. A later response may differ from the dated run. If the endpoint now blocks you, retain unknown rather than claiming the historical result was reproduced. The same reasoning applies to HTML login shells, but this API observation does not demonstrate every platform uses the same failure mode.</p>
+      <p>Open the reference source URL in the frozen record and inspect the exact username field inside any returned user objects, because an empty JSON array still returns HTTP 200 without a matching account.</p>
+      <p>Compare that observation with the detector label and record found, not found, or unknown accordingly. If the live endpoint later blocks requests, retain unknown rather than claiming the historical run reproduced; the same principle applies to HTML login shells.</p>
     </section>
 
       <section class="seo-cta"><h2 id="check-a-public-username">Check a public username</h2><p>Free with no sign-up: 100 sites, up to 5 results shown in full. Verify each candidate at its source.</p><username-search-input sample="octocat"></username-search-input></section>
@@ -127,7 +133,7 @@
       </div>
       <nav class="site-footer__group" aria-label="Tools">
   <p class="site-footer__heading">Tools</p>
-  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
+  <ul><li><a href="/#tool">Username search</a></li><li><a href="/reverse-email-lookup.html">Reverse email lookup</a></li><li><a href="/reverse-username-lookup.html">Reverse username lookup</a></li><li><a href="/username-checker.html">Username checker</a></li><li><a href="/discord-id-lookup.html">Discord ID lookup</a></li><li><a href="/digital-footprint-checker.html">Digital footprint checker</a></li><li><a href="/free-osint-tool.html">Free OSINT tools</a></li><li><a href="/deep-search.html">Deep Search</a></li><li><a href="/footprint">Footprint tools</a></li><li><a href="/features">All features</a></li><li><a href="/app.html">Android app</a></li><li><a href="/pricing">Plans</a></li><li><a href="/developers.html">API</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Explore">
   <p class="site-footer__heading">Explore</p>
@@ -135,7 +141,7 @@
 </nav>
 <nav class="site-footer__group" aria-label="Compare">
   <p class="site-footer__heading">Compare</p>
-  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best OSINT tools 2026-2027</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
+  <ul><li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools 2026-2027</a></li><li><a href="/vs/sherlock">MyRecon vs Sherlock</a></li><li><a href="/whatsmyname-alternatives.html">WhatsMyName alternatives</a></li><li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools</a></li><li><a href="/osint-tool-pricing.html">OSINT tool prices</a></li><li><a href="/vs/">Choose a research workflow</a></li></ul>
 </nav>
 <nav class="site-footer__group" aria-label="Company">
   <p class="site-footer__heading">Company</p>

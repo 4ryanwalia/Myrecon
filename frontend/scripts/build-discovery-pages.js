@@ -86,6 +86,10 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
     html = html.replace(/<\/body>/i, '  <script src="/assets/js/username-search-input.js" defer></script>\n</body>');
   }
 
+  if (/id="discord-lookup-form"/.test(bodyHtml) && !/discord-id-lookup\.js/i.test(html)) {
+    html = html.replace(/<\/body>/i, '  <script src="/assets/js/discord-id-lookup.js" defer></script>\n</body>');
+  }
+
   const outPath = path.join(root, outFileName);
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
@@ -114,9 +118,9 @@ const usernameBody = fs.readFileSync(path.join(root, 'content/discovery/username
   .replace('<!-- faq -->', usernameQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
-  title: 'Social Media Username Checker, Free in Browser | MyRecon',
-  description: 'Check a username across 100 sites free with no sign-up, or 560+ with a free account. See which profiles exist and which checks stayed unknown.',
-  keywords: 'username checker, social media username search, username lookup, check username across platforms, find accounts by username, public profile search, handle checker, username availability vs search, browser username checker, osint username search',
+  title: 'Free Username Checker for 560+ Sites | MyRecon',
+  description: 'Run a free username checker across 560+ public platforms. See guest limits, verify live profile leads and test handle registration rules safely.',
+  keywords: 'username checker, free username checker, username lookup tool, social media username search, check username across platforms, find accounts by username, public profile search, osint username search',
   url: `${site}/username-checker.html`,
   outFileName: 'username-checker.html',
   crumbLabel: 'Username checker',
@@ -132,13 +136,12 @@ const osintQuestions = [
   ['How does MyRecon compare to Sherlock and Maigret?', 'MyRecon offers username checks and other tools in a browser. Sherlock and Maigret run from your terminal and let you review their source and settings. Results from any tool should be checked against the original profile before you rely on a match.'],
   ['Can a free OSINT tool find private or hidden social accounts?', 'MyRecon searches supported public sources. A blocked request or a sign-in screen leaves the public profile check unresolved.'],
   ['What can I check for free?', 'MyRecon includes free public username checks, email breach lookup, password exposure checks and tools for reviewing domain registration, DNS and IP information. Read the plans page for account and usage limits.'],
-  ['Why should I check the domain spelling when searching for free OSINT tools?', 'Phone keyboards frequently turn open-source intelligence queries into typos like osnit tool, oisnt, osnt, myrekon, myreocn, or open source inteligence. Verify the official myrecon.xyz address before running username or breach lookups.'],
 ];
 
 const osintBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Free OSINT tool</span></nav>
-  <h1>Free OSINT tools online for checking your own footprint</h1>
-  <p class="sub">Search for a username you use, check an email address for reported breaches, or review public records for a domain you control. The web tools run in your browser.</p>
+  <h1>Free OSINT tools online for public self-audits</h1>
+  <p class="sub">Use MyRecon's free browser OSINT tools to search a username, check an email address for reported breaches, or review public records for a domain you control.</p>
   <username-search-input sample="octocat"></username-search-input>
   <p>Starting from an email instead? Use the <a href="/reverse-email-lookup.html">reverse email lookup</a>.</p>
   <p class="discovery-note">Guest Quick checks cover 100 supported platforms and show up to five result cards. A free account includes five Standard username searches a day across 560+ supported platforms. <a href="/pricing">See current plans and limits.</a></p>
@@ -184,18 +187,30 @@ const osintBody = `<main id="main" class="container prose discovery-page">
     <p>Compare <a href="/vs/sherlock">MyRecon and Sherlock</a> or read the <a href="/blog/best-free-osint-tools-for-investigators.html">free OSINT tools guide</a> for options by task.</p>
   </section>
   <section>
+    <h2>A beginner-friendly list of free OSINT websites</h2>
+    <p>For a beginner-friendly list of free OSINT websites with zero terminal setup, pair one handle scanner, one breach checker, one domain lookup, and one web archive. Each OSINT online tool or reconnaissance website answers a different public-source question and lets you verify leads directly at the source.</p>
+    <ul>
+      <li><strong>Username and OSINT platform search:</strong> <a href="/username-checker.html">MyRecon</a> (browser sweeps across 100 guest or 560+ signed-in platforms with explicit unknown verdicts) and <a href="/whatsmyname-alternatives.html">WhatsMyName migration alternatives</a>.</li>
+      <li><strong>Email breach and password checks:</strong> <a href="/reverse-email-lookup.html">MyRecon reverse email lookup</a> and <a href="/vs/have-i-been-pwned.html">Have I Been Pwned</a> for historical breach datasets and k-anonymity password checks.</li>
+      <li><strong>Domain, DNS and IP context:</strong> MyRecon's <a href="/#tool=domain">RDAP domain lookup</a>, <a href="/#tool=dns">DNS records</a>, and <a href="/#tool=ip">IP lookup</a>, alongside ICANN Lookup and crt.sh for certificate transparency logs.</li>
+      <li><strong>Directory and beginner workflows:</strong> Read our <a href="/blog/free-osint-tools-for-beginners.html">beginner OSINT workflow</a> or compare top OSINT sites in our <a href="/blog/best-free-osint-tools-for-investigators.html">best OSINT tools guide</a> across open source intelligence tools and online investigation tools.</li>
+    </ul>
+  </section>
+  <section>
     <h2>Featured OSINT resources and tools</h2>
     <p>Explore our research library, cheat sheets, and specialized investigation workflows:</p>
     <ul>
       <li><a href="/digital-footprint-checker.html">Digital footprint checker &amp; exposure audit</a></li>
-      <li><a href="/reverse-username-lookup.html">Reverse username lookup across 560+ platforms</a></li>
+      <li><a href="/reverse-username-lookup.html">Reverse username search &amp; lookup across 560+ platforms</a></li>
       <li><a href="/username-checker.html">Username checker and public profile search</a></li>
       <li><a href="/osint-cheat-sheet.html">OSINT cheat sheet &amp; Google dork generator</a></li>
       <li><a href="/deep-search.html">Deep Search: public activity &amp; mentions</a></li>
-      <li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools for 2026-2027</a></li>
-      <li><a href="/upcoming-osint-tools-2027.html">Best new and upcoming OSINT tools (2026-2027)</a></li>
+      <li><a href="/blog/best-free-osint-tools-for-investigators.html">Best free OSINT tools for investigators</a></li>
+      <li><a href="/upcoming-osint-tools-2027.html">Upcoming OSINT tools (2026-2027)</a></li>
       <li><a href="/osint-glossary.html">OSINT glossary &amp; spelling clarifications</a></li>
       <li><a href="/blog/best-username-search-tools.html">Best OSINT username search tools compared</a></li>
+      <li><a href="/find/github-profile">GitHub user search and profile lookup guide</a></li>
+      <li><a href="/blog/instagram-username-search.html">Instagram username search guide</a></li>
       <li><a href="/guides/build-a-breach-monitor.html">How to build a personal data breach monitor</a></li>
       <li><a href="/guides/photo-metadata-exif.html">EXIF and photo metadata investigation guide</a></li>
       <li><a href="/guides/read-an-email-header.html">How to read and analyze email headers for spoofing</a></li>
@@ -215,8 +230,8 @@ const osintBody = `<main id="main" class="container prose discovery-page">
 </main>`;
 
 buildDiscoveryPage({
-  title: 'Free OSINT Tool Online (2026-2027): No Install | MyRecon',
-  description: 'Run free 2026-2027 OSINT tools in your browser with no install: search usernames across 560+ sites, check email breaches, and inspect DNS, WHOIS and IPs.',
+  title: 'Free OSINT Tools Online: Browser Suite | MyRecon',
+  description: 'Use free OSINT tools in your browser with no install: search usernames across 560+ sites, check email breaches, and inspect DNS, WHOIS and IPs.',
   url: `${site}/free-osint-tool.html`,
   outFileName: 'free-osint-tool.html',
   modifiedAt: '2026-11-27',
@@ -240,9 +255,9 @@ const footprintBody = fs.readFileSync(path.join(root, 'content/discovery/digital
   .replace('<!-- faq -->', footprintQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join(''));
 
 buildDiscoveryPage({
-  title: 'Digital Footprint Checker: Email & Username Scan | MyRecon',
-  description: 'Check your digital footprint free: scan an email for breaches and linked accounts, search your usernames, then follow steps to clean up what you find.',
-  keywords: 'digital footprint checker, free digital footprint checker, digital footprint search, digital footprint audit, check digital footprint free, online footprint audit, how to check digital footprint, digital footprint scanner, reverse digital footprint, personal privacy audit, privacy goal checklist, digital footprint cleanup goal, zero footprint goal, check online exposure free, search digital footprint by name',
+  title: 'Digital Footprint Checker & Exposure Audit | MyRecon',
+  description: 'Audit your digital footprint by email and public handle. Review breach exposure, verify old accounts and follow practical cleanup steps.',
+  keywords: 'digital footprint checker, free digital footprint checker, digital footprint audit, online presence checker, check digital footprint free, personal privacy audit, footprint cleanup checklist',
   url: `${site}/digital-footprint-checker.html`,
   outFileName: 'digital-footprint-checker.html',
   crumbLabel: 'Digital footprint checker',
@@ -262,14 +277,15 @@ const lookupQuestions = [
 
 const lookupBody = `<main id="main" class="container prose discovery-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Reverse username lookup</span></nav>
-  <h1>Free reverse username lookup for public profiles</h1>
-  <p class="sub">Enter a username or paste a full Instagram, TikTok or GitHub profile link. Review candidates by opening the original profile links.</p>
+  <h1>Free reverse username search and lookup for public profiles</h1>
+  <p class="sub">Use MyRecon to run a reverse username search from a handle or a full Instagram, TikTok or GitHub profile link, then review candidates by opening the original profile URLs.</p>
   <username-search-input sample="octocat"></username-search-input>
   <p class="discovery-note">Guest Quick covers 100 supported platforms and shows up to five result cards. A free account includes five Standard searches a day across 560+ supported platforms. <a href="/pricing">See current plans.</a></p>
   <p><a href="/videos/reverse-username-search.html">Watch the 32-second walkthrough</a> or <a href="/username-checker.html#observed-demo">see a recorded guest result</a>.</p>
   <section>
     <h2>What is reverse username lookup and how does it work?</h2>
-    <p>A reverse username search checks where the same handle may appear. Use it to revisit your own forgotten accounts, then confirm each result through the service where it appeared. A shared username can occur across accounts owned by different people.</p>
+    <p>A reverse username search checks where the same handle may appear across supported social networks, developer hubs, and forums. Whether you call it a username reverse lookup, username reverse search, or reverse search username check, it helps you find username reuse on your own forgotten accounts before confirming ownership directly at the source.</p>
+    <p>Run a reverse username search free with no sign-up for a 100-site preview, or sign in for 560+ platforms. Unlike raw-status username lookup tools that flag login walls as hits, MyRecon labels blocked responses as unknown; a public handle sweep is also distinct from a numeric user id search such as a <a href="/discord-id-lookup.html">Discord ID lookup</a>.</p>
   </section>
   <section>
     <h2>How to perform an effective reverse username search</h2>
@@ -328,14 +344,13 @@ const lookupBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Ethical investigation guidelines</h2>
     <p>Reverse username lookups must be conducted responsibly. MyRecon queries publicly accessible endpoints and does not bypass private account settings or access restricted data. Use this tool for personal privacy audits, self-reconnaissance, and authorized security assessments. See our <a href="/terms.html">terms of use</a> and <a href="/privacy.html">privacy policy</a>.</p>
-    <p>If a mobile search turns this tool into typos such as <em>revrese username lookup</em>, <em>usernmae search</em>, <em>useranme</em>, or <em>lokup</em>, verify you are on <code>myrecon.xyz</code> or check the <a href="/osint-glossary.html#search-and-spelling-clarifications">OSINT spelling reference</a>.</p>
     <p>Access and evidence reviewed <time datetime="2026-11-27">27 November 2026</time>.</p>
   </section>
 </main>`;
 
 buildDiscoveryPage({
-  title: 'Reverse Username Lookup: Find Accounts by Handle | MyRecon',
-  description: 'Find social media accounts by username, free and with no sign-up. Paste a handle or an Instagram, TikTok or GitHub link and check 100+ sites.',
+  title: 'Reverse Username Search & Lookup (Free) | MyRecon',
+  description: 'Run a free reverse username search and lookup across 100 sites as a guest or 560+ signed in. Paste a handle or profile URL and verify each lead.',
   url: `${site}/reverse-username-lookup.html`,
   outFileName: 'reverse-username-lookup.html',
   modifiedAt: '2026-11-27',
@@ -423,7 +438,6 @@ const emailBody = `<main id="main" class="container prose discovery-page">
   <section>
     <h2>Using email lookups responsibly</h2>
     <p>Look up your own addresses, or addresses you are authorized to review for security work. Do not use the results to harass, track or impersonate anyone. Read the <a href="/terms.html">terms of use</a> and the <a href="/privacy.html">privacy policy</a>.</p>
-    <p>When searching quickly for <em>revrese email lookup</em>, <em>emial breach check</em>, <em>holeh</em>, or <em>epeios</em> on a phone, confirm <code>myrecon.xyz</code> in the address bar before submitting an email address, or review the <a href="/osint-glossary.html#search-and-spelling-clarifications">spelling clarification reference</a>.</p>
     <p>Sources and behaviour reviewed <time datetime="2026-11-27">27 November 2026</time>.</p>
   </section>
 </main>`;
@@ -442,6 +456,131 @@ buildDiscoveryPage({
     name: 'MyRecon reverse email lookup',
     url: `${site}/reverse-email-lookup.html`,
     applicationCategory: 'SecurityApplication',
+    operatingSystem: 'Any',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+});
+
+// 9. Discord ID lookup (added 2026-11-28). "discord id lookup" is 10K-100K
+// searches a month worldwide in Keyword Planner (28 Nov 2026), low competition,
+// and the results are single-purpose tools. Everything is decoded in the
+// browser by assets/js/discord-id-lookup.js; it never calls Discord, so the
+// page must not claim to show names, custom avatars or anything private.
+const discordQuestions = [
+  ['Can I find a Discord user by ID?', 'An ID tells you when the account was created and which default avatar Discord gives it. It does not contain the username, email address, phone number or IP address. Inside Discord, Developer Mode lets you copy the ID of a user you can already see, which is the reliable way to keep track of them after a name change.'],
+  ['How do I tell how old a Discord account is?', 'Copy the user ID with Developer Mode switched on and paste it into the lookup. The first 42 bits of the ID are the creation time, so the result is exact to the millisecond and the account cannot change it.'],
+  ['Does a Discord ID ever change?', 'No. Usernames, display names, server nicknames and avatars can all change, but the ID stays the same for the life of the account, server, channel or message.'],
+  ['Is it safe to share a Discord ID?', 'An ID on its own reveals only a creation date. Share it with Discord or a server moderator when you report someone, but avoid posting it publicly next to private messages or personal details.'],
+  ['Can this tool see deleted accounts or private servers?', 'It decodes the number you paste and nothing else. It cannot tell whether an account still exists, was deleted or banned, or what a private server contains.'],
+];
+
+const discordBody = `<main id="main" class="container prose discovery-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">MyRecon</a> / <span aria-current="page">Discord ID lookup</span></nav>
+  <h1>Discord ID lookup: decode any user, server or message ID</h1>
+  <p class="sub">Paste a Discord ID, a mention such as &lt;@175928847299117063&gt;, or a message link. You get the exact creation date, the account age and timestamp codes you can paste into Discord. It runs in your browser; nothing is sent to MyRecon or Discord.</p>
+  <form id="discord-lookup-form" class="discord-lookup" autocomplete="off">
+    <label for="discord-lookup-input">Discord ID, mention or link</label>
+    <input id="discord-lookup-input" inputmode="text" spellcheck="false" placeholder="175928847299117063">
+    <details class="discord-compare-toggle">
+      <summary>Compare with a second ID (spot a newer copycat account)</summary>
+      <label for="discord-lookup-compare">Second Discord ID</label>
+      <input id="discord-lookup-compare" inputmode="text" spellcheck="false" placeholder="Another user ID">
+    </details>
+    <button type="submit" class="btn btn-primary">Look up ID</button>
+  </form>
+  <div id="discord-lookup-result" aria-live="polite"></div>
+  <p class="discovery-note">Try Discord's own documented example, 175928847299117063. It decodes to 30 April 2016, 11:18:25.796 UTC.</p>
+
+  <section>
+    <h2>What a Discord ID lookup shows</h2>
+    <ul>
+      <li><strong>Creation date and time.</strong> Exact to the millisecond, in UTC and in your own time zone.</li>
+      <li><strong>Account age.</strong> How many years, months and days ago the account, server, channel or message was created.</li>
+      <li><strong>Timestamp codes.</strong> All nine &lt;t:unix:style&gt; formats, ready to copy into a Discord message.</li>
+      <li><strong>Default avatar.</strong> Which of Discord's six default avatars a user on the new username system gets if they have not uploaded a picture.</li>
+      <li><strong>Which of two accounts is older.</strong> Paste a second ID to compare, which is the quickest check against an impersonator.</li>
+    </ul>
+    <p>It does not show the current username, a custom avatar, the email address, phone number, IP address or location. None of those are stored in the ID. Sites that show a name and picture for an ID get them by asking Discord's API with a bot account; anything beyond that from an ID alone is not real.</p>
+  </section>
+
+  <section>
+    <h2>What you can paste</h2>
+    <p>The lookup reads the ID out of the common forms people copy from Discord:</p>
+    <ul>
+      <li>A bare ID, 17 to 20 digits for anything created in recent years.</li>
+      <li>A user mention, <code>&lt;@ID&gt;</code>, or the older <code>&lt;@!ID&gt;</code> form.</li>
+      <li>A role <code>&lt;@&amp;ID&gt;</code>, channel <code>&lt;#ID&gt;</code> or custom emoji <code>&lt;:name:ID&gt;</code>.</li>
+      <li>A message link, <code>discord.com/channels/server/channel/message</code>. The server, channel and message are decoded separately.</li>
+      <li>A profile link, <code>discord.com/users/ID</code>.</li>
+    </ul>
+    <p>To copy an ID inside Discord, switch on Developer Mode in the app's Advanced settings, then use Copy User ID, Copy Server ID or Copy Message Link from the right-click or long-press menu. The <a href="/guides/discord-id-creation-date.html">Discord ID creation date guide</a> walks through the menus on desktop and mobile.</p>
+  </section>
+
+  <section>
+    <h2>How the date is worked out</h2>
+    <p>Discord IDs are 64-bit "snowflakes". Discord's developer reference documents the layout: bits 63 to 22 hold milliseconds since the Discord epoch, 1420070400000 (the first second of 2015), and the low 22 bits hold an internal worker ID, process ID and counter. The creation time is <code>(id &gt;&gt; 22) + 1420070400000</code>.</p>
+    <p>The tool does that shift with JavaScript's BigInt. Ordinary numbers in a spreadsheet or in JavaScript lose the last digits of an 18-digit integer, which is why some quick converters are off by a few seconds.</p>
+  </section>
+
+  <section>
+    <h2>Using account age to check an impersonator</h2>
+    <p>Copycat accounts take a real person's name and picture, then message their friends or community. They cannot copy the ID. Put the real account's ID in the first box and the suspicious one in the second: if the real account dates from 2019 and the other from last Tuesday, you have your answer, and the ages go straight into your report to the server's moderators or to Discord.</p>
+    <p>Age is a signal, not proof. An old account can be stolen and a new one can be genuine, for example when someone has just lost access to their old login. For a full method, see <a href="/guides/identify-impersonation-accounts">how to identify impersonation accounts</a> and <a href="/blog/report-social-media-impersonation.html">how to report impersonation</a>.</p>
+  </section>
+
+  <section>
+    <h2>Discord timestamp codes</h2>
+    <p>Discord turns <code>&lt;t:UNIX:STYLE&gt;</code> into a date shown in each reader's own time zone. The Unix time is in seconds. Styles from Discord's message formatting reference:</p>
+    <div class="discovery-table-wrap" tabindex="0" role="region" aria-label="Discord timestamp styles">
+    <table>
+      <caption>Timestamp styles as listed by Discord</caption>
+      <thead><tr><th>Style</th><th>Example display</th></tr></thead>
+      <tbody>
+        <tr><td><code>t</code></td><td>16:20</td></tr>
+        <tr><td><code>T</code></td><td>16:20:30</td></tr>
+        <tr><td><code>d</code></td><td>20/04/2021</td></tr>
+        <tr><td><code>D</code></td><td>April 20, 2021</td></tr>
+        <tr><td><code>f</code> (default)</td><td>April 20, 2021 at 16:20</td></tr>
+        <tr><td><code>F</code></td><td>Tuesday, April 20, 2021 at 16:20</td></tr>
+        <tr><td><code>s</code></td><td>20/04/2021, 16:20</td></tr>
+        <tr><td><code>S</code></td><td>20/04/2021, 16:20:30</td></tr>
+        <tr><td><code>R</code></td><td>4 years ago</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Looking for a person rather than an ID?</h2>
+    <p>If you know a handle rather than a number, a <a href="/reverse-username-lookup.html">reverse username lookup</a> checks where the same name appears across 560+ public platforms. Discord does not publish user profiles to the open web, so the <a href="/find/discord-user">Discord user lookup page</a> explains what can and cannot be found from a username.</p>
+  </section>
+
+  <section>
+    <h2>Discord ID lookup questions</h2>
+    <div class="faq">${discordQuestions.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
+  </section>
+
+  <section>
+    <h2>Sources</h2>
+    <p>Snowflake layout, Discord epoch, mention formats, timestamp styles and the default avatar rule: Discord developer documentation, Reference ("Snowflakes", "Message Formatting", "Image Formatting"), read 28 November 2026. Updated 28 November 2026.</p>
+  </section>
+</main>`;
+
+buildDiscoveryPage({
+  title: 'Discord ID Lookup: Account Age & Creation Date | MyRecon',
+  description: 'Free Discord ID lookup. Paste a user, server or message ID, mention or link to see when it was created, the account age and Discord timestamp codes.',
+  url: `${site}/discord-id-lookup.html`,
+  outFileName: 'discord-id-lookup.html',
+  modifiedAt: '2026-11-28',
+  crumbLabel: 'Discord ID lookup',
+  questions: discordQuestions,
+  bodyHtml: discordBody,
+  webApplication: {
+    '@type': 'WebApplication',
+    name: 'MyRecon Discord ID lookup',
+    url: `${site}/discord-id-lookup.html`,
+    applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any',
     isAccessibleForFree: true,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },

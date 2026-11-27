@@ -10,19 +10,19 @@
   "sections": [
     {
       "heading": "1. Separate observations from secrets",
-      "body": "Create a case folder with three parts: a source log, restricted evidence and a report draft. Give the case an identifier such as CASE-014 rather than naming the folder after a person. In the source log record the public URL, observation time with timezone, the question it answers and whether the observation is confirmed or uncertain. Keep passwords, API keys, recovery codes and session cookies out of all three parts. If a screenshot contains an unrelated email address or browser notification, crop or redact it before sharing. Preserve an unredacted original only when the authorized purpose requires it, in the restricted evidence folder."
+      "body": "Create a case folder with three parts: a source log, restricted evidence, and a report draft, labeled with a neutral case ID like CASE-014 rather than a person's name.\n\nRecord the public URL, observation time with timezone, question answered, and confirmed-vs-uncertain status in the source log. Keep passwords, API keys, recovery codes, and session cookies out of all three parts, and crop unrelated emails or notifications before sharing screenshots."
     },
     {
       "heading": "2. Restrict the storage and sharing route",
-      "body": "Use a device with disk encryption enabled, a screen lock and supported security updates. For cloud notes, choose a workspace you control, enable multifactor authentication, and share with named collaborators rather than an anyone-with-the-link URL. Check whether a shared parent folder gives access to the case automatically. Give report readers access to the report, not the entire evidence directory. Remove collaborators when their work ends. Disk encryption protects a locked device; it does not stop someone reading an unlocked laptop or an already signed-in cloud account."
+      "body": "Store research notes on a device with full-disk encryption, a screen lock, and current security updates, and restrict cloud workspaces to named collaborators with multifactor authentication.\n\nCheck whether a shared parent folder inherits access automatically, grant report readers access only to the report, and remove collaborators once work concludes. Disk encryption protects a locked device, not an unlocked laptop or active browser session."
     },
     {
       "heading": "3. Test the permissions before storing evidence",
-      "body": "Create a harmless dummy file first. Copy its sharing link into a signed-out private browser window. If it opens without the intended account, disable public sharing and repeat the check. Then verify that an intended collaborator can open only the agreed files. This is a permission test you can perform with your own workspace, not a claim that MyRecon audits your cloud settings. Include exported PDFs, attachments, local sync folders and downloaded copies in the access review because changing a cloud link does not revoke a copy already downloaded."
+      "body": "Create a harmless dummy file first and paste its sharing link into a signed-out private browser window; if it opens without authentication, disable public sharing and retest.\n\nNext verify that an intended collaborator can open only the agreed files. Include exported PDFs, attachments, local sync folders, and downloads in your review, because changing a cloud link never revokes copies already downloaded."
     },
     {
       "heading": "4. Use a retention log, including backups",
-      "body": "Before collection, write a retention decision: case owner, purpose, review date and deletion trigger. For example, an internal test case might be reviewed 30 days after its report is accepted; that is an illustrative choice, not a legal retention rule. At review, delete unnecessary screenshots, exports and temporary copies. Check the recycle bin, version history, email attachments and backup policy. Record what remains and why. Do not promise immediate erasure from immutable backups; restrict access and allow the documented backup lifecycle to expire copies.",
+      "body": "Write a retention decision before collecting anything: record the case owner, purpose, review date, and deletion trigger (for example, an illustrative 30-day post-report review).\n\nAt review, remove unnecessary screenshots, exports, and temporary copies from the recycle bin, version history, and email attachments. Record what stays and why, and allow immutable backup lifecycles to expire copies rather than promising instant erasure.",
       "download": {
         "href": "/assets/downloads/research-notes-retention.csv",
         "label": "Download the blank register with one illustrative example (CSV)"
@@ -60,11 +60,11 @@
     },
     {
       "heading": "Worked example: a safe note and a risky note",
-      "body": "Risky: a document containing a full copied profile, home address, private guesses and a reusable account token, shared by public link. Safer: CASE-014 / source URL / observed 2026-10-03 14:00 IST / public biography links to the official project / connection unresolved / screenshot stored under restricted evidence / review date assigned. The safer entry retains what supports the question and makes uncertainty visible. Before exporting, search the draft for secrets, hidden comments and identifying filenames, and inspect the export itself. A redaction box that merely covers text is not sufficient if the text can still be selected or copied."
+      "body": "A risky note dumps a copied profile, home address, guesses, and a session token into a public-link doc; a safer note logs CASE-014, source URL, IST timestamp, public bio clue, unresolved status, and review date.\n\nBefore exporting, search the draft for secrets, hidden comments, and identifying filenames, and inspect the exported PDF. A visual black box over selectable text is not true redaction."
     },
     {
       "heading": "If notes are accidentally exposed",
-      "body": "Disable the exposed link, revoke collaborator access where appropriate, and rotate any credentials that appeared in the notes. Establish which files and copies were accessible using the workspace audit features available to you. Notify the responsible project owner through your agreed incident process. Preserve the minimum incident record needed to explain the exposure; copying the entire leaked notebook into more channels creates additional copies. Follow applicable organizational requirements for further response."
+      "body": "Disable the exposed link immediately, revoke collaborator access where needed, and rotate any credentials or tokens that appeared inside the notebook.\n\nUse workspace audit logs to determine which files were accessed and notify the project owner through your incident process. Keep a minimal incident record rather than forwarding the leaked notebook across extra channels."
     }
   ],
   "sources": [

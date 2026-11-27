@@ -13,7 +13,7 @@ const footerHash = crypto.createHash("sha256").update(fs.readFileSync(path.join(
 const GROUPS = [
   ["Tools", [
     ["Username search", "/#tool"], ["Reverse email lookup", "/reverse-email-lookup.html"],
-    ["Reverse username lookup", "/reverse-username-lookup.html"], ["Username checker", "/username-checker.html"],
+    ["Reverse username lookup", "/reverse-username-lookup.html"], ["Username checker", "/username-checker.html"], ["Discord ID lookup", "/discord-id-lookup.html"],
     ["Digital footprint checker", "/digital-footprint-checker.html"], ["Free OSINT tools", "/free-osint-tool.html"],
     ["Deep Search", "/deep-search.html"], ["Footprint tools", "/footprint"], ["All features", "/features.html"], ["Android app", "/app.html"],
     ["Plans", "/pricing.html"], ["API", "/developers.html"],
@@ -26,7 +26,7 @@ const GROUPS = [
     ["Upcoming OSINT tools 2026-2027", "/upcoming-osint-tools-2027.html"],
     ["MyRecon vs Sherlock", "/vs/sherlock"],
     ["WhatsMyName alternatives", "/whatsmyname-alternatives.html"],
-    ["Best OSINT tools 2026-2027", "/blog/best-free-osint-tools-for-investigators.html"],
+    ["Best free OSINT tools", "/blog/best-free-osint-tools-for-investigators.html"],
     ["OSINT tool prices", "/osint-tool-pricing.html"],
     ["Choose a research workflow", "/vs/"],
   ]],
