@@ -130,7 +130,8 @@
         src: `https://cdn.discordapp.com/embed/avatars/${r.avatarIndex}.png`,
         alt: `Discord default avatar ${r.avatarIndex}`, width: '64', height: '64', loading: 'lazy',
       });
-      fig.append(img, el('figcaption', {}, `Default avatar ${r.avatarIndex}: what Discord shows if this user (on the new username system) has not set a picture.`));
+      const prefix = item.kind === 'User' ? '' : 'If this is a user ID: ';
+      fig.append(img, el('figcaption', {}, `${prefix}default avatar ${r.avatarIndex}, what Discord shows if the user (on the new username system) has not set a picture.`));
       box.append(fig);
     }
 
