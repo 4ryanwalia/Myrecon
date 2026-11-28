@@ -8,7 +8,7 @@ function paragraphs(text) {
   const result = [];
   let group = '';
   for (const sentence of sentences(text)) {
-    if (group && (group + sentence).split(/\s+/).length > 70) { result.push(group); group = ''; }
+    if (group && `${group} ${sentence}`.split(/\s+/).length > 65) { result.push(group); group = ''; }
     group += (group ? ' ' : '') + sentence;
   }
   if (group) result.push(group);

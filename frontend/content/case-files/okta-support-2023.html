@@ -13,22 +13,56 @@
   "vector": "A service account whose credentials had been saved into a personal Google profile on a managed device, used to access the customer support case management system and the HAR files stored in it",
   "actor": "Not publicly attributed",
   "cost": "Downstream intrusions at multiple security vendors; a revised disclosure a month later; sustained reputational damage to an identity provider",
-  "exposed": ["Session tokens and cookies in uploaded HAR files", "Customer support case contents", "Names and email addresses of support system users"],
+  "exposed": [
+    "Session tokens and cookies in uploaded HAR files",
+    "Customer support case contents",
+    "Names and email addresses of support system users"
+  ],
   "sortDate": "2023-10-20",
   "published": "2026-09-15",
-  "updated": "2026-09-15",
-  "related": ["twilio-0ktapus-2022", "lastpass-2022", "uber-2022"],
+  "updated": "2026-11-28",
+  "related": [
+    "twilio-0ktapus-2022",
+    "lastpass-2022",
+    "uber-2022"
+  ],
   "faq": [
-    { "q": "What is a HAR file and why is it dangerous?", "a": "A HAR file is an HTTP Archive: a recording of everything a browser sent and received during a session, which support teams ask for because it shows exactly what went wrong. It records request headers, and request headers carry session cookies and authorisation tokens. So a HAR file captured from a logged-in session is a container holding live credentials, produced by a user who believes they are sending a log file." },
-    { "q": "How did the attackers get into the support system?", "a": "Okta reported that a service account's credentials had been saved into an employee's personal Google profile while signed into Chrome on a company-managed laptop. Compromise of that personal account therefore exposed a corporate service credential. It is an unusually clean illustration of why browser profile sync across personal and work identities is a security boundary problem and not a convenience question." },
-    { "q": "How was the attack detected?", "a": "By a customer. BeyondTrust identified suspicious activity against its own Okta tenant, traced it to a session token from a HAR file it had uploaded days earlier, and reported it to Okta. Cloudflare and 1Password identified related activity. The detection came from downstream organisations watching their own logs, not from the provider, which is a genuine argument for customers monitoring their identity provider's activity independently." },
-    { "q": "Why did the number change from 134 customers to everyone?", "a": "Okta's initial disclosure described 134 customers whose uploaded files were accessed. A month later it disclosed that a report the attacker had run contained the names and email addresses of essentially all users of the customer support system, around 18,400. The first figure covered files retrieved; the second covered a report that had been overlooked in the initial analysis. Early breach numbers are almost always the floor." }
+    {
+      "q": "What is a HAR file and why is it dangerous?",
+      "a": "A HAR file is an HTTP Archive: a recording of everything a browser sent and received during a session, which support teams ask for because it shows exactly what went wrong. It records request headers, and request headers carry session cookies and authorisation tokens.\n\nSo a HAR file captured from a logged-in session is a container holding live credentials, produced by a user who believes they are sending a log file."
+    },
+    {
+      "q": "How did the attackers get into the support system?",
+      "a": "Okta reported that a service account's credentials had been saved into an employee's personal Google profile while signed into Chrome on a company-managed laptop. Compromise of that personal account therefore exposed a corporate service credential. It is an unusually clean illustration of why browser profile sync across personal and work identities is a security boundary problem and not a convenience question."
+    },
+    {
+      "q": "How was the attack detected?",
+      "a": "By a customer. BeyondTrust identified suspicious activity against its own Okta tenant, traced it to a session token from a HAR file it had uploaded days earlier, and reported it to Okta. Cloudflare and 1Password identified related activity. The detection came from downstream organisations watching their own logs, not from the provider, which is a genuine argument for customers monitoring their identity provider's activity independently."
+    },
+    {
+      "q": "Why did the number change from 134 customers to everyone?",
+      "a": "Okta's initial disclosure described 134 customers whose uploaded files were accessed. A month later it disclosed that a report the attacker had run contained the names and email addresses of essentially all users of the customer support system, around 18,400. The first figure covered files retrieved; the second covered a report that had been overlooked in the initial analysis. Early breach numbers are almost always the floor."
+    }
   ],
   "sources": [
-    { "label": "Okta security incident updates and root cause statements, October–November 2023" },
-    { "label": "BeyondTrust, public technical write-up of the October 2023 Okta support case incident" },
-    { "label": "Cloudflare, incident report concerning compromised Okta credentials, October 2023" },
-    { "label": "1Password, security incident report, October 2023" }
+    {
+      "label": "Okta security incident updates and root cause statements, October–November 2023",
+      "url": "https://sec.okta.com/articles/harfiles/",
+      "note": "Okta Security HAR files advisory, checked 28 November 2026"
+    },
+    {
+      "label": "BeyondTrust, public technical write-up of the October 2023 Okta support case incident"
+    },
+    {
+      "label": "Cloudflare, incident report concerning compromised Okta credentials, October 2023",
+      "url": "https://blog.cloudflare.com/how-cloudflare-mitigated-yet-another-okta-compromise/",
+      "note": "Cloudflare incident report, checked 28 November 2026"
+    },
+    {
+      "label": "1Password, security incident report, October 2023",
+      "url": "https://1password.com/blog/okta-incident",
+      "note": "1Password incident report, checked 28 November 2026"
+    }
   ]
 }
 -->

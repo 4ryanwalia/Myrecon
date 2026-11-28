@@ -12,22 +12,54 @@
   "vector": "Mass automated scraping of public social media and websites, plus a February 2020 breach of the company's own client list",
   "actor": "Clearview AI itself; the client list theft was never attributed",
   "cost": "Fines and orders from the UK, France, Italy, Greece, Australia and Canada; a US settlement restricting sales to private companies",
-  "exposed": ["Face images", "Source URLs linking each face to its original profile", "Clearview's own client list and search counts"],
+  "exposed": [
+    "Face images",
+    "Source URLs linking each face to its original profile",
+    "Clearview's own client list and search counts"
+  ],
   "sortDate": "2020-01-18",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
-  "related": ["facebook-scrape-2021", "cambridge-analytica-2018", "23andme-2023"],
+  "updated": "2026-11-28",
+  "related": [
+    "facebook-scrape-2021",
+    "cambridge-analytica-2018",
+    "23andme-2023"
+  ],
   "faq": [
-    { "q": "Is scraping public photos illegal?", "a": "It depends entirely on where you are, and the answer differs sharply between jurisdictions. Under GDPR and similar regimes, a photograph processed to identify a person is biometric data, and processing it needs a lawful basis that Clearview did not have, several European regulators said so explicitly and issued fines. In the United States there is no equivalent general rule, and enforcement has come through state biometric laws, notably Illinois' BIPA. Public and free to process are different questions." },
-    { "q": "What was actually breached at Clearview?", "a": "In February 2020, the company disclosed that an intruder had obtained its client list, along with the number of searches each client had run. Clearview described the flaw as fixed and said its database of images was not accessed. The significance was not technical: the company's defence had rested on being a responsible custodian trusted by law enforcement, and the list revealed private companies and individuals among the accounts." },
-    { "q": "Can I get my face removed?", "a": "It depends on where you live, and this is one of the clearest illustrations of privacy law being a geographic lottery. Residents of the EU, the UK and some other jurisdictions have deletion rights that regulators have ordered Clearview to honour. Residents of most US states have no comparable right. Illinois residents gained relief through the BIPA settlement. Everyone else is largely dependent on whichever regulator has authority over them." },
-    { "q": "Why does an OSINT site care about this?", "a": "Because it defines the boundary of the field. Open-source intelligence works from information that is public, and Clearview is the extreme case of what happens when public information is aggregated at scale and made searchable by face. The techniques are not exotic, scraping, indexing, matching. What distinguishes legitimate investigative work from this is purpose, consent and proportionality, not technical capability." }
+    {
+      "q": "Is scraping public photos illegal?",
+      "a": "It depends entirely on where you are, and the answer differs sharply between jurisdictions. Under GDPR and similar regimes, a photograph processed to identify a person is biometric data, and processing it needs a lawful basis that Clearview did not have, several European regulators said so explicitly and issued fines.\n\nIn the United States there is no equivalent general rule, and enforcement has come through state biometric laws, notably Illinois' BIPA. Public and free to process are different questions."
+    },
+    {
+      "q": "What was actually breached at Clearview?",
+      "a": "In February 2020, the company disclosed that an intruder had obtained its client list, along with the number of searches each client had run. Clearview described the flaw as fixed and said its database of images was not accessed. The significance was not technical: the company's defence had rested on being a responsible custodian trusted by law enforcement, and the list revealed private companies and individuals among the accounts."
+    },
+    {
+      "q": "Can I get my face removed?",
+      "a": "It depends on where you live, and this is one of the clearest illustrations of privacy law being a geographic lottery. Residents of the EU, the UK and some other jurisdictions have deletion rights that regulators have ordered Clearview to honour. Residents of most US states have no comparable right. Illinois residents gained relief through the BIPA settlement. Everyone else is largely dependent on whichever regulator has authority over them."
+    },
+    {
+      "q": "Why does an OSINT site care about this?",
+      "a": "Because it defines the boundary of the field. Open-source intelligence works from information that is public, and Clearview is the extreme case of what happens when public information is aggregated at scale and made searchable by face. The techniques are not exotic, scraping, indexing, matching. What distinguishes legitimate investigative work from this is purpose, consent and proportionality, not technical capability."
+    }
   ],
   "sources": [
-    { "label": "Information Commissioner's Office, enforcement notice and monetary penalty, Clearview AI Inc., May 2022", "url": "https://ico.org.uk/action-weve-taken/enforcement/clearview-ai-inc-mpn/" },
-    { "label": "Office of the Privacy Commissioner of Canada, joint investigation findings, February 2021", "url": "https://www.priv.gc.ca/en/opc-news/news-and-announcements/2021/nr-c_210203/" },
-    { "label": "CNIL (France), decision fining Clearview AI, October 2022" },
-    { "label": "ACLU v. Clearview AI, Illinois BIPA settlement, May 2022" }
+    {
+      "label": "Information Commissioner's Office, Upper Tribunal judgment on Clearview AI Inc. enforcement appeal (originally fined May 2022), October 2025",
+      "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/10/uk-upper-tribunal-hands-down-judgment-on-clearview-ai-inc/",
+      "note": "checked 28 Nov 2026"
+    },
+    {
+      "label": "Office of the Privacy Commissioner of Canada, joint investigation findings, February 2021",
+      "url": "https://www.priv.gc.ca/en/opc-news/news-and-announcements/2021/nr-c_210203/",
+      "note": "checked 28 Nov 2026"
+    },
+    {
+      "label": "CNIL (France), decision fining Clearview AI, October 2022"
+    },
+    {
+      "label": "ACLU v. Clearview AI, Illinois BIPA settlement, May 2022"
+    }
   ]
 }
 -->
@@ -35,7 +67,9 @@
 
 <h2>What happened</h2>
 
-<p>From around 2017, Clearview AI ran automated collection across the public web, gathering images of faces along with the URLs they came from. That second part matters more than the first: the product is not a face database, it is a face-to-source index. Submit a photograph and it returns other images of the same person, each linked to the page it appeared on, which is to say, to the person's name, employer, city and social accounts.</p>
+<p>From around 2017, Clearview AI ran automated collection across the public web, gathering images of faces along with the URLs they came from. That second part matters more than the first: the product is not a face database, it is a face-to-source index.</p>
+
+<p>Submit a photograph and it returns other images of the same person, each linked to the page it appeared on, which is to say, to the person's name, employer, city and social accounts.</p>
 
 <p>The company sold access primarily to law enforcement agencies. By January 2020 it claimed over three billion images. It later reported holding more than thirty billion.</p>
 

@@ -12,22 +12,52 @@
   "vector": "Stolen contractor credentials, multi-factor fatigue plus social engineering over WhatsApp, then hardcoded privileged credentials found in an internal PowerShell script",
   "actor": "Attributed by Uber to Lapsus$; a UK teenager associated with the group was later convicted over a series of intrusions including this one",
   "cost": "No customer data loss established; internal tooling compromised, including access to the company's vulnerability disclosure programme",
-  "exposed": ["Internal collaboration and messaging systems", "Cloud and identity administration consoles", "Internal vulnerability reports"],
+  "exposed": [
+    "Internal collaboration and messaging systems",
+    "Cloud and identity administration consoles",
+    "Internal vulnerability reports"
+  ],
   "sortDate": "2022-09-15",
   "published": "2026-09-15",
-  "updated": "2026-09-15",
-  "related": ["uber-2016", "twilio-0ktapus-2022", "mgm-resorts-2023"],
+  "updated": "2026-11-28",
+  "related": [
+    "uber-2016",
+    "twilio-0ktapus-2022",
+    "mgm-resorts-2023"
+  ],
   "faq": [
-    { "q": "What is MFA fatigue?", "a": "Where the second factor is a push notification that the user approves with a tap, an attacker who already has the password can request approval over and over. The victim's phone fills with prompts, at any hour, with no way to make them stop. Eventually somebody taps approve, to end the noise, or because they assume a system is malfunctioning. The control is not bypassed technically. It is worn down." },
-    { "q": "How did the attacker get the password in the first place?", "a": "Reporting indicates the contractor's corporate credentials were obtained from a dark web marketplace, having most likely been captured by information-stealing malware on a personal device. This is the ordinary supply chain for initial access now: the credential is a commodity bought for a small sum, and the work begins after login." },
-    { "q": "What did the attacker actually reach?", "a": "After getting onto the internal network they found a PowerShell script on a shared drive containing hardcoded credentials for a privileged access management system, the vault holding administrative secrets. That unlocked access to a range of internal tools including cloud consoles, the identity provider, internal dashboards and Slack, where the attacker announced the breach. Uber stated it found no evidence of access to customer accounts or trip history." },
-    { "q": "Why does a vulnerability disclosure programme matter here?", "a": "Because the attacker reached Uber's account on its bug bounty platform, which holds reports of vulnerabilities that have been submitted but not yet fixed. That is a list of ways into the company, written by researchers, held in one place. Any organisation running a disclosure programme should treat that account as a crown-jewel system rather than a security team convenience." }
+    {
+      "q": "What is MFA fatigue?",
+      "a": "Where the second factor is a push notification that the user approves with a tap, an attacker who already has the password can request approval over and over. The victim's phone fills with prompts, at any hour, with no way to make them stop. Eventually somebody taps approve, to end the noise, or because they assume a system is malfunctioning. The control is not bypassed technically. It is worn down."
+    },
+    {
+      "q": "How did the attacker get the password in the first place?",
+      "a": "Reporting indicates the contractor's corporate credentials were obtained from a dark web marketplace, having most likely been captured by information-stealing malware on a personal device. This is the ordinary supply chain for initial access now: the credential is a commodity bought for a small sum, and the work begins after login."
+    },
+    {
+      "q": "What did the attacker actually reach?",
+      "a": "After getting onto the internal network they found a PowerShell script on a shared drive containing hardcoded credentials for a privileged access management system, the vault holding administrative secrets. That unlocked access to a range of internal tools including cloud consoles, the identity provider, internal dashboards and Slack, where the attacker announced the breach. Uber stated it found no evidence of access to customer accounts or trip history."
+    },
+    {
+      "q": "Why does a vulnerability disclosure programme matter here?",
+      "a": "Because the attacker reached Uber's account on its bug bounty platform, which holds reports of vulnerabilities that have been submitted but not yet fixed. That is a list of ways into the company, written by researchers, held in one place. Any organisation running a disclosure programme should treat that account as a crown-jewel system rather than a security team convenience."
+    }
   ],
   "sources": [
-    { "label": "Uber, security update and incident statements, September 2022" },
-    { "label": "Contemporaneous technical reporting and screenshots published by the attacker, September 2022" },
-    { "label": "UK prosecution and 2023 verdict concerning Lapsus$-associated intrusions" },
-    { "label": "CISA guidance on phishing-resistant multi-factor authentication" }
+    {
+      "label": "Uber, security update and incident statements, September 2022"
+    },
+    {
+      "label": "Contemporaneous technical reporting and screenshots published by the attacker, September 2022"
+    },
+    {
+      "label": "UK prosecution and 2023 verdict concerning Lapsus$-associated intrusions"
+    },
+    {
+      "label": "CISA guidance on phishing-resistant multi-factor authentication",
+      "url": "https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf",
+      "note": "CISA Phishing-Resistant MFA fact sheet PDF, checked 28 November 2026"
+    }
   ]
 }
 -->

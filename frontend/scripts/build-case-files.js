@@ -248,7 +248,8 @@ function article(c, all) {
     description: c.description,
     datePublished: c.published,
     dateModified: c.updated || c.published,
-    author: { "@type": "Organization", name: "MyRecon" },
+    author: { "@type": "Person", "@id": `${SITE}/founder.html#person`, name: "Aryan Walia", jobTitle: "Penetration Tester and Founder", url: `${SITE}/founder.html` },
+    editor: { "@type": "Person", "@id": `${SITE}/founder.html#person`, name: "Aryan Walia", url: `${SITE}/founder.html` },
     publisher: {
       "@type": "Organization",
       "@id": `${SITE}/#organization`,
@@ -274,7 +275,7 @@ function article(c, all) {
         mainEntity: c.faq.map((f) => ({
           "@type": "Question",
           name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a.replace(/<[^>]*>/g, "") },
+          acceptedAnswer: { "@type": "Answer", text: f.a.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim() },
         })),
       })
     : "";
@@ -346,7 +347,7 @@ ${facts ? `      <dl class="cf-facts">\n${facts}\n      </dl>\n` : ""}${c.expose
 
 ${(c.faq || []).length ? `      <h2>Questions people ask</h2>
       <div class="bx-faq">
-${c.faq.map((f) => `        <h3>${esc(f.q)}</h3>\n        <p>${f.a}</p>`).join("\n\n")}
+${c.faq.map((f) => `        <h3>${esc(f.q)}</h3>\n        ${String(f.a).split(/\n\n+/).map((p) => `<p>${p.trim()}</p>`).join("\n        ")}`).join("\n\n")}
       </div>\n` : ""}
       <!-- After the questions, before the sources. A case file explains a
            breach that is over; the one thing it cannot do is tell the reader
@@ -472,6 +473,8 @@ ${c.records ? `            <span class="cf-card-count">${esc(c.records)}</span>\
         name: "Case Files",
         description,
         url,
+        isPartOf: { "@id": `${SITE}/#website` },
+        publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
       }),
       extraLd: itemList,
       faqLd: crumbLd,

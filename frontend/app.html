@@ -63,10 +63,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css?v=5944e41a11">
   <link rel="stylesheet" href="/assets/css/fx.css?v=88a694edd5">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"MyRecon Android App: On-Device OSINT & Breaches","description":"Download MyRecon free on Google Play for Android 11+. Run on-device OSINT handle sweeps, breach watches and password checks with no account needed.","url":"https://www.myrecon.xyz/app.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"publisher":{"@id":"https://www.myrecon.xyz/#organization","@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Android app","item":"https://www.myrecon.xyz/app.html"}]},"dateModified":"2026-11-27","mainEntity":{"@id":"https://www.myrecon.xyz/app.html#android-app"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"MyRecon Android App: On-Device OSINT & Breaches","description":"Download MyRecon free on Google Play for Android 11+. Run on-device OSINT handle sweeps, breach watches and password checks with no account needed.","url":"https://www.myrecon.xyz/app.html","isPartOf":{"@id":"https://www.myrecon.xyz/#website"},"reviewedBy":{"@type":"Person","@id":"https://www.myrecon.xyz/founder.html#person","name":"Aryan Walia","url":"https://www.myrecon.xyz/founder.html"},"publisher":{"@id":"https://www.myrecon.xyz/#organization","@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"MyRecon","item":"https://www.myrecon.xyz/"},{"@type":"ListItem","position":2,"name":"Android app","item":"https://www.myrecon.xyz/app.html"}]},"dateModified":"2026-11-28","mainEntity":{"@id":"https://www.myrecon.xyz/app.html#android-app"}}</script>
   <script type="application/ld+json">{"@type":"MobileApplication","@id":"https://www.myrecon.xyz/app.html#android-app","name":"MyRecon: OSINT Username Search","alternateName":"MyRecon","operatingSystem":"Android 11 or newer","applicationCategory":"SecurityApplication","url":"https://www.myrecon.xyz/app.html","installUrl":"https://play.google.com/store/apps/details?id=com.Myrecon.osint","publisher":{"@id":"https://www.myrecon.xyz/#organization","@type":"Organization","name":"MyRecon","url":"https://www.myrecon.xyz/","logo":{"@type":"ImageObject","url":"https://www.myrecon.xyz/assets/img/og-image.png","width":1200,"height":630}},"description":"Checks a username across many platforms from the device itself, watches for new data breaches and checks passwords against known leaks.","@context":"https://schema.org","offers":{"@type":"Offer","price":0,"url":"https://play.google.com/store/apps/details?id=com.Myrecon.osint"}}</script>
   <link rel="stylesheet" href="/assets/css/site-footer.css?v=f0659f90de">
 <link rel="stylesheet" href="/assets/css/android-promo.css">
+<style>.editorial-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px}.editorial-table-wrap table{width:100%;min-width:520px;border-collapse:collapse;font-size:.94rem}.editorial-table-wrap caption{text-align:left;padding:10px 12px;font-size:.86rem;color:var(--text-dim);border-bottom:1px solid var(--border)}.editorial-table-wrap th,.editorial-table-wrap td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}.editorial-table-wrap thead th{font-weight:700;background:var(--surface)}.editorial-table-wrap tbody th{font-weight:600}.editorial-table-wrap tbody tr:last-child th,.editorial-table-wrap tbody tr:last-child td{border-bottom:0}</style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -148,6 +149,27 @@
     <p style="color:var(--text-dim)">
       Both surfaces are read-only on public sources and differ in network origin and telemetry: Android requests originate from your mobile connection (and the app displays Google Play ads), while website requests originate from cloud infrastructure covered by our <a href="/privacy.html" style="color:var(--accent)">privacy policy</a>. Choose the Android app when you want a phone-first digital footprint check without a command line.
     </p>
+
+    <h2 id="android-vs-web-comparison" style="margin:34px 0 10px">Android app vs web toolkit at a glance</h2>
+    <p style="color:var(--text-dim)">Use the table below to choose between the Android app and the browser toolkit depending on your network, privacy and reporting workflow.</p>
+    <div class="editorial-table-wrap" style="margin:14px 0 22px">
+      <table>
+        <caption>Comparison of MyRecon Android app and web toolkit, reviewed 28 November 2026</caption>
+        <thead><tr><th scope="col">Capability</th><th scope="col">MyRecon Android app</th><th scope="col">MyRecon web toolkit</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Request origin</th><td>Your mobile connection (fewer datacenter blocks)</td><td>MyRecon cloud servers</td></tr>
+          <tr><th scope="row">Account required</th><td>No account needed for core sweeps and Breach Watch</td><td>Guest Quick (100 sites); free Google sign-in for 560+ Standard scans</td></tr>
+          <tr><th scope="row">Password leak check</th><td>On-device SHA-1 k-anonymity via <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Pwned Passwords</a></td><td>In-browser SHA-1 k-anonymity via Pwned Passwords</td></tr>
+          <tr><th scope="row">Breach alerts</th><td>Daily on-device public catalogue check; opt-in email toggle</td><td>On-demand <a href="/reverse-email-lookup.html">reverse email lookup</a></td></tr>
+          <tr><th scope="row">QR safety scanner</th><td>Built-in redirect-chain and lookalike inspection</td><td>Web domain, DNS and IP tools</td></tr>
+          <tr><th scope="row">Server scan history</th><td>None stored on MyRecon servers</td><td>None stored on MyRecon servers</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="permissions-and-limitations" style="margin:34px 0 10px">Permissions, telemetry and limitations</h2>
+    <p style="color:var(--text-dim)">The Android app requests camera access only when you open the QR link safety scanner, and never requests GPS or precise location for analytics. Search inputs and results are excluded from Firebase Analytics and Google AdMob advertising signals, and optional Usage Analytics can be turned off at any time in the app's Privacy menu (off by default in the EEA, UK and Switzerland).</p>
+    <p style="color:var(--text-dim)">Like every OSINT tool, the app cannot bypass private account settings, inspect private messages, or guarantee that two matching usernames belong to the same individual. Blocked or login-walled sites are reported as unknown rather than absent. Reviewed <time datetime="2026-11-28">28 November 2026</time>; see <a href="/about.html#editorial-method" style="color:var(--accent)">editorial method</a> and <a href="/is-myrecon-legit.html" style="color:var(--accent)">six independent checks for MyRecon</a>.</p>
 
     <h2 id="availability" style="margin:34px 0 10px">Availability</h2>
     <p style="color:var(--text-dim)">

@@ -6,7 +6,7 @@
   "description": "Distinguish Discord usernames, display names and user IDs using official client workflows. MyRecon has no direct Discord account check.",
   "h1": "Discord Users: Names, IDs & Verification Limits",
   "focus_keyword": "find a public Discord username profile",
-  "intro": "Discord does not offer a universal public profile directory like GitHub. MyRecon has no direct Discord account check. For an account you already interact with, distinguish the unique username, display name, server nickname and numerical user ID. This page is a manual verification guide, not a way to discover hidden accounts.",
+  "intro": "Discord does not publish an open web directory of usernames like GitHub, so MyRecon has no direct Discord username sweep. If you already have a numeric Discord user ID, MyRecon's separate Discord ID lookup decodes its creation timestamp locally and fetches the public profile fields Discord exposes via its Get User API. This guide covers distinguishing usernames, display names, server nicknames and user IDs safely.",
   "sections": [
     {
       "heading": "Start from a conversation you can already access",
@@ -17,7 +17,7 @@
       "body": "Enable Developer Mode under Discord's Advanced settings, then use the profile or user context menu to copy the numerical user ID. Menu placement differs between desktop and mobile, so follow the official guide linked below.\n\nRecord the numerical ID alongside the current visible name to distinguish accounts. Developer Mode does not reveal private messages, and a copied user ID also encodes the account creation date.",
       "link": {
         "href": "/discord-id-lookup.html",
-        "label": "Discord ID lookup: decode an ID to its creation date"
+        "label": "Discord ID lookup: decode creation date and view public user fields"
       }
     },
     {
@@ -38,13 +38,12 @@
     }
   ],
   "sources": [
-    "https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID",
-    "https://support.discord.com/hc/en-us/articles/12620128861463-New-Usernames-Display-Names",
-    "https://discord.com/safety"
+    "https://docs.discord.com/developers/reference",
+    "https://docs.discord.com/developers/resources/user"
   ],
-  "reviewed_at": "2026-10-03",
-  "modified_at": "2026-11-25",
-  "reviewer": "MyRecon editorial",
+  "reviewed_at": "2026-11-28",
+  "modified_at": "2026-11-28",
+  "reviewer": "Aryan Walia (CEH), MyRecon",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"
@@ -52,7 +51,7 @@
   "faq": [
     {
       "question": "Does MyRecon directly check Discord accounts?",
-      "answer": "No. Discord is not a direct check in the standard release catalogue. This guide uses the Discord client and official documentation."
+      "answer": "MyRecon has no direct Discord username sweep because Discord does not publish open web profile URLs for handles. If you already have a numeric Discord user ID, the separate Discord ID lookup decodes its Snowflake creation time locally and retrieves public profile fields (username, display name, avatar, banner and badges) via Discord's Get User API."
     },
     {
       "question": "Is a Discord display name unique?",

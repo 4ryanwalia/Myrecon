@@ -5,7 +5,7 @@
   "description": "How reused handles, email prefixes and avatars link alternate and secondary accounts, and what that means for keeping your own profiles separate.",
   "category": "Investigation",
   "datePublished": "2026-10-13",
-  "dateModified": "2026-11-27"
+  "dateModified": "2026-11-28"
 }
 -->
 <p class="lead">Most internet users maintain between 7 and 15 distinct online accounts. When auditing your own exposure or learning how to find hidden social media accounts and secondary profiles during an authorized review, username reuse habits and digital footprints often leave verifiable public links across the web.</p>
@@ -38,7 +38,8 @@
 <p>Checking <code>linktr.ee/{username}</code> or <code>{username}.carrd.co</code> is one of the quickest ways to verify a cluster of connected profiles directly authorized by the account owner.</p>
 
 <h2>Method 4: Analyze linked email footprints</h2>
-<p>If an email address is known or associated with a username, ethical researchers check whether that email has appeared in public breach notices or service registrations. Tools like MyRecon's integrated email tool and services like <a href="/vs/have-i-been-pwned">Have I Been Pwned</a> reveal which services have experienced data exposures involving that identifier. When an account exists on an unexpected platform, it confirms that the target user registered an account there.</p>
+<p>If an email address is known or associated with a username, ethical researchers check whether that email has appeared in public breach notices or voluntary profile registries. Tools like MyRecon's email lookup and <a href="/vs/have-i-been-pwned">Have I Been Pwned</a> reveal which services experienced exposures involving that identifier.</p>
+<p>Review the <a href="https://haveibeenpwned.com/FAQs" target="_blank" rel="noopener noreferrer">Have I Been Pwned FAQ</a> for breach-catalogue limits and the <a href="https://docs.gravatar.com/json/" target="_blank" rel="noopener noreferrer">Gravatar JSON profile documentation</a> (checked 28 Nov 2026) to see how hashed email addresses can resolve to voluntary public profiles. When an unexpected platform appears, confirm it independently before assuming ownership.</p>
 
 <h2>Verification: Separating coincidence from connection</h2>
 <p>Just because an account exists on another platform with the same handle does not mean it belongs to the person you are researching. Common usernames like <code>shadow</code>, <code>alex99</code>, or <code>sarah_smith</code> are claimed by hundreds of different people across different networks.</p>
@@ -53,6 +54,6 @@
   <li><strong>Leave bio links empty.</strong> A link-in-bio page or a personal site is a public list of the accounts you want connected. Do not add one to an account you want kept apart.</li>
   <li><strong>Check from the outside.</strong> Search your alternate handle and email the way a stranger would, and run a <a href="/#tool">username search</a> on both handles to see which platforms show them side by side.</li>
 </ul>
-<p>None of this is about hiding wrongdoing. Plenty of people have sound reasons to keep parts of their online life apart, and knowing how accounts get linked is the most practical way to do that.</p>
+<p>None of this is about hiding wrongdoing. Plenty of people have sound reasons to keep parts of their online life apart, and knowing how accounts get linked is the most practical way to do that. For practical compartmentation and social-account hardening baselines, review <a href="https://ssd.eff.org/" target="_blank" rel="noopener noreferrer">EFF Surveillance Self-Defense</a> and the <a href="https://www.ncsc.gov.uk/guidance/social-media-how-to-use-it-safely" target="_blank" rel="noopener noreferrer">UK NCSC social media safety guidance</a> (checked <time datetime="2026-11-28">28 Nov 2026</time>).</p>
 
-<div class="callout"><p><strong>Ethical Reminder:</strong> Public-source intelligence tools examine only voluntarily published, publicly accessible web data. Never attempt to access private communications, bypass security controls, or violate platform terms of service.</p></div>
+<div class="callout"><p><strong>Ethical Reminder:</strong> Public-source intelligence tools examine only voluntarily published, publicly accessible web data. Never attempt to access private communications, bypass security controls, or violate platform terms of service. See our <a href="/about.html#editorial-method">editorial method</a> for how MyRecon verifies attribution claims.</p></div>

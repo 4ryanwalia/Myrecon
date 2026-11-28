@@ -85,7 +85,7 @@
         <div class="vs-badge"><span>VS</span></div>
         <div class="vs-side">Have I Been Pwned<small>Breach search service</small></div>
       </div>
-      <p class="vs-date" style="margin-top:18px">Checked against Have I Been Pwned's own documentation on 25 September 2026</p>
+      <p class="vs-date" style="margin-top:18px">Checked against <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener noreferrer">Have I Been Pwned API v3 documentation</a> and <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Pwned Passwords</a> on <time datetime="2026-11-28">28 November 2026</time> · <a href="/about.html#editorial-method">Editorial method</a></p>
     </section>
     <article class="vs-article container">
     <div class="vs-verdict">
@@ -101,13 +101,14 @@
         <tr><th scope="row">Breach alerts by email</th><td>Android app, compared on-device</td><td class="vs-yes">Yes, free notifications</td></tr>
         <tr><th scope="row">Password check</th><td class="vs-yes">Yes, uses Pwned Passwords (k-anonymity)</td><td class="vs-yes">Yes, Pwned Passwords</td></tr>
         <tr><th scope="row">Domain-wide breach search</th><td class="vs-no">No</td><td class="vs-yes">Yes, for verified domain owners</td></tr>
-        <tr><th scope="row">Username search</th><td class="vs-yes">Yes, 100+ platforms on the web</td><td class="vs-no">No</td></tr>
+        <tr><th scope="row">Username search</th><td class="vs-yes">Yes, 100 guest / 560+ free account / 3,000+ Extended</td><td class="vs-no">No</td></tr>
         <tr><th scope="row">WHOIS / DNS / IP</th><td class="vs-yes">Yes</td><td class="vs-no">No</td></tr>
         <tr><th scope="row">Email API</th><td>Not offered</td><td class="vs-yes">Yes, paid API key required</td></tr>
         <tr><th scope="row">Breach catalogue</th><td>Republished with written analysis, CC BY credit to HIBP</td><td>Original source, CC BY 4.0</td></tr>
       </tbody></table></div>
     <h2 id="what-have-i-been-pwned-is">What Have I Been Pwned is</h2>
-    <p>Have I Been Pwned (HIBP), created by Troy Hunt, is the best-known service for checking whether an email address appears in a data breach. It maintains a catalogue of breaches with descriptions, dates and the data types exposed, offers free email notifications when your address turns up in a new one, and lets organisations search breaches across a domain they have verified. Its Pwned Passwords service lets anyone check a password against hundreds of millions of breached passwords without sending the password, using a technique called k-anonymity. According to its API documentation, searching by email through the API requires a paid key, while the breach catalogue and Pwned Passwords are free to use, with breach data licensed CC BY 4.0.</p>
+    <p>Have I Been Pwned (HIBP), created by Troy Hunt, is the reference service for checking whether an email address appears in a published data breach. It tracks breach dates, descriptions and exposed data classes, offers free email notifications, and lets verified domain owners search breaches across their domains.</p>
+    <p>Its <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Pwned Passwords</a> service checks passwords against breached hashes without sending the password, using k-anonymity. Under its <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener noreferrer">API v3 documentation</a> (checked <time datetime="2026-11-28">28 November 2026</time>), email lookup via the API requires a paid key, while the breach catalogue and Pwned Passwords remain free, with breach data licensed CC BY 4.0.</p>
 
     <h2 id="how-myrecon-uses-hibp">How MyRecon uses HIBP</h2>
     <ul>

@@ -13,22 +13,55 @@
   "vector": "Credentials found in a private code repository, used to reach cloud storage",
   "actor": "Two individuals who later pleaded guilty in the United States",
   "cost": "$148 million multistate settlement; the chief security officer criminally convicted",
-  "exposed": ["Names", "Email addresses", "Phone numbers", "600,000 US driver's licence numbers"],
+  "exposed": [
+    "Names",
+    "Email addresses",
+    "Phone numbers",
+    "600,000 US driver's licence numbers"
+  ],
   "sortDate": "2017-11-21",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
-  "related": ["capital-one-2019", "lastpass-2022", "yahoo-2013-2014"],
+  "updated": "2026-11-28",
+  "related": [
+    "capital-one-2019",
+    "lastpass-2022",
+    "yahoo-2013-2014"
+  ],
   "faq": [
-    { "q": "What did Uber actually do wrong?", "a": "Two separate things. The breach itself was a credential-handling failure: access keys in a private code repository that reached a cloud storage account. The far more serious conduct was the response, paying the attackers $100,000 through the bug bounty programme, having them sign non-disclosure agreements describing the theft as research, and not notifying users, drivers or regulators for more than a year, while the company was already under investigation for an earlier breach." },
-    { "q": "Was the chief security officer really convicted?", "a": "Yes. Joe Sullivan was convicted in October 2022 of obstructing a Federal Trade Commission proceeding and misprision of a felony, and sentenced in 2023 to three years of probation. It is the case that established personal criminal exposure for a security executive over the handling of a breach, rather than the breach itself." },
-    { "q": "Is paying a bug bounty for stolen data legitimate?", "a": "Paying a researcher who finds a flaw is normal and valuable. Paying people who have already taken customer data, in exchange for silence and a signed agreement, is something else, and prosecutors treated the bounty framing as concealment rather than disclosure. The distinction is whether data was exfiltrated and whether the people affected were told." },
-    { "q": "What data was taken?", "a": "Names, email addresses and mobile numbers for around 57 million riders and drivers, plus roughly 600,000 US driver's licence numbers belonging to drivers. No trip history, card numbers or dates of birth were reported as taken." }
+    {
+      "q": "What did Uber actually do wrong?",
+      "a": "Two separate things. The breach itself was a credential-handling failure: access keys in a private code repository that reached a cloud storage account.\n\nThe far more serious conduct was the response, paying the attackers $100,000 through the bug bounty programme, having them sign non-disclosure agreements describing the theft as research, and not notifying users, drivers or regulators for more than a year, while the company was already under investigation for an earlier breach."
+    },
+    {
+      "q": "Was the chief security officer really convicted?",
+      "a": "Yes. Joe Sullivan was convicted in October 2022 of obstructing a Federal Trade Commission proceeding and misprision of a felony, and sentenced in 2023 to three years of probation. It is the case that established personal criminal exposure for a security executive over the handling of a breach, rather than the breach itself."
+    },
+    {
+      "q": "Is paying a bug bounty for stolen data legitimate?",
+      "a": "Paying a researcher who finds a flaw is normal and valuable. Paying people who have already taken customer data, in exchange for silence and a signed agreement, is something else, and prosecutors treated the bounty framing as concealment rather than disclosure. The distinction is whether data was exfiltrated and whether the people affected were told."
+    },
+    {
+      "q": "What data was taken?",
+      "a": "Names, email addresses and mobile numbers for around 57 million riders and drivers, plus roughly 600,000 US driver's licence numbers belonging to drivers. No trip history, card numbers or dates of birth were reported as taken."
+    }
   ],
   "sources": [
-    { "label": "US Department of Justice, conviction of Joe Sullivan, October 2022" },
-    { "label": "Uber statement by chief executive Dara Khosrowshahi, 21 November 2017" },
-    { "label": "Multistate attorneys general settlement, September 2018" },
-    { "label": "UK Information Commissioner's Office monetary penalty notice, November 2018" }
+    {
+      "label": "US Department of Justice, conviction of Joe Sullivan, October 2022",
+      "url": "https://www.justice.gov/usao-ndca/pr/former-chief-security-officer-uber-convicted-federal-charges-covering-data-breach",
+      "note": "USAO NDCA conviction release, checked 28 November 2026"
+    },
+    {
+      "label": "Uber statement by chief executive Dara Khosrowshahi, 21 November 2017"
+    },
+    {
+      "label": "Multistate attorneys general settlement, September 2018"
+    },
+    {
+      "label": "UK Information Commissioner's Office monetary penalty notice, November 2018",
+      "url": "https://ico.org.uk/action-weve-taken/enforcement/",
+      "note": "UK ICO enforcement index, checked 28 November 2026"
+    }
   ]
 }
 -->
@@ -76,7 +109,9 @@
 
 <h2>The uncomfortable part</h2>
 
-<p>It is worth being fair about the decision Sullivan faced, because the industry's reaction to the conviction was not unanimous. Extortion payments were, in 2016, a genuinely grey area, and framing one as a bounty was not unheard of. The elements that made this prosecution possible were specific: an active federal investigation into the company's data security, non-disclosure agreements containing a false statement about whether data was taken, and a year of silence towards the people in the file.</p>
+<p>It is worth being fair about the decision Sullivan faced, because the industry's reaction to the conviction was not unanimous. Extortion payments were, in 2016, a genuinely grey area, and framing one as a bounty was not unheard of.</p>
+
+<p>The elements that made this prosecution possible were specific: an active federal investigation into the company's data security, non-disclosure agreements containing a false statement about whether data was taken, and a year of silence towards the people in the file.</p>
 
 <p>The practical lesson for anyone running security is not "never negotiate". It is that the decision to withhold notification is a legal decision with personal consequences, and it must be made by the company in writing, not by one executive under pressure.</p>
 

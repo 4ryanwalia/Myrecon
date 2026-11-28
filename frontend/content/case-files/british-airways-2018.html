@@ -16,7 +16,7 @@
   "exposed": ["Names", "Billing addresses", "Email addresses", "Payment card numbers", "Expiry dates", "CVV security codes"],
   "sortDate": "2018-09-06",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
+  "updated": "2026-11-28",
   "related": ["target-2013", "tjx-2007", "marriott-starwood-2018"],
   "faq": [
     { "q": "How were CVV codes stolen when nobody stores them?", "a": "Because they were never stored. Card rules forbid keeping the CVV after a transaction, and BA did not keep it. The skimmer captured the code in the browser at the moment the customer typed it, before it reached the airline's systems at all. This is exactly why client-side attacks are so effective against payment pages: they read the data upstream of every rule about what may be retained." },
@@ -25,7 +25,7 @@
     { "q": "What is Magecart?", "a": "Magecart is not one group. It is the umbrella name for many crews running the same technique: get a small piece of JavaScript onto a checkout page, read the payment fields as they are filled in, and send a copy to a server you control. They usually get in through a third-party script the site embeds, analytics, chat widgets, ad tags, rather than through the site's own code." }
   ],
   "sources": [
-    { "label": "Information Commissioner's Office, penalty notice, British Airways, October 2020", "url": "https://ico.org.uk/action-weve-taken/enforcement/british-airways/", "note": "the detailed public account of the intrusion" },
+    { "label": "Information Commissioner's Office, penalty notice, British Airways, October 2020", "url": "https://ico.org.uk/media2/migrated/2618421/ba-penalty-20201016.pdf", "note": "ICO Penalty Notice PDF, detailed public account of the intrusion, checked 28 Nov 2026" },
     { "label": "RiskIQ, Inside the Magecart Breach of British Airways", "note": "the original analysis identifying the modified script" },
     { "label": "British Airways statements to customers, September 2018" },
     { "label": "Group claim against British Airways, settled July 2021 on undisclosed terms" }

@@ -13,22 +13,58 @@
   "vector": "Server-side request forgery through a misconfigured web application firewall, reaching cloud instance metadata",
   "actor": "Paige Thompson, a former cloud engineer, convicted in 2022",
   "cost": "$80 million regulatory penalty and a $190 million class settlement",
-  "exposed": ["Names", "Addresses", "Phone numbers", "Email addresses", "Dates of birth", "Self-reported income", "Credit scores and balances", "140,000 Social Security numbers", "80,000 linked bank account numbers", "1 million Canadian Social Insurance numbers"],
+  "exposed": [
+    "Names",
+    "Addresses",
+    "Phone numbers",
+    "Email addresses",
+    "Dates of birth",
+    "Self-reported income",
+    "Credit scores and balances",
+    "140,000 Social Security numbers",
+    "80,000 linked bank account numbers",
+    "1 million Canadian Social Insurance numbers"
+  ],
   "sortDate": "2019-07-29",
   "published": "2026-09-14",
   "updated": "2026-09-14",
-  "related": ["snowflake-2024", "equifax-2017", "uber-2016"],
+  "related": [
+    "snowflake-2024",
+    "equifax-2017",
+    "uber-2016"
+  ],
   "faq": [
-    { "q": "What is SSRF, in plain terms?", "a": "Server-side request forgery. You persuade a server to make a web request on your behalf, to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials." },
-    { "q": "Why did the cloud hand over credentials?", "a": "Cloud instances fetch temporary credentials from a link-local metadata address so applications do not need hard-coded keys. It is a good design with one weakness: any code that can make an HTTP request from the instance can ask for those credentials. If the request can be triggered from outside through SSRF, so can the credential theft. Amazon's IMDSv2, released months after this breach, requires a session token first, which closes that path." },
-    { "q": "Was Capital One hacked because it used the cloud?", "a": "No. The misconfiguration was Capital One's, in a firewall it operated, and the same mistake is possible in a data centre. What the cloud changed is the blast radius: an over-permissive role attached to one instance could list and copy entire storage buckets in minutes." },
-    { "q": "What happened to the attacker?", "a": "Paige Thompson, a former Amazon Web Services engineer, was arrested in July 2019 after discussing the data online and publishing evidence of it to a public code-sharing site. She was convicted of wire fraud and computer fraud in June 2022 and sentenced to time served with five years of probation." }
+    {
+      "q": "What is SSRF, in plain terms?",
+      "a": "Server-side request forgery. You persuade a server to make a web request on your behalf, to an address you choose. That matters because the server sits inside the network and can reach internal addresses your browser cannot, including, in a cloud environment, the special address that hands out the machine's own credentials."
+    },
+    {
+      "q": "Why did the cloud hand over credentials?",
+      "a": "Cloud instances fetch temporary credentials from a link-local metadata address so applications do not need hard-coded keys. It is a good design with one weakness: any code that can make an HTTP request from the instance can ask for those credentials. If the request can be triggered from outside through SSRF, so can the credential theft. Amazon's IMDSv2, released months after this breach, requires a session token first, which closes that path."
+    },
+    {
+      "q": "Was Capital One hacked because it used the cloud?",
+      "a": "No. The misconfiguration was Capital One's, in a firewall it operated, and the same mistake is possible in a data centre. What the cloud changed is the blast radius: an over-permissive role attached to one instance could list and copy entire storage buckets in minutes."
+    },
+    {
+      "q": "What happened to the attacker?",
+      "a": "Paige Thompson, a former Amazon Web Services engineer, was arrested in July 2019 after discussing the data online and publishing evidence of it to a public code-sharing site. She was convicted of wire fraud and computer fraud in June 2022 and sentenced to time served with five years of probation."
+    }
   ],
   "sources": [
-    { "label": "Office of the Comptroller of the Currency, $80 million civil money penalty against Capital One, August 2020", "url": "https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html" },
-    { "label": "US Department of Justice, indictment and conviction of Paige Thompson, 2019–2022" },
-    { "label": "Capital One incident disclosures and SEC filings, 2019" },
-    { "label": "Amazon Web Services, announcement of Instance Metadata Service v2, November 2019" }
+    {
+      "label": "Office of the Comptroller of the Currency, $80 million civil money penalty against Capital One, August 2020",
+      "url": "https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html"
+    },
+    {
+      "label": "US Department of Justice, indictment and conviction of Paige Thompson, 2019–2022"
+    },
+    {
+      "label": "Capital One incident disclosures and SEC filings, 2019"
+    },
+    {
+      "label": "Amazon Web Services, announcement of Instance Metadata Service v2, November 2019"
+    }
   ]
 }
 -->
@@ -48,7 +84,9 @@
 
 <h2>How it was discovered</h2>
 
-<p>Not by monitoring. On 17 July 2019, an outside researcher emailed Capital One's responsible disclosure address to report that data appearing to belong to the bank had been published on a public code-sharing site. The attacker had also discussed the material in online chat groups under a recognisable handle. Capital One confirmed the breach, notified the FBI, and an arrest followed on 29 July, the same day the breach was announced publicly.</p>
+<p>Not by monitoring. On 17 July 2019, an outside researcher emailed Capital One's responsible disclosure address to report that data appearing to belong to the bank had been published on a public code-sharing site. The attacker had also discussed the material in online chat groups under a recognisable handle.</p>
+
+<p>Capital One confirmed the breach, notified the FBI, and an arrest followed on 29 July, the same day the breach was announced publicly.</p>
 
 <p>Four months from intrusion to discovery, and the discovery came from someone who happened to notice a public post. It is worth sitting with that: the technical sophistication of the attack was modest, and the detection was accidental.</p>
 

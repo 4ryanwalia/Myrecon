@@ -12,22 +12,56 @@
   "vector": "Malicious code inserted into the SolarWinds Orion build pipeline and distributed as a digitally signed update",
   "actor": "APT29 / Cozy Bear, attributed by the US government to Russia's SVR foreign intelligence service",
   "cost": "Tens of millions in direct costs to SolarWinds; the SEC later sued the company and its security chief",
-  "exposed": ["Government and corporate email", "Internal network access", "Source code", "Authentication tokens"],
+  "exposed": [
+    "Government and corporate email",
+    "Internal network access",
+    "Source code",
+    "Authentication tokens"
+  ],
   "sortDate": "2020-12-08",
   "published": "2026-09-14",
   "updated": "2026-09-14",
-  "related": ["moveit-2023", "accellion-2021", "opm-2015"],
+  "related": [
+    "moveit-2023",
+    "accellion-2021",
+    "opm-2015"
+  ],
   "faq": [
-    { "q": "Was SolarWinds a data breach?", "a": "Not in the usual sense. Almost no consumer records were stolen. What was stolen was access, to US federal departments, to security vendors, to technology companies, and in several cases email, source code and authentication material. It matters because it changed what the industry counts as a breach: the asset taken was a position inside other people's networks." },
-    { "q": "How many organisations were actually compromised?", "a": "Around 18,000 SolarWinds customers downloaded a trojanised Orion update. That number is usually quoted as the scale of the attack, and it overstates the damage. The backdoor only phoned home; the attackers then selected a much smaller set, commonly reported as fewer than 100 organisations, for hands-on intrusion. Everyone else had a dormant backdoor and a very bad month of incident response." },
-    { "q": "Who was behind the SolarWinds attack?", "a": "In April 2021 the US government formally attributed it to the SVR, Russia's foreign intelligence service. The industry tracks the same activity as APT29 or Cozy Bear. Russia denied involvement and no individual has been prosecuted." },
-    { "q": "What is SUNBURST?", "a": "SUNBURST is the name FireEye gave to the backdoor inserted into SolarWinds Orion. It was written to resemble ordinary Orion code, waited up to two weeks before activating, checked whether it was running inside a researcher's analysis environment, and disguised its command traffic as Orion's own telemetry protocol." }
+    {
+      "q": "Was SolarWinds a data breach?",
+      "a": "Not in the usual sense. Almost no consumer records were stolen. What was stolen was access, to US federal departments, to security vendors, to technology companies, and in several cases email, source code and authentication material. It matters because it changed what the industry counts as a breach: the asset taken was a position inside other people's networks."
+    },
+    {
+      "q": "How many organisations were actually compromised?",
+      "a": "Around 18,000 SolarWinds customers downloaded a trojanised Orion update. That number is usually quoted as the scale of the attack, and it overstates the damage. The backdoor only phoned home; the attackers then selected a much smaller set, commonly reported as fewer than 100 organisations, for hands-on intrusion. Everyone else had a dormant backdoor and a very bad month of incident response."
+    },
+    {
+      "q": "Who was behind the SolarWinds attack?",
+      "a": "In April 2021 the US government formally attributed it to the SVR, Russia's foreign intelligence service. The industry tracks the same activity as APT29 or Cozy Bear. Russia denied involvement and no individual has been prosecuted."
+    },
+    {
+      "q": "What is SUNBURST?",
+      "a": "SUNBURST is the name FireEye gave to the backdoor inserted into SolarWinds Orion. It was written to resemble ordinary Orion code, waited up to two weeks before activating, checked whether it was running inside a researcher's analysis environment, and disguised its command traffic as Orion's own telemetry protocol."
+    }
   ],
   "sources": [
-    { "label": "FireEye (now Mandiant), Highly Evasive Attacker Leverages SolarWinds Supply Chain", "url": "https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor", "note": "the original technical disclosure" },
-    { "label": "CISA Emergency Directive 21-01", "url": "https://www.cisa.gov/news-events/directives/ed-21-01-mitigate-solarwinds-orion-code-compromise", "note": "ordered federal agencies to disconnect Orion" },
-    { "label": "Joint statement by the FBI, CISA, ODNI and NSA attributing the campaign, January 2021" },
-    { "label": "SEC v. SolarWinds Corp. and Timothy G. Brown, filed October 2023", "note": "largely dismissed in July 2024" }
+    {
+      "label": "FireEye (now Mandiant), Highly Evasive Attacker Leverages SolarWinds Supply Chain",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor",
+      "note": "the original technical disclosure"
+    },
+    {
+      "label": "CISA Emergency Directive 21-01",
+      "url": "https://www.cisa.gov/news-events/directives/ed-21-01-mitigate-solarwinds-orion-code-compromise",
+      "note": "ordered federal agencies to disconnect Orion"
+    },
+    {
+      "label": "Joint statement by the FBI, CISA, ODNI and NSA attributing the campaign, January 2021"
+    },
+    {
+      "label": "SEC v. SolarWinds Corp. and Timothy G. Brown, filed October 2023",
+      "note": "largely dismissed in July 2024"
+    }
   ]
 }
 -->
@@ -47,7 +81,9 @@
 
 <h2>The backdoor was built to be boring</h2>
 
-<p>SUNBURST's design shows an unusual amount of patience. After installation it lay dormant for up to two weeks before doing anything at all. It checked the domain it had landed on and stopped if the environment looked like a malware analysis sandbox. It refused to run when certain security tools were present. Its command-and-control traffic was formatted to resemble Orion's own legitimate telemetry, so a defender reading network logs saw monitoring software sending monitoring data.</p>
+<p>SUNBURST's design shows an unusual amount of patience. After installation it lay dormant for up to two weeks before doing anything at all. It checked the domain it had landed on and stopped if the environment looked like a malware analysis sandbox. It refused to run when certain security tools were present.</p>
+
+<p>Its command-and-control traffic was formatted to resemble Orion's own legitimate telemetry, so a defender reading network logs saw monitoring software sending monitoring data.</p>
 
 <p>That restraint was the operationally significant decision. A backdoor talking on 18,000 networks is loud. One that chooses to speak on a few dozen of them is not. The attackers were never trying to exploit 18,000 organisations, they were using 18,000 organisations as a catalogue to select from.</p>
 

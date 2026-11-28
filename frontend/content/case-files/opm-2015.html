@@ -13,22 +13,57 @@
   "vector": "Stolen contractor credentials, then malware providing persistent access",
   "actor": "Attributed by US officials to actors working for China; never formally charged",
   "cost": "$63 million class settlement; the agency's director resigned",
-  "exposed": ["Names", "Social Security numbers", "Addresses", "Employment and residency history", "Foreign contacts", "Financial difficulties", "Drug use and arrests disclosed on clearance forms", "Mental health history", "Fingerprints"],
+  "exposed": [
+    "Names",
+    "Social Security numbers",
+    "Addresses",
+    "Employment and residency history",
+    "Foreign contacts",
+    "Financial difficulties",
+    "Drug use and arrests disclosed on clearance forms",
+    "Mental health history",
+    "Fingerprints"
+  ],
   "sortDate": "2015-06-04",
   "published": "2026-09-14",
   "updated": "2026-09-14",
-  "related": ["anthem-2015", "equifax-2017", "marriott-starwood-2018"],
+  "related": [
+    "anthem-2015",
+    "equifax-2017",
+    "marriott-starwood-2018"
+  ],
   "faq": [
-    { "q": "What is an SF-86 and why does it matter?", "a": "It is the questionnaire used for US national security positions. To be cleared, an applicant discloses every address and job for a decade, every foreign contact and foreign travel, financial problems, arrests, drug use, alcohol issues and mental health treatment, plus the names and details of relatives, neighbours and references. The form exists precisely to surface anything that could be used to pressure a person. Losing a database of completed forms hands that inventory to someone else." },
-    { "q": "Why were fingerprints a bigger deal than Social Security numbers?", "a": "Because you cannot reissue a fingerprint. A stolen identifier that can never be changed matters most for people whose work depends on not being recognised, and biometric checks at borders and in secure facilities have become far more common since 2015." },
-    { "q": "Was anyone prosecuted for the OPM breach?", "a": "No one has been charged with the OPM intrusion itself. US officials publicly attributed it to Chinese actors, and a Chinese national was later arrested over related malware used in other intrusions, but no OPM prosecution has followed." },
-    { "q": "How was it finally detected?", "a": "During a vendor demonstration. A security product being trialled at OPM flagged malicious traffic that existing tools had not, which is how the first intrusion came to light in April 2015. Investigating it uncovered the second, far larger theft of the background investigation archive." }
+    {
+      "q": "What is an SF-86 and why does it matter?",
+      "a": "It is the questionnaire used for US national security positions. To be cleared, an applicant discloses every address and job for a decade, every foreign contact and foreign travel, financial problems, arrests, drug use, alcohol issues and mental health treatment, plus the names and details of relatives, neighbours and references.\n\nThe form exists precisely to surface anything that could be used to pressure a person. Losing a database of completed forms hands that inventory to someone else."
+    },
+    {
+      "q": "Why were fingerprints a bigger deal than Social Security numbers?",
+      "a": "Because you cannot reissue a fingerprint. A stolen identifier that can never be changed matters most for people whose work depends on not being recognised, and biometric checks at borders and in secure facilities have become far more common since 2015."
+    },
+    {
+      "q": "Was anyone prosecuted for the OPM breach?",
+      "a": "No one has been charged with the OPM intrusion itself. US officials publicly attributed it to Chinese actors, and a Chinese national was later arrested over related malware used in other intrusions, but no OPM prosecution has followed."
+    },
+    {
+      "q": "How was it finally detected?",
+      "a": "During a vendor demonstration. A security product being trialled at OPM flagged malicious traffic that existing tools had not, which is how the first intrusion came to light in April 2015. Investigating it uncovered the second, far larger theft of the background investigation archive."
+    }
   ],
   "sources": [
-    { "label": "US House Committee on Oversight and Government Reform, \"The OPM Data Breach: How the Government Jeopardized Our National Security for More than a Generation\", September 2016" },
-    { "label": "OPM cybersecurity incident notifications, June and July 2015", "url": "https://www.opm.gov/cybersecurity/" },
-    { "label": "US Office of the Inspector General audit reports on OPM information security, 2014–2015" },
-    { "label": "In re US Office of Personnel Management Data Security Breach Litigation, $63 million settlement, 2022" }
+    {
+      "label": "US House Committee on Oversight and Government Reform, \"The OPM Data Breach: How the Government Jeopardized Our National Security for More than a Generation\", September 2016"
+    },
+    {
+      "label": "OPM cybersecurity incident notifications, June and July 2015",
+      "url": "https://www.opm.gov/cybersecurity/"
+    },
+    {
+      "label": "US Office of the Inspector General audit reports on OPM information security, 2014–2015"
+    },
+    {
+      "label": "In re US Office of Personnel Management Data Security Breach Litigation, $63 million settlement, 2022"
+    }
   ]
 }
 -->
@@ -73,7 +108,9 @@
 
 <h2>What it changed</h2>
 
-<p><strong>Federal cybersecurity got a sprint and then a strategy.</strong> The immediate response was a government-wide "cybersecurity sprint", patch the critical vulnerabilities, cut the number of privileged users, and get multi-factor authentication onto privileged accounts at speed. The longer consequence was the creation of the National Background Investigation Bureau and, eventually, the transfer of that function to the Department of Defense, on the reasoning that a personnel agency was never the right custodian for counterintelligence-grade data.</p>
+<p><strong>Federal cybersecurity got a sprint and then a strategy.</strong> The immediate response was a government-wide "cybersecurity sprint", patch the critical vulnerabilities, cut the number of privileged users, and get multi-factor authentication onto privileged accounts at speed.</p>
+
+<p>The longer consequence was the creation of the National Background Investigation Bureau and, eventually, the transfer of that function to the Department of Defense, on the reasoning that a personnel agency was never the right custodian for counterintelligence-grade data.</p>
 
 <p><strong>Contractor access became a first-class control.</strong> The credentials that opened the door belonged to a company doing investigations on OPM's behalf. This is the same failure pattern as <a href="/breaches/case-files/target-2013.html">Target's refrigeration contractor</a> two years earlier, in a context where the consequences were national rather than financial.</p>
 
@@ -81,7 +118,9 @@
 
 <h2>Why it still matters a decade on</h2>
 
-<p>Stolen card numbers stop working. Stolen clearance files do not. A person who filled in an SF-86 in 2013 disclosing a relative abroad, a period of financial trouble and a course of counselling is still that person, and the file describing it is still accurate. The value of the archive to a foreign service is not what it enabled in 2015; it is what it enables across an entire career, as those applicants rise into more senior positions.</p>
+<p>Stolen card numbers stop working. Stolen clearance files do not. A person who filled in an SF-86 in 2013 disclosing a relative abroad, a period of financial trouble and a course of counselling is still that person, and the file describing it is still accurate.</p>
+
+<p>The value of the archive to a foreign service is not what it enabled in 2015; it is what it enables across an entire career, as those applicants rise into more senior positions.</p>
 
 <p>That is the structural point worth taking from this case: for some categories of data, the exposure window is not measured in months. It is measured in working lifetimes.</p>
 

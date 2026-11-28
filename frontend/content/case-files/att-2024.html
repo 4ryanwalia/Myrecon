@@ -13,22 +13,57 @@
   "vector": "A third-party cloud data warehouse account without multi-factor authentication",
   "actor": "Part of the campaign tracked as UNC5537; charges followed in late 2024",
   "cost": "A proposed $177 million settlement covering both 2024 incidents",
-  "exposed": ["Phone numbers contacted", "Counts of calls and texts", "Call durations", "Cell site identifiers for some records"],
+  "exposed": [
+    "Phone numbers contacted",
+    "Counts of calls and texts",
+    "Call durations",
+    "Cell site identifiers for some records"
+  ],
   "sortDate": "2024-07-12",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
-  "related": ["snowflake-2024", "t-mobile-2021", "facebook-scrape-2021"],
+  "updated": "2026-11-28",
+  "related": [
+    "snowflake-2024",
+    "t-mobile-2021",
+    "facebook-scrape-2021"
+  ],
   "faq": [
-    { "q": "Were the contents of my calls or messages stolen?", "a": "No. The data was metadata: which numbers interacted, how many times, and for how long, plus cell site identifiers for a subset of records. The words spoken and the text of messages were not included." },
-    { "q": "If it is only metadata, why does it matter?", "a": "Because a complete record of who you contact reveals relationships that content often does not. A sequence of calls to an oncology practice, a divorce lawyer, a rehabilitation clinic or a domestic violence helpline tells the story without a single word being read. Metadata at scale is also easy to analyse automatically, which content is not." },
-    { "q": "I was not an AT&T customer. Am I in it?", "a": "Possibly. The records cover numbers that AT&T customers interacted with, and that includes people on other networks. You can be in a telephone metadata set without ever having had a relationship with the carrier that lost it." },
-    { "q": "Was this the same as the other AT&T leak in 2024?", "a": "No, they are separate. In March 2024, a dataset of about 73 million current and former customer records from 2019 or earlier surfaced publicly, including Social Security numbers and account passcodes, prompting a mass passcode reset. The July disclosure concerned call and text metadata taken from a cloud data warehouse in April 2024." }
+    {
+      "q": "Were the contents of my calls or messages stolen?",
+      "a": "No. The data was metadata: which numbers interacted, how many times, and for how long, plus cell site identifiers for a subset of records. The words spoken and the text of messages were not included."
+    },
+    {
+      "q": "If it is only metadata, why does it matter?",
+      "a": "Because a complete record of who you contact reveals relationships that content often does not. A sequence of calls to an oncology practice, a divorce lawyer, a rehabilitation clinic or a domestic violence helpline tells the story without a single word being read. Metadata at scale is also easy to analyse automatically, which content is not."
+    },
+    {
+      "q": "I was not an AT&T customer. Am I in it?",
+      "a": "Possibly. The records cover numbers that AT&T customers interacted with, and that includes people on other networks. You can be in a telephone metadata set without ever having had a relationship with the carrier that lost it."
+    },
+    {
+      "q": "Was this the same as the other AT&T leak in 2024?",
+      "a": "No, they are separate. In March 2024, a dataset of about 73 million current and former customer records from 2019 or earlier surfaced publicly, including Social Security numbers and account passcodes, prompting a mass passcode reset. The July disclosure concerned call and text metadata taken from a cloud data warehouse in April 2024."
+    }
   ],
   "sources": [
-    { "label": "AT&T Form 8-K filing and customer notice, July 2024" },
-    { "label": "Mandiant analysis of UNC5537 and the Snowflake-related campaign, June 2024" },
-    { "label": "Federal Communications Commission enforcement actions against AT&T, 2024" },
-    { "label": "Proposed class settlement filings, 2025" }
+    {
+      "label": "AT&T Form 8-K filing and customer notice, July 2024",
+      "url": "https://www.sec.gov/edgar/browse/?CIK=0000732717",
+      "note": "AT&T SEC EDGAR filings, checked 28 November 2026"
+    },
+    {
+      "label": "Mandiant analysis of UNC5537 and the Snowflake-related campaign, June 2024",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/unc5537-snowflake-data-theft-extortion",
+      "note": "Google Cloud / Mandiant UNC5537 analysis, checked 28 November 2026"
+    },
+    {
+      "label": "Federal Communications Commission enforcement actions against AT&T, 2024",
+      "url": "https://www.fcc.gov/enforcement",
+      "note": "FCC Enforcement Bureau, checked 28 November 2026"
+    },
+    {
+      "label": "Proposed class settlement filings, 2025"
+    }
   ]
 }
 -->

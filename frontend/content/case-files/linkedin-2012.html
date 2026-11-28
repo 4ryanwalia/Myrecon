@@ -13,22 +13,50 @@
   "vector": "Never fully detailed publicly; passwords stored as unsalted SHA-1",
   "actor": "Yevgeniy Nikulin, convicted in a US federal court in 2020",
   "cost": "$1.25 million settlement with premium subscribers; a chain of secondary breaches at other companies",
-  "exposed": ["Email addresses", "Unsalted SHA-1 password hashes"],
+  "exposed": [
+    "Email addresses",
+    "Unsalted SHA-1 password hashes"
+  ],
   "sortDate": "2012-06-06",
   "published": "2026-09-14",
   "updated": "2026-09-14",
-  "related": ["dropbox-2012", "myspace-2016", "collection-1-2019"],
+  "related": [
+    "dropbox-2012",
+    "myspace-2016",
+    "collection-1-2019"
+  ],
   "faq": [
-    { "q": "How many LinkedIn accounts were breached?", "a": "Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale." },
-    { "q": "What is an unsalted SHA-1 hash, and why was it a problem?", "a": "SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords, modern hardware tests billions of candidates per second. \"Unsalted\" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless." },
-    { "q": "Was the 2021 \"700 million LinkedIn records\" leak the same thing?", "a": "No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event, no security control was bypassed, which is what makes scraping so hard to prevent." },
-    { "q": "Did the LinkedIn breach cause other breaches?", "a": "Directly. A Dropbox employee reused their LinkedIn password on a corporate account, which led to the theft of 68 million Dropbox credentials. Mark Zuckerberg's Twitter and Pinterest accounts were taken over in 2016 using a password from the LinkedIn set. Reuse is what turns one company's failure into everyone's." }
+    {
+      "q": "How many LinkedIn accounts were breached?",
+      "a": "Around 165 million, of which roughly 117 million had a usable email-and-password pair. Only 6.5 million hashes appeared in 2012; the rest surfaced in May 2016 when the full file was offered for sale."
+    },
+    {
+      "q": "What is an unsalted SHA-1 hash, and why was it a problem?",
+      "a": "SHA-1 is a fast hashing algorithm designed for checking file integrity, not for storing passwords, modern hardware tests billions of candidates per second. \"Unsalted\" means no random value was mixed into each password, so identical passwords produced identical hashes and one cracking run solved every account that shared a password. A password-specific algorithm with a per-user salt would have made the same file close to worthless."
+    },
+    {
+      "q": "Was the 2021 \"700 million LinkedIn records\" leak the same thing?",
+      "a": "No. That dataset was scraped from public profiles using LinkedIn's own interfaces, not taken from its databases, and it contained no passwords. It is a real privacy problem but a different category of event, no security control was bypassed, which is what makes scraping so hard to prevent."
+    },
+    {
+      "q": "Did the LinkedIn breach cause other breaches?",
+      "a": "Directly. A Dropbox employee reused their LinkedIn password on a corporate account, which led to the theft of 68 million Dropbox credentials. Mark Zuckerberg's Twitter and Pinterest accounts were taken over in 2016 using a password from the LinkedIn set. Reuse is what turns one company's failure into everyone's."
+    }
   ],
   "sources": [
-    { "label": "LinkedIn security notices, June 2012 and May 2016" },
-    { "label": "US Department of Justice, conviction of Yevgeniy Nikulin, 2020" },
-    { "label": "In re LinkedIn User Privacy Litigation, $1.25 million settlement, 2015" },
-    { "label": "Have I Been Pwned, LinkedIn breach record", "url": "https://haveibeenpwned.com/PwnedWebsites#LinkedIn" }
+    {
+      "label": "LinkedIn security notices, June 2012 and May 2016"
+    },
+    {
+      "label": "US Department of Justice, conviction of Yevgeniy Nikulin, 2020"
+    },
+    {
+      "label": "In re LinkedIn User Privacy Litigation, $1.25 million settlement, 2015"
+    },
+    {
+      "label": "Have I Been Pwned, LinkedIn breach record",
+      "url": "https://haveibeenpwned.com/PwnedWebsites#LinkedIn"
+    }
   ]
 }
 -->
@@ -44,7 +72,9 @@
 
 <h2>Why the hashes fell so fast</h2>
 
-<p>SHA-1 is a cryptographic hash function built for speed, it exists to verify that a file has not changed, and it is very good at that. Speed is precisely the wrong property for password storage. A consumer graphics card can compute billions of SHA-1 hashes per second, so an attacker holding a list of hashes can simply try every word in a dictionary, every leaked password from every previous breach, and every plausible mutation of both.</p>
+<p>SHA-1 is a cryptographic hash function built for speed, it exists to verify that a file has not changed, and it is very good at that. Speed is precisely the wrong property for password storage.</p>
+
+<p>A consumer graphics card can compute billions of SHA-1 hashes per second, so an attacker holding a list of hashes can simply try every word in a dictionary, every leaked password from every previous breach, and every plausible mutation of both.</p>
 
 <p>The missing salt made it worse. A salt is a unique random value stored with each user and mixed into the hash, so that two people who both choose <code>linkedin123</code> end up with completely different stored values. Without it, one cracking run answers for everybody at once: crack the hash for <code>linkedin123</code> once, and every account that used it falls simultaneously.</p>
 

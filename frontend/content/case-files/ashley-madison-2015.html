@@ -13,21 +13,54 @@
   "vector": "Never publicly established; the attackers claimed insider-level access",
   "actor": "A group calling itself The Impact Team. Never identified.",
   "cost": "$1.6 million FTC and state settlement, $11.2 million class settlement, the chief executive's job",
-  "exposed": ["Names", "Email addresses", "Home addresses", "Partial card data and transaction records", "Sexual preferences stated on profiles", "bcrypt password hashes, plus a weak legacy token"],
+  "exposed": [
+    "Names",
+    "Email addresses",
+    "Home addresses",
+    "Partial card data and transaction records",
+    "Sexual preferences stated on profiles",
+    "bcrypt password hashes, plus a weak legacy token"
+  ],
   "sortDate": "2015-08-18",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
-  "related": ["medibank-2022", "23andme-2023", "sony-pictures-2014"],
+  "updated": "2026-11-28",
+  "related": [
+    "medibank-2022",
+    "23andme-2023",
+    "sony-pictures-2014"
+  ],
   "faq": [
-    { "q": "Were Ashley Madison passwords cracked?", "a": "Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password, a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly. Strong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase." },
-    { "q": "Did Ashley Madison really charge to delete data it kept?", "a": "It offered a paid \"full delete\" option, and regulators found that the deletion was not complete, payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case." },
-    { "q": "Were all the accounts real people?", "a": "No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address, which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users." },
-    { "q": "Was anyone caught?", "a": "No. The Impact Team was never identified, and no charges were ever brought. The company's chief executive resigned, the business was renamed Ruby Corp, and Ashley Madison continues to operate." }
+    {
+      "q": "Were Ashley Madison passwords cracked?",
+      "a": "Most were not, at first. The site used bcrypt with a high cost factor, which is genuinely strong password storage. But researchers then found a legacy authentication token in the code that had been generated from an MD5 hash of the lowercased username and password, a far weaker construction. That shortcut allowed roughly 11 million passwords to be recovered quickly.\n\nStrong hashing in one place does not help if a weaker copy of the same secret exists somewhere else in the codebase."
+    },
+    {
+      "q": "Did Ashley Madison really charge to delete data it kept?",
+      "a": "It offered a paid \"full delete\" option, and regulators found that the deletion was not complete, payment records and other data were retained. Charging for a privacy guarantee that is not delivered is a consumer protection matter as much as a security one, and it was central to the FTC's case."
+    },
+    {
+      "q": "Were all the accounts real people?",
+      "a": "No, and this matters for anyone reading a name in the dump. The site never verified email addresses at signup, so anyone could register any address, which is how government and military addresses ended up in the file without their owners' involvement. Regulators also found the service used automated engager profiles to interact with paying male users."
+    },
+    {
+      "q": "Was anyone caught?",
+      "a": "No. The Impact Team was never identified, and no charges were ever brought. The company's chief executive resigned, the business was renamed Ruby Corp, and Ashley Madison continues to operate."
+    }
   ],
   "sources": [
-    { "label": "Federal Trade Commission, Ashley Madison settlement, December 2016", "url": "https://www.ftc.gov/news-events/news/press-releases/2016/12/operators-ashleymadisoncom-settle-ftc-state-charges-resulting-massive-data-breach" },
-    { "label": "Joint report of the Privacy Commissioner of Canada and the Australian Privacy Commissioner, August 2016" },
-    { "label": "CynoSure Prime analysis of the legacy login token, September 2015" }
+    {
+      "label": "Federal Trade Commission, Ashley Madison settlement, December 2016",
+      "url": "https://www.ftc.gov/news-events/news/press-releases/2016/12/operators-ashleymadisoncom-settle-ftc-state-charges-resulting-2015-data-breach-exposed-36-million",
+      "note": "checked 28 Nov 2026"
+    },
+    {
+      "label": "Joint report of the Privacy Commissioner of Canada and the Australian Privacy Commissioner, August 2016",
+      "url": "https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2016/pipeda-2016-005/",
+      "note": "OPC PIPEDA Findings #2016-005, checked 28 Nov 2026"
+    },
+    {
+      "label": "CynoSure Prime analysis of the legacy login token, September 2015"
+    }
   ]
 }
 -->
@@ -35,7 +68,9 @@
 
 <h2>What happened</h2>
 
-<p>On 19 July 2015, visitors to Ashley Madison, a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media, were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently. This was not a ransom in the usual sense: there was no price. The demand was that the business cease to exist.</p>
+<p>On 19 July 2015, visitors to Ashley Madison, a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media, were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently.</p>
+
+<p>This was not a ransom in the usual sense: there was no price. The demand was that the business cease to exist.</p>
 
 <p>Avid Life Media did not comply. On 18 and 20 August, the attackers published, in two releases: roughly 32 million user records, internal company documents, source code, and the chief executive's email archive. It was posted openly and mirrored instantly. Within days, searchable web front-ends existed for anyone to check a name or an email address.</p>
 
@@ -80,7 +115,9 @@
 
 <h2>What it changed</h2>
 
-<p><strong>Sensitivity entered the risk calculation properly.</strong> Before Ashley Madison, breach severity was largely measured in identity-theft terms: how many card numbers, how many national identifiers. This case forced a second axis, what does this data imply about a person, and what happens to them if it is published? That axis now drives how health data, sexual-orientation data and location history are classified, and it is why the <a href="/breaches/">breach archive</a> weights those fields the way it does.</p>
+<p><strong>Sensitivity entered the risk calculation properly.</strong> Before Ashley Madison, breach severity was largely measured in identity-theft terms: how many card numbers, how many national identifiers. This case forced a second axis, what does this data imply about a person, and what happens to them if it is published?</p>
+
+<p>That axis now drives how health data, sexual-orientation data and location history are classified, and it is why the <a href="/breaches/">breach archive</a> weights those fields the way it does.</p>
 
 <p><strong>Deletion became auditable.</strong> "Delete my account" stopped being a UI affordance and became a claim regulators will test. The right to erasure written into the GDPR two years later has a very similar shape to the finding against Avid Life Media.</p>
 

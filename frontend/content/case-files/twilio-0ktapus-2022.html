@@ -12,22 +12,55 @@
   "vector": "SMS phishing to employees, directing them to convincing fake single sign-on pages that relayed credentials and one-time codes in real time",
   "actor": "A group tracked as 0ktapus / Scatter Swine, overlapping with what later became known as Scattered Spider",
   "cost": "Not disclosed; downstream compromises at Twilio, Signal, DoorDash, Mailchimp and others",
-  "exposed": ["Corporate credentials", "One-time passcodes", "Customer support tooling access", "Phone numbers of 1,900 Signal users"],
+  "exposed": [
+    "Corporate credentials",
+    "One-time passcodes",
+    "Customer support tooling access",
+    "Phone numbers of 1,900 Signal users"
+  ],
   "sortDate": "2022-08-07",
   "published": "2026-09-14",
   "updated": "2026-09-14",
-  "related": ["lastpass-2022", "mgm-resorts-2023", "twitter-2022"],
+  "related": [
+    "lastpass-2022",
+    "mgm-resorts-2023",
+    "twitter-2022"
+  ],
   "faq": [
-    { "q": "If they had one-time codes, is two-factor authentication useless?", "a": "No, the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing. Cloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one." },
-    { "q": "What actually happened to Twilio customers?", "a": "Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them." },
-    { "q": "Why is it called 0ktapus?", "a": "Group-IB, which analysed the campaign, named it after the phishing pages themselves, most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises." },
-    { "q": "How did attackers know which employees to text?", "a": "Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file." }
+    {
+      "q": "If they had one-time codes, is two-factor authentication useless?",
+      "a": "No, the type matters enormously. Codes from an app or an SMS can be typed into a fake page and replayed by the attacker within their thirty-second window. A hardware security key or passkey cannot, because it checks the website's real domain before it will sign anything, and a lookalike domain simply gets nothing.\n\nCloudflare's employees clicked the same links as everyone else. Their keys refused to authenticate to a site that was not the real one."
+    },
+    {
+      "q": "What actually happened to Twilio customers?",
+      "a": "Twilio said 209 customer accounts and 93 Authy users were affected. The most-reported downstream effect was at Signal, where the attackers used Twilio's customer tooling to re-register a small number of accounts: about 1,900 users' phone numbers were exposed and up to three accounts were re-registered to attacker-controlled devices. Signal's message contents were not accessible, because they are end-to-end encrypted and Signal itself cannot read them."
+    },
+    {
+      "q": "Why is it called 0ktapus?",
+      "a": "Group-IB, which analysed the campaign, named it after the phishing pages themselves, most impersonated Okta, the single sign-on provider many of the targeted companies used. Okta was not breached in this campaign. It was impersonated, which is a hazard of being the login screen everybody recognises."
+    },
+    {
+      "q": "How did attackers know which employees to text?",
+      "a": "Phone numbers for employees at targeted companies were obtained in advance, reportedly including from data taken in earlier compromises. This is the compounding effect of breaches: the output of one becomes the targeting list for the next, and a leaked corporate directory is worth far more as an input to phishing than it ever was as a standalone file."
+    }
   ],
   "sources": [
-    { "label": "Group-IB, Roasting 0ktapus: the phishing campaign going after Okta identity credentials", "url": "https://www.group-ib.com/blog/0ktapus/", "note": "the analysis that mapped the campaign's scale" },
-    { "label": "Twilio incident report, August 2022", "url": "https://www.twilio.com/en-us/blog/august-2022-social-engineering-attack" },
-    { "label": "Cloudflare, The mechanics of a sophisticated phishing scam and how we stopped it", "url": "https://blog.cloudflare.com/2022-07-sms-phishing-attacks/" },
-    { "label": "Signal statement on the Twilio incident, August 2022" }
+    {
+      "label": "Group-IB, Roasting 0ktapus: the phishing campaign going after Okta identity credentials",
+      "url": "https://www.group-ib.com/blog/0ktapus/",
+      "note": "the analysis that mapped the campaign's scale"
+    },
+    {
+      "label": "Twilio incident report, August 2022",
+      "url": "https://www.twilio.com/en-us/blog/august-2022-social-engineering-attack"
+    },
+    {
+      "label": "Cloudflare, The mechanics of a sophisticated phishing scam and how we stopped it",
+      "url": "https://blog.cloudflare.com/2022-07-sms-phishing-attacks/"
+    },
+    {
+      "label": "Signal statement on the Twilio incident, August 2022"
+    }
   ]
 }
 -->

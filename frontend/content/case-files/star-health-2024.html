@@ -13,22 +13,59 @@
   "vector": "Not established publicly; the insurer confirmed unauthorised access and disputed the attacker's account of how the data was obtained",
   "actor": "An actor operating under the handle \"xenZen\", who ran Telegram bots distributing the records",
   "cost": "Litigation against Telegram and the actor, an interim injunction from the Madras High Court, and a regulatory examination of a listed insurer",
-  "exposed": ["Names", "Phone numbers", "Physical addresses", "Dates of birth", "Identity and tax numbers", "Medical reports", "Insurance policy documents", "Claim records"],
+  "exposed": [
+    "Names",
+    "Phone numbers",
+    "Physical addresses",
+    "Dates of birth",
+    "Identity and tax numbers",
+    "Medical reports",
+    "Insurance policy documents",
+    "Claim records"
+  ],
   "sortDate": "2024-09-20",
   "published": "2026-09-15",
-  "updated": "2026-09-15",
-  "related": ["mobikwik-2021", "aadhaar-exposures-2018", "medibank-2022"],
+  "updated": "2026-11-28",
+  "related": [
+    "mobikwik-2021",
+    "aadhaar-exposures-2018",
+    "medibank-2022"
+  ],
   "faq": [
-    { "q": "What made this leak different from an ordinary database dump?", "a": "The delivery. Instead of a file posted for sale on a forum, the data was made available through Telegram chatbots: a user sent a query and the bot returned matching customer documents, including policy papers and medical reports. That turns a technical artefact into a consumer product. No forum account, no torrent, no ability to handle a multi-gigabyte database, just a chat window." },
-    { "q": "How did the attacker say they obtained the data, and did the company accept that account?", "a": "The actor publicly claimed the data had been obtained with inside help. Star Health rejected that account, said its initial assessment found no widespread compromise of sensitive customer data, and stated it was investigating. Those claims remain contested, and this file does not adopt either side's version. What is not in dispute is that genuine customer documents were being distributed." },
-    { "q": "What did Star Health do about it?", "a": "It sued Telegram and the actor in the Madras High Court and obtained interim orders directing that the bots be blocked. It is a reasonable response and an instructive one: the legal action targeted distribution rather than the breach, because distribution is the part with an identifiable intermediary that a court can order to act. Bots taken down can be replaced; the underlying copies do not go away." },
-    { "q": "Why is health insurance data worse than most breached data?", "a": "Because it combines identity with medical detail and financial exposure in one record. A policy document carries name, address, date of birth, identity numbers and the sum insured; a claim record adds what a person was treated for and when. That supports impersonation, targeted extortion, and fraud against both the customer and the insurer, and, unlike a password, none of it can be changed after the fact." }
+    {
+      "q": "What made this leak different from an ordinary database dump?",
+      "a": "The delivery. Instead of a file posted for sale on a forum, the data was made available through Telegram chatbots: a user sent a query and the bot returned matching customer documents, including policy papers and medical reports. That turns a technical artefact into a consumer product. No forum account, no torrent, no ability to handle a multi-gigabyte database, just a chat window."
+    },
+    {
+      "q": "How did the attacker say they obtained the data, and did the company accept that account?",
+      "a": "The actor publicly claimed the data had been obtained with inside help. Star Health rejected that account, said its initial assessment found no widespread compromise of sensitive customer data, and stated it was investigating. Those claims remain contested, and this file does not adopt either side's version. What is not in dispute is that genuine customer documents were being distributed."
+    },
+    {
+      "q": "What did Star Health do about it?",
+      "a": "It sued Telegram and the actor in the Madras High Court and obtained interim orders directing that the bots be blocked. It is a reasonable response and an instructive one: the legal action targeted distribution rather than the breach, because distribution is the part with an identifiable intermediary that a court can order to act. Bots taken down can be replaced; the underlying copies do not go away."
+    },
+    {
+      "q": "Why is health insurance data worse than most breached data?",
+      "a": "Because it combines identity with medical detail and financial exposure in one record. A policy document carries name, address, date of birth, identity numbers and the sum insured; a claim record adds what a person was treated for and when. That supports impersonation, targeted extortion, and fraud against both the customer and the insurer, and, unlike a password, none of it can be changed after the fact."
+    }
   ],
   "sources": [
-    { "label": "Reuters reporting on Telegram chatbots distributing Star Health customer data, September–October 2024" },
-    { "label": "Star Health and Allied Insurance, stock exchange disclosures and public statements, September 2024" },
-    { "label": "Madras High Court, interim orders in proceedings against Telegram and others, 2024" },
-    { "label": "Indian Computer Emergency Response Team (CERT-In) incident reporting framework" }
+    {
+      "label": "Reuters reporting on Telegram chatbots distributing Star Health customer data, September–October 2024"
+    },
+    {
+      "label": "Star Health and Allied Insurance, stock exchange disclosures and public statements, September 2024",
+      "url": "https://www.starhealth.in/",
+      "note": "company portal, checked 28 November 2026"
+    },
+    {
+      "label": "Madras High Court, interim orders in proceedings against Telegram and others, 2024"
+    },
+    {
+      "label": "Indian Computer Emergency Response Team (CERT-In) incident reporting framework",
+      "url": "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf",
+      "note": "CERT-In 28 April 2022 Directions, checked 28 November 2026"
+    }
   ]
 }
 -->
@@ -44,7 +81,9 @@
 
 <h2>The distribution is the innovation</h2>
 
-<p>For most of the history of data breaches, stolen data has been awkward to use. It arrives as a compressed archive of database tables, tens of gigabytes, badly documented, and extracting one person's record requires the ability to load it and query it. That friction is a real, if unearned, protection. It limits the pool of people who can act on a leak to those with the tooling and patience to process one.</p>
+<p>For most of the history of data breaches, stolen data has been awkward to use. It arrives as a compressed archive of database tables, tens of gigabytes, badly documented, and extracting one person's record requires the ability to load it and query it. That friction is a real, if unearned, protection.</p>
+
+<p>It limits the pool of people who can act on a leak to those with the tooling and patience to process one.</p>
 
 <p>A chatbot removes it entirely. The interface is a message. The query is a name or a phone number. The response is a formatted document. Someone with a grudge against a neighbour, an ex-partner looking for an address, or a small-time fraudster picking targets no longer needs any technical capability at all, and the same interface serves a bulk buyer perfectly well.</p>
 
@@ -73,7 +112,9 @@
 
 <h2>What it changed</h2>
 
-<p>The case arrived while India's Digital Personal Data Protection Act, passed in 2023, was still waiting on the rules that would give it operational teeth. That timing is the context for everything about the public handling of this incident: the absence of a clear statutory notification deadline, the reliance on stock exchange disclosure rather than customer notification as the primary public statement, and the fact that the most detailed account available to affected customers came from journalists rather than from anyone with a duty to inform them.</p>
+<p>The case arrived while India's Digital Personal Data Protection Act, passed in 2023, was still waiting on the rules that would give it operational teeth.</p>
+
+<p>That timing is the context for everything about the public handling of this incident: the absence of a clear statutory notification deadline, the reliance on stock exchange disclosure rather than customer notification as the primary public statement, and the fact that the most detailed account available to affected customers came from journalists rather than from anyone with a duty to inform them.</p>
 
 <p>For the insurance sector specifically, it put a number on a risk that had been discussed abstractly. Insurers hold more sensitive data than banks do, financial detail plus medical history plus identity documents, retained for the life of a policy and beyond, and they have historically been supervised on solvency far more closely than on data handling. A leak that could be queried by name made that asymmetry difficult to ignore.</p>
 

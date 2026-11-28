@@ -5,7 +5,7 @@
   "description": "Learn open-source username intelligence techniques: HTTP soft-404 traps, WAF challenges, handle permutations and multi-source corroboration.",
   "category": "OSINT Methodology",
   "datePublished": "2026-10-13",
-  "dateModified": "2026-11-27"
+  "dateModified": "2026-11-28"
 }
 -->
 <p class="lead">In open-source intelligence (OSINT), a username is frequently the starting pivot point for an entire investigation. Tracing how a single handle is reused across hundreds of platforms reveals digital footprints, operational security mistakes, and public online relationships.</p>
@@ -13,18 +13,18 @@
 <h2>The evolution of username OSINT: From manual searches to automated engines</h2>
 <p>In the early days of digital investigations, researchers manually typed handles into browser address bars or relied on generic search engines. Today, automated scanners execute parallel HTTP requests across hundreds of endpoints in seconds. Modern username intelligence tools generally fall into two categories:</p>
 <ul>
-  <li><strong>Command-Line Tools (CLI):</strong> Tools like <em>Sherlock</em> and <em>Maigret</em> run in terminal environments via Python or Docker. They are highly customizable and cover vast community datasets, but require technical installation, frequent dependency updates, and maintenance to avoid IP bans.</li>
-  <li><strong>Web-Based OSINT Platforms:</strong> Platforms like <a href="/#tool">MyRecon</a> and <em>WhatsMyName</em> (archived in November 2026, so its site list is no longer updated; see <a href="/whatsmyname-alternatives.html">alternatives</a>) run directly in the browser or via API. They eliminate installation overhead, execute fast client-side previews, and feature built-in controls against false positives. Read our comprehensive comparison in <a href="/vs/sherlock">MyRecon vs Sherlock</a> and <a href="/vs/maigret">MyRecon vs Maigret</a>.</li>
+  <li><strong>Command-Line Tools (CLI):</strong> Open-source tools like <a href="https://github.com/sherlock-project/sherlock" target="_blank" rel="noopener noreferrer">Sherlock</a> and <a href="https://github.com/soxoj/maigret" target="_blank" rel="noopener noreferrer">Maigret</a> (checked 28 Nov 2026) run in terminal environments via Python or Docker. They are highly customizable and cover large community datasets, but require local installation, dependency updates, and rate-limit management.</li>
+  <li><strong>Web-Based OSINT Platforms:</strong> Platforms like <a href="/#tool">MyRecon</a> and the <a href="https://github.com/WebBreacher/WhatsMyName" target="_blank" rel="noopener noreferrer">WhatsMyName</a> project (archived in November 2026, checked 28 Nov 2026; see <a href="/whatsmyname-alternatives.html">alternatives</a>) run in the browser or via API. They eliminate installation overhead and separate confirmed hits from uncertain checks. Read our comparisons in <a href="/vs/sherlock">MyRecon vs Sherlock</a> and <a href="/vs/maigret">MyRecon vs Maigret</a>.</li>
 </ul>
 
 <h2>The technical mechanics of username enumeration</h2>
 <p>When an OSINT tool checks whether an account exists, it sends an HTTP <code>GET</code> or <code>HEAD</code> request to the platform's profile URI. Evaluating the response requires navigating three primary technical obstacles:</p>
 
-<h3>1. Status code ambiguity & soft 404s</h3>
-<p>While RFC standards specify HTTP <code>404 Not Found</code> for nonexistent resources, modern single-page applications (SPAs) often return HTTP <code>200 OK</code> with an empty shell or redirect to a login wall. Advanced scanners inspect the response payload for specific error strings (such as "User not found" or "Page does not exist") or measure response byte length rather than trusting the status code alone.</p>
+<h3>1. Status code ambiguity &amp; soft 404s</h3>
+<p>While <a href="https://www.rfc-editor.org/info/rfc9110/" target="_blank" rel="noopener noreferrer">RFC 9110 (HTTP Semantics)</a> (checked 28 Nov 2026) specifies HTTP <code>404 Not Found</code> for nonexistent resources, modern single-page applications (SPAs) often return HTTP <code>200 OK</code> with an empty shell or redirect to a login wall. Reliable scanners inspect the response payload for explicit error strings (such as "User not found" or "Page does not exist") or verify profile metadata against negative controls rather than trusting the status code alone.</p>
 
 <h3>2. Anti-bot mitigation and Cloudflare challenges</h3>
-<p>Major platforms like Instagram, TikTok, and Reddit employ sophisticated Web Application Firewalls (WAFs) and rate limiters. Scanners that send hundreds of rapid requests from a single data-center IP often encounter HTTP 403 or 429 errors. Client-side browser scanning (as supported in MyRecon's guest preview) leverages the visitor's residential browser context to minimize rate limiting.</p>
+<p>Major platforms like Instagram, TikTok, and Reddit employ sophisticated Web Application Firewalls (WAFs) and rate limiters. Scanners that send hundreds of rapid requests from a single data-center IP often encounter HTTP 403 or 429 errors. On the web, MyRecon's server-side worker classifies WAF blocks and login walls explicitly as <code>unknown</code> instead of guessing, while direct device-side requests run from the user's own connection in <a href="/app.html">MyRecon for Android</a>.</p>
 
 <h3>3. Account enumeration protection</h3>
 <p>Privacy-conscious platforms may intentionally obfuscate whether a handle exists by displaying identical profile placeholder pages for both active private accounts and nonexistent handles.</p>
@@ -35,10 +35,10 @@
   <li><strong>Phase 1: Baseline Sweep:</strong> Run the exact target handle through a multi-platform scanner to establish a broad overview of confirmed, negative, and inconclusive sites.</li>
   <li><strong>Phase 2: Handle Permutations:</strong> Generate and test common variations, including prefix/suffix additions (e.g. <code>_official</code>, <code>dev</code>), common character substitutions, and known alternate nicknames.</li>
   <li><strong>Phase 3: Artifact Extraction:</strong> For every confirmed profile, extract visual and textual indicators: avatar images, bio descriptions, joined dates, follower networks, and linked external URLs.</li>
-  <li><strong>Phase 4: Independent Corroboration:</strong> Pivot into external databases: check whether an associated email has experienced credential exposure using the <a href="/#tool">breach lookup tool</a>, check domain registration details via <a href="/#tool=domain">WHOIS/RDAP</a>, and corroborate shared context before finalizing any findings.</li>
+  <li><strong>Phase 4: Independent Corroboration:</strong> Pivot into external databases: check whether an associated email has experienced credential exposure using the <a href="/#tool">breach lookup tool</a>, inspect domain registration details via <a href="/#tool=domain">WHOIS/RDAP</a> (<a href="https://www.rfc-editor.org/info/rfc7480/" target="_blank" rel="noopener noreferrer">RFC 7480</a>, checked 28 Nov 2026), and corroborate shared context before finalizing any findings.</li>
 </ol>
 
 <h2>Ethical standards in open-source research</h2>
 <p>Open-source intelligence relies exclusively on voluntarily published, publicly accessible records. Ethical researchers never engage in social engineering, unauthorized access attempts, or surveillance of private communications. Adhering to the principle of corroboration ensures that innocent users are not falsely conflated with malicious actors who happen to share a common screen name.</p>
 
-<div class="callout"><p><strong>Try It Yourself:</strong> Begin your research with the free <a href="/#tool">MyRecon online scanner</a> or explore our <a href="/guides/">library of OSINT guides</a> for step-by-step tutorials on DNS, WHOIS, and breach analysis.</p></div>
+<div class="callout"><p><strong>Try It Yourself:</strong> Begin your research with the free <a href="/#tool">MyRecon online scanner</a>, explore our <a href="/guides/">library of OSINT guides</a>, or review our <a href="/about.html#editorial-method">editorial method</a>. External sources checked <time datetime="2026-11-28">28 Nov 2026</time>.</p></div>

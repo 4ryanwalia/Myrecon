@@ -13,22 +13,59 @@
   "vector": "An internet-facing API endpoint that required no authentication and allowed enumeration of customer records",
   "actor": "An extortionist who posted samples, demanded US$1 million, then withdrew the demand",
   "cost": "Regulatory proceedings by two Australian regulators, a class action, and the cost of reissuing identity documents nationwide",
-  "exposed": ["Names", "Dates of birth", "Phone numbers", "Email addresses", "Addresses", "Passport numbers", "Driver's licence numbers", "Medicare numbers"],
+  "exposed": [
+    "Names",
+    "Dates of birth",
+    "Phone numbers",
+    "Email addresses",
+    "Addresses",
+    "Passport numbers",
+    "Driver's licence numbers",
+    "Medicare numbers"
+  ],
   "sortDate": "2022-09-22",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
-  "related": ["medibank-2022", "t-mobile-2021", "marriott-starwood-2018"],
+  "updated": "2026-11-28",
+  "related": [
+    "medibank-2022",
+    "t-mobile-2021",
+    "marriott-starwood-2018"
+  ],
   "faq": [
-    { "q": "How did the Optus breach happen?", "a": "Through an API endpoint that was reachable from the public internet and required no authentication. Customer records were addressed by identifiers that could be incremented, so anyone who found the endpoint could iterate through the database. There was no intrusion in the conventional sense, the door was open and the records were numbered." },
-    { "q": "Why were identity documents the worst part?", "a": "Because a passport, driver's licence or Medicare number is what Australian banks and services use to verify identity. A stolen one supports account opening in the victim's name, and replacing them costs money and time. The scale forced state and federal governments into a mass reissue and a rethink of whether telcos should be holding those numbers at all." },
-    { "q": "Did Optus pay a ransom?", "a": "No. An extortionist posted 10,000 records publicly and demanded US$1 million, then withdrew the demand and issued an apology days later, claiming the data had been deleted. There is no way to verify a deletion claim, which is exactly why paying is a poor bet even when the demand is withdrawn." },
-    { "q": "What changed in Australian law afterwards?", "a": "Penalties under the Privacy Act were raised sharply in December 2022, to the greater of A$50 million, three times the benefit obtained, or 30% of adjusted domestic turnover. Temporary rules also allowed telcos to share identity data with financial institutions and government agencies so compromised documents could be flagged rather than silently reused." }
+    {
+      "q": "How did the Optus breach happen?",
+      "a": "Through an API endpoint that was reachable from the public internet and required no authentication. Customer records were addressed by identifiers that could be incremented, so anyone who found the endpoint could iterate through the database. There was no intrusion in the conventional sense, the door was open and the records were numbered."
+    },
+    {
+      "q": "Why were identity documents the worst part?",
+      "a": "Because a passport, driver's licence or Medicare number is what Australian banks and services use to verify identity. A stolen one supports account opening in the victim's name, and replacing them costs money and time. The scale forced state and federal governments into a mass reissue and a rethink of whether telcos should be holding those numbers at all."
+    },
+    {
+      "q": "Did Optus pay a ransom?",
+      "a": "No. An extortionist posted 10,000 records publicly and demanded US$1 million, then withdrew the demand and issued an apology days later, claiming the data had been deleted. There is no way to verify a deletion claim, which is exactly why paying is a poor bet even when the demand is withdrawn."
+    },
+    {
+      "q": "What changed in Australian law afterwards?",
+      "a": "Penalties under the Privacy Act were raised sharply in December 2022, to the greater of A$50 million, three times the benefit obtained, or 30% of adjusted domestic turnover. Temporary rules also allowed telcos to share identity data with financial institutions and government agencies so compromised documents could be flagged rather than silently reused."
+    }
   ],
   "sources": [
-    { "label": "Office of the Australian Information Commissioner, civil penalty proceedings against Singtel Optus Pty Ltd" },
-    { "label": "Australian Communications and Media Authority, federal court proceedings, 2023" },
-    { "label": "Privacy Legislation Amendment (Enforcement and Other Measures) Act 2022 (Cth)" },
-    { "label": "Optus customer notifications and public statements, September–October 2022" }
+    {
+      "label": "Office of the Australian Information Commissioner, civil penalty proceedings against Singtel Optus Pty Ltd"
+    },
+    {
+      "label": "Australian Communications and Media Authority, federal court proceedings, 2023",
+      "url": "https://www.acma.gov.au/acma-statement-2022-optus-data-breach",
+      "note": "ACMA Optus statement, checked 28 November 2026"
+    },
+    {
+      "label": "Privacy Legislation Amendment (Enforcement and Other Measures) Act 2022 (Cth)",
+      "url": "https://www.legislation.gov.au/C2022A00083/asmade/text",
+      "note": "Federal Register of Legislation, checked 28 November 2026"
+    },
+    {
+      "label": "Optus customer notifications and public statements, September–October 2022"
+    }
   ]
 }
 -->

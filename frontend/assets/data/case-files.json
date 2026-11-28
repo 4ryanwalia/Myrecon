@@ -1,9 +1,9 @@
 {
-  "generated": "2026-11-27T22:19:11.286Z",
+  "generated": "2026-11-28T01:47:28.872Z",
   "source": "MyRecon Case Files",
   "index": "https://www.myrecon.xyz/breaches/case-files/",
   "count": 60,
-  "words": 55584,
+  "words": 55585,
   "cases": [
     {
       "slug": "irhythm-2026",
@@ -121,8 +121,10 @@
           {
             "title": "What happened",
             "paragraphs": [
-              "In the second half of 2024, bots appeared on Telegram offering customer records belonging to Star Health, India's largest standalone health insurer. Reporting established that the documents returned were genuine, policy papers and medical reports belonging to real customers, complete with the identity and contact details attached to them. The actor behind the bots, operating under the handle \"xenZen\", claimed to hold data relating to tens of millions of customers.",
-              "The insurer confirmed that it had been the subject of unauthorised and illegal access, said its initial assessment had not found a widespread compromise of sensitive customer data, and stated that an investigation was underway. The actor publicly asserted that the data had been obtained with inside assistance; the company rejected that account. Those competing claims were never resolved in public, and this file does not adopt either.",
+              "In the second half of 2024, bots appeared on Telegram offering customer records belonging to Star Health, India's largest standalone health insurer. Reporting established that the documents returned were genuine, policy papers and medical reports belonging to real customers, complete with the identity and contact details attached to them.",
+              "The actor behind the bots, operating under the handle \"xenZen\", claimed to hold data relating to tens of millions of customers.",
+              "The insurer confirmed that it had been the subject of unauthorised and illegal access, said its initial assessment had not found a widespread compromise of sensitive customer data, and stated that an investigation was underway. The actor publicly asserted that the data had been obtained with inside assistance; the company rejected that account.",
+              "Those competing claims were never resolved in public, and this file does not adopt either.",
               "What is not contested is the part that matters to the people in the records: authentic documents describing their health and identity were being handed out on request, and no statement from any party changed that while it was happening."
             ]
           },
@@ -161,7 +163,8 @@
             "paragraphs": [
               "The case arrived while India's Digital Personal Data Protection Act, passed in 2023, was still waiting on the rules that would give it operational teeth.",
               "That timing is the context for everything about the public handling of this incident: the absence of a clear statutory notification deadline, the reliance on stock exchange disclosure rather than customer notification as the primary public statement, and the fact that the most detailed account available to affected customers came from journalists rather than from anyone with a duty to inform them.",
-              "For the insurance sector specifically, it put a number on a risk that had been discussed abstractly. Insurers hold more sensitive data than banks do, financial detail plus medical history plus identity documents, retained for the life of a policy and beyond, and they have historically been supervised on solvency far more closely than on data handling. A leak that could be queried by name made that asymmetry difficult to ignore."
+              "For the insurance sector specifically, it put a number on a risk that had been discussed abstractly. Insurers hold more sensitive data than banks do, financial detail plus medical history plus identity documents, retained for the life of a policy and beyond, and they have historically been supervised on solvency far more closely than on data handling.",
+              "A leak that could be queried by name made that asymmetry difficult to ignore."
             ]
           },
           {
@@ -170,7 +173,8 @@
               "Start from the assumption that you cannot verify whether your documents were among those distributed, because no reliable per-customer check was ever published. Act on the exposure that would exist if they were.",
               "The realistic risks are impersonation and targeted fraud. A caller who has your policy number, your sum insured and the date of a real claim sounds exactly like your insurer, and the scripts that follow are predictable: a claim that needs re-verification, a renewal at a corrected premium, a settlement pending a small processing payment.",
               "No insurer resolves any of those by asking for a one-time password, a UPI approval, or a transfer to an individual account. End the call and dial the number printed on your policy document.",
-              "There is also a quieter exposure with no procedural fix. Medical detail in circulation invites extortion against the specific people for whom a diagnosis is private, and the correct response to a message threatening disclosure is the same as for every other extortion attempt in this archive: the sender has a leaked file, not a relationship with you, and paying establishes only that your number is worth contacting again.",
+              "There is also a quieter exposure with no procedural fix.",
+              "Medical detail in circulation invites extortion against the specific people for whom a diagnosis is private, and the correct response to a message threatening disclosure is the same as for every other extortion attempt in this archive: the sender has a leaked file, not a relationship with you, and paying establishes only that your number is worth contacting again.",
               "For the other Indian incidents in this archive side by side, and what to do about each kind of exposed data, see Data breaches in India: what leaked, and what to do ."
             ]
           }
@@ -188,13 +192,17 @@
           "label": "Reuters reporting on Telegram chatbots distributing Star Health customer data, September–October 2024"
         },
         {
-          "label": "Star Health and Allied Insurance, stock exchange disclosures and public statements, September 2024"
+          "label": "Star Health and Allied Insurance, stock exchange disclosures and public statements, September 2024",
+          "url": "https://www.starhealth.in/",
+          "note": "company portal, checked 28 November 2026"
         },
         {
           "label": "Madras High Court, interim orders in proceedings against Telegram and others, 2024"
         },
         {
-          "label": "Indian Computer Emergency Response Team (CERT-In) incident reporting framework"
+          "label": "Indian Computer Emergency Response Team (CERT-In) incident reporting framework",
+          "url": "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf",
+          "note": "CERT-In 28 April 2022 Directions, checked 28 November 2026"
         }
       ],
       "records": "Claims of data relating to around 31 million customers; individual policy documents and medical reports retrievable on request",
@@ -216,7 +224,7 @@
       ],
       "sort_date": "2024-09-20",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1155,
       "sources": 4
@@ -247,8 +255,8 @@
             "paragraphs": [
               "In April 2024, an actor using the handle USDoD advertised a dataset said to contain 2.9 billion rows of personal data covering the United States, the United Kingdom and Canada, at an asking price of $3.5 million. Portions circulated through the summer, and in August large parts were published free on a criminal forum.",
               "The records contained names, current and historical addresses, Social Security numbers, phone numbers, and in many cases lists of relatives and associates, the standard shape of a background-check profile.",
-              "Why \"2.9 billion records\" is not \"2.9 billion people\". Brokers store one row per observed combination of name and address. A person who has lived at eight addresses, used a middle initial sometimes, and shared a household with three others can generate dozens of rows. The file also contained deceased people and obviously stale entries. Researchers who worked through it found roughly 134 million unique email addresses.",
-              "The gap between the advertised figure and the useful one is the single most important thing to understand about broker breaches.",
+              "Why \"2.9 billion records\" is not \"2.9 billion people\". Brokers store one row per observed combination of name and address. A person who has lived at eight addresses, used a middle initial sometimes, and shared a household with three others can generate dozens of rows. The file also contained deceased people and obviously stale entries.",
+              "Researchers who worked through it found roughly 134 million unique email addresses. The gap between the advertised figure and the useful one is the single most important thing to understand about broker breaches.",
               "The company compounded the story: researchers found that a sister site operated by the same business was publishing an archive containing plaintext credentials for its own administrative back end. Whatever the original route in, the operational standard on display did not suggest a well-defended organisation."
             ]
           },
@@ -310,7 +318,9 @@
           "label": "Chapter 11 bankruptcy filing, October 2024"
         },
         {
-          "label": "Independent analyses of the published dataset by security researchers, August 2024"
+          "label": "Independent analyses of the published dataset by security researchers, August 2024",
+          "url": "https://www.troyhunt.com/inside-the-3-billion-people-national-public-data-breach/",
+          "note": "Troy Hunt dataset analysis, checked 28 November 2026"
         }
       ],
       "records": "advertised as 2.9 billion rows; researchers identified about 134 million unique email addresses",
@@ -329,7 +339,7 @@
       ],
       "sort_date": "2024-08-06",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 820,
       "sources": 3
@@ -419,13 +429,19 @@
       ],
       "source_links": [
         {
-          "label": "AT&T Form 8-K filing and customer notice, July 2024"
+          "label": "AT&T Form 8-K filing and customer notice, July 2024",
+          "url": "https://www.sec.gov/edgar/browse/?CIK=0000732717",
+          "note": "AT&T SEC EDGAR filings, checked 28 November 2026"
         },
         {
-          "label": "Mandiant analysis of UNC5537 and the Snowflake-related campaign, June 2024"
+          "label": "Mandiant analysis of UNC5537 and the Snowflake-related campaign, June 2024",
+          "url": "https://cloud.google.com/blog/topics/threat-intelligence/unc5537-snowflake-data-theft-extortion",
+          "note": "Google Cloud / Mandiant UNC5537 analysis, checked 28 November 2026"
         },
         {
-          "label": "Federal Communications Commission enforcement actions against AT&T, 2024"
+          "label": "Federal Communications Commission enforcement actions against AT&T, 2024",
+          "url": "https://www.fcc.gov/enforcement",
+          "note": "FCC Enforcement Bureau, checked 28 November 2026"
         },
         {
           "label": "Proposed class settlement filings, 2025"
@@ -446,7 +462,7 @@
       ],
       "sort_date": "2024-07-12",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 857,
       "sources": 4
@@ -613,7 +629,8 @@
             "title": "The ransom, and why paying failed twice",
             "paragraphs": [
               "Roughly $22 million in bitcoin moved to an address associated with ALPHV. The transaction was visible on the blockchain and widely analysed.",
-              "What followed is the clearest public illustration of why payment is an unreliable transaction. The affiliate who had actually carried out the intrusion complained publicly that ALPHV had taken the money and vanished, and ALPHV's infrastructure went offline shortly afterwards in what appeared to be an exit scam. Then, months later, a different group, RansomHub, attempted to extort the company again, claiming to hold the same data.",
+              "What followed is the clearest public illustration of why payment is an unreliable transaction. The affiliate who had actually carried out the intrusion complained publicly that ALPHV had taken the money and vanished, and ALPHV's infrastructure went offline shortly afterwards in what appeared to be an exit scam.",
+              "Then, months later, a different group, RansomHub, attempted to extort the company again, claiming to hold the same data.",
               "The victim paid, and the data was still in circulation and still being used as leverage. When people argue that paying buys nothing enforceable, this is the case they mean."
             ]
           },
@@ -656,13 +673,22 @@
           "label": "Testimony of UnitedHealth Group CEO Andrew Witty before US Senate and House committees, May 2024"
         },
         {
-          "label": "US Department of Health and Human Services, Office for Civil Rights breach portal notice"
+          "label": "US Department of Health and Human Services, Office for Civil Rights breach portal notice",
+          "url": "https://ocrportal.hhs.gov/ocr/breach/breach_frontpage.jsf?faces-redirect=true",
+          "note": "HHS OCR breach portal, checked 28 November 2026"
         },
         {
           "label": "UnitedHealth Group quarterly results and incident updates, 2024–2025"
         },
         {
-          "label": "US Department of State, Rewards for Justice, ALPHV/BlackCat reward announcement, 2024"
+          "label": "US Department of State, Rewards for Justice, ALPHV/BlackCat reward announcement, 2024",
+          "url": "https://rewardsforjustice.net/rewards/alphv-blackcat/",
+          "note": "checked 28 November 2026"
+        },
+        {
+          "label": "US Department of Health and Human Services, Change Healthcare Cybersecurity Incident FAQ",
+          "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/change-healthcare-cybersecurity-incident-frequently-asked-questions/index.html",
+          "note": "checked 28 November 2026"
         }
       ],
       "records": "about 190 million people",
@@ -683,10 +709,10 @@
       ],
       "sort_date": "2024-02-21",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 892,
-      "sources": 4
+      "sources": 5
     },
     {
       "slug": "british-library-2023",
@@ -726,7 +752,8 @@
               "In March 2024 the Library published a paper setting out what had happened and what it had learned. It is the part of this case with the longest half-life.",
               "The normal output of an attack on a public institution is a holding statement and, eventually, a reassuring summary phrased so generally that no other organisation can act on it. Legal advice pushes in that direction, and so does the reasonable fear of publishing a map of your own weaknesses.",
               "The Library went the other way and described the contributing factors plainly: the reliance on ageing infrastructure, the historic under-investment behind it, the access route that lacked multi-factor authentication, and the complexity of an estate assembled over decades of separate projects.",
-              "That candour has a specific value for the sector it sits in. Museums, libraries, universities and archives run comparable estates on comparable budgets, and they do not have the option of rebuilding from scratch. A peer institution reading this report learns more about its own risk than any vendor threat report would tell it, and can point to a named example when it asks for money to fix the same problems."
+              "That candour has a specific value for the sector it sits in. Museums, libraries, universities and archives run comparable estates on comparable budgets, and they do not have the option of rebuilding from scratch.",
+              "A peer institution reading this report learns more about its own risk than any vendor threat report would tell it, and can point to a named example when it asks for money to fix the same problems."
             ]
           },
           {
@@ -746,16 +773,17 @@
             "paragraphs": [
               "The attack reframed how the UK cultural sector talks about cyber risk. Institutions whose boards had treated information security as an IT line item watched a peer lose its principal public service for the better part of a year, with no ransom paid and no insurer making the problem disappear.",
               "The lesson taken up most widely was not about ransomware at all: it was that deferred infrastructure investment is a risk that eventually gets called in, and that the bill arrives at the worst possible moment and all at once.",
-              "It also served as a public demonstration of what refusing to pay actually costs. The argument for refusal is sound and the Library's position was defensible, but the honest version of that argument has to include this: refusal meant the data was published anyway, and the institution funded its own recovery out of reserves. Cases where refusal is presented as costless do the decision a disservice.",
-              "This one shows the real shape of it."
+              "It also served as a public demonstration of what refusing to pay actually costs. The argument for refusal is sound and the Library's position was defensible, but the honest version of that argument has to include this: refusal meant the data was published anyway, and the institution funded its own recovery out of reserves.",
+              "Cases where refusal is presented as costless do the decision a disservice. This one shows the real shape of it."
             ]
           },
           {
             "title": "If you used the Library",
             "paragraphs": [
-              "The population most affected is staff rather than readers. Employee personal data, including HR and financial records, was published, and there is no mechanism for withdrawing it once it is on a leak site. The remedies there are the ones that apply to any exposure of identity data: vigilance about approaches that cite real internal detail, and scepticism about anyone who establishes credibility by reciting information that is now freely available.",
-              "For readers, the exposure was narrower. The Library advised anyone who had reused their Library account password elsewhere to change it, which is the correct advice and worth restating in general form: the harm from a leaked password at a low-value service is almost entirely determined by whether that password exists anywhere else. If it was unique, a breach of the service that held it is an inconvenience.",
-              "If it was not, the breach is about your email account, and it always was."
+              "The population most affected is staff rather than readers. Employee personal data, including HR and financial records, was published, and there is no mechanism for withdrawing it once it is on a leak site.",
+              "The remedies there are the ones that apply to any exposure of identity data: vigilance about approaches that cite real internal detail, and scepticism about anyone who establishes credibility by reciting information that is now freely available.",
+              "For readers, the exposure was narrower. The Library advised anyone who had reused their Library account password elsewhere to change it, which is the correct advice and worth restating in general form: the harm from a leaked password at a low-value service is almost entirely determined by whether that password exists anywhere else.",
+              "If it was unique, a breach of the service that held it is an inconvenience. If it was not, the breach is about your email account, and it always was."
             ]
           }
         ]
@@ -763,7 +791,9 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "British Library, \"Learning Lessons from the Cyber-Attack\", March 2024"
+          "label": "British Library, \"Learning Lessons from the Cyber-Attack\", March 2024",
+          "url": "https://www.bl.uk/home/british-library-cyber-incident-review-8-march-2024.pdf",
+          "note": "British Library March 2024 review PDF, checked 28 November 2026"
         },
         {
           "label": "British Library incident updates and service status notices, October 2023 – 2024"
@@ -772,7 +802,9 @@
           "label": "Rhysida leak site postings and contemporaneous reporting, November 2023"
         },
         {
-          "label": "UK National Cyber Security Centre guidance on ransomware and legacy infrastructure"
+          "label": "UK National Cyber Security Centre guidance on ransomware and legacy infrastructure",
+          "url": "https://www.ncsc.gov.uk/guidance/mitigating-malware-and-ransomware-attacks",
+          "note": "UK NCSC ransomware guidance, checked 28 November 2026"
         }
       ],
       "records": "Around 600GB exfiltrated, roughly 490,000 files, including employee personal data",
@@ -789,7 +821,7 @@
       ],
       "sort_date": "2023-10-31",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 981,
       "sources": 4
@@ -829,9 +861,10 @@
           {
             "title": "Detected by the customers",
             "paragraphs": [
-              "The sequence that surfaced this incident is the part worth studying. BeyondTrust noticed anomalous activity against its own Okta tenant, investigated, connected it to a HAR file it had uploaded to Okta support days earlier, and raised it with Okta. Cloudflare and 1Password identified related activity in their own environments. The detection, and much of the initial technical analysis, came from downstream organisations examining their own logs.",
-              "Two things follow from that. The first is a reasonable criticism of the provider's own detection and its initial responsiveness, which was raised at the time by the customers involved. The second is more broadly useful: these particular customers are security companies with mature detection capability, watching their identity provider's activity closely enough to spot an unexpected session. A typical enterprise would not have noticed at all.",
-              "If your identity provider is the root of trust for everything else, its audit log is not the provider's business, it is yours, and something at your end should be reading it."
+              "The sequence that surfaced this incident is the part worth studying. BeyondTrust noticed anomalous activity against its own Okta tenant, investigated, connected it to a HAR file it had uploaded to Okta support days earlier, and raised it with Okta. Cloudflare and 1Password identified related activity in their own environments.",
+              "The detection, and much of the initial technical analysis, came from downstream organisations examining their own logs.",
+              "Two things follow from that. The first is a reasonable criticism of the provider's own detection and its initial responsiveness, which was raised at the time by the customers involved. The second is more broadly useful: these particular customers are security companies with mature detection capability, watching their identity provider's activity closely enough to spot an unexpected session.",
+              "A typical enterprise would not have noticed at all. If your identity provider is the root of trust for everything else, its audit log is not the provider's business, it is yours, and something at your end should be reading it."
             ]
           },
           {
@@ -877,16 +910,22 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "Okta security incident updates and root cause statements, October–November 2023"
+          "label": "Okta security incident updates and root cause statements, October–November 2023",
+          "url": "https://sec.okta.com/articles/harfiles/",
+          "note": "Okta Security HAR files advisory, checked 28 November 2026"
         },
         {
           "label": "BeyondTrust, public technical write-up of the October 2023 Okta support case incident"
         },
         {
-          "label": "Cloudflare, incident report concerning compromised Okta credentials, October 2023"
+          "label": "Cloudflare, incident report concerning compromised Okta credentials, October 2023",
+          "url": "https://blog.cloudflare.com/how-cloudflare-mitigated-yet-another-okta-compromise/",
+          "note": "Cloudflare incident report, checked 28 November 2026"
         },
         {
-          "label": "1Password, security incident report, October 2023"
+          "label": "1Password, security incident report, October 2023",
+          "url": "https://1password.com/blog/okta-incident",
+          "note": "1Password incident report, checked 28 November 2026"
         }
       ],
       "records": "Initially reported as 134 customers; later disclosed as affecting the details of essentially all users of the support system, around 18,400",
@@ -903,7 +942,7 @@
       ],
       "sort_date": "2023-10-20",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1172,
       "sources": 4
@@ -934,7 +973,8 @@
             "paragraphs": [
               "From April 2023, attackers ran credential stuffing against 23andMe: automated login attempts using pairs harvested from unrelated breaches, on the reliable assumption that a percentage of people reuse passwords. Around 14,000 accounts accepted them.",
               "That alone would have been a minor incident. What made it a major one was DNA Relatives, an opt-in feature that shows a user other customers who share DNA with them, along with display names, relationship estimates, locations, birth years and ancestry results.",
-              "The amplification, in one sentence. Compromising one account exposes everyone that account can see. With a feature designed to connect you to hundreds of genetic relatives, 14,000 compromised accounts became 6.9 million exposed profiles, a multiplier of roughly 500. The people in that 6.9 million had strong passwords, two-factor authentication and good habits, and none of it mattered, because their exposure depended on a stranger's choices.",
+              "The amplification, in one sentence. Compromising one account exposes everyone that account can see. With a feature designed to connect you to hundreds of genetic relatives, 14,000 compromised accounts became 6.9 million exposed profiles, a multiplier of roughly 500.",
+              "The people in that 6.9 million had strong passwords, two-factor authentication and good habits, and none of it mattered, because their exposure depended on a stranger's choices.",
               "The company became aware of the problem in October 2023, after data from the breach was advertised on a hacking forum. It required password resets and later made two-factor authentication mandatory for all accounts."
             ]
           },
@@ -1005,13 +1045,20 @@
       ],
       "source_links": [
         {
-          "label": "Joint investigation findings of the UK Information Commissioner's Office and the Office of the Privacy Commissioner of Canada, 2025"
+          "label": "Joint investigation findings of the UK Information Commissioner's Office and the Office of the Privacy Commissioner of Canada, 2025",
+          "url": "https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2025/pipeda-2025-001/",
+          "note": "OPC PIPEDA Findings #2025-001, checked 28 November 2026"
         },
         {
           "label": "23andMe customer notifications and SEC filing, October and December 2023"
         },
         {
           "label": "Class action settlement, 2024"
+        },
+        {
+          "label": "UK Information Commissioner's Office, statement on 23andMe investigation, 2025",
+          "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/03/statement-on-23andme-investigation/",
+          "note": "checked 28 November 2026"
         }
       ],
       "records": "about 6.9 million people, from 14,000 compromised accounts",
@@ -1031,10 +1078,10 @@
       ],
       "sort_date": "2023-10-06",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 902,
-      "sources": 3
+      "sources": 4
     },
     {
       "slug": "mgm-resorts-2023",
@@ -1174,8 +1221,8 @@
               "MOVEit Transfer, made by Progress Software, is managed file transfer software. Organisations use it to send large, sensitive files to partners with encryption and an audit trail: payroll data to a bureau, claims files to an insurer, citizen records between agencies. Its whole purpose is to be trusted with the things that matter.",
               "On 27 May 2023, attackers began exploiting a zero-day SQL injection vulnerability, later designated CVE-2023-34362, in the product's web interface. No credentials were required. The flaw allowed database commands to be executed and a web shell to be planted, after which the attacker could inventory and download whatever files the instance held.",
               "Progress published an advisory and a patch on 31 May. By then Cl0p had been harvesting for days, and the pattern of the campaign made clear it had been prepared in advance: scripted, automated, and launched into a holiday weekend when incident response teams were thin.",
-              "Why file transfer products specifically. This was not Cl0p's first time. The group exploited Accellion FTA in 2021 and Fortra GoAnywhere in early 2023, and similar products have been targeted since. The logic is exact: managed file transfer servers are internet-facing by design, they hold concentrated sensitive data by design, and they sit at the boundary between organisations, so one compromise yields data belonging to many parties.",
-              "It is the highest-leverage target class in enterprise software."
+              "Why file transfer products specifically. This was not Cl0p's first time. The group exploited Accellion FTA in 2021 and Fortra GoAnywhere in early 2023, and similar products have been targeted since.",
+              "The logic is exact: managed file transfer servers are internet-facing by design, they hold concentrated sensitive data by design, and they sit at the boundary between organisations, so one compromise yields data belonging to many parties. It is the highest-leverage target class in enterprise software."
             ]
           },
           {
@@ -1300,7 +1347,8 @@
             "title": "Why the age of the data is the story",
             "paragraphs": [
               "Identity documents behave differently from other breached data, and time makes them worse rather than better. A password stolen in 2005 has almost certainly been changed. A card number has expired. A driver's licence number issued in 2005 is quite possibly still the number on the licence in the wallet today, because licences are renewed by reissuing the same number.",
-              "That matters because of how identity verification actually works in Australia. Banks, telecommunications providers and government services confirm identity by checking a document number against a name and a date of birth. Someone holding all three can open accounts, port a phone number, or apply for credit. The document does not need to be forged, the number alone is often sufficient to satisfy an automated check.",
+              "That matters because of how identity verification actually works in Australia. Banks, telecommunications providers and government services confirm identity by checking a document number against a name and a date of birth. Someone holding all three can open accounts, port a phone number, or apply for credit.",
+              "The document does not need to be forged, the number alone is often sufficient to satisfy an automated check.",
               "So a breach of eighteen-year-old records is not a breach of stale data. For the portion of it that consists of identity document numbers, it is nearly as dangerous as a breach of records collected last week, and the affected population is far larger: everyone who ever applied, whether or not they were approved, whether or not they ever borrowed a cent."
             ]
           },
@@ -1350,16 +1398,22 @@
       ],
       "source_links": [
         {
-          "label": "Latitude Group Holdings, ASX announcements and customer notifications, March–April 2023"
+          "label": "Latitude Group Holdings, ASX announcements and customer notifications, March–April 2023",
+          "url": "https://www.latitudefinancial.com.au/",
+          "note": "Latitude official site, checked 28 November 2026"
         },
         {
           "label": "Office of the Australian Information Commissioner, statements regarding the Latitude Financial breach"
         },
         {
-          "label": "Australian Cyber Security Centre guidance on compromised identity documents"
+          "label": "Australian Cyber Security Centre guidance on compromised identity documents",
+          "url": "https://www.cyber.gov.au/",
+          "note": "ACSC official portal, checked 28 November 2026"
         },
         {
-          "label": "New Zealand Office of the Privacy Commissioner, public statements, 2023"
+          "label": "New Zealand Office of the Privacy Commissioner, public statements, 2023",
+          "url": "https://www.privacy.org.nz/",
+          "note": "OPC New Zealand portal, checked 28 November 2026"
         }
       ],
       "records": "About 14 million customer records across Australia and New Zealand",
@@ -1379,7 +1433,7 @@
       ],
       "sort_date": "2023-03-16",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1061,
       "sources": 4
@@ -1545,8 +1599,10 @@
           {
             "title": "The disclosure gap",
             "paragraphs": [
-              "India's framework at the time placed reporting obligations on organisations to report incidents to CERT-In, the national computer emergency response team, within tight timeframes. That is a real obligation with real value, it gives the national agency visibility. It is not a transparency mechanism. Nothing in it requires that findings be published, that affected individuals be notified, or that a post-incident account ever reach the people whose records were involved.",
-              "The Digital Personal Data Protection Act was passed in 2023, after this incident, and introduced notification duties for personal data breaches. Even so, the distinction worth carrying forward is between notifying a regulator and publishing an account. Singapore's SingHealth report and the British Library's post-incident paper exist because institutions chose, or were compelled, to explain themselves in public. Notification to an agency produces no such document.",
+              "India's framework at the time placed reporting obligations on organisations to report incidents to CERT-In, the national computer emergency response team, within tight timeframes. That is a real obligation with real value, it gives the national agency visibility. It is not a transparency mechanism.",
+              "Nothing in it requires that findings be published, that affected individuals be notified, or that a post-incident account ever reach the people whose records were involved.",
+              "The Digital Personal Data Protection Act was passed in 2023, after this incident, and introduced notification duties for personal data breaches. Even so, the distinction worth carrying forward is between notifying a regulator and publishing an account. Singapore's SingHealth report and the British Library's post-incident paper exist because institutions chose, or were compelled, to explain themselves in public.",
+              "Notification to an agency produces no such document.",
               "The practical consequence falls on patients. Someone treated at AIIMS in the years before November 2022 has no way to find out whether their records were affected, no notification to wait for, and no published finding to consult. The absence of a number is not evidence that the number was small."
             ]
           },
@@ -1565,15 +1621,16 @@
             "title": "What it changed",
             "paragraphs": [
               "Within the Indian health system the attack functioned as a warning that landed. Hospital IT security moved up the agenda, advisories circulated across public health institutions, and the specific weaknesses that make hospitals easy, flat networks, shared credentials, unsupported operating systems attached to diagnostic equipment, got more attention than they had before.",
-              "What did not change was the documentary record. The incident produced no inquiry report, no regulatory decision setting out findings, and no technical account from which other hospitals could learn specifics. Every institution that wanted to avoid the same outcome had to reason from press coverage. Against that, the countries that publish, including Singapore after SingHealth, and the British Library after Rhysida, hand their entire sector a usable document."
+              "What did not change was the documentary record. The incident produced no inquiry report, no regulatory decision setting out findings, and no technical account from which other hospitals could learn specifics. Every institution that wanted to avoid the same outcome had to reason from press coverage.",
+              "Against that, the countries that publish, including Singapore after SingHealth, and the British Library after Rhysida, hand their entire sector a usable document."
             ]
           },
           {
             "title": "If you were treated at AIIMS before November 2022",
             "paragraphs": [
               "Assume the data held about you may have been affected, and that no notification is coming, because none was ever issued. Hospital records in India typically hold name, contact details, address, age, identity numbers where collected, and clinical detail, a combination that supports convincing impersonation rather than direct financial fraud.",
-              "The approach that follows is the same one that works for every unverified exposure: treat knowledge of your details as proof of nothing. A caller who cites a genuine past appointment, a test result, or an identity number has established only that they have access to a record. No hospital, insurer or government office completes anything by asking for a one-time password or a payment to an individual account.",
-              "Ring back on a number you looked up yourself, and treat unexpected contact referencing your medical history with the same suspicion you would give a message about your bank.",
+              "The approach that follows is the same one that works for every unverified exposure: treat knowledge of your details as proof of nothing. A caller who cites a genuine past appointment, a test result, or an identity number has established only that they have access to a record.",
+              "No hospital, insurer or government office completes anything by asking for a one-time password or a payment to an individual account. Ring back on a number you looked up yourself, and treat unexpected contact referencing your medical history with the same suspicion you would give a message about your bank.",
               "For the other Indian incidents in this archive side by side, and what to do about each kind of exposed data, see Data breaches in India: what leaked, and what to do ."
             ]
           }
@@ -1588,10 +1645,14 @@
           "label": "Delhi Police first information report and contemporaneous reporting, November–December 2022"
         },
         {
-          "label": "Indian Computer Emergency Response Team (CERT-In) directions of 28 April 2022 on incident reporting"
+          "label": "Indian Computer Emergency Response Team (CERT-In) directions of 28 April 2022 on incident reporting",
+          "url": "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf",
+          "note": "CERT-In 28 April 2022 Directions PDF, checked 28 November 2026"
         },
         {
-          "label": "Digital Personal Data Protection Act, 2023 (India)"
+          "label": "Digital Personal Data Protection Act, 2023 (India)",
+          "url": "https://www.meity.gov.in/",
+          "note": "MeitY portal, checked 28 November 2026"
         }
       ],
       "records": "Reported to involve patient records at national scale; no verified figure was ever published",
@@ -1608,7 +1669,7 @@
       ],
       "sort_date": "2022-11-23",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1052,
       "sources": 4
@@ -1657,7 +1718,8 @@
             "title": "Why health claims data is the worst category",
             "paragraphs": [
               "Every other entry in this archive involves data that can, eventually, be neutralised. Cards get cancelled. Passwords get changed. Even passport numbers get reissued.",
-              "A claims record says that a named person had a specific procedure on a specific date. It cannot be revoked, corrected or replaced, because it is true. The harm is not fraud; it is the fact of other people knowing, an employer, a family member, a community. For customers whose treatment involved reproductive health, mental health, addiction or HIV, the publication was the harm, complete on the day it happened.",
+              "A claims record says that a named person had a specific procedure on a specific date. It cannot be revoked, corrected or replaced, because it is true. The harm is not fraud; it is the fact of other people knowing, an employer, a family member, a community.",
+              "For customers whose treatment involved reproductive health, mental health, addiction or HIV, the publication was the harm, complete on the day it happened.",
               "That is what puts Medibank in the same category as Ashley Madison rather than with the credential dumps, and it is why health data attracts the severity weighting it does."
             ]
           },
@@ -1706,13 +1768,17 @@
           "label": "Office of the Australian Information Commissioner, civil penalty proceedings against Medibank Private Limited, June 2024"
         },
         {
-          "label": "Australian Government, autonomous cyber sanctions announcement, January 2024"
+          "label": "Australian Government, autonomous cyber sanctions announcement, January 2024",
+          "url": "https://www.foreignminister.gov.au/minister/penny-wong/media-release/cyber-sanctions-response-medibank-private-cyber-attack",
+          "note": "Australian Foreign Minister release, checked 28 November 2026"
         },
         {
           "label": "Medibank cyber event updates and ASX announcements, October 2022 – 2023"
         },
         {
-          "label": "Australian Prudential Regulation Authority, capital adjustment, June 2023"
+          "label": "Australian Prudential Regulation Authority, capital adjustment, June 2023",
+          "url": "https://www.apra.gov.au/news-and-publications/apra-takes-action-against-medibank-private-relation-cyber-incident",
+          "note": "APRA capital adjustment action, checked 28 November 2026"
         }
       ],
       "records": "9.7 million current and former customers; health claims data for about 480,000",
@@ -1732,7 +1798,7 @@
       ],
       "sort_date": "2022-10-13",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 913,
       "sources": 4
@@ -1763,7 +1829,8 @@
             "paragraphs": [
               "On 22 September 2022, Optus, Australia's second-largest telecommunications company, disclosed that customer data had been taken. The eventual figure was 9.8 million current and former customers, in a country of roughly 26 million people. Around 2.1 million of those records contained at least one government identity document number: a passport, a driver's licence, or a Medicare number.",
               "The mechanism, as set out in the regulatory proceedings that followed, was an API endpoint exposed to the public internet without any requirement to authenticate. Requests for customer records were accepted from anyone, and the identifiers used to address those records were sequential enough to enumerate. There was no exploit, no malware, and no stolen credential. Somebody found the endpoint and iterated.",
-              "The specific engineering failure. Two controls were missing at once. Authentication, so that only an authorised caller gets an answer. And authorisation on the object itself, so that even an authenticated caller can only fetch records they are entitled to, the flaw category known as insecure direct object reference. Either one alone would have limited this to a nuisance. Together, their absence turned a customer lookup into a public database export."
+              "The specific engineering failure. Two controls were missing at once. Authentication, so that only an authorised caller gets an answer. And authorisation on the object itself, so that even an authenticated caller can only fetch records they are entitled to, the flaw category known as insecure direct object reference. Either one alone would have limited this to a nuisance.",
+              "Together, their absence turned a customer lookup into a public database export."
             ]
           },
           {
@@ -1826,10 +1893,14 @@
           "label": "Office of the Australian Information Commissioner, civil penalty proceedings against Singtel Optus Pty Ltd"
         },
         {
-          "label": "Australian Communications and Media Authority, federal court proceedings, 2023"
+          "label": "Australian Communications and Media Authority, federal court proceedings, 2023",
+          "url": "https://www.acma.gov.au/acma-statement-2022-optus-data-breach",
+          "note": "ACMA Optus statement, checked 28 November 2026"
         },
         {
-          "label": "Privacy Legislation Amendment (Enforcement and Other Measures) Act 2022 (Cth)"
+          "label": "Privacy Legislation Amendment (Enforcement and Other Measures) Act 2022 (Cth)",
+          "url": "https://www.legislation.gov.au/C2022A00083/asmade/text",
+          "note": "Federal Register of Legislation, checked 28 November 2026"
         },
         {
           "label": "Optus customer notifications and public statements, September–October 2022"
@@ -1854,7 +1925,7 @@
       ],
       "sort_date": "2022-09-22",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 834,
       "sources": 4
@@ -1884,9 +1955,10 @@
             "title": "What happened",
             "paragraphs": [
               "The starting point was a contractor's corporate credentials, which reporting indicates were purchased on a dark web marketplace after most likely being harvested by information-stealing malware on a personal device. On its own the password was useless, because the second factor stood in the way.",
-              "So the attacker attacked the second factor at the only point where it is soft: the human being approving it. Repeated login attempts generated a stream of push notifications. The contractor declined them. The prompts continued. The attacker then contacted the contractor over WhatsApp, presenting as Uber IT support, and said the notifications were the result of a problem that would be resolved once one was accepted. One was accepted.",
-              "What came next is the part with the broader lesson. Being inside the network as a contractor is not, by itself, very valuable, the account was not privileged. Looking around the internal file shares, the attacker found a PowerShell script containing hardcoded administrative credentials for the company's privileged access management system: the vault where administrative secrets are kept. One script, one plaintext credential, and the vault opened.",
-              "From there came access to cloud consoles, the identity provider, internal dashboards, Slack, where the attacker posted a message announcing the breach to the workforce, and the company's account on its vulnerability disclosure platform.",
+              "So the attacker attacked the second factor at the only point where it is soft: the human being approving it. Repeated login attempts generated a stream of push notifications. The contractor declined them. The prompts continued.",
+              "The attacker then contacted the contractor over WhatsApp, presenting as Uber IT support, and said the notifications were the result of a problem that would be resolved once one was accepted. One was accepted.",
+              "What came next is the part with the broader lesson. Being inside the network as a contractor is not, by itself, very valuable, the account was not privileged. Looking around the internal file shares, the attacker found a PowerShell script containing hardcoded administrative credentials for the company's privileged access management system: the vault where administrative secrets are kept.",
+              "One script, one plaintext credential, and the vault opened. From there came access to cloud consoles, the identity provider, internal dashboards, Slack, where the attacker posted a message announcing the breach to the workforce, and the company's account on its vulnerability disclosure platform.",
               "MFA is not a boolean. \"Do you have MFA?\" is the wrong question, and it is the one on every security questionnaire. Push-approval and SMS codes stop credential stuffing and undirected phishing, and they fold against an attacker willing to spend twenty minutes on one person.",
               "Phishing-resistant factors, hardware security keys and passkeys bound to the origin, do not fold, because there is nothing for the user to approve that a fake site can use and no code that can be read out or relayed. The gap between those two is the gap this breach went through."
             ]
@@ -1895,8 +1967,10 @@
             "title": "The secret in the script",
             "paragraphs": [
               "The social engineering is what gets retold, and the hardcoded credential is what actually mattered. Everything beyond a single contractor's ordinary access followed from a secret written into a script and left on a share where any authenticated user could read it.",
-              "That file exists in most organisations. It is written during an outage or a migration by somebody who intends to remove the credential afterwards, and the credential stays because the script keeps working and nothing ever forces a review. Privileged access management exists exactly to stop long-lived administrative secrets from lying around, and the credential to the system that holds all the other secrets was lying around.",
-              "The defence is unglamorous: scan repositories and shared storage for secrets continuously rather than during audits, issue short-lived credentials so that a leaked one expires on its own, and treat any human-readable administrative password as an incident rather than a finding. The measure of success is not that no secret is ever written down. It is that a secret written down in March is dead by April."
+              "That file exists in most organisations. It is written during an outage or a migration by somebody who intends to remove the credential afterwards, and the credential stays because the script keeps working and nothing ever forces a review.",
+              "Privileged access management exists exactly to stop long-lived administrative secrets from lying around, and the credential to the system that holds all the other secrets was lying around.",
+              "The defence is unglamorous: scan repositories and shared storage for secrets continuously rather than during audits, issue short-lived credentials so that a leaked one expires on its own, and treat any human-readable administrative password as an incident rather than a finding. The measure of success is not that no secret is ever written down.",
+              "It is that a secret written down in March is dead by April."
             ]
           },
           {
@@ -1915,7 +1989,8 @@
             "title": "What it changed",
             "paragraphs": [
               "This breach, alongside the 0ktapus campaign against Twilio and others in the same year, moved phishing-resistant authentication from a recommendation to an expectation at large technology companies. Push-based approval was not abandoned everywhere, but the assumption that it constituted adequate protection for administrative access did not survive 2022.",
-              "It also changed how MFA fatigue is treated operationally. Number matching, where the user must type a digit displayed on the login screen rather than simply tapping approve, was rolled out widely by identity providers, along with rate limiting on repeated prompts and alerting on the pattern itself. A flood of declined approvals is now, correctly, treated as an attack in progress rather than as a malfunction.",
+              "It also changed how MFA fatigue is treated operationally. Number matching, where the user must type a digit displayed on the login screen rather than simply tapping approve, was rolled out widely by identity providers, along with rate limiting on repeated prompts and alerting on the pattern itself.",
+              "A flood of declined approvals is now, correctly, treated as an attack in progress rather than as a malfunction.",
               "The quieter shift was cultural, and it is the one most organisations still get wrong. The contractor who accepted the prompt had been worn down and then lied to by someone who sounded like their own IT department.",
               "Organisations that responded by blaming users got less reporting and slower detection; the ones that responded by making it safe and quick to say \"I think I just approved something I should not have\" got the opposite."
             ]
@@ -1942,7 +2017,9 @@
           "label": "UK prosecution and 2023 verdict concerning Lapsus$-associated intrusions"
         },
         {
-          "label": "CISA guidance on phishing-resistant multi-factor authentication"
+          "label": "CISA guidance on phishing-resistant multi-factor authentication",
+          "url": "https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf",
+          "note": "CISA Phishing-Resistant MFA fact sheet PDF, checked 28 November 2026"
         }
       ],
       "records": "No evidence of access to customer accounts or trip data; internal tools, Slack, cloud consoles and vulnerability reports were reached",
@@ -1959,7 +2036,7 @@
       ],
       "sort_date": "2022-09-15",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1062,
       "sources": 4
@@ -1974,7 +2051,8 @@
       "description": "A single SMS phishing campaign harvested credentials and one-time codes from employees at more than 130 companies. Cloudflare was targeted with the same messages and lost nothing.",
       "story": {
         "background": [
-          "In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in. One company's staff did the same and nothing happened, and that difference is the entire lesson of this case."
+          "In the summer of 2022, employees at more than a hundred technology companies received a text message saying their single sign-on password had expired. The page it led to looked exactly right, asked for a password, then asked for the six-digit code from their authenticator app. Thousands of people typed both in.",
+          "One company's staff did the same and nothing happened, and that difference is the entire lesson of this case."
         ],
         "how": [
           "SMS phishing to employees, directing them to convincing fake single sign-on pages that relayed credentials and one-time codes in real time"
@@ -1989,7 +2067,8 @@
             "title": "What happened",
             "paragraphs": [
               "The campaign was industrial rather than clever. The attackers registered domains combining a target company's name with words like -sso , -okta or -help , stood up phishing pages that mirrored each company's real login screen, and sent SMS messages to employees' personal mobile numbers claiming a password reset or schedule change required them to log in.",
-              "The important mechanism was what happened next. The phishing page did not simply store the credentials for later. It relayed them to the real login page immediately, in real time, and when the real service asked for a one-time code, the phishing page asked the victim for it and relayed that too. The victim experienced a login that appeared to work. The attacker got a live session.",
+              "The important mechanism was what happened next. The phishing page did not simply store the credentials for later. It relayed them to the real login page immediately, in real time, and when the real service asked for a one-time code, the phishing page asked the victim for it and relayed that too. The victim experienced a login that appeared to work.",
+              "The attacker got a live session.",
               "Group-IB's later analysis found roughly 9,900 sets of credentials and about 5,400 one-time codes captured, across more than 130 organisations. The targeting concentrated on technology, telecoms and cryptocurrency companies, which is to say, on companies whose systems provide access to other companies' customers.",
               "Why a one-time code is not phishing-resistant. A code from an app or a text message is a shared secret that the human copies from one place to another. Anything that can convince the human to copy it into the wrong box defeats it, and the attacker has thirty seconds to use it, which is plenty when the relay is automated.",
               "A security key or passkey is different in kind, not degree: the browser performs a cryptographic challenge that is bound to the real domain name. Present it a lookalike domain and it will not produce a signature at all. There is nothing for the user to get wrong."
@@ -1999,8 +2078,8 @@
             "title": "The company it did not work on",
             "paragraphs": [
               "Cloudflare was targeted in the same campaign, with the same message format, within the same minutes. Its employees received 76 messages. Some of them clicked. Some of them entered their credentials on the fake page.",
-              "The attack failed at the next step. Cloudflare required hardware security keys for all employees, and the keys would not authenticate to a domain that was not Cloudflare's. The attackers had valid passwords and no way to use them. Cloudflare published a detailed account of the attempt, including the fact that its own people had been fooled by the message, which is the part worth dwelling on.",
-              "The control that saved them did not depend on anyone spotting anything."
+              "The attack failed at the next step. Cloudflare required hardware security keys for all employees, and the keys would not authenticate to a domain that was not Cloudflare's. The attackers had valid passwords and no way to use them.",
+              "Cloudflare published a detailed account of the attempt, including the fact that its own people had been fooled by the message, which is the part worth dwelling on. The control that saved them did not depend on anyone spotting anything."
             ]
           },
           {
@@ -2150,7 +2229,9 @@
           "label": "Twitter security incident statement, August 2022"
         },
         {
-          "label": "Irish Data Protection Commission, announcement of inquiry, December 2022"
+          "label": "Irish Data Protection Commission, announcement of inquiry, December 2022",
+          "url": "https://www.dataprotection.ie/en/news-media/data-protection-commission-launches-inquiry-twitter-concerning-datasets",
+          "note": "DPC 23 December 2022 announcement, checked 28 November 2026"
         },
         {
           "label": "HackerOne report and researcher disclosure, January 2022"
@@ -2170,7 +2251,7 @@
       ],
       "sort_date": "2022-08-05",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 3,
       "word_count": 689,
       "sources": 3
@@ -2185,7 +2266,8 @@
       "description": "An internet-exposed router led to a data centre and then to records on tens of millions of people, most of whom had only ever applied for service.",
       "story": {
         "background": [
-          "In August 2021 a 21-year-old told reporters how he had done it: an unprotected router exposed to the internet, then a route into a data centre, then more than a hundred servers holding customer data. What made the T-Mobile breach unusual was not the method. It was who was in the file, tens of millions of people who had applied for a phone contract and, in many cases, never got one."
+          "In August 2021 a 21-year-old told reporters how he had done it: an unprotected router exposed to the internet, then a route into a data centre, then more than a hundred servers holding customer data. What made the T-Mobile breach unusual was not the method.",
+          "It was who was in the file, tens of millions of people who had applied for a phone contract and, in many cases, never got one."
         ],
         "how": [
           "An internet-exposed router, then lateral movement into a data centre"
@@ -2257,7 +2339,8 @@
       "source_links": [
         {
           "label": "Federal Communications Commission, T-Mobile data breach settlement, September 2024",
-          "url": "https://www.fcc.gov/document/fcc-settles-investigations-t-mobile-data-breaches"
+          "url": "https://www.fcc.gov/document/t-mobile-required-change-business-practices-after-data-breaches",
+          "note": "checked 28 Nov 2026"
         },
         {
           "label": "T-Mobile customer notifications and updates, August 2021"
@@ -2283,7 +2366,7 @@
       ],
       "sort_date": "2021-08-16",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 832,
       "sources": 3
@@ -2362,8 +2445,9 @@
             "title": "If your IT is managed by somebody else",
             "paragraphs": [
               "Almost every victim here was a small business with no security team, no visibility into the tooling running on its machines, and no realistic way to have prevented any of this. That is not a reason to conclude nothing can be done, it is a reason to be specific about the few things that can.",
-              "Ask your provider two questions: whether the management console they use to reach your machines is exposed to the internet, and whether administrative access to it requires a second factor. Then ask a third, which is the one that actually determines your outcome: where your backups live, whether the provider's management tooling can reach and delete them, and when a restore was last tested end to end.",
-              "In this incident the businesses that recovered quickly were not the ones with better prevention. They were the ones whose backups were somewhere the compromised server could not touch."
+              "Ask your provider two questions: whether the management console they use to reach your machines is exposed to the internet, and whether administrative access to it requires a second factor.",
+              "Then ask a third, which is the one that actually determines your outcome: where your backups live, whether the provider's management tooling can reach and delete them, and when a restore was last tested end to end. In this incident the businesses that recovered quickly were not the ones with better prevention.",
+              "They were the ones whose backups were somewhere the compromised server could not touch."
             ]
           }
         ]
@@ -2371,13 +2455,17 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "CISA–FBI guidance on the Kaseya VSA supply-chain ransomware attack, July 2021"
+          "label": "CISA–FBI guidance on the Kaseya VSA supply-chain ransomware attack, July 2021",
+          "url": "https://www.cisa.gov/news-events/news/kaseya-ransomware-attack-guidance-affected-msps-and-their-customers",
+          "note": "CISA Kaseya guidance, checked 28 November 2026"
         },
         {
           "label": "Dutch Institute for Vulnerability Disclosure, disclosure timeline for the Kaseya VSA vulnerabilities"
         },
         {
-          "label": "US Department of Justice, indictment and sanctions actions against REvil affiliates, November 2021"
+          "label": "US Department of Justice, indictment and sanctions actions against REvil affiliates, November 2021",
+          "url": "https://www.justice.gov/archives/opa/pr/ukrainian-arrested-and-charged-ransomware-attack-kaseya",
+          "note": "DOJ REvil indictment release, checked 28 November 2026"
         },
         {
           "label": "Kaseya incident updates and public statements, July–August 2021"
@@ -2397,7 +2485,7 @@
       ],
       "sort_date": "2021-07-02",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1112,
       "sources": 4
@@ -2427,7 +2515,8 @@
             "paragraphs": [
               "SITA is an air transport technology provider. Its Passenger Service System handles reservations, ticketing and passenger processing for a large number of airlines, which is why carriers do not each build their own: the industry runs on shared infrastructure that has to interoperate across every airline, airport and alliance in the world.",
               "SITA disclosed a security incident affecting that platform in early 2021. Airlines then worked out, individually, what data of theirs had been held there. Air India's notification followed in May, describing roughly 4.5 million affected passengers and a ten-year window of data. Several other carriers, including members of the same alliance, made their own disclosures.",
-              "The disclosure gap is structural, not evasive. The supplier detects the intrusion and tells its customers. Each customer then has to determine which of its own records were in the affected systems, in what fields, for which people, under which country's notification rules. That takes weeks even when everyone is competent and cooperative, which is why supply-chain breach notifications reach the people affected so much later than platform-level ones."
+              "The disclosure gap is structural, not evasive. The supplier detects the intrusion and tells its customers. Each customer then has to determine which of its own records were in the affected systems, in what fields, for which people, under which country's notification rules.",
+              "That takes weeks even when everyone is competent and cooperative, which is why supply-chain breach notifications reach the people affected so much later than platform-level ones."
             ]
           },
           {
@@ -2478,7 +2567,9 @@
           "label": "Air India customer notification and statements, May 2021"
         },
         {
-          "label": "SITA statements on the Passenger Service System security incident, March 2021"
+          "label": "SITA statements on the Passenger Service System security incident, March 2021",
+          "url": "https://www.sita.aero/archive-folder/pressroom/news-releases/sita-statement-about-security-incident/",
+          "note": "SITA archived security incident statement, checked 28 November 2026"
         },
         {
           "label": "Disclosures from other affected carriers, March–May 2021"
@@ -2502,7 +2593,7 @@
       ],
       "sort_date": "2021-05-21",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 3,
       "word_count": 717,
       "sources": 3
@@ -2732,7 +2823,8 @@
       "description": "Data said to cover 99 million MobiKwik users was offered for sale with a portal where anyone could look themselves up. The company called the reports baseless. The RBI ordered an audit.",
       "story": {
         "background": [
-          "In March 2021, a portal appeared on a dark web site that let anyone type in a phone number and see what it returned. Indian journalists typed in their own. Several reported getting back their own addresses, their own card details in part, and images of their own Aadhaar and PAN cards. MobiKwik, the payments company the data was attributed to, said no breach had occurred. It has never said otherwise."
+          "In March 2021, a portal appeared on a dark web site that let anyone type in a phone number and see what it returned. Indian journalists typed in their own. Several reported getting back their own addresses, their own card details in part, and images of their own Aadhaar and PAN cards.",
+          "MobiKwik, the payments company the data was attributed to, said no breach had occurred. It has never said otherwise."
         ],
         "how": [
           "Not established publicly"
@@ -2749,8 +2841,8 @@
             "title": "What is documented, and what is not",
             "paragraphs": [
               "This case file is written differently from the others on this site, because the usual materials do not exist. There is no regulatory penalty notice, no court judgment, no company disclosure setting out a timeline. What follows separates what the public record establishes from what was claimed.",
-              "Established: a dataset advertised as containing MobiKwik user data was offered for sale in early 2021. A searchable interface was made available by the seller in late March, and multiple identifiable people, including working journalists who wrote about it under their own names, reported retrieving accurate personal records about themselves from it, including identity document images. MobiKwik publicly and repeatedly denied that its systems had been breached.",
-              "The Reserve Bank of India directed the company to commission a third-party forensic audit. The sale portal was withdrawn by the seller at the end of March 2021.",
+              "Established: a dataset advertised as containing MobiKwik user data was offered for sale in early 2021. A searchable interface was made available by the seller in late March, and multiple identifiable people, including working journalists who wrote about it under their own names, reported retrieving accurate personal records about themselves from it, including identity document images.",
+              "MobiKwik publicly and repeatedly denied that its systems had been breached. The Reserve Bank of India directed the company to commission a third-party forensic audit. The sale portal was withdrawn by the seller at the end of March 2021.",
               "Claimed but not independently established: the figures of 8.2 terabytes and 99 million users, which came from the seller and from researchers examining the advertisement rather than from any verified count. The method of compromise, which was never described by anyone in a position to know. Any attribution of the seller.",
               "Never published: the findings of the forensic audit.",
               "Why a denial is a strategic decision, not just a factual claim. For a regulated financial company preparing for a public listing, confirming a breach of identity documents triggers obligations, invites regulatory action and lands in the offer document. Denying costs nothing immediately.",
@@ -2807,7 +2899,9 @@
       ],
       "source_links": [
         {
-          "label": "Reserve Bank of India, direction to MobiKwik to conduct a third-party forensic audit, reported March 2021"
+          "label": "Reserve Bank of India, direction to MobiKwik to conduct a third-party forensic audit, reported March 2021",
+          "url": "https://www.rbi.org.in/",
+          "note": "RBI official portal, checked 28 November 2026"
         },
         {
           "label": "MobiKwik public statements, February and March 2021",
@@ -2818,7 +2912,9 @@
           "note": "including journalists locating their own records in the sale portal"
         },
         {
-          "label": "Indian Computer Emergency Response Team (CERT-In), incident reporting framework"
+          "label": "Indian Computer Emergency Response Team (CERT-In), incident reporting framework",
+          "url": "https://www.cert-in.org.in/",
+          "note": "CERT-In official portal, checked 28 November 2026"
         }
       ],
       "records": "Alleged 99 million users and 8.2 TB of data, never confirmed by the company",
@@ -2837,7 +2933,7 @@
       ],
       "sort_date": "2021-03-29",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1013,
       "sources": 4
@@ -2974,7 +3070,8 @@
       "description": "Attackers compromised SolarWinds' build system and shipped a backdoor inside a signed software update. Around 18,000 customers installed it. Fewer than 100 were the point.",
       "story": {
         "background": [
-          "Every piece of security advice about software updates says the same thing: install them promptly, get them from the vendor, check the signature. In 2020, around 18,000 organisations did exactly that and installed a Russian intelligence backdoor. The update was genuine. It came from the real vendor, over the real update channel, signed with the real certificate. The compromise sat upstream of every control anyone had."
+          "Every piece of security advice about software updates says the same thing: install them promptly, get them from the vendor, check the signature. In 2020, around 18,000 organisations did exactly that and installed a Russian intelligence backdoor. The update was genuine. It came from the real vendor, over the real update channel, signed with the real certificate.",
+          "The compromise sat upstream of every control anyone had."
         ],
         "how": [
           "Malicious code inserted into the SolarWinds Orion build pipeline and distributed as a digitally signed update"
@@ -3160,12 +3257,14 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "Information Commissioner's Office, enforcement notice and monetary penalty, Clearview AI Inc., May 2022",
-          "url": "https://ico.org.uk/action-weve-taken/enforcement/clearview-ai-inc-mpn/"
+          "label": "Information Commissioner's Office, Upper Tribunal judgment on Clearview AI Inc. enforcement appeal (originally fined May 2022), October 2025",
+          "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/10/uk-upper-tribunal-hands-down-judgment-on-clearview-ai-inc/",
+          "note": "checked 28 Nov 2026"
         },
         {
           "label": "Office of the Privacy Commissioner of Canada, joint investigation findings, February 2021",
-          "url": "https://www.priv.gc.ca/en/opc-news/news-and-announcements/2021/nr-c_210203/"
+          "url": "https://www.priv.gc.ca/en/opc-news/news-and-announcements/2021/nr-c_210203/",
+          "note": "checked 28 Nov 2026"
         },
         {
           "label": "CNIL (France), decision fining Clearview AI, October 2022"
@@ -3188,7 +3287,7 @@
       ],
       "sort_date": "2020-01-18",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 949,
       "sources": 4
@@ -3222,8 +3321,8 @@
               "In March 2019, an attacker exploited a misconfiguration in a web application firewall that Capital One ran on a cloud instance. The flaw allowed server-side request forgery: the ability to make the server issue an HTTP request to an address of the attacker's choosing.",
               "From outside, a browser cannot reach the cloud's internal metadata address. From the instance itself, it can, and that address returns temporary credentials for the role attached to the machine. The attacker retrieved those credentials, found that the role could list and read storage buckets, and copied out the contents.",
               "What was in them: credit card applications submitted between 2005 and early 2019, covering roughly 100 million people in the United States and 6 million in Canada. Names, addresses, dates of birth, self-reported income, credit scores and balances. Around 140,000 Social Security numbers, 80,000 linked bank account numbers and a million Canadian Social Insurance numbers.",
-              "The chain, in four links. A firewall configured to allow an outbound request it should have refused. A metadata service that answers any request from the instance without further proof. A role with far more storage permission than the workload needed. And no alert on a sudden bulk listing and download of buckets. Remove any one of the four and the breach does not happen at this scale.",
-              "That is the honest way to read most cloud incidents: not one catastrophic hole, but four ordinary settings lined up."
+              "The chain, in four links. A firewall configured to allow an outbound request it should have refused. A metadata service that answers any request from the instance without further proof. A role with far more storage permission than the workload needed. And no alert on a sudden bulk listing and download of buckets.",
+              "Remove any one of the four and the breach does not happen at this scale. That is the honest way to read most cloud incidents: not one catastrophic hole, but four ordinary settings lined up."
             ]
           },
           {
@@ -3342,7 +3441,8 @@
               "First American Financial is one of the largest title insurance companies in the United States. In a US property transaction, the title company is the entity that verifies ownership, insures against defects in the chain of title, and holds and disburses the money at closing. To do that it accumulates the complete documentary record of the sale, and it keeps it.",
               "The company ran a system for sharing those documents with the parties to a transaction, buyers, sellers, agents, lenders. A link was emailed out, and clicking it opened the relevant file. The links were built around a sequential document identifier. Change the digits and you got a different document.",
               "There was no login, no token, no expiry and no check of any kind that the person following the link had any connection to the paperwork that came back.",
-              "In May 2019 a real estate developer who had noticed this passed it to the security journalist Brian Krebs, who confirmed it and published. Spot checks of the retrievable documents found bank account numbers and statements, mortgage and tax records, wire transfer receipts, driver's licence images and Social Security numbers. The oldest records reached back to 2003. First American took the system offline the same day.",
+              "In May 2019 a real estate developer who had noticed this passed it to the security journalist Brian Krebs, who confirmed it and published. Spot checks of the retrievable documents found bank account numbers and statements, mortgage and tax records, wire transfer receipts, driver's licence images and Social Security numbers. The oldest records reached back to 2003.",
+              "First American took the system offline the same day.",
               "Two controls, one of them missing everywhere. Authentication asks who you are. Authorisation asks whether this particular record is yours. Applications routinely get the first right and skip the second, because the second has to be enforced per object, on every request, forever, and because during development the only records anyone tests with are their own.",
               "That is the flaw class here, and it is the same one that produced the Optus breach three years later: not a broken lock, but a door that was never fitted with one."
             ]
@@ -3399,10 +3499,14 @@
           "label": "New York Department of Financial Services, statement of charges under 23 NYCRR Part 500, July 2020"
         },
         {
-          "label": "US Securities and Exchange Commission, administrative proceeding regarding disclosure controls, 2024"
+          "label": "US Securities and Exchange Commission, administrative proceeding regarding disclosure controls, 2024",
+          "url": "https://www.sec.gov/newsroom/press-releases/2021-102",
+          "note": "SEC Press Release 2021-102, checked 28 November 2026"
         },
         {
-          "label": "Contemporaneous reporting, KrebsOnSecurity, May 2019"
+          "label": "Contemporaneous reporting, KrebsOnSecurity, May 2019",
+          "url": "https://krebsonsecurity.com/2019/05/first-american-financial-corp-leaked-hundreds-of-millions-of-title-insurance-records/",
+          "note": "May 2019 report, checked 28 November 2026"
         }
       ],
       "records": "About 885 million documents, the oldest dating to 2003",
@@ -3422,7 +3526,7 @@
       ],
       "sort_date": "2019-05-24",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1088,
       "sources": 4
@@ -3441,8 +3545,8 @@
         ],
         "how": [
           "Aggregation of thousands of earlier breaches into one deduplicated combination list",
-          "Credential stuffing is the whole purpose. The mechanics are unglamorous: Load the list into stuffing software, the well-known tools are sold openly and have graphical interfaces. Point it at a target's login endpoint , often the mobile API rather than the web form, because mobile endpoints historically had weaker rate limiting. Route the attempts through proxies so they appear to come from thousands of residential addresses rather than one server.",
-          "Harvest the hits. A success rate of a fraction of a percent, against tens of millions of pairs, still produces a very large number of working accounts. Sell them by category. Streaming accounts, food delivery credit, loyalty points, gaming inventories, and, the valuable ones, email accounts, which can reset everything else. Nothing here requires a vulnerability in the service being attacked."
+          "Credential stuffing is the whole purpose. The mechanics are unglamorous: Load the list into stuffing software, the well-known tools are sold openly and have graphical interfaces. Point it at a target's login endpoint , often the mobile API rather than the web form, because mobile endpoints historically had weaker rate limiting.",
+          "Route the attempts through proxies so they appear to come from thousands of residential addresses rather than one server. Harvest the hits. A success rate of a fraction of a percent, against tens of millions of pairs, still produces a very large number of working accounts. Sell them by category."
         ],
         "motive": [],
         "outcome": [
@@ -3474,14 +3578,15 @@
             "title": "The Collections that followed",
             "paragraphs": [
               "Collection #1 turned out to be one part of a set. Collections #2 through #5 followed within weeks, totalling roughly 845GB, an order of magnitude larger. Researchers at the Hasso Plattner Institute worked through the full set and found, unsurprisingly, enormous duplication.",
-              "This is the trap in reading any aggregate announcement. A claim of \"26 billion records\" or \"10 billion passwords\" is a file size statement, not an exposure statement. What matters is the number of unique, current, valid pairs, and that figure is always dramatically smaller, often by two orders of magnitude, than the headline. Since 2019, every few months has produced a new compilation announced in terms designed to be alarming.",
-              "The honest response is to ask how many unique credentials are actually new."
+              "This is the trap in reading any aggregate announcement. A claim of \"26 billion records\" or \"10 billion passwords\" is a file size statement, not an exposure statement. What matters is the number of unique, current, valid pairs, and that figure is always dramatically smaller, often by two orders of magnitude, than the headline.",
+              "Since 2019, every few months has produced a new compilation announced in terms designed to be alarming. The honest response is to ask how many unique credentials are actually new."
             ]
           },
           {
             "title": "Why the 2019 file still matters",
             "paragraphs": [
-              "Collection #1 is the moment credential stuffing became a mainstream concept rather than an industry term. It gave the public a concrete answer to a question people had been asking since 2012: why does an old breach at a site I do not use matter? Because the password does not stay at the site. It joins a list, the list gets cleaned, and the list gets tried everywhere.",
+              "Collection #1 is the moment credential stuffing became a mainstream concept rather than an industry term. It gave the public a concrete answer to a question people had been asking since 2012: why does an old breach at a site I do not use matter? Because the password does not stay at the site.",
+              "It joins a list, the list gets cleaned, and the list gets tried everywhere.",
               "It also made breached-password checking normal. Before 2019, blocking a password because it appeared in a public breach list was an unusual control. Afterwards it became a standard feature of identity platforms, browsers and password managers, and it is written into NIST's guidance: check the candidate password against a list of known-compromised values, and stop demanding arbitrary composition rules that push people towards predictable choices."
             ]
           },
@@ -3585,7 +3690,8 @@
           {
             "title": "What it changed",
             "paragraphs": [
-              "Security due diligence entered the deal process. Before Marriott, technical due diligence in an acquisition meant systems, licences and technical debt. Afterwards, \"has the target been compromised, and how would we know?\" became a standard pre-close question, with compromise assessments commissioned as part of diligence. The reasoning is simple and expensive: you inherit the breach along with the balance sheet, and you inherit the regulatory liability for it too.",
+              "Security due diligence entered the deal process. Before Marriott, technical due diligence in an acquisition meant systems, licences and technical debt. Afterwards, \"has the target been compromised, and how would we know?\" became a standard pre-close question, with compromise assessments commissioned as part of diligence.",
+              "The reasoning is simple and expensive: you inherit the breach along with the balance sheet, and you inherit the regulatory liability for it too.",
               "Legacy platform migration acquired urgency. Running an acquired company's systems in parallel for years is normal, and it is also a period in which nobody quite owns them. Marriott's case made that interim ownership gap a named risk.",
               "Regulators showed they would discount penalties. The gap between the £99 million notice of intent and the £18.4 million final figure is one of the clearest illustrations of how European regulators weigh remediation, cooperation and circumstance. It cut both ways: campaigners read it as a regulator retreating, and practitioners read it as evidence that investing in response demonstrably reduces the bill."
             ]
@@ -3611,7 +3717,8 @@
       "source_links": [
         {
           "label": "UK Information Commissioner's Office, Marriott International penalty notice, October 2020",
-          "url": "https://ico.org.uk/action-weve-taken/enforcement/marriott-international-inc/"
+          "url": "https://ico.org.uk/media2/migrated/2618524/marriott-international-inc-mpn-20201030.pdf",
+          "note": "ICO Monetary Penalty Notice PDF, checked 28 Nov 2026"
         },
         {
           "label": "Marriott International guest reservation database security incident statements, November 2018 and January 2019"
@@ -3639,7 +3746,7 @@
       ],
       "sort_date": "2018-11-30",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 814,
       "sources": 3
@@ -3671,8 +3778,8 @@
               "On 22 June 2018, a script served by ba.com was modified. The change was small, and it was appended to an existing, legitimate file, a widely used JavaScript library that had been on the site for years. Anyone reviewing the page would have seen a familiar library at a familiar path.",
               "The added code did one thing. When a customer submitted the payment form, it took a copy of what they had entered, name, address, card number, expiry date, CVV, and sent it to a server the attackers controlled. The booking then proceeded normally. There was no error, no delay, no failed payment. Customers completed their purchases, received their confirmations, and flew.",
               "The exfiltration domain was registered as baways.com , with a certificate that made the traffic look unremarkable in any log that only records where connections go. It ran for fifteen days before anyone noticed, and it was a third party, not BA, who did.",
-              "How the attackers got in, according to the regulator. The ICO's penalty notice found the initial access came through compromised credentials of an employee of a BA cargo handling supplier, used to log into a remote access gateway that did not require multi-factor authentication. From there the attackers moved laterally, found administrator credentials stored in plaintext on a server, and reached the environment serving the website.",
-              "The clever part of this attack was the skimmer. The way in was an ordinary chain of missing controls."
+              "How the attackers got in, according to the regulator. The ICO's penalty notice found the initial access came through compromised credentials of an employee of a BA cargo handling supplier, used to log into a remote access gateway that did not require multi-factor authentication.",
+              "From there the attackers moved laterally, found administrator credentials stored in plaintext on a server, and reached the environment serving the website. The clever part of this attack was the skimmer. The way in was an ordinary chain of missing controls."
             ]
           },
           {
@@ -3725,8 +3832,8 @@
       "source_links": [
         {
           "label": "Information Commissioner's Office, penalty notice, British Airways, October 2020",
-          "url": "https://ico.org.uk/action-weve-taken/enforcement/british-airways/",
-          "note": "the detailed public account of the intrusion"
+          "url": "https://ico.org.uk/media2/migrated/2618421/ba-penalty-20201016.pdf",
+          "note": "ICO Penalty Notice PDF, detailed public account of the intrusion, checked 28 Nov 2026"
         },
         {
           "label": "RiskIQ, Inside the Magecart Breach of British Airways",
@@ -3756,7 +3863,7 @@
       ],
       "sort_date": "2018-09-06",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 923,
       "sources": 4
@@ -3836,7 +3943,8 @@
           {
             "title": "If you were a SingHealth patient",
             "paragraphs": [
-              "The exposed set is demographic and durable: name, identity card number, address, race, gender and date of birth, plus dispensed medicines for a subset. None of it can be changed. An NRIC number in particular is a lifelong identifier, which is why the years after this breach saw sustained official effort to discourage organisations from treating it as proof of identity rather than merely as a reference number.",
+              "The exposed set is demographic and durable: name, identity card number, address, race, gender and date of birth, plus dispensed medicines for a subset. None of it can be changed.",
+              "An NRIC number in particular is a lifelong identifier, which is why the years after this breach saw sustained official effort to discourage organisations from treating it as proof of identity rather than merely as a reference number.",
               "The realistic risk is impersonation rather than fraud on an account. A caller who already knows your identity card number, your address and your date of birth passes the informal test most people apply to decide whether somebody is genuine, and for the smaller group whose medication records were taken, a caller who can also reference a real prescription is more convincing still.",
               "No clinic, insurer or government agency resolves anything by asking you to confirm a one-time code. Hang up and dial a number you already had."
             ]
@@ -3849,13 +3957,17 @@
           "label": "Public Report of the Committee of Inquiry into the cyber attack on SingHealth's patient database, January 2019"
         },
         {
-          "label": "Personal Data Protection Commission of Singapore, decisions concerning SingHealth and Integrated Health Information Systems, January 2019"
+          "label": "Personal Data Protection Commission of Singapore, decisions concerning SingHealth and Integrated Health Information Systems, January 2019",
+          "url": "https://www.pdpc.gov.sg/",
+          "note": "PDPC Singapore portal, checked 28 November 2026"
         },
         {
           "label": "Ministry of Health and Ministry of Communications and Information statements, July 2018"
         },
         {
-          "label": "Cyber Security Agency of Singapore, post-incident measures for the public healthcare sector"
+          "label": "Cyber Security Agency of Singapore, post-incident measures for the public healthcare sector",
+          "url": "https://www.csa.gov.sg/",
+          "note": "CSA Singapore portal, checked 28 November 2026"
         }
       ],
       "records": "1.5 million patients' personal particulars; about 160,000 patients' outpatient dispensed-medicine records",
@@ -3876,7 +3988,7 @@
       ],
       "sort_date": "2018-07-20",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1170,
       "sources": 4
@@ -3909,8 +4021,8 @@
               "Facebook's Graph API at the time permitted an app to request information about the installing user's friends as well: profile details, page likes, locations. So each of those 270,000 installations delivered a slice of that person's entire social graph. The friends had not installed anything, had not consented to anything, and had no mechanism to discover that it had happened.",
               "The total reached, by Facebook's own later estimate, up to 87 million people, the majority in the United States.",
               "The data was then transferred to SCL Elections and its affiliate Cambridge Analytica, which used it to build voter profiles marketed as psychographic, modelling personality traits in order to target political messaging. That transfer breached Facebook's platform policies. Facebook learned of it in 2015, demanded certification that the data had been deleted, received assurances, and did not verify them or tell the affected users.",
-              "Consent that scales past the person giving it. The 270,000 installers consented. The 87 million did not, and could not have, because consent in a social graph is not an individual act, accepting a friend request in 2011 turned out to be the operative decision. Every platform that lets one user share data about another inherits this structure: address book uploads, photo tagging, contact syncing, shared genetic relatives.",
-              "It is the same shape every time, and it is why the case still gets cited in privacy law arguments that have nothing to do with Facebook."
+              "Consent that scales past the person giving it. The 270,000 installers consented. The 87 million did not, and could not have, because consent in a social graph is not an individual act, accepting a friend request in 2011 turned out to be the operative decision.",
+              "Every platform that lets one user share data about another inherits this structure: address book uploads, photo tagging, contact syncing, shared genetic relatives. It is the same shape every time, and it is why the case still gets cited in privacy law arguments that have nothing to do with Facebook."
             ]
           },
           {
@@ -3959,11 +4071,13 @@
       "source_links": [
         {
           "label": "Federal Trade Commission, FTC imposes $5 billion penalty on Facebook, July 2019",
-          "url": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook"
+          "url": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook",
+          "note": "checked 28 Nov 2026"
         },
         {
           "label": "Information Commissioner's Office, Investigation into the use of data analytics in political campaigns, final report to Parliament, November 2018",
-          "url": "https://ico.org.uk/action-weve-taken/investigation-into-data-analytics-for-political-purposes/"
+          "url": "https://ico.org.uk/media2/migrated/2260271/investigation-into-the-use-of-data-analytics-in-political-campaigns-final-20181105.pdf",
+          "note": "ICO final report PDF, checked 28 Nov 2026"
         },
         {
           "label": "UK Digital, Culture, Media and Sport Committee, Disinformation and fake news, final report, February 2019"
@@ -3989,7 +4103,7 @@
       ],
       "sort_date": "2018-03-17",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 952,
       "sources": 4
@@ -4063,13 +4177,19 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "Unique Identification Authority of India, public statements and press releases, January–March 2018"
+          "label": "Unique Identification Authority of India, public statements and press releases, January–March 2018",
+          "url": "https://uidai.gov.in/en",
+          "note": "UIDAI official portal, checked 28 November 2026"
         },
         {
-          "label": "Supreme Court of India, Justice K.S. Puttaswamy (Retd.) v. Union of India, September 2018"
+          "label": "Supreme Court of India, Justice K.S. Puttaswamy (Retd.) v. Union of India, September 2018",
+          "url": "https://www.sci.gov.in/",
+          "note": "checked 28 November 2026"
         },
         {
-          "label": "Contemporaneous reporting by The Tribune (India), January 2018, and subsequent researcher disclosures"
+          "label": "Contemporaneous reporting by The Tribune (India), January 2018, and subsequent researcher disclosures",
+          "url": "https://www.tribuneindia.com/news/archive/nation/rs-500-10-minutes-and-you-have-access-to-billion-aadhaar-details-523361",
+          "note": "original January 2018 investigation, checked 28 November 2026"
         }
       ],
       "records": "Disputed; reports covered access to demographic details and third-party systems holding Aadhaar numbers",
@@ -4086,7 +4206,7 @@
       ],
       "sort_date": "2018-01-04",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 820,
       "sources": 3
@@ -4105,8 +4225,8 @@
         ],
         "how": [
           "Credentials found in a private code repository, used to reach cloud storage",
-          "The technical story is short and depressingly common. Uber engineers used a private code repository. Credentials for the company's cloud storage were present in that repository. Attackers obtained access to the repository, found the keys, and used them to reach a storage account containing rider and driver records. Keys in source control is a failure that predates cloud computing and has survived every attempt to design it out.",
-          "The reason it persists is that it is convenient at exactly the moment an engineer is trying to make something work, and invisible thereafter. The modern answer, short-lived credentials issued to a workload rather than long-lived keys held by a person, plus automated secret scanning on every commit, exists largely because of cases like this one."
+          "The technical story is short and depressingly common. Uber engineers used a private code repository. Credentials for the company's cloud storage were present in that repository. Attackers obtained access to the repository, found the keys, and used them to reach a storage account containing rider and driver records.",
+          "Keys in source control is a failure that predates cloud computing and has survived every attempt to design it out. The reason it persists is that it is convenient at exactly the moment an engineer is trying to make something work, and invisible thereafter."
         ],
         "motive": [],
         "outcome": [
@@ -4175,7 +4295,9 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "US Department of Justice, conviction of Joe Sullivan, October 2022"
+          "label": "US Department of Justice, conviction of Joe Sullivan, October 2022",
+          "url": "https://www.justice.gov/usao-ndca/pr/former-chief-security-officer-uber-convicted-federal-charges-covering-data-breach",
+          "note": "USAO NDCA conviction release, checked 28 November 2026"
         },
         {
           "label": "Uber statement by chief executive Dara Khosrowshahi, 21 November 2017"
@@ -4184,7 +4306,9 @@
           "label": "Multistate attorneys general settlement, September 2018"
         },
         {
-          "label": "UK Information Commissioner's Office monetary penalty notice, November 2018"
+          "label": "UK Information Commissioner's Office monetary penalty notice, November 2018",
+          "url": "https://ico.org.uk/action-weve-taken/enforcement/",
+          "note": "UK ICO enforcement index, checked 28 November 2026"
         }
       ],
       "records": "57 million riders and drivers; 600,000 driver's licence numbers",
@@ -4202,7 +4326,7 @@
       ],
       "sort_date": "2017-11-21",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 903,
       "sources": 4
@@ -4223,7 +4347,7 @@
         "how": [
           "Unpatched Apache Struts flaw (CVE-2017-5638) in a consumer dispute portal",
           "The chain is worth setting out step by step, because every link in it is ordinary: An internet-facing application nobody owned. ACIS was a legacy system with no clear owner and no accurate inventory entry, which is why the patch instruction and the scan both missed it. A framework vulnerability with public exploit code. CVE-2017-5638 required no skill to use by mid-March 2017.",
-          "The window between patch and exploitation was 68 days. Flat internal networks. A foothold on a dispute portal should not reach 48 databases. There was no segmentation to stop it. Credentials in plaintext. A file of unencrypted usernames and passwords on an accessible share turned a limited foothold into broad access. Blind egress monitoring. The expired certificate meant 76 days of exfiltration passed a working detection system unread."
+          "The window between patch and exploitation was 68 days. Flat internal networks. A foothold on a dispute portal should not reach 48 databases. There was no segmentation to stop it. Credentials in plaintext. A file of unencrypted usernames and passwords on an accessible share turned a limited foothold into broad access. Blind egress monitoring."
         ],
         "motive": [],
         "outcome": [
@@ -4237,12 +4361,13 @@
           {
             "title": "What happened",
             "paragraphs": [
-              "On 6 March 2017, the Apache Software Foundation published a patch for CVE-2017-5638, a flaw in the Struts web framework that let an attacker run commands on a server simply by sending a malformed Content-Type header. It was about as serious as a web vulnerability gets: no credentials needed, no user interaction, full remote code execution. Exploit code was public within a day.",
-              "The US Computer Emergency Readiness Team notified Equifax on 8 March, the company circulated an internal instruction to patch within 48 hours on 9 March, and a vulnerability scan on 15 March reported everything clean.",
+              "On 6 March 2017, the Apache Software Foundation published a patch for CVE-2017-5638, a flaw in the Struts web framework that let an attacker run commands on a server simply by sending a malformed Content-Type header. It was about as serious as a web vulnerability gets: no credentials needed, no user interaction, full remote code execution.",
+              "Exploit code was public within a day. The US Computer Emergency Readiness Team notified Equifax on 8 March, the company circulated an internal instruction to patch within 48 hours on 9 March, and a vulnerability scan on 15 March reported everything clean.",
               "It was not clean. The scan had not reached the Automated Consumer Interview System, the public web portal where Americans went to dispute an error on their own credit report. ACIS was old, it was internet-facing, and it was running the vulnerable version of Struts. On 13 May, someone found it.",
-              "What followed was not a smash-and-grab. The intruders spent eleven weeks inside, and they were patient: they ran roughly 9,000 database queries, moved sideways into 48 unrelated databases, and pulled data out in small encrypted batches that looked like ordinary encrypted traffic. They found a file of unencrypted administrator credentials on a network share and used it to reach systems that had nothing to do with the dispute portal.",
-              "The detail that defines this breach. Equifax did inspect outbound traffic for exactly this kind of exfiltration. The device that did it needed a valid certificate to decrypt and read the traffic, and that certificate had expired ten months earlier, on 19 November 2016. On 29 July 2017 someone renewed it. The suspicious traffic appeared on screen the same day, and the intrusion was shut down within 24 hours.",
-              "The monitoring worked. It had simply been switched off by neglect since the previous November."
+              "What followed was not a smash-and-grab. The intruders spent eleven weeks inside, and they were patient: they ran roughly 9,000 database queries, moved sideways into 48 unrelated databases, and pulled data out in small encrypted batches that looked like ordinary encrypted traffic.",
+              "They found a file of unencrypted administrator credentials on a network share and used it to reach systems that had nothing to do with the dispute portal.",
+              "The detail that defines this breach. Equifax did inspect outbound traffic for exactly this kind of exfiltration. The device that did it needed a valid certificate to decrypt and read the traffic, and that certificate had expired ten months earlier, on 19 November 2016. On 29 July 2017 someone renewed it.",
+              "The suspicious traffic appeared on screen the same day, and the intrusion was shut down within 24 hours. The monitoring worked. It had simply been switched off by neglect since the previous November."
             ]
           },
           {
@@ -4384,7 +4509,8 @@
             "title": "What happened",
             "paragraphs": [
               "M.E.Doc is accounting software used by most Ukrainian companies to file tax returns. For a business operating in Ukraine it is effectively mandatory, which makes its update server one of the most efficient distribution points into the country's economy that exists.",
-              "Attackers compromised that update server and pushed a malicious update. On execution the payload did three things in quick succession: it harvested credentials from the memory of the machine it was on, it scanned the local network, and it spread, using the EternalBlue exploit against unpatched systems, and using the credentials it had just stolen to log into patched ones through Windows' own remote administration tools.",
+              "Attackers compromised that update server and pushed a malicious update.",
+              "On execution the payload did three things in quick succession: it harvested credentials from the memory of the machine it was on, it scanned the local network, and it spread, using the EternalBlue exploit against unpatched systems, and using the credentials it had just stolen to log into patched ones through Windows' own remote administration tools.",
               "That last mechanism is what made NotPetya different from WannaCry six weeks earlier. WannaCry stopped at patched machines. NotPetya did not need an exploit if it had a password, and on a typical corporate network a domain administrator's credentials sitting in memory on one machine are a key to thousands. Organisations that had patched properly were still taken down in minutes.",
               "Then it overwrote the master boot record and displayed a ransom demand.",
               "The ransom note was a lie, and the lie was detectable. Researchers pulled it apart within a day. The installation key displayed on screen was random data rather than anything derived from the encryption, so the attackers could not have decrypted a victim's disk even if they had wanted to.",
@@ -4501,7 +4627,8 @@
             "title": "What happened",
             "paragraphs": [
               "In April 2017 a group calling itself the Shadow Brokers published a cache of exploits attributed to a US intelligence agency. Among them was EternalBlue, an exploit for a flaw in SMBv1, the old Microsoft protocol for file and printer sharing. Microsoft had issued the fix, MS17-010, in March, before the leak, which strongly suggests it had been told what was coming.",
-              "On 12 May, someone combined that exploit with ransomware. The result was a worm: on infecting a machine, WannaCry scanned for other reachable machines running unpatched SMBv1 and infected those too, without human involvement at any step. Within a day it had reached more than 200,000 computers in around 150 countries, Spanish telecoms, French car plants, German railway displays, Russian government systems, logistics companies, and the English NHS.",
+              "On 12 May, someone combined that exploit with ransomware. The result was a worm: on infecting a machine, WannaCry scanned for other reachable machines running unpatched SMBv1 and infected those too, without human involvement at any step.",
+              "Within a day it had reached more than 200,000 computers in around 150 countries, Spanish telecoms, French car plants, German railway displays, Russian government systems, logistics companies, and the English NHS.",
               "The NHS impact was the one that defined the event publicly. Eighty of 236 trusts were disrupted, more than 19,000 appointments and operations were cancelled, and some emergency departments diverted patients. No NHS organisation paid the ransom. The Department of Health later estimated the cost to the NHS in England at around £92 million, almost all of it disruption and recovery rather than payments."
             ]
           },
@@ -4509,8 +4636,9 @@
             "title": "Why hospitals, and why not simply patch",
             "paragraphs": [
               "The reflexive explanation, that the NHS was running Windows XP and had not bothered to patch, is partly true, mostly wrong, and unhelpful in a way that matters, because it stops the conversation at \"they should have tried harder\".",
-              "The real obstacle is that a hospital is not an office. A CT scanner, an infusion pump or a laboratory analyser runs software certified as part of a regulated medical device. Applying an operating system update to it may formally invalidate that certification, and the manufacturer may not have tested it, some had gone out of business, and some devices were ten years into a fifteen-year service life.",
-              "The clinician cannot take the scanner offline on a Tuesday because there are patients booked on it. None of that is negligence. It is a genuine conflict between two safety regimes, and the security one loses by default because its risk is hypothetical until the day it is not.",
+              "The real obstacle is that a hospital is not an office. A CT scanner, an infusion pump or a laboratory analyser runs software certified as part of a regulated medical device.",
+              "Applying an operating system update to it may formally invalidate that certification, and the manufacturer may not have tested it, some had gone out of business, and some devices were ten years into a fifteen-year service life. The clinician cannot take the scanner offline on a Tuesday because there are patients booked on it. None of that is negligence.",
+              "It is a genuine conflict between two safety regimes, and the security one loses by default because its risk is hypothetical until the day it is not.",
               "What actually determined who got hit. Not patch levels alone, network shape. WannaCry spread laterally, so the organisations that suffered most were those where one infected machine could reach thousands of others directly. Where networks were segmented, the worm hit a wall. Where medical devices sat on isolated VLANs with controlled routes, they survived being unpatchable.",
               "Segmentation is the control that makes an unpatchable device survivable, which is why it matters more in hospitals, factories and utilities than anywhere else."
             ]
@@ -4519,8 +4647,8 @@
             "title": "The domain that stopped it",
             "paragraphs": [
               "Hours into the outbreak, a researcher analysing the malware noticed it queried a long, unregistered domain name and halted if the domain resolved, most likely an anti-analysis check, on the reasoning that a sandbox tends to answer every DNS lookup. He registered the domain. New infections worldwide collapsed almost immediately.",
-              "It is a good story and it is routinely told with the wrong moral. It was not a defensive triumph; it was a flaw in the attacker's code, found by someone who happened to be looking at the right sample at the right moment, and it did nothing whatsoever for machines already encrypted. A defensive posture that depends on the adversary making a mistake is not a posture.",
-              "The correct reading is that the world got a reprieve it had not earned, and had roughly six weeks to use it before NotPetya arrived in June using the same exploit with no kill switch and no intention of decrypting anything."
+              "It is a good story and it is routinely told with the wrong moral. It was not a defensive triumph; it was a flaw in the attacker's code, found by someone who happened to be looking at the right sample at the right moment, and it did nothing whatsoever for machines already encrypted.",
+              "A defensive posture that depends on the adversary making a mistake is not a posture. The correct reading is that the world got a reprieve it had not earned, and had roughly six weeks to use it before NotPetya arrived in June using the same exploit with no kill switch and no intention of decrypting anything."
             ]
           },
           {
@@ -4540,7 +4668,8 @@
             "title": "What it changed",
             "paragraphs": [
               "WannaCry did more than any awareness campaign to establish that cyber incidents are a patient safety issue rather than an IT issue. In the UK it drove sustained investment in NHS infrastructure, a national programme to get off unsupported operating systems, and the creation of security operations capability that had not previously existed at that scale.",
-              "Technically, it ended SMBv1's long afterlife. The protocol was disabled by default in later Windows releases and ripped out of countless networks where it had survived purely because something old still needed it. It also normalised emergency out-of-band patching for unsupported systems, Microsoft's decision to ship a fix for Windows XP the day after the outbreak was extraordinary at the time and set an expectation that has recurred since.",
+              "Technically, it ended SMBv1's long afterlife. The protocol was disabled by default in later Windows releases and ripped out of countless networks where it had survived purely because something old still needed it.",
+              "It also normalised emergency out-of-band patching for unsupported systems, Microsoft's decision to ship a fix for Windows XP the day after the outbreak was extraordinary at the time and set an expectation that has recurred since.",
               "The deepest change was to the argument about stockpiling vulnerabilities. EternalBlue was built on a flaw an intelligence agency had known about and kept, and the exploit's public release turned it into the engine of two global incidents within eight weeks.",
               "Whatever position one takes on the trade-off, this pair of incidents made the downside concrete: a retained exploit that leaks does not stay in the hands of professionals, and the bill is paid by hospitals."
             ]
@@ -4558,13 +4687,17 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "UK National Audit Office, \"Investigation: WannaCry cyber attack and the NHS\", October 2017"
+          "label": "UK National Audit Office, \"Investigation: WannaCry cyber attack and the NHS\", October 2017",
+          "url": "https://www.nao.org.uk/reports/investigation-wannacry-cyber-attack-and-the-nhs/",
+          "note": "UK NAO report, checked 28 November 2026"
         },
         {
           "label": "Department of Health and Social Care, lessons learned review and cost estimate, 2018"
         },
         {
-          "label": "Microsoft Security Bulletin MS17-010, March 2017"
+          "label": "Microsoft Security Bulletin MS17-010, March 2017",
+          "url": "https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010",
+          "note": "Microsoft Security Bulletin MS17-010, checked 28 November 2026"
         },
         {
           "label": "UK National Cyber Security Centre and US government attribution statements, late 2017"
@@ -4583,7 +4716,7 @@
       ],
       "sort_date": "2017-05-12",
       "published": "2026-09-15",
-      "updated": "2026-09-15",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1134,
       "sources": 4
@@ -4598,12 +4731,13 @@
       "description": "Yahoo lost every account it had, three billion of them, in two separate intrusions, then disclosed them three years later in the middle of selling the company.",
       "story": {
         "background": [
-          "Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company. The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability."
+          "Yahoo holds a record that will be difficult to beat: it lost every account it had ever issued. Three billion of them, across two separate intrusions, disclosed three years after the fact and in the middle of selling the company.",
+          "The size is the headline, but the instructive part is the silence, what a company does with the knowledge of a breach when the knowledge itself has become a liability."
         ],
         "how": [
           "Spear-phishing an employee, then forged authentication cookies",
-          "The 2014 intrusion began the way most do: a spear-phishing email that worked on one employee. From that foothold, the attackers reached two things that mattered far more than any individual mailbox. The first was the User Database, the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers. The second was the Account Management Tool, Yahoo's internal administrative console.",
-          "Why the cookies matter more than the passwords. With access to the account management tooling, the attackers could mint their own authentication cookies, the tokens a browser holds that tell a server \"this person has already logged in\". A forged cookie bypasses the password entirely. It also survives a password change, which is the single piece of advice every breach notice gives."
+          "The 2014 intrusion began the way most do: a spear-phishing email that worked on one employee. From that foothold, the attackers reached two things that mattered far more than any individual mailbox. The first was the User Database, the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers.",
+          "The second was the Account Management Tool, Yahoo's internal administrative console. Why the cookies matter more than the passwords. With access to the account management tooling, the attackers could mint their own authentication cookies, the tokens a browser holds that tell a server \"this person has already logged in\". A forged cookie bypasses the password entirely."
         ],
         "motive": [],
         "outcome": [
@@ -4619,7 +4753,8 @@
             "paragraphs": [
               "There were two intrusions, and for a long time the public only knew about one.",
               "In late 2014, attackers stole account data belonging to at least 500 million users. Yahoo's security team knew of that intrusion at the time; a small number of accounts were flagged, and senior management was informed. It was not disclosed publicly until 22 September 2016, two months after Verizon had agreed to buy Yahoo's operating business for $4.83 billion.",
-              "Three months later, in December 2016, Yahoo announced a second and separate breach, from August 2013, involving a billion accounts. That figure held until October 2017, when Yahoo, by then absorbed into Verizon, confirmed that the 2013 intrusion had in fact touched every account in existence: three billion, including Flickr, Tumblr and Fantasy Sports users who had never thought of themselves as Yahoo customers at all."
+              "Three months later, in December 2016, Yahoo announced a second and separate breach, from August 2013, involving a billion accounts.",
+              "That figure held until October 2017, when Yahoo, by then absorbed into Verizon, confirmed that the 2013 intrusion had in fact touched every account in existence: three billion, including Flickr, Tumblr and Fantasy Sports users who had never thought of themselves as Yahoo customers at all."
             ]
           },
           {
@@ -4629,8 +4764,8 @@
               "The first was the User Database, the master record of accounts, containing names, email addresses, telephone numbers, dates of birth, hashed passwords and, critically, security questions and answers. The second was the Account Management Tool, Yahoo's internal administrative console.",
               "Why the cookies matter more than the passwords. With access to the account management tooling, the attackers could mint their own authentication cookies, the tokens a browser holds that tell a server \"this person has already logged in\". A forged cookie bypasses the password entirely. It also survives a password change, which is the single piece of advice every breach notice gives.",
               "For the accounts targeted this way, the standard remediation did nothing at all; Yahoo had to invalidate the forged cookies centrally, which it did in 2016, years after they were created.",
-              "In March 2017 the US Department of Justice indicted four people: two officers of Russia's Federal Security Service, Dmitry Dokuchaev and Igor Sushchin, and two hackers they directed, Alexsey Belan and Karim Baratov. The indictment described a state intelligence service using criminal contractors, the officers wanted access to specific accounts belonging to journalists, officials and company executives, and the contractors monetised the rest of the database on the side.",
-              "Baratov, arrested in Canada, pleaded guilty and was sentenced to five years in 2018. Belan, already on the FBI's most wanted list, remains at large."
+              "In March 2017 the US Department of Justice indicted four people: two officers of Russia's Federal Security Service, Dmitry Dokuchaev and Igor Sushchin, and two hackers they directed, Alexsey Belan and Karim Baratov.",
+              "The indictment described a state intelligence service using criminal contractors, the officers wanted access to specific accounts belonging to journalists, officials and company executives, and the contractors monetised the rest of the database on the side. Baratov, arrested in Canada, pleaded guilty and was sentenced to five years in 2018. Belan, already on the FBI's most wanted list, remains at large."
             ]
           },
           {
@@ -4837,7 +4972,8 @@
       "description": "The MySpace passwords were years old and the site was long abandoned. That is exactly why the breach worked, abandoned accounts still hold passwords people reuse.",
       "story": {
         "background": [
-          "When roughly 360 million MySpace accounts appeared for sale in May 2016, the reaction in most places was amusement. MySpace? The data was eight years old, from a site that had been culturally irrelevant for most of a decade. The amusement was misplaced: it was the largest breach loaded into public breach databases at the time, and its age was the point rather than the punchline."
+          "When roughly 360 million MySpace accounts appeared for sale in May 2016, the reaction in most places was amusement. MySpace? The data was eight years old, from a site that had been culturally irrelevant for most of a decade.",
+          "The amusement was misplaced: it was the largest breach loaded into public breach databases at the time, and its age was the point rather than the punchline."
         ],
         "how": [
           "Never publicly detailed; passwords stored as unsalted SHA-1 of the first ten characters, lowercased"
@@ -4877,7 +5013,8 @@
             "title": "The other MySpace data loss",
             "paragraphs": [
               "Worth recording alongside it: in 2019 MySpace confirmed that a server migration had destroyed roughly twelve years of user-uploaded music, photos and video, an estimated fifty million tracks from fourteen million artists, gone with no recoverable backup.",
-              "That is not a breach, and it belongs here anyway, because it is the other half of the same lesson. Handing your only copy of something to a platform means accepting its retention decisions, its migration competence and its survival. Availability failures rarely make the news the way breaches do, and for the person who lost the only recording of a song they wrote, the outcome is worse."
+              "That is not a breach, and it belongs here anyway, because it is the other half of the same lesson. Handing your only copy of something to a platform means accepting its retention decisions, its migration competence and its survival.",
+              "Availability failures rarely make the news the way breaches do, and for the person who lost the only recording of a song they wrote, the outcome is worse."
             ]
           },
           {
@@ -4958,14 +5095,15 @@
               "The database held about 4.9 million parent accounts and 6.4 million child profiles. The parent records contained names, postal addresses, email addresses, download history, IP addresses, password hashes and, stored in plain text, the answers to their security questions. The child profiles contained names, dates of birth and genders, each linked to the parent account.",
               "Because the parent and child records were linked, the dataset resolved to something more specific than either: a named child, their age, and the home address they live at.",
               "For a subset of users, Kid Connect data was also exposed, including photographs children had taken and messages they had exchanged.",
-              "The technical findings were all in the category of long-settled. SQL injection had been comprehensively documented for seventeen years by 2015. Unsalted MD5 password hashing had been unacceptable for roughly a decade, such hashes fall in bulk on commodity hardware almost immediately. Storing security question answers in plain text defeats the purpose of having them, since the recovery mechanism becomes readable to anyone who reaches the table.",
-              "None of these required a sophisticated attacker to find, and none required expertise to avoid."
+              "The technical findings were all in the category of long-settled. SQL injection had been comprehensively documented for seventeen years by 2015. Unsalted MD5 password hashing had been unacceptable for roughly a decade, such hashes fall in bulk on commodity hardware almost immediately.",
+              "Storing security question answers in plain text defeats the purpose of having them, since the recovery mechanism becomes readable to anyone who reaches the table. None of these required a sophisticated attacker to find, and none required expertise to avoid."
             ]
           },
           {
             "title": "The attacker who did not sell it",
             "paragraphs": [
-              "What happened next is the reason the harm was contained. The attacker did not publish the data, did not offer it for sale, and did not extort the company. They provided it to a journalist at Motherboard, stating that the intent was to demonstrate how badly it had been protected. Troy Hunt, who runs Have I Been Pwned, examined the data independently and published a detailed technical assessment.",
+              "What happened next is the reason the harm was contained. The attacker did not publish the data, did not offer it for sale, and did not extort the company. They provided it to a journalist at Motherboard, stating that the intent was to demonstrate how badly it had been protected.",
+              "Troy Hunt, who runs Have I Been Pwned, examined the data independently and published a detailed technical assessment.",
               "The dataset did not, as far as is known, enter the criminal market. An arrest was made in the UK.",
               "The uncomfortable observation is that the difference between this being a footnote and being a decade-long identity fraud problem for millions of children was the personal choice of one person who had already broken the law. Nothing VTech did produced that outcome. It is the least reliable control imaginable, and in this instance it was the only one that operated."
             ]
@@ -4974,7 +5112,8 @@
             "title": "The terms of service",
             "paragraphs": [
               "In the weeks after the breach, VTech amended its terms of service. The revised language stated that users acknowledged and agreed that any information transmitted to its sites might not be secure, and assumed the risk of it being accessed by unauthorised parties.",
-              "The reaction was severe and largely on one point: a company cannot contract out of its obligation to secure children's data, and attempting to do so shortly after failing to secure children's data reads as a statement of intent rather than a legal precaution. Regulators in several jurisdictions took note, and the clause became a widely cited example of what not to do after an incident."
+              "The reaction was severe and largely on one point: a company cannot contract out of its obligation to secure children's data, and attempting to do so shortly after failing to secure children's data reads as a statement of intent rather than a legal precaution.",
+              "Regulators in several jurisdictions took note, and the clause became a widely cited example of what not to do after an incident."
             ]
           },
           {
@@ -5022,7 +5161,8 @@
         },
         {
           "label": "Federal Trade Commission, Electronic toy maker VTech settles FTC allegations, January 2018",
-          "url": "https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-us-law"
+          "url": "https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-ftc-act",
+          "note": "checked 28 Nov 2026"
         },
         {
           "label": "Troy Hunt, analysis of the VTech data, November 2015",
@@ -5054,7 +5194,7 @@
       ],
       "sort_date": "2015-11-27",
       "published": "2026-09-14",
-      "updated": "2026-11-22",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1036,
       "sources": 5
@@ -5069,7 +5209,8 @@
       "description": "TalkTalk lost 156,959 customers' data to a SQL injection attack on three webpages it had inherited in an acquisition and forgotten about. Teenagers found them.",
       "story": {
         "background": [
-          "In October 2015 the chief executive of TalkTalk went on national radio and was asked whether the stolen customer data had been encrypted. She said she did not know. That answer, more than the breach, is what the incident is remembered for in Britain, and the technical story underneath it is worse, because the way in had been sitting unattended on the company's own website for six years."
+          "In October 2015 the chief executive of TalkTalk went on national radio and was asked whether the stolen customer data had been encrypted. She said she did not know.",
+          "That answer, more than the breach, is what the incident is remembered for in Britain, and the technical story underneath it is worse, because the way in had been sitting unattended on the company's own website for six years."
         ],
         "how": [
           "SQL injection against legacy webpages inherited from the Tiscali UK acquisition"
@@ -5135,8 +5276,9 @@
       "check_targets": [],
       "source_links": [
         {
-          "label": "Information Commissioner's Office, monetary penalty notice, TalkTalk Telecom Group plc, October 2016",
-          "url": "https://ico.org.uk/action-weve-taken/enforcement/talktalk-telecom-group-plc/"
+          "label": "Information Commissioner's Office, TalkTalk cyber attack: how the ICO investigation unfolded (£400,000 monetary penalty, October 2016)",
+          "url": "https://ico.org.uk/about-the-ico/media-centre/talktalk-cyber-attack-how-the-ico-investigation-unfolded/",
+          "note": "checked 28 Nov 2026"
         },
         {
           "label": "House of Commons Culture, Media and Sport Committee, Cyber Security: Protection of Personal Data Online, 2016"
@@ -5167,7 +5309,7 @@
       ],
       "sort_date": "2015-10-22",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 944,
       "sources": 4
@@ -5196,8 +5338,8 @@
           {
             "title": "What happened",
             "paragraphs": [
-              "On 19 July 2015, visitors to Ashley Madison, a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media, were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently. This was not a ransom in the usual sense: there was no price.",
-              "The demand was that the business cease to exist.",
+              "On 19 July 2015, visitors to Ashley Madison, a dating service built explicitly around extramarital affairs, owned by Toronto-based Avid Life Media, were shown a message from a group calling itself The Impact Team. It claimed to have the company's full customer database and demanded that Ashley Madison and a sister site, Established Men, be taken offline permanently.",
+              "This was not a ransom in the usual sense: there was no price. The demand was that the business cease to exist.",
               "Avid Life Media did not comply. On 18 and 20 August, the attackers published, in two releases: roughly 32 million user records, internal company documents, source code, and the chief executive's email archive. It was posted openly and mirrored instantly. Within days, searchable web front-ends existed for anyone to check a name or an email address."
             ]
           },
@@ -5269,10 +5411,13 @@
       "source_links": [
         {
           "label": "Federal Trade Commission, Ashley Madison settlement, December 2016",
-          "url": "https://www.ftc.gov/news-events/news/press-releases/2016/12/operators-ashleymadisoncom-settle-ftc-state-charges-resulting-massive-data-breach"
+          "url": "https://www.ftc.gov/news-events/news/press-releases/2016/12/operators-ashleymadisoncom-settle-ftc-state-charges-resulting-2015-data-breach-exposed-36-million",
+          "note": "checked 28 Nov 2026"
         },
         {
-          "label": "Joint report of the Privacy Commissioner of Canada and the Australian Privacy Commissioner, August 2016"
+          "label": "Joint report of the Privacy Commissioner of Canada and the Australian Privacy Commissioner, August 2016",
+          "url": "https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2016/pipeda-2016-005/",
+          "note": "OPC PIPEDA Findings #2016-005, checked 28 Nov 2026"
         },
         {
           "label": "CynoSure Prime analysis of the legacy login token, September 2015"
@@ -5295,7 +5440,7 @@
       ],
       "sort_date": "2015-08-18",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 5,
       "word_count": 1081,
       "sources": 3
@@ -5332,15 +5477,18 @@
               "Financial history : debts, bankruptcies, gambling problems, unpaid taxes.",
               "Arrests, drug use and alcohol problems , disclosed on the understanding that honesty is safer than concealment.",
               "Mental health treatment , and the details of relatives and cohabitants.",
-              "The form exists to compile, in one place, everything about a person that a hostile service might use to pressure them. Handing a completed archive of 21.5 million of these to a foreign intelligence service is, functionally, handing over the vulnerability assessment of an entire cleared workforce, plus the identities of their relatives, partners and references, none of whom ever consented to be in a government database at all."
+              "The form exists to compile, in one place, everything about a person that a hostile service might use to pressure them.",
+              "Handing a completed archive of 21.5 million of these to a foreign intelligence service is, functionally, handing over the vulnerability assessment of an entire cleared workforce, plus the identities of their relatives, partners and references, none of whom ever consented to be in a government database at all."
             ]
           },
           {
             "title": "How it happened",
             "paragraphs": [
               "There were two intrusions, and OPM's own inspector general had been warning about the conditions that allowed them for years. Audit reports before 2015 repeatedly flagged systems operating without valid security authorisations, incomplete inventories and weak access controls.",
-              "The initial foothold came through credentials belonging to a contractor that carried out background investigations. Once inside, the attackers installed malware for persistent access and moved laterally. The first intrusion, involving personnel records for 4.2 million current and former federal employees, was identified in April 2015, and identified almost by accident, during a demonstration of a security product OPM was evaluating, which flagged traffic the incumbent tools had missed.",
-              "The second discovery was the serious one. Investigating the first intrusion revealed a separate, earlier and far larger theft: the background investigation archive itself, 21.5 million records, plus 5.6 million fingerprint images. The fingerprint figure was initially reported as 1.1 million and revised upwards in September 2015, a familiar pattern in which the first number out of the door is the one everybody remembers and the wrong one."
+              "The initial foothold came through credentials belonging to a contractor that carried out background investigations. Once inside, the attackers installed malware for persistent access and moved laterally.",
+              "The first intrusion, involving personnel records for 4.2 million current and former federal employees, was identified in April 2015, and identified almost by accident, during a demonstration of a security product OPM was evaluating, which flagged traffic the incumbent tools had missed.",
+              "The second discovery was the serious one. Investigating the first intrusion revealed a separate, earlier and far larger theft: the background investigation archive itself, 21.5 million records, plus 5.6 million fingerprint images.",
+              "The fingerprint figure was initially reported as 1.1 million and revised upwards in September 2015, a familiar pattern in which the first number out of the door is the one everybody remembers and the wrong one."
             ]
           },
           {
@@ -5440,7 +5588,7 @@
         "how": [
           "Spear-phishing a subsidiary, then stolen credentials into a data warehouse",
           "The entry point was a spear-phishing campaign against a subsidiary. At least one employee opened a message and their credentials were captured; from there the attackers escalated and moved laterally until they reached credentials with access to the enterprise data warehouse. The control that would have stopped it.",
-          "The California Department of Insurance's examination, and Anthem's own remediation commitments, kept returning to the same theme: privileged access to a warehouse holding tens of millions of member records was reachable with a password alone. Multi-factor authentication on administrative and remote access, and tighter segmentation between the corporate network and the warehouse, are the two controls that recur in every finding. They were not exotic in 2014."
+          "The California Department of Insurance's examination, and Anthem's own remediation commitments, kept returning to the same theme: privileged access to a warehouse holding tens of millions of member records was reachable with a password alone. Multi-factor authentication on administrative and remote access, and tighter segmentation between the corporate network and the warehouse, are the two controls that recur in every finding."
         ],
         "motive": [],
         "outcome": [
@@ -5460,8 +5608,8 @@
             "title": "How they got in",
             "paragraphs": [
               "The entry point was a spear-phishing campaign against a subsidiary. At least one employee opened a message and their credentials were captured; from there the attackers escalated and moved laterally until they reached credentials with access to the enterprise data warehouse.",
-              "The control that would have stopped it. The California Department of Insurance's examination, and Anthem's own remediation commitments, kept returning to the same theme: privileged access to a warehouse holding tens of millions of member records was reachable with a password alone. Multi-factor authentication on administrative and remote access, and tighter segmentation between the corporate network and the warehouse, are the two controls that recur in every finding.",
-              "They were not exotic in 2014. They were simply not in place.",
+              "The control that would have stopped it. The California Department of Insurance's examination, and Anthem's own remediation commitments, kept returning to the same theme: privileged access to a warehouse holding tens of millions of member records was reachable with a password alone.",
+              "Multi-factor authentication on administrative and remote access, and tighter segmentation between the corporate network and the warehouse, are the two controls that recur in every finding. They were not exotic in 2014. They were simply not in place.",
               "In May 2019 the Department of Justice indicted two Chinese nationals over the intrusion and three similar attacks on other US companies. The indictment described the same pattern: tailored phishing emails, a remote access trojan, patient lateral movement, then a bulk extraction of a customer database. Neither defendant has been brought to trial in the United States."
             ]
           },
@@ -5671,8 +5819,8 @@
               "One server had not been upgraded. It still accepted a username and password alone.",
               "Attackers obtained the credentials of a JPMorgan employee, found the server that would accept them without a second factor, and were inside. Between June and August 2014 they moved through the internal network, reaching more than ninety servers and eventually a database holding customer contact information. The bank detected the intrusion in July and August and disclosed it in a regulatory filing on 2 October.",
               "The scale was unprecedented for a US bank: 76 million households and 7 million small businesses. Names, addresses, phone numbers, email addresses, and internal information about which products a customer held. No account numbers, no passwords, no Social Security numbers, no money moved.",
-              "Coverage, not capability, is the usual failure. Almost no large breach happens because a security control does not exist. They happen because a control exists in 99% of the estate. The missing 1% is a server nobody owns, a subsidiary acquired last year, a test environment that was supposed to be temporary, or a device that broke when the agent was installed and was quietly exempted.",
-              "Attackers do not need to find the average state of your security. They need to find the exception, and they only have to be right once."
+              "Coverage, not capability, is the usual failure. Almost no large breach happens because a security control does not exist. They happen because a control exists in 99% of the estate.",
+              "The missing 1% is a server nobody owns, a subsidiary acquired last year, a test environment that was supposed to be temporary, or a device that broke when the agent was installed and was quietly exempted. Attackers do not need to find the average state of your security. They need to find the exception, and they only have to be right once."
             ]
           },
           {
@@ -5781,8 +5929,8 @@
               "In April 2014, attackers obtained the credentials of a third-party vendor with access to Home Depot's network. Vendor accounts of this kind exist everywhere in retail, for refrigeration monitoring, for point-of-sale support, for logistics, and they typically have narrow legitimate purposes and broad practical reach.",
               "Those credentials alone would not have been enough. The attackers used a Windows vulnerability to escalate their privileges, moved through the corporate network, and eventually reached the environment serving self-checkout terminals in US and Canadian stores. There they deployed custom memory-scraping malware built for the specific point-of-sale software Home Depot used.",
               "From April to early September, every card swiped at an affected self-checkout was captured in the instant it was readable. Fifty-six million cards were taken, along with fifty-three million email addresses that were disclosed weeks later as a separate finding.",
-              "The warnings were internal and documented. Reporting after the breach, later echoed in litigation, described years of concern raised by Home Depot's own security staff about outdated antivirus software on store systems, the absence of network segmentation between corporate and payment environments, and infrequent vulnerability scanning. This is the most common shape of a large breach: not an absence of knowledge, but a backlog of known problems with no forcing function.",
-              "The forcing function arrived in September."
+              "The warnings were internal and documented. Reporting after the breach, later echoed in litigation, described years of concern raised by Home Depot's own security staff about outdated antivirus software on store systems, the absence of network segmentation between corporate and payment environments, and infrequent vulnerability scanning.",
+              "This is the most common shape of a large breach: not an absence of knowledge, but a backlog of known problems with no forcing function. The forcing function arrived in September."
             ]
           },
           {
@@ -5898,7 +6046,8 @@
           {
             "title": "The announcement",
             "paragraphs": [
-              "The disclosure itself was fast by the standards of 2014, two weeks or so from discovery. The execution was not. The initial public statement appeared where users were not looking. Email notifications took days to reach everyone. The password reset prompt did not appear consistently on login. Journalists testing the site in the hours after the announcement found they could still sign in without being asked to change anything.",
+              "The disclosure itself was fast by the standards of 2014, two weeks or so from discovery. The execution was not. The initial public statement appeared where users were not looking. Email notifications took days to reach everyone. The password reset prompt did not appear consistently on login.",
+              "Journalists testing the site in the hours after the announcement found they could still sign in without being asked to change anything.",
               "For an incident whose entire remediation depends on hundreds of millions of people performing one action, this is not a communications footnote. The difference between a well-run reset and a badly run one is measured in how many reused passwords stay live on other websites afterwards, and credential stuffing attacks in the following years drew on precisely that gap.",
               "eBay also gave no detail about how the passwords were protected. \"Encrypted\" is not a specification. Whether a password is protected by a modern, deliberately slow hashing function or by something trivially reversible changes the advice by an order of magnitude, and users were given no basis to judge."
             ]
@@ -6020,7 +6169,8 @@
             "paragraphs": [
               "It set the boundary of employer liability for insider acts in UK law. The judgment is cited in almost every subsequent argument about whether a company answers for a rogue employee. The test it confirmed is about whether the employee was furthering the employer's business, however improperly, not merely whether the job created the opportunity.",
               "It did not let employers off. The route the claimants did not win on is the route that still works: direct liability for the employer's own security failures. After GDPR, that route is considerably stronger than it was in 2014, and a company relying on Morrisons as a defence while running no monitoring on bulk data access is misreading it badly.",
-              "Data loss prevention for privileged staff got a business case. The uncomfortable finding in this case is that the controls which would have caught Skelton are ones most organisations still find awkward: monitoring what senior, trusted people do with data they are entitled to see; blocking removable media for staff who have a legitimate reason to move files; requiring two people for bulk exports of sensitive datasets.",
+              "Data loss prevention for privileged staff got a business case.",
+              "The uncomfortable finding in this case is that the controls which would have caught Skelton are ones most organisations still find awkward: monitoring what senior, trusted people do with data they are entitled to see; blocking removable media for staff who have a legitimate reason to move files; requiring two people for bulk exports of sensitive datasets.",
               "The payroll file got reclassified. Many organisations discovered through this case that their crown-jewel dataset was not their customer database. Employee payroll contains the identity documents, bank details and salary of everyone in the company, held in one file, transferred routinely to external auditors and pension administrators."
             ]
           },
@@ -6090,7 +6240,7 @@
         "how": [
           "Stolen credentials belonging to a refrigeration contractor, then memory-scraping malware on the tills",
           "Card data on a magnetic stripe is encrypted in transit and at rest. But at the moment the stripe is read, the terminal holds the track data in memory in the clear for a fraction of a second so it can process the transaction.",
-          "That gap is what BlackPOS-family malware exists to exploit: it sits on the terminal, watches its own process memory for the pattern of a card track, and copies it out. The stolen tracks were written to a file on an internal server, then moved out of the network in batches over the following two weeks, timed, according to the Senate committee's later analysis, to blend into normal business hours."
+          "That gap is what BlackPOS-family malware exists to exploit: it sits on the terminal, watches its own process memory for the pattern of a card track, and copies it out."
         ],
         "motive": [],
         "outcome": [
@@ -6135,15 +6285,16 @@
           {
             "title": "What it cost, and who paid",
             "paragraphs": [
-              "Target reported roughly $202 million in gross breach-related expenses across the following years, materially offset by insurance. Card issuers bore the cost of reissuing tens of millions of cards and recovered part of it through settlements with Visa and MasterCard. Consumers, in the main, were made whole on fraudulent transactions, card networks' liability rules are designed for exactly that, but spent the season cancelling cards and waiting for replacements.",
+              "Target reported roughly $202 million in gross breach-related expenses across the following years, materially offset by insurance. Card issuers bore the cost of reissuing tens of millions of cards and recovered part of it through settlements with Visa and MasterCard.",
+              "Consumers, in the main, were made whole on fraudulent transactions, card networks' liability rules are designed for exactly that, but spent the season cancelling cards and waiting for replacements.",
               "The people who paid the highest personal price were the executives. A chief executive of a Fortune 50 retailer losing his job over an intrusion was new in 2014, and it is the reason the subject stopped being delegated downwards."
             ]
           },
           {
             "title": "What it changed",
             "paragraphs": [
-              "Chip cards arrived in America. The United States had been an outlier: the rest of the developed world had moved to EMV chip cards years earlier, leaving the US magnetic stripe as the softest target on the planet. Target accelerated a rollout that was already planned, and the card networks brought forward the October 2015 liability shift that made whichever party had not adopted chip technology responsible for fraudulent transactions.",
-              "Card-present fraud in the US fell sharply afterwards, and moved online, where it remains.",
+              "Chip cards arrived in America. The United States had been an outlier: the rest of the developed world had moved to EMV chip cards years earlier, leaving the US magnetic stripe as the softest target on the planet.",
+              "Target accelerated a rollout that was already planned, and the card networks brought forward the October 2015 liability shift that made whichever party had not adopted chip technology responsible for fraudulent transactions. Card-present fraud in the US fell sharply afterwards, and moved online, where it remains.",
               "Vendor access became a controlled thing. Before Target, third-party portal accounts were plumbing. After it, they became an audited asset class: scoped credentials, network segmentation between vendor systems and everything else, and contractual security obligations that a refrigeration contractor is now expected to meet.",
               "\"We had alerts\" stopped being a defence. The Senate committee's report walked through the intrusion as a kill chain and showed that Target had opportunities to break it at nearly every stage. That framing, where did detection exist, and why did it not produce a response, is now the standard shape of a post-incident review."
             ]
@@ -6171,7 +6322,9 @@
           "label": "Multistate attorneys general settlement announcement, May 2017"
         },
         {
-          "label": "Contemporaneous reporting by Brian Krebs, who broke the story on 18 December 2013"
+          "label": "Contemporaneous reporting by Brian Krebs, who broke the story on 18 December 2013",
+          "url": "https://krebsonsecurity.com/2013/12/sources-target-investigating-data-breach/",
+          "note": "original 18 December 2013 report, checked 28 November 2026"
         }
       ],
       "records": "40 million payment cards, 70 million customer records",
@@ -6193,7 +6346,7 @@
       ],
       "sort_date": "2013-12-18",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 979,
       "sources": 4
@@ -6212,8 +6365,8 @@
         ],
         "how": [
           "Intrusion into internal systems; source code taken alongside customer data",
-          "A system that checks passwords does not need to be able to read them. That is the whole point of a password hash: the site stores a one-way transformation, and at login it repeats the transformation and compares. Done properly, a slow algorithm, a unique random salt per user, a stolen file yields almost nothing, and two users with the same password produce entirely different stored values. Adobe did not hash.",
-          "It encrypted , using Triple DES in ECB mode, with one key for everybody. Two consequences follow, and they compound: Encryption is reversible. A hash cannot be undone by anyone, including the company that made it. Encryption can, by anyone holding the key. The moment the key is compromised, every password in the file is readable. ECB mode is deterministic."
+          "A system that checks passwords does not need to be able to read them. That is the whole point of a password hash: the site stores a one-way transformation, and at login it repeats the transformation and compares.",
+          "Done properly, a slow algorithm, a unique random salt per user, a stolen file yields almost nothing, and two users with the same password produce entirely different stored values. Adobe did not hash. It encrypted , using Triple DES in ECB mode, with one key for everybody. Two consequences follow, and they compound: Encryption is reversible."
         ],
         "motive": [],
         "outcome": [
@@ -6231,7 +6384,8 @@
           {
             "title": "The password decision",
             "paragraphs": [
-              "A system that checks passwords does not need to be able to read them. That is the whole point of a password hash: the site stores a one-way transformation, and at login it repeats the transformation and compares. Done properly, a slow algorithm, a unique random salt per user, a stolen file yields almost nothing, and two users with the same password produce entirely different stored values.",
+              "A system that checks passwords does not need to be able to read them. That is the whole point of a password hash: the site stores a one-way transformation, and at login it repeats the transformation and compares.",
+              "Done properly, a slow algorithm, a unique random salt per user, a stolen file yields almost nothing, and two users with the same password produce entirely different stored values.",
               "Adobe did not hash. It encrypted , using Triple DES in ECB mode, with one key for everybody.",
               "Two consequences follow, and they compound:",
               "Encryption is reversible. A hash cannot be undone by anyone, including the company that made it. Encryption can, by anyone holding the key. The moment the key is compromised, every password in the file is readable.",
@@ -6263,7 +6417,8 @@
             "paragraphs": [
               "The Adobe file became a teaching artefact. Before it, \"hash your passwords properly\" was an argument security engineers had with product teams about theoretical risk. Afterwards there was a concrete, visual example of what the alternative looks like when the file gets out, and, crucially, one that a non-specialist could follow in ninety seconds.",
               "It also killed the password hint as a feature. Hints existed to reduce support calls; they survive almost nowhere now, because Adobe demonstrated that a hint is a piece of plaintext that describes a secret, stored next to the secret, and available to anyone who takes the database.",
-              "The third legacy is more subtle. Adobe is one of the clearest cases of a breach figure that moved with the definition: 2.9 million, then 38 million, then 153 million, depending on whether you counted customers Adobe believed were affected, active accounts, or rows in the file. Almost every breach since has produced the same divergence, and reading a disclosure now means asking what exactly is being counted."
+              "The third legacy is more subtle. Adobe is one of the clearest cases of a breach figure that moved with the definition: 2.9 million, then 38 million, then 153 million, depending on whether you counted customers Adobe believed were affected, active accounts, or rows in the file.",
+              "Almost every breach since has produced the same divergence, and reading a disclosure now means asking what exactly is being counted."
             ]
           },
           {
@@ -6332,7 +6487,8 @@
       "description": "LinkedIn stored passwords as unsalted SHA-1. Six and a half million hashes leaked in 2012; four years later the full 165 million-account file went on sale.",
       "story": {
         "background": [
-          "On 5 June 2012 someone posted a file of 6.5 million password hashes to a Russian password-cracking forum and asked for help with the ones they could not solve. The hashes were unsalted SHA-1. Within days, most of them were cracked, and LinkedIn confirmed the file was its own. It took another four years for anyone to learn that 6.5 million was a fraction of what had been taken."
+          "On 5 June 2012 someone posted a file of 6.5 million password hashes to a Russian password-cracking forum and asked for help with the ones they could not solve. The hashes were unsalted SHA-1. Within days, most of them were cracked, and LinkedIn confirmed the file was its own.",
+          "It took another four years for anyone to learn that 6.5 million was a fraction of what had been taken."
         ],
         "how": [
           "Never fully detailed publicly; passwords stored as unsalted SHA-1"
@@ -6477,7 +6633,8 @@
             "title": "Rebuilding rather than restoring",
             "paragraphs": [
               "Sony's technical response was more decisive than its communications. Rather than patching the compromised environment and bringing it back, the company moved the service to a different data centre, rebuilt the architecture, added new monitoring and a new firewall design, and appointed its first chief information security officer.",
-              "This is the right call and it is rarely made, because it is enormously expensive and every day of the rebuild is a day of lost revenue and public anger. The judgement underneath it is simple: after an intrusion of unknown depth, you cannot prove the attacker is gone from an environment you did not rebuild. Most organisations decide they can live with that uncertainty. Sony decided it could not.",
+              "This is the right call and it is rarely made, because it is enormously expensive and every day of the rebuild is a day of lost revenue and public anger. The judgement underneath it is simple: after an intrusion of unknown depth, you cannot prove the attacker is gone from an environment you did not rebuild. Most organisations decide they can live with that uncertainty.",
+              "Sony decided it could not.",
               "The return was staged through mid-May, with a mandatory password reset and a firmware update required before any console could reconnect."
             ]
           },
@@ -6519,13 +6676,17 @@
       "source_links": [
         {
           "label": "Information Commissioner's Office, monetary penalty notice, Sony Computer Entertainment Europe, January 2013",
-          "url": "https://ico.org.uk/action-weve-taken/enforcement/sony-computer-entertainment-europe-limited/"
+          "note": "£250,000 penalty issued 24 January 2013; original ICO notice URL retired"
         },
         {
-          "label": "Sony Corporation statements and PlayStation Blog posts, April–May 2011"
+          "label": "Sony Corporation statements and PlayStation Blog, Sony's Response to the U.S. House of Representatives, May 2011",
+          "url": "https://blog.playstation.com/2011/05/04/sonys-response-to-the-u-s-house-of-representatives/",
+          "note": "checked 28 Nov 2026"
         },
         {
-          "label": "US House of Representatives Subcommittee on Commerce, Manufacturing and Trade, Sony written responses, May 2011"
+          "label": "US House of Representatives Subcommittee on Commerce, Manufacturing and Trade, Sony and Epsilon: Lessons for Data Security Legislation (Serial No. 112-55), June 2011",
+          "url": "https://www.govinfo.gov/content/pkg/CHRG-112hhrg71258/html/CHRG-112hhrg71258.htm",
+          "note": "official US GovInfo hearing transcript, checked 28 Nov 2026"
         },
         {
           "label": "Sony Corporation FY2011 financial results",
@@ -6550,7 +6711,7 @@
       ],
       "sort_date": "2011-04-26",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 898,
       "sources": 4
@@ -6581,7 +6742,8 @@
           {
             "title": "What happened",
             "paragraphs": [
-              "In December 2009, a researcher published details of a SQL injection vulnerability in a RockYou web application. SQL injection is the oldest widely exploited web flaw there is: user input is concatenated into a database query rather than passed as a parameter, so an attacker can end the intended query and append their own. It was thoroughly documented, thoroughly understood and thoroughly preventable long before 2009.",
+              "In December 2009, a researcher published details of a SQL injection vulnerability in a RockYou web application. SQL injection is the oldest widely exploited web flaw there is: user input is concatenated into a database query rather than passed as a parameter, so an attacker can end the intended query and append their own.",
+              "It was thoroughly documented, thoroughly understood and thoroughly preventable long before 2009.",
               "Someone used it to dump the user table, 32.6 million rows of email addresses and passwords, the passwords in plain text. The file went public within days.",
               "Why plaintext storage is different in kind, not degree. A hashed password file is a puzzle: an attacker can solve the weak entries quickly and the strong ones perhaps never. A plaintext file is an answer key. Every password falls at once, including the long random ones generated by careful users, and the company itself has been able to read them the entire time."
             ]
@@ -6607,7 +6769,8 @@
           {
             "title": "The regulatory tail",
             "paragraphs": [
-              "In March 2012 the US Federal Trade Commission settled with RockYou over two distinct failures. The first was the security one: the company had told users their information was protected while storing it in plain text behind an injectable application. The second was a children's privacy violation, RockYou had knowingly collected information from roughly 179,000 children in breach of COPPA, and paid a $250,000 civil penalty for it.",
+              "In March 2012 the US Federal Trade Commission settled with RockYou over two distinct failures. The first was the security one: the company had told users their information was protected while storing it in plain text behind an injectable application.",
+              "The second was a children's privacy violation, RockYou had knowingly collected information from roughly 179,000 children in breach of COPPA, and paid a $250,000 civil penalty for it.",
               "The settlement is an early example of a regulator treating a security promise as a marketing claim. RockYou was not punished simply for being breached; it was punished for the gap between what its privacy page said and what its database looked like."
             ]
           },
@@ -6640,7 +6803,8 @@
       "source_links": [
         {
           "label": "Federal Trade Commission, RockYou settlement, March 2012",
-          "url": "https://www.ftc.gov/news-events/news/press-releases/2012/03/operator-online-game-site-charged-violating-childrens-privacy-law"
+          "url": "https://www.ftc.gov/news-events/news/press-releases/2012/03/ftc-charges-security-flaws-rockyou-game-site-exposed-32-million-email-addresses-passwords",
+          "note": "checked 28 Nov 2026"
         },
         {
           "label": "Imperva, \"Consumer Password Worst Practices\", January 2010",
@@ -6663,7 +6827,7 @@
       ],
       "sort_date": "2009-12-14",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 4,
       "word_count": 946,
       "sources": 3
@@ -6695,7 +6859,8 @@
               "The attackers, the same group behind TJX : got in through SQL injection in a corporate web application in late 2007. SQL injection was the best-understood web vulnerability in existence by then, with a decade of documentation behind it.",
               "That gave them a foothold on the corporate network, not the payment network. It took months of patient lateral movement to bridge the gap. Once across, they installed sniffer software that read card numbers and full magnetic stripe data out of the traffic as it was processed.",
               "Card data was encrypted in transit between merchants and Heartland, and encrypted at rest. Inside the processing environment, in memory and on the wire, it was in the clear, because that is where the processing happened. That gap is what the sniffer harvested.",
-              "The compliance lesson, stated bluntly. Heartland had passed its assessment. Nothing in the standard as applied caught an injectable web application or the absence of segmentation between corporate and payment networks. An annual audit tells you the state of a system on the day someone looked; an attacker gets to choose a different day. Both things can be true: the assessment was valid, and the company was not secure."
+              "The compliance lesson, stated bluntly. Heartland had passed its assessment. Nothing in the standard as applied caught an injectable web application or the absence of segmentation between corporate and payment networks. An annual audit tells you the state of a system on the day someone looked; an attacker gets to choose a different day.",
+              "Both things can be true: the assessment was valid, and the company was not secure."
             ]
           },
           {
@@ -6742,10 +6907,14 @@
           "label": "Heartland Payment Systems public statements and SEC filings, 2009"
         },
         {
-          "label": "US Department of Justice, indictment and prosecution of Albert Gonzalez, 2009–2010"
+          "label": "US Department of Justice, indictment and prosecution of Albert Gonzalez, 2009–2010",
+          "url": "https://www.justice.gov/archives/opa/pr/albert-gonzalez-sentenced-20-years-federal-prison-hacking-major-us-retail-and-payment",
+          "note": "DOJ sentencing release, checked 28 November 2026"
         },
         {
-          "label": "Payment Card Industry Security Standards Council guidance updates following the breach"
+          "label": "Payment Card Industry Security Standards Council guidance updates following the breach",
+          "url": "https://www.pcisecuritystandards.org/",
+          "note": "PCI SSC official site, checked 28 November 2026"
         }
       ],
       "records": "about 130 million card numbers",
@@ -6762,7 +6931,7 @@
       ],
       "sort_date": "2009-01-20",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 3,
       "word_count": 674,
       "sources": 3
@@ -6800,7 +6969,7 @@
           {
             "title": "Why the numbers disagree",
             "paragraphs": [
-              "TJX confirmed 45.7 million cards. Filings in subsequent litigation by banks put the figure closer to 94 million.",
+              "TJX confirmed 45.7 million cards, while filings in subsequent litigation by banks put the figure closer to 94 million.",
               "Both appear in accounts of the breach, and the discrepancy is not evidence of dishonesty so much as of how breach counting works: the company counts what its logs can prove, plaintiffs count what the evidence supports as a maximum, and the incomplete logging that allowed an eighteen-month intrusion is the same incomplete logging that makes the count uncertain.",
               "The general principle, useful for reading any breach: a confirmed figure is a floor, established by evidence that survived; it is rarely a ceiling."
             ]
@@ -6844,10 +7013,14 @@
           "label": "TJX Companies SEC filings and shareholder disclosures, 2007"
         },
         {
-          "label": "US Department of Justice, prosecution of Albert Gonzalez, 2008–2010"
+          "label": "US Department of Justice, prosecution of Albert Gonzalez, 2008–2010",
+          "url": "https://www.justice.gov/archives/opa/pr/eleven-indicted-connection-largest-hacking-and-identity-theft-case-ever-prosecuted",
+          "note": "DOJ indictment release, checked 28 November 2026"
         },
         {
-          "label": "Canadian Privacy Commissioner and Alberta Information and Privacy Commissioner joint report, September 2007"
+          "label": "Canadian Privacy Commissioner and Alberta Information and Privacy Commissioner joint report, September 2007",
+          "url": "https://www.priv.gc.ca/en/",
+          "note": "OPC Canada portal, checked 28 November 2026"
         }
       ],
       "records": "45.7 million cards confirmed; court filings suggested up to 94 million",
@@ -6864,9 +7037,9 @@
       ],
       "sort_date": "2007-01-17",
       "published": "2026-09-14",
-      "updated": "2026-09-14",
+      "updated": "2026-11-28",
       "reading_minutes": 3,
-      "word_count": 760,
+      "word_count": 761,
       "sources": 3
     }
   ]

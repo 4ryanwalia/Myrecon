@@ -338,8 +338,15 @@ function reputationAbuse(pages) {
     const reasons = [];
     if (/rel="[^"]*\bsponsored\b/i.test(p.html)) reasons.push('rel=sponsored link');
     if (/\b(guest post|sponsored post|paid partnership|advertorial|promo code|coupon code)\b/i.test(p.text)) reasons.push('sponsored/guest wording');
-    const authors = [...p.html.matchAll(/"author"\s*:\s*\{[^}]*"name"\s*:\s*"([^"]+)"/g)].map(m => m[1]);
-    const outside = authors.filter(a => !/myrecon/i.test(a));
+    const authorBlocks = [...p.html.matchAll(/"author"\s*:\s*(\{[^}]*\})/g)].map(m => m[1]);
+    const outside = [];
+    for (const blk of authorBlocks) {
+      const name = (blk.match(/"name"\s*:\s*"([^"]+)"/) || [, ''])[1];
+      if (!name) continue;
+      if (/myrecon/i.test(name)) continue;
+      if (new RegExp(`"(@id|url)"\\s*:\\s*"${SITE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`, 'i').test(blk)) continue;
+      outside.push(name);
+    }
     if (outside.length) reasons.push('author: ' + [...new Set(outside)].join(', '));
     if (reasons.length) flagged.push({ url: p.loc.replace(SITE, '') || '/', reasons });
   }

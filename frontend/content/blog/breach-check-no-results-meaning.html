@@ -5,7 +5,7 @@
   "description": "A clean breach check is limited by provider coverage. Learn how to distinguish no match, unavailable checks and a confirmed account incident.",
   "category": "Breach evidence and account checks",
   "datePublished": "2026-10-25",
-  "dateModified": "2026-10-25",
+  "dateModified": "2026-11-28",
   "keywords": [
     "no breach found meaning",
     "email breach checker no results",
@@ -14,7 +14,35 @@
 }
 -->
 <p class="lead">“No breach found” means the completed check found no match in the sources it supports. It is not a certificate that your information has never been exposed. A timeout, unavailable provider or unsupported query is a different outcome and should remain unknown.</p>
-<h2>Read the result before taking action</h2><table><thead><tr><th>Outcome</th><th>Useful interpretation</th><th>Next step</th></tr></thead><tbody><tr><td>Published breach match</td><td>A provider associates the queried identifier with a known record</td><td>Read the incident and exposed fields</td></tr><tr><td>Completed check, no match</td><td>No match in the checked source at this time</td><td>Retain the date and source coverage</td></tr><tr><td>Unavailable or blocked</td><td>The check did not establish an answer</td><td>Retry later or consult the provider</td></tr><tr><td>Company notification, no searchable match</td><td>The notice and searchable catalogue cover different evidence</td><td>Follow the verified notice</td></tr></tbody></table>
-<h2>Why a real notification may not appear in search</h2><p>A catalogue can only expose records available to that service. Some incidents are not published there; some records use another address; some involve information that is not searchable by email. The <a href="https://haveibeenpwned.com/FAQs">Have I Been Pwned FAQ</a> explains limitations of its service. Search coverage and notification coverage should not be treated as identical.</p><p>Use addresses you own and know you used. An account created with an alias can differ from the address you use today. Do not guess other people's addresses or upload private correspondence to make a check more complete.</p>
-<h2>Keep three questions separate</h2><p>Was my identifier in a published breach? Does someone currently have access to my account? Is a public profile mine? These require different evidence. A breach match does not establish a current login. A username match does not establish account ownership. An unfamiliar session in your account settings is a reason to investigate even if your breach check is clean.</p>
-<h2>A repeatable review record</h2><p>Keep a small private note with the source, date, outcome and next action. Avoid saving leaked data, screenshots of unrelated people or full notification letters in public issue trackers. A useful entry reads “completed source check, no match, checked 25 October; company notice reviewed separately.” It says what was checked without claiming complete safety.</p><p>Review unexpected security messages through the official service, update reused passwords through its own settings and inspect recovery options when appropriate. If a provider check failed, preserve that status until a later successful check resolves it. A green card should never hide a network failure.</p><p>Use the <a href="/guides/check-email-data-breach.html">email breach guide</a>, <a href="/blog/breach-date-vs-disclosure-date.html">breach timeline guide</a> and <a href="/guides/verify-osint-account-matches.html">account evidence guide</a> for the next step.</p>
+
+<h2>Read the result before taking action</h2>
+<p>Separate a verified negative lookup from an incomplete check or a direct company disclosure before deciding whether your account is safe.</p>
+<table><thead><tr><th>Outcome</th><th>Useful interpretation</th><th>Next step</th></tr></thead><tbody><tr><td>Published breach match</td><td>A provider associates the queried identifier with a known record</td><td>Read the incident and exposed fields</td></tr><tr><td>Completed check, no match</td><td>No match in the checked source at this time</td><td>Retain the date and source coverage</td></tr><tr><td>Unavailable or blocked</td><td>The check did not establish an answer</td><td>Retry later or consult the provider</td></tr><tr><td>Company notification, no searchable match</td><td>The notice and searchable catalogue cover different evidence</td><td>Follow the verified notice</td></tr></tbody></table>
+
+<h2>Why a real notification may not appear in search</h2>
+<p>A catalogue can only expose records available to that service. Some incidents are not published there; some records use another address; some involve information that is not searchable by email. The <a href="https://haveibeenpwned.com/FAQs" target="_blank" rel="noopener noreferrer">Have I Been Pwned FAQ</a> (checked 28 Nov 2026) explains coverage limits, sensitive breaches, and why certain compromises are never loaded into public search.</p>
+<p>Several routine gaps explain a clean check alongside a real exposure:</p>
+<ul>
+  <li><strong>Unpublished or private incidents:</strong> Targeted compromises, insider thefts, and ransomware extortion datasets that are never released publicly will not appear in breach aggregators.</li>
+  <li><strong>Alias and legacy-address mismatch:</strong> Older signups often sit under a work email, university address, plus-addressed alias (<code>name+shop@domain</code>), or retired ISP mailbox rather than your current primary inbox.</li>
+  <li><strong>Non-email identifiers:</strong> Breaches of medical records, payment processors, or telecom accounts may expose a phone number, customer ID, or postal address without indexing an email field.</li>
+  <li><strong>Catalogue ingestion lag:</strong> A vendor may notify customers or file with a regulator weeks before a dataset is verified and added to searchable indices.</li>
+</ul>
+<p>Use addresses you own and know you used. Do not guess other people's addresses or upload private correspondence to make a check more complete.</p>
+
+<h2>Keep three questions separate</h2>
+<p>Was my identifier in a published breach? Does someone currently have access to my account? Is a public profile mine? These require different evidence. A breach match does not establish a current login, a username match does not establish account ownership, and an unfamiliar session in your account settings is a reason to investigate even if your breach check is clean.</p>
+
+<h2>Concrete verification steps after a clean breach check</h2>
+<p>If you received a suspicious login alert, a phishing email referencing real personal details, or a vendor breach letter despite a clean search, run four direct checks you control:</p>
+<ol>
+  <li><strong>Check password exposure independently via k-anonymity:</strong> Test reused passwords locally through <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Pwned Passwords</a> (checked 28 Nov 2026) or MyRecon's browser-side password checker, which sends only a 5-character SHA-1 prefix. Follow <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" target="_blank" rel="noopener noreferrer">NIST SP 800-63B</a> (checked 28 Nov 2026) by replacing any known-breached password immediately.</li>
+  <li><strong>Inspect active sessions and forwarding rules:</strong> Open your email provider's security log directly (never via links in an alert), sign out unknown devices, and check inbox filters or auto-forwarding rules that attackers use to hide password resets.</li>
+  <li><strong>Verify vendor notices through official channels:</strong> Navigate directly to the company's status or security page, or confirm regulatory breach listings such as the <a href="https://oag.ca.gov/privacy/databreach/list" target="_blank" rel="noopener noreferrer">California Attorney General data breach search</a> (checked 28 Nov 2026).</li>
+  <li><strong>Harden recovery and fraud defences:</strong> Enable app-based or hardware-key MFA per <a href="https://www.cisa.gov/secure-our-world/turn-mfa" target="_blank" rel="noopener noreferrer">CISA MFA guidance</a> (checked 28 Nov 2026). If financial or government ID data was disclosed in a vendor letter, use the step-by-step recovery checklist at <a href="https://www.identitytheft.gov/" target="_blank" rel="noopener noreferrer">IdentityTheft.gov</a> (checked 28 Nov 2026).</li>
+</ol>
+
+<h2>A repeatable review record</h2>
+<p>Keep a small private note with the source, date, outcome and next action. Avoid saving leaked data, screenshots of unrelated people or full notification letters in public issue trackers. A useful entry reads “completed source check, no match, checked 28 Nov 2026; company notice reviewed separately.” It records what was verified without overstating safety.</p>
+<p>Review unexpected security messages through the official service, update reused passwords through its own settings and inspect recovery options when appropriate. If a provider check failed, preserve that status until a later successful check resolves it. A green card should never hide a network failure.</p>
+<p>Use the <a href="/guides/check-email-data-breach.html">email breach guide</a>, <a href="/blog/breach-date-vs-disclosure-date.html">breach timeline guide</a>, <a href="/guides/verify-osint-account-matches.html">account evidence guide</a>, and our <a href="/about.html#editorial-method">editorial method</a> for the next step. External sources checked <time datetime="2026-11-28">28 Nov 2026</time>.</p>

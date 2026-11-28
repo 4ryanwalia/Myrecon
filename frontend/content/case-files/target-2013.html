@@ -13,22 +13,57 @@
   "vector": "Stolen credentials belonging to a refrigeration contractor, then memory-scraping malware on the tills",
   "actor": "Never publicly identified; the malware was a variant of BlackPOS",
   "cost": "Around $202 million gross; the chief executive and CIO both resigned",
-  "exposed": ["Card numbers", "Expiry dates", "CVVs from the magnetic stripe", "PINs (encrypted)", "Names", "Addresses", "Phone numbers", "Email addresses"],
+  "exposed": [
+    "Card numbers",
+    "Expiry dates",
+    "CVVs from the magnetic stripe",
+    "PINs (encrypted)",
+    "Names",
+    "Addresses",
+    "Phone numbers",
+    "Email addresses"
+  ],
   "sortDate": "2013-12-18",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
-  "related": ["heartland-2008", "tjx-2007", "change-healthcare-2024"],
+  "updated": "2026-11-28",
+  "related": [
+    "heartland-2008",
+    "tjx-2007",
+    "change-healthcare-2024"
+  ],
   "faq": [
-    { "q": "How did hackers get into Target?", "a": "Through Fazio Mechanical Services, a refrigeration and air-conditioning contractor. Malware delivered by a phishing email stole the contractor's credentials for a Target vendor portal, and from there the attackers found a route into the internal network and eventually onto the point-of-sale terminals." },
-    { "q": "How many people were affected by the Target breach?", "a": "Around 40 million payment cards were captured from the tills between 27 November and 15 December 2013, and a separate 70 million customer records, names, addresses, phone numbers and email addresses, were also taken. The two sets overlap, so the total number of individuals is somewhere between the two figures." },
-    { "q": "Did Target ignore warnings?", "a": "Its monitoring did generate alerts. Target had deployed FireEye, and the system flagged the malware as it was installed; the alerts went to a security operations team and were not acted on before the data started leaving. That detail, detection working and response failing, is why the case is taught as an operations failure rather than a technology one." },
-    { "q": "What did the Target breach cost?", "a": "Target reported gross breach-related expenses of around $202 million, partly offset by insurance. Settlements included $18.5 million with 47 US states in 2017, roughly $10 million to consumers, and payments to card issuers through Visa and MasterCard. The chief information officer resigned in March 2014 and the chief executive in May." }
+    {
+      "q": "How did hackers get into Target?",
+      "a": "Through Fazio Mechanical Services, a refrigeration and air-conditioning contractor. Malware delivered by a phishing email stole the contractor's credentials for a Target vendor portal, and from there the attackers found a route into the internal network and eventually onto the point-of-sale terminals."
+    },
+    {
+      "q": "How many people were affected by the Target breach?",
+      "a": "Around 40 million payment cards were captured from the tills between 27 November and 15 December 2013, and a separate 70 million customer records, names, addresses, phone numbers and email addresses, were also taken. The two sets overlap, so the total number of individuals is somewhere between the two figures."
+    },
+    {
+      "q": "Did Target ignore warnings?",
+      "a": "Its monitoring did generate alerts. Target had deployed FireEye, and the system flagged the malware as it was installed; the alerts went to a security operations team and were not acted on before the data started leaving. That detail, detection working and response failing, is why the case is taught as an operations failure rather than a technology one."
+    },
+    {
+      "q": "What did the Target breach cost?",
+      "a": "Target reported gross breach-related expenses of around $202 million, partly offset by insurance. Settlements included $18.5 million with 47 US states in 2017, roughly $10 million to consumers, and payments to card issuers through Visa and MasterCard. The chief information officer resigned in March 2014 and the chief executive in May."
+    }
   ],
   "sources": [
-    { "label": "US Senate Committee on Commerce, Science and Transportation, \"A Kill Chain Analysis of the 2013 Target Data Breach\", March 2014" },
-    { "label": "Target Corporation SEC filings and quarterly results, 2014–2015" },
-    { "label": "Multistate attorneys general settlement announcement, May 2017" },
-    { "label": "Contemporaneous reporting by Brian Krebs, who broke the story on 18 December 2013" }
+    {
+      "label": "US Senate Committee on Commerce, Science and Transportation, \"A Kill Chain Analysis of the 2013 Target Data Breach\", March 2014"
+    },
+    {
+      "label": "Target Corporation SEC filings and quarterly results, 2014–2015"
+    },
+    {
+      "label": "Multistate attorneys general settlement announcement, May 2017"
+    },
+    {
+      "label": "Contemporaneous reporting by Brian Krebs, who broke the story on 18 December 2013",
+      "url": "https://krebsonsecurity.com/2013/12/sources-target-investigating-data-breach/",
+      "note": "original 18 December 2013 report, checked 28 November 2026"
+    }
   ]
 }
 -->
@@ -44,7 +79,9 @@
 
 <h2>How card scraping worked</h2>
 
-<p>Card data on a magnetic stripe is encrypted in transit and at rest. But at the moment the stripe is read, the terminal holds the track data in memory in the clear for a fraction of a second so it can process the transaction. That gap is what BlackPOS-family malware exists to exploit: it sits on the terminal, watches its own process memory for the pattern of a card track, and copies it out.</p>
+<p>Card data on a magnetic stripe is encrypted in transit and at rest. But at the moment the stripe is read, the terminal holds the track data in memory in the clear for a fraction of a second so it can process the transaction.</p>
+
+<p>That gap is what BlackPOS-family malware exists to exploit: it sits on the terminal, watches its own process memory for the pattern of a card track, and copies it out.</p>
 
 <p>The stolen tracks were written to a file on an internal server, then moved out of the network in batches over the following two weeks, timed, according to the Senate committee's later analysis, to blend into normal business hours.</p>
 
@@ -76,7 +113,9 @@
 
 <h2>What it changed</h2>
 
-<p><strong>Chip cards arrived in America.</strong> The United States had been an outlier: the rest of the developed world had moved to EMV chip cards years earlier, leaving the US magnetic stripe as the softest target on the planet. Target accelerated a rollout that was already planned, and the card networks brought forward the October 2015 liability shift that made whichever party had not adopted chip technology responsible for fraudulent transactions. Card-present fraud in the US fell sharply afterwards, and moved online, where it remains.</p>
+<p><strong>Chip cards arrived in America.</strong> The United States had been an outlier: the rest of the developed world had moved to EMV chip cards years earlier, leaving the US magnetic stripe as the softest target on the planet.</p>
+
+<p>Target accelerated a rollout that was already planned, and the card networks brought forward the October 2015 liability shift that made whichever party had not adopted chip technology responsible for fraudulent transactions. Card-present fraud in the US fell sharply afterwards, and moved online, where it remains.</p>
 
 <p><strong>Vendor access became a controlled thing.</strong> Before Target, third-party portal accounts were plumbing. After it, they became an audited asset class: scoped credentials, network segmentation between vendor systems and everything else, and contractual security obligations that a refrigeration contractor is now expected to meet.</p>
 

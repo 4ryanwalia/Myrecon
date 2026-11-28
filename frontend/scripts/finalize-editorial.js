@@ -44,7 +44,16 @@ function walk(dir) {
         const schema = {
           '@context': 'https://schema.org',
           '@graph': [
-            { '@type': 'Article', headline: 'Is MyRecon legit? Six checks you can review', url: 'https://www.myrecon.xyz/is-myrecon-legit.html', dateModified: '2026-11-22', author: { '@type': 'Organization', name: 'MyRecon' } },
+            {
+              '@type': 'Article',
+              headline: 'Is MyRecon legit? Six checks you can review',
+              url: 'https://www.myrecon.xyz/is-myrecon-legit.html',
+              dateModified: '2026-11-28',
+              isPartOf: { '@id': 'https://www.myrecon.xyz/#website' },
+              author: { '@type': 'Person', '@id': 'https://www.myrecon.xyz/founder.html#person', name: 'Aryan Walia', url: 'https://www.myrecon.xyz/founder.html' },
+              editor: { '@type': 'Person', '@id': 'https://www.myrecon.xyz/founder.html#person', name: 'Aryan Walia', url: 'https://www.myrecon.xyz/founder.html' },
+              publisher: { '@type': 'Organization', '@id': 'https://www.myrecon.xyz/#organization', name: 'MyRecon', url: 'https://www.myrecon.xyz/', logo: { '@type': 'ImageObject', url: 'https://www.myrecon.xyz/assets/img/og-image.png', width: 1200, height: 630 } },
+            },
             { '@type': 'BreadcrumbList', itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'MyRecon', item: 'https://www.myrecon.xyz/' },
               { '@type': 'ListItem', position: 2, name: 'Is MyRecon legit?', item: 'https://www.myrecon.xyz/is-myrecon-legit.html' },

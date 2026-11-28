@@ -12,22 +12,54 @@
   "vector": "Authentication bypass and code injection in internet-facing Kaseya VSA servers, used to distribute a malicious agent update",
   "actor": "REvil (Sodinokibi), a ransomware-as-a-service operation",
   "cost": "A US$70 million demand for a universal decryptor; hundreds of businesses halted, including around 800 Coop supermarkets in Sweden",
-  "exposed": ["Encrypted business systems", "Managed service provider tooling", "Operational downtime across unrelated industries"],
+  "exposed": [
+    "Encrypted business systems",
+    "Managed service provider tooling",
+    "Operational downtime across unrelated industries"
+  ],
   "sortDate": "2021-07-02",
   "published": "2026-09-15",
-  "updated": "2026-09-15",
-  "related": ["solarwinds-2020", "moveit-2023", "colonial-pipeline-2021"],
+  "updated": "2026-11-28",
+  "related": [
+    "solarwinds-2020",
+    "moveit-2023",
+    "colonial-pipeline-2021"
+  ],
   "faq": [
-    { "q": "Was Kaseya's software compromised the way SolarWinds was?", "a": "No, and the distinction matters. In the SolarWinds case the attackers got inside the build process and shipped their code inside a genuinely signed release, so every customer who installed the update was compromised. Kaseya's build pipeline was not touched. The attackers exploited vulnerabilities in internet-facing VSA servers run by managed service providers, then used the legitimate software's own update mechanism to push a payload to the machines each server managed. The trust that was abused was the agent's trust in its server, not a customer's trust in a signed build." },
-    { "q": "How did around 50 providers turn into around 1,500 victims?", "a": "That is the arithmetic of managed IT. A service provider runs one VSA server to administer the computers of dozens or hundreds of client companies, dentists, accountants, small manufacturers. Compromising one server therefore reaches every client behind it, and those clients had no relationship with Kaseya, no knowledge that the product existed, and no ability to do anything about it." },
-    { "q": "Did anyone pay the ransom?", "a": "REvil demanded US$70 million for a universal decryptor covering every victim. Kaseya has consistently said it did not pay, and in late July 2021 it obtained a working universal decryptor from a third party and distributed it free to victims. Reporting afterwards indicated the FBI had held a decryption key for around three weeks while it prepared an operation against REvil, during which victims remained encrypted." },
-    { "q": "Had the vulnerabilities been reported before the attack?", "a": "Yes. Researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of flaws in VSA to Kaseya under coordinated disclosure, and Kaseya was working through fixes when REvil struck the remaining unpatched issues. This is the uncomfortable part of the case: the process worked, the vendor was engaged and responsive, and it still was not fast enough." }
+    {
+      "q": "Was Kaseya's software compromised the way SolarWinds was?",
+      "a": "No, and the distinction matters. In the SolarWinds case the attackers got inside the build process and shipped their code inside a genuinely signed release, so every customer who installed the update was compromised. Kaseya's build pipeline was not touched.\n\nThe attackers exploited vulnerabilities in internet-facing VSA servers run by managed service providers, then used the legitimate software's own update mechanism to push a payload to the machines each server managed. The trust that was abused was the agent's trust in its server, not a customer's trust in a signed build."
+    },
+    {
+      "q": "How did around 50 providers turn into around 1,500 victims?",
+      "a": "That is the arithmetic of managed IT. A service provider runs one VSA server to administer the computers of dozens or hundreds of client companies, dentists, accountants, small manufacturers. Compromising one server therefore reaches every client behind it, and those clients had no relationship with Kaseya, no knowledge that the product existed, and no ability to do anything about it."
+    },
+    {
+      "q": "Did anyone pay the ransom?",
+      "a": "REvil demanded US$70 million for a universal decryptor covering every victim. Kaseya has consistently said it did not pay, and in late July 2021 it obtained a working universal decryptor from a third party and distributed it free to victims. Reporting afterwards indicated the FBI had held a decryption key for around three weeks while it prepared an operation against REvil, during which victims remained encrypted."
+    },
+    {
+      "q": "Had the vulnerabilities been reported before the attack?",
+      "a": "Yes. Researchers at the Dutch Institute for Vulnerability Disclosure had reported a set of flaws in VSA to Kaseya under coordinated disclosure, and Kaseya was working through fixes when REvil struck the remaining unpatched issues. This is the uncomfortable part of the case: the process worked, the vendor was engaged and responsive, and it still was not fast enough."
+    }
   ],
   "sources": [
-    { "label": "CISA–FBI guidance on the Kaseya VSA supply-chain ransomware attack, July 2021" },
-    { "label": "Dutch Institute for Vulnerability Disclosure, disclosure timeline for the Kaseya VSA vulnerabilities" },
-    { "label": "US Department of Justice, indictment and sanctions actions against REvil affiliates, November 2021" },
-    { "label": "Kaseya incident updates and public statements, July–August 2021" }
+    {
+      "label": "CISA–FBI guidance on the Kaseya VSA supply-chain ransomware attack, July 2021",
+      "url": "https://www.cisa.gov/news-events/news/kaseya-ransomware-attack-guidance-affected-msps-and-their-customers",
+      "note": "CISA Kaseya guidance, checked 28 November 2026"
+    },
+    {
+      "label": "Dutch Institute for Vulnerability Disclosure, disclosure timeline for the Kaseya VSA vulnerabilities"
+    },
+    {
+      "label": "US Department of Justice, indictment and sanctions actions against REvil affiliates, November 2021",
+      "url": "https://www.justice.gov/archives/opa/pr/ukrainian-arrested-and-charged-ransomware-attack-kaseya",
+      "note": "DOJ REvil indictment release, checked 28 November 2026"
+    },
+    {
+      "label": "Kaseya incident updates and public statements, July–August 2021"
+    }
   ]
 }
 -->

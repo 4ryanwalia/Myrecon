@@ -10,19 +10,19 @@
   "sections": [
     {
       "heading": "Username lookup across public profiles",
-      "body": "Search a username you own or are authorized to review. MyRecon checks supported public profile pages and reports candidates for manual verification. Guest scans show an initial set of results; sign in when you need the full report or want saved scans. Coverage changes by platform, and a blocked request or ambiguous page stays unconfirmed rather than being counted as a match."
+      "body": "Search a username you own or are authorized to review. MyRecon checks supported public profile pages and reports candidates for manual verification. Guest scans preview 100 sites (up to 5 results shown in full); sign in for 560+ platform standard sweeps or 3,000+ Extended coverage on Pro plans.\n\nCoverage changes by platform, and MyRecon classifies responses using HTTP semantics (RFC 9110) plus response-body signals so a blocked request or login wall stays unknown rather than being counted as a match. Numeric Discord IDs are decoded and checked separately through Discord's public API documentation model."
     },
     {
       "heading": "Email and breach exposure",
-      "body": "Email checks can examine provider and deliverability signals, disposable-address indicators, and available breach exposure from public breach data sources. A breach result describes data in a source record; it does not prove that an account is currently compromised. Review the affected fields and follow the remediation guidance for the account you control."
+      "body": "Email checks examine provider and deliverability signals, disposable-address indicators, public profile records such as Gravatar JSON profiles, optional Holehe-style registration signals, and available breach exposure from public breach sources modeled after the Have I Been Pwned API v3 schema.\n\nA breach result describes data in a source record; it does not prove that an account is currently compromised. Review the affected fields and follow the remediation guidance for the account you control."
     },
     {
       "heading": "Password exposure checks",
-      "body": "The password exposure checker hashes the password in your browser and uses the first five characters of that hash for a k-anonymity lookup. The password itself is not sent to MyRecon. Use a password you control, and change it anywhere it is reused if the check reports exposure."
+      "body": "The password exposure checker hashes the password in your browser and uses the first five characters of that SHA-1 hash for a Pwned Passwords k-anonymity lookup. The password itself is not sent to MyRecon. Use a password you control, and change it anywhere it is reused if the check reports exposure."
     },
     {
       "heading": "Domain registration and DNS",
-      "body": "Domain lookups use RDAP, the modern registration-data protocol that succeeds WHOIS for many registries, to show available registrar, registration, and nameserver details. DNS lookups resolve records such as A, AAAA, MX, NS, TXT, CNAME, SOA, and CAA using DNS-over-HTTPS. Public registration records can be redacted, and DNS answers describe current configuration rather than who controls a service."
+      "body": "Domain lookups use RDAP (RFC 7480), the modern registration-data protocol that succeeds WHOIS for many registries, to show available registrar, registration, and nameserver details. DNS lookups resolve records such as A, AAAA, MX, NS, TXT, CNAME, SOA, and CAA using DNS-over-HTTPS (RFC 8484).\n\nPublic registration records can be redacted, and DNS answers describe current configuration rather than who controls a service."
     },
     {
       "heading": "IP address context",
@@ -30,7 +30,7 @@
     },
     {
       "heading": "Review, export, and privacy",
-      "body": "Open candidate links at their original sources before relying on a result. Browser history and saved guest items stay in the browser; signed-in scan reports can be saved to the account and deleted there. Where available, results can be exported for a self-audit. Read the privacy policy for the current retention and account details."
+      "body": "Open candidate links at their original sources before relying on a result. Search inputs and results are not saved on MyRecon servers; results remain in your current browser session, and any explicit local saves or exported files stay under your control. Read the privacy policy for current retention and account metadata details."
     },
     {
       "heading": "Use MyRecon within its limits",
@@ -38,11 +38,19 @@
     }
   ],
   "sources": [
-    "https://www.myrecon.xyz/"
+    "https://www.rfc-editor.org/info/rfc9110/",
+    "https://haveibeenpwned.com/API/v3",
+    "https://haveibeenpwned.com/Passwords",
+    "https://docs.discord.com/developers/reference",
+    "https://docs.gravatar.com/json/",
+    "https://github.com/megadose/holehe",
+    "https://www.rfc-editor.org/info/rfc7480/",
+    "https://www.rfc-editor.org/info/rfc8484/"
   ],
-  "reviewed_at": "2026-09-27",
-  "modified_at": "2026-09-30",
-  "reviewer": "Codex editorial pass",
+  "method": "Module behavior and data-handling statements were verified against MyRecon's privacy policy and primary technical references (RFC 9110, RFC 7480, RFC 8484, Have I Been Pwned API v3 and Pwned Passwords, Discord Developer Docs, Gravatar JSON Docs, and Holehe), checked 28 Nov 2026.",
+  "reviewed_at": "2026-11-28",
+  "modified_at": "2026-11-28",
+  "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",
     "href": "/"

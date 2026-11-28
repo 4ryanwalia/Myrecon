@@ -13,21 +13,52 @@
   "vector": "An internet-exposed router, then lateral movement into a data centre",
   "actor": "John Binns, who described the intrusion to journalists at the time",
   "cost": "$350 million class settlement plus a $150 million security spending commitment; a later $31.5 million settlement with the FCC",
-  "exposed": ["Names", "Dates of birth", "Social Security numbers", "Driver's licence and ID numbers", "Phone numbers", "Account PINs for some prepaid customers"],
+  "exposed": [
+    "Names",
+    "Dates of birth",
+    "Social Security numbers",
+    "Driver's licence and ID numbers",
+    "Phone numbers",
+    "Account PINs for some prepaid customers"
+  ],
   "sortDate": "2021-08-16",
   "published": "2026-09-14",
-  "updated": "2026-09-14",
-  "related": ["optus-2022", "att-2024", "snowflake-2024"],
+  "updated": "2026-11-28",
+  "related": [
+    "optus-2022",
+    "att-2024",
+    "snowflake-2024"
+  ],
   "faq": [
-    { "q": "I only applied to T-Mobile and never joined. Was I affected?", "a": "Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile, a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years." },
-    { "q": "How did the attacker get in?", "a": "He described it publicly: an internet-exposed router with weak protection gave a foothold, from which he reached a data centre and, eventually, servers holding customer data. He characterised T-Mobile's security as poor, which the subsequent regulatory settlements did not seriously contest." },
-    { "q": "Why does T-Mobile appear in breach lists so often?", "a": "Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond, a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure." },
-    { "q": "What is an account PIN and why did it matter?", "a": "It is the code that authenticates you to the carrier when you call support, and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset." }
+    {
+      "q": "I only applied to T-Mobile and never joined. Was I affected?",
+      "a": "Very possibly. Roughly 40 million of the exposed records belonged to former customers and to people who had applied for credit with T-Mobile, a category that includes anyone whose application was declined. Credit checks generate exactly the data an identity thief wants, and companies routinely keep those records for years."
+    },
+    {
+      "q": "How did the attacker get in?",
+      "a": "He described it publicly: an internet-exposed router with weak protection gave a foothold, from which he reached a data centre and, eventually, servers holding customer data. He characterised T-Mobile's security as poor, which the subsequent regulatory settlements did not seriously contest."
+    },
+    {
+      "q": "Why does T-Mobile appear in breach lists so often?",
+      "a": "Because it has disclosed a series of incidents across 2018, 2019, 2020, 2021, 2023 and beyond, a pattern the US Federal Communications Commission referenced when it settled with the company in 2024, requiring both a penalty and specific security investments. Repetition is itself a finding: it points at governance rather than at any single technical failure."
+    },
+    {
+      "q": "What is an account PIN and why did it matter?",
+      "a": "It is the code that authenticates you to the carrier when you call support, and the control that is supposed to stop somebody else moving your number to their SIM. Prepaid account PINs were among the exposed data, which made SIM-swap attacks against those customers materially easier until they were reset."
+    }
   ],
   "sources": [
-    { "label": "Federal Communications Commission, T-Mobile data breach settlement, September 2024", "url": "https://www.fcc.gov/document/fcc-settles-investigations-t-mobile-data-breaches" },
-    { "label": "T-Mobile customer notifications and updates, August 2021" },
-    { "label": "Class settlement in In re T-Mobile Customer Data Security Breach Litigation, 2022" }
+    {
+      "label": "Federal Communications Commission, T-Mobile data breach settlement, September 2024",
+      "url": "https://www.fcc.gov/document/t-mobile-required-change-business-practices-after-data-breaches",
+      "note": "checked 28 Nov 2026"
+    },
+    {
+      "label": "T-Mobile customer notifications and updates, August 2021"
+    },
+    {
+      "label": "Class settlement in In re T-Mobile Customer Data Security Breach Litigation, 2022"
+    }
   ]
 }
 -->
@@ -59,7 +90,9 @@
 
 <h2>The pattern, which is the real story</h2>
 
-<p>T-Mobile disclosed security incidents in 2018, 2019, 2020, 2021 and again in January 2023, when an API was abused to pull data on 37 million accounts. That repetition is why the US Federal Communications Commission's September 2024 settlement was structured the way it was: a $31.5 million resolution split evenly between a penalty and a commitment to spend on specific security improvements, zero-trust architecture, phishing-resistant multi-factor authentication, and better data inventory and segmentation.</p>
+<p>T-Mobile disclosed security incidents in 2018, 2019, 2020, 2021 and again in January 2023, when an API was abused to pull data on 37 million accounts.</p>
+
+<p>That repetition is why the US Federal Communications Commission's September 2024 settlement was structured the way it was: a $31.5 million resolution split evenly between a penalty and a commitment to spend on specific security improvements, zero-trust architecture, phishing-resistant multi-factor authentication, and better data inventory and segmentation.</p>
 
 <p>Regulators tend to treat a first breach as an incident and a fifth as a governance failure. The remedy shifts accordingly, from a fine towards a supervised programme of work with deadlines.</p>
 

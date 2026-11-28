@@ -37,6 +37,18 @@ function buildDiscoveryPage({ title, description, keywords, url, outFileName, cr
         dateModified: modifiedAt,
         inLanguage: 'en',
         isPartOf: { '@id': `${site}/#website` },
+        author: {
+          '@type': 'Person',
+          '@id': `${site}/founder.html#person`,
+          name: 'Aryan Walia',
+          url: `${site}/founder.html`,
+        },
+        reviewedBy: {
+          '@type': 'Person',
+          '@id': `${site}/founder.html#person`,
+          name: 'Aryan Walia',
+          url: `${site}/founder.html`,
+        },
         publisher: {
           '@type': 'Organization',
           '@id': `${site}/#organization`,
@@ -133,7 +145,7 @@ function dailyBenchmarkSection() {
   const m = run.tools.myrecon;
   return `<section id="daily-benchmark"><h2>How often does a username checker get it wrong?</h2>
     <p>On MyRecon's daily control set it made ${m.FP} false positives and ${m.FN} misses in ${m.total} checks on ${when}. That set is small on purpose: ${run.username_count} fixed usernames, 5 real and 5 made up, on ${run.platforms.join(', ').replace(/, ([^,]*)$/, ' and $1')}. It is not a score for all 560+ platforms, where login walls and blocks leave more checks unknown.</p>
-    <div class="table-wrap"><table><caption>Public-controls benchmark, run ${when} (${run.network_environment}); real and made-up handles checked against official API answers</caption><thead><tr><th scope="col">Engine</th><th scope="col">Real found</th><th scope="col">Made-up rejected</th><th scope="col">False positives</th><th scope="col">Misses</th><th scope="col">Unknown</th><th scope="col">Decided</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="discovery-table-wrap"><table><caption>Public-controls benchmark, run ${when} (${run.network_environment}); real and made-up handles checked against official API answers</caption><thead><tr><th scope="col">Engine</th><th scope="col">Real found</th><th scope="col">Made-up rejected</th><th scope="col">False positives</th><th scope="col">Misses</th><th scope="col">Unknown</th><th scope="col">Decided</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p>The run repeats every day on a schedule, and this table is rebuilt from the latest result each time the site is published. The reference shares some official API evidence with MyRecon's engine, so read it as a regression check, not an independent audit. <a href="/data/benchmarks.json">Raw results for every run</a> · <a href="/blog/username-search-benchmark-research.html">method and history</a></p>
   </section>`;
 }
@@ -216,10 +228,11 @@ const osintBody = `<main id="main" class="container prose discovery-page">
     <p>For a beginner-friendly list of free OSINT websites with zero terminal setup, pair one handle scanner, one breach checker, one domain lookup, and one web archive. Each OSINT online tool or reconnaissance website answers a different public-source question and lets you verify leads directly at the source.</p>
     <ul>
       <li><strong>Username and OSINT platform search:</strong> <a href="/username-checker.html">MyRecon</a> (browser sweeps across 100 guest or 560+ signed-in platforms with explicit unknown verdicts) and <a href="/whatsmyname-alternatives.html">WhatsMyName migration alternatives</a>.</li>
-      <li><strong>Email breach and password checks:</strong> <a href="/reverse-email-lookup.html">MyRecon reverse email lookup</a> and <a href="/vs/have-i-been-pwned.html">Have I Been Pwned</a> for historical breach datasets and k-anonymity password checks.</li>
-      <li><strong>Domain, DNS and IP context:</strong> MyRecon's <a href="/#tool=domain">RDAP domain lookup</a>, <a href="/#tool=dns">DNS records</a>, and <a href="/#tool=ip">IP lookup</a>, alongside ICANN Lookup and crt.sh for certificate transparency logs.</li>
+      <li><strong>Email breach and password checks:</strong> <a href="/reverse-email-lookup.html">MyRecon reverse email lookup</a> and <a href="/vs/have-i-been-pwned.html">Have I Been Pwned</a> for historical breach datasets and <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Pwned Passwords k-anonymity checks</a>.</li>
+      <li><strong>Domain, DNS and IP context:</strong> MyRecon's <a href="/#tool=domain">RDAP domain lookup</a> (see <a href="https://www.rfc-editor.org/info/rfc7480/" target="_blank" rel="noopener noreferrer">RFC 7480</a>), <a href="/#tool=dns">DNS records</a>, and <a href="/#tool=ip">IP lookup</a>, alongside <a href="https://lookup.icann.org/" target="_blank" rel="noopener noreferrer">ICANN Lookup</a> and <a href="https://crt.sh/" target="_blank" rel="noopener noreferrer">crt.sh</a> for certificate transparency logs.</li>
       <li><strong>Directory and beginner workflows:</strong> Read our <a href="/blog/free-osint-tools-for-beginners.html">beginner OSINT workflow</a> or compare top OSINT sites in our <a href="/blog/best-free-osint-tools-for-investigators.html">best OSINT tools guide</a> across open source intelligence tools and online investigation tools.</li>
     </ul>
+    <p>Primary standards and tools above checked <time datetime="2026-11-28">28 November 2026</time>. Read our <a href="/about.html#editorial-method">editorial method</a>.</p>
   </section>
   <section>
     <h2>Featured OSINT resources and tools</h2>
@@ -313,7 +326,7 @@ function octocatSampleSection() {
   const absent = checks.filter((c) => c.reference.verdict === 'not_found').map((c) => `${c.platform}'s API`);
   return `  <section id="sample-result"><h2>What does a reverse username result look like?</h2>
     <p>Here is a real one. On ${when} MyRecon looked up the public handle <code>octocat</code> on ${checks.length} platforms and agreed with each platform's own API on ${agree} of ${checks.length}.${absent.length ? ` A "Not found" is a result too: ${absent.join(' and ')} had no user by that name.` : ''}</p>
-    <div class="table-wrap"><table><caption>Reverse lookup for octocat, ${when}, compared with each platform's official API</caption><thead><tr><th scope="col">Platform</th><th scope="col">MyRecon said</th><th scope="col">Official API said</th><th scope="col">Reference source</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="discovery-table-wrap"><table><caption>Reverse lookup for octocat, ${when}, compared with each platform's official API</caption><thead><tr><th scope="col">Platform</th><th scope="col">MyRecon said</th><th scope="col">Official API said</th><th scope="col">Reference source</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p>This sample is rebuilt from MyRecon's scheduled benchmark each time the site is published; a full search covers 100 platforms as a guest or 560+ signed in. Daily error counts are on the <a href="/username-checker.html#daily-benchmark">username checker page</a>.</p>
   </section>`;
 }
@@ -347,7 +360,8 @@ ${octocatSampleSection()}
   </section>
   <section>
     <h2 id="overcoming-false-positives-the-synthetic-control-advantage">Why a username result can be unconfirmed</h2>
-    <p>A page can respond successfully while showing a generic page, a sign-in screen or an account-missing message. In <a href="/blog/username-search-benchmark-research.html#http-200-username-evidence">MyRecon's recorded checks</a>, one GitLab fixture returned HTTP 200 in 20 repeated observations where the official API found no account. Use the exact username and profile evidence at the source when reviewing a candidate.</p>
+    <p>A page can respond successfully while showing a generic page, a sign-in screen or an account-missing message. Under <a href="https://www.rfc-editor.org/info/rfc9110/" target="_blank" rel="noopener noreferrer">RFC 9110 (HTTP Semantics)</a>, a 200 OK status only confirms that the server returned a representation, not that a profile exists.</p>
+    <p>In <a href="/blog/username-search-benchmark-research.html#http-200-username-evidence">MyRecon's recorded checks</a>, one GitLab fixture returned HTTP 200 in 20 repeated observations where the official API found no account. Official APIs such as the <a href="https://docs.github.com/en/rest/users/users" target="_blank" rel="noopener noreferrer">GitHub Users REST API</a> (checked <time datetime="2026-11-28">28 November 2026</time>) provide explicit status semantics, whereas login-walled social platforms frequently return ambiguous shells. Use the exact username and profile evidence at the source when reviewing a candidate.</p>
   </section>
   <section>
     <h2>How do you corroborate a username match?</h2>
@@ -425,24 +439,35 @@ const emailBody = `<main id="main" class="container prose discovery-page">
     <h2 id="what-the-lookup-checks">What the email lookup checks</h2>
     <dl>
       <dt><strong>Reported breaches</strong></dt>
-      <dd>The address is checked against two free breach sources, LeakCheck and XposedOrNot. You see each named breach, its date where the source gives one, and the types of data it exposed, such as passwords, phone numbers or physical addresses. Large combined lists of old credentials are counted separately, so they do not inflate the number of distinct breaches.</dd>
+      <dd>The address is checked against two free breach sources, <a href="https://leakcheck.io/" target="_blank" rel="noopener noreferrer">LeakCheck</a> and <a href="https://xposedornot.com/" target="_blank" rel="noopener noreferrer">XposedOrNot</a>. You see each named breach, its date where the source gives one, and the types of data it exposed, such as passwords, phone numbers or physical addresses. Large combined lists of old credentials are counted separately, so they do not inflate the number of distinct breaches.</dd>
       <dt><strong>Public profiles for the exact address</strong></dt>
-      <dd>A public Gravatar profile and the accounts it lists, GitHub commits made with the address, and keys.openpgp.org, which only lists an address after its owner confirms it. These are things the owner of the address chose to publish.</dd>
+      <dd>A public <a href="https://docs.gravatar.com/json/" target="_blank" rel="noopener noreferrer">Gravatar JSON profile</a> and the accounts it lists, public GitHub commits published with the address via the <a href="https://docs.github.com/en/rest/users/users" target="_blank" rel="noopener noreferrer">GitHub REST API</a>, and <a href="https://keys.openpgp.org/about/" target="_blank" rel="noopener noreferrer">keys.openpgp.org</a>, which only lists an address after its owner verifies control of it. These are records the owner of the address chose to publish.</dd>
       <dt><strong>Linked-account checks (optional)</strong></dt>
-      <dd>Turn on "Also check linked accounts" and the lookup asks 100+ services, among them Spotify, Instagram, Pinterest, Amazon and Duolingo, whether the address is registered with them. This uses Holehe, an open-source tool, plus a few checks MyRecon maintains. It sends the address to every service it tests, so it is off unless you choose it.</dd>
+      <dd>Turn on "Also check linked accounts" and the lookup asks 100+ services, among them Spotify, Instagram, Pinterest, Amazon and Duolingo, whether the address is registered with them. This uses <a href="https://github.com/megadose/holehe" target="_blank" rel="noopener noreferrer">Holehe</a>, an open-source tool, plus two checks MyRecon maintains. It sends the address to every service it tests, so it is off unless you choose it.</dd>
     </dl>
-    <p>Sensitive breaches, such as dating or adult sites that Have I Been Pwned marks as sensitive, are never listed against an address, and every result carries a note explaining that rule.</p>
+    <p>Sensitive breaches, such as dating or adult sites that <a href="https://haveibeenpwned.com/API/v3" target="_blank" rel="noopener noreferrer">Have I Been Pwned</a> marks as sensitive, are never listed against an address, and every result carries a note explaining that rule.</p>
   </section>
   <section>
     <h2 id="holehe-online">Holehe online, without installing Python</h2>
-    <p>Holehe is an open-source command-line tool that checks whether an email address is registered on a service by reading how that service's sign-up or password-reset screen answers. Running it yourself means installing Python and the package, then reading raw output in a terminal.</p>
+    <p><a href="https://github.com/megadose/holehe" target="_blank" rel="noopener noreferrer">Holehe</a> is an open-source command-line tool that checks whether an email address is registered on a service by reading how that service's sign-up or password-reset screen answers. Running it yourself means installing Python and the package, then reading raw output in a terminal.</p>
     <p>The linked-account option in this lookup runs a pinned copy of Holehe on MyRecon's server, plus two checks MyRecon maintains for Hugging Face and HackerRank, and shows the answers as a list: registered, no signal, or could not check. Rate limits and blocks are counted as "could not check", never as "not registered". As with Holehe itself, each service it tests receives the address.</p>
   </section>
   <section>
     <h2 id="holehe-services-skipped">Which Holehe checks does MyRecon skip, and why?</h2>
-    <p>Twelve. MyRecon pins Holehe at commit 14da70f, which has 123 service modules, and runs 111 of them plus its own Hugging Face and HackerRank checks. It skips the 12 whose check works by starting a password reset or an account sign-up, because that can send the address owner an email or create a pending account.</p>
-    <div class="table-wrap"><table><caption>Holehe modules in MyRecon's pinned catalogue, by how the check asks the service (catalogue dated 12 October 2026)</caption><thead><tr><th scope="col">How the module asks</th><th scope="col">Run</th><th scope="col">Skipped</th></tr></thead><tbody><tr><th scope="row">Sign-up form ("is this email taken?")</th><td>96</td><td>6</td></tr><tr><th scope="row">Login form</th><td>11</td><td>2</td></tr><tr><th scope="row">Password recovery</th><td>0</td><td>4</td></tr><tr><th scope="row">Other public endpoint</th><td>4</td><td>0</td></tr><tr><th scope="row">Total</th><td>111</td><td>12</td></tr></tbody></table></div>
+    <p>Twelve. MyRecon pins Holehe at <a href="https://github.com/megadose/holehe/tree/14da70f" target="_blank" rel="noopener noreferrer">commit 14da70f</a>, which has 123 service modules, and runs 111 of them plus its own Hugging Face and HackerRank checks. It skips the 12 whose check works by starting a password reset or an account sign-up, because that can send the address owner an email or create a pending account.</p>
+    <div class="discovery-table-wrap"><table><caption>Holehe modules in MyRecon's pinned catalogue, by how the check asks the service (catalogue dated 12 October 2026)</caption><thead><tr><th scope="col">How the module asks</th><th scope="col">Run</th><th scope="col">Skipped</th></tr></thead><tbody><tr><th scope="row">Sign-up form ("is this email taken?")</th><td>96</td><td>6</td></tr><tr><th scope="row">Login form</th><td>11</td><td>2</td></tr><tr><th scope="row">Password recovery</th><td>0</td><td>4</td></tr><tr><th scope="row">Other public endpoint</th><td>4</td><td>0</td></tr><tr><th scope="row">Total</th><td>111</td><td>12</td></tr></tbody></table></div>
     <p>The skipped services are Adobe, Devrant, Discord, Mail.ru, Nutshell, Odnoklassniki, Parler, Samsung, SEOClerks, Tumblr, Xing and Yahoo. A "no signal" on this page therefore never covers those twelve. Running Holehe yourself checks them, at the cost of possibly alerting the address owner.</p>
+  </section>
+  <section>
+    <h2 id="email-verification-and-limitations">Verification workflow and known limitations</h2>
+    <p>Every reverse email signal should be corroborated against a second independent source before you act on it. Breach entries, public profiles and sign-up responses answer three different questions and fail in different ways.</p>
+    <ul>
+      <li><strong>Distinguish named breaches from stealer logs and combolists:</strong> Named incidents point to one service that lost records; stealer-log collections come from malware on a user's device and often include active passwords and session cookies. Rotate affected credentials and revoke active sessions when passwords or tokens are listed.</li>
+      <li><strong>Verify passwords safely offline with k-anonymity:</strong> To check whether a specific password leaked without sending it over the network, use the <a href="/#tool=password">MyRecon password check</a> powered by <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Have I Been Pwned Pwned Passwords</a>, which hashes locally in your browser and sends only the first five SHA-1 characters.</li>
+      <li><strong>Check domain mail authentication separately:</strong> For a custom domain address you manage, follow up with <a href="/#tool=dns">DNS inspection</a> to review published SPF (<a href="https://www.rfc-editor.org/info/rfc7208/" target="_blank" rel="noopener noreferrer">RFC 7208</a>), DKIM (<a href="https://www.rfc-editor.org/info/rfc6376/" target="_blank" rel="noopener noreferrer">RFC 6376</a>) and DMARC (<a href="https://www.rfc-editor.org/info/rfc7489/" target="_blank" rel="noopener noreferrer">RFC 7489</a>) policies.</li>
+      <li><strong>Read unresolved counts carefully:</strong> Third-party breach APIs and Holehe target endpoints experience rate limits and anti-bot challenges. MyRecon reports timed-out or blocked checks as unresolved rather than marking the email clean.</li>
+    </ul>
+    <p>Primary source URLs and pinned module counts checked <time datetime="2026-11-28">28 November 2026</time>. Read our <a href="/about.html#editorial-method">editorial method</a>.</p>
   </section>
   <section>
     <h2 id="what-this-lookup-does-not-do">What does this email lookup not do?</h2>
@@ -531,8 +556,8 @@ const discordQuestions = [
   ['Can I find a Discord user by ID?', 'Yes, for the public profile. Paste a user ID and the lookup shows the current username, display name, avatar, banner and public badges that Discord returns for that ID, plus the creation date decoded from the number. It cannot show an email address, phone number, IP address or location, because Discord does not give those out.'],
   ['How do I tell how old a Discord account is?', 'Copy the user ID with Developer Mode switched on and paste it into the lookup. The first 42 bits of the ID are the creation time, so the result is exact to the millisecond and the account cannot change it.'],
   ['Does a Discord ID ever change?', 'No. Usernames, display names, server nicknames and avatars can all change, but the ID stays the same for the life of the account, server, channel or message.'],
-  ['Is it safe to share a Discord ID?', 'An ID on its own reveals only a creation date. Share it with Discord or a server moderator when you report someone, but avoid posting it publicly next to private messages or personal details.'],
-  ['Can this tool see deleted accounts or private servers?', 'It decodes the number you paste and nothing else. It cannot tell whether an account still exists, was deleted or banned, or what a private server contains.'],
+  ['Is it safe to share a Discord ID?', 'A Discord ID is a public identifier. On its own it lets anyone decode the creation timestamp and look up the public profile fields Discord returns for that ID (current username, display name, avatar, banner and public badges), but it cannot reveal your email, phone number, IP address or server list. Share it with Discord or server moderators when reporting abuse, and avoid pairing it with private contact details in public posts.'],
+  ['Can this tool see deleted accounts or private servers?', 'For user IDs, MyRecon queries Discord\'s documented Get User API endpoint and decodes the Snowflake timestamp locally. If Discord returns no user for an ID, the number belongs to a server, channel or message, or the user account has been deleted. It cannot see inside private servers, read messages, or explain why an account was banned or removed.'],
 ];
 
 const discordBody = `<main id="main" class="container prose discovery-page">
@@ -625,7 +650,11 @@ const discordBody = `<main id="main" class="container prose discovery-page">
 
   <section>
     <h2>Sources</h2>
-    <p>Snowflake layout, Discord epoch, mention formats, timestamp styles and the default avatar rule: Discord developer documentation, Reference ("Snowflakes", "Message Formatting", "Image Formatting"). Profile fields and badge names: Discord developer documentation, Users ("Get User", "User Flags"). Both read 28 November 2026. Updated 28 November 2026.</p>
+    <ul>
+      <li><a href="https://docs.discord.com/developers/reference" target="_blank" rel="noopener noreferrer">Discord Developer Documentation: API Reference</a> (Snowflakes, Discord epoch 1420070400000, mention formats, message timestamp styles and image formatting; checked <time datetime="2026-11-28">28 November 2026</time>).</li>
+      <li><a href="https://docs.discord.com/developers/resources/user" target="_blank" rel="noopener noreferrer">Discord Developer Documentation: User Resource</a> (Get User endpoint, public user fields and user flags; checked <time datetime="2026-11-28">28 November 2026</time>).</li>
+    </ul>
+    <p>Updated <time datetime="2026-11-28">28 November 2026</time>. Read our <a href="/about.html#editorial-method">editorial method</a>.</p>
   </section>
 </main>`;
 
@@ -690,7 +719,7 @@ const watchBody = `<main id="main" class="container prose discovery-page watch-p
       <li><a href="/username-checker.html">Use the web username checker</a></li>
       <li><a href="/free-osint-tool.html">Free OSINT tool overview</a></li>
       <li><a href="/digital-footprint-checker.html">Check your own digital footprint</a></li>
-      <li><a href="/directory.html">Browse the research directory</a></li>
+      <li><a href="/guides/">Browse OSINT and privacy guides</a></li>
     </ul>
   </section>
 

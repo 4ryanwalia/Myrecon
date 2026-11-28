@@ -5,8 +5,8 @@
   "description": "See how Sherlock and Maigret results varied across 22 runs on GitHub, GitLab and Hacker News. Download the dated results, HTTP status study and methods.",
   "category": "Research",
   "datePublished": "2026-11-01",
-  "dateModified": "2026-11-23",
-  "editorial_review": "2026-11-22",
+  "dateModified": "2026-11-28",
+  "editorial_review": "2026-11-28",
   "dataset": {
     "name": "HTTP status and username lookup verdicts across GitHub, GitLab and Hacker News",
     "description": "600 paired observations of HTTP status rules and official API reference verdicts. Twenty runs repeat the same ten fixtures per platform. The downloadable CSV uses platform-specific fixture IDs to preserve repeated-measurement groups.",
@@ -142,6 +142,15 @@
   <li><strong>Corrections used this case:</strong> the final MyRecon run follows fixes informed by the observed handle mismatch and missing profiles. It is not an untouched, held-out evaluation. Earlier results are retained for review.</li>
   <li><strong>Hidden preview evidence:</strong> five OSINTsearch matches and all its profile URLs were hidden. No accuracy or identity inference is made for them.</li>
   <li><strong>Scope of a lead:</strong> a matching public handle does not confirm identity, common ownership, registration availability or access to private information.</li>
+</ul>
+
+<h2 id="methodology-review-2026-11-28">Methodology review and limitations (28 November 2026)</h2>
+<p>A verification review on <time datetime="2026-11-28">28 November 2026</time> checked cross-section consistency between the 30 September case study, the 20-run HTTP status dataset (600 observations) and the 22-run repeatability dataset (660 observations). All observation counts, pinned commit hashes and CSV export definitions match across sections.</p>
+<ul>
+  <li><strong>Repeated-measurement clustering:</strong> The 154 Sherlock Hacker News disagreements represent 7 distinct controls observed across 22 runs (7 x 22 = 154), and the 20 GitLab HTTP-200 contradictions represent 1 fixture observed across 20 runs (1 x 20 = 20). Analysts must group by fixture ID rather than treating repeated runs as independent handles.</li>
+  <li><strong>Post-hoc rule fixes in the 30 September case:</strong> As documented in the Corrections section, the final MyRecon 12/12 supported count followed bug fixes made after inspecting earlier runs on <code>4ryanwalia</code>. That makes the 30 September run a documented diagnostic case, not a blind out-of-sample benchmark; use the predeclared <a href="/blog/username-search-controlled-study-2026.html">1 November 35-control study</a> for pre-registered controls.</li>
+  <li><strong>Datacenter runner artifact:</strong> The 200/200 Hacker News HTTP 419 responses reflect GitHub Actions runner egress. Residential or mobile networks can receive different status codes on the exact same URLs.</li>
+  <li><strong>Authorship and auditability:</strong> Written and reviewed by <a href="/founder.html">Aryan Walia</a> (CEH, Founder) under our <a href="/about.html#editorial-method">editorial method</a>; HTTP semantics referenced against <a href="https://www.rfc-editor.org/info/rfc9110/" target="_blank" rel="noopener noreferrer">RFC 9110</a> (checked <time datetime="2026-11-28">28 November 2026</time>).</li>
 </ul>
 
 <h2 id="reproduce">Reproduce and inspect the evidence</h2>

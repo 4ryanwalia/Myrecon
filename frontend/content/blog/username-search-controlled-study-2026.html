@@ -5,8 +5,8 @@
   "description": "Original MyRecon, Sherlock and Maigret control study: supported matches, false positives, unresolved checks, pinned versions and downloadable CSV/JSON evidence.",
   "category": "Research",
   "datePublished": "2026-11-01",
-  "dateModified": "2026-11-27",
-  "editorial_review": "2026-11-01",
+  "dateModified": "2026-11-28",
+  "editorial_review": "2026-11-28",
   "dataset": {
     "name": "Username search control study: 35 controls, 8 platforms, 3 tools (1 November 2026)",
     "datePublished": "2026-11-01",
@@ -96,5 +96,14 @@
 <p>The reference and MyRecon share some official API sources, so this is a publisher-run regression study rather than an independent audit. Thirty-five controls and one network window cannot estimate population error rates. Eighteen reference negatives and six positives were decisive; eleven references remained unknown. Exclusions reduce effective scope, which is why both the common planned scope and scored denominators are published. No production detection rules were changed in response to this study. Known fixtures are not a held-out evaluation, and a matching handle does not prove identity, common ownership or registration availability.</p>
 
 <p>See the <a href="/blog/username-search-benchmark-research.html">earlier case study and separate daily regression snapshot</a>, the <a href="/blog/sherlock-vs-maigret-vs-myrecon.html">workflow comparison</a>, and the <a href="/guides/account-enumeration-false-positives.html">false-positive review guide</a>. Corrections can be reported through the <a href="/contact.html">contact page</a>; replacement observations should retain their own dates.</p>
+
+<h2 id="methodology-review-2026-11-28">Methodology review and limitations (28 November 2026)</h2>
+<p>A structured pre-submission verification pass on <time datetime="2026-11-28">28 November 2026</time> audited every denominator, statistical bound and source-independence disclosure in this study. All three tool tables sum cleanly to 35 controls (MyRecon 6+0+0+18+11=35; Sherlock 4+0+0+11+20=35; Maigret 6+0+0+18+11=35).</p>
+<ul>
+  <li><strong>Statistical confidence on small samples:</strong> With 0 false positives across 18 scored negatives (MyRecon and Maigret), the exact 95% Clopper-Pearson upper confidence bound on the false-positive rate is 18.5%, and with 11 scored negatives (Sherlock) it is 28.5%. Zero observed errors on 18 controls cannot support a "0% false-positive" marketing claim across 560+ sites.</li>
+  <li><strong>Shared-source coupling:</strong> Because MyRecon and the reference verifier both query official public REST APIs on GitHub, GitLab, Hacker News, Docker Hub and Dev.to, agreement on those endpoints validates regression stability rather than independent ground truth on closed social networks.</li>
+  <li><strong>Platform mix bias:</strong> All eight tested platforms are developer or technical-community registries. Consumer social networks (Instagram, TikTok, X, Snapchat) exhibit much higher login-wall and anti-bot refusal rates, documented separately in our <a href="/guides/why-username-checkers-report-fake-accounts.html">24-platform measurement</a> and <a href="/whatsmyname-alternatives.html#how-many-whatsmyname-checks-still-work">27 November 2026 690-rule replay</a>.</li>
+  <li><strong>Authorship and auditability:</strong> Written and reviewed by <a href="/founder.html">Aryan Walia</a> (CEH, Founder) under our <a href="/about.html#editorial-method">editorial method</a>. All raw payloads, rule hashes and SHA-256 checksums remain downloadable above.</li>
+</ul>
 
 <h2 id="sources">Primary sources</h2><ul><li><a href="https://github.com/sherlock-project/sherlock">Sherlock upstream project</a> and its pinned site-rule links in the manifest.</li><li><a href="https://github.com/soxoj/maigret">Maigret upstream project</a> and its pinned fixture fields in the manifest.</li><li><a href="https://docs.github.com/en/rest/users/users#get-a-user">GitHub user endpoint</a>, <a href="https://docs.gitlab.com/api/users/">GitLab Users API</a>, <a href="https://github.com/HackerNews/API#users">Hacker News Users API</a> and <a href="https://developers.forem.com/api/v1#tag/users/operation/getUser">Forem user API</a>.</li><li>The account-specific reference URLs and captured evidence for every platform appear in the matrix and downloadable JSON.</li></ul>

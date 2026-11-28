@@ -5,27 +5,57 @@
   "description": "If you locate a forgotten account you control, confirm access, update recovery details, check for misuse and close it safely if you no longer need it.",
   "category": "Account cleanup",
   "datePublished": "2026-09-27",
-  "dateModified": "2026-09-27"
+  "dateModified": "2026-11-28"
 }
 -->
 <p class="lead">Finding a profile with an old handle is only the first step. Before changing or deleting anything, confirm that you control it. Similar names and reused usernames can point to somebody else's account.</p>
 
 <h2>Confirm that the account is yours</h2>
 <p>Sign in using a password you already manage or use the platform's official recovery process for an email or phone you control. Check that the account contains details you recognise. If you cannot prove control, do not attempt to enter it or submit a deletion request for it.</p>
-<p>A username search can surface a likely profile, but it cannot prove who runs the account. Use the service's own access and recovery process as the authority for ownership.</p>
+<p>A username search can surface a likely profile, but it cannot prove who runs the account. Cross-check candidate profiles against welcome emails in your inbox, old password-manager entries, and linked domains before treating the account as yours. Use the service's own access and recovery process as the authority for ownership.</p>
 
 <h2>If you want to keep it, secure it now</h2>
+<p>Old accounts are frequent entry points for credential stuffing because they often hold legacy passwords, outdated recovery phones, and unrevoked third-party app tokens. Harden the account before updating public profile details:</p>
 <ul>
-  <li>Set a unique password using a password manager.</li>
+  <li>Set a unique password using a password manager following <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" target="_blank" rel="noopener noreferrer">NIST SP 800-63B authentication guidance</a> and <a href="https://www.cisa.gov/audiences/small-and-medium-businesses/secure-your-business/require-strong-passwords" target="_blank" rel="noopener noreferrer">CISA password recommendations</a> (checked 28 Nov 2026).</li>
   <li>Replace an outdated recovery email or phone with contact details you still control.</li>
-  <li>Enable two-factor authentication and save recovery codes in a secure place.</li>
-  <li>Review login sessions, connected applications and recent account activity.</li>
-  <li>Remove public details you no longer want to share, and check who can find or contact you.</li>
+  <li>Enable phishing-resistant or app-based two-factor authentication as advised by <a href="https://www.cisa.gov/secure-our-world/turn-mfa" target="_blank" rel="noopener noreferrer">CISA MFA guidance</a> (checked 28 Nov 2026) and save recovery codes offline.</li>
+  <li>Review active login sessions, OAuth connected applications, API tokens, and recent account activity; revoke anything you do not recognise.</li>
+  <li>Remove public details you no longer want to share, and check who can find, tag, or contact you while viewing the profile from a signed-out browser.</li>
 </ul>
 <p>If the password was reused, change it anywhere else it appears. Secure your main email account first because it can reset access to many other services. Our guides explain <a href="/guides/strong-passwords-guide.html">password managers</a> and <a href="/guides/two-factor-authentication.html">two-factor authentication</a>.</p>
 
-<h2>If you want to close it</h2>
-<p>Save anything important, check billing and connected logins, then use the provider's deletion option. If you are unsure whether to <a href="/blog/account-deletion-vs-deactivation.html">deactivate or delete the account</a>, check how that platform treats the two first. Keep the confirmation and note whether there is a waiting period. If the account is already compromised and you cannot access it, use the platform's official recovery and hacked-account process before asking for closure.</p>
-<p>Closing the profile is separate from removing a copy that a search engine, archive or another site already holds. Start with the source, then follow the relevant removal process for any remaining result. See <a href="/guides/remove-personal-info-from-search.html">how search-result removal works</a>.</p>
+<h2>Password-manager and connected-login cleanup</h2>
+<p>Securing or closing a single forgotten account leaves exposure behind if its credentials or sign-in grants remain wired into other services. Audit both your vault and your identity providers right after you regain access:</p>
+<ol>
+  <li><strong>Search your password manager by handle, email, and legacy password:</strong> Flag every site still sharing the old password or old email alias, and rotate those credentials immediately.</li>
+  <li><strong>Check federated sign-in links:</strong> If you created the old account with "Sign in with Google", Apple, GitHub, or Facebook, remove that app grant in your identity provider's security settings as well as on the site itself.</li>
+  <li><strong>Export or archive records before removing vault entries:</strong> Once an account is closed, tag the password-manager entry as closed with the confirmation date and ticket number (rather than deleting the note immediately) so you can prove closure if a future breach notice arrives.</li>
+</ol>
 
-<p>For a broader discovery routine, use <a href="/blog/find-your-own-old-accounts.html">the guide to finding your own old accounts</a>. MyRecon's <a href="/services.html">footprint removal support</a> can help with accounts and listings you own or are formally authorised to manage.</p>
+<h2>If you want to close it safely</h2>
+<p>Save anything important, check active subscriptions, billing profiles, and connected logins, then use the provider's permanent deletion option. If you are unsure whether to <a href="/blog/account-deletion-vs-deactivation.html">deactivate or delete the account</a>, check how that platform handles retention and handle release first.</p>
+<ol>
+  <li><strong>Export personal files and receipts:</strong> Download photos, messages, tax invoices, or software licences before starting closure.</li>
+  <li><strong>Scrub public fields where deletion is delayed:</strong> Some platforms enforce a 14-day to 90-day grace period before final erasure. Removing your bio, avatar, and outbound links first reduces public visibility while the countdown runs.</li>
+  <li><strong>Record confirmation evidence:</strong> Save the deletion confirmation email, date, and waiting period in your private <a href="/templates/digital-footprint-audit-template.html">digital footprint audit log</a>.</li>
+  <li><strong>Handle compromised accounts through official recovery first:</strong> If an attacker already changed the email or password, follow the platform's hacked-account workflow before requesting closure.</li>
+</ol>
+
+<h2>Using GDPR and CCPA deletion requests when self-service fails</h2>
+<p>When a site hides its delete button, lacks a working self-service flow, or still holds profile data after you close the account, statutory privacy rights provide a formal escalation path depending on where you live.</p>
+<table>
+  <caption>Primary statutory deletion pathways (checked 28 Nov 2026)</caption>
+  <thead><tr><th scope="col">Jurisdiction / Law</th><th scope="col">Right &amp; official reference</th><th scope="col">What to include in your request</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">EU / EEA (GDPR Art. 17)</th><td>Right to erasure under EU data protection law (<a href="https://commission.europa.eu/law/law-topic/data-protection_en" target="_blank" rel="noopener noreferrer">European Commission GDPR overview</a>)</td><td>Exact account URL, registered email, clear request for erasure under Article 17, and verification only through the channel the controller specifies</td></tr>
+    <tr><th scope="row">United Kingdom (UK GDPR)</th><td>Guidance from the <a href="https://ico.org.uk/for-the-public/your-right-to-get-your-data-deleted/" target="_blank" rel="noopener noreferrer">UK ICO right to get your data deleted</a></td><td>Account identifier, date of prior self-service attempt, and request for written confirmation within one calendar month</td></tr>
+    <tr><th scope="row">California (CCPA / CPRA)</th><td>Right to delete described by the <a href="https://oag.ca.gov/privacy/ccpa" target="_blank" rel="noopener noreferrer">California Office of the Attorney General</a></td><td>Verifiable consumer request naming the account and asking the business (and its service providers) to delete personal information</td></tr>
+  </tbody>
+</table>
+<p>Statutory erasure is not absolute: companies can retain narrow records required for tax, fraud prevention, or legal compliance. Even so, a formal privacy-email request sent to the address listed in the site's privacy policy routinely resolves stalled account closures and data-broker profiles.</p>
+
+<h2>Clean up residual search results after closure</h2>
+<p>Closing the profile is separate from removing a cached snippet that a search engine, archive, or mirror site already holds. Start by verifying the profile URL returns HTTP 404 or a deleted-account page while signed out, then submit the URL through <a href="https://support.google.com/websearch/answer/6349986" target="_blank" rel="noopener noreferrer">Google's Refresh Outdated Content tool</a> (checked 28 Nov 2026). See <a href="/guides/remove-personal-info-from-search.html">how search-result removal works</a> for step-by-step screenshots and timing.</p>
+
+<p>For a broader discovery routine, use <a href="/blog/find-your-own-old-accounts.html">the guide to finding your own old accounts</a> and our <a href="/about.html#editorial-method">editorial method</a>. MyRecon's <a href="/services.html">footprint removal support</a> can help with accounts and listings you own or are formally authorised to manage. External sources checked <time datetime="2026-11-28">28 Nov 2026</time>.</p>

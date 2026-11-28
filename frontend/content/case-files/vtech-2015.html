@@ -13,23 +13,62 @@
   "vector": "SQL injection against the Learning Lodge app store, with passwords protected only by unsalted MD5 and security answers stored in plain text",
   "actor": "An individual who gave the data to a journalist rather than selling it; a related arrest was made in the UK",
   "cost": "$650,000 FTC settlement in 2018 over children's privacy violations",
-  "exposed": ["Children's names", "Dates of birth", "Genders", "Parents' names and addresses", "Email addresses", "Password hashes and plain-text security answers", "Chat logs and photographs from Kid Connect"],
+  "exposed": [
+    "Children's names",
+    "Dates of birth",
+    "Genders",
+    "Parents' names and addresses",
+    "Email addresses",
+    "Password hashes and plain-text security answers",
+    "Chat logs and photographs from Kid Connect"
+  ],
   "sortDate": "2015-11-27",
   "published": "2026-09-14",
-  "updated": "2026-11-22",
-  "related": ["ashley-madison-2015", "talktalk-2015", "23andme-2023"],
+  "updated": "2026-11-28",
+  "related": [
+    "ashley-madison-2015",
+    "talktalk-2015",
+    "23andme-2023"
+  ],
   "faq": [
-    { "q": "Why is children's data treated as a special category?", "a": "Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years. They cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service." },
-    { "q": "What actually made this breach so bad technically?", "a": "Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection, such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit." },
-    { "q": "What did the attacker do with the data?", "a": "Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful, an arrest followed in the UK, but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested." },
-    { "q": "Did VTech face consequences?", "a": "The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites." }
+    {
+      "q": "Why is children's data treated as a special category?",
+      "a": "Because the exposure lasts a lifetime and the subject had no part in the decision. A child whose name, date of birth and photograph leaked in 2015 was perhaps six years old; they will be applying for credit and jobs with those identifiers for another seventy years.\n\nThey cannot change a date of birth, they did not consent to the account, and the record linking them to their parents and home address does not decay. Almost every other breach exposes adults who at least chose to use the service."
+    },
+    {
+      "q": "What actually made this breach so bad technically?",
+      "a": "Three findings, each avoidable. The application was vulnerable to SQL injection, a flaw already old enough to be inexcusable in 2015. Passwords were protected with unsalted MD5, which is not meaningfully protection, such hashes are recovered in bulk almost instantly. Security questions and their answers were stored in plain text, meaning the account recovery mechanism was readable to anyone who reached the database. And traffic was not consistently protected in transit."
+    },
+    {
+      "q": "What did the attacker do with the data?",
+      "a": "Not what usually happens. They gave it to a journalist at Motherboard and did not sell or publish it, saying their purpose was to demonstrate how poorly it had been protected. That does not make the intrusion lawful, an arrest followed in the UK, but it did mean the dataset largely did not enter criminal circulation, which is unusual and is why the practical harm was smaller than the exposure suggested."
+    },
+    {
+      "q": "Did VTech face consequences?",
+      "a": "The US Federal Trade Commission settled with VTech in January 2018 for $650,000 over violations of the Children's Online Privacy Protection Act, finding it had collected children's personal information without proper parental notice and consent and had failed to secure it. VTech also amended its terms of service after the breach in a way that attracted criticism, adding language disclaiming liability for the security of data on its sites."
+    }
   ],
   "sources": [
-    { "label": "Federal Trade Commission complaint, Learning Lodge registration, January 2018", "url": "https://www.ftc.gov/system/files/documents/cases/vtech_file_stamped_complaint_w_exs_1-8-18.pdf" },
-    { "label": "Federal Trade Commission, Electronic toy maker VTech settles FTC allegations, January 2018", "url": "https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-us-law" },
-    { "label": "Troy Hunt, analysis of the VTech data, November 2015", "url": "https://www.troyhunt.com/when-children-are-breached-inside/", "note": "the independent technical assessment of what was exposed" },
-    { "label": "Motherboard reporting on the breach and interviews with the attacker, November 2015" },
-    { "label": "VTech Holdings Limited public statements and FAQ, November–December 2015" }
+    {
+      "label": "Federal Trade Commission complaint, Learning Lodge registration, January 2018",
+      "url": "https://www.ftc.gov/system/files/documents/cases/vtech_file_stamped_complaint_w_exs_1-8-18.pdf"
+    },
+    {
+      "label": "Federal Trade Commission, Electronic toy maker VTech settles FTC allegations, January 2018",
+      "url": "https://www.ftc.gov/news-events/news/press-releases/2018/01/electronic-toy-maker-vtech-settles-ftc-allegations-it-violated-childrens-privacy-law-ftc-act",
+      "note": "checked 28 Nov 2026"
+    },
+    {
+      "label": "Troy Hunt, analysis of the VTech data, November 2015",
+      "url": "https://www.troyhunt.com/when-children-are-breached-inside/",
+      "note": "the independent technical assessment of what was exposed"
+    },
+    {
+      "label": "Motherboard reporting on the breach and interviews with the attacker, November 2015"
+    },
+    {
+      "label": "VTech Holdings Limited public statements and FAQ, November–December 2015"
+    }
   ]
 }
 -->

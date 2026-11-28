@@ -13,22 +13,56 @@
   "vector": "Unpatched Apache Struts flaw (CVE-2017-5638) in a consumer dispute portal",
   "actor": "Four members of China's PLA, indicted by the US Department of Justice in 2020",
   "cost": "Up to $700 million in settlements; the chief executive, CIO and CSO all left",
-  "exposed": ["Names", "Social Security numbers", "Dates of birth", "Addresses", "Driver's licence numbers", "209,000 credit card numbers"],
+  "exposed": [
+    "Names",
+    "Social Security numbers",
+    "Dates of birth",
+    "Addresses",
+    "Driver's licence numbers",
+    "209,000 credit card numbers"
+  ],
   "sortDate": "2017-09-07",
   "published": "2026-09-14",
   "updated": "2026-11-22",
-  "related": ["national-public-data-2024", "capital-one-2019", "anthem-2015"],
+  "related": [
+    "national-public-data-2024",
+    "capital-one-2019",
+    "anthem-2015"
+  ],
   "faq": [
-    { "q": "Was I affected by the Equifax breach?", "a": "Use the eligibility lookup linked by the Federal Trade Commission on its Equifax settlement page. The deadline for new claims was January 22, 2024. If you were affected and discover identity misuse, the FTC says free identity restoration help is available until January 2029, even if you never filed a claim." },
-    { "q": "What data was stolen in the Equifax breach?", "a": "Names, Social Security numbers, dates of birth and addresses for 147.9 million people; driver's licence numbers for a smaller subset; and credit card numbers for around 209,000 people. Roughly 15 million UK records and around 19,000 Canadian records were also taken." },
-    { "q": "Did anyone go to prison over the Equifax breach?", "a": "Not for the breach itself. Jun Ying, a former chief information officer at Equifax's US Information Solutions unit, pleaded guilty to insider trading for dumping his shares before the public announcement and was sentenced in 2019. In 2020 the Department of Justice indicted four members of China's People's Liberation Army over the intrusion; they are not in US custody." },
-    { "q": "How much did Equifax pay?", "a": "The 2019 settlement with the FTC, the CFPB and 50 US states and territories was worth up to $700 million, including a $425 million consumer restitution fund. Individual payouts were small: the fund was heavily oversubscribed and cash claims of $125 were cut to a few dollars each." }
+    {
+      "q": "Was I affected by the Equifax breach?",
+      "a": "Use the eligibility lookup linked by the Federal Trade Commission on its Equifax settlement page. The deadline for new claims was January 22, 2024. If you were affected and discover identity misuse, the FTC says free identity restoration help is available until January 2029, even if you never filed a claim."
+    },
+    {
+      "q": "What data was stolen in the Equifax breach?",
+      "a": "Names, Social Security numbers, dates of birth and addresses for 147.9 million people; driver's licence numbers for a smaller subset; and credit card numbers for around 209,000 people. Roughly 15 million UK records and around 19,000 Canadian records were also taken."
+    },
+    {
+      "q": "Did anyone go to prison over the Equifax breach?",
+      "a": "Not for the breach itself. Jun Ying, a former chief information officer at Equifax's US Information Solutions unit, pleaded guilty to insider trading for dumping his shares before the public announcement and was sentenced in 2019. In 2020 the Department of Justice indicted four members of China's People's Liberation Army over the intrusion; they are not in US custody."
+    },
+    {
+      "q": "How much did Equifax pay?",
+      "a": "The 2019 settlement with the FTC, the CFPB and 50 US states and territories was worth up to $700 million, including a $425 million consumer restitution fund. Individual payouts were small: the fund was heavily oversubscribed and cash claims of $125 were cut to a few dollars each."
+    }
   ],
   "sources": [
-    { "label": "US Government Accountability Office, GAO-18-559: Actions Taken by Equifax and Federal Agencies in Response to the 2017 Breach", "url": "https://www.gao.gov/products/gao-18-559", "note": "the clearest public account of the intrusion" },
-    { "label": "Federal Trade Commission, Equifax data breach settlement", "url": "https://www.ftc.gov/enforcement/refunds/equifax-data-breach-settlement" },
-    { "label": "US Department of Justice indictment of four PLA members, February 2020" },
-    { "label": "US Senate Permanent Subcommittee on Investigations report, 2019" }
+    {
+      "label": "US Government Accountability Office, GAO-18-559: Actions Taken by Equifax and Federal Agencies in Response to the 2017 Breach",
+      "url": "https://www.gao.gov/products/gao-18-559",
+      "note": "the clearest public account of the intrusion"
+    },
+    {
+      "label": "Federal Trade Commission, Equifax data breach settlement",
+      "url": "https://www.ftc.gov/enforcement/refunds/equifax-data-breach-settlement"
+    },
+    {
+      "label": "US Department of Justice indictment of four PLA members, February 2020"
+    },
+    {
+      "label": "US Senate Permanent Subcommittee on Investigations report, 2019"
+    }
   ]
 }
 -->
@@ -36,7 +70,9 @@
 
 <h2>What happened</h2>
 
-<p>On 6 March 2017, the Apache Software Foundation published a patch for CVE-2017-5638, a flaw in the Struts web framework that let an attacker run commands on a server simply by sending a malformed <code>Content-Type</code> header. It was about as serious as a web vulnerability gets: no credentials needed, no user interaction, full remote code execution. Exploit code was public within a day. The US Computer Emergency Readiness Team notified Equifax on 8 March, the company circulated an internal instruction to patch within 48 hours on 9 March, and a vulnerability scan on 15 March reported everything clean.</p>
+<p>On 6 March 2017, the Apache Software Foundation published a patch for CVE-2017-5638, a flaw in the Struts web framework that let an attacker run commands on a server simply by sending a malformed <code>Content-Type</code> header. It was about as serious as a web vulnerability gets: no credentials needed, no user interaction, full remote code execution.</p>
+
+<p>Exploit code was public within a day. The US Computer Emergency Readiness Team notified Equifax on 8 March, the company circulated an internal instruction to patch within 48 hours on 9 March, and a vulnerability scan on 15 March reported everything clean.</p>
 
 <p>It was not clean. The scan had not reached the Automated Consumer Interview System, the public web portal where Americans went to dispute an error on their own credit report. ACIS was old, it was internet-facing, and it was running the vulnerable version of Struts. On 13 May, someone found it.</p>
 
@@ -84,7 +120,9 @@
 
 <h2>What happened next</h2>
 
-<p>The response made the breach worse. The lookup site Equifax set up for worried consumers ran on a lookalike domain rather than equifax.com, <em>equifaxsecurity2017.com</em>: which is precisely the pattern every bank tells customers to distrust. A security researcher registered a near-identical domain to make the point, and Equifax's own official Twitter account sent people to the fake one several times. The site's early answers were inconsistent: the same Social Security number could return different results on different attempts. The offer of free credit monitoring initially carried terms that appeared to waive the right to sue, which the company withdrew after a public outcry.</p>
+<p>The response made the breach worse. The lookup site Equifax set up for worried consumers ran on a lookalike domain rather than equifax.com, <em>equifaxsecurity2017.com</em>: which is precisely the pattern every bank tells customers to distrust. A security researcher registered a near-identical domain to make the point, and Equifax's own official Twitter account sent people to the fake one several times.</p>
+
+<p>The site's early answers were inconsistent: the same Social Security number could return different results on different attempts. The offer of free credit monitoring initially carried terms that appeared to waive the right to sue, which the company withdrew after a public outcry.</p>
 
 <p>The settlement two years later was worth up to $700 million, including a $425 million fund for consumers. The FTC had to publicly warn claimants that the advertised $125 cash alternative would be reduced to a token amount, because far more people claimed it than the fund could pay. For most people the practical outcome of the largest consumer data settlement in US history was a few dollars or a few years of monitoring they had to remember to enrol in.</p>
 

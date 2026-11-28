@@ -608,6 +608,7 @@ function article(b, editorial, siblings) {
     dateModified: archiveUpdate?.date,
     citation: { "@type": "CreativeWork", name: `${b.Title} entry in Have I Been Pwned`, url: recordUrl },
     author: { "@type": "Organization", name: "MyRecon", url: `${SITE}/about.html` },
+    editor: { "@type": "Person", "@id": `${SITE}/founder.html#person`, name: "Aryan Walia", url: `${SITE}/founder.html` },
     publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
     mainEntityOfPage: url,
     image: logo || `${SITE}/assets/img/og-image.png`,
@@ -804,6 +805,8 @@ function index(items, earlier = earlierArchiveEntries(items)) {
         name: "The Breach Files",
         description,
         url,
+        isPartOf: { "@id": `${SITE}/#website` },
+        publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "MyRecon", url: `${SITE}/`, logo: { "@type": "ImageObject", url: `${SITE}/assets/img/og-image.png`, width: 1200, height: 630 } },
       }),
       extraLd: JSON.stringify({
         "@context": "https://schema.org",

@@ -13,22 +13,58 @@
   "vector": "A compromised front-end workstation, then lateral movement to a privileged account and queries against the electronic medical records database",
   "actor": "A skilled and well-resourced advanced persistent threat group; the government did not publicly name a state",
   "cost": "S$750,000 fine for the health IT agency and S$250,000 for SingHealth; a public Committee of Inquiry and sixteen recommendations",
-  "exposed": ["Names", "National registration identity card numbers", "Addresses", "Genders", "Races", "Dates of birth", "Outpatient dispensed medicines"],
+  "exposed": [
+    "Names",
+    "National registration identity card numbers",
+    "Addresses",
+    "Genders",
+    "Races",
+    "Dates of birth",
+    "Outpatient dispensed medicines"
+  ],
   "sortDate": "2018-07-20",
   "published": "2026-09-15",
-  "updated": "2026-09-15",
-  "related": ["anthem-2015", "medibank-2022", "opm-2015"],
+  "updated": "2026-11-28",
+  "related": [
+    "anthem-2015",
+    "medibank-2022",
+    "opm-2015"
+  ],
   "faq": [
-    { "q": "What was actually taken?", "a": "Demographic records for about 1.5 million people who had visited SingHealth outpatient clinics over a seven-year period: name, national identity card number, address, gender, race and date of birth. For roughly 160,000 of those patients, records of dispensed outpatient medicines were also taken. Diagnoses, doctors' notes and test results were not, the attackers queried a specific database in a specific way, and what they took reflects that." },
-    { "q": "Was the Prime Minister specifically targeted?", "a": "Yes. The Committee of Inquiry found that the records of Prime Minister Lee Hsien Loong were repeatedly and specifically targeted, along with those of a number of other individuals. That finding is what separates this case from an ordinary healthcare breach: the bulk data was not the objective but the by-product of reaching one person's prescription history." },
-    { "q": "How did the attackers get in?", "a": "Through a front-end workstation, most likely via a phishing email carrying malware. From that foothold they moved laterally through the network over a period of months, obtained credentials for privileged accounts, and eventually reached a server from which they could query the electronic medical records database directly. It is the standard shape of a targeted intrusion: the entry point is mundane, and the work happens afterwards." },
-    { "q": "Why were the failings made public in such detail?", "a": "Singapore convened a Committee of Inquiry with public hearings, and its report names specific technical weaknesses and specific human decisions, including administrative accounts with weak passwords, unpatched software, and staff who saw anomalies and did not escalate them. Very few countries publish that level of detail about a government-linked breach. The report is more useful to defenders than almost any vendor incident write-up, precisely because it does not protect anyone." }
+    {
+      "q": "What was actually taken?",
+      "a": "Demographic records for about 1.5 million people who had visited SingHealth outpatient clinics over a seven-year period: name, national identity card number, address, gender, race and date of birth. For roughly 160,000 of those patients, records of dispensed outpatient medicines were also taken. Diagnoses, doctors' notes and test results were not, the attackers queried a specific database in a specific way, and what they took reflects that."
+    },
+    {
+      "q": "Was the Prime Minister specifically targeted?",
+      "a": "Yes. The Committee of Inquiry found that the records of Prime Minister Lee Hsien Loong were repeatedly and specifically targeted, along with those of a number of other individuals. That finding is what separates this case from an ordinary healthcare breach: the bulk data was not the objective but the by-product of reaching one person's prescription history."
+    },
+    {
+      "q": "How did the attackers get in?",
+      "a": "Through a front-end workstation, most likely via a phishing email carrying malware. From that foothold they moved laterally through the network over a period of months, obtained credentials for privileged accounts, and eventually reached a server from which they could query the electronic medical records database directly. It is the standard shape of a targeted intrusion: the entry point is mundane, and the work happens afterwards."
+    },
+    {
+      "q": "Why were the failings made public in such detail?",
+      "a": "Singapore convened a Committee of Inquiry with public hearings, and its report names specific technical weaknesses and specific human decisions, including administrative accounts with weak passwords, unpatched software, and staff who saw anomalies and did not escalate them. Very few countries publish that level of detail about a government-linked breach. The report is more useful to defenders than almost any vendor incident write-up, precisely because it does not protect anyone."
+    }
   ],
   "sources": [
-    { "label": "Public Report of the Committee of Inquiry into the cyber attack on SingHealth's patient database, January 2019" },
-    { "label": "Personal Data Protection Commission of Singapore, decisions concerning SingHealth and Integrated Health Information Systems, January 2019" },
-    { "label": "Ministry of Health and Ministry of Communications and Information statements, July 2018" },
-    { "label": "Cyber Security Agency of Singapore, post-incident measures for the public healthcare sector" }
+    {
+      "label": "Public Report of the Committee of Inquiry into the cyber attack on SingHealth's patient database, January 2019"
+    },
+    {
+      "label": "Personal Data Protection Commission of Singapore, decisions concerning SingHealth and Integrated Health Information Systems, January 2019",
+      "url": "https://www.pdpc.gov.sg/",
+      "note": "PDPC Singapore portal, checked 28 November 2026"
+    },
+    {
+      "label": "Ministry of Health and Ministry of Communications and Information statements, July 2018"
+    },
+    {
+      "label": "Cyber Security Agency of Singapore, post-incident measures for the public healthcare sector",
+      "url": "https://www.csa.gov.sg/",
+      "note": "CSA Singapore portal, checked 28 November 2026"
+    }
   ]
 }
 -->

@@ -5,7 +5,7 @@
   "description": "Review public social media profile candidates with permission. Use usernames and source evidence, and keep uncertain ownership matches unconfirmed.",
   "category": "OSINT Investigation",
   "datePublished": "2026-10-14",
-  "dateModified": "2026-10-14"
+  "dateModified": "2026-11-28"
 }
 -->
 <p class="lead">Whether you are conducting authorized pre-employment due diligence, investigating online fraud, or auditing your own digital footprint, locating public social media accounts is one of the most common open-source intelligence (OSINT) workflows. Here is the complete step-by-step methodology used by professional researchers.</p>
@@ -21,7 +21,7 @@
 </ul>
 
 <h2>Method 1: Reverse Username Lookup Across 560+ Platforms</h2>
-<p>Over 70% of internet users reuse their favorite handle across multiple platforms, from mainstream networks like X, YouTube, and Instagram to developer hubs, gaming networks, and niche forums.</p>
+<p>Many internet users reuse a favorite handle across multiple platforms, from mainstream networks like X, YouTube, and Instagram to developer hubs, gaming networks, and niche forums.</p>
 <p>Rather than manually typing URLs into dozens of websites, automated username checkers query platform registration endpoints in parallel. To begin an investigation:</p>
 <ol>
   <li>Collect known handles, variations, and past gaming or forum handles.</li>
@@ -33,9 +33,9 @@
 <h2>Method 2: Email Reverse Search and Identity Pivots</h2>
 <p>If you have a known email address, you can pivot from the email to connected social identities without sending any communication:</p>
 <ul>
-  <li><strong>Gravatar &amp; Automattic Avatars:</strong> Gravatar hashes email addresses using MD5 (e.g., <code>https://www.gravatar.com/avatar/&lt;hash&gt;.json</code>). Querying this endpoint can reveal full names, usernames, and profile pictures voluntarily linked to the address.</li>
-  <li><strong>GitHub Commit Logs:</strong> If the target has contributed to public open-source repositories, their git commit metadata often includes both their public handle and their configured email address.</li>
-  <li><strong>Breach Intelligence:</strong> Public breach notifications (such as those indexed by <a href="/#tool">MyRecon email breach search</a>) associate emails with compromised services, exposing which platforms the user historically registered on.</li>
+  <li><strong>Gravatar &amp; Automattic Avatars:</strong> Per the <a href="https://docs.gravatar.com/rest/hash/" target="_blank" rel="noopener noreferrer">Gravatar email-hashing specification</a> and <a href="https://docs.gravatar.com/json/" target="_blank" rel="noopener noreferrer">Gravatar JSON profile docs</a> (checked 28 Nov 2026), Gravatar indexes trimmed, lowercased email addresses using SHA-256 (with legacy MD5 support) at endpoints such as <code>https://gravatar.com/&lt;hash&gt;.json</code>, revealing only details the owner voluntarily published.</li>
+  <li><strong>GitHub Commit Logs &amp; User API:</strong> If the target has contributed to public open-source repositories, public Git commit metadata and the <a href="https://docs.github.com/en/rest/users/users" target="_blank" rel="noopener noreferrer">GitHub REST Users API</a> (checked 28 Nov 2026) can show public handles, bios, and configured commit emails.</li>
+  <li><strong>Breach Intelligence:</strong> Public breach notifications (such as those indexed by <a href="/#tool">MyRecon email breach search</a> and explained in the <a href="https://haveibeenpwned.com/FAQs" target="_blank" rel="noopener noreferrer">Have I Been Pwned FAQ</a>, checked 28 Nov 2026) associate emails with disclosed incidents, showing where an address appeared historically.</li>
 </ul>
 
 <h2>Method 3: Reverse Image Search on Profile Pictures</h2>
@@ -54,16 +54,16 @@ site:linkedin.com/in/ "username"
 site:reddit.com/user/ "username"
 "username" (site:tiktok.com OR site:youtube.com OR site:twitch.tv)
 "known_email@gmail.com" -site:google.com</code></pre>
-<p>To find cached or deleted profile pages, prepend <code>cache:</code> to the profile URL or inspect historical captures on the Wayback Machine (archive.org).</p>
+<p>To inspect historical captures of changed or deleted public profile pages, search the profile URL using the <a href="https://help.archive.org/help/using-the-wayback-machine/" target="_blank" rel="noopener noreferrer">Internet Archive Wayback Machine guide</a> (checked 28 Nov 2026).</p>
 
 <h2>Legal and Ethical Boundaries</h2>
 <p>OSINT investigations must adhere strictly to legal guidelines:</p>
 <ul>
-  <li><strong>Public data only:</strong> Never attempt to guess passwords, send malicious phishing lures, or bypass access control systems (violating the CFAA or international equivalents).</li>
+  <li><strong>Public data only:</strong> Never attempt to guess passwords, send malicious phishing lures, or bypass access control systems, which can violate the US Computer Fraud and Abuse Act (<a href="https://www.law.cornell.edu/uscode/text/18/1030" target="_blank" rel="noopener noreferrer">18 U.S.C. &sect; 1030</a>, checked 28 Nov 2026) or international equivalents.</li>
   <li><strong>No harassment or doxxing:</strong> Gathering intelligence to intimidate, harass, or publish sensitive private details is unethical and illegal.</li>
   <li><strong>Respect opt-outs:</strong> Honor data subject requests and service terms of use.</li>
 </ul>
 
 <h2>Next Steps for Your Investigation</h2>
 <p>Ready to put these methods into action? Start by auditing your own public footprint to understand what strangers can uncover about you:</p>
-<p><a href="/#tool">Run a free username audit on MyRecon</a> · <a href="/reverse-username-lookup.html">Read our reverse username guide</a> · <a href="/digital-footprint-checker.html">Download the digital footprint checklist</a></p>
+<p><a href="/#tool">Run a free username audit on MyRecon</a> · <a href="/reverse-username-lookup.html">Read our reverse username guide</a> · <a href="/digital-footprint-checker.html">Download the digital footprint checklist</a> · <a href="/about.html#editorial-method">Editorial method</a>. External sources checked <time datetime="2026-11-28">28 Nov 2026</time>.</p>
