@@ -60,7 +60,24 @@
     },
     {
       "heading": "Read benchmark evidence with its scope",
-      "body": "MyRecon links recorded comparison evidence from the homepage. The published case is useful for inspecting result definitions and source review; a single handle is not an estimate of overall precision, recall or success rate across the catalogue. Provider failures and unsupported services should remain visible. A large platform count measures attempted scope, not confirmed accounts or reliable identity resolution."
+      "body": "In MyRecon's November 2026 study, a rule based only on HTTP status left 326 of 600 observations inconclusive. The study repeated ten fixed controls per platform in 20 runs on GitHub, GitLab and Hacker News. When a check is inconclusive, it leaves the profile's existence unresolved.\n\nAll 20 disagreements came from repeats of one GitLab control. The status rule reported a match for that fixture while the official API reference showed no matching account. These results describe the fixed controls and the study environment.",
+      "table": {
+        "caption": "HTTP status rule versus official API reference, 1–21 November 2026",
+        "headers": ["Platform", "Repeated observations", "Inconclusive", "Disagreed with reference"],
+        "rows": [
+          ["GitHub", "200", "6", "0"],
+          ["GitLab", "200", "120", "20"],
+          ["Hacker News", "200", "200", "0"]
+        ]
+      },
+      "download": {
+        "href": "/assets/downloads/username-http-status-controls-november-2026.csv",
+        "label": "Download all 600 November observations (CSV)"
+      },
+      "link": {
+        "href": "/blog/username-search-benchmark-research.html#november-controls",
+        "label": "Read the November benchmark method and results"
+      }
     },
     {
       "heading": "Report a suspected detector problem",
@@ -78,7 +95,8 @@
     "https://docs.gitlab.com/api/users/#list-users"
   ],
   "reviewed_at": "2026-10-03",
-  "modified_at": "2026-10-03",
+  "published_at": "2026-10-03",
+  "modified_at": "2026-11-28",
   "reviewer": "MyRecon editorial",
   "cta": {
     "label": "Search a public username with MyRecon",

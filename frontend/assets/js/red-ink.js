@@ -17,7 +17,7 @@
   const controls='#tool,#results,a,button,input,textarea,select,label,summary,header,nav,[role="dialog"],[role="button"],[contenteditable],.orbit,.promo-art,.hero-trace-tags,figure,picture,video,iframe,[role="img"],[data-ink-exclude]';
   const random=(a,b)=>a+Math.random()*(b-a),pt=(x,y)=>({x,y});
   let nib=pt(innerWidth-45,150),marks=[],blocks=[],textBoxes=[],raf=0,lastScroll=-9999,refresh=0,engaged=false,park=null,hintRead=0,lastFrame=performance.now();
-  let handwriting=null,cueDrawn=false;
+  let handwriting=null,cueDrawn=false,canvasHasInk=false;
   const ease=t=>t*t*t*(10+t*(-15+6*t));
   function curve(a,b,c,d){return Array.from({length:65},(_,i)=>{const t=i/64,u=1-t;return pt(u*u*u*a.x+3*u*u*t*b.x+3*u*t*t*c.x+t*t*t*d.x,u*u*u*a.y+3*u*u*t*b.y+3*u*t*t*c.y+t*t*t*d.y);});}
   function arrow(a,b,c,tip,size=9){
@@ -146,7 +146,7 @@
         try{
           m=hint();
           if(!m)return false;
-          m.life=24000;m.fade=11000;m.born=performance.now();m.drawn=[];state.mark=m;marks.push(m);
+          m.life=24000;m.fade=11000;m.born=performance.now();m.drawn=[];state.mark=m;marks.push(m);wake();
           {
             const o=origin(m);if(!o)return false;
             hook.style.left=(o.x+m.cue.x)+'px';hook.style.top=(o.y+m.cue.y)+'px';
@@ -221,15 +221,15 @@
     const dt=Math.min(60,now-lastFrame);lastFrame=now;
     const scrolling=now-lastScroll<240;
     if(now>refresh){measure();refresh=now+180;}
-    ctx.clearRect(0,0,innerWidth,innerHeight);hook.style.opacity='0';
-    marks=marks.filter(m=>now-m.born<(m.life||24000)&&origin(m));let lifted=true;
+    if(canvasHasInk||marks.length){ctx.clearRect(0,0,innerWidth,innerHeight);hook.style.opacity='0';}
+    marks=marks.filter(m=>now-m.born<(m.life||24000)&&origin(m));canvasHasInk=marks.length>0;let lifted=true;
     for(const m of marks){const o=origin(m);if(!m.cue)continue;const fade=Math.min(1,Math.max(0,((m.life||24000)-(now-m.born))/(m.fade||11000)));ctx.globalAlpha=m.alpha*fade;ctx.strokeStyle='#e14959';ctx.lineWidth=m.width;ctx.lineCap='round';ctx.lineJoin='round';if(!m.side)for(const line of m.drawn){ctx.beginPath();line.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](o.x+p.x,o.y+p.y));ctx.stroke();}
       if(m.cue&&!scrolling){const x=o.x+m.cue.x,y=o.y+m.cue.y,b={left:x,right:x+220,top:y,bottom:y+49};if(y>85&&y+49<innerHeight&&!blocked(b)){
         hook.style.left=x+'px';hook.style.top=y+'px';hook.style.opacity=String(Math.min(1,(now-m.born)/450,Math.max(0,(16000-hintRead)/2000)));
         hintRead+=dt;host.dataset.hintVisible='true';
       }}
     }
-    for(const b of blocks)ctx.clearRect(b.left-14,b.top-14,b.width+28,b.height+28);
+    if(canvasHasInk)for(const b of blocks)ctx.clearRect(b.left-14,b.top-14,b.width+28,b.height+28);
     // Wrapped tabs get a side arrow in the gutter, clipped outside the panel.
     if(marks.some(m=>m.side&&m.cue)){
       const panel=tool.getBoundingClientRect(),top=Math.max(0,panel.top-3);
@@ -241,7 +241,7 @@
       ctx.restore();
       for(const b of blocks){if(b.inkElement===tool)continue;const pad=tool.contains(b.inkElement)?3:14;ctx.clearRect(b.left-pad,b.top-pad,b.width+pad*2,b.height+pad*2);}
     }
-    if(handwriting){paintWriting();raf=requestAnimationFrame(tick);return;}
+    if(handwriting){paintWriting();if(canvasHasInk)raf=requestAnimationFrame(tick);return;}
     if(park){
       const t=park.route?Math.min(1,(now-park.start)/1200):1;
       if(park.route)nib=along(park.route,t*t*(3-2*t));
@@ -250,8 +250,8 @@
     nib.x=Math.max(8,Math.min(innerWidth-33,nib.x));nib.y=Math.max(80,Math.min(innerHeight-12,nib.y));
     let homeless=false;if(!safe(nib)){const clear=nearestSafe(nib);if(clear)nib=clear;else homeless=true;}
     pen.style.opacity=homeless?'0':'.9';pen.style.transform=`translate(${nib.x}px,${nib.y-40}px) rotate(${(engaged?0:Math.sin(now/800)*4)+(lifted?8:0)}deg) scale(${lifted?1.06:1})`;
-    // Keep the parked pen visible without clearing a blank canvas every frame.
-    if(!engaged||park||marks.length)raf=requestAnimationFrame(tick);
+    // Layout changes call wake() if a hidden pen can become visible again.
+    if((!engaged&&!homeless)||park||canvasHasInk)raf=requestAnimationFrame(tick);
   }
   function yieldToVisitor(e){if(!e.target.closest?.('#tool,#results,[role="dialog"]')||engaged)return;engaged=true;marks=[];const target=nearestSafe(pt(innerWidth-54,125));park={route:target&&travel(nib,target),start:performance.now()};host.dataset.mode='resting';wake();}
   for(const event of ['focusin','input','pointerdown'])document.addEventListener(event,yieldToVisitor);
