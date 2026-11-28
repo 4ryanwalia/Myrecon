@@ -190,3 +190,23 @@ test('all named and future crawlers share public access and protected-path rules
   assert.ok(!group.rules.some(([type, value]) => type === 'disallow' && (value === '/' || value.includes('?'))));
   assert.deepEqual(robots.match(/^Sitemap:.*$/gm), ['Sitemap: https://www.myrecon.xyz/sitemap-index.xml']);
 });
+
+test('the agent discovery manifest advertises the read-only public breach catalogue', () => {
+  const frontend = path.resolve(__dirname, '..');
+  const manifestPath = '/.well-known/ard.json';
+  const manifest = JSON.parse(fs.readFileSync(path.join(frontend, manifestPath.slice(1)), 'utf8'));
+  assert.equal(manifest.entries.length, 1);
+  const [entry] = manifest.entries;
+  assert.equal(entry.identifier, 'urn:air:www.myrecon.xyz:api:public-breach-metadata');
+  assert.equal(entry.url, site + '/data/v1/openapi.json');
+  assert.equal(entry.type, 'application/json');
+  assert.ok(entry.representativeQueries.length >= 2 && entry.representativeQueries.length <= 5);
+  assert.ok(fs.readFileSync(path.join(frontend, 'robots.txt'), 'utf8').includes('Agentmap: ' + site + manifestPath));
+  assert.ok(fs.readFileSync(path.join(frontend, 'index.html'), 'utf8').includes('<link rel="ard" href="' + manifestPath + '">'));
+  assert.ok(fs.readFileSync(path.join(frontend, 'llms.txt'), 'utf8').includes('](' + site + manifestPath + ')'));
+  const { buildOpenApi } = require('../scripts/breach-api-openapi');
+  const api = buildOpenApi(site, 1);
+  assert.deepEqual(api.servers.map(server => server.url), [site + '/data/v1']);
+  assert.ok(Object.keys(api.paths).length > 0);
+  for (const operations of Object.values(api.paths)) assert.deepEqual(Object.keys(operations), ['get']);
+});
