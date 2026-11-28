@@ -89,6 +89,7 @@ try { for (const script of scripts) {
 fs.writeFileSync(homepagePath, homepageContents);
 }
 require('./build-username-chart').buildUsernameChart(ROOT);
+require('./build-home-changelog').buildHomeChangelog(ROOT);
 require('./enhance-article-promotion');
 require('./install-app-nudge').run();
 require('./enrich-story-experience');
