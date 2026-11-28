@@ -51,6 +51,7 @@
         const raw = input.value.trim();
         const value = email ? raw : raw.replace(/^@/, "");
         if (!value) return;
+        window.MyReconAnalytics?.toolCtaSubmit?.(email ? "email" : "username", "landing_form");
         go(value);
       });
       root.querySelector("button.sample")?.addEventListener("click", (event) => {

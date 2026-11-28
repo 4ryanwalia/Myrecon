@@ -61,6 +61,21 @@ test('additional assistants preserve the bounded source across internal navigati
   assert.equal(tagged.events[0][2].attribution_method, 'utm');
   assert.equal(load(undefined, 'https://www.perplexity.ai.example.org/').events.length, 0);
 });
+test('primary tool CTA records only a predefined tool and surface', () => {
+  const state = load('https://www.myrecon.xyz/digital-footprint-checker.html?q=private@example.com');
+  state.api.toolCtaSubmit('email', 'landing_form');
+  state.api.toolCtaSubmit('username', 'homepage_tool');
+  state.api.toolCtaSubmit('private@example.com', 'landing_form');
+  state.api.toolCtaSubmit('email', 'private@example.com');
+  assert.equal(state.events.length, 2);
+  assert.equal(state.events[0][1], 'tool_cta_submit');
+  assert.equal(state.events[0][2].scan_tool, 'email');
+  assert.equal(state.events[1][2].cta_surface, 'homepage_tool');
+  assert.doesNotMatch(JSON.stringify(state.events), /private|example.com/);
+  const benchmark = load('https://www.myrecon.xyz/?mr_benchmark=1');
+  benchmark.api.toolCtaSubmit('email', 'homepage_tool');
+  assert.equal(benchmark.events.length, 0);
+});
 test('benchmark flag suppresses conversions across internal pages, even without storage', () => {
   const a = load('https://www.myrecon.xyz/?mr_benchmark=1', 'https://chatgpt.com');
   a.api.scanComplete('username', 'quick', false); a.api.signUp(true);

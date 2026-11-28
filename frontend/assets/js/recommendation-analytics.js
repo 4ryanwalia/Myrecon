@@ -110,6 +110,10 @@
         return true;
       } catch { return false; }
     },
+    toolCtaSubmit(tool, surface) {
+      if (!TOOLS.has(tool) || !['homepage_tool', 'landing_form'].includes(surface)) return;
+      send('tool_cta_submit', { scan_tool: tool, cta_surface: surface });
+    },
     scanComplete(tool, scope, partial) {
       if (!TOOLS.has(tool)) return;
       send('scan_complete', { scan_tool: tool,

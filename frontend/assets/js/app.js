@@ -1828,7 +1828,7 @@
     box.querySelector('[data-profile-edit]')?.addEventListener('click', () => { clearTimeout(profileTimer); pendingProfileUrl = null; profileCancelled = true; profileController?.abort(); $("#queryInput").value = parsed.handle; profileAutoGate.reset(); box.remove(); $("#queryInput").focus(); });
     box.querySelector('[data-profile-cancel]')?.addEventListener('click', () => { clearTimeout(profileTimer); pendingProfileUrl = null; profileCancelled = true; profileController?.abort(); $("#queryInput").value = ''; profileAutoGate.reset(); box.remove(); });
   }
-  async function run() {
+  async function run(fromPrimaryCta = false) {
     clearTimeout(profileTimer); pendingProfileUrl = null;
     if ($("#runBtn").disabled) return;
     if (activeTool !== "email") await window.MyReconAccount?.ready;
@@ -1843,6 +1843,7 @@
       value = parsed.handle;
     }
     if (!value) { input.focus(); toast("Enter something to investigate.", "err"); return; }
+    if (fromPrimaryCta) window.MyReconAnalytics?.toolCtaSubmit?.(activeTool, "homepage_tool");
     if (tool.route) {
       if (window.MyReconDeepSearch) {
         enterToolMode();
@@ -2810,8 +2811,8 @@
       switchTool("username");
       renderHistory();
       renderSaved();
-      $("#runBtn")?.addEventListener("click", run);
-      $("#queryInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+      $("#runBtn")?.addEventListener("click", () => run(true));
+      $("#queryInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.repeat) run(true); });
       $("#queryInput")?.addEventListener("input", updateDetectHint);
       $("#queryInput")?.addEventListener("input", () => { clearTimeout(profileTimer); pendingProfileUrl = null; });
       $("#queryInput")?.addEventListener("paste", (event) => {
