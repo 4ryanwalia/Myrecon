@@ -182,7 +182,7 @@ test('all named and future crawlers share public access and protected-path rules
   assert.equal(groups.length, 1, 'A new named group must not lose shared exclusions');
   const group = groups[0];
   assert.ok(group.agents.includes('*'));
-  for (const agent of ['OAI-SearchBot', 'GPTBot', 'ChatGPT-User', 'Claude-SearchBot', 'Claude-User', 'ClaudeBot', 'Googlebot', 'Google-Extended', 'bingbot', 'Applebot', 'Applebot-Extended', 'PerplexityBot', 'Perplexity-User', 'DuckAssistBot', 'Amazonbot', 'Amzn-SearchBot', 'Amzn-User']) {
+  for (const agent of ['OAI-SearchBot', 'GPTBot', 'ChatGPT-User', 'Claude-SearchBot', 'Claude-User', 'ClaudeBot', 'Googlebot', 'Google-Extended', 'bingbot', 'Applebot', 'Applebot-Extended', 'PerplexityBot', 'Perplexity-User', 'DuckAssistBot', 'Amazonbot', 'Amzn-SearchBot', 'Amzn-User', 'Meta-WebIndexer', 'Meta-ExternalAgent', 'Meta-ExternalFetcher', 'CCBot']) {
     assert.ok(group.agents.includes(agent.toLowerCase()), agent);
   }
   for (const route of ['/api/', '/content/', '/worker-console/']) assert.ok(group.rules.some(([type, value]) => type === 'disallow' && value === route), route);

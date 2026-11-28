@@ -1,7 +1,8 @@
 # Public pages may be crawled for search, user-requested retrieval and AI training.
 # Named agents and the wildcard share one group and the same exclusions.
 # Google-Extended and Applebot-Extended are content-use controls, not
-# separate HTTP crawlers. Search access does not guarantee indexing or citations.
+# separate HTTP crawlers. Unlisted providers, including future crawlers, use
+# the wildcard. Search access does not guarantee indexing or citations.
 User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
 User-agent: GPTBot
@@ -22,6 +23,10 @@ User-agent: Perplexity-User
 User-agent: Amazonbot
 User-agent: Amzn-SearchBot
 User-agent: Amzn-User
+User-agent: Meta-WebIndexer
+User-agent: Meta-ExternalAgent
+User-agent: Meta-ExternalFetcher
+User-agent: CCBot
 User-agent: *
 # The API the front end calls. Nothing here renders, and every response is
 # JSON, so there is nothing for a crawler to index.
@@ -46,5 +51,7 @@ Allow: /
 
 Sitemap: https://www.myrecon.xyz/sitemap-index.xml
 
-# Site documentation convention for LLMs:
+# Public crawling and citation policy:
+# https://www.myrecon.xyz/about.html#ai-crawling-and-public-content
+# Curated entry points for systems that read llms.txt:
 # https://www.myrecon.xyz/llms.txt

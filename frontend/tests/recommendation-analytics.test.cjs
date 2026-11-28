@@ -49,6 +49,18 @@ test('tagged visits are distinct from referrers; restored users do not count as 
   a.api.signUp(false); a.api.signUp(undefined); a.api.scanComplete('secret input', 'secret input', false);
   assert.equal(a.events.length, 1);
 });
+test('additional assistants preserve the bounded source across internal navigation', () => {
+  const first = load(undefined, 'https://www.perplexity.ai/search/private');
+  assert.equal(first.events[0][2].ai_source, 'perplexity');
+  assert.equal(first.events[0][2].attribution_method, 'referrer');
+  const next = load(undefined, 'https://www.myrecon.xyz/about.html', first.storage);
+  next.api.scanComplete('email', '', false);
+  assert.equal(next.events[0][2].ai_source, 'perplexity');
+  const tagged = load('https://www.myrecon.xyz/?utm_source=chat.deepseek.com');
+  assert.equal(tagged.events[0][2].ai_source, 'deepseek');
+  assert.equal(tagged.events[0][2].attribution_method, 'utm');
+  assert.equal(load(undefined, 'https://www.perplexity.ai.example.org/').events.length, 0);
+});
 test('benchmark flag suppresses conversions across internal pages, even without storage', () => {
   const a = load('https://www.myrecon.xyz/?mr_benchmark=1', 'https://chatgpt.com');
   a.api.scanComplete('username', 'quick', false); a.api.signUp(true);
